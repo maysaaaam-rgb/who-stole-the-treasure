@@ -505,81 +505,285 @@
     }
   }
 
-  /* ---------- 4. Workshop & My Home Builder (o_workbench, h_*, f_*, g_*) ---------- */
+  /* ---------- 4. Full-Screen Home & Crafting Studio Page (House Upgrade, 16 Recipes & Live Interactive Yard Preview) ---------- */
   var workshopTab = 'home';
+  var craftFilter = 'all';
+  var studioSelectedIdx = -1;
+
+  // Studio Preview Stage maps 1:1 to Zone 0 Home Plot: worldX 400..2050 (w=1650), worldY 360..1350 (h=990)
+  var PLOT_X0 = 400, PLOT_W = 1650, PLOT_Y0 = 360, PLOT_H = 990;
 
   function openWorkshop(tab) {
     sound('playTap');
     if (W() && W().closeDecorDock) W().closeDecorDock(true);
     if (tab) workshopTab = tab;
+    var st = readState();
+    if (studioSelectedIdx >= (st.placed || []).length) studioSelectedIdx = -1;
     renderWorkshop();
+  }
+
+  function setCraftFilter(f) {
+    sound('playTap');
+    craftFilter = f || 'all';
+    renderWorkshop();
+  }
+
+  function selectStudioPlaced(idx, ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    sound('playTap');
+    studioSelectedIdx = (studioSelectedIdx === idx) ? -1 : idx;
+    renderWorkshop();
+  }
+
+  function tapStudioStage(ev) {
+    if (studioSelectedIdx < 0) return;
+    var canvas = document.getElementById('wg-studio-canvas');
+    if (!canvas) return;
+    var rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    var rx = Math.max(0.05, Math.min(0.95, (ev.clientX - rect.left) / rect.width));
+    var ry = Math.max(0.12, Math.min(0.93, (ev.clientY - rect.top) / rect.height));
+    var wx = Math.round(PLOT_X0 + rx * PLOT_W);
+    var wy = Math.round(PLOT_Y0 + ry * PLOT_H);
+    // Prevent dropping directly over the House roof/door (x: 1030..1310, y: 460..715)
+    if (wx > 1030 && wx < 1310 && wy > 460 && wy < 715) {
+      wy = 765;
+    }
+    var st = readState();
+    if (st.placed && st.placed[studioSelectedIdx]) {
+      st.placed[studioSelectedIdx].x = wx;
+      st.placed[studioSelectedIdx].y = wy;
+      writeState(st);
+      sound('playPop');
+      if (W() && W().refreshHome) W().refreshHome(false);
+      renderWorkshop();
+    }
+  }
+
+  function flipStudioItem(ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    var st = readState();
+    if (studioSelectedIdx >= 0 && st.placed && st.placed[studioSelectedIdx]) {
+      st.placed[studioSelectedIdx].flip = !st.placed[studioSelectedIdx].flip;
+      writeState(st);
+      sound('playPop');
+      if (W() && W().refreshHome) W().refreshHome(false);
+      renderWorkshop();
+    }
+  }
+
+  function storeStudioItem(ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    var st = readState();
+    if (studioSelectedIdx >= 0 && st.placed && st.placed[studioSelectedIdx]) {
+      st.placed.splice(studioSelectedIdx, 1);
+      studioSelectedIdx = -1;
+      writeState(st);
+      sound('playCorrect');
+      say('Stored in your bag!');
+      if (W() && W().refreshHome) W().refreshHome(false);
+      renderWorkshop();
+    }
+  }
+
+  function seeHomeInWorld() {
+    sound('playFanfare');
+    closeModal();
+    if (W()) {
+      if (W().S && W().S.zone === 0) {
+        if (W().refreshHome) W().refreshHome(true);
+      } else if (W().goZone) {
+        W().goZone(0, 0);
+      }
+    }
   }
 
   function renderWorkshop() {
     var st = readState(), bag = readBag().items || {};
     var curTier = HOUSE_TIERS[Math.max(0, Math.min(HOUSE_TIERS.length - 1, (st.houseTier || 1) - 1))];
     var nextTier = HOUSE_TIERS[st.houseTier || 1] || null;
-    var inHome = W() && W().S && W().S.zone === 0;
+    var placed = st.placed || [];
 
     var matBar = Object.keys(MAT_ICONS).map(function (k) {
       return '<span class="wg-mat-chip"><img src="' + FLAT + MAT_ICONS[k] + '.webp" alt=""><b>' + (Number(bag[k]) || 0) + '</b><small>' + k + '</small></span>';
     }).join('');
 
-    var bodyHtml = '';
+    // Build Live Interactive Home & Yard Preview Stage
+    var placedNodesHtml = placed.map(function (p, idx) {
+      var rec = RECIPES.filter(function (r) { return r.id === p.id; })[0];
+      if (!rec) return '';
+      var leftPct = Math.max(4, Math.min(96, ((p.x - PLOT_X0) / PLOT_W) * 100)).toFixed(1);
+      var topPct = Math.max(10, Math.min(94, ((p.y - PLOT_Y0) / PLOT_H) * 100)).toFixed(1);
+      var hPx = Math.round((rec.h || 110) * 0.36);
+      var isSel = (idx === studioSelectedIdx);
+      var zIdx = rec.flat ? 4 : Math.round(topPct);
+      return '<button type="button" class="wg-studio-item' + (isSel ? ' selected' : '') + '" style="left:' + leftPct + '%;top:' + topPct + '%;z-index:' + zIdx + '" title="' + esc(rec.name) + ' (Tap to select & move)" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">' +
+        '<img src="' + FLAT + rec.id + '.webp" alt="" style="height:' + hPx + 'px;' + (p.flip ? 'transform:scaleX(-1)' : '') + '">' +
+        (isSel ? '<span class="wg-studio-sel-tag">' + esc(rec.name) + '</span>' : '') +
+      '</button>';
+    }).join('');
+
+    var selObj = (studioSelectedIdx >= 0 && placed[studioSelectedIdx]) ? placed[studioSelectedIdx] : null;
+    var selRec = selObj ? RECIPES.filter(function (r) { return r.id === selObj.id; })[0] : null;
+
+    var stageToolbarHtml = selRec
+      ? '<div class="wg-studio-toolbar">' +
+          '<img src="' + FLAT + selRec.id + '.webp" style="width:30px;height:30px;object-fit:contain" alt="">' +
+          '<div class="wg-st-txt"><b>' + esc(selRec.name) + '</b><small>Tap anywhere on the Veranda or Garden to move it!</small></div>' +
+          '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.flipStudioItem(event)">↔ Flip</button>' +
+          '<button type="button" class="isl-btn" style="min-height:34px;padding:4px 10px;font-size:0.8rem;background:#e11d48;border-bottom-color:#881337" onclick="WorldGame.storeStudioItem(event)">📥 Bag</button>' +
+          '<button type="button" class="isl-btn emerald" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.selectStudioPlaced(-1, event)">✓ Done</button>' +
+        '</div>'
+      : '<div class="wg-studio-toolbar hint">' +
+          '<span>💡 <b>Live Home &amp; Yard Preview:</b> Tap any item on the map to move, flip, or pack it — then tap <b>🌍 See in Real World!</b></span>' +
+        '</div>';
+
+    var stageHtml =
+      '<div class="wg-studio-stage-wrap">' +
+        '<div class="wg-studio-stage-head">' +
+          '<span>🏡 <b>Level ' + curTier.level + ': ' + esc(curTier.name) + '</b></span>' +
+          '<span class="wg-st-badge">🪑 ' + placed.length + ' items in yard</span>' +
+        '</div>' +
+        '<div class="wg-studio-canvas" id="wg-studio-canvas" onclick="WorldGame.tapStudioStage(event)">' +
+          '<div class="wg-studio-path-h"></div>' +
+          '<div class="wg-studio-path-v"></div>' +
+          '<div class="wg-studio-deck" title="Connected Wooden Foundation & Veranda Patio">' +
+            '<div class="wg-studio-pad"></div>' +
+            '<span class="wg-studio-zone-tag">🏠 Veranda Deck</span>' +
+          '</div>' +
+          '<div class="wg-studio-steps"></div>' +
+          '<span class="wg-studio-garden-tag">🌳 Sunny Garden Lawn</span>' +
+          '<div class="wg-studio-npc" style="left:9.5%;top:34%" title="Grandpa Bolt"><img src="' + FLAT + 'c_bolt_happy.webp" alt=""></div>' +
+          '<div class="wg-studio-wb" style="left:21.8%;top:36.4%" title="Crafting Workbench"><img src="' + FLAT + 'o_workbench.webp" alt=""></div>' +
+          '<div class="wg-studio-house" style="left:46.7%;top:34.3%" title="Level ' + curTier.level + ': ' + esc(curTier.name) + '">' +
+            '<img src="' + FLAT + curTier.id + '.webp" alt="">' +
+            '<span class="wg-studio-house-tag">🏰 ' + esc(curTier.name) + '</span>' +
+          '</div>' +
+          placedNodesHtml +
+        '</div>' +
+        stageToolbarHtml +
+      '</div>';
+
+    // Build Right-Side Tab Panel (1: Upgrade House, 2: Craft Items, 3: Decorate & Bag)
+    var rightHtml = '';
     if (workshopTab === 'home') {
       var canUp = nextTier && hasMaterials(nextTier.cost);
-      bodyHtml =
+      var roadmapHtml = HOUSE_TIERS.map(function (t) {
+        var done = t.level < curTier.level;
+        var curr = t.level === curTier.level;
+        return '<div class="wg-tier-step' + (curr ? ' current' : (done ? ' done' : '')) + '">' +
+          '<img src="' + FLAT + t.id + '.webp" alt="">' +
+          '<b>Lv.' + t.level + ' ' + esc(t.name) + '</b>' +
+          '<em>' + (curr ? '📍 Current' : (done ? '✓ Built' : '🔒 Locked')) + '</em>' +
+        '</div>';
+      }).join('');
+
+      rightHtml =
         '<div class="wg-home-upgrade-card">' +
           '<div class="wg-home-pics">' +
             '<div class="wg-home-stage"><img src="' + FLAT + curTier.id + '.webp" alt=""><span>Level ' + curTier.level + ': ' + esc(curTier.name) + '</span></div>' +
             (nextTier ? '<div class="wg-home-arrow">➡</div><div class="wg-home-stage next"><img src="' + FLAT + nextTier.id + '.webp" alt=""><span>Level ' + nextTier.level + ': ' + esc(nextTier.name) + '</span></div>' : '') +
           '</div>' +
           (nextTier
-            ? '<div style="margin:12px 0"><div style="font-weight:800;color:#fde68a;margin-bottom:6px">Materials needed to upgrade:</div><div class="wg-cost-row">' + costPillsHtml(nextTier.cost, bag) + '</div></div>' +
-              '<button type="button" class="isl-btn ' + (canUp ? 'emerald' : '') + '" id="wg-btn-upgrade-home" ' + (canUp ? 'onclick="WorldGame.upgradeHome()"' : 'disabled aria-disabled="true"') + '>' +
-                (canUp ? '🔨 Upgrade Home Now!' : 'Gather more materials in the zones!') +
+            ? '<div style="margin:10px 0"><div style="font-weight:800;color:#fde68a;margin-bottom:6px">Materials needed for Level ' + nextTier.level + ' (' + esc(nextTier.name) + '):</div><div class="wg-cost-row">' + costPillsHtml(nextTier.cost, bag) + '</div></div>' +
+              '<button type="button" class="isl-btn ' + (canUp ? 'emerald' : '') + '" id="wg-btn-upgrade-home" style="min-height:46px;font-size:1rem;padding:8px 20px" ' + (canUp ? 'onclick="WorldGame.upgradeHome()"' : 'disabled aria-disabled="true"') + '>' +
+                (canUp ? '🔨 Upgrade to ' + esc(nextTier.name) + ' Now!' : '🔒 Gather Materials in Zones 1–4 to Upgrade!') +
               '</button>'
-            : '<div style="font-size:1.2rem;font-weight:800;color:#6ee7b7;margin-top:10px">🏰 You built the Royal Fairy-Tale Castle!</div>') +
+            : '<div style="font-size:1.15rem;font-weight:800;color:#6ee7b7;margin-top:10px">🏰 Maximum Level! You built the Royal Fairy-Tale Castle!</div>') +
+        '</div>' +
+        '<div class="wg-roadmap-wrap">' +
+          '<div class="wg-sec-title">🏰 5-Stage Home Evolution Roadmap</div>' +
+          '<div class="wg-tier-roadmap">' + roadmapHtml + '</div>' +
         '</div>';
-    } else {
-      var cards = RECIPES.map(function (r) {
+    } else if (workshopTab === 'craft') {
+      var filtered = RECIPES.filter(function (r) {
+        if (craftFilter === 'patio') return r.kind === 'patio';
+        if (craftFilter === 'garden') return r.kind === 'garden';
+        return true;
+      });
+      var cards = filtered.map(function (r) {
         var ownedCount = Number((st.ownedFurniture || {})[r.id]) || 0;
-        var placedCount = (st.placed || []).filter(function (p) { return p.id === r.id; }).length;
+        var placedCount = placed.filter(function (p) { return p.id === r.id; }).length;
+        var inBag = Math.max(0, ownedCount - placedCount);
         var canCraft = hasMaterials(r.cost);
         return '<div class="wg-recipe-card">' +
+          '<span class="wg-rec-kind ' + r.kind + '">' + (r.kind === 'patio' ? '🏠 Veranda' : '🌳 Garden') + '</span>' +
           '<img src="' + FLAT + r.id + '.webp" class="wg-recipe-pic" alt="" onclick="IslandAudio.speak(\'' + esc(r.name) + '\')">' +
           '<div class="wg-recipe-name">' + esc(r.name) + '</div>' +
+          '<div class="wg-rec-counts">Owned: <b>' + ownedCount + '</b> · Placed: <b>' + placedCount + '</b></div>' +
           '<div class="wg-cost-row">' + costPillsHtml(r.cost, bag) + '</div>' +
           '<div class="wg-recipe-actions">' +
-            '<button type="button" class="isl-btn ' + (canCraft ? 'amber' : '') + '" style="min-height:38px;padding:4px 10px;font-size:0.85rem" ' + (canCraft ? 'onclick="WorldGame.craftItem(\'' + r.id + '\')"' : 'disabled') + '>🔨 Craft</button>' +
-            (ownedCount > placedCount
-              ? '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:4px 10px;font-size:0.85rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">📍 Place (' + (ownedCount - placedCount) + ')</button>'
-              : (placedCount > 0 ? '<button type="button" class="isl-btn cyan" style="min-height:38px;padding:4px 10px;font-size:0.85rem" onclick="WorldGame.startMoveMode(\'' + r.id + '\')">✋ Move (' + placedCount + ')</button>' : '')) +
+            '<button type="button" class="isl-btn ' + (canCraft ? 'amber' : '') + '" style="min-height:36px;padding:4px 10px;font-size:0.82rem" ' + (canCraft ? 'onclick="WorldGame.craftItem(\'' + r.id + '\')"' : 'disabled') + '>🔨 Craft</button>' +
+            (inBag > 0
+              ? '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">📍 Place (+' + inBag + ')</button>'
+              : '') +
           '</div>' +
         '</div>';
       }).join('');
-      bodyHtml = '<div class="wg-recipes-grid">' + cards + '</div>';
+      rightHtml =
+        '<div class="wg-craft-filters">' +
+          '<button type="button" class="isl-btn ' + (craftFilter === 'all' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.setCraftFilter(\'all\')">All Items (16)</button>' +
+          '<button type="button" class="isl-btn ' + (craftFilter === 'patio' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.setCraftFilter(\'patio\')">🏠 Veranda Patio (6)</button>' +
+          '<button type="button" class="isl-btn ' + (craftFilter === 'garden' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.setCraftFilter(\'garden\')">🌳 Garden Lawn (10)</button>' +
+        '</div>' +
+        '<div class="wg-recipes-grid">' + cards + '</div>';
+    } else {
+      // Tab 3: Decorate & Bag
+      var bagItemsHtml = RECIPES.map(function (r) {
+        var ownedCount = Number((st.ownedFurniture || {})[r.id]) || 0;
+        var placedCount = placed.filter(function (p) { return p.id === r.id; }).length;
+        var avail = Math.max(0, ownedCount - placedCount);
+        if (avail <= 0) return '';
+        return '<div class="wg-bag-row">' +
+          '<img src="' + FLAT + r.id + '.webp" style="width:42px;height:42px;object-fit:contain" alt="">' +
+          '<div style="flex:1;min-width:0"><b>' + esc(r.name) + '</b><small style="display:block;color:#94a3b8">' + avail + ' in bag · ' + (r.kind === 'patio' ? '🏠 Veranda' : '🌳 Garden') + '</small></div>' +
+          '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">📍 Place on Map</button>' +
+        '</div>';
+      }).join('');
+
+      var placedListHtml = placed.map(function (p, idx) {
+        var rec = RECIPES.filter(function (r) { return r.id === p.id; })[0];
+        if (!rec) return '';
+        var isSel = (idx === studioSelectedIdx);
+        return '<div class="wg-bag-row' + (isSel ? ' active' : '') + '" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)" style="cursor:pointer">' +
+          '<img src="' + FLAT + rec.id + '.webp" style="width:40px;height:40px;object-fit:contain" alt="">' +
+          '<div style="flex:1;min-width:0"><b>' + esc(rec.name) + '</b><small style="display:block;color:#6ee7b7">' + (isSel ? '✋ Selected — Tap map to move!' : 'Tap to select & move on map') + '</small></div>' +
+          '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:3px 9px;font-size:0.78rem" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">✋ Move</button>' +
+        '</div>';
+      }).join('');
+
+      rightHtml =
+        '<div class="wg-decor-lists">' +
+          '<div class="wg-sec-title">🎒 Ready in Your Bag (Tap to Place)</div>' +
+          (bagItemsHtml || '<div class="wg-empty-note">All your crafted items are placed in the yard! Craft more in the <b>🔨 Craft Items</b> tab.</div>') +
+          '<div class="wg-sec-title" style="margin-top:12px">🪑 Placed on Your Island (' + placed.length + ')</div>' +
+          (placedListHtml || '<div class="wg-empty-note">Nothing placed yet — tap Place above or craft new items!</div>') +
+        '</div>';
     }
 
     document.body.classList.add('isl-modal-open');
     modalRoot().innerHTML =
       '<div class="isl-modal-backdrop" id="wg-workshop-backdrop">' +
-        '<div class="isl-card-modal wg-workshop-modal">' +
-          '<div class="isl-mission-top">' +
-            '<div style="display:flex;align-items:center;gap:8px;font-size:1.35rem;font-weight:800"><img src="' + FLAT + 'o_workbench.webp" style="width:40px;height:40px;object-fit:contain" alt=""> Island Workshop &amp; Home</div>' +
-            '<div style="margin-left:auto;display:flex;gap:8px">' +
-              (!inHome
-                ? '<button type="button" class="isl-btn emerald" style="min-height:42px;padding:6px 12px;font-size:0.9rem" onclick="WorldGame.jumpZone(0)">🏡 Go to My Home</button>'
-                : '<button type="button" class="isl-btn cyan" style="min-height:42px;padding:6px 12px;font-size:0.9rem" onclick="WorldGame.startMoveMode()">🪑 Live Decorate</button>') +
+        '<div class="isl-card-modal wg-studio-modal">' +
+          '<div class="isl-mission-top wg-studio-top">' +
+            '<div style="display:flex;align-items:center;gap:8px;font-size:1.28rem;font-weight:800"><img src="' + FLAT + 'o_workbench.webp" style="width:36px;height:36px;object-fit:contain" alt=""> My Home &amp; Crafting Studio</div>' +
+            '<div class="wg-studio-mats">' + matBar + '</div>' +
+            '<div style="margin-left:auto;display:flex;gap:8px;align-items:center">' +
+              '<button type="button" class="isl-btn emerald" id="wg-btn-see-world" style="min-height:42px;padding:6px 14px;font-size:0.92rem" onclick="WorldGame.seeHomeInWorld()">🌍 See in Real World!</button>' +
               '<button type="button" class="isl-btn" style="min-height:42px;min-width:44px;padding:6px 12px" onclick="WorldGame.closeModal()">✕</button>' +
             '</div>' +
           '</div>' +
-          '<div class="wg-mat-bar">' + matBar + '</div>' +
-          '<div style="display:flex;gap:8px;margin-bottom:10px">' +
-            '<button type="button" class="isl-btn ' + (workshopTab === 'home' ? 'amber' : '') + '" style="min-height:42px;padding:6px 16px" onclick="WorldGame.openWorkshop(\'home\')">🏰 Upgrade House</button>' +
-            '<button type="button" class="isl-btn ' + (workshopTab === 'craft' ? 'amber' : '') + '" style="min-height:42px;padding:6px 16px" onclick="WorldGame.openWorkshop(\'craft\')">🪑 Craft &amp; Decorate (16)</button>' +
+          '<div class="wg-studio-body">' +
+            stageHtml +
+            '<div class="wg-studio-panel">' +
+              '<div class="wg-studio-tabs">' +
+                '<button type="button" class="isl-btn ' + (workshopTab === 'home' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'home\')">🏰 1. Upgrade House</button>' +
+                '<button type="button" class="isl-btn ' + (workshopTab === 'craft' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'craft\')">🔨 2. Craft Items (16)</button>' +
+                '<button type="button" class="isl-btn ' + (workshopTab === 'decorate' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'decorate\')">🎨 3. Arrange (' + placed.length + ')</button>' +
+              '</div>' +
+              '<div class="wg-studio-tab-content">' + rightHtml + '</div>' +
+            '</div>' +
           '</div>' +
-          bodyHtml +
         '</div>' +
       '</div>';
   }
@@ -608,17 +812,12 @@
     var px = r.defPos.x + (countSame ? (countSame * 90) % 240 : 0);
     var py = r.defPos.y + (countSame ? Math.floor(countSame / 3) * 75 : 0);
     st.placed.push({ id: id, x: px, y: py, flip: false });
+    studioSelectedIdx = st.placed.length - 1;
     writeState(st);
     sound('playCorrect');
-    say('You crafted a ' + r.name + '!');
+    say('You crafted a ' + r.name + '! Tap the preview map to move it!');
     if (W() && W().refreshHome) W().refreshHome(true);
-    /* If on Home Island, jump straight into Live Decorator Dock so the pupil can position their new item in the 2D world! */
-    if (W() && W().S && W().S.zone === 0 && W().openDecorDock) {
-      closeModal();
-      W().openDecorDock(id);
-    } else {
-      renderWorkshop();
-    }
+    renderWorkshop();
   }
 
   function placeItem(id) {
@@ -628,15 +827,11 @@
     st.placed = st.placed || [];
     var countSame = st.placed.filter(function (p) { return p.id === id; }).length;
     st.placed.push({ id: id, x: r.defPos.x + countSame * 85, y: r.defPos.y, flip: false });
+    studioSelectedIdx = st.placed.length - 1;
     writeState(st);
     sound('playTap');
     if (W() && W().refreshHome) W().refreshHome(false);
-    if (W() && W().S && W().S.zone === 0 && W().openDecorDock) {
-      closeModal();
-      W().openDecorDock(id);
-    } else {
-      renderWorkshop();
-    }
+    renderWorkshop();
   }
 
   function removePlaced(id) {
@@ -645,6 +840,7 @@
     for (var i = st.placed.length - 1; i >= 0; i--) {
       if (st.placed[i].id === id) { st.placed.splice(i, 1); break; }
     }
+    studioSelectedIdx = -1;
     writeState(st);
     sound('playTap');
     if (W() && W().refreshHome) W().refreshHome(false);
@@ -652,9 +848,7 @@
   }
 
   function startMoveMode(focusId) {
-    closeModal();
-    if (W() && W().openDecorDock) W().openDecorDock(focusId || null);
-    else if (W() && W().setMoveMode) W().setMoveMode(true);
+    openWorkshop('decorate');
   }
 
   /* ---------- 5. Villager Quests Compass & In-World Gift Drops (v_*) ---------- */
@@ -1033,6 +1227,12 @@
     openEnergyCharge: openEnergyCharge,
     answerEnergy: answerEnergy,
     openWorkshop: openWorkshop,
+    setCraftFilter: setCraftFilter,
+    selectStudioPlaced: selectStudioPlaced,
+    tapStudioStage: tapStudioStage,
+    flipStudioItem: flipStudioItem,
+    storeStudioItem: storeStudioItem,
+    seeHomeInWorld: seeHomeInWorld,
     upgradeHome: upgradeHome,
     craftItem: craftItem,
     placeItem: placeItem,

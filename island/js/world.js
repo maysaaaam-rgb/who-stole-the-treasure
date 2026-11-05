@@ -38,7 +38,7 @@
         { art: FLAT + 'o_flowers_pink', x: 1260, y: 1120, h: 54, flat: true }
       ],
       ground2: { flowers: [FLAT + 'o_flowers'], count: 26 },
-      paths: [[[540, 775], [780, 775], [1120, 775], [1375, 775]], [[1120, 775], [1120, 695]]],
+      paths: [[[540, 785], [760, 785], [960, 855], [1170, 865], [1460, 865]], [[1170, 865], [1170, 1080]]],
       edge: { top: [FLAT + 'o_tree_round', FLAT + 'o_tree_pine'], topH: [340, 430], bottom: [FLAT + 'o_bush'], bottomH: [130, 170] },
       gather: [
         { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 420, y: 920 },
@@ -184,8 +184,15 @@
       for (i = 0; i < 14; i++) { c.fillStyle = look.patch; c.beginPath(); c.ellipse(seeded(i + 200) * W, seeded(i + 230) * H, 150 + seeded(i + 260) * 220, 80 + seeded(i + 290) * 110, 0, 0, 7); c.fill(); }
       var oval = function (cx, cy, rx, ry, fill, line, lw) { c.beginPath(); c.ellipse(cx, cy, rx, ry, 0, 0, 7); c.fillStyle = fill; c.fill(); if (line) { c.lineWidth = lw; c.strokeStyle = line; c.stroke(); } };
       if (z === 0) {
-        /* Warm wooden patio deck for furniture (f_*) next to the house */
-        var px = 1380, py = 460, pw = 560, ph = 390, pr = 28;
+        /* Connected Wooden Foundation & Veranda Deck directly under the House (x: 940..1920, y: 440..840) */
+        var px = 940, py = 440, pw = 980, ph = 400, pr = 32;
+        c.save();
+        c.fillStyle = 'rgba(20, 40, 15, 0.28)';
+        c.beginPath();
+        c.roundRect ? c.roundRect(px + 8, py + 14, pw, ph, pr) : c.rect(px + 8, py + 14, pw, ph);
+        c.fill();
+        c.restore();
+
         c.save();
         c.beginPath();
         c.moveTo(px + pr, py); c.lineTo(px + pw - pr, py); c.quadraticCurveTo(px + pw, py, px + pw, py + pr);
@@ -194,9 +201,30 @@
         c.lineTo(px, py + pr); c.quadraticCurveTo(px, py, px + pr, py); c.closePath();
         c.fillStyle = '#c8924b'; c.fill();
         c.clip();
-        c.globalAlpha = .82; c.fillStyle = tile('t_floor'); c.fillRect(px, py, pw, ph);
+        c.globalAlpha = .85; c.fillStyle = tile('t_floor'); c.fillRect(px, py, pw, ph);
+        /* Subtle stone hearth foundation pad directly under the House (x: 1010..1330, y: 495..735) */
+        c.globalAlpha = 1;
+        c.fillStyle = 'rgba(71, 85, 105, 0.36)';
+        c.beginPath();
+        c.ellipse(1170, 655, 155, 86, 0, 0, Math.PI * 2);
+        c.fill();
+        c.lineWidth = 5;
+        c.strokeStyle = 'rgba(226, 232, 240, 0.45)';
+        c.stroke();
         c.restore();
         c.lineWidth = 8; c.strokeStyle = '#6f4316'; c.stroke();
+
+        /* Welcoming front wooden porch steps below the House door (x: 1090..1250, y: 828..866) */
+        c.save();
+        c.fillStyle = '#b9823f';
+        c.strokeStyle = '#6f4316';
+        c.lineWidth = 5;
+        c.fillRect(1090, 828, 160, 20);
+        c.strokeRect(1090, 828, 160, 20);
+        c.fillStyle = '#d69e5c';
+        c.fillRect(1104, 846, 132, 18);
+        c.strokeRect(1104, 846, 132, 18);
+        c.restore();
       }
       if (z === 1) {
         oval(1762, 476, 425, 262, '#f3dd9c', '#b98f4a', 5);
@@ -970,15 +998,15 @@
       return;
     }
     var visiting = (z === 0 && S.visitingFriend) ? S.visitingFriend : null;
-    if ($('w-decor')) $('w-decor').style.display = (z === 0 && !visiting) ? 'inline-flex' : 'none';
-    if ($('w-home')) $('w-home').innerHTML = '<img src="art/flat/u_build.webp" alt=""><span>' + (visiting ? 'My Home' : 'Build') + '</span>';
+    if ($('w-decor')) $('w-decor').style.display = 'none';
+    if ($('w-home')) $('w-home').innerHTML = '<img src="art/flat/u_build.webp" alt=""><span>' + (visiting ? 'My Home' : 'Home Studio') + '</span>';
     if (z === 0) {
       var st = visiting && visiting.world ? visiting.world : (root.WorldGame ? root.WorldGame.readState() : { houseTier: 1, placed: [] });
       var tier = (root.WorldGame && root.WorldGame.HOUSE_TIERS[(st.houseTier || 1) - 1]) || { name: 'Cosy Tent' };
       if (visiting) {
         $('w-goal').innerHTML = '🏡 ' + esc(visiting.first_name) + '\'s Home Island · ' + tier.name + '<small>Walk around, tap furniture to try it, or tap 🏠 My Home to return!</small>';
       } else {
-        $('w-goal').innerHTML = '🏡 My Home Island · ' + tier.name + '<small>Tap furniture to sit/light up, or tap Decorate & Build!</small>';
+        $('w-goal').innerHTML = '🏡 My Home Island · ' + tier.name + '<small>Tap your House or Workbench to open the Home & Crafting Studio!</small>';
       }
       return;
     }
@@ -1006,19 +1034,19 @@
     var visiting = S.visitingFriend;
     var st = (visiting && visiting.world) ? visiting.world : root.WorldGame.readState();
     var tier = root.WorldGame.HOUSE_TIERS[Math.max(0, Math.min(root.WorldGame.HOUSE_TIERS.length - 1, (st.houseTier || 1) - 1))];
-    var hImg = sc.add.image(1120, 700, FLAT + tier.id).setOrigin(.5, .96).setDepth(700);
+    var hImg = sc.add.image(1170, 700, FLAT + tier.id).setOrigin(.5, .96).setDepth(700);
     hImg.setScale(320 / hImg.height);
-    var hShadow = sc.add.image(1120, 700, 'shadow').setScale(2.6, 1.7).setDepth(-6);
-    solid(sc, 1120, 670, 230, 66);
-    var hLabel = makeWorldLabel(sc, 1120, 724, visiting ? ('🏡 ' + (visiting.first_name || 'Friend') + "'s House") : '🏰 My House', '#fde047');
-    sc.houseSpot = { kind: 'house', img: hImg, shadow: hShadow, label: hLabel, x: 1120, y: 700, def: { h: 320, sw: 230 } };
+    var hShadow = sc.add.image(1170, 700, 'shadow').setScale(2.6, 1.7).setDepth(-6);
+    solid(sc, 1170, 670, 230, 66);
+    var hLabel = makeWorldLabel(sc, 1170, 730, visiting ? ('🏡 ' + (visiting.first_name || 'Friend') + "'s House") : '🏰 My House (Tap to Build)', '#fde047');
+    sc.houseSpot = { kind: 'house', img: hImg, shadow: hShadow, label: hLabel, x: 1170, y: 700, def: { h: 320, sw: 230 } };
 
-    var wbImg = sc.add.image(780, 720, FLAT + 'o_workbench').setOrigin(.5, .96).setDepth(720);
+    var wbImg = sc.add.image(760, 720, FLAT + 'o_workbench').setOrigin(.5, .96).setDepth(720);
     wbImg.setScale(150 / wbImg.height);
-    sc.add.image(780, 720, 'shadow').setScale(1.6).setDepth(-6);
-    solid(sc, 780, 700, 110, 40);
-    var wbLabel = makeWorldLabel(sc, 780, 744, '🔨 Craft & Build', '#38bdf8');
-    sc.workbenchSpot = { kind: 'workbench', img: wbImg, label: wbLabel, x: 780, y: 720, def: { h: 150, sw: 120 } };
+    sc.add.image(760, 720, 'shadow').setScale(1.6).setDepth(-6);
+    solid(sc, 760, 700, 110, 40);
+    var wbLabel = makeWorldLabel(sc, 760, 744, '🔨 Craft & Decorate', '#38bdf8');
+    sc.workbenchSpot = { kind: 'workbench', img: wbImg, label: wbLabel, x: 760, y: 720, def: { h: 150, sw: 120 } };
     sc.homeObjs.push(sc.houseSpot, sc.workbenchSpot);
 
     if (visiting) {
@@ -1589,7 +1617,13 @@
     if (hit) {
       hidePanel(); S.near = hit;
       spawnTapRipple(sc, hit.x, hit.y + 28, true);
-      walkTo(hit.x, hit.y + 54, function () { openThing(hit); });
+      walkTo(hit.x, hit.y + 54, function () {
+        if (!S.visitingFriend && root.WorldGame && (hit.kind === 'house' || hit.kind === 'workbench')) {
+          root.WorldGame.openWorkshop(hit.kind === 'house' ? 'home' : 'craft');
+        } else {
+          openThing(hit);
+        }
+      });
       return;
     }
     hidePanel(); S.near = null;
