@@ -176,6 +176,53 @@
     }
     return monsterCache[key] ? '<img class="wl-mon" src="' + monsterCache[key] + '" alt="" style="width:' + size + 'px;height:' + size + 'px">' : '<span style="font-size:' + Math.round(size * 0.6) + 'px">🐣</span>';
   }
+
+  /* ---------- Social Network: Player Pro Rating & 5-Star Island Reviews ---------- */
+  var RATING_STORE_KEY = 'eaa_island_social_ratings_v1';
+  function loadSocialRatings() {
+    try { return JSON.parse(localStorage.getItem(RATING_STORE_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function saveSocialRatings(obj) {
+    try { localStorage.setItem(RATING_STORE_KEY, JSON.stringify(obj)); } catch (e) { /* ignore */ }
+  }
+  function calcPersonProStats(p) {
+    if (!p) return { rating: '3.5', proScore: 180, houseName: 'Straw Hut', houseTier: 2, sportsWins: 1, title: '🧭 Explorer' };
+    if (p.id === W.me && root.WorldGame && root.WorldGame.getPlayerRating) {
+      var myR = root.WorldGame.getPlayerRating();
+      var tiers = ['Cosy Tent', 'Straw Hut', 'Red-Roof Cottage', 'Two-Floor House', 'Fairy-Tale Castle'];
+      return {
+        rating: myR.ratingFixed,
+        proScore: myR.proScore,
+        houseTier: myR.houseTier,
+        houseName: tiers[Math.max(0, Math.min(4, myR.houseTier - 1))],
+        sportsWins: myR.sportsWins,
+        title: myR.rankTitle
+      };
+    }
+    var ratings = loadSocialRatings();
+    var myVote = Number(ratings[p.id]) || 0;
+    var stars = Number(p.stars) || 6;
+    var zones = Number(p.zones) || 1;
+    var stickers = Number(p.stickers) || 3;
+    var lvl = Number(p.level) || 2;
+    var hTier = p.id === 'demo-c' ? 4 : (p.id === 'demo-a' ? 3 : 2);
+    var spWins = p.id === 'demo-a' ? 4 : (p.id === 'demo-c' ? 5 : (p.id === 'demo-b' ? 2 : 1));
+    var baseScore = (stars * 14) + (zones * 65) + (stickers * 12) + (lvl * 45) + (hTier * 55) + (spWins * 30) + (myVote * 15);
+    var rawRate = Math.min(5.0, 2.4 + (stars / 25) * 1.1 + (lvl / 5) * 0.7 + (hTier / 5) * 0.5 + (myVote ? (myVote - 3) * 0.12 : 0.2));
+    var rFixed = (Math.round(rawRate * 10) / 10).toFixed(1);
+    var tiers2 = ['Cosy Tent', 'Straw Hut', 'Red-Roof Cottage', 'Two-Floor House', 'Fairy-Tale Castle'];
+    var title = rawRate >= 4.5 ? '👑 Island Legend' : (rawRate >= 3.8 ? '🏆 Pro Builder' : '🧭 Island Explorer');
+    return {
+      rating: rFixed,
+      proScore: baseScore,
+      houseTier: hTier,
+      houseName: tiers2[hTier - 1] || 'Straw Hut',
+      sportsWins: spWins,
+      myVote: myVote,
+      title: title
+    };
+  }
+
   function byId(id) { return ((W.people && W.people.people) || []).filter(function (p) { return p.id === id; })[0]; }
 
   function latestBubbleFor(person) {
@@ -190,7 +237,7 @@
 
   /* ---------- screens ---------- */
   function shell(inner) {
-    var tabs = [['wall', '🌟 Class Plaza'], ['friends', '🏖️ Visit Friends'], ['team', '🚀 Team Race']];
+    var tabs = [['wall', '🌟 Class Plaza'], ['friends', '🏡 Visit & Rate Islands'], ['team', '🏆 Pro Rankings & Teams']];
     return '<div class="wl" id="wl">' +
       '<header class="wl-top"><button type="button" class="wl-btn wl-x" onclick="IslandWall.close()" aria-label="Back to the island">◀ 🏝️ Island</button>' +
         '<div class="wl-tabs">' + tabs.map(function (t) { return '<button type="button" class="wl-btn wl-tab' + (W.tab === t[0] ? ' on' : '') + '" onclick="IslandWall.tab(\'' + t[0] + '\')">' + t[1] + '</button>'; }).join('') + '</div>' +
@@ -277,11 +324,18 @@
   function friendsView() {
     var ppl = (W.people && W.people.people) || [];
     if (!ppl.length) return '<div class="wl-empty"><b>No classmates here yet.</b></div>';
-    return '<div class="wl-grid">' + ppl.filter(function (p) { return p.id !== W.me; }).map(function (p) {
+    return '<div class="wl-board-header" style="margin-bottom:10px"><h3>🏡 Classmates\' Islands & Pro Ratings</h3><span>Visit any classmate\'s 2D Home Island, rate their design, or send a gift!</span></div>' +
+      '<div class="wl-grid">' + ppl.filter(function (p) { return p.id !== W.me; }).map(function (p) {
+      var st = calcPersonProStats(p);
       return '<button type="button" class="wl-friend" onclick="IslandWall.visit(\'' + esc(p.id) + '\')">' +
-        monsterPic(p, 110) +
-        '<b>' + esc(p.first_name) + '</b>' +
-        '<small>Level ' + (p.level || 1) + ' · 🏖️ Visit Beach</small>' +
+        '<div style="display:flex;justify-content:space-between;width:100%;font-size:12px;font-weight:800;color:#fde047;margin-bottom:4px">' +
+          '<span>⭐ ' + st.rating + '</span>' +
+          '<span style="color:#38bdf8">🏆 ' + st.proScore + ' pts</span>' +
+        '</div>' +
+        monsterPic(p, 104) +
+        '<b>' + esc(p.first_name) + ' <small style="color:#a7f3d0;font-weight:700">Lv.' + (p.level || 1) + '</small></b>' +
+        '<small style="color:#cbd5e1">' + esc(st.houseName) + ' · ⚽ ' + st.sportsWins + ' Wins</small>' +
+        '<span style="margin-top:6px;display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(56,189,248,0.18);border:1px solid rgba(56,189,248,0.4);color:#7dd3fc;font-size:11px;font-weight:800">🏡 Visit & Rate Island ▶</span>' +
       '</button>';
     }).join('') + '</div>';
   }
@@ -323,8 +377,26 @@
           '</div>' +
           '<div class="wl-visit-fx" id="wl-visit-fx"></div>' +
         '</div>' +
-        '<h2>🏖️ ' + esc(p.first_name) + '\'s Sunny Beach Camp</h2>' +
-        '<div class="wl-chips"><span>🌟 Level ' + (p.level || 1) + '</span><span>⭐ ' + (p.stars || 0) + ' stars</span><span>🏝️ ' + (p.zones || 0) + ' zones</span><span>📒 ' + (p.stickers || 0) + ' stickers</span></div>' +
+        (function () {
+          var pst = calcPersonProStats(p);
+          var starBtns = [1, 2, 3, 4, 5].map(function (n) {
+            var on = (pst.myVote || 0) >= n;
+            return '<button type="button" class="wl-btn" style="min-width:38px;min-height:36px;padding:4px 8px;font-size:1.05rem;background:' + (on ? 'linear-gradient(180deg,#f59e0b,#d97706)' : 'rgba(15,23,42,0.8)') + ';border-color:' + (on ? '#fde047' : 'rgba(148,163,184,0.3)') + '" onclick="IslandWall.rateFriend(\'' + esc(p.id) + '\',' + n + ')">' + (on ? '⭐' : '☆') + '</button>';
+          }).join('');
+          return '<h2>🏖️ ' + esc(p.first_name) + '\'s Island (' + esc(pst.title) + ')</h2>' +
+            '<div class="wl-chips">' +
+              '<span style="border-color:#fde047;color:#fde047">⭐ ' + pst.rating + ' / 5.0 Rating</span>' +
+              '<span style="border-color:#38bdf8;color:#7dd3fc">🏆 ' + pst.proScore + ' Pro Pts</span>' +
+              '<span>🏡 ' + esc(pst.houseName) + '</span>' +
+              '<span>⚽ ' + pst.sportsWins + ' Sports Wins</span>' +
+              '<span>🌟 Lv.' + (p.level || 1) + ' · ' + (p.stars || 0) + ' ★</span>' +
+            '</div>' +
+            '<div style="margin:10px auto;padding:8px 14px;border-radius:14px;background:rgba(15,23,42,0.75);border:1px solid rgba(250,204,21,0.3);display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center">' +
+              '<b style="font-size:0.88rem;color:#fde047">🌟 Rate ' + esc(p.first_name) + '\'s Island:</b>' +
+              starBtns +
+              (pst.myVote ? '<small style="color:#6ee7b7;font-weight:800">✓ You rated ' + pst.myVote + '/5 ⭐</small>' : '<small style="color:#94a3b8">(+5 🪙 reward!)</small>') +
+            '</div>';
+        })() +
         '<div class="wl-visit-actions">' +
           '<button type="button" class="wl-btn wl-hi5" id="wl-btn-visit2d" style="background:linear-gradient(180deg,#10b981,#059669);border-bottom-color:#064e3b;color:#fff" onclick="IslandWall.visit2DHome(\'' + esc(p.id) + '\')">🏡 Walk in 2D Home</button>' +
           '<button type="button" class="wl-btn wl-hi5" id="wl-btn-hi5" onclick="IslandWall.highFive(\'' + esc(p.id) + '\')">👋 High-Five!</button>' +
@@ -342,10 +414,29 @@
     var mineCard = mine ? '<section class="wl-team" style="--c:' + esc(mine.color || '#38bdf8') + '"><h2>' + esc(mine.name) + '</h2><div class="wl-grid wl-grid-small">' + (mine.members || []).map(function (id) {
       var p = byId(id); return p ? '<div class="wl-friend wl-mate' + (p.solo ? ' solo' : '') + '" onclick="IslandWall.visit(\'' + esc(p.id) + '\')" style="cursor:pointer">' + monsterPic(p, 80) + '<b>' + esc(p.first_name) + '</b>' + (p.solo ? '<small>🦸 solo</small>' : '<small>🏖️ Visit</small>') + '</div>' : '';
     }).join('') + '</div></section>' : '';
+    var allPeople = (t.people || []).slice();
+    var ranked = allPeople.map(function (p) {
+      return { p: p, st: calcPersonProStats(p) };
+    }).sort(function (a, b) { return b.st.proScore - a.st.proScore; });
+    var boardHtml = '<section class="wl-race" style="margin-bottom:14px"><h3>🏅 Class Island Pro Leaderboard (Story · Home · Sports · Stars)</h3>' +
+      ranked.map(function (row, idx) {
+        var p = row.p, st = row.st, isMe = p.id === W.me;
+        var medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : '#' + (idx + 1)));
+        return '<div class="wl-bar-row" style="padding:8px 12px;border-radius:12px;margin-bottom:6px;background:' + (isMe ? 'rgba(56,189,248,0.18)' : 'rgba(15,23,42,0.65)') + ';border:1px solid ' + (isMe ? '#38bdf8' : 'rgba(148,163,184,0.2)') + ';display:flex;align-items:center;gap:10px;cursor:pointer" onclick="' + (isMe ? 'IslandWall.close()' : 'IslandWall.visit(\'' + esc(p.id) + '\')') + '">' +
+          '<b style="min-width:32px;font-size:1.1rem">' + medal + '</b>' +
+          monsterPic(p, 44) +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-weight:800;color:#f8fafc">' + esc(p.first_name) + (isMe ? ' (You)' : '') + ' <small style="color:#fde047">⭐ ' + st.rating + '</small></div>' +
+            '<div style="font-size:11px;color:#94a3b8">' + esc(st.title) + ' · 🏡 ' + esc(st.houseName) + ' · ⚽ ' + st.sportsWins + ' Wins</div>' +
+          '</div>' +
+          '<span style="font-weight:900;color:#38bdf8;font-size:0.95rem">🏆 ' + st.proScore + ' pts</span>' +
+        '</div>';
+      }).join('') +
+    '</section>';
     var race = '<section class="wl-race"><h3>⭐ Class Team Star Race</h3>' + teams.slice().sort(function (a, b) { return starsOf(b) - starsOf(a); }).map(function (x) {
       var n = starsOf(x); return '<div class="wl-bar-row"><b>' + esc(x.name) + '</b><div class="wl-bar"><i style="width:' + Math.round(n / top * 100) + '%;background:' + esc(x.color || '#38bdf8') + '"></i></div><span>⭐ ' + n + '</span></div>';
     }).join('') + '</section>';
-    return choice + mineCard + race;
+    return choice + boardHtml + mineCard + race;
   }
 
   function draw() {
@@ -588,6 +679,24 @@
       q.set('zone', '0');
       q.set('visit', id);
       root.location.href = 'world.html?' + q.toString();
+    },
+    rateFriend: function (id, stars) {
+      tap();
+      var p = byId(id);
+      var ratings = loadSocialRatings();
+      var firstVote = !ratings[id];
+      ratings[id] = Math.max(1, Math.min(5, Number(stars) || 5));
+      saveSocialRatings(ratings);
+      if (root.IslandAudio && root.IslandAudio.playFanfare) root.IslandAudio.playFanfare();
+      say('You rated ' + (p ? p.first_name : 'your friend') + 's island ' + ratings[id] + ' stars!');
+      if (firstVote && root.WorldGame && root.WorldGame.addBonusCoins) {
+        root.WorldGame.addBonusCoins(5);
+      }
+      redrawShell();
+      var a = $('wl-gift-area');
+      if (a && p) {
+        a.innerHTML = '<p class="wl-note wl-ok">🌟 You rated ' + esc(p.first_name) + '\'s Island <b>' + ratings[id] + ' / 5 Stars</b>!' + (firstVote ? ' (+5 🪙 Kindness Coins!)' : '') + '</p>';
+      }
     },
     highFive: function (id) {
       var p = byId(id);
