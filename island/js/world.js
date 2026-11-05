@@ -1584,7 +1584,7 @@
       say('Welcome to ' + fr.first_name + 's Home Island!');
     } else if (t.kind === 'sports') {
       panel(FLAT + 'o_ball', '🏆 Island Sports Arena', 'Use your English Energy (⚡ 15) to play 1v1 or 2v2 Football ⚽ & Beach Volleyball 🏐 with classmates!', 'Play Sports ⚽', function () {
-        if (root.WorldGame && root.WorldGame.openSportsArena) root.WorldGame.openSportsArena('soccer', '4v4');
+        if (root.WorldGame && root.WorldGame.openSportsArena) root.WorldGame.openSportsArena('soccer', '2v2');
       });
       say('Let us play football or volleyball in the Sports Arena!');
     } else if (t.kind === 'door_out') {
@@ -1764,7 +1764,7 @@
         } else if (hit.kind === 'door_out') {
           exitHouse();
         } else if (hit.kind === 'sports' && root.WorldGame && root.WorldGame.openSportsArena) {
-          root.WorldGame.openSportsArena('soccer', '4v4');
+          root.WorldGame.openSportsArena('soccer', '2v2');
         } else if (!S.visitingFriend && root.WorldGame && hit.kind === 'workbench') {
           root.WorldGame.openWorkshop('blueprints');
         } else {

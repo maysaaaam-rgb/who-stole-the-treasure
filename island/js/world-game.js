@@ -388,7 +388,7 @@
             '<div style="font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:8px"><img src="' + FLAT + 'u_map.webp" style="width:34px;height:34px;object-fit:contain" alt=""> Practice Island World Map</div>' +
             demoBtns +
             '<div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
-              '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.openSportsArena(\'soccer\', \'4v4\')">âš½ Sports Arena</button>' +
+              '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.openSportsArena(\'soccer\', \'2v2\')">âš½ Sports Arena</button>' +
               '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openStickerBook()">ðŸ“’ Sticker Book</button>' +
               '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openCorner()">ðŸ–ï¸ Trophy Camp</button>' +
               '<a class="isl-btn cyan" style="min-height:38px;padding:5px 11px;font-size:0.86rem;text-decoration:none;display:inline-flex;align-items:center" href="../index.html">ðŸ« School Hub</a>' +
@@ -1146,7 +1146,7 @@
             '<div style="display:flex;align-items:center;gap:8px;font-size:1.18rem;font-weight:800"><img src="' + FLAT + 'o_workbench.webp" style="width:32px;height:32px;object-fit:contain" alt=""> Home &amp; Crafting Studio</div>' +
             '<div class="wg-studio-mats">' + matBar + '</div>' +
             '<div style="margin-left:auto;display:flex;gap:5px;align-items:center;flex-wrap:wrap">' +
-              '<button type="button" class="isl-btn cyan" id="wg-btn-open-sports" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.openSportsArena(\'soccer\', \'4v4\')">âš½ Sports Arena</button>' +
+              '<button type="button" class="isl-btn cyan" id="wg-btn-open-sports" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.openSportsArena(\'soccer\', \'2v2\')">âš½ Sports Arena</button>' +
               '<button type="button" class="isl-btn amber" id="wg-btn-enter-room" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.seeHomeInWorld(true)">ðŸšª Walk Inside Room!</button>' +
               '<button type="button" class="isl-btn emerald" id="wg-btn-see-world" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.seeHomeInWorld(false)">ðŸŒ³ Walk in Garden!</button>' +
               '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:4px 9px" onclick="WorldGame.closeModal()">âœ•</button>' +
@@ -1429,11 +1429,11 @@
     updateStatusHud();
   }
 
-  /* ---------- 7. 2.5D Island Sports Arena (⚽ 3D Pro Stadium Football & 🏐 3D 4v4 Beach Volleyball) ---------- */
+  /* ---------- 7. 2.5D Island Sports Arena (⚽ Dynamic AI Pro Football & 🏐 4v4 Beach Volleyball) ---------- */
   var sportsRaf = 0;
   var sportsState = null;
   var sportsSport = 'soccer'; // 'soccer' | 'volleyball'
-  var sportsMode = '4v4';     // '1v1' | '2v2' | '4v4' (4 players per side default!)
+  var sportsMode = '2v2';     // '1v1' | '2v2' | '4v4'
   var sportsControl = '1p';   // '1p' (vs AI) | '2p' (2-Player Local Same Screen)
   var sportImgs = {};
 
@@ -1461,15 +1461,17 @@
   function openSportsArena(sport, mode, ctrl) {
     stopSportsLoop();
     sound('playTap');
-    if (sport) sportsSport = sport;
+    if (sport) {
+      sportsSport = sport;
+      if (sport === 'volleyball' && !mode) sportsMode = '4v4';
+      if (sport === 'soccer' && !mode) sportsMode = '2v2';
+    }
     if (mode) sportsMode = mode;
-    if (!sportsMode) sportsMode = '4v4';
     if (ctrl) sportsControl = ctrl;
     var eNow = getEnergy();
     var st = readState();
     var trophies = Number(st.sportsWins) || 0;
-    // Preload 3D JPEG stadium backgrounds & monster sprites
-    ['stadium_soccer_3d.jpg', 'stadium_volleyball_3d.jpg', 'c_bolt_happy', 'c_lulu_happy', 'c_nutty_happy', 'c_ember_happy', 'o_ball'].forEach(getSportImg);
+    ['c_bolt_happy', 'c_lulu_happy', 'c_nutty_happy', 'c_ember_happy', 'o_ball'].forEach(getSportImg);
 
     document.body.classList.add('isl-modal-open');
     modalRoot().innerHTML =
@@ -1477,15 +1479,15 @@
         '<div class="isl-card-modal wg-sports-modal">' +
           '<div class="isl-mission-top wg-sports-top">' +
             '<div style="display:flex;align-items:center;gap:8px;font-size:1.12rem;font-weight:800;color:#fde047">' +
-              '<img src="' + FLAT + 'o_ball.webp" style="width:28px;height:28px;object-fit:contain" alt=""> 🏆 3D Island Champions Stadium' +
+              '<img src="' + FLAT + 'o_ball.webp" style="width:28px;height:28px;object-fit:contain" alt=""> 🏆 Island Pro Sports Stadium' +
             '</div>' +
             '<div class="wg-sports-selectors">' +
-              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsSport === 'soccer' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.openSportsArena(\'soccer\', \'' + sportsMode + '\', \'' + sportsControl + '\')">⚽ 3D Football (4v4)</button>' +
-              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsSport === 'volleyball' ? 'amber' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.openSportsArena(\'volleyball\', \'' + sportsMode + '\', \'' + sportsControl + '\')">🏐 3D Volleyball (4v4)</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsSport === 'soccer' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.openSportsArena(\'soccer\', \'2v2\', \'' + sportsControl + '\')">⚽ Football</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsSport === 'volleyball' ? 'amber' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.openSportsArena(\'volleyball\', \'4v4\', \'' + sportsControl + '\')">🏐 Volleyball (4v4)</button>' +
               '<button type="button" tabindex="-1" class="isl-btn ' + (sportsMode === '1v1' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'1v1\', \'' + sportsControl + '\')">1 vs 1</button>' +
               '<button type="button" tabindex="-1" class="isl-btn ' + (sportsMode === '2v2' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'2v2\', \'' + sportsControl + '\')">2 vs 2</button>' +
-              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsMode === '4v4' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'4v4\', \'' + sportsControl + '\')">4 vs 4 Squad</button>' +
-              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsControl === '2p' ? 'amber' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'' + sportsMode + '\', \'' + (sportsControl === '2p' ? '1p' : '2p') + '\')">' + (sportsControl === '2p' ? '👥 2P Same Screen' : '🤖 1P vs AI') + '</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsMode === '4v4' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'4v4\', \'' + sportsControl + '\')">4 vs 4</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsControl === '2p' ? 'amber' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'' + sportsMode + '\', \'' + (sportsControl === '2p' ? '1p' : '2p') + '\')">' + (sportsControl === '2p' ? '👥 2P Same Screen' : '🤖 1P vs Smart AI') + '</button>' +
             '</div>' +
             '<div style="margin-left:auto;display:flex;gap:6px;align-items:center">' +
               '<span class="wg-st-badge">🏆 Wins: <b id="wg-sp-wins">' + trophies + '</b></span>' +
@@ -1496,25 +1498,25 @@
           '<div class="wg-sports-scoreboard">' +
             '<div class="wg-sp-team blue"><span>🟦 ' + (sportsMode === '4v4' ? 'YOUR 4v4 SQUAD' : (sportsMode === '2v2' ? 'YOU + SKY' : 'YOU (BLUE)')) + '</span><b id="wg-sp-score-a">0</b></div>' +
             '<div class="wg-sp-vs">' +
-              '<span id="wg-sp-status">' + (sportsSport === 'soccer' ? '⚽ 3D Champions Pitch! Dribble, Pass (E) &amp; Shoot (Space)! First to 3 Goals Wins +25 🪙!' : '🏐 3D Beach Championship! Move to Target Ring &amp; Press SPACE to Spike!') + '</span>' +
-              '<small>' + (sportsSport === 'soccer' ? '🕹️ Move: WASD / Arrows / Click / Stick · 👟 E = Pass to Teammates · 🔥 Space or Click Goal = Power Shot!' : '🕹️ Slow Floaty Ball · Teammates Set to YOU · Move (WASD/Arrows/Click) &amp; Press SPACE to Spike!') + '</small>' +
+              '<span id="wg-sp-status">' + (sportsSport === 'soccer' ? '⚽ Dynamic Dribbling &amp; Smart AI! First to 3 Goals Wins +25 🪙!' : '🏐 4v4 Giant Court! Move to Target Ring &amp; Press SPACE to Spike!') + '</span>' +
+              '<small>' + (sportsSport === 'soccer' ? '🕹️ Cut &amp; Turn (WASD/Arrows/Drag) to Feint Past AI · 👟 E = 1-2 Pass · 🔥 Space = Power Shot / Tackle!' : '🕹️ Slow Floaty Ball · Teammates Set to YOU · Move (WASD/Arrows/Click) &amp; Press SPACE to Spike!') + '</small>' +
             '</div>' +
-            '<div class="wg-sp-team red"><b id="wg-sp-score-b">0</b><span>' + (sportsControl === '2p' ? 'P2 (ARROWS+ENTER)' : (sportsMode === '4v4' ? 'RIVAL 4v4 SQUAD' : 'LEO &amp; SUNNY')) + ' 🟥</span></div>' +
+            '<div class="wg-sp-team red"><b id="wg-sp-score-b">0</b><span>' + (sportsControl === '2p' ? 'P2 (ARROWS+ENTER)' : (sportsMode === '4v4' ? 'AI 4v4 SQUAD' : 'LEO &amp; SUNNY (AI)')) + ' 🟥</span></div>' +
           '</div>' +
           '<div class="wg-sports-stage-wrap">' +
-            '<canvas id="wg-sports-canvas" width="1280" height="600"></canvas>' +
+            '<canvas id="wg-sports-canvas" width="1040" height="500"></canvas>' +
             '<div class="wg-sports-controls">' +
               '<div class="wg-sp-joy-wrap">' +
                 '<div class="wg-sp-joy" id="wg-sp-joy" aria-label="360 Analog Joystick">' +
                   '<div class="wg-sp-joy-ring"></div>' +
                   '<div class="wg-sp-joy-knob" id="wg-sp-knob">🕹️</div>' +
                 '</div>' +
-                '<div class="wg-sp-joy-hint"><b>360° Stick</b><small>or WASD / Arrows / Click</small></div>' +
+                '<div class="wg-sp-joy-hint"><b>360° Stick</b><small>or WASD / Arrows / Drag</small></div>' +
               '</div>' +
               '<div class="wg-sp-action-group">' +
-                '<button type="button" tabindex="-1" class="isl-btn cyan wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'pass\')">' + (sportsSport === 'soccer' ? '👟 PASS TO TEAMMATE (E)' : '🙌 HIGH SET (E)') + '</button>' +
-                '<button type="button" tabindex="-1" class="isl-btn emerald wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'dash\')">💨 SPRINT BOOST (Shift)</button>' +
-                '<button type="button" tabindex="-1" class="isl-btn amber wg-act-btn shoot" onpointerdown="this.blur();WorldGame.sportsAction(\'power\')">' + (sportsSport === 'soccer' ? '🔥 SHOOT / STEAL! (Space)' : '🔥 JUMP SPIKE! (Space)') + '</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn cyan wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'pass\')">' + (sportsSport === 'soccer' ? '👟 1-2 PASS / LOB (E)' : '🙌 HIGH SET (E)') + '</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn emerald wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'dash\')">💨 SKILL FEINT / SPRINT (Shift)</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn amber wg-act-btn shoot" onpointerdown="this.blur();WorldGame.sportsAction(\'power\')">' + (sportsSport === 'soccer' ? '🔥 SHOOT / TACKLE! (Space)' : '🔥 JUMP SPIKE! (Space)') + '</button>' +
               '</div>' +
               '<div style="display:flex;gap:5px;margin-left:auto">' +
                 '<button type="button" tabindex="-1" class="isl-btn" style="min-height:38px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.restartSportsMatch()">🔄 Play Again</button>' +
@@ -1557,12 +1559,12 @@
   function drawMonsterSpriteFrame(ctx, sheetKey, fallbackPic, x, y, z, vx, vy, flipX, animTick, cheering, stunned, teamColor, isMe, isFinished) {
     var sheet = (W() && W().getMonsterSheet) ? W().getMonsterSheet(sheetKey) : null;
     var speed = isFinished ? 0 : Math.hypot(vx, vy);
-    var moving = !isFinished && speed > 0.85;
+    var moving = !isFinished && speed > 0.55;
     var frameIdx = 10;
     if (cheering) {
       frameIdx = 20;
     } else if (moving) {
-      var step4 = Math.floor(animTick * 0.22) % 4;
+      var step4 = Math.floor(animTick * 0.26) % 4;
       if (Math.abs(vx) > Math.abs(vy) * 1.15) {
         frameIdx = 11 + step4;
       } else if (vy < -0.5 && Math.abs(vx) < 0.6) {
@@ -1576,42 +1578,39 @@
       frameIdx = 10;
     }
 
-    // True 2.5D perspective depth scale: players closer to bottom camera (higher y) are slightly larger!
-    var depthScale = Math.max(0.76, Math.min(1.12, 0.78 + (y - 250) / 820));
-    var bounceY = moving ? Math.abs(Math.sin(animTick * 0.28)) * 4.0 : 0;
+    var bounceY = moving ? Math.abs(Math.sin(animTick * 0.38)) * 5.2 : 0;
     var drawY = Math.round(y - z - bounceY);
+    // Subtle athletic lean in movement direction for dynamic dribbling feel!
+    var leanAngle = moving ? Math.max(-0.14, Math.min(0.14, vx * 0.018)) : 0;
 
     ctx.save();
-    // 1. 3D Contact Shadow on turf/sand
-    var shScale = Math.max(0.45, 1 - z / 180) * depthScale;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
+    var shScale = Math.max(0.45, 1 - z / 180);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.36)';
     ctx.beginPath();
-    ctx.ellipse(Math.round(x), Math.round(y + 15 * depthScale), (isMe ? 24 : 20) * shScale, 7.5 * shScale, 0, 0, Math.PI * 2);
+    ctx.ellipse(Math.round(x), Math.round(y + 18), (isMe ? 25 : 22) * shScale, 8 * shScale, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // 2. Glowing 3D Stadium Tactical Ring under feet
     ctx.strokeStyle = isMe ? '#fde047' : teamColor;
-    ctx.lineWidth = isMe ? 3.8 : 2.4;
+    ctx.lineWidth = isMe ? 3.8 : 2.2;
     ctx.beginPath();
-    ctx.ellipse(Math.round(x), Math.round(y + 15 * depthScale), (isMe ? 26 : 22) * shScale, 8.5 * shScale, 0, 0, Math.PI * 2);
+    ctx.ellipse(Math.round(x), Math.round(y + 18), (isMe ? 27 : 24) * shScale, 9 * shScale, 0, 0, Math.PI * 2);
     ctx.stroke();
 
-    // 3. Draw 7-col 3D Monster Spritesheet frame with 2.5D depth scaling
     ctx.translate(Math.round(x), drawY);
-    if (stunned) ctx.globalAlpha = 0.58;
+    if (leanAngle) ctx.rotate(leanAngle);
+    if (stunned) ctx.globalAlpha = 0.62;
     if (flipX) ctx.scale(-1, 1);
 
-    var baseSize = isMe ? 76 : 68;
-    var size = Math.round(baseSize * depthScale);
     if (sheet && sheet.width >= 1000) {
       var fSize = Math.round(sheet.width / 7);
       var col = frameIdx % 7;
       var row = Math.floor(frameIdx / 7);
-      ctx.drawImage(sheet, col * fSize, row * fSize, fSize, fSize, -size / 2, -size + 18, size, size);
+      var size = isMe ? 88 : 80;
+      ctx.drawImage(sheet, col * fSize, row * fSize, fSize, fSize, -size / 2, -size + 22, size, size);
     } else {
       var pImg = getSportImg(fallbackPic || 'c_bolt_happy');
       if (pImg && pImg.complete && pImg.naturalWidth > 0) {
-        ctx.drawImage(pImg, -size * 0.42, -size * 0.55, size * 0.84, size * 0.84);
+        ctx.drawImage(pImg, -30, -38, 60, 60);
       }
     }
     ctx.restore();
@@ -1624,8 +1623,8 @@
     var t = (b.vz + Math.sqrt(Math.max(0, disc))) / g;
     t = Math.max(0, Math.min(180, t));
     return {
-      x: Math.max(135, Math.min((Wc || 1280) - 135, b.x + b.vx * t)),
-      y: Math.max(275, Math.min(485, b.y + b.vy * t)),
+      x: Math.max(55, Math.min((Wc || 1040) - 55, b.x + b.vx * t)),
+      y: Math.max(135, Math.min((Hc || 500) - 35, b.y + b.vy * t)),
       t: t
     };
   }
@@ -1637,20 +1636,9 @@
     var Wc = canvas.width, Hc = canvas.height;
     var keys = {};
 
-    // Calibrated 2.5D Field Coordinates matching the 3D JPEG Stadium Perspective!
-    // Soccer 3D Pitch: y: 265..552, Left Goal at x=122 (y: 300..425), Right Goal at x=1158 (y: 300..425), Center=(640, 385)
-    // Volleyball 3D Court: y: 270..488, Left Half x: 130..612, Right Half x: 668..1150, Net at x=640
-    var PITCH_TOP = sp === 'soccer' ? 265 : 272;
-    var PITCH_BOT = sp === 'soccer' ? 550 : 488;
-    var PITCH_MID_Y = sp === 'soccer' ? 388 : 378;
-    var GOAL_TOP_Y = 298;
-    var GOAL_BOT_Y = 432;
-    var GOAL_LEFT_X = 128;
-    var GOAL_RIGHT_X = Wc - 128;
-
     var st = {
       sport: sp,
-      mode: md || '4v4',
+      mode: md,
       ctrl: ctrlMode || '1p',
       scoreA: 0,
       scoreB: 0,
@@ -1661,8 +1649,8 @@
       netRippleA: 0,
       netRippleB: 0,
       tick: 0,
-      bannerText: sp === 'soccer' ? '⚽ 4v4 3D STADIUM! DRIBBLE, PASS (E) OR SHOOT (SPACE)!' : '🏐 4v4 3D BEACH COURT! MOVE TO THE RING & PRESS SPACE TO SPIKE!',
-      bannerTimer: 100,
+      bannerText: sp === 'soccer' ? '⚽ DYNAMIC DRIBBLING! WEAVE PAST DEFENDERS, PASS (E) OR SHOOT (SPACE)!' : '🏐 4v4 GIANT COURT! MOVE TO THE RING & PRESS SPACE TO SPIKE!',
+      bannerTimer: 95,
       joyX: 0,
       joyY: 0,
       mouseAim: null,
@@ -1671,17 +1659,18 @@
       actionKind: 'power',
       holder: null,
       stealCooldown: 0,
-      idleFrames: 0,
+      dribblePhase: 0,
+      prevDirX: 1,
+      prevDirY: 0,
       allyHoldFrames: 0,
       lastHitterTeam: null,
       teamTouches: 0,
       particles: [],
       ballTrail: [],
       players: [],
-      ball: { x: Wc / 2, y: PITCH_MID_Y, z: 0, vx: 0, vy: 0, vz: 0, r: 14, spin: 0 }
+      ball: { x: Wc / 2, y: Hc / 2 + 18, z: 0, vx: 0, vy: 0, vz: 0, r: 15, spin: 0 }
     };
 
-    // Wire 360° Virtual Analog Thumbstick (#wg-sp-joy)
     var joyEl = document.getElementById('wg-sp-joy');
     var knobEl = document.getElementById('wg-sp-knob');
     if (joyEl && knobEl) {
@@ -1757,79 +1746,73 @@
     var resetPositions = function (servingSide) {
       st.waitingKickoff = false;
       st.holder = null;
-      st.stealCooldown = 45;
-      st.idleFrames = 0;
+      st.stealCooldown = 35;
       st.allyHoldFrames = 0;
       st.ballTrail = [];
       st.mouseAim = null;
       st.pointerSteer = null;
       st.lastHitterTeam = null;
       st.teamTouches = 0;
+      var midY = Hc / 2 + 20;
 
       if (sp === 'soccer') {
-        // 4v4 3D Football Formation on the 1280x600 3D Pitch
         st.players = [
-          { id: 'me',   sheet: 'me', pic: 'c_bolt_happy',  team: 'A', role: 'fwd', name: 'YOU',   color: '#38bdf8', x: 460, y: PITCH_MID_Y, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 20, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0 },
-          { id: 'opp1', sheet: 'c1', pic: 'c_ember_happy', team: 'B', role: 'fwd', name: st.ctrl === '2p' ? 'P2' : 'Leo', color: '#f43f5e', x: 840, y: PITCH_MID_Y - 65, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 20, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0 }
+          { id: 'me',   sheet: 'me', pic: 'c_bolt_happy',  team: 'A', role: 'fwd', name: 'YOU',   color: '#38bdf8', x: 340, y: midY, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 24, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, aiPhase: 0 },
+          { id: 'opp1', sheet: 'c1', pic: 'c_ember_happy', team: 'B', role: 'fwd', name: st.ctrl === '2p' ? 'P2' : 'Leo', color: '#f43f5e', x: Wc - 300, y: midY, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 24, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, aiPhase: 0 }
         ];
-        if (st.mode === '2v2' || st.mode === '4v4') {
+        if (md === '2v2' || md === '4v4') {
           st.players.push(
-            { id: 'ally', sheet: 'c0', pic: 'c_lulu_happy',  team: 'A', role: 'gk', name: 'Sky',   color: '#38bdf8', x: GOAL_LEFT_X + 24, y: PITCH_MID_Y - 18, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 19, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0 },
-            { id: 'opp2', sheet: 'c2', pic: 'c_nutty_happy', team: 'B', role: 'gk', name: 'Sunny', color: '#f43f5e', x: GOAL_RIGHT_X - 24, y: PITCH_MID_Y - 18, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 19, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0 }
+            { id: 'ally',  sheet: 'c0', pic: 'c_lulu_happy',  team: 'A', role: 'wing', name: 'Sky',   color: '#38bdf8', x: 260, y: midY - 115, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 22, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, aiPhase: 1.5 },
+            { id: 'opp2',  sheet: 'c2', pic: 'c_nutty_happy', team: 'B', role: 'gk',   name: 'Sunny', color: '#f43f5e', x: Wc - 92, y: midY, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 22, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, aiPhase: 3.0 }
           );
         }
-        if (st.mode === '4v4') {
+        if (md === '4v4') {
           st.players.push(
-            { id: 'ally2', sheet: 'c2', pic: 'c_nutty_happy', team: 'A', role: 'wing', name: 'Pip',   color: '#38bdf8', x: 350, y: 305, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 19, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0 },
-            { id: 'ally3', sheet: 'c3', pic: 'c_bolt_happy',  team: 'A', role: 'wing', name: 'Coco',  color: '#38bdf8', x: 340, y: 485, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 19, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0 },
-            { id: 'opp3',  sheet: 'c3', pic: 'c_lulu_happy',  team: 'B', role: 'wing', name: 'Ember', color: '#f43f5e', x: 920, y: 310, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 19, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0 },
-            { id: 'opp4',  sheet: 'c0', pic: 'c_ember_happy', team: 'B', role: 'wing', name: 'Nutty', color: '#f43f5e', x: 910, y: 485, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 19, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0 }
+            { id: 'ally2', sheet: 'c2', pic: 'c_nutty_happy', team: 'A', role: 'wing', name: 'Pip',   color: '#38bdf8', x: 260, y: midY + 115, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 22, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, aiPhase: 2.2 },
+            { id: 'ally3', sheet: 'c3', pic: 'c_bolt_happy',  team: 'A', role: 'gk',   name: 'Coco',  color: '#38bdf8', x: 92,  y: midY, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 22, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, aiPhase: 0.8 },
+            { id: 'opp3',  sheet: 'c3', pic: 'c_lulu_happy',  team: 'B', role: 'wing', name: 'Ember', color: '#f43f5e', x: Wc - 260, y: midY - 110, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 22, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, aiPhase: 1.1 },
+            { id: 'opp4',  sheet: 'c0', pic: 'c_ember_happy', team: 'B', role: 'wing', name: 'Nutty', color: '#f43f5e', x: Wc - 260, y: midY + 110, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 22, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, aiPhase: 4.0 }
           );
         }
         st.holder = st.players[0];
-        st.ball.x = st.players[0].x + 22;
-        st.ball.y = PITCH_MID_Y + 4;
+        st.ball.x = st.players[0].x + 28;
+        st.ball.y = midY + 4;
         st.ball.z = 0;
         st.ball.vx = 0;
         st.ball.vy = 0;
         st.ball.vz = 0;
       } else {
-        // ====================================================================
-        // GIANT 4v4 3D BEACH VOLLEYBALL COURT (4 Players on Each Side!)
-        // ====================================================================
         st.players = [
-          // Team A (Left Court - 4 Players in 2x2 Quadrant Formation)
-          { id: 'me',    sheet: 'me', pic: 'c_bolt_happy',  team: 'A', homeX: 485, homeY: 420, name: 'YOU',   color: '#38bdf8', x: 485, y: 420, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 24, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
-          { id: 'ally1', sheet: 'c0', pic: 'c_lulu_happy',  team: 'A', homeX: 495, homeY: 310, name: 'Sky',   color: '#38bdf8', x: 495, y: 310, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 21, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
-          { id: 'ally2', sheet: 'c2', pic: 'c_nutty_happy', team: 'A', homeX: 275, homeY: 315, name: 'Pip',   color: '#38bdf8', x: 275, y: 315, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 21, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
-          { id: 'ally3', sheet: 'c3', pic: 'c_bolt_happy',  team: 'A', homeX: 245, homeY: 435, name: 'Coco',  color: '#38bdf8', x: 245, y: 435, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 21, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
+          { id: 'me',    sheet: 'me', pic: 'c_bolt_happy',  team: 'A', homeX: 365, homeY: 345, name: 'YOU',   color: '#38bdf8', x: 365, y: 345, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 28, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
+          { id: 'ally1', sheet: 'c0', pic: 'c_lulu_happy',  team: 'A', homeX: 365, homeY: 205, name: 'Sky',   color: '#38bdf8', x: 365, y: 205, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 25, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
+          { id: 'ally2', sheet: 'c2', pic: 'c_nutty_happy', team: 'A', homeX: 165, homeY: 205, name: 'Pip',   color: '#38bdf8', x: 165, y: 205, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 25, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
+          { id: 'ally3', sheet: 'c3', pic: 'c_bolt_happy',  team: 'A', homeX: 165, homeY: 365, name: 'Coco',  color: '#38bdf8', x: 165, y: 365, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 25, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
 
-          // Team B (Right Court - 4 Players in 2x2 Quadrant Formation)
-          { id: 'opp1',  sheet: 'c1', pic: 'c_ember_happy', team: 'B', homeX: Wc - 495, homeY: 310, name: st.ctrl === '2p' ? 'P2' : 'Leo', color: '#f43f5e', x: Wc - 495, y: 310, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 21, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
-          { id: 'opp2',  sheet: 'c2', pic: 'c_nutty_happy', team: 'B', homeX: Wc - 485, homeY: 420, name: 'Sunny', color: '#f43f5e', x: Wc - 485, y: 420, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 21, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
-          { id: 'opp3',  sheet: 'c3', pic: 'c_lulu_happy',  team: 'B', homeX: Wc - 275, homeY: 315, name: 'Ember', color: '#f43f5e', x: Wc - 275, y: 315, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 21, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
-          { id: 'opp4',  sheet: 'c0', pic: 'c_ember_happy', team: 'B', homeX: Wc - 245, homeY: 435, name: 'Nutty', color: '#f43f5e', x: Wc - 245, y: 435, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 21, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 }
+          { id: 'opp1',  sheet: 'c1', pic: 'c_ember_happy', team: 'B', homeX: Wc - 365, homeY: 205, name: st.ctrl === '2p' ? 'P2' : 'Leo', color: '#f43f5e', x: Wc - 365, y: 205, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 25, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
+          { id: 'opp2',  sheet: 'c2', pic: 'c_nutty_happy', team: 'B', homeX: Wc - 365, homeY: 345, name: 'Sunny', color: '#f43f5e', x: Wc - 365, y: 345, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 25, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
+          { id: 'opp3',  sheet: 'c3', pic: 'c_lulu_happy',  team: 'B', homeX: Wc - 165, homeY: 205, name: 'Ember', color: '#f43f5e', x: Wc - 165, y: 205, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 25, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 },
+          { id: 'opp4',  sheet: 'c0', pic: 'c_ember_happy', team: 'B', homeX: Wc - 165, homeY: 365, name: 'Nutty', color: '#f43f5e', x: Wc - 165, y: 365, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 25, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0, hitCooldown: 0 }
         ];
-        if (st.mode === '1v1') {
+        if (md === '1v1') {
           st.players = [st.players[0], st.players[4]];
-        } else if (st.mode === '2v2') {
+        } else if (md === '2v2') {
           st.players = [st.players[0], st.players[2], st.players[4], st.players[6]];
         }
 
         if (servingSide === 'B') {
-          st.ball.x = Wc - 380;
-          st.ball.y = 370;
-          st.ball.z = 95;
-          st.ball.vx = -3.2;
-          st.ball.vy = 0.3;
-          st.ball.vz = 4.8;
+          st.ball.x = Wc - 280;
+          st.ball.y = 280;
+          st.ball.z = 90;
+          st.ball.vx = -3.1;
+          st.ball.vy = 0.4;
+          st.ball.vz = 4.6;
         } else {
-          st.ball.x = 465;
-          st.ball.y = 410;
-          st.ball.z = 98;
-          st.ball.vx = 0.25;
+          st.ball.x = 340;
+          st.ball.y = 335;
+          st.ball.z = 95;
+          st.ball.vx = 0.3;
           st.ball.vy = 0;
-          st.ball.vz = 3.9;
+          st.ball.vz = 3.8;
           st.bannerText = '🏐 BALL TOSSED TO YOU! PRESS SPACE OR CLICK TO SPIKE!';
           st.bannerTimer = 85;
         }
@@ -1893,17 +1876,17 @@
       st.mouseAim = pt;
       var me = st.players[0];
       if (sp === 'soccer' && me) {
-        if ((st.holder === me || Math.hypot(st.ball.x - me.x, st.ball.y - me.y) < 75) && pt.x > GOAL_RIGHT_X - 160) {
+        if ((st.holder === me || Math.hypot(st.ball.x - me.x, st.ball.y - me.y) < 70) && pt.x > Wc - 165) {
           var adx = pt.x - me.x, ady = pt.y - me.y, alen = Math.hypot(adx, ady) || 1;
           me.dirX = adx / alen;
           me.dirY = ady / alen;
           st.actionKind = 'power';
           st.actionPressed = true;
         } else {
-          st.pointerSteer = { x: pt.x, y: Math.max(PITCH_TOP, Math.min(PITCH_BOT, pt.y)) };
+          st.pointerSteer = pt;
         }
       } else {
-        st.pointerSteer = { x: Math.min(Wc / 2 - 36, pt.x), y: Math.max(PITCH_TOP, Math.min(PITCH_BOT, pt.y)) };
+        st.pointerSteer = { x: Math.min(Wc / 2 - 38, pt.x), y: pt.y };
         st.actionKind = 'power';
         st.actionPressed = true;
       }
@@ -1913,18 +1896,16 @@
       if (!pt) return;
       st.mouseAim = pt;
       if (e.buttons && !st.finished) {
-        st.pointerSteer = (sp === 'volleyball')
-          ? { x: Math.min(Wc / 2 - 36, pt.x), y: Math.max(PITCH_TOP, Math.min(PITCH_BOT, pt.y)) }
-          : { x: pt.x, y: Math.max(PITCH_TOP, Math.min(PITCH_BOT, pt.y)) };
+        st.pointerSteer = (sp === 'volleyball') ? { x: Math.min(Wc / 2 - 38, pt.x), y: pt.y } : pt;
       }
     });
 
     var kickSoccerBall = function (kicker, vx, vy, vz, burstColor) {
       st.holder = null;
-      st.stealCooldown = 22;
+      st.stealCooldown = 20;
       st.allyHoldFrames = 0;
-      st.ball.x = kicker.x + (vx / (Math.hypot(vx, vy) || 1)) * 24;
-      st.ball.y = kicker.y + (vy / (Math.hypot(vx, vy) || 1)) * 16;
+      st.ball.x = kicker.x + (vx / (Math.hypot(vx, vy) || 1)) * 28;
+      st.ball.y = kicker.y + (vy / (Math.hypot(vx, vy) || 1)) * 18;
       st.ball.vx = vx;
       st.ball.vy = vy;
       st.ball.vz = vz || 2.5;
@@ -1939,16 +1920,16 @@
         st.scoreA++;
         st.netRippleB = 32;
         sound('playFanfare');
-        st.bannerText = (sp === 'soccer' ? '⚽ GOAL FOR YOUR SQUAD! 🌟' : '🏐 ACE POINT FOR YOUR SQUAD! 🌟');
+        st.bannerText = (sp === 'soccer' ? '⚽ GOAL FOR YOUR TEAM! 🌟' : '🏐 ACE POINT FOR YOUR SQUAD! 🌟');
         st.players.forEach(function (p) { if (p.team === 'A') p.cheerTimer = 45; });
-        spawnBurst(GOAL_RIGHT_X, (GOAL_TOP_Y + GOAL_BOT_Y) / 2, '#fde047', 35);
+        spawnBurst(Wc - 60, Hc / 2, '#fde047', 32);
       } else {
         st.scoreB++;
         st.netRippleA = 32;
         sound('playPop');
         st.bannerText = (sp === 'soccer' ? '⚽ RIVAL GOAL! YOUR BALL NOW!' : '🏐 RIVAL POINT! YOUR SERVE!');
         st.players.forEach(function (p) { if (p.team === 'B') p.cheerTimer = 45; });
-        spawnBurst(GOAL_LEFT_X, (GOAL_TOP_Y + GOAL_BOT_Y) / 2, '#f43f5e', 24);
+        spawnBurst(60, Hc / 2, '#f43f5e', 22);
       }
       st.bannerTimer = 75;
       st.goalCooldown = 45;
@@ -2016,86 +1997,106 @@
 
         if (sp === 'soccer') {
           // ==================================================================
-          // 3D PRO STADIUM SOCCER ENGINE (4v4 Team Passing, Dribble Shield & Power Shot)
+          // DYNAMIC SOFT-TOUCH DRIBBLING + SMART TACTICAL AI ENGINE
           // ==================================================================
           if (st.actionPressed && st.actionKind === 'dash' && me) {
             me.dashTimer = 20;
             sound('playHop');
+            // Skill Feint burst when sprinting with the ball!
+            if (st.holder === me) {
+              spawnBurst(me.x, me.y + 12, '#38bdf8', 10);
+              st.bannerText = '💨 SKILL FEINT BOOST!';
+              st.bannerTimer = 28;
+            }
             st.actionPressed = false;
           }
 
-          var dashBoost = (me.dashTimer && me.dashTimer > 0) ? 1.52 : 1.0;
+          var dashBoost = (me.dashTimer && me.dashTimer > 0) ? 1.55 : 1.0;
           if (me.dashTimer > 0) me.dashTimer--;
 
           var mag = Math.hypot(dx, dy);
           if (mag > 0.05) {
             var nx = dx / Math.max(1, mag), ny = dy / Math.max(1, mag);
-            me.vx = nx * 6.4 * dashBoost;
-            me.vy = ny * 5.6 * dashBoost;
-            me.dirX = dx / mag;
-            me.dirY = dy / mag;
+            var targetVx = nx * 5.8 * dashBoost;
+            var targetVy = ny * 5.8 * dashBoost;
+            // Responsive acceleration with smooth carving turns
+            me.vx = me.vx * 0.42 + targetVx * 0.58;
+            me.vy = me.vy * 0.42 + targetVy * 0.58;
+            var newDirX = dx / mag, newDirY = dy / mag;
+            // Detect sharp cut / directional feint ("مراوغة")!
+            var cutDot = me.dirX * newDirX + me.dirY * newDirY;
+            if (st.holder === me && cutDot < 0.35 && Math.hypot(me.vx, me.vy) > 2.5) {
+              // Ankle-breaker feint: nearby AI defenders get faked out in the old direction!
+              st.players.slice(1).forEach(function (opp) {
+                if (opp.team === 'B' && Math.hypot(opp.x - me.x, opp.y - me.y) < 135) {
+                  opp.vx = me.dirX * 5.2;
+                  opp.vy = me.dirY * 5.2;
+                  opp.stunTimer = 26;
+                  spawnBurst(me.x, me.y + 10, '#34d399', 10);
+                  st.bannerText = '⚡ ANKLE-BREAKER FEINT!';
+                  st.bannerTimer = 30;
+                }
+              });
+            }
+            me.dirX = newDirX;
+            me.dirY = newDirY;
             if (Math.abs(me.vx) > 0.15) me.flipX = me.vx < 0;
-            st.idleFrames = 0;
           } else {
-            me.vx = 0;
-            me.vy = 0;
-            st.idleFrames++;
+            // Smooth natural turf glide
+            me.vx *= 0.72;
+            me.vy *= 0.72;
+            if (Math.hypot(me.vx, me.vy) < 0.2) { me.vx = 0; me.vy = 0; }
           }
 
-          if (Math.hypot(me.vx, me.vy) > 4.0 && st.tick % 4 === 0) {
-            st.particles.push({ x: me.x, y: me.y + 14, vx: -me.vx * 0.2, vy: -0.4, r: 4, life: 12, maxLife: 12, color: 'rgba(255,255,255,0.45)' });
+          if (Math.hypot(me.vx, me.vy) > 3.8 && st.tick % 4 === 0) {
+            st.particles.push({ x: me.x, y: me.y + 16, vx: -me.vx * 0.2, vy: -0.4, r: 4, life: 12, maxLife: 12, color: 'rgba(255,255,255,0.45)' });
           }
 
-          var goalMidY = (GOAL_TOP_Y + GOAL_BOT_Y) / 2;
-
-          // Handle Player 1 Shoot / Pass / Slide Tackle Action!
+          // Handle Player 1 Shoot / 1-2 Pass / Slide Tackle Action!
           if (st.actionPressed && me) {
             st.actionPressed = false;
-            if (st.holder === me || Math.hypot(b.x - me.x, b.y - me.y) < 72) {
+            if (st.holder === me || Math.hypot(b.x - me.x, b.y - me.y) < 66) {
               if (st.actionKind === 'pass') {
-                // Find open winger teammate (Pip or Coco) to pass to!
-                var wingers = st.players.filter(function (q) { return q.team === 'A' && q.id !== 'me' && q.role !== 'gk'; });
-                var bestWing = wingers[0] || st.players[2];
-                if (bestWing) {
-                  var pwx = bestWing.x + 65 - me.x, pwy = bestWing.y - me.y, pwl = Math.hypot(pwx, pwy) || 1;
-                  kickSoccerBall(me, (pwx / pwl) * 11.5, (pwy / pwl) * 11.5, 3.2, '#38bdf8');
-                  st.bannerText = '👟 PASS TO ' + bestWing.name.toUpperCase() + '!';
+                // Smart 1-2 Pass to open teammate (Sky or Pip) who will cross it back to YOU!
+                var mates = st.players.filter(function (q) { return q.team === 'A' && q.id !== 'me'; });
+                var mate = mates[0];
+                if (mate) {
+                  var pmx = (mate.x + 50) - me.x, pmy = mate.y - me.y, pml = Math.hypot(pmx, pmy) || 1;
+                  kickSoccerBall(me, (pmx / pml) * 11.2, (pmy / pml) * 11.2, 2.8, '#38bdf8');
+                  st.bannerText = '👟 1-2 GIVE & GO PASS TO ' + mate.name.toUpperCase() + '!';
                   st.bannerTimer = 35;
+                } else {
+                  kickSoccerBall(me, me.dirX * 10.5, me.dirY * 10.5, 6.2, '#38bdf8');
                 }
               } else {
-                // GUIDED POWER SHOT TOWARD OPEN CORNER OF RIGHT 3D GOAL!
+                var aimX = me.dirX, aimY = me.dirY;
                 var gkOpp = st.players.find(function (q) { return q.team === 'B' && q.role === 'gk'; });
-                var openGoalY = goalMidY;
-                if (gkOpp) {
-                  openGoalY = (gkOpp.y > goalMidY) ? (GOAL_TOP_Y + 24) : (GOAL_BOT_Y - 24);
-                } else if (Math.abs(dy) > 0.1) {
-                  openGoalY = goalMidY + dy * 48;
+                var openGY = gkOpp ? ((gkOpp.y > Hc / 2 + 20) ? 185 : 335) : (Hc / 2 + 20 + dy * 75);
+                if (st.mouseAim && st.mouseAim.x > me.x + 20) {
+                  var mdx = st.mouseAim.x - me.x, mdy = st.mouseAim.y - me.y, mlen = Math.hypot(mdx, mdy) || 1;
+                  aimX = mdx / mlen; aimY = mdy / mlen;
+                } else if (aimX >= -0.25) {
+                  var gx = (Wc - 38) - me.x, gy = openGY - me.y, glen = Math.hypot(gx, gy) || 1;
+                  aimX = gx / glen; aimY = gy / glen;
                 }
-                var targetX = GOAL_RIGHT_X + 18;
-                var targetY = openGoalY;
-                if (st.mouseAim && st.mouseAim.x > me.x + 40 && st.mouseAim.y >= GOAL_TOP_Y - 30 && st.mouseAim.y <= GOAL_BOT_Y + 30) {
-                  targetX = GOAL_RIGHT_X + 18;
-                  targetY = Math.max(GOAL_TOP_Y + 12, Math.min(GOAL_BOT_Y - 12, st.mouseAim.y));
-                }
-                var gx = targetX - me.x, gy = targetY - me.y, glen = Math.hypot(gx, gy) || 1;
-                kickSoccerBall(me, (gx / glen) * 16.5, (gy / glen) * 16.5, 3.2, '#fde047');
+                kickSoccerBall(me, aimX * 15.0, aimY * 15.0, 3.6, '#fde047');
                 st.bannerText = '🔥 SUPER POWER SHOT!';
                 st.bannerTimer = 35;
               }
             } else {
-              // INSTANT SLIDE TACKLE STEAL!
+              // Slide Tackle Lunge
               var bdx0 = b.x - me.x, bdy0 = b.y - me.y, blen0 = Math.hypot(bdx0, bdy0) || 1;
               me.dirX = bdx0 / blen0;
               me.dirY = bdy0 / blen0;
-              me.vx = me.dirX * 10.0;
-              me.vy = me.dirY * 10.0;
-              me.dashTimer = 18;
+              me.vx = me.dirX * 9.2;
+              me.vy = me.dirY * 9.2;
+              me.dashTimer = 16;
               sound('playHop');
-              if (blen0 < 135) {
-                if (st.holder && st.holder.team === 'B') st.holder.stunTimer = 65;
+              if (blen0 < 105) {
+                if (st.holder && st.holder.team === 'B') st.holder.stunTimer = 50;
                 st.holder = me;
-                st.stealCooldown = 45;
-                spawnBurst(b.x, b.y, '#34d399', 18);
+                st.stealCooldown = 38;
+                spawnBurst(b.x, b.y, '#34d399', 16);
                 st.bannerText = '⚡ CLEAN TACKLE! YOUR BALL!';
                 st.bannerTimer = 40;
                 sound('playCorrect');
@@ -2103,13 +2104,15 @@
             }
           }
 
-          // Update AI Teammate & Opponents
+          // ==================================================================
+          // SMART TACTICAL AI BRAIN (Jockeying, Weaving Dribble & Overlapping Runs)
+          // ==================================================================
           st.players.slice(1).forEach(function (p) {
             if (p.stunTimer > 0) {
               p.stunTimer--;
-              p.vx *= 0.7;
-              p.vy *= 0.7;
-              if (Math.hypot(p.vx, p.vy) < 0.4) { p.vx = 0; p.vy = 0; }
+              p.vx *= 0.82;
+              p.vy *= 0.82;
+              if (Math.hypot(p.vx, p.vy) < 0.3) { p.vx = 0; p.vy = 0; }
               return;
             }
             if (p.id === 'opp1' && st.ctrl === '2p') {
@@ -2117,95 +2120,126 @@
               var p2y = (keys.ArrowDown ? 1 : 0) - (keys.ArrowUp ? 1 : 0);
               var l2 = Math.hypot(p2x, p2y);
               if (l2 > 0.05) {
-                p.vx = (p2x / l2) * 5.4;
-                p.vy = (p2y / l2) * 5.4;
+                p.vx = (p2x / l2) * 5.2;
+                p.vy = (p2y / l2) * 5.2;
                 p.dirX = p2x / l2;
                 p.dirY = p2y / l2;
                 p.flipX = p.vx < 0;
-              } else { p.vx = 0; p.vy = 0; }
+              } else { p.vx *= 0.7; p.vy *= 0.7; }
               if (keys.Enter && st.holder === p) {
-                var g2x = GOAL_LEFT_X - p.x, g2y = goalMidY - p.y, g2l = Math.hypot(g2x, g2y) || 1;
-                kickSoccerBall(p, (g2x / g2l) * 15.0, (g2y / g2l) * 15.0, 3.2, '#f43f5e');
+                var g2x = 42 - p.x, g2y = (Hc / 2 + 20) - p.y, g2l = Math.hypot(g2x, g2y) || 1;
+                kickSoccerBall(p, (g2x / g2l) * 13.5, (g2y / g2l) * 13.5, 3.6, '#f43f5e');
               }
               return;
             }
 
             if (p.role === 'gk') {
-              var gkX = p.team === 'A' ? (GOAL_LEFT_X + 22) : (GOAL_RIGHT_X - 22);
+              var gkX = p.team === 'A' ? 92 : (Wc - 92);
               var gkY = (p.team === 'A')
-                ? Math.max(GOAL_TOP_Y + 10, Math.min(GOAL_BOT_Y - 10, b.y))
-                : (goalMidY + Math.sin(st.tick * 0.038) * 52);
-              var gdx = gkX - p.x, gdy = gkY - p.y;
-              p.vx = Math.abs(gdx) > 6 ? gdx * 0.12 : 0;
-              p.vy = Math.abs(gdy) > 6 ? gdy * 0.10 : 0;
+                ? Math.max(165, Math.min(355, b.y))
+                : ((Hc / 2 + 20) + Math.sin(st.tick * 0.04) * 76);
+              p.vx = (gkX - p.x) * 0.12;
+              p.vy = (gkY - p.y) * 0.10;
               p.flipX = (p.team === 'B');
               if (st.holder === p) {
                 if (p.team === 'A') {
-                  var toMeX = me.x - p.x, toMeY = me.y - p.y, toMeL = Math.hypot(toMeX, toMeY) || 1;
-                  kickSoccerBall(p, (toMeX / toMeL) * 10.5, (toMeY / toMeL) * 10.5, 2.2, '#38bdf8');
-                  st.bannerText = '📣 SKY PASSES TO YOU!';
+                  var toMeX = (me.x + 30) - p.x, toMeY = me.y - p.y, toMeL = Math.hypot(toMeX, toMeY) || 1;
+                  kickSoccerBall(p, (toMeX / toMeL) * 10.0, (toMeY / toMeL) * 10.0, 2.2, '#38bdf8');
+                  st.bannerText = '📣 GOALKEEPER PASS TO YOU!';
                   st.bannerTimer = 40;
                 } else {
-                  kickSoccerBall(p, -7.8, (Math.random() - 0.5) * 3.5, 2.8, '#f43f5e');
+                  var fwdOpp = st.players.find(function (q) { return q.team === 'B' && q.role !== 'gk'; }) || p;
+                  var fox = fwdOpp.x - p.x, foy = fwdOpp.y - p.y, fol = Math.hypot(fox, foy) || 1;
+                  kickSoccerBall(p, (fox / fol) * 8.5, (foy / fol) * 8.5, 2.6, '#f43f5e');
                 }
               }
             } else if (p.team === 'A') {
-              // Friendly Wingers (Pip & Coco): Run up the wings with you, or dribble forward & cross back to YOU!
+              // SMART AI TEAMMATE (Sky / Pip):
+              // When teammate has the ball: dribbles upfield for 0.6s then plays a smart through-ball to YOU!
               if (st.holder === p) {
                 st.allyHoldFrames++;
-                p.vx = 4.2;
-                p.vy = (goalMidY - p.y) * 0.04;
+                p.vx = 4.4;
+                p.vy = Math.sin(st.tick * 0.08 + p.aiPhase) * 1.8;
                 p.dirX = 1;
-                p.dirY = 0;
+                p.dirY = p.vy * 0.2;
                 p.flipX = false;
-                if (st.allyHoldFrames > 32 || p.x > GOAL_RIGHT_X - 210) {
-                  var pmX = (me.x + 35) - p.x, pmY = me.y - p.y, pmL = Math.hypot(pmX, pmY) || 1;
-                  kickSoccerBall(p, (pmX / pmL) * 10.5, (pmY / pmL) * 10.5, 2.4, '#38bdf8');
-                  st.bannerText = '👟 ' + p.name.toUpperCase() + ' CROSSES TO YOU! PRESS SPACE!';
-                  st.bannerTimer = 45;
+                if (st.allyHoldFrames > 28 || p.x > Wc - 220) {
+                  var leadX = Math.min(Wc - 140, me.x + 75);
+                  var leadY = me.y;
+                  var pmX = leadX - p.x, pmY = leadY - p.y, pmL = Math.hypot(pmX, pmY) || 1;
+                  kickSoccerBall(p, (pmX / pmL) * 10.2, (pmY / pmL) * 10.2, 2.2, '#38bdf8');
+                  st.bannerText = '👟 ' + p.name.toUpperCase() + ' THROUGH-BALL TO YOU!';
+                  st.bannerTimer = 42;
                 }
               } else {
-                var suppX = Math.min(GOAL_RIGHT_X - 180, Math.max(260, me.x + 40));
-                var suppY = (p.id === 'ally2') ? 300 : 495;
-                var sdx = suppX - p.x, sdy = suppY - p.y;
-                p.vx = Math.abs(sdx) > 12 ? sdx * 0.065 : 0;
-                p.vy = Math.abs(sdy) > 12 ? sdy * 0.065 : 0;
-                p.flipX = false;
+                // Make intelligent overlapping runs on the opposite wing from YOU!
+                var wingY = (me.y > Hc / 2 + 20) ? 165 : 375;
+                if (p.id === 'ally2') wingY = (me.y > Hc / 2 + 20) ? 385 : 155;
+                var wingX = Math.min(Wc - 200, Math.max(240, me.x + 85 + Math.sin(st.tick * 0.04 + p.aiPhase) * 35));
+                p.vx = (wingX - p.x) * 0.075;
+                p.vy = (wingY - p.y) * 0.075;
+                if (Math.abs(p.vx) > 0.2) p.flipX = p.vx < 0;
               }
             } else if (p.team === 'B') {
-              // Rival Defenders (Leo, Ember, Nutty): Slower & zoned so the pitch feels open and tactical!
+              // SMART RIVAL AI (Leo / Ember / Nutty):
               if (st.holder === p) {
-                var rgx = GOAL_LEFT_X - p.x, rgy = goalMidY - p.y, rlen = Math.hypot(rgx, rgy) || 1;
-                p.vx = (rgx / rlen) * 2.15;
-                p.vy = (rgy / rlen) * 2.15;
-                p.dirX = rgx / rlen;
-                p.dirY = rgy / rlen;
-                p.flipX = true;
-                if (p.x < 350 && st.tick % 35 === 0) {
-                  kickSoccerBall(p, (rgx / rlen) * 10.2, (rgy / rlen) * 10.2 + (Math.random() - 0.5) * 2.2, 3.0, '#f43f5e');
+                // AI dribbles with dynamic weaving & feints around YOU instead of walking in a straight line!
+                var rgx = 68 - p.x;
+                var weaveOffset = Math.sin(st.tick * 0.075 + p.aiPhase) * 65;
+                // Dodge away from 'me' if 'me' is right in front of AI!
+                var distMe = Math.hypot(me.x - p.x, me.y - p.y);
+                if (distMe < 130 && me.x < p.x) {
+                  weaveOffset += (p.y < me.y ? -75 : 75);
                 }
+                var rgy = Math.max(125, Math.min(Hc - 55, (Hc / 2 + 20) + weaveOffset)) - p.y;
+                var rlen = Math.hypot(rgx, rgy) || 1;
+                var aiDribSpd = 2.95;
+                p.vx = p.vx * 0.8 + (rgx / rlen) * aiDribSpd * 0.2;
+                p.vy = p.vy * 0.8 + (rgy / rlen) * aiDribSpd * 0.2;
+                p.dirX = p.vx / (Math.hypot(p.vx, p.vy) || 1);
+                p.dirY = p.vy / (Math.hypot(p.vx, p.vy) || 1);
+                p.flipX = true;
+                if (p.x < 260 && st.tick % 32 === 0) {
+                  var shotY = (Hc / 2 + 20) + (Math.random() - 0.5) * 90 - p.y;
+                  var slen = Math.hypot(rgx, shotY) || 1;
+                  kickSoccerBall(p, (rgx / slen) * 10.8, (shotY / slen) * 10.8, 3.0, '#f43f5e');
+                  st.bannerText = '⚠️ ' + p.name.toUpperCase() + ' TAKES A SHOT!';
+                  st.bannerTimer = 35;
+                }
+              } else if (st.holder === me) {
+                // Tactical Jockeying: AI shadows the space between YOU and the goal with lateral weaving,
+                // leaving realistic angles for you to cut & dribble around them!
+                var jockeyX = Math.min(Wc - 130, me.x + 105);
+                var jockeyY = me.y + Math.sin(st.tick * 0.055 + p.aiPhase) * 58;
+                if (p.id === 'opp3') { jockeyX = Math.max(480, me.x + 150); jockeyY = 175; }
+                if (p.id === 'opp4') { jockeyX = Math.max(480, me.x + 150); jockeyY = 365; }
+                // Only close in slowly if you hold the ball near the box
+                if (me.x > Wc - 320 && p.id === 'opp1') {
+                  jockeyX = b.x + 18;
+                  jockeyY = b.y;
+                }
+                var jdx = jockeyX - p.x, jdy = jockeyY - p.y, jlen = Math.hypot(jdx, jdy) || 1;
+                var maxJockeySpd = (p.id === 'opp1') ? 2.65 : 2.1;
+                var tvx = (jdx / jlen) * Math.min(maxJockeySpd, jlen * 0.12);
+                var tvy = (jdy / jlen) * Math.min(maxJockeySpd, jlen * 0.12);
+                p.vx = p.vx * 0.90 + tvx * 0.10;
+                p.vy = p.vy * 0.90 + tvy * 0.10;
+                p.flipX = (me.x < p.x);
               } else {
-                // Keep wings in their lanes so all 3 rivals don't bunch up on the ball!
-                var targetBX = b.x;
-                var targetBY = b.y;
-                if (p.id === 'opp3') { targetBX = Math.max(580, b.x + 80); targetBY = Math.min(370, b.y - 45); }
-                if (p.id === 'opp4') { targetBX = Math.max(580, b.x + 80); targetBY = Math.max(410, b.y + 45); }
-                var cdx = targetBX - p.x, cdy = targetBY - p.y, clen = Math.hypot(cdx, cdy) || 1;
-                var maxSpd = (p.id === 'opp1') ? 2.0 : 1.65;
-                var tvx = clen > 12 ? (cdx / clen) * Math.min(maxSpd, clen) : 0;
-                var tvy = clen > 12 ? (cdy / clen) * Math.min(maxSpd, clen) : 0;
-                p.vx = p.vx * 0.93 + tvx * 0.07;
-                p.vy = p.vy * 0.93 + tvy * 0.07;
-                if (Math.hypot(p.vx, p.vy) < 0.35) { p.vx = 0; p.vy = 0; }
+                // Free ball: chase toward ball
+                var cdx = b.x - p.x, cdy = b.y - p.y, clen = Math.hypot(cdx, cdy) || 1;
+                var freeSpd = (p.id === 'opp1') ? 2.85 : 2.2;
+                p.vx = p.vx * 0.88 + ((cdx / clen) * Math.min(freeSpd, clen)) * 0.12;
+                p.vy = p.vy * 0.88 + ((cdy / clen) * Math.min(freeSpd, clen)) * 0.12;
                 if (Math.abs(p.vx) > 0.25) p.flipX = p.vx < 0;
               }
             }
           });
 
-          // Move all soccer players & check ball pickup / Dribble Shield!
+          // Move all soccer players & check ball pickup / possession
           st.players.forEach(function (p) {
-            p.x = Math.max(GOAL_LEFT_X - 10, Math.min(GOAL_RIGHT_X + 10, p.x + p.vx));
-            p.y = Math.max(PITCH_TOP, Math.min(PITCH_BOT, p.y + p.vy));
+            p.x = Math.max(54, Math.min(Wc - 54, p.x + p.vx));
+            p.y = Math.max(92, Math.min(Hc - 34, p.y + p.vy));
             if (p.cheerTimer > 0) p.cheerTimer--;
             if (p.stunTimer > 0) return;
 
@@ -2221,51 +2255,54 @@
                 sound('playPop');
               } else if (st.holder !== p && st.holder.team !== p.team && st.stealCooldown <= 0) {
                 if (p.id === 'me') {
-                  st.holder.stunTimer = 60;
+                  st.holder.stunTimer = 45;
                   st.holder = me;
-                  st.stealCooldown = 45;
+                  st.stealCooldown = 38;
                   spawnBurst(b.x, b.y, '#38bdf8', 14);
-                  st.bannerText = '⚡ BALL STOLEN! GO SCORE!';
+                  st.bannerText = '⚡ GREAT INTERCEPTION!';
                   st.bannerTimer = 35;
                   sound('playHop');
-                } else if (st.holder === me) {
-                  // DRIBBLE SHIELD: While YOU are moving/dribbling, AI CANNOT steal the ball off your feet!
-                  if (st.idleFrames < 140) {
-                    p.stunTimer = 45;
-                    var pushDx = p.x - me.x, pushDy = p.y - me.y, pushL = Math.hypot(pushDx, pushDy) || 1;
-                    p.vx = (pushDx / pushL) * 6.5;
-                    p.vy = (pushDy / pushL) * 6.5;
-                    p.x += p.vx * 2;
-                    p.y += p.vy * 2;
-                    spawnBurst(p.x, p.y, '#34d399', 12);
-                    st.bannerText = '💨 SMOOTH DRIBBLE PAST ' + p.name.toUpperCase() + '!';
-                    st.bannerTimer = 35;
+                } else if (st.holder === me && p.role !== 'gk') {
+                  // If YOU are sprinting or cutting at speed, you brush right past the defender!
+                  var mySpd = Math.hypot(me.vx, me.vy);
+                  if (mySpd > 2.2 || me.dashTimer > 0) {
+                    p.stunTimer = 30;
+                    var awayX = p.x - me.x, awayY = p.y - me.y, awayL = Math.hypot(awayX, awayY) || 1;
+                    p.vx = (awayX / awayL) * 4.8;
+                    p.vy = (awayY / awayL) * 4.8;
+                    spawnBurst(b.x, b.y, '#34d399', 8);
                     sound('playHop');
-                  } else {
+                  } else if (distToBall < p.r + b.r - 4) {
+                    // Only if you stop moving right on top of the defender can he dispossess you
                     st.holder = p;
-                    st.stealCooldown = 45;
-                    st.idleFrames = 0;
+                    st.stealCooldown = 42;
+                    sound('playPop');
                   }
                 }
               }
             }
           });
 
-          // Update Ball Position
+          // DYNAMIC SOFT-TOUCH BALL DRIBBLING PHYSICS:
+          // Instead of gluing the ball rigidly to one pixel, the ball taps rhythmically ahead of the dribbler's stride
+          // and arcs smoothly when carving/turning!
           if (st.holder) {
             var h = st.holder;
+            var hSpd = Math.hypot(h.vx, h.vy);
+            if (hSpd > 0.4) st.dribblePhase += 0.22;
+            var strideKick = (hSpd > 0.6) ? (24 + Math.sin(st.dribblePhase) * 9 + hSpd * 1.4) : 22;
             var dLen = Math.hypot(h.dirX, h.dirY) || 1;
-            var targetBX = h.x + (h.dirX / dLen) * 22;
-            var targetBY = h.y + (h.dirY / dLen) * 14 + 4;
-            b.x += (targetBX - b.x) * 0.6;
-            b.y += (targetBY - b.y) * 0.6;
-            b.z = Math.hypot(h.vx, h.vy) > 0.8 ? Math.abs(Math.sin(st.tick * 0.35)) * 4 : 0;
+            var targetBX = h.x + (h.dirX / dLen) * strideKick;
+            var targetBY = h.y + (h.dirY / dLen) * (strideKick * 0.72) + 4;
+            b.x += (targetBX - b.x) * 0.34;
+            b.y += (targetBY - b.y) * 0.34;
+            b.z = hSpd > 0.8 ? Math.abs(Math.sin(st.dribblePhase)) * 5.5 : 0;
             b.vx = h.vx;
             b.vy = h.vy;
-            b.spin += Math.hypot(h.vx, h.vy) * 0.08;
-            var inGoalWalk = (b.y >= GOAL_TOP_Y - 12 && b.y <= GOAL_BOT_Y + 12);
-            if (inGoalWalk && b.x >= GOAL_RIGHT_X - 18 && st.goalCooldown <= 0) onScore('A');
-            if (inGoalWalk && b.x <= GOAL_LEFT_X + 18 && st.goalCooldown <= 0) onScore('B');
+            b.spin += hSpd * 0.09;
+            var inGoalWalk = (b.y > 150 && b.y < 370);
+            if (inGoalWalk && b.x > Wc - 74 && st.goalCooldown <= 0) onScore('A');
+            if (inGoalWalk && b.x < 74 && st.goalCooldown <= 0) onScore('B');
           } else {
             b.x += b.vx;
             b.y += b.vy;
@@ -2278,29 +2315,29 @@
                 else b.vz = 0;
               }
             }
-            b.vx *= (b.z > 2 ? 0.992 : 0.982);
-            b.vy *= (b.z > 2 ? 0.992 : 0.982);
+            b.vx *= (b.z > 2 ? 0.992 : 0.98);
+            b.vy *= (b.z > 2 ? 0.992 : 0.98);
             b.spin += Math.hypot(b.vx, b.vy) * 0.06;
 
             if (Math.hypot(b.vx, b.vy) > 6.5) {
               st.ballTrail.push({ x: b.x, y: b.y, z: b.z, life: 11 });
             }
 
-            var inGoalY = (b.y >= GOAL_TOP_Y - 10 && b.y <= GOAL_BOT_Y + 10 && b.z < 68);
-            if (b.y < PITCH_TOP + b.r) { b.y = PITCH_TOP + b.r; b.vy *= -0.82; }
-            if (b.y > PITCH_BOT - b.r) { b.y = PITCH_BOT - b.r; b.vy *= -0.82; }
-            if (b.x <= GOAL_LEFT_X + b.r) {
+            var inGoalY = (b.y > 150 && b.y < 370 && b.z < 68);
+            if (b.y < 88 + b.r) { b.y = 88 + b.r; b.vy *= -0.82; }
+            if (b.y > Hc - 26 - b.r) { b.y = Hc - 26 - b.r; b.vy *= -0.82; }
+            if (b.x < 56 + b.r) {
               if (inGoalY && st.goalCooldown <= 0) onScore('B');
-              else { b.x = GOAL_LEFT_X + b.r; b.vx *= -0.82; }
+              else { b.x = 56 + b.r; b.vx *= -0.82; }
             }
-            if (b.x >= GOAL_RIGHT_X - b.r) {
+            if (b.x > Wc - 56 - b.r) {
               if (inGoalY && st.goalCooldown <= 0) onScore('A');
-              else { b.x = GOAL_RIGHT_X - b.r; b.vx *= -0.82; }
+              else { b.x = Wc - 56 - b.r; b.vx *= -0.82; }
             }
           }
         } else {
           // ==================================================================
-          // GIANT 4v4 3D BEACH VOLLEYBALL ENGINE (Slow Floaty Ball + Teammate Set to YOU!)
+          // GIANT 4v4 BEACH VOLLEYBALL ENGINE (Slow Floaty Ball + Teammate Set to YOU!)
           // ==================================================================
           var landing = predictLanding(b, 0, Wc, Hc);
           st.landingSpot = landing;
@@ -2318,13 +2355,14 @@
             me.vx = (dx / Math.max(1, vMag)) * 5.8 * vDash;
             me.vy = (dy / Math.max(1, vMag)) * 4.8 * vDash;
             if (Math.abs(me.vx) > 0.15) me.flipX = me.vx < 0;
-          } else if (landing.x < Wc / 2 && b.vz < 1.5 && Math.hypot(landing.x - me.x, landing.y - me.y) < 145 && Math.hypot(landing.x - me.x, landing.y - me.y) > 10) {
+          } else if (landing.x < Wc / 2 && b.vz < 1.5 && Math.hypot(landing.x - me.x, landing.y - me.y) < 135 && Math.hypot(landing.x - me.x, landing.y - me.y) > 10) {
             me.vx = (landing.x - me.x) * 0.14;
             me.vy = (landing.y - me.y) * 0.14;
             me.flipX = false;
           } else {
-            me.vx = 0;
-            me.vy = 0;
+            me.vx *= 0.68;
+            me.vy *= 0.68;
+            if (Math.hypot(me.vx, me.vy) < 0.25) { me.vx = 0; me.vy = 0; }
           }
 
           if (st.actionPressed && me) {
@@ -2332,7 +2370,7 @@
               me.vz = 8.6;
               sound('playHop');
             }
-            if (b.x < Wc / 2 + 20 && Math.hypot(b.x - me.x, b.y - me.y) < 165) {
+            if (b.x < Wc / 2 + 20 && Math.hypot(b.x - me.x, b.y - me.y) < 155) {
               me.vx = (b.x - me.x) * 0.22;
               me.vy = (b.y - me.y) * 0.22;
             }
@@ -2344,7 +2382,7 @@
           var closestReceiver = sidePlayers[0];
           var bestDist = 99999;
           sidePlayers.forEach(function (q) {
-            var d = Math.hypot(landing.x - q.homeX, landing.y - q.homeY) + (q.id === 'me' ? -50 : 0);
+            var d = Math.hypot(landing.x - q.homeX, landing.y - q.homeY) + (q.id === 'me' ? -45 : 0);
             if (d < bestDist) { bestDist = d; closestReceiver = q; }
           });
 
@@ -2360,8 +2398,8 @@
             var tx = p.homeX;
             var ty = p.homeY;
             if (closestReceiver === p) {
-              tx = (p.team === 'A') ? Math.max(135, Math.min(Wc / 2 - 42, landing.x)) : Math.max(Wc / 2 + 42, Math.min(Wc - 135, landing.x));
-              ty = Math.max(PITCH_TOP, Math.min(PITCH_BOT, landing.y));
+              tx = (p.team === 'A') ? Math.max(70, Math.min(Wc / 2 - 42, landing.x)) : Math.max(Wc / 2 + 42, Math.min(Wc - 70, landing.x));
+              ty = Math.max(145, Math.min(Hc - 38, landing.y));
             }
             var distToTarget = Math.hypot(tx - p.x, ty - p.y);
             if (distToTarget < 10) {
@@ -2383,9 +2421,9 @@
             if (p.hitCooldown > 0) p.hitCooldown--;
             if (p.cheerTimer > 0) p.cheerTimer--;
             p.x += p.vx;
-            p.y = Math.max(PITCH_TOP, Math.min(PITCH_BOT, p.y + p.vy));
-            if (p.team === 'A') p.x = Math.max(125, Math.min(Wc / 2 - 36, p.x));
-            else p.x = Math.max(Wc / 2 + 36, Math.min(Wc - 125, p.x));
+            p.y = Math.max(140, Math.min(Hc - 34, p.y + p.vy));
+            if (p.team === 'A') p.x = Math.max(58, Math.min(Wc / 2 - 36, p.x));
+            else p.x = Math.max(Wc / 2 + 36, Math.min(Wc - 58, p.x));
 
             p.z += p.vz;
             if (p.z > 0 || p.vz !== 0) {
@@ -2395,7 +2433,7 @@
 
             var bdx = b.x - p.x, bdy = b.y - p.y, bdz = b.z - (p.z + 28);
             var dist2d = Math.hypot(bdx, bdy * 0.85);
-            var hitRadius = (p.id === 'me') ? (p.r + b.r + 30) : (p.r + b.r + 12);
+            var hitRadius = (p.id === 'me') ? (p.r + b.r + 28) : (p.r + b.r + 12);
             if (dist2d < hitRadius && Math.abs(bdz) < 62 && b.vz <= 2.2 && p.hitCooldown <= 0) {
               p.hitCooldown = 22;
               b.z = Math.max(b.z, p.z + 38);
@@ -2409,18 +2447,18 @@
 
               if (p.id === 'me') {
                 var isSpike = (p.z > 8 || st.actionPressed) && st.actionKind !== 'pass';
-                var targetRX = Wc / 2 + 160 + Math.random() * 280;
-                var targetRY = PITCH_TOP + 25 + Math.random() * (PITCH_BOT - PITCH_TOP - 50);
+                var targetRX = Wc / 2 + 140 + Math.random() * 260;
+                var targetRY = 175 + Math.random() * 260;
                 if (st.mouseAim && st.mouseAim.x > Wc / 2 + 30) {
-                  targetRX = Math.min(Wc - 140, st.mouseAim.x);
-                  targetRY = Math.max(PITCH_TOP + 15, Math.min(PITCH_BOT - 15, st.mouseAim.y));
+                  targetRX = Math.min(Wc - 70, st.mouseAim.x);
+                  targetRY = Math.max(155, Math.min(Hc - 45, st.mouseAim.y));
                 } else if (Math.abs(dy) > 0.1) {
-                  targetRY = Math.max(PITCH_TOP + 15, Math.min(PITCH_BOT - 15, PITCH_MID_Y + dy * 90));
+                  targetRY = Math.max(155, Math.min(Hc - 45, (Hc / 2 + 30) + dy * 120));
                 }
-                var flightT = isSpike ? 92 : 122;
+                var flightT = isSpike ? 88 : 118;
                 b.vx = (targetRX - b.x) / flightT;
                 b.vy = (targetRY - b.y) / flightT;
-                b.vz = isSpike ? 4.6 : 6.4;
+                b.vz = isSpike ? 4.4 : 6.2;
                 spawnBurst(b.x, b.y - b.z, isSpike ? '#fde047' : '#38bdf8', isSpike ? 22 : 12);
                 st.bannerText = isSpike ? '🔥 MONSTER POWER SPIKE!' : '🏐 NICE OVERHEAD SEND!';
                 st.bannerTimer = 45;
@@ -2436,24 +2474,24 @@
                   st.bannerTimer = 60;
                   sound('playPop');
                 } else {
-                  var overX = Wc / 2 + 160 + Math.random() * 260;
-                  var overY = PITCH_TOP + 25 + Math.random() * (PITCH_BOT - PITCH_TOP - 50);
-                  b.vx = (overX - b.x) / 120;
-                  b.vy = (overY - b.y) / 120;
-                  b.vz = 6.3;
+                  var overX = Wc / 2 + 160 + Math.random() * 220;
+                  var overY = 180 + Math.random() * 240;
+                  b.vx = (overX - b.x) / 118;
+                  b.vy = (overY - b.y) / 118;
+                  b.vz = 6.2;
                   sound('playPop');
                 }
               } else {
-                var toAX = 220 + Math.random() * 340;
-                var toAY = PITCH_TOP + 25 + Math.random() * (PITCH_BOT - PITCH_TOP - 50);
+                var toAX = 140 + Math.random() * (Wc / 2 - 210);
+                var toAY = 175 + Math.random() * 250;
                 if (Math.random() < 0.65 && me) {
-                  toAX = Math.max(150, Math.min(Wc / 2 - 65, me.x + (Math.random() - 0.5) * 90));
-                  toAY = Math.max(PITCH_TOP + 15, Math.min(PITCH_BOT - 15, me.y + (Math.random() - 0.5) * 80));
+                  toAX = Math.max(95, Math.min(Wc / 2 - 65, me.x + (Math.random() - 0.5) * 90));
+                  toAY = Math.max(165, Math.min(Hc - 50, me.y + (Math.random() - 0.5) * 90));
                 }
-                var rivalT = 124;
+                var rivalT = 122;
                 b.vx = (toAX - b.x) / rivalT;
                 b.vy = (toAY - b.y) / rivalT;
-                b.vz = 6.5;
+                b.vz = 6.4;
                 sound('playPop');
               }
             }
@@ -2470,10 +2508,10 @@
             st.ballTrail.push({ x: b.x, y: b.y, z: b.z, life: 12 });
           }
 
-          if (b.x < 120 + b.r) { b.x = 120 + b.r; b.vx *= -0.85; }
-          if (b.x > Wc - 120 - b.r) { b.x = Wc - 120 - b.r; b.vx *= -0.85; }
-          if (b.y < PITCH_TOP) { b.y = PITCH_TOP; b.vy *= -0.85; }
-          if (b.y > PITCH_BOT) { b.y = PITCH_BOT; b.vy *= -0.85; }
+          if (b.x < 48 + b.r) { b.x = 48 + b.r; b.vx *= -0.85; }
+          if (b.x > Wc - 48 - b.r) { b.x = Wc - 48 - b.r; b.vx *= -0.85; }
+          if (b.y < 135) { b.y = 135; b.vy *= -0.85; }
+          if (b.y > Hc - 28) { b.y = Hc - 28; b.vy *= -0.85; }
 
           if (Math.abs(b.x - Wc / 2) < b.r + 6 && b.z < 52) {
             if (b.z > 28) {
@@ -2494,56 +2532,150 @@
       }
 
       // ======================================================================
-      // RENDER HIGH-RES 3D STADIUM JPEG BACKGROUND & 2.5D ACTORS (1280 x 600)
+      // RENDER FULL-PITCH 2.5D STADIUM FRAME (1040 x 500)
       // ======================================================================
       ctx.clearRect(0, 0, Wc, Hc);
 
-      var bgKey = (sp === 'soccer') ? 'stadium_soccer_3d.jpg' : 'stadium_volleyball_3d.jpg';
-      var bgImg = getSportImg(bgKey);
-      if (bgImg && bgImg.complete && bgImg.naturalWidth > 0) {
-        ctx.drawImage(bgImg, 0, 0, Wc, Hc);
-      } else {
-        ctx.fillStyle = sp === 'soccer' ? '#15803d' : '#f59e0b';
-        ctx.fillRect(0, 0, Wc, Hc);
-      }
-
       if (sp === 'soccer') {
-        // Subtle glowing goal-mouth indicator & Live Golden Shot Aiming Arrow
+        var standG = ctx.createLinearGradient(0, 0, 0, 76);
+        standG.addColorStop(0, '#090d16');
+        standG.addColorStop(1, '#1e293b');
+        ctx.fillStyle = standG;
+        ctx.fillRect(0, 0, Wc, 76);
+
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(0, 54, Wc, 22);
+        for (var cf = 0; cf < 32; cf++) {
+          var fx = 24 + cf * 32;
+          var fy = 36 + (cf % 2) * 10 - (st.finished ? 0 : Math.abs(Math.sin(st.tick * 0.08 + cf)) * (st.bannerTimer > 0 ? 6 : 1.5));
+          ctx.fillStyle = ['#38bdf8', '#fde047', '#f43f5e', '#34d399', '#a855f7'][cf % 5];
+          ctx.beginPath();
+          ctx.arc(fx, fy, 6.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        var bgGrass = ctx.createLinearGradient(0, 76, 0, Hc);
+        bgGrass.addColorStop(0, '#14532d');
+        bgGrass.addColorStop(1, '#166534');
+        ctx.fillStyle = bgGrass;
+        ctx.fillRect(0, 76, Wc, Hc - 76);
+
+        for (var s = 0; s < 10; s++) {
+          if (s % 2 === 0) {
+            ctx.fillStyle = 'rgba(34, 197, 94, 0.16)';
+            var topX1 = 68 + s * ((Wc - 136) / 10);
+            var topX2 = 68 + (s + 1) * ((Wc - 136) / 10);
+            var botX1 = 30 + s * ((Wc - 60) / 10);
+            var botX2 = 30 + (s + 1) * ((Wc - 60) / 10);
+            ctx.beginPath();
+            ctx.moveTo(topX1, 82); ctx.lineTo(topX2, 82);
+            ctx.lineTo(botX2, Hc - 20); ctx.lineTo(botX1, Hc - 20);
+            ctx.closePath(); ctx.fill();
+          }
+        }
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.88)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(66, 82); ctx.lineTo(Wc - 66, 82);
+        ctx.lineTo(Wc - 32, Hc - 20); ctx.lineTo(32, Hc - 20);
+        ctx.closePath(); ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(Wc / 2, 82); ctx.lineTo(Wc / 2, Hc - 20);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(Wc / 2, Hc / 2 + 20, 74, 52, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.strokeRect(50, 130, 105, 260);
+        ctx.strokeRect(Wc - 155, 130, 105, 260);
+
+        var rA = st.finished ? 0 : Math.sin(st.tick * 0.5) * st.netRippleA;
+        var rB = st.finished ? 0 : Math.sin(st.tick * 0.5) * st.netRippleB;
+
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.24)';
+        ctx.beginPath();
+        ctx.moveTo(56, 150); ctx.lineTo(14 - rA * 0.4, 138); ctx.lineTo(14 - rA * 0.4, 356); ctx.lineTo(56, 370);
+        ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 4; ctx.stroke();
+
+        ctx.fillStyle = 'rgba(244, 63, 94, 0.28)';
+        ctx.beginPath();
+        ctx.moveTo(Wc - 56, 150); ctx.lineTo(Wc - 14 + rB * 0.4, 138); ctx.lineTo(Wc - 14 + rB * 0.4, 356); ctx.lineTo(Wc - 56, 370);
+        ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 4; ctx.stroke();
+
         if (!st.finished && st.holder === me && me) {
           ctx.save();
-          var gkOpp2 = st.players.find(function (q) { return q.team === 'B' && q.role === 'gk'; });
-          var gMidY = (GOAL_TOP_Y + GOAL_BOT_Y) / 2;
-          var openGY = gkOpp2 ? ((gkOpp2.y > gMidY) ? (GOAL_TOP_Y + 24) : (GOAL_BOT_Y - 24)) : gMidY;
-          var tx2 = GOAL_RIGHT_X + 15, ty2 = openGY;
-          if (st.mouseAim && st.mouseAim.x > me.x + 40 && st.mouseAim.y >= GOAL_TOP_Y - 30 && st.mouseAim.y <= GOAL_BOT_Y + 30) {
-            tx2 = GOAL_RIGHT_X + 15; ty2 = st.mouseAim.y;
+          var aX = me.dirX, aY = me.dirY;
+          if (st.mouseAim && st.mouseAim.x > me.x + 20) {
+            var mdx2 = st.mouseAim.x - me.x, mdy2 = st.mouseAim.y - me.y, ml2 = Math.hypot(mdx2, mdy2) || 1;
+            aX = mdx2 / ml2; aY = mdy2 / ml2;
+          } else if (aX >= -0.2) {
+            var gx3 = (Wc - 38) - me.x, gy3 = (Hc / 2 + 20 + dy * 75) - me.y, gl3 = Math.hypot(gx3, gy3) || 1;
+            aX = gx3 / gl3; aY = gy3 / gl3;
           }
-          var adx2 = tx2 - b.x, ady2 = ty2 - b.y, al2 = Math.hypot(adx2, ady2) || 1;
-          var aX = adx2 / al2, aY = ady2 / al2;
-          ctx.strokeStyle = 'rgba(253, 224, 71, 0.92)';
-          ctx.lineWidth = 4;
-          ctx.setLineDash([9, 7]);
+          ctx.strokeStyle = 'rgba(253, 224, 71, 0.9)';
+          ctx.lineWidth = 3.5;
+          ctx.setLineDash([8, 6]);
           ctx.beginPath();
           ctx.moveTo(b.x, b.y);
-          ctx.lineTo(b.x + aX * 165, b.y + aY * 165);
+          ctx.lineTo(b.x + aX * 145, b.y + aY * 145);
           ctx.stroke();
           ctx.fillStyle = '#fde047';
           ctx.beginPath();
-          ctx.arc(b.x + aX * 165, b.y + aY * 165, 7.5, 0, Math.PI * 2);
+          ctx.arc(b.x + aX * 145, b.y + aY * 145, 7, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
         }
       } else {
-        // 3D Volleyball Target Landing Ring & Flight Guide Line on Sand
+        var skyG = ctx.createLinearGradient(0, 0, 0, 118);
+        skyG.addColorStop(0, '#0284c7');
+        skyG.addColorStop(1, '#7dd3fc');
+        ctx.fillStyle = skyG;
+        ctx.fillRect(0, 0, Wc, 118);
+
+        ctx.fillStyle = '#0ea5e9';
+        ctx.fillRect(0, 96, Wc, 32);
+        ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+        ctx.lineWidth = 2.5;
+        var waveOff = st.finished ? 0 : Math.sin(st.tick * 0.05) * 8;
+        ctx.beginPath();
+        ctx.moveTo(0, 122 + waveOff * 0.3);
+        ctx.lineTo(Wc, 122 - waveOff * 0.3);
+        ctx.stroke();
+
+        var sandG = ctx.createLinearGradient(0, 126, 0, Hc);
+        sandG.addColorStop(0, '#fde68a');
+        sandG.addColorStop(1, '#f59e0b');
+        ctx.fillStyle = sandG;
+        ctx.fillRect(0, 126, Wc, Hc - 126);
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.92)';
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.moveTo(64, 142); ctx.lineTo(Wc - 64, 142);
+        ctx.lineTo(Wc - 34, Hc - 22); ctx.lineTo(34, Hc - 22);
+        ctx.closePath(); ctx.stroke();
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(265, 142); ctx.lineTo(250, Hc - 22);
+        ctx.moveTo(Wc - 265, 142); ctx.lineTo(Wc - 250, Hc - 22);
+        ctx.moveTo(48, (142 + Hc - 22) / 2); ctx.lineTo(Wc - 48, (142 + Hc - 22) / 2);
+        ctx.stroke();
+
         if (!st.finished && st.landingSpot) {
           ctx.save();
           var isOurSide = st.landingSpot.x < Wc / 2;
           ctx.strokeStyle = isOurSide ? '#0284c7' : '#e11d48';
-          ctx.fillStyle = isOurSide ? 'rgba(56, 189, 248, 0.38)' : 'rgba(244, 63, 94, 0.30)';
+          ctx.fillStyle = isOurSide ? 'rgba(56, 189, 248, 0.34)' : 'rgba(244, 63, 94, 0.28)';
           ctx.lineWidth = 3.5;
           var pulseR = 28 + Math.sin(st.tick * 0.22) * 5;
           ctx.beginPath();
-          ctx.ellipse(st.landingSpot.x, st.landingSpot.y, pulseR, 12, 0, 0, Math.PI * 2);
+          ctx.ellipse(st.landingSpot.x, st.landingSpot.y, pulseR, 13, 0, 0, Math.PI * 2);
           ctx.fill();
           ctx.stroke();
 
@@ -2557,16 +2689,14 @@
         }
       }
 
-      // Draw 3D Ball Shadow on the ground at (b.x, b.y)
       ctx.save();
       var bShScale = Math.max(0.35, 1 - b.z / 200);
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.36)';
       ctx.beginPath();
-      ctx.ellipse(b.x, b.y + 10, b.r * 1.1 * bShScale, 6 * bShScale, 0, 0, Math.PI * 2);
+      ctx.ellipse(b.x, b.y + 10, b.r * 1.05 * bShScale, 6 * bShScale, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
 
-      // Depth-sort Players by y coordinate for true 2.5D overlap
       var sortedPlayers = st.players.slice().sort(function (a, b2) { return a.y - b2.y; });
       sortedPlayers.forEach(function (p) {
         drawMonsterSpriteFrame(
@@ -2584,14 +2714,13 @@
           st.finished
         );
 
-        // Clean Transparent Nameplate (NO black rectangle box!)
         ctx.save();
         ctx.font = (p.id === 'me' ? '900 14px ' : '800 12.5px ') + 'Fredoka, sans-serif';
         ctx.textAlign = 'center';
-        var labelY = Math.round(p.y - (p.z || 0) - 58);
-        var canSpikeNow = (!st.finished && sp === 'volleyball' && p.id === 'me' && b.x < Wc / 2 + 20 && Math.hypot(b.x - p.x, b.y - p.y) < 120);
+        var labelY = Math.round(p.y - (p.z || 0) - 62);
+        var canSpikeNow = (!st.finished && sp === 'volleyball' && p.id === 'me' && b.x < Wc / 2 + 20 && Math.hypot(b.x - p.x, b.y - p.y) < 110);
         var labelTxt = p.stunTimer > 0
-          ? '💫 Dizzied!'
+          ? '💫 Off-Balance!'
           : (p.id === 'me'
               ? (sp === 'soccer'
                   ? (st.holder === p ? '⚽ YOU (SPACE = SHOOT!)' : '▼ YOU')
@@ -2605,7 +2734,17 @@
         ctx.restore();
       });
 
-      // Draw Ball Comet Trail
+      if (sp === 'volleyball') {
+        ctx.save();
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillRect(Wc / 2 - 4, 118, 8, Hc - 138);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.30)';
+        ctx.fillRect(Wc / 2 - 3, 126, 6, Hc - 165);
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(Wc / 2 - 5, 122, 10, 12);
+        ctx.restore();
+      }
+
       for (var ti = st.ballTrail.length - 1; ti >= 0; ti--) {
         var tr = st.ballTrail[ti];
         tr.life--;
@@ -2618,7 +2757,6 @@
         ctx.restore();
       }
 
-      // Draw 3D Ball at (b.x, b.y - b.z)
       ctx.save();
       var bScale = 1 + (b.z || 0) / 210;
       var drawR = (b.r + 3) * bScale;
@@ -2630,7 +2768,6 @@
       }
       ctx.restore();
 
-      // Update & Draw Burst Particles
       for (var pi = st.particles.length - 1; pi >= 0; pi--) {
         var pt = st.particles[pi];
         pt.x += pt.vx;
@@ -2650,7 +2787,7 @@
         if (st.bannerTimer > 0) st.bannerTimer--;
         ctx.save();
         if (st.finished) {
-          ctx.fillStyle = 'rgba(6, 9, 17, 0.62)';
+          ctx.fillStyle = 'rgba(6, 9, 17, 0.55)';
           ctx.fillRect(0, Hc / 2 - 48, Wc, 96);
         }
         ctx.font = '800 ' + (st.finished ? '22px' : '18px') + ' Fredoka, sans-serif';
