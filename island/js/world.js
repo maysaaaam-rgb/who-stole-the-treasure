@@ -1046,17 +1046,20 @@
       return;
     }
     var visiting = (z === 0 && S.visitingFriend) ? S.visitingFriend : null;
-    if ($('w-decor')) $('w-decor').style.display = 'none';
+    if ($('w-decor')) {
+      $('w-decor').style.display = (z === 0 && !visiting) ? '' : 'none';
+      $('w-decor').innerHTML = '<img src="art/flat/o_workbench.webp" alt=""><span>' + (S.moveMode ? 'Done' : 'Move') + '</span>';
+    }
     if ($('w-home')) $('w-home').innerHTML = '<img src="art/flat/u_build.webp" alt=""><span>' + (visiting ? 'My Home' : 'Home Studio') + '</span>';
     if (z === 0) {
       var st = visiting && visiting.world ? visiting.world : (root.WorldGame ? root.WorldGame.readState() : { houseTier: 1, placed: [] });
       var tier = (root.WorldGame && root.WorldGame.HOUSE_TIERS[(st.houseTier || 1) - 1]) || { name: 'Cosy Tent' };
       if (S.inHouse) {
-        $('w-goal').innerHTML = '🛋️ Inside ' + (visiting ? esc(visiting.first_name) + '\'s ' : 'My ') + tier.name + '<small>Tap furniture to rest/use, tap the Blueprint Desk, or walk to the bottom door to go outside!</small>';
+        $('w-goal').innerHTML = '🛋️ Inside ' + (visiting ? esc(visiting.first_name) + '\'s ' : 'My ') + tier.name + '<small>Drag any furniture to move it, tap to rest, or walk to the bottom door to go outside!</small>';
       } else if (visiting) {
         $('w-goal').innerHTML = '🏡 ' + esc(visiting.first_name) + '\'s Home Island · ' + tier.name + '<small>Tap the House to walk inside, or tap 🏠 My Home to return!</small>';
       } else {
-        $('w-goal').innerHTML = '🏡 My Home Island · ' + tier.name + '<small>Walk into your House door to see your room, or tap Workbench for Blueprints & Crafting!</small>';
+        $('w-goal').innerHTML = '🏡 My Home Island · ' + tier.name + '<small>Walk into your House door, drag any furniture to move it, or tap Workbench!</small>';
       }
       return;
     }
@@ -1068,11 +1071,12 @@
   function makeWorldLabel(sc, x, y, text, color) {
     return sc.add.text(x, y, text, {
       fontFamily: 'Fredoka, sans-serif',
-      fontSize: '19px',
+      fontSize: '20px',
       fontStyle: '700',
       color: color || '#ffffff',
-      backgroundColor: '#0f172add',
-      padding: { x: 9, y: 3 }
+      stroke: '#060911',
+      strokeThickness: 5,
+      shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,0.75)', blur: 4, stroke: true, fill: true }
     }).setOrigin(0.5).setDepth(4502);
   }
 
@@ -1126,10 +1130,7 @@
       var spawnFriendHost = function () {
         if (!sc.scene || !sc.scene.isActive()) return;
         var fWalker = makeWalker(sc, fKey, fx, fy, .52);
-        var fTag = sc.add.text(fx, fy - 110, '👋 ' + (visiting.first_name || 'Friend'), {
-          fontFamily: 'Fredoka, sans-serif', fontSize: '24px', fontStyle: '700', color: '#fde047',
-          backgroundColor: '#0f172add', padding: { x: 10, y: 4 }
-        }).setOrigin(.5).setDepth(4505);
+        var fTag = makeWorldLabel(sc, fx, fy - 110, '👋 ' + (visiting.first_name || 'Friend'), '#fde047').setDepth(4505);
         sc.tweens.add({ targets: fTag, y: fy - 118, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
         sc.homeObjs.push({ kind: 'friend_host', friend: visiting, walker: fWalker, tag: fTag, x: fx, y: fy, def: { h: 140, sw: 90 } });
       };
@@ -1296,7 +1297,8 @@
   function renderDecorTray(activeId) {
     var tray = $('w-dd-tray'); if (!tray || !root.WorldGame) return;
     var st = root.WorldGame.readState();
-    var cards = root.WorldGame.RECIPES.map(function (r) {
+    var wantKind = S.inHouse ? 'patio' : 'garden';
+    var cards = root.WorldGame.RECIPES.filter(function (r) { return r.kind === wantKind; }).map(function (r) {
       var owned = Number((st.ownedFurniture || {})[r.id]) || 0;
       var placed = (st.placed || []).filter(function (p) { return p.id === r.id; }).length;
       var avail = Math.max(0, owned - placed);
@@ -1305,22 +1307,26 @@
       return '<button type="button" class="w-dd-card' + (isAct ? ' active' : '') + '" data-id="' + r.id + '" onclick="WORLD.selectDecorCard(\'' + r.id + '\')">' +
         '<img src="' + artUrl(FLAT + r.id) + '" alt="">' +
         '<span>' + esc(r.name) + '</span>' +
-        '<em>' + (avail > 0 ? '+' + avail + ' in bag' : '✓ placed (' + placed + ')') + '</em>' +
+        '<em>' + (avail > 0 ? '+' + avail + ' in bag' : '✋ move (' + placed + ')') + '</em>' +
       '</button>';
     }).join('');
-    tray.innerHTML = cards || '<div style="color:#94a3b8;font-size:13px;padding:8px">Craft furniture in the Workshop first!</div>';
+    tray.innerHTML = cards || '<div style="color:#94a3b8;font-size:13px;padding:8px">Tap [🔨 Craft More] to build items for your ' + (S.inHouse ? 'Inside Room' : 'Garden') + '!</div>';
   }
 
   function selectDecorCard(id) {
     sound('playTap');
     var st = root.WorldGame.readState();
+    var rec = root.WorldGame.RECIPES.filter(function (r) { return r.id === id; })[0];
+    if (rec && rec.kind === 'patio' && !S.inHouse) {
+      enterHouse();
+      return;
+    }
     var owned = Number((st.ownedFurniture || {})[id]) || 0;
     var placedIndices = [];
     (st.placed || []).forEach(function (p, idx) { if (p.id === id) placedIndices.push(idx); });
     if (owned > placedIndices.length) {
-      var rec = root.WorldGame.RECIPES.filter(function (r) { return r.id === id; })[0];
       var newPos = rec ? rec.defPos : { x: 1200, y: 800 };
-      st.placed.push({ id: id, x: newPos.x, y: newPos.y, flip: false });
+      st.placed.push({ id: id, x: newPos.x, y: newPos.y, flip: false, lvl: 1 });
       root.WorldGame.writeState(st);
       S.movingIdx = st.placed.length - 1;
       renderPlacedFurniture(scene);
@@ -1332,7 +1338,7 @@
     if (target && scene && scene.cameras && scene.cameras.main) {
       scene.cameras.main.pan(target.x, target.y, 350, 'Power2');
     }
-    $('w-goal').innerHTML = '✋ Tap on the yard or veranda to drop it!<small>Use [↔ Flip] or [📥 Put in Bag] below</small>';
+    $('w-goal').innerHTML = '✋ Tap or drag anywhere on the ' + (S.inHouse ? 'room floor' : 'garden') + ' to move it!<small>Use [↔ Flip] or [📥 Put in Bag] below</small>';
   }
 
   function flipDecor() {
@@ -1640,52 +1646,109 @@
       say(line);
     }
   }
+  function clampFurnCoord(x, y) {
+    if (S.inHouse) {
+      return {
+        x: Math.round(Math.max(610, Math.min(1790, x))),
+        y: Math.round(Math.max(585, Math.min(1080, y)))
+      };
+    }
+    return {
+      x: Math.round(Math.max(220, Math.min(W - 220, x))),
+      y: Math.round(Math.max(380, Math.min(H - 140, y)))
+    };
+  }
+  function onPointerMove(ptr) {
+    var sc = scene; if (!sc || !S.dragFurn || S.modal) return;
+    if (!ptr.isDown) { onPointerUp(ptr); return; }
+    var x = ptr.worldX, y = ptr.worldY;
+    var dist = Math.hypot(x - S.dragFurn.startX, y - S.dragFurn.startY);
+    if (!S.dragFurn.moved && dist > 10) {
+      S.dragFurn.moved = true;
+      S.movingIdx = S.dragFurn.ps.idx;
+      stopWalking();
+      hidePanel();
+      sound('playTap');
+    }
+    if (S.dragFurn.moved) {
+      var pos = clampFurnCoord(x, y);
+      var ps = S.dragFurn.ps;
+      ps.x = pos.x; ps.y = pos.y;
+      if (ps.img) { ps.img.setPosition(pos.x, pos.y); ps.img.setDepth(ps.flat ? -4 : pos.y); }
+      if (ps.shadow) ps.shadow.setPosition(pos.x, pos.y);
+      if (ps.glow) ps.glow.setPosition(pos.x, pos.y - (ps.h || 110) * 0.52);
+      $('w-goal').innerHTML = '✋ Dragging <b>' + esc(ps.name) + '</b><small>Release to drop it right here!</small>';
+    }
+  }
+  function onPointerUp(ptr) {
+    var sc = scene; if (!S.dragFurn) return;
+    var df = S.dragFurn;
+    S.dragFurn = null;
+    if (df.moved && root.WorldGame) {
+      var st = root.WorldGame.readState();
+      if (st.placed && st.placed[df.ps.idx]) {
+        st.placed[df.ps.idx].x = df.ps.x;
+        st.placed[df.ps.idx].y = df.ps.y;
+        root.WorldGame.writeState(st);
+        sound('playCorrect');
+        if (sc && sc.dust) sc.dust.explode(12, df.ps.x, df.ps.y);
+        if (sc) showWorldFloat(sc, df.ps.x, df.ps.y - 60, '✓ Moved ' + df.ps.name + '!', '#34d399');
+        if (sc) renderPlacedFurniture(sc);
+        if (S.moveMode) renderDecorTray(st.placed[df.ps.idx].id);
+        else setGoal();
+      }
+      return;
+    }
+    if (!S.moveMode && sc && df.ps) {
+      hidePanel();
+      spawnTapRipple(sc, df.ps.x, df.ps.y + 10, true);
+      walkTo(df.ps.x, df.ps.y + 20, function () { interactFurniture(sc, df.ps); });
+    }
+  }
   function onTap(ptr) {
     var sc = scene; if (!sc || !sc.player || S.modal) return;
     var x = ptr.worldX, y = ptr.worldY;
-    if (S.moveMode && S.zone === 0 && root.WorldGame) {
-      var picked = -1;
-      (sc.placedSprites || []).forEach(function (ps) {
-        if (Math.abs(x - ps.x) < 70 && y <= ps.y + 16 && y >= ps.y - ps.h - 20) picked = ps.idx;
-      });
-      if (picked >= 0) {
-        S.movingIdx = picked;
-        sound('playTap');
-        var st = root.WorldGame.readState();
-        var item = st.placed && st.placed[picked];
-        renderDecorTray(item ? item.id : null);
-        $('w-goal').innerHTML = '✋ Moving ' + (item ? item.id : 'item') + '<small>Tap anywhere on the yard or veranda to place it!</small>';
-        return;
-      }
-      if (S.movingIdx >= 0) {
-        var st = root.WorldGame.readState();
-        if (st.placed && st.placed[S.movingIdx]) {
-          st.placed[S.movingIdx].x = Math.round(Math.max(220, Math.min(W - 220, x)));
-          st.placed[S.movingIdx].y = Math.round(Math.max(380, Math.min(H - 140, y)));
-          root.WorldGame.writeState(st);
-          sound('playCorrect');
-          sc.dust.explode(10, x, y);
-          renderPlacedFurniture(sc);
-          renderDecorTray(st.placed[S.movingIdx].id);
-        }
-        $('w-goal').innerHTML = '✓ Item placed!<small>Tap another item to move, or tap Done</small>';
-        return;
-      }
-    }
-    if (!S.moveMode && S.zone === 0 && sc.placedSprites && sc.placedSprites.length) {
+    if (S.zone === 0 && sc.placedSprites && sc.placedSprites.length) {
       var fHit = null, fBest = 1e9;
       sc.placedSprites.forEach(function (ps) {
-        if (Math.abs(x - ps.x) < 75 && y <= ps.y + 24 && y >= ps.y - ps.h - 24) {
+        if (Math.abs(x - ps.x) < 78 && y <= ps.y + 26 && y >= ps.y - ps.h - 26) {
           var fd = Math.abs(x - ps.x) + Math.abs(y - ps.y);
           if (fd < fBest) { fBest = fd; fHit = ps; }
         }
       });
       if (fHit) {
+        if (!S.visitingFriend && root.WorldGame) {
+          S.dragFurn = { ps: fHit, startX: x, startY: y, moved: false };
+          if (S.moveMode) {
+            S.movingIdx = fHit.idx;
+            sound('playTap');
+            var st0 = root.WorldGame.readState();
+            var it0 = st0.placed && st0.placed[fHit.idx];
+            renderDecorTray(it0 ? it0.id : null);
+            $('w-goal').innerHTML = '✋ Moving ' + esc(fHit.name) + '<small>Drag it or tap anywhere on the ' + (S.inHouse ? 'room floor' : 'garden') + ' to place it!</small>';
+          }
+          return;
+        }
         hidePanel();
         spawnTapRipple(sc, fHit.x, fHit.y + 10, true);
         walkTo(fHit.x, fHit.y + 20, function () { interactFurniture(sc, fHit); });
         return;
       }
+    }
+    if (S.moveMode && S.zone === 0 && root.WorldGame && S.movingIdx >= 0) {
+      var st = root.WorldGame.readState();
+      if (st.placed && st.placed[S.movingIdx]) {
+        var cPos = clampFurnCoord(x, y);
+        st.placed[S.movingIdx].x = cPos.x;
+        st.placed[S.movingIdx].y = cPos.y;
+        root.WorldGame.writeState(st);
+        sound('playCorrect');
+        sc.dust.explode(10, cPos.x, cPos.y);
+        renderPlacedFurniture(sc);
+        renderDecorTray(st.placed[S.movingIdx].id);
+      }
+      $('w-goal').innerHTML = '✓ Item placed!<small>Tap or drag another item, or tap Done</small>';
+      return;
     }
     var list = interactables(sc), hit = null, best = 1e9;
     list.forEach(function (t) {
@@ -1735,7 +1798,7 @@
     var to = S.zone + dir;
     if (to < 0 || to > 4) return null;
     var x = dir > 0 ? W - 70 : 70, y = 760;
-    var sign = sc.add.text(x + (dir > 0 ? -40 : 40), y - 80, '', { fontFamily: 'Fredoka, sans-serif', fontSize: '26px', fontStyle: '700', color: '#fff', backgroundColor: '#0f172aee', padding: { x: 12, y: 6 }, align: 'center' }).setOrigin(dir > 0 ? 1 : 0, .5).setDepth(4400);
+    var sign = sc.add.text(x + (dir > 0 ? -40 : 40), y - 80, '', { fontFamily: 'Fredoka, sans-serif', fontSize: '26px', fontStyle: '700', color: '#fff', stroke: '#060911', strokeThickness: 5, shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,0.75)', blur: 4, stroke: true, fill: true }, align: 'center' }).setOrigin(dir > 0 ? 1 : 0, .5).setDepth(4400);
     var pic = sc.add.image(x, y, FLAT + 'o_gate_arrow').setOrigin(.5, .8).setDepth(4400); pic.setScale(130 / pic.height); pic.setFlipX(dir < 0);
     sc.tweens.add({ targets: pic, x: x + dir * 12, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     var g = { x: x, y: y, dir: dir, to: to, sign: sign, pic: pic, setLock: function () {
@@ -1841,6 +1904,8 @@
       sc.shiftKey = sc.keys ? sc.keys.shift : null;
       sc.wasd = sc.input.keyboard ? sc.input.keyboard.addKeys('W,A,S,D') : null;
       sc.input.on('pointerdown', onTap);
+      sc.input.on('pointermove', onPointerMove);
+      sc.input.on('pointerup', onPointerUp);
       sc.walkers = [];
 
       (async function () {
@@ -2331,7 +2396,11 @@
     onMissionComplete: onMissionComplete,
     interactFurniture: interactFurniture,
     walkToActiveGoal: walkToActiveGoal,
-    onSessionChanged: onSessionChanged
+    onSessionChanged: onSessionChanged,
+    getMonsterSheet: function (key) {
+      if (!scene || !scene.textures || !scene.textures.exists(key)) return null;
+      return scene.textures.get(key).getSourceImage();
+    }
   };
   var tries = 0;
   (function waitForPupil() {
