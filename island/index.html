@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <meta name="theme-color" content="#060911">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Practice Island • English Adventure Academy</title>
+  <title>Practice Island â€¢ English Adventure Academy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=w3">
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/adventure.css?v=w3">
   <link rel="stylesheet" href="css/wall.css?v=w3">
   <link rel="stylesheet" href="css/shop.css?v=7">
-  <link rel="stylesheet" href="css/world.css?v=29">
+  <link rel="stylesheet" href="css/world.css?v=30">
 </head>
 <body class="w-page">
   <!-- Practice Island 2D Adventure World (unified entry point). -->
@@ -28,7 +28,7 @@
       <button type="button" class="w-btn w-status-chip" id="w-status" aria-label="Monster Level & Coins" title="Tap to open Store!">
         <span class="w-lvl-badge" id="w-lvl-txt">Lv.3</span>
         <span class="w-xp-track"><span class="w-xp-fill" id="w-xp-fill" style="width:35%"></span></span>
-        <span class="w-coin-val" id="w-coin-txt">🪙 130</span>
+        <span class="w-coin-val" id="w-coin-txt">ðŸª™ 130</span>
       </button>
       <button type="button" class="w-btn w-energy-chip" id="w-energy" aria-label="Monster Energy" title="Tap to charge +30 Energy!"><img src="art/flat/i_energy.webp" alt=""><b id="w-energy-val">35</b></button>
     </div>
@@ -40,7 +40,7 @@
       <button type="button" class="w-btn w-tool w-icon-btn" id="w-dress" aria-label="Dress up"><img src="art/flat/u_dress.webp" alt=""><span>Look</span></button>
       <button type="button" class="w-btn w-tool w-icon-btn" id="w-shop" aria-label="Store"><img src="art/flat/u_store.webp" alt=""><span>Store</span></button>
       <button type="button" class="w-btn w-tool w-icon-btn" id="w-wall" aria-label="Class Plaza"><img src="art/flat/u_friends.webp" alt=""><span>Plaza</span></button>
-      <button type="button" class="w-btn w-tool w-mute-btn" id="w-mute" aria-label="Sound On/Off" title="Sound On/Off">🔊</button>
+      <button type="button" class="w-btn w-tool w-mute-btn" id="w-mute" aria-label="Sound On/Off" title="Sound On/Off">ðŸ”Š</button>
     </div>
     <div id="w-fps"></div>
   </div>
@@ -52,18 +52,18 @@
   <div id="w-talk">
     <img id="w-face" src="" alt="">
     <div id="w-line"></div>
-    <button type="button" class="w-btn" id="w-next">OK ▶</button>
+    <button type="button" class="w-btn" id="w-next">OK â–¶</button>
   </div>
 
   <!-- Live In-World Decorator Dock (My Home Island) -->
   <div id="w-decor-dock" aria-label="Live Home Decorator">
     <div class="w-dd-head">
-      <div class="w-dd-title">🪑 Live Yard &amp; Veranda Decorator <small id="w-dd-hint">Tap an item below or on the ground, then tap where to place it!</small></div>
+      <div class="w-dd-title">ðŸª‘ Live Yard &amp; Veranda Decorator <small id="w-dd-hint">Tap an item below or on the ground, then tap where to place it!</small></div>
       <div class="w-dd-actions">
-        <button type="button" class="w-btn w-dd-btn cyan" id="w-dd-flip" onclick="WORLD.flipDecor()">↔ Flip</button>
-        <button type="button" class="w-btn w-dd-btn amber" id="w-dd-craft" onclick="WorldGame.openWorkshop('craft')">🔨 Craft More</button>
-        <button type="button" class="w-btn w-dd-btn coral" id="w-dd-store" onclick="WORLD.putAwayDecor()">📥 Put in Bag</button>
-        <button type="button" class="w-btn w-dd-btn emerald" id="w-dd-done" onclick="WORLD.closeDecorDock()">✓ Done</button>
+        <button type="button" class="w-btn w-dd-btn cyan" id="w-dd-flip" onclick="WORLD.flipDecor()">â†” Flip</button>
+        <button type="button" class="w-btn w-dd-btn amber" id="w-dd-craft" onclick="WorldGame.openWorkshop('craft')">ðŸ”¨ Craft More</button>
+        <button type="button" class="w-btn w-dd-btn coral" id="w-dd-store" onclick="WORLD.putAwayDecor()">ðŸ“¥ Put in Bag</button>
+        <button type="button" class="w-btn w-dd-btn emerald" id="w-dd-done" onclick="WORLD.closeDecorDock()">âœ“ Done</button>
       </div>
     </div>
     <div class="w-dd-tray" id="w-dd-tray"></div>
@@ -72,7 +72,7 @@
   <div id="w-bag"></div>
   <div id="w-vignette"></div>
   <div id="w-fade"></div>
-  <div id="w-load">🏝️ Going to the island...<small id="w-load-small"></small></div>
+  <div id="w-load">ðŸï¸ Going to the island...<small id="w-load-small"></small></div>
   <div id="isl-modal-root"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -105,7 +105,8 @@
   <script src="js/app.js?v=w4"></script>
   <script src="js/shop.js?v=7"></script>
   <script src="lib/phaser.min.js"></script>
-  <script src="js/world-game.js?v=29"></script>
-  <script src="js/world.js?v=29"></script>
+  <script src="js/world-game.js?v=30"></script>
+  <script src="js/world.js?v=30"></script>
 </body>
 </html>
+

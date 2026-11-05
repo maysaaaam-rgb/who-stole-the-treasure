@@ -1,4 +1,4 @@
-/* Practice Island — the walking world. Clean 3-Point Game HUD, Live Decorator Dock, and Turn-Based Battle Arena. */
+﻿/* Practice Island â€” the walking world. Clean 3-Point Game HUD, Live Decorator Dock, and Turn-Based Battle Arena. */
 :root { --w-spring: cubic-bezier(.175,.885,.32,1.275); }
 html, body.w-page { height: 100%; overflow: hidden; background: #060911; user-select: none; -webkit-user-select: none; touch-action: none; }
 /* Hide stray #isl-dream bar injected by shop.js so it never overlaps the 2D world */
@@ -216,7 +216,7 @@ body.w-on #w-vignette { display: block; }
 .wg-mat-badge img { width: 24px; height: 24px; object-fit: contain; }
 
 /* ========================================================
-   PRACTICE ISLAND — PRO VERSION VISUALS & CYBER-GLASSMORPHISM
+   PRACTICE ISLAND â€” PRO VERSION VISUALS & CYBER-GLASSMORPHISM
    ======================================================== */
 
 /* Pro HUD Container */
@@ -1378,6 +1378,7 @@ body.w-on #w-vignette { display: block; }
   padding: 6px 18px !important;
 }
 
-#wg-sports-canvas { max-height: 47vh !important; width: auto !important; margin: 0 auto; }
+.wg-sports-modal { max-width: min(1160px, 97vw) !important; width: min(1160px, 97vw) !important; } #wg-sports-canvas { max-height: 55vh !important; width: auto !important; max-width: 100% !important; margin: 0 auto; }
 .wg-sp-joy { width: 56px !important; height: 56px !important; }
 .wg-sports-controls { flex-wrap: nowrap !important; gap: 8px !important; margin-top: 6px !important; }
+
