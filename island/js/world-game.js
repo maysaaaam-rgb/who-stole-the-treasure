@@ -1429,7 +1429,7 @@
     updateStatusHud();
   }
 
-  /* ---------- 7. 2.5D Island Sports Arena (⚽ Football & 🏐 Beach Volleyball — Animated 3D Monsters, 3D Ball Arc & Full Player Control) ---------- */
+  /* ---------- 7. 2.5D Island Sports Arena (⚽ Pro Arcade Football & 🏐 Beach Volleyball) ---------- */
   var sportsRaf = 0;
   var sportsState = null;
   var sportsSport = 'soccer'; // 'soccer' | 'volleyball'
@@ -1452,8 +1452,8 @@
       sportsRaf = 0;
     }
     if (sportsState && sportsState.keyHandler) {
-      root.removeEventListener('keydown', sportsState.keyHandler);
-      root.removeEventListener('keyup', sportsState.keyUpHandler);
+      root.removeEventListener('keydown', sportsState.keyHandler, true);
+      root.removeEventListener('keyup', sportsState.keyUpHandler, true);
     }
     sportsState = null;
   }
@@ -1474,134 +1474,124 @@
       '<div class="isl-modal-backdrop" id="wg-sports-backdrop">' +
         '<div class="isl-card-modal wg-sports-modal">' +
           '<div class="isl-mission-top wg-sports-top">' +
-            '<div style="display:flex;align-items:center;gap:8px;font-size:1.15rem;font-weight:800;color:#fde047">' +
-              '<img src="' + FLAT + 'o_ball.webp" style="width:30px;height:30px;object-fit:contain" alt=""> 🏆 2.5D Island Sports Stadium' +
+            '<div style="display:flex;align-items:center;gap:8px;font-size:1.12rem;font-weight:800;color:#fde047">' +
+              '<img src="' + FLAT + 'o_ball.webp" style="width:28px;height:28px;object-fit:contain" alt=""> 🏆 Island Pro Sports Stadium' +
             '</div>' +
             '<div class="wg-sports-selectors">' +
-              '<button type="button" class="isl-btn ' + (sportsSport === 'soccer' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.openSportsArena(\'soccer\', \'' + sportsMode + '\', \'' + sportsControl + '\')">⚽ Football</button>' +
-              '<button type="button" class="isl-btn ' + (sportsSport === 'volleyball' ? 'amber' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.openSportsArena(\'volleyball\', \'' + sportsMode + '\', \'' + sportsControl + '\')">🏐 Volleyball</button>' +
-              '<button type="button" class="isl-btn ' + (sportsMode === '1v1' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.openSportsArena(\'' + sportsSport + '\', \'1v1\', \'' + sportsControl + '\')">1 vs 1</button>' +
-              '<button type="button" class="isl-btn ' + (sportsMode === '2v2' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.openSportsArena(\'' + sportsSport + '\', \'2v2\', \'' + sportsControl + '\')">2 vs 2 Team</button>' +
-              '<button type="button" class="isl-btn ' + (sportsControl === '2p' ? 'amber' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.openSportsArena(\'' + sportsSport + '\', \'' + sportsMode + '\', \'' + (sportsControl === '2p' ? '1p' : '2p') + '\')">' + (sportsControl === '2p' ? '👥 2P Local (WASD vs Arrows)' : '🤖 1P vs AI') + '</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsSport === 'soccer' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.openSportsArena(\'soccer\', \'' + sportsMode + '\', \'' + sportsControl + '\')">⚽ Football</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsSport === 'volleyball' ? 'amber' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.openSportsArena(\'volleyball\', \'' + sportsMode + '\', \'' + sportsControl + '\')">🏐 Volleyball</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsMode === '1v1' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'1v1\', \'' + sportsControl + '\')">1 vs 1</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsMode === '2v2' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'2v2\', \'' + sportsControl + '\')">2 vs 2 Team</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsControl === '2p' ? 'amber' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'' + sportsMode + '\', \'' + (sportsControl === '2p' ? '1p' : '2p') + '\')">' + (sportsControl === '2p' ? '👥 2P Same Screen' : '🤖 1P vs AI') + '</button>' +
             '</div>' +
             '<div style="margin-left:auto;display:flex;gap:6px;align-items:center">' +
               '<span class="wg-st-badge">🏆 Wins: <b id="wg-sp-wins">' + trophies + '</b></span>' +
               '<span class="wg-st-badge" style="color:#fde047">⚡ <b id="wg-sp-energy">' + eNow + '</b></span>' +
-              '<button type="button" class="isl-btn" style="min-height:36px;min-width:38px;padding:4px 9px" onclick="WorldGame.closeModal()">✕</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn" style="min-height:36px;min-width:38px;padding:4px 9px" onclick="WorldGame.closeModal()">✕</button>' +
             '</div>' +
           '</div>' +
           '<div class="wg-sports-scoreboard">' +
-            '<div class="wg-sp-team blue"><span>🟦 ' + (sportsMode === '2v2' ? 'YOU + SKY' : 'YOU (P1)') + '</span><b id="wg-sp-score-a">0</b></div>' +
+            '<div class="wg-sp-team blue"><span>🟦 ' + (sportsMode === '2v2' ? 'YOU + SKY' : 'YOU (BLUE)') + '</span><b id="wg-sp-score-a">0</b></div>' +
             '<div class="wg-sp-vs">' +
-              '<span id="wg-sp-status">' + (sportsSport === 'soccer' ? '⚽ First to 3 Goals Wins +25 🪙!' : '🏐 First to 5 Points Wins +25 🪙!') + '</span>' +
-              '<small>⚡ Earned by your English effort! You control your monster — tap field, use D-Pad, or WASD/Arrows!</small>' +
+              '<span id="wg-sp-status">' + (sportsSport === 'soccer' ? '⚽ Dribble &amp; Shoot! First to 3 Goals Wins +25 🪙!' : '🏐 Bump, Set &amp; Spike! First to 5 Points Wins +25 🪙!') + '</span>' +
+              '<small>' + (sportsSport === 'soccer' ? '🕹️ Move: WASD / Arrows / Joystick · ⚽ Space or Click Goal = Shoot / Slide Tackle · Shift/E = Pass!' : '🕹️ Move under landing ring: WASD / Arrows / Joystick · 🔥 Space = Jump &amp; Spike!') + '</small>' +
             '</div>' +
-            '<div class="wg-sp-team red"><b id="wg-sp-score-b">0</b><span>' + (sportsControl === '2p' ? 'PLAYER 2 (ARROWS)' : (sportsMode === '2v2' ? 'LEO &amp; SUNNY' : 'LEO (RIVAL)')) + ' 🟥</span></div>' +
+            '<div class="wg-sp-team red"><b id="wg-sp-score-b">0</b><span>' + (sportsControl === '2p' ? 'P2 (ARROWS+ENTER)' : (sportsMode === '2v2' ? 'LEO &amp; SUNNY' : 'LEO (RED)')) + ' 🟥</span></div>' +
           '</div>' +
           '<div class="wg-sports-stage-wrap">' +
-            '<canvas id="wg-sports-canvas" width="820" height="430"></canvas>' +
+            '<canvas id="wg-sports-canvas" width="820" height="420"></canvas>' +
             '<div class="wg-sports-controls">' +
-              '<div class="wg-sp-dpad" aria-label="Directional Pad">' +
-                '<button type="button" class="isl-btn cyan wg-dpad-btn" onpointerdown="WorldGame.setSportDir(-1,0,true)" onpointerup="WorldGame.setSportDir(-1,0,false)" onpointerleave="WorldGame.setSportDir(-1,0,false)">◀</button>' +
-                '<button type="button" class="isl-btn cyan wg-dpad-btn" onpointerdown="WorldGame.setSportDir(0,-1,true)" onpointerup="WorldGame.setSportDir(0,-1,false)" onpointerleave="WorldGame.setSportDir(0,-1,false)">▲</button>' +
-                '<button type="button" class="isl-btn cyan wg-dpad-btn" onpointerdown="WorldGame.setSportDir(0,1,true)" onpointerup="WorldGame.setSportDir(0,1,false)" onpointerleave="WorldGame.setSportDir(0,1,false)">▼</button>' +
-                '<button type="button" class="isl-btn cyan wg-dpad-btn" onpointerdown="WorldGame.setSportDir(1,0,true)" onpointerup="WorldGame.setSportDir(1,0,false)" onpointerleave="WorldGame.setSportDir(1,0,false)">▶</button>' +
+              '<div class="wg-sp-joy-wrap">' +
+                '<div class="wg-sp-joy" id="wg-sp-joy" aria-label="360 Analog Joystick">' +
+                  '<div class="wg-sp-joy-ring"></div>' +
+                  '<div class="wg-sp-joy-knob" id="wg-sp-knob">🕹️</div>' +
+                '</div>' +
+                '<div class="wg-sp-joy-hint"><b>360° Stick</b><small>or WASD / Arrows</small></div>' +
               '</div>' +
               '<div class="wg-sp-action-group">' +
-                '<button type="button" class="isl-btn cyan" style="min-height:40px;padding:5px 12px;font-size:0.84rem" onclick="WorldGame.sportsAction(\'lob\')">' + (sportsSport === 'soccer' ? '🚀 Lob / Pass' : '🙌 High Set') + '</button>' +
-                '<button type="button" class="isl-btn emerald" style="min-height:40px;padding:5px 12px;font-size:0.84rem" onclick="WorldGame.sportsAction(\'dash\')">💨 Turbo Dash</button>' +
-                '<button type="button" class="isl-btn amber" style="min-height:40px;padding:5px 14px;font-size:0.88rem" onclick="WorldGame.sportsAction(\'power\')">' + (sportsSport === 'soccer' ? '🔥 SUPER SHOT! (Space)' : '🔥 JUMP SPIKE! (Space)') + '</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn cyan wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'pass\')">' + (sportsSport === 'soccer' ? '👟 PASS / CHIP (E)' : '🙌 HIGH SET (E)') + '</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn emerald wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'dash\')">💨 SPRINT / TACKLE (Shift)</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn amber wg-act-btn shoot" onpointerdown="this.blur();WorldGame.sportsAction(\'power\')">' + (sportsSport === 'soccer' ? '🔥 SHOOT / STEAL! (Space)' : '🔥 JUMP SPIKE! (Space)') + '</button>' +
               '</div>' +
               '<div style="display:flex;gap:5px;margin-left:auto">' +
-                '<button type="button" class="isl-btn amber" style="min-height:38px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.openEnergyCharge(\'⚡ Answer 3 English questions to boost +30 Energy!\', function(){ WorldGame.openSportsArena(\'' + sportsSport + '\', \'' + sportsMode + '\', \'' + sportsControl + '\'); })">⚡ +Energy</button>' +
-                '<button type="button" class="isl-btn" style="min-height:38px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.restartSportsMatch()">🔄 Kick Off</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn" style="min-height:38px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.restartSportsMatch()">🔄 Reset</button>' +
               '</div>' +
             '</div>' +
           '</div>' +
         '</div>' +
       '</div>';
 
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     startSportsMatch(sportsSport, sportsMode, sportsControl);
   }
 
   function restartSportsMatch() {
-    if (getEnergy() < 10) {
-      openEnergyCharge('⚡ Charge +30 Energy with 3 quick English questions to play another match!', function () {
-        openSportsArena(sportsSport, sportsMode, sportsControl);
-      });
-      return;
-    }
-    useEnergy(10);
     openSportsArena(sportsSport, sportsMode, sportsControl);
   }
 
   function setSportDir(dx, dy, isDown) {
     if (!sportsState) return;
-    if (isDown) sportsState.waitingKickoff = false;
-    if (dx < 0) sportsState.pad.left = isDown;
-    if (dx > 0) sportsState.pad.right = isDown;
-    if (dy < 0) sportsState.pad.up = isDown;
-    if (dy > 0) sportsState.pad.down = isDown;
+    if (isDown) {
+      sportsState.joyX = dx;
+      sportsState.joyY = dy;
+    } else {
+      sportsState.joyX = 0;
+      sportsState.joyY = 0;
+    }
   }
 
   function sportsAction(kind) {
     if (!sportsState) return;
     sportsState.waitingKickoff = false;
-    var me = sportsState.players[0];
-    if (!me) return;
-    if (kind === 'dash') {
-      me.dashTimer = 18;
-      sound('playHop');
-      return;
-    }
     sportsState.actionKind = kind || 'power';
     sportsState.actionPressed = true;
   }
 
-  function drawMonsterSpriteFrame(ctx, sheetKey, fallbackPic, x, y, z, vx, vy, flipX, animTick, cheering, teamColor, isMe) {
+  function drawMonsterSpriteFrame(ctx, sheetKey, fallbackPic, x, y, z, vx, vy, flipX, animTick, cheering, stunned, teamColor, isMe) {
     var sheet = (W() && W().getMonsterSheet) ? W().getMonsterSheet(sheetKey) : null;
     var speed = Math.hypot(vx, vy);
-    var moving = speed > 0.25;
-    var frameIdx = 0;
+    var moving = speed > 0.22;
+    var frameIdx = 10;
     if (cheering) {
       frameIdx = 20;
     } else if (moving) {
-      var step4 = Math.floor(animTick * 0.25) % 4;
-      if (Math.abs(vx) > Math.abs(vy) * 1.35) {
+      var step4 = Math.floor(animTick * 0.28) % 4;
+      if (Math.abs(vx) > Math.abs(vy) * 1.15) {
         frameIdx = 11 + step4; // Side profile run cycle
       } else if (vy < -0.5 && Math.abs(vx) < 0.6) {
         frameIdx = 16 + step4; // Up/back run cycle
-      } else if (Math.abs(vx) > 0.35 && Math.abs(vy) > 0.35) {
+      } else if (Math.abs(vx) > 0.3 && Math.abs(vy) > 0.3) {
         frameIdx = 6 + step4;  // 3/4 diagonal run cycle
       } else {
         frameIdx = 1 + step4;  // Front run cycle
       }
     } else {
-      frameIdx = 10; // Side profile athletic ready stance
+      frameIdx = 10; // Athletic side stance
     }
 
-    var bounceY = moving ? Math.abs(Math.sin(animTick * 0.42)) * 6 : Math.sin(animTick * 0.08) * 2;
+    var bounceY = moving ? Math.abs(Math.sin(animTick * 0.45)) * 6.5 : Math.sin(animTick * 0.08) * 2;
     var drawY = y - z - bounceY;
-    var squashX = moving ? (1 + Math.sin(animTick * 0.42) * 0.06) : 1;
-    var squashY = moving ? (1 - Math.sin(animTick * 0.42) * 0.06) : 1;
+    var squashX = moving ? (1 + Math.sin(animTick * 0.45) * 0.06) : 1;
+    var squashY = moving ? (1 - Math.sin(animTick * 0.45) * 0.06) : 1;
 
     ctx.save();
-    // 1. Ground shadow on the turf/sand (shrinks as player jumps higher in z)
+    // 1. Ground shadow on turf/sand
     var shScale = Math.max(0.45, 1 - z / 160);
     ctx.fillStyle = 'rgba(0, 0, 0, 0.36)';
     ctx.beginPath();
     ctx.ellipse(x, y + 18, 24 * shScale, 8 * shScale, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // 2. Glowing 3D Stadium Pedestal Ring under player
+    // 2. Glowing 3D Stadium Ring under feet
     ctx.strokeStyle = isMe ? '#fde047' : teamColor;
-    ctx.lineWidth = isMe ? 3.2 : 2.2;
+    ctx.lineWidth = isMe ? 3.5 : 2.2;
     ctx.beginPath();
     ctx.ellipse(x, y + 18, 26 * shScale, 9 * shScale, 0, 0, Math.PI * 2);
     ctx.stroke();
 
-    // 3. Draw 25-frame 3D-shaded Monster Spritesheet frame (or fallback raster)
+    // 3. Draw 7-col 3D Monster Spritesheet frame
     ctx.translate(x, drawY);
+    if (stunned) ctx.globalAlpha = 0.65;
     if (flipX) ctx.scale(-1, 1);
     ctx.scale(squashX, squashY);
 
@@ -1618,6 +1608,19 @@
       }
     }
     ctx.restore();
+  }
+
+  function predictLanding(b, groundZ) {
+    if (b.z <= groundZ + 2 && Math.abs(b.vz) < 0.8) return { x: b.x, y: b.y };
+    // Solve z + vz*t - 0.5*g*t^2 = 0 (g = 0.24)
+    var g = 0.24;
+    var disc = b.vz * b.vz + 2 * g * Math.max(0, b.z - groundZ);
+    var t = (b.vz + Math.sqrt(Math.max(0, disc))) / g;
+    t = Math.max(0, Math.min(95, t));
+    return {
+      x: Math.max(55, Math.min(765, b.x + b.vx * t)),
+      y: Math.max(100, Math.min(395, b.y + b.vy * t))
+    };
   }
 
   function startSportsMatch(sp, md, ctrlMode) {
@@ -1640,17 +1643,58 @@
       netRippleA: 0,
       netRippleB: 0,
       tick: 0,
-      bannerText: sp === 'soccer' ? '⚡ TAP FIELD OR PRESS ARROW / WASD TO KICK OFF!' : '⚡ TAP COURT OR PRESS SPACE / ARROW TO SERVE!',
-      bannerTimer: 120,
-      targetPos: null,
-      pad: { left: false, right: false, up: false, down: false },
+      bannerText: sp === 'soccer' ? '⚽ MOVE (WASD / ARROWS / DRAG) TO DRIBBLE · SPACE = SHOOT!' : '🏐 MOVE TO THE RING & PRESS SPACE TO SPIKE!',
+      bannerTimer: 95,
+      joyX: 0,
+      joyY: 0,
+      mouseAim: null,
       actionPressed: false,
       actionKind: 'power',
+      holder: null, // Player currently dribbling the soccer ball!
+      stealCooldown: 0,
       particles: [],
       ballTrail: [],
       players: [],
-      ball: { x: Wc / 2, y: Hc / 2 + 15, z: 0, vx: 0, vy: 0, vz: 0, r: 15, spin: 0 }
+      ball: { x: Wc / 2, y: Hc / 2 + 18, z: 0, vx: 0, vy: 0, vz: 0, r: 15, spin: 0 }
     };
+
+    // Wire 360° Virtual Analog Thumbstick (#wg-sp-joy)
+    var joyEl = document.getElementById('wg-sp-joy');
+    var knobEl = document.getElementById('wg-sp-knob');
+    if (joyEl && knobEl) {
+      var joyActiveId = null;
+      var updateJoy = function (e) {
+        st.waitingKickoff = false;
+        var r = joyEl.getBoundingClientRect();
+        var cx = r.left + r.width / 2;
+        var cy = r.top + r.height / 2;
+        var dx = e.clientX - cx;
+        var dy = e.clientY - cy;
+        var maxR = 28;
+        var dist = Math.hypot(dx, dy) || 1;
+        var k = Math.min(1, dist / maxR);
+        st.joyX = (dx / dist) * k;
+        st.joyY = (dy / dist) * k;
+        knobEl.style.transform = 'translate(' + Math.round(st.joyX * maxR) + 'px,' + Math.round(st.joyY * maxR) + 'px)';
+      };
+      var endJoy = function () {
+        joyActiveId = null;
+        st.joyX = 0;
+        st.joyY = 0;
+        knobEl.style.transform = 'translate(0px,0px)';
+      };
+      joyEl.addEventListener('pointerdown', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        joyActiveId = e.pointerId;
+        if (joyEl.setPointerCapture) { try { joyEl.setPointerCapture(e.pointerId); } catch (err) {} }
+        updateJoy(e);
+      });
+      joyEl.addEventListener('pointermove', function (e) {
+        if (joyActiveId === e.pointerId) updateJoy(e);
+      });
+      joyEl.addEventListener('pointerup', endJoy);
+      joyEl.addEventListener('pointercancel', endJoy);
+    }
 
     var spawnBurst = function (x, y, color, count) {
       for (var i = 0; i < (count || 14); i++) {
@@ -1670,122 +1714,161 @@
 
     var resetPositions = function (servingSide) {
       st.waitingKickoff = true;
-      st.targetPos = null;
+      st.holder = null;
+      st.stealCooldown = 30;
       st.ballTrail = [];
+      st.mouseAim = null;
+      st.pointerSteer = null;
       if (sp === 'soccer') {
         var midY = Hc / 2 + 18;
         st.players = [
-          { id: 'me',   sheet: 'me', pic: 'c_bolt_happy',  team: 'A', role: 'fwd', name: 'YOU',   color: '#38bdf8', x: 255, y: midY, z: 0, vx: 0, vy: 0, vz: 0, r: 24, flipX: false, dashTimer: 0, cheerTimer: 0 },
-          { id: 'opp1', sheet: 'c1', pic: 'c_ember_happy', team: 'B', role: 'fwd', name: st.ctrl === '2p' ? 'P2' : 'Leo', color: '#f43f5e', x: Wc - 255, y: midY, z: 0, vx: 0, vy: 0, vz: 0, r: 24, flipX: true, dashTimer: 0, cheerTimer: 0 }
+          { id: 'me',   sheet: 'me', pic: 'c_bolt_happy',  team: 'A', role: 'fwd', name: 'YOU',   color: '#38bdf8', x: 355, y: midY, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 24, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0 },
+          { id: 'opp1', sheet: 'c1', pic: 'c_ember_happy', team: 'B', role: 'fwd', name: st.ctrl === '2p' ? 'P2' : 'Leo', color: '#f43f5e', x: Wc - 265, y: midY, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 24, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0 }
         ];
         if (md === '2v2') {
           st.players.push(
-            { id: 'ally', sheet: 'c0', pic: 'c_lulu_happy',  team: 'A', role: 'gk', name: 'Sky',   color: '#38bdf8', x: 112, y: midY, z: 0, vx: 0, vy: 0, vz: 0, r: 22, flipX: false, dashTimer: 0, cheerTimer: 0 },
-            { id: 'opp2', sheet: 'c2', pic: 'c_nutty_happy', team: 'B', role: 'gk', name: 'Sunny', color: '#f43f5e', x: Wc - 112, y: midY, z: 0, vx: 0, vy: 0, vz: 0, r: 22, flipX: true, dashTimer: 0, cheerTimer: 0 }
+            { id: 'ally', sheet: 'c0', pic: 'c_lulu_happy',  team: 'A', role: 'gk', name: 'Sky',   color: '#38bdf8', x: 96, y: midY, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 22, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0 },
+            { id: 'opp2', sheet: 'c2', pic: 'c_nutty_happy', team: 'B', role: 'gk', name: 'Sunny', color: '#f43f5e', x: Wc - 96, y: midY, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 22, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0 }
           );
         }
-        st.ball.x = Wc / 2;
-        st.ball.y = midY;
+        st.holder = st.players[0];
+        st.ball.x = st.players[0].x + 24;
+        st.ball.y = midY + 4;
         st.ball.z = 0;
         st.ball.vx = 0;
         st.ball.vy = 0;
         st.ball.vz = 0;
       } else {
-        // 2.5D Beach Volleyball Court (players move in x and depth y: 265..385, jump in z)
+        // 2.5D Beach Volleyball Court
         var baseY = 330;
         st.players = [
-          { id: 'me',   sheet: 'me', pic: 'c_bolt_happy',  team: 'A', name: 'YOU',   color: '#38bdf8', x: 270, y: baseY, z: 0, vx: 0, vy: 0, vz: 0, r: 25, flipX: false, dashTimer: 0, cheerTimer: 0 },
-          { id: 'opp1', sheet: 'c1', pic: 'c_ember_happy', team: 'B', name: st.ctrl === '2p' ? 'P2' : 'Leo', color: '#f43f5e', x: Wc - 270, y: baseY, z: 0, vx: 0, vy: 0, vz: 0, r: 25, flipX: true, dashTimer: 0, cheerTimer: 0 }
+          { id: 'me',   sheet: 'me', pic: 'c_bolt_happy',  team: 'A', name: 'YOU',   color: '#38bdf8', x: 265, y: baseY, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 26, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0 },
+          { id: 'opp1', sheet: 'c1', pic: 'c_ember_happy', team: 'B', name: st.ctrl === '2p' ? 'P2' : 'Leo', color: '#f43f5e', x: Wc - 265, y: baseY, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 26, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0 }
         ];
         if (md === '2v2') {
           st.players.push(
-            { id: 'ally', sheet: 'c0', pic: 'c_lulu_happy',  team: 'A', name: 'Sky',   color: '#38bdf8', x: 145, y: baseY + 28, z: 0, vx: 0, vy: 0, vz: 0, r: 23, flipX: false, dashTimer: 0, cheerTimer: 0 },
-            { id: 'opp2', sheet: 'c2', pic: 'c_nutty_happy', team: 'B', name: 'Sunny', color: '#f43f5e', x: Wc - 145, y: baseY + 28, z: 0, vx: 0, vy: 0, vz: 0, r: 23, flipX: true, dashTimer: 0, cheerTimer: 0 }
+            { id: 'ally', sheet: 'c0', pic: 'c_lulu_happy',  team: 'A', name: 'Sky',   color: '#38bdf8', x: 140, y: baseY + 25, z: 0, vx: 0, vy: 0, vz: 0, dirX: 1, dirY: 0, r: 24, flipX: false, dashTimer: 0, stunTimer: 0, cheerTimer: 0 },
+            { id: 'opp2', sheet: 'c2', pic: 'c_nutty_happy', team: 'B', name: 'Sunny', color: '#f43f5e', x: Wc - 140, y: baseY + 25, z: 0, vx: 0, vy: 0, vz: 0, dirX: -1, dirY: 0, r: 24, flipX: true, dashTimer: 0, stunTimer: 0, cheerTimer: 0 }
           );
         }
-        st.ball.x = servingSide === 'B' ? (Wc - 270) : 270;
+        st.ball.x = servingSide === 'B' ? (Wc - 240) : 240;
         st.ball.y = baseY;
-        st.ball.z = 48;
-        st.ball.vx = 0;
-        st.ball.vy = 0;
-        st.ball.vz = 0;
-        st.servingSide = servingSide || 'A';
+        st.ball.z = 65;
+        st.ball.vx = servingSide === 'B' ? -4.2 : 4.2;
+        st.ball.vy = (Math.random() - 0.5) * 1.2;
+        st.ball.vz = 5.5;
       }
     };
 
     resetPositions('A');
 
+    // Capture keyboard in capture phase & prevent Space/Arrows from clicking buttons or scrolling!
     st.keyHandler = function (e) {
-      keys[e.code] = true;
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'Space'].indexOf(e.code) >= 0) {
-        if (st.waitingKickoff) {
-          st.waitingKickoff = false;
-          if (sp === 'volleyball' && st.ball.vx === 0 && st.ball.vz === 0) {
-            st.ball.vx = st.servingSide === 'B' ? -4.8 : 4.8;
-            st.ball.vy = (Math.random() - 0.5) * 1.2;
-            st.ball.vz = 7.8;
-            sound('playHop');
-          }
+      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyE', 'ShiftLeft', 'ShiftRight', 'Enter'].indexOf(e.code) >= 0) {
+        e.preventDefault();
+        e.stopPropagation();
+        st.waitingKickoff = false;
+        if (document.activeElement && document.activeElement !== document.body && document.activeElement.blur) {
+          document.activeElement.blur();
         }
       }
+      keys[e.code] = true;
       if (e.code === 'Space') {
         st.actionKind = 'power';
         st.actionPressed = true;
-      } else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.code === 'KeyE') {
-        if (st.players[0]) { st.players[0].dashTimer = 16; sound('playHop'); }
+      } else if (e.code === 'KeyE') {
+        st.actionKind = 'pass';
+        st.actionPressed = true;
+      } else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        st.actionKind = 'dash';
+        st.actionPressed = true;
       }
     };
     st.keyUpHandler = function (e) {
       keys[e.code] = false;
     };
-    root.addEventListener('keydown', st.keyHandler);
-    root.addEventListener('keyup', st.keyUpHandler);
+    root.addEventListener('keydown', st.keyHandler, true);
+    root.addEventListener('keyup', st.keyUpHandler, true);
 
-    var setPointerTarget = function (e, isTap) {
+    // Canvas Mouse / Touch interaction:
+    // - Moving mouse aims your shot direction
+    // - Clicking/tapping shoots toward where you clicked (if you have the ball) OR sprints/tackles toward that point!
+    var getCanvasPt = function (e) {
       var rect = canvas.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      var px = ((e.clientX - rect.left) / rect.width) * Wc;
-      var py = ((e.clientY - rect.top) / rect.height) * Hc;
-      if (st.waitingKickoff) {
-        st.waitingKickoff = false;
-        if (sp === 'volleyball' && st.ball.vx === 0 && st.ball.vz === 0) {
-          st.ball.vx = st.servingSide === 'B' ? -4.8 : 4.8;
-          st.ball.vy = (Math.random() - 0.5) * 1.2;
-          st.ball.vz = 7.8;
-          sound('playHop');
-        }
-      }
-      st.targetPos = { x: px, y: py };
-      if (isTap) {
-        var me = st.players[0];
-        if (me && Math.hypot(px - st.ball.x, py - st.ball.y) < 75) {
+      if (!rect.width || !rect.height) return null;
+      return {
+        x: ((e.clientX - rect.left) / rect.width) * Wc,
+        y: ((e.clientY - rect.top) / rect.height) * Hc
+      };
+    };
+    canvas.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      var pt = getCanvasPt(e);
+      if (!pt) return;
+      st.waitingKickoff = false;
+      st.mouseAim = pt;
+      var me = st.players[0];
+      if (sp === 'soccer' && me) {
+        // Clicking inside the rival's goal area (x > Wc - 145) while holding the ball shoots directly at that spot!
+        // Clicking/dragging anywhere else on the pitch steers & dribbles your monster smoothly toward your cursor/finger!
+        if ((st.holder === me || Math.hypot(st.ball.x - me.x, st.ball.y - me.y) < 58) && pt.x > Wc - 145) {
+          var adx = pt.x - me.x, ady = pt.y - me.y, alen = Math.hypot(adx, ady) || 1;
+          me.dirX = adx / alen;
+          me.dirY = ady / alen;
           st.actionKind = 'power';
           st.actionPressed = true;
+        } else {
+          st.pointerSteer = pt;
         }
+      } else {
+        st.pointerSteer = pt;
+        st.actionKind = 'power';
+        st.actionPressed = true;
       }
+    });
+    canvas.addEventListener('pointermove', function (e) {
+      var pt = getCanvasPt(e);
+      if (!pt) return;
+      st.mouseAim = pt;
+      if (e.buttons) st.pointerSteer = pt;
+    });
+    canvas.addEventListener('pointerup', function () {
+      st.pointerSteer = null;
+    });
+
+    var kickSoccerBall = function (kicker, vx, vy, vz, burstColor) {
+      st.holder = null;
+      st.stealCooldown = 16;
+      st.ball.x = kicker.x + (vx / (Math.hypot(vx, vy) || 1)) * 26;
+      st.ball.y = kicker.y + (vy / (Math.hypot(vx, vy) || 1)) * 18;
+      st.ball.vx = vx;
+      st.ball.vy = vy;
+      st.ball.vz = vz || 2.5;
+      spawnBurst(st.ball.x, st.ball.y, burstColor || '#fde047', 14);
+      sound('playCorrect');
     };
-    canvas.addEventListener('pointerdown', function (e) { setPointerTarget(e, true); });
-    canvas.addEventListener('pointermove', function (e) { if (e.buttons) setPointerTarget(e, false); });
 
     var onScore = function (team) {
       if (st.finished) return;
+      st.holder = null;
       if (team === 'A') {
         st.scoreA++;
-        st.netRippleB = 26;
+        st.netRippleB = 28;
         sound('playFanfare');
         st.bannerText = (sp === 'soccer' ? '⚽ GOAL FOR YOUR TEAM! 🌟' : '🏐 ACE POINT FOR YOUR TEAM! 🌟');
         st.players.forEach(function (p) { if (p.team === 'A') p.cheerTimer = 55; });
-        spawnBurst(Wc - 60, Hc / 2, '#fde047', 28);
+        spawnBurst(Wc - 60, Hc / 2, '#fde047', 30);
       } else {
         st.scoreB++;
-        st.netRippleA = 26;
+        st.netRippleA = 28;
         sound('playPop');
-        st.bannerText = (sp === 'soccer' ? '⚽ RIVAL GOAL! TAP TO KICK OFF!' : '🏐 RIVAL POINT! TAP TO SERVE!');
+        st.bannerText = (sp === 'soccer' ? '⚽ RIVAL GOAL! YOUR BALL NOW!' : '🏐 RIVAL POINT! GET READY!');
         st.players.forEach(function (p) { if (p.team === 'B') p.cheerTimer = 55; });
         spawnBurst(60, Hc / 2, '#f43f5e', 22);
       }
-      st.bannerTimer = 75;
-      st.goalCooldown = 50;
+      st.bannerTimer = 70;
+      st.goalCooldown = 45;
       var elA = document.getElementById('wg-sp-score-a');
       var elB = document.getElementById('wg-sp-score-b');
       if (elA) elA.textContent = String(st.scoreA);
@@ -1806,8 +1889,8 @@
           if (wEl) wEl.textContent = String(wSt.sportsWins);
         } else {
           sound('playSoftFail');
-          say('Close match! Tap Kick Off to play again!');
-          st.bannerText = '👏 CLOSE MATCH! TAP KICK OFF TO REMATCH!';
+          say('Close match! Tap Reset to play again!');
+          st.bannerText = '👏 CLOSE MATCH! TAP RESET TO PLAY AGAIN!';
         }
         var stEl = document.getElementById('wg-sp-status');
         if (stEl) stEl.textContent = st.bannerText;
@@ -1822,190 +1905,281 @@
       var me = st.players[0];
       var b = st.ball;
 
-      // Read Player 1 input (WASD + On-screen D-Pad + Arrows if 1P mode)
-      var useArrowsForP1 = (st.ctrl !== '2p');
-      var dx = ((keys.KeyD || st.pad.right || (useArrowsForP1 && keys.ArrowRight)) ? 1 : 0) -
-               ((keys.KeyA || st.pad.left  || (useArrowsForP1 && keys.ArrowLeft))  ? 1 : 0);
-      var dy = ((keys.KeyS || st.pad.down  || (useArrowsForP1 && keys.ArrowDown))  ? 1 : 0) -
-               ((keys.KeyW || st.pad.up    || (useArrowsForP1 && keys.ArrowUp))    ? 1 : 0);
+      // Read Player 1 movement (WASD + Arrows in 1P mode + 360° Joystick + Pointer drag)
+      var useArrowsP1 = (st.ctrl !== '2p');
+      var kx = ((keys.KeyD || (useArrowsP1 && keys.ArrowRight)) ? 1 : 0) -
+               ((keys.KeyA || (useArrowsP1 && keys.ArrowLeft))  ? 1 : 0);
+      var ky = ((keys.KeyS || (useArrowsP1 && keys.ArrowDown))  ? 1 : 0) -
+               ((keys.KeyW || (useArrowsP1 && keys.ArrowUp))    ? 1 : 0);
 
-      if (dx || dy) {
-        st.targetPos = null;
-        if (st.waitingKickoff) {
-          st.waitingKickoff = false;
-          if (sp === 'volleyball' && b.vx === 0 && b.vz === 0) {
-            b.vx = st.servingSide === 'B' ? -4.8 : 4.8;
-            b.vy = (Math.random() - 0.5) * 1.2;
-            b.vz = 7.8;
-          }
-        }
-      } else if (st.targetPos && me) {
-        var tdx = st.targetPos.x - me.x;
-        var tdy = st.targetPos.y - me.y;
-        var tdist = Math.hypot(tdx, tdy);
-        if (tdist > 10) {
-          dx = tdx / tdist;
-          dy = tdy / tdist;
-        } else {
-          st.targetPos = null;
-        }
+      var dx = kx || st.joyX;
+      var dy = ky || st.joyY;
+
+      if (!dx && !dy && st.pointerSteer && me) {
+        var psx = st.pointerSteer.x - me.x, psy = st.pointerSteer.y - me.y, pslen = Math.hypot(psx, psy);
+        if (pslen > 12) { dx = psx / pslen; dy = psy / pslen; }
       }
 
       if (!st.finished && !st.waitingKickoff) {
         if (st.goalCooldown > 0) st.goalCooldown--;
+        if (st.stealCooldown > 0) st.stealCooldown--;
         if (st.netRippleA > 0) st.netRippleA *= 0.88;
         if (st.netRippleB > 0) st.netRippleB *= 0.88;
 
-        var dashBoost = (me.dashTimer && me.dashTimer > 0) ? 1.55 : 1.0;
-        if (me.dashTimer > 0) me.dashTimer--;
-
         if (sp === 'soccer') {
-          var len1 = Math.hypot(dx, dy) || 1;
-          if (dx || dy) { dx /= len1; dy /= len1; }
-          me.vx = dx * 5.2 * dashBoost;
-          me.vy = dy * 5.2 * dashBoost;
-          if (Math.abs(me.vx) > 0.2) me.flipX = me.vx < 0;
+          // ==================================================================
+          // PRO ARCADE SOCCER ENGINE (Dribbling Possession, Aim Cone, Tackle & Pass)
+          // ==================================================================
+          if (st.actionPressed && st.actionKind === 'dash' && me) {
+            me.dashTimer = 16;
+            sound('playHop');
+            st.actionPressed = false;
+          }
+
+          var dashBoost = (me.dashTimer && me.dashTimer > 0) ? 1.55 : 1.0;
+          if (me.dashTimer > 0) me.dashTimer--;
+
+          var mag = Math.hypot(dx, dy);
+          if (mag > 0.05) {
+            var nx = dx / Math.max(1, mag), ny = dy / Math.max(1, mag);
+            me.vx = nx * 5.2 * dashBoost;
+            me.vy = ny * 5.2 * dashBoost;
+            me.dirX = dx / mag;
+            me.dirY = dy / mag;
+            if (Math.abs(me.vx) > 0.15) me.flipX = me.vx < 0;
+          } else {
+            me.vx *= 0.65;
+            me.vy *= 0.65;
+          }
 
           // Dust particles when sprinting
-          if (Math.hypot(me.vx, me.vy) > 3.5 && st.tick % 4 === 0) {
+          if (Math.hypot(me.vx, me.vy) > 3.8 && st.tick % 4 === 0) {
             st.particles.push({ x: me.x, y: me.y + 16, vx: -me.vx * 0.2, vy: -0.4, r: 4, life: 12, maxLife: 12, color: 'rgba(255,255,255,0.45)' });
           }
 
-          // Teammate & Opponents
+          // Handle Player 1 Shoot / Pass / Slide Tackle Action!
+          if (st.actionPressed && me) {
+            st.actionPressed = false;
+            if (st.holder === me || Math.hypot(b.x - me.x, b.y - me.y) < 58) {
+              // WE HAVE THE BALL -> SHOOT OR PASS!
+              var aimX = me.dirX, aimY = me.dirY;
+              // Bias aim slightly toward rival right-side goal if aiming forward, or toward mouseAim
+              if (st.mouseAim && st.mouseAim.x > me.x + 20) {
+                var mdx = st.mouseAim.x - me.x, mdy = st.mouseAim.y - me.y, mlen = Math.hypot(mdx, mdy) || 1;
+                aimX = mdx / mlen; aimY = mdy / mlen;
+              } else if (aimX >= -0.2) {
+                var gx = (Wc - 38) - me.x, gy = (Hc / 2 + 18 + dy * 65) - me.y, glen = Math.hypot(gx, gy) || 1;
+                aimX = gx / glen; aimY = gy / glen;
+              }
+              if (st.actionKind === 'pass' && st.players[2] && st.players[2].team === 'A') {
+                // Pass to teammate or chip forward
+                kickSoccerBall(me, aimX * 9.5, aimY * 9.5, 6.8, '#38bdf8');
+                st.bannerText = '🚀 CHIP / LOB PASS!';
+                st.bannerTimer = 35;
+              } else {
+                // Blazing Power Shot!
+                kickSoccerBall(me, aimX * 13.8, aimY * 13.8, 3.8, '#fde047');
+                st.bannerText = '🔥 SUPER POWER SHOT!';
+                st.bannerTimer = 35;
+              }
+            } else {
+              // WE DON'T HAVE THE BALL -> SLIDE TACKLE LUNGE TOWARD BALL!
+              var bdx0 = b.x - me.x, bdy0 = b.y - me.y, blen0 = Math.hypot(bdx0, bdy0) || 1;
+              me.dirX = bdx0 / blen0;
+              me.dirY = bdy0 / blen0;
+              me.vx = me.dirX * 8.5;
+              me.vy = me.dirY * 8.5;
+              me.dashTimer = 14;
+              sound('playHop');
+              if (blen0 < 82 && st.holder && st.holder.team === 'B') {
+                st.holder.stunTimer = 55; // Stun Leo for ~1 sec so he can't steal back!
+                st.holder = me;
+                st.stealCooldown = 28;
+                spawnBurst(b.x, b.y, '#34d399', 16);
+                st.bannerText = '⚡ CLEAN TACKLE! YOUR BALL!';
+                st.bannerTimer = 40;
+                sound('playCorrect');
+              }
+            }
+          }
+
+          // Update AI Teammate & Opponents
           st.players.slice(1).forEach(function (p) {
-            if (p.id === 'opp1' && st.ctrl === '2p') {
-              // Human Player 2 on Arrow Keys!
-              var p2x = (keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0);
-              var p2y = (keys.ArrowDown ? 1 : 0) - (keys.ArrowUp ? 1 : 0);
-              var l2 = Math.hypot(p2x, p2y) || 1;
-              p.vx = (p2x / l2) * 5.2;
-              p.vy = (p2y / l2) * 5.2;
-              if (Math.abs(p.vx) > 0.2) p.flipX = p.vx < 0;
+            if (p.stunTimer > 0) {
+              p.stunTimer--;
+              p.vx *= 0.7;
+              p.vy *= 0.7;
               return;
             }
-            var tx = b.x, ty = b.y;
-            if (p.role === 'gk') {
-              tx = p.team === 'A' ? 104 : (Wc - 104);
-              ty = Math.max(150, Math.min(Hc - 120, b.y));
-            } else if (p.team === 'B') {
-              // Fair AI rival: approaches ball to challenge
-              tx = b.x + 14;
-              ty = b.y;
+            if (p.id === 'opp1' && st.ctrl === '2p') {
+              var p2x = (keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0);
+              var p2y = (keys.ArrowDown ? 1 : 0) - (keys.ArrowUp ? 1 : 0);
+              var l2 = Math.hypot(p2x, p2y);
+              if (l2 > 0.05) {
+                p.vx = (p2x / l2) * 5.0;
+                p.vy = (p2y / l2) * 5.0;
+                p.dirX = p2x / l2;
+                p.dirY = p2y / l2;
+                p.flipX = p.vx < 0;
+              } else { p.vx *= 0.65; p.vy *= 0.65; }
+              if (keys.Enter && st.holder === p) {
+                var g2x = 42 - p.x, g2y = (Hc / 2 + 18) - p.y, g2l = Math.hypot(g2x, g2y) || 1;
+                kickSoccerBall(p, (g2x / g2l) * 13.0, (g2y / g2l) * 13.0, 3.6, '#f43f5e');
+              }
+              return;
             }
-            var adx = tx - p.x, ady = ty - p.y, alen = Math.hypot(adx, ady) || 1;
-            var spd = p.role === 'gk' ? 2.7 : 2.95;
-            p.vx = (adx / alen) * Math.min(spd, alen);
-            p.vy = (ady / alen) * Math.min(spd, alen);
-            if (Math.abs(p.vx) > 0.2) p.flipX = p.vx < 0;
+
+            if (p.role === 'gk') {
+              // Goalkeeper stays in the box and tracks ball Y
+              var gkX = p.team === 'A' ? 92 : (Wc - 92);
+              var gkY = Math.max(155, Math.min(315, b.y));
+              p.vx = (gkX - p.x) * 0.14;
+              p.vy = (gkY - p.y) * 0.14;
+              p.flipX = (p.team === 'B');
+              // If goalkeeper has the ball, immediately pass it to forward!
+              if (st.holder === p) {
+                if (p.team === 'A') {
+                  var toMeX = me.x - p.x, toMeY = me.y - p.y, toMeL = Math.hypot(toMeX, toMeY) || 1;
+                  kickSoccerBall(p, (toMeX / toMeL) * 9.2, (toMeY / toMeL) * 9.2, 2.2, '#38bdf8');
+                  st.bannerText = '📣 SKY PASSES TO YOU!';
+                  st.bannerTimer = 40;
+                } else {
+                  kickSoccerBall(p, -8.5, (Math.random() - 0.5) * 4, 3.0, '#f43f5e');
+                }
+              }
+            } else if (p.team === 'B') {
+              // Rival Forward (Leo):
+              if (st.holder === p) {
+                // Dribble toward left goal at moderate speed so player can tackle him!
+                var rgx = 70 - p.x, rgy = (Hc / 2 + 18) - p.y, rlen = Math.hypot(rgx, rgy) || 1;
+                p.vx = (rgx / rlen) * 2.85;
+                p.vy = (rgy / rlen) * 2.85;
+                p.dirX = rgx / rlen;
+                p.dirY = rgy / rlen;
+                p.flipX = true;
+                // Only shoot when inside shooting range (x < 275) after dribbling!
+                if (p.x < 275 && st.tick % 24 === 0) {
+                  kickSoccerBall(p, (rgx / rlen) * 10.2, (rgy / rlen) * 10.2 + (Math.random() - 0.5) * 2.5, 3.0, '#f43f5e');
+                }
+              } else {
+                // Chase ball at fair speed (3.1 vs player's 5.2)
+                var cdx = b.x - p.x, cdy = b.y - p.y, clen = Math.hypot(cdx, cdy) || 1;
+                p.vx = (cdx / clen) * Math.min(3.1, clen);
+                p.vy = (cdy / clen) * Math.min(3.1, clen);
+                if (Math.abs(p.vx) > 0.2) p.flipX = p.vx < 0;
+              }
+            }
           });
 
-          // Move soccer players & 3D ball collision
+          // Move all soccer players & check ball pickup / possession
           st.players.forEach(function (p) {
-            p.x = Math.max(58, Math.min(Wc - 58, p.x + p.vx));
-            p.y = Math.max(88, Math.min(Hc - 38, p.y + p.vy));
+            p.x = Math.max(56, Math.min(Wc - 56, p.x + p.vx));
+            p.y = Math.max(88, Math.min(Hc - 34, p.y + p.vy));
             if (p.cheerTimer > 0) p.cheerTimer--;
 
-            var bdx = b.x - p.x, bdy = b.y - p.y, dist = Math.hypot(bdx, bdy);
-            if (dist < p.r + b.r && b.z < 38 && dist > 0.01) {
-              var nx = bdx / dist, ny = bdy / dist;
-              b.x = p.x + nx * (p.r + b.r + 3);
-              b.y = p.y + ny * (p.r + b.r + 3);
+            if (p.stunTimer > 0) return;
 
-              if (p.id === 'me') {
-                if (st.actionPressed) {
-                  // Aim toward right goal with blazing 3D arc!
-                  var gx = Wc - 42 - p.x, gy = (Hc / 2 + 18) - p.y + (dy * 55), glen = Math.hypot(gx, gy) || 1;
-                  var pwr = st.actionKind === 'lob' ? 8.5 : 12.2;
-                  b.vx = (gx / glen) * pwr;
-                  b.vy = (gy / glen) * pwr;
-                  b.vz = st.actionKind === 'lob' ? 7.8 : 4.2;
-                  spawnBurst(b.x, b.y, '#38bdf8', 12);
-                  sound('playCorrect');
-                } else {
-                  // Controlled dribble / push forward
-                  b.vx = nx * 6.8 + p.vx * 0.55;
-                  b.vy = ny * 6.8 + p.vy * 0.55;
-                  b.vz = Math.max(b.vz, 1.8);
+            var distToBall = Math.hypot(b.x - p.x, b.y - p.y);
+            if (distToBall < p.r + b.r + 4 && b.z < 34) {
+              if (!st.holder) {
+                // Free ball pickup!
+                st.holder = p;
+                b.vx = 0; b.vy = 0; b.vz = 0; b.z = 0;
+                sound('playPop');
+              } else if (st.holder !== p && st.holder.team !== p.team && st.stealCooldown <= 0) {
+                // Steal / tackle check!
+                // Player 1 steals easily when dashing or touching; AI only steals if Player 1 isn't dashing
+                if (p.id === 'me' || (st.holder.dashTimer <= 0 && Math.random() < 0.18)) {
+                  st.holder.stunTimer = (p.id === 'me') ? 48 : 22;
+                  st.holder = p;
+                  st.stealCooldown = 30;
+                  spawnBurst(b.x, b.y, p.team === 'A' ? '#38bdf8' : '#f43f5e', 10);
                   sound('playHop');
                 }
-              } else if (p.id === 'ally') {
-                // Sky passes straight to YOU!
-                var pdx = (me.x + 40) - p.x, pdy = me.y - p.y, plen = Math.hypot(pdx, pdy) || 1;
-                b.vx = (pdx / plen) * 8.2;
-                b.vy = (pdy / plen) * 8.2;
-                b.vz = 3.6;
-                st.bannerText = '📣 SKY PASSES TO YOU! SHOOT!';
-                st.bannerTimer = 40;
-                sound('playHop');
-              } else {
-                // Rival kick toward left goal
-                var rgx = 42 - p.x, rgy = (Hc / 2 + 18) - p.y + (Math.random() - 0.5) * 70, rlen = Math.hypot(rgx, rgy) || 1;
-                b.vx = (rgx / rlen) * 7.2;
-                b.vy = (rgy / rlen) * 7.2;
-                b.vz = 2.6;
-                sound('playHop');
               }
             }
           });
 
-          // If Player pressed Super Shot / Lob within 68px of ball even without direct overlap
-          if (st.actionPressed && me && Math.hypot(b.x - me.x, b.y - me.y) < 68 && b.z < 46) {
-            var gx2 = Wc - 42 - me.x, gy2 = (Hc / 2 + 18) - me.y + (dy * 55), glen2 = Math.hypot(gx2, gy2) || 1;
-            var pwr2 = st.actionKind === 'lob' ? 8.8 : 12.6;
-            b.vx = (gx2 / glen2) * pwr2;
-            b.vy = (gy2 / glen2) * pwr2;
-            b.vz = st.actionKind === 'lob' ? 8.2 : 4.5;
-            spawnBurst(b.x, b.y, '#fde047', 16);
-            sound('playCorrect');
-          }
-          st.actionPressed = false;
-
-          // 3D Ball Physics on Soccer Pitch
-          b.x += b.vx;
-          b.y += b.vy;
-          b.z += b.vz;
-          if (b.z > 0 || b.vz !== 0) {
-            b.vz -= 0.36; // 3D Gravity
-            if (b.z <= 0) {
-              b.z = 0;
-              if (Math.abs(b.vz) > 1.2) {
-                b.vz = -b.vz * 0.58;
-                sound('playPop');
-              } else {
-                b.vz = 0;
+          // Update Ball Position: Either dribbled at holder's feet OR flying freely in 3D!
+          if (st.holder) {
+            var h = st.holder;
+            var dLen = Math.hypot(h.dirX, h.dirY) || 1;
+            var targetBX = h.x + (h.dirX / dLen) * 24;
+            var targetBY = h.y + (h.dirY / dLen) * 16 + 4;
+            b.x += (targetBX - b.x) * 0.55;
+            b.y += (targetBY - b.y) * 0.55;
+            b.z = Math.abs(Math.sin(st.tick * 0.35)) * 4;
+            b.vx = h.vx;
+            b.vy = h.vy;
+            b.spin += Math.hypot(h.vx, h.vy) * 0.08;
+            // Walk-in goal if dribbled across goal line!
+            var inGoalWalk = (b.y > 160 && b.y < 320);
+            if (inGoalWalk && b.x > Wc - 56 && st.goalCooldown <= 0) onScore('A');
+            if (inGoalWalk && b.x < 56 && st.goalCooldown <= 0) onScore('B');
+          } else {
+            b.x += b.vx;
+            b.y += b.vy;
+            b.z += b.vz;
+            if (b.z > 0 || b.vz !== 0) {
+              b.vz -= 0.34;
+              if (b.z <= 0) {
+                b.z = 0;
+                if (Math.abs(b.vz) > 1.2) { b.vz = -b.vz * 0.56; sound('playPop'); }
+                else b.vz = 0;
               }
             }
-          }
-          b.vx *= (b.z > 2 ? 0.992 : 0.978);
-          b.vy *= (b.z > 2 ? 0.992 : 0.978);
-          b.spin += Math.hypot(b.vx, b.vy) * 0.06;
+            b.vx *= (b.z > 2 ? 0.992 : 0.976);
+            b.vy *= (b.z > 2 ? 0.992 : 0.976);
+            b.spin += Math.hypot(b.vx, b.vy) * 0.06;
 
-          if (Math.hypot(b.vx, b.vy) > 6.5) {
-            st.ballTrail.push({ x: b.x, y: b.y, z: b.z, life: 10 });
-          }
+            if (Math.hypot(b.vx, b.vy) > 6.5) {
+              st.ballTrail.push({ x: b.x, y: b.y, z: b.z, life: 10 });
+            }
 
-          // Goal mouth y: 165..315
-          var inGoalY = (b.y > 165 && b.y < 315 && b.z < 55);
-          if (b.y < 84 + b.r) { b.y = 84 + b.r; b.vy *= -0.85; }
-          if (b.y > Hc - 30 - b.r) { b.y = Hc - 30 - b.r; b.vy *= -0.85; }
-          if (b.x < 52 + b.r) {
-            if (inGoalY && st.goalCooldown <= 0) onScore('B');
-            else { b.x = 52 + b.r; b.vx *= -0.85; }
-          }
-          if (b.x > Wc - 52 - b.r) {
-            if (inGoalY && st.goalCooldown <= 0) onScore('A');
-            else { b.x = Wc - 52 - b.r; b.vx *= -0.85; }
+            // Goal mouth y: 160..320
+            var inGoalY = (b.y > 160 && b.y < 320 && b.z < 58);
+            if (b.y < 84 + b.r) { b.y = 84 + b.r; b.vy *= -0.82; }
+            if (b.y > Hc - 26 - b.r) { b.y = Hc - 26 - b.r; b.vy *= -0.82; }
+            if (b.x < 52 + b.r) {
+              if (inGoalY && st.goalCooldown <= 0) onScore('B');
+              else { b.x = 52 + b.r; b.vx *= -0.82; }
+            }
+            if (b.x > Wc - 52 - b.r) {
+              if (inGoalY && st.goalCooldown <= 0) onScore('A');
+              else { b.x = Wc - 52 - b.r; b.vx *= -0.82; }
+            }
           }
         } else {
-          // 2.5D Beach Volleyball Physics (x: court width, y: depth 245..390, z: jump height)
-          var lenV = Math.hypot(dx, dy) || 1;
-          if (dx || dy) { dx /= lenV; dy /= lenV; }
-          me.vx = dx * 5.0 * dashBoost;
-          me.vy = dy * 3.8 * dashBoost;
-          if (Math.abs(me.vx) > 0.2) me.flipX = me.vx < 0;
+          // ==================================================================
+          // 2.5D BEACH VOLLEYBALL ENGINE (True Landing Ring + Magnet Assist + Spike)
+          // ==================================================================
+          var landing = predictLanding(b, 0);
+          st.landingSpot = landing;
+
+          if (st.actionPressed && st.actionKind === 'dash' && me) {
+            me.dashTimer = 16;
+            sound('playHop');
+            st.actionPressed = false;
+          }
+          var vDash = (me.dashTimer && me.dashTimer > 0) ? 1.5 : 1.0;
+          if (me.dashTimer > 0) me.dashTimer--;
+
+          var vMag = Math.hypot(dx, dy);
+          if (vMag > 0.05) {
+            me.vx = (dx / Math.max(1, vMag)) * 5.2 * vDash;
+            me.vy = (dy / Math.max(1, vMag)) * 4.0 * vDash;
+            if (Math.abs(me.vx) > 0.15) me.flipX = me.vx < 0;
+          } else if (b.x < Wc / 2 && b.vz < 0 && Math.hypot(landing.x - me.x, landing.y - me.y) < 75) {
+            // Gentle magnet-assist toward the landing circle when the ball is on your side!
+            me.vx = (landing.x - me.x) * 0.12;
+            me.vy = (landing.y - me.y) * 0.12;
+          } else {
+            me.vx *= 0.65;
+            me.vy *= 0.65;
+          }
 
           if (st.actionPressed && me.z <= 1) {
-            me.vz = 9.2; // High Jump for Spike/Block!
+            me.vz = 9.4; // High Jump for Spike!
             sound('playHop');
           }
 
@@ -2018,53 +2192,54 @@
               if (keys.Enter && p.z <= 1) p.vz = 9.0;
               return;
             }
-            var onMyHalf = (p.team === 'A' && b.x < Wc / 2) || (p.team === 'B' && b.x >= Wc / 2);
+            var onMyHalf = (p.team === 'A' && landing.x < Wc / 2) || (p.team === 'B' && landing.x >= Wc / 2);
             var homeX = p.team === 'A' ? 140 : (p.id === 'opp1' ? Wc - 260 : Wc - 135);
-            var homeY = p.id === 'ally' || p.id === 'opp2' ? 355 : 315;
-            var targetX = onMyHalf ? (p.team === 'A' ? Math.min(220, b.x) : b.x) : homeX;
-            var targetY = onMyHalf ? b.y : homeY;
-            p.vx = Math.max(-3.8, Math.min(3.8, (targetX - p.x) * 0.12));
-            p.vy = Math.max(-2.8, Math.min(2.8, (targetY - p.y) * 0.12));
-            if (onMyHalf && Math.hypot(b.x - p.x, b.y - p.y) < 48 && b.z < 55 && b.vz < 0 && p.z <= 1) {
-              p.vz = 8.4;
+            var homeY = (p.id === 'ally' || p.id === 'opp2') ? 355 : 315;
+            var tx = onMyHalf ? (p.team === 'A' ? Math.min(230, landing.x) : Math.max(Wc / 2 + 45, landing.x)) : homeX;
+            var ty = onMyHalf ? landing.y : homeY;
+            p.vx = Math.max(-3.6, Math.min(3.6, (tx - p.x) * 0.13));
+            p.vy = Math.max(-2.8, Math.min(2.8, (ty - p.y) * 0.13));
+            if (onMyHalf && Math.hypot(b.x - p.x, b.y - p.y) < 46 && b.z < 52 && b.vz < 0 && p.z <= 1) {
+              p.vz = 8.2;
             }
           });
 
           st.players.forEach(function (p) {
             p.x += p.vx;
-            p.y = Math.max(255, Math.min(390, p.y + p.vy));
+            p.y = Math.max(255, Math.min(392, p.y + p.vy));
             if (p.team === 'A') p.x = Math.max(55, Math.min(Wc / 2 - 34, p.x));
             else p.x = Math.max(Wc / 2 + 34, Math.min(Wc - 55, p.x));
 
             p.z += p.vz;
             if (p.z > 0 || p.vz !== 0) {
-              p.vz -= 0.46;
+              p.vz -= 0.45;
               if (p.z <= 0) { p.z = 0; p.vz = 0; }
             }
 
+            // Generous 3D hit radius so receiving & spiking feels awesome!
             var bdx = b.x - p.x, bdy = b.y - p.y, bdz = b.z - (p.z + 28);
-            var dist3d = Math.hypot(bdx, bdy, bdz * 0.7);
-            if (dist3d < p.r + b.r + 6 && b.vz <= 2) {
+            var dist3d = Math.hypot(bdx, bdy * 0.85, bdz * 0.65);
+            if (dist3d < p.r + b.r + 12 && b.vz <= 2.5) {
               b.z = Math.max(b.z, p.z + 36);
-              var isSpike = (p.id === 'me' && (p.z > 18 || st.actionPressed) && st.actionKind === 'power');
+              var isSpike = (p.id === 'me' && (p.z > 14 || st.actionPressed) && st.actionKind !== 'pass');
               if (p.id === 'ally') {
-                // Teammate sets the ball high to YOU!
+                // Sky sets the ball high to YOU!
                 b.vx = (me.x + 25 - b.x) * 0.045;
                 b.vy = (me.y - b.y) * 0.045;
-                b.vz = 8.8;
-                st.bannerText = '🙌 HIGH SET TO YOU! JUMP & SPIKE!';
+                b.vz = 8.6;
+                st.bannerText = '🙌 HIGH SET TO YOU! PRESS SPACE TO SPIKE!';
                 st.bannerTimer = 45;
               } else if (isSpike) {
-                b.vx = 7.4;
-                b.vy = (dx ? dy * 2.2 : (Math.random() - 0.5) * 2.4);
-                b.vz = 5.4;
+                b.vx = 7.6;
+                b.vy = dy * 2.5;
+                b.vz = 5.0;
                 spawnBurst(b.x, b.y - b.z, '#fde047', 18);
                 st.bannerText = '🔥 MONSTER POWER SPIKE!';
                 st.bannerTimer = 40;
               } else {
-                b.vx = (p.team === 'A' ? 5.0 : -5.0) + (bdx * 0.05);
-                b.vy = Math.max(-2.2, Math.min(2.2, bdy * 0.08));
-                b.vz = 8.4;
+                b.vx = (p.team === 'A' ? 5.2 : -5.0) + (bdx * 0.04);
+                b.vy = Math.max(-2.0, Math.min(2.0, bdy * 0.06));
+                b.vz = 8.2;
               }
               sound('playPop');
             }
@@ -2074,29 +2249,28 @@
           b.x += b.vx;
           b.y += b.vy;
           b.z += b.vz;
-          b.vz -= 0.22; // Volleyball float gravity
+          b.vz -= 0.24; // Volleyball float gravity
           b.spin += b.vx * 0.05;
 
-          if (b.x < 45 + b.r) { b.x = 45 + b.r; b.vx *= -0.85; }
-          if (b.x > Wc - 45 - b.r) { b.x = Wc - 45 - b.r; b.vx *= -0.85; }
+          if (b.x < 48 + b.r) { b.x = 48 + b.r; b.vx *= -0.85; }
+          if (b.x > Wc - 48 - b.r) { b.x = Wc - 48 - b.r; b.vx *= -0.85; }
           if (b.y < 250) { b.y = 250; b.vy *= -0.85; }
           if (b.y > 392) { b.y = 392; b.vy *= -0.85; }
 
-          // 3D Net collision at x = Wc/2 (net height = 56 in z)
-          if (Math.abs(b.x - Wc / 2) < b.r + 6 && b.z < 56) {
-            if (b.z > 42) {
-              b.z = 57;
-              b.vz = Math.abs(b.vz) * 0.75 + 2;
+          // Net collision at x = Wc/2
+          if (Math.abs(b.x - Wc / 2) < b.r + 6 && b.z < 54) {
+            if (b.z > 38) {
+              b.z = 55;
+              b.vz = Math.abs(b.vz) * 0.75 + 2.2;
             } else {
               b.vx *= -0.8;
               b.x = b.x < Wc / 2 ? (Wc / 2 - b.r - 7) : (Wc / 2 + b.r + 7);
             }
           }
 
-          // Ball hits the sand (z <= 0) -> Point!
           if (b.z <= 0 && st.goalCooldown <= 0) {
             b.z = 0;
-            spawnBurst(b.x, b.y, '#fde047', 16);
+            spawnBurst(b.x, b.y, '#fde047', 18);
             onScore(b.x < Wc / 2 ? 'B' : 'A');
           }
         }
@@ -2108,145 +2282,147 @@
       ctx.clearRect(0, 0, Wc, Hc);
 
       if (sp === 'soccer') {
-        // 1. 3D Stadium Crowd Stands & Night Sky Header (y: 0..76)
-        var standG = ctx.createLinearGradient(0, 0, 0, 78);
+        // 1. 3D Stadium Crowd Stands & Floodlights (y: 0..76)
+        var standG = ctx.createLinearGradient(0, 0, 0, 76);
         standG.addColorStop(0, '#090d16');
         standG.addColorStop(1, '#1e293b');
         ctx.fillStyle = standG;
-        ctx.fillRect(0, 0, Wc, 78);
+        ctx.fillRect(0, 0, Wc, 76);
 
-        // Stadium crowd rows & animated cheering fans
         ctx.fillStyle = '#334155';
-        ctx.fillRect(0, 56, Wc, 22);
+        ctx.fillRect(0, 54, Wc, 22);
         for (var cf = 0; cf < 26; cf++) {
           var fx = 24 + cf * 31;
-          var fy = 38 + (cf % 2) * 10 - Math.abs(Math.sin(st.tick * 0.08 + cf)) * (st.bannerTimer > 0 ? 7 : 2);
+          var fy = 36 + (cf % 2) * 10 - Math.abs(Math.sin(st.tick * 0.08 + cf)) * (st.bannerTimer > 0 ? 7 : 2);
           ctx.fillStyle = ['#38bdf8', '#fde047', '#f43f5e', '#34d399', '#a855f7'][cf % 5];
           ctx.beginPath();
           ctx.arc(fx, fy, 6.5, 0, Math.PI * 2);
           ctx.fill();
         }
 
-        // 2. 2.5D Perspective Turf Pitch (y: 78..Hc)
-        var bgGrass = ctx.createLinearGradient(0, 78, 0, Hc);
+        // 2. 2.5D Perspective Turf Pitch
+        var bgGrass = ctx.createLinearGradient(0, 76, 0, Hc);
         bgGrass.addColorStop(0, '#14532d');
         bgGrass.addColorStop(1, '#166534');
         ctx.fillStyle = bgGrass;
-        ctx.fillRect(0, 78, Wc, Hc - 78);
+        ctx.fillRect(0, 76, Wc, Hc - 76);
 
-        // Perspective mowed grass stripes
         for (var s = 0; s < 10; s++) {
           if (s % 2 === 0) {
             ctx.fillStyle = 'rgba(34, 197, 94, 0.16)';
-            var topX1 = 70 + s * ((Wc - 140) / 10);
-            var topX2 = 70 + (s + 1) * ((Wc - 140) / 10);
+            var topX1 = 68 + s * ((Wc - 136) / 10);
+            var topX2 = 68 + (s + 1) * ((Wc - 136) / 10);
             var botX1 = 28 + s * ((Wc - 56) / 10);
             var botX2 = 28 + (s + 1) * ((Wc - 56) / 10);
             ctx.beginPath();
-            ctx.moveTo(topX1, 84);
-            ctx.lineTo(topX2, 84);
-            ctx.lineTo(botX2, Hc - 22);
-            ctx.lineTo(botX1, Hc - 22);
-            ctx.closePath();
-            ctx.fill();
+            ctx.moveTo(topX1, 82); ctx.lineTo(topX2, 82);
+            ctx.lineTo(botX2, Hc - 20); ctx.lineTo(botX1, Hc - 20);
+            ctx.closePath(); ctx.fill();
           }
         }
 
-        // Perspective pitch boundary trapezoid
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.88)';
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.moveTo(68, 84);
-        ctx.lineTo(Wc - 68, 84);
-        ctx.lineTo(Wc - 34, Hc - 24);
-        ctx.lineTo(34, Hc - 24);
-        ctx.closePath();
-        ctx.stroke();
+        ctx.moveTo(66, 82); ctx.lineTo(Wc - 66, 82);
+        ctx.lineTo(Wc - 32, Hc - 20); ctx.lineTo(32, Hc - 20);
+        ctx.closePath(); ctx.stroke();
 
-        // Halfway line & perspective center ellipse
         ctx.beginPath();
-        ctx.moveTo(Wc / 2, 84);
-        ctx.lineTo(Wc / 2, Hc - 24);
+        ctx.moveTo(Wc / 2, 82); ctx.lineTo(Wc / 2, Hc - 20);
         ctx.stroke();
         ctx.beginPath();
-        ctx.ellipse(Wc / 2, Hc / 2 + 18, 62, 44, 0, 0, Math.PI * 2);
+        ctx.ellipse(Wc / 2, Hc / 2 + 18, 62, 42, 0, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Penalty boxes
-        ctx.strokeRect(48, 138, 86, 200);
-        ctx.strokeRect(Wc - 134, 138, 86, 200);
+        ctx.strokeRect(48, 136, 86, 196);
+        ctx.strokeRect(Wc - 134, 136, 86, 196);
 
-        // 3. 3D Goal Cages with Dynamic Net Ripple (y: 165..315)
+        // 3. 3D Goal Cages with Dynamic Net Ripple (y: 160..320)
         var rA = Math.sin(st.tick * 0.5) * st.netRippleA;
         var rB = Math.sin(st.tick * 0.5) * st.netRippleB;
 
-        // Left Goal (Your Team A Goal)
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.22)';
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.24)';
         ctx.beginPath();
-        ctx.moveTo(52, 165); ctx.lineTo(14 - rA * 0.4, 152); ctx.lineTo(14 - rA * 0.4, 302); ctx.lineTo(52, 315);
+        ctx.moveTo(52, 160); ctx.lineTo(14 - rA * 0.4, 148); ctx.lineTo(14 - rA * 0.4, 306); ctx.lineTo(52, 320);
         ctx.closePath(); ctx.fill();
         ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3.5; ctx.stroke();
 
-        // Right Goal (Rival Team B Goal)
-        ctx.fillStyle = 'rgba(244, 63, 94, 0.22)';
+        ctx.fillStyle = 'rgba(244, 63, 94, 0.24)';
         ctx.beginPath();
-        ctx.moveTo(Wc - 52, 165); ctx.lineTo(Wc - 14 + rB * 0.4, 152); ctx.lineTo(Wc - 14 + rB * 0.4, 302); ctx.lineTo(Wc - 52, 315);
+        ctx.moveTo(Wc - 52, 160); ctx.lineTo(Wc - 14 + rB * 0.4, 148); ctx.lineTo(Wc - 14 + rB * 0.4, 306); ctx.lineTo(Wc - 52, 320);
         ctx.closePath(); ctx.fill();
         ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 3.5; ctx.stroke();
+
+        // 4. Live Shot Aiming Arrow when YOU have the ball!
+        if (st.holder === me && me) {
+          ctx.save();
+          var aX = me.dirX, aY = me.dirY;
+          if (st.mouseAim && st.mouseAim.x > me.x + 20) {
+            var mdx2 = st.mouseAim.x - me.x, mdy2 = st.mouseAim.y - me.y, ml2 = Math.hypot(mdx2, mdy2) || 1;
+            aX = mdx2 / ml2; aY = mdy2 / ml2;
+          } else if (aX >= -0.2) {
+            var gx3 = (Wc - 38) - me.x, gy3 = (Hc / 2 + 18 + dy * 65) - me.y, gl3 = Math.hypot(gx3, gy3) || 1;
+            aX = gx3 / gl3; aY = gy3 / gl3;
+          }
+          ctx.strokeStyle = 'rgba(253, 224, 71, 0.85)';
+          ctx.lineWidth = 3.5;
+          ctx.setLineDash([7, 6]);
+          ctx.beginPath();
+          ctx.moveTo(b.x, b.y);
+          ctx.lineTo(b.x + aX * 125, b.y + aY * 125);
+          ctx.stroke();
+          ctx.fillStyle = '#fde047';
+          ctx.beginPath();
+          ctx.arc(b.x + aX * 125, b.y + aY * 125, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
       } else {
-        // 2.5D Sunny Tropical Beach Volleyball Court
-        var skyG = ctx.createLinearGradient(0, 0, 0, 195);
+        // 2.5D Sunny Beach Volleyball Court
+        var skyG = ctx.createLinearGradient(0, 0, 0, 190);
         skyG.addColorStop(0, '#0284c7');
         skyG.addColorStop(1, '#7dd3fc');
         ctx.fillStyle = skyG;
-        ctx.fillRect(0, 0, Wc, 195);
+        ctx.fillRect(0, 0, Wc, 190);
 
-        // Animated rolling ocean waves
         ctx.fillStyle = '#0ea5e9';
-        ctx.fillRect(0, 175, Wc, 45);
+        ctx.fillRect(0, 172, Wc, 44);
         ctx.strokeStyle = 'rgba(255,255,255,0.65)';
         ctx.lineWidth = 2.5;
         var waveOff = Math.sin(st.tick * 0.05) * 8;
         ctx.beginPath();
-        ctx.moveTo(0, 212 + waveOff * 0.3);
-        ctx.lineTo(Wc, 212 - waveOff * 0.3);
+        ctx.moveTo(0, 208 + waveOff * 0.3);
+        ctx.lineTo(Wc, 208 - waveOff * 0.3);
         ctx.stroke();
 
-        // Golden Beach Sand
-        var sandG = ctx.createLinearGradient(0, 218, 0, Hc);
+        var sandG = ctx.createLinearGradient(0, 214, 0, Hc);
         sandG.addColorStop(0, '#fde68a');
         sandG.addColorStop(1, '#f59e0b');
         ctx.fillStyle = sandG;
-        ctx.fillRect(0, 218, Wc, Hc - 218);
+        ctx.fillRect(0, 214, Wc, Hc - 214);
 
-        // 2.5D Perspective Sand Court Lines
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.moveTo(85, 245);
-        ctx.lineTo(Wc - 85, 245);
-        ctx.lineTo(Wc - 42, 398);
-        ctx.lineTo(42, 398);
-        ctx.closePath();
-        ctx.stroke();
+        ctx.moveTo(85, 242); ctx.lineTo(Wc - 85, 242);
+        ctx.lineTo(Wc - 42, 396); ctx.lineTo(42, 396);
+        ctx.closePath(); ctx.stroke();
 
-        // Pulsing Ball Landing Shadow Target on Sand
-        ctx.strokeStyle = b.x < Wc / 2 ? '#38bdf8' : '#fde047';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.ellipse(b.x, b.y, 18 + Math.sin(st.tick * 0.2) * 3, 7, 0, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-
-      // Target click ring for Player 1
-      if (st.targetPos) {
-        ctx.save();
-        ctx.strokeStyle = '#fde047';
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.ellipse(st.targetPos.x, st.targetPos.y, 18, 8, 0, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
+        // True Predicted Landing Target Ring on Sand!
+        if (st.landingSpot) {
+          ctx.save();
+          var isOurSide = st.landingSpot.x < Wc / 2;
+          ctx.strokeStyle = isOurSide ? '#38bdf8' : '#f43f5e';
+          ctx.fillStyle = isOurSide ? 'rgba(56, 189, 248, 0.25)' : 'rgba(244, 63, 94, 0.25)';
+          ctx.lineWidth = 3;
+          var pulseR = 22 + Math.sin(st.tick * 0.25) * 4;
+          ctx.beginPath();
+          ctx.ellipse(st.landingSpot.x, st.landingSpot.y, pulseR, 10, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+        }
       }
 
       // Draw 3D Ball Shadow on the ground at (b.x, b.y)
@@ -2258,7 +2434,7 @@
       ctx.fill();
       ctx.restore();
 
-      // Depth-sort Players & Net & Ball by y coordinate for true 2.5D overlap!
+      // Depth-sort Players by y coordinate for 2.5D overlap
       var sortedPlayers = st.players.slice().sort(function (a, b2) { return a.y - b2.y; });
       sortedPlayers.forEach(function (p) {
         drawMonsterSpriteFrame(
@@ -2270,6 +2446,7 @@
           !!p.flipX,
           st.tick,
           p.cheerTimer > 0,
+          p.stunTimer > 0,
           p.color,
           p.id === 'me'
         );
@@ -2279,7 +2456,7 @@
         ctx.font = '800 13px Fredoka, sans-serif';
         ctx.textAlign = 'center';
         var labelY = p.y - (p.z || 0) - 62;
-        var labelTxt = p.id === 'me' ? '▼ YOU' : p.name;
+        var labelTxt = p.stunTimer > 0 ? '💫 Stunned!' : (p.id === 'me' ? (st.holder === p ? '⚽ YOU (SHOOT!)' : '▼ YOU') : p.name);
         ctx.strokeStyle = '#060911';
         ctx.lineWidth = 4.5;
         ctx.strokeText(labelTxt, p.x, labelY);
@@ -2288,18 +2465,15 @@
         ctx.restore();
       });
 
-      // Draw 3D Volleyball Net in the middle of the court
+      // Draw 3D Volleyball Net
       if (sp === 'volleyball') {
         ctx.save();
-        // Net posts in perspective
         ctx.fillStyle = '#cbd5e1';
-        ctx.fillRect(Wc / 2 - 4, 192, 8, 208);
-        // Net mesh band
+        ctx.fillRect(Wc / 2 - 4, 188, 8, 210);
         ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
-        ctx.fillRect(Wc / 2 - 3, 200, 6, 155);
-        // Top white net tape
+        ctx.fillRect(Wc / 2 - 3, 196, 6, 155);
         ctx.fillStyle = '#f8fafc';
-        ctx.fillRect(Wc / 2 - 5, 195, 10, 12);
+        ctx.fillRect(Wc / 2 - 5, 191, 10, 12);
         ctx.restore();
       }
 
@@ -2316,7 +2490,7 @@
         ctx.restore();
       }
 
-      // Draw 3D Ball at (b.x, b.y - b.z) scaled by height z
+      // Draw 3D Ball at (b.x, b.y - b.z)
       ctx.save();
       var bScale = 1 + (b.z || 0) / 220;
       var drawR = (b.r + 2) * bScale;
@@ -2344,21 +2518,18 @@
         ctx.restore();
       }
 
-      // Kickoff / Banner Overlay (Clean translucent text banner)
-      if (st.waitingKickoff || st.bannerTimer > 0 || st.finished) {
-        if (st.bannerTimer > 0 && !st.waitingKickoff) st.bannerTimer--;
+      // Banner Overlay
+      if (st.bannerTimer > 0 || st.finished) {
+        if (st.bannerTimer > 0) st.bannerTimer--;
         ctx.save();
-        var msg = st.waitingKickoff
-          ? (sp === 'soccer' ? '⚡ READY! TAP FIELD, D-PAD, OR PRESS WASD / ARROWS TO KICK OFF!' : '⚡ READY! TAP COURT OR PRESS SPACE / ARROWS TO SERVE!')
-          : st.bannerText;
         ctx.font = '800 17px Fredoka, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.strokeStyle = '#060911';
         ctx.lineWidth = 5;
-        ctx.strokeText(msg, Wc / 2, 32);
+        ctx.strokeText(st.bannerText, Wc / 2, 30);
         ctx.fillStyle = '#fde047';
-        ctx.fillText(msg, Wc / 2, 32);
+        ctx.fillText(st.bannerText, Wc / 2, 30);
         ctx.restore();
       }
 
