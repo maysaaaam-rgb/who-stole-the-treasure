@@ -1,4 +1,4 @@
-﻿/* Practice Island â€” the walking world. Clean 3-Point Game HUD, Live Decorator Dock, and Turn-Based Battle Arena. */
+/* Practice Island â€” the walking world. Clean 3-Point Game HUD, Live Decorator Dock, and Turn-Based Battle Arena. */
 :root { --w-spring: cubic-bezier(.175,.885,.32,1.275); }
 html, body.w-page { height: 100%; overflow: hidden; background: #060911; user-select: none; -webkit-user-select: none; touch-action: none; }
 /* Hide stray #isl-dream bar injected by shop.js so it never overlaps the 2D world */
@@ -1378,7 +1378,7 @@ body.w-on #w-vignette { display: block; }
   padding: 6px 18px !important;
 }
 
-.wg-sports-modal { max-width: 98vw !important; width: min(1360px, 98vw) !important; padding: 10px 14px !important; } #wg-sports-canvas { width: 100% !important; height: 62vh !important; max-height: 62vh !important; margin: 0 auto; display: block; }
+.wg-sports-modal { max-width: 98vw !important; width: min(1240px, 98vw) !important; padding: 10px 14px !important; } #wg-sports-canvas { width: 100% !important; height: auto !important; max-height: 60vh !important; aspect-ratio: 1040 / 500; margin: 0 auto; display: block; }
 .wg-sp-joy { width: 56px !important; height: 56px !important; }
 .wg-sports-controls { flex-wrap: nowrap !important; gap: 8px !important; margin-top: 6px !important; }
 
