@@ -1,4 +1,4 @@
-/* Practice Island — World Game Engine (Stages 2–5 Overhaul: Cloud Sync, My Home & Live Decorator, In-World Villager Quests, World Map & Turn-Based Monster Battles).
+﻿/* Practice Island â€” World Game Engine (Stages 2â€“5 Overhaul: Cloud Sync, My Home & Live Decorator, In-World Villager Quests, World Map & Turn-Based Monster Battles).
    Works alongside island/js/world.js, island/js/sync.js, and island/js/app.js. */
 (function (root) {
   'use strict';
@@ -66,8 +66,8 @@
   ];
 
   var SPELLS = [
-    { id: 'star',   name: 'Star Bolt',    sub: '35 DMG · Fast',    icon: 'x_star',   dmg: 35, heal: 0,  shield: false },
-    { id: 'pow',    name: 'Mega Slam',    sub: '45 DMG · Heavy',   icon: 'x_pow',    dmg: 45, heal: 0,  shield: false },
+    { id: 'star',   name: 'Star Bolt',    sub: '35 DMG Â· Fast',    icon: 'x_star',   dmg: 35, heal: 0,  shield: false },
+    { id: 'pow',    name: 'Mega Slam',    sub: '45 DMG Â· Heavy',   icon: 'x_pow',    dmg: 45, heal: 0,  shield: false },
     { id: 'shield', name: 'Magic Shield', sub: '30 DMG + Block',   icon: 'x_shield', dmg: 30, heal: 0,  shield: true  },
     { id: 'hearts', name: 'Heart Heal',   sub: '25 DMG + 30 HP',   icon: 'x_hearts', dmg: 25, heal: 30, shield: false }
   ];
@@ -185,16 +185,16 @@
     var lvlEl = $('w-lvl-txt'), xpEl = $('w-xp-fill'), coinEl = $('w-coin-txt'), statusEl = $('w-status'), muteEl = $('w-mute');
     if (lvlEl) lvlEl.textContent = 'Lv.' + lvl;
     if (xpEl) xpEl.style.width = pct + '%';
-    if (coinEl) coinEl.textContent = '🪙 ' + coins;
+    if (coinEl) coinEl.textContent = 'ðŸª™ ' + coins;
     if (statusEl) {
-      statusEl.title = 'Level ' + lvl + ' (' + xp + (nextCeil ? '/' + nextCeil : '') + ' XP) · ' + coins + ' Coins — Tap to open Store!';
+      statusEl.title = 'Level ' + lvl + ' (' + xp + (nextCeil ? '/' + nextCeil : '') + ' XP) Â· ' + coins + ' Coins â€” Tap to open Store!';
       if (pop) {
         statusEl.classList.remove('pop'); void statusEl.offsetWidth; statusEl.classList.add('pop');
         setTimeout(function () { statusEl.classList.remove('pop'); }, 320);
       }
     }
     if (muteEl && root.IslandAudio && root.IslandAudio.isMuted) {
-      muteEl.textContent = root.IslandAudio.isMuted() ? '🔇' : '🔊';
+      muteEl.textContent = root.IslandAudio.isMuted() ? 'ðŸ”‡' : 'ðŸ”Š';
     }
   }
 
@@ -315,7 +315,7 @@
     if (z === 0) {
       var st = readState();
       var tier = HOUSE_TIERS[Math.max(0, Math.min(HOUSE_TIERS.length - 1, (st.houseTier || 1) - 1))];
-      return '🏡 ' + tier.name + ' · ' + ((st.placed && st.placed.length) || 0) + ' items';
+      return 'ðŸ¡ ' + tier.name + ' Â· ' + ((st.placed && st.placed.length) || 0) + ' items';
     }
     var g = s.grade || 3;
     var zm = root.IslandData.getZoneMissions(g, z, false);
@@ -327,8 +327,8 @@
       totalStars += n;
     });
     var chestDone = !!(s.doc.chests && s.doc.chests['z' + z]);
-    if (chestDone) return '🐚 Done! · ★ ' + totalStars + '/15';
-    return '⭐ ' + done + '/5 Stops' + (totalStars ? ' · ★ ' + totalStars : '');
+    if (chestDone) return 'ðŸš Done! Â· â˜… ' + totalStars + '/15';
+    return 'â­ ' + done + '/5 Stops' + (totalStars ? ' Â· â˜… ' + totalStars : '');
   }
 
   function openWorldMap() {
@@ -338,11 +338,11 @@
     var curZone = (W() && W().S && W().S.zone !== undefined) ? W().S.zone : 1;
     var isOpen = function (z) { return z <= 1 || (W() && W().isOpen && W().isOpen(z)); };
     var islands = [
-      { z: 0, name: 'My Home Island',   sub: 'Build · Craft · Garden', img: 'm_island_home',    x: 20, y: 74, open: true },
-      { z: 1, name: 'Sunny Meadow',     sub: 'Unit 1 · Grandpa Bolt',  img: 'm_island_meadow',  x: 50, y: 27, open: true },
-      { z: 2, name: 'Lighthouse Beach', sub: 'Unit 2 · Lulu',          img: 'm_island_beach',   x: 80, y: 27, open: isOpen(2) },
-      { z: 3, name: 'Treehouse Forest', sub: 'Unit 3 · Mr. Nutty',     img: 'm_island_forest',  x: 50, y: 74, open: isOpen(3) },
-      { z: 4, name: 'Volcano Peak',     sub: 'Unit 4 · Ember',         img: 'm_island_volcano', x: 80, y: 74, open: isOpen(4) }
+      { z: 0, name: 'My Home Island',   sub: 'Build Â· Craft Â· Garden', img: 'm_island_home',    x: 20, y: 74, open: true },
+      { z: 1, name: 'Sunny Meadow',     sub: 'Unit 1 Â· Grandpa Bolt',  img: 'm_island_meadow',  x: 50, y: 27, open: true },
+      { z: 2, name: 'Lighthouse Beach', sub: 'Unit 2 Â· Lulu',          img: 'm_island_beach',   x: 80, y: 27, open: isOpen(2) },
+      { z: 3, name: 'Treehouse Forest', sub: 'Unit 3 Â· Mr. Nutty',     img: 'm_island_forest',  x: 50, y: 74, open: isOpen(3) },
+      { z: 4, name: 'Volcano Peak',     sub: 'Unit 4 Â· Ember',         img: 'm_island_volcano', x: 80, y: 74, open: isOpen(4) }
     ];
     var nodesHtml = islands.map(function (isl) {
       var here = curZone === isl.z;
@@ -350,23 +350,23 @@
       return '<button type="button" class="wg-map-node' + (isl.open ? '' : ' locked') + (here ? ' here' : '') + '" style="left:' + isl.x + '%;top:' + isl.y + '%" onclick="WorldGame.jumpZone(' + isl.z + ')">' +
         '<img src="' + FLAT + isl.img + '.webp" class="wg-map-isl-pic" alt="">' +
         (!isl.open ? '<img src="' + FLAT + 'o_cloud_lock.webp" class="wg-map-lock" alt="">' : '') +
-        (here ? '<span class="wg-map-here">📍 You are here</span>' : '') +
-        '<span class="wg-map-label"><b>' + esc(isl.name) + '</b><small>' + esc(isl.open ? isl.sub : '🔒 Finish 4 stops in Zone ' + (isl.z - 1)) + '</small>' + (prog ? '<em>' + esc(prog) + '</em>' : '') + '</span>' +
+        (here ? '<span class="wg-map-here">ðŸ“ You are here</span>' : '') +
+        '<span class="wg-map-label"><b>' + esc(isl.name) + '</b><small>' + esc(isl.open ? isl.sub : 'ðŸ”’ Finish 4 stops in Zone ' + (isl.z - 1)) + '</small>' + (prog ? '<em>' + esc(prog) + '</em>' : '') + '</span>' +
       '</button>';
     }).join('');
 
     var plazaBtn = '<button type="button" class="wg-map-node" style="left:20%;top:27%" onclick="WorldGame.closeModal(); if(window.IslandWall) IslandWall.open()">' +
       '<img src="' + FLAT + 'm_island_plaza.webp" class="wg-map-isl-pic" alt="">' +
-      '<span class="wg-map-label"><b>🌟 Class Plaza</b><small>Friends · Hangout</small><em>👋 Visit Classmates</em></span>' +
+      '<span class="wg-map-label"><b>ðŸŒŸ Class Plaza</b><small>Friends Â· Hangout</small><em>ðŸ‘‹ Visit Classmates</em></span>' +
     '</button>';
 
     var pipTipObj = (s.doc && s.doc.pipTip) || ((ZONE_GRAMMAR_TIPS[g] || ZONE_GRAMMAR_TIPS[3])[Math.max(1, curZone)] || ZONE_GRAMMAR_TIPS[3][1]);
-    var tipSpeak = 'Captain Pip says: Remember, ' + pipTipObj.word + ' — ' + pipTipObj.meaning + '!';
+    var tipSpeak = 'Captain Pip says: Remember, ' + pipTipObj.word + ' â€” ' + pipTipObj.meaning + '!';
     var pipBannerHtml =
       '<div class="wg-map-tip">' +
-        '<span style="font-size:1.45rem">🦜</span>' +
-        '<div style="flex:1;min-width:0"><b>💡 Captain Pip\'s Helpful Tip:</b> Remember: <b>"' + esc(pipTipObj.word) + '"</b> — ' + esc(pipTipObj.meaning) + '!</div>' +
-        '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:4px 10px;font-size:0.82rem;flex:none" onclick="IslandAudio.speak(\'' + esc(tipSpeak) + '\', null, \'pip\')">🔊 Hear Tip</button>' +
+        '<span style="font-size:1.45rem">ðŸ¦œ</span>' +
+        '<div style="flex:1;min-width:0"><b>ðŸ’¡ Captain Pip\'s Helpful Tip:</b> Remember: <b>"' + esc(pipTipObj.word) + '"</b> â€” ' + esc(pipTipObj.meaning) + '!</div>' +
+        '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:4px 10px;font-size:0.82rem;flex:none" onclick="IslandAudio.speak(\'' + esc(tipSpeak) + '\', null, \'pip\')">ðŸ”Š Hear Tip</button>' +
       '</div>';
 
     var demoBtns = '';
@@ -376,7 +376,7 @@
         '<div style="display:flex;gap:4px;align-items:center;background:rgba(2,6,23,.65);padding:3px 6px;border-radius:12px;border:1px solid rgba(255,255,255,.14)">' +
           '<button type="button" class="isl-btn ' + (curId === 'demo-g3' ? 'cyan' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-g3\')">G3</button>' +
           '<button type="button" class="isl-btn ' + (curId === 'demo-g4' ? 'cyan' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-g4\')">G4</button>' +
-          '<button type="button" class="isl-btn ' + (curId === 'demo-star' ? 'amber' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-star\')">⭐ Star</button>' +
+          '<button type="button" class="isl-btn ' + (curId === 'demo-star' ? 'amber' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-star\')">â­ Star</button>' +
         '</div>';
     }
 
@@ -388,11 +388,11 @@
             '<div style="font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:8px"><img src="' + FLAT + 'u_map.webp" style="width:34px;height:34px;object-fit:contain" alt=""> Practice Island World Map</div>' +
             demoBtns +
             '<div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
-              '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.openSportsArena(\'soccer\', \'2v2\')">⚽ Sports Arena</button>' +
-              '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openStickerBook()">📒 Sticker Book</button>' +
-              '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openCorner()">🏖️ Trophy Camp</button>' +
-              '<a class="isl-btn cyan" style="min-height:38px;padding:5px 11px;font-size:0.86rem;text-decoration:none;display:inline-flex;align-items:center" href="../index.html">🏫 School Hub</a>' +
-              '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:5px 10px" onclick="WorldGame.closeModal()">✕</button>' +
+              '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.openSportsArena(\'soccer\', \'2v2\')">âš½ Sports Arena</button>' +
+              '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openStickerBook()">ðŸ“’ Sticker Book</button>' +
+              '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openCorner()">ðŸ–ï¸ Trophy Camp</button>' +
+              '<a class="isl-btn cyan" style="min-height:38px;padding:5px 11px;font-size:0.86rem;text-decoration:none;display:inline-flex;align-items:center" href="../index.html">ðŸ« School Hub</a>' +
+              '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:5px 10px" onclick="WorldGame.closeModal()">âœ•</button>' +
             '</div>' +
           '</div>' +
           pipBannerHtml +
@@ -415,7 +415,7 @@
     root.location.href = '../index.html';
   }
 
-  /* ---------- 3. 3-Question Energy Charge Burst (⚡ Energy for Finishing!) ---------- */
+  /* ---------- 3. 3-Question Energy Charge Burst (âš¡ Energy for Finishing!) ---------- */
   var energyRun = null;
 
   function pickQuestions(count, zoneNum) {
@@ -467,9 +467,9 @@
         '<div class="isl-modal-backdrop" id="wg-energy-backdrop">' +
           '<div class="isl-card-modal" style="max-width:480px;text-align:center">' +
             '<img src="' + FLAT + 'i_energy.webp" style="width:88px;height:88px;object-fit:contain;animation:idleBob 1.2s ease-in-out infinite" alt="">' +
-            '<h2 style="margin:6px 0;font-size:1.8rem;color:#fde047">+30 Energy Charged! ⚡</h2>' +
-            '<p style="color:#cbd5e1;font-size:1.08rem;margin:0 0 16px">You now have <b style="color:#fde047">⚡ ' + newE + ' Energy</b> to harvest trees, build, or play Sports!</p>' +
-            '<button type="button" class="isl-btn emerald" id="wg-energy-done" style="min-width:190px;font-size:1.15rem" onclick="WorldGame.closeModal()">Let\'s Go! 🚀</button>' +
+            '<h2 style="margin:6px 0;font-size:1.8rem;color:#fde047">+30 Energy Charged! âš¡</h2>' +
+            '<p style="color:#cbd5e1;font-size:1.08rem;margin:0 0 16px">You now have <b style="color:#fde047">âš¡ ' + newE + ' Energy</b> to harvest trees, build, or play Sports!</p>' +
+            '<button type="button" class="isl-btn emerald" id="wg-energy-done" style="min-width:190px;font-size:1.15rem" onclick="WorldGame.closeModal()">Let\'s Go! ðŸš€</button>' +
           '</div>' +
         '</div>';
       return;
@@ -489,11 +489,11 @@
         '<div class="isl-card-modal" style="max-width:540px">' +
           '<div class="isl-mission-top">' +
             '<div style="display:flex;align-items:center;gap:8px;font-size:1.25rem;font-weight:800;color:#fde047"><img src="' + FLAT + 'i_energy.webp" style="width:34px;height:34px;object-fit:contain" alt=""> Energy Charge (' + (energyRun.idx + 1) + ' / ' + energyRun.qs.length + ')</div>' +
-            '<button type="button" class="isl-btn" style="margin-left:auto;min-height:42px;min-width:44px;padding:6px 12px" onclick="WorldGame.closeModal()">✕</button>' +
+            '<button type="button" class="isl-btn" style="margin-left:auto;min-height:42px;min-width:44px;padding:6px 12px" onclick="WorldGame.closeModal()">âœ•</button>' +
           '</div>' +
           '<div style="color:#bae6fd;font-size:0.92rem;font-weight:700;margin-bottom:8px">' + esc(energyRun.reason) + '</div>' +
           '<div class="wg-q-card">' +
-            '<button type="button" class="isl-btn amber" style="min-height:44px;padding:6px 14px;margin-bottom:10px" onclick="IslandAudio.speak(\'' + esc(speakText) + '\')">🔊 Listen</button>' +
+            '<button type="button" class="isl-btn amber" style="min-height:44px;padding:6px 14px;margin-bottom:10px" onclick="IslandAudio.speak(\'' + esc(speakText) + '\')">ðŸ”Š Listen</button>' +
             '<div style="font-size:1.35rem;font-weight:800;color:#fff;margin-bottom:14px">' + esc(promptText) + '</div>' +
             '<div class="wg-choices-grid">' + choices + '</div>' +
           '</div>' +
@@ -562,11 +562,11 @@
       id: 'bp_hut',
       title: '3. The Builder\'s Hut & Star Upgrade',
       view: 'inside',
-      clue: 'Upgrade your home to Level 2 (Straw Hut) and upgrade ANY placed furniture item to Lv.2 Deluxe (★★)!',
+      clue: 'Upgrade your home to Level 2 (Straw Hut) and upgrade ANY placed furniture item to Lv.2 Deluxe (â˜…â˜…)!',
       coins: 35, energy: 25, xp: 15,
       checks: [
         { label: 'Upgrade House to Level 2+ (Straw Hut)', test: function (st) { return (Number(st.houseTier) || 1) >= 2; } },
-        { label: 'Upgrade any placed item to Lv.2 Deluxe (★★)', test: function (st) { return (st.placed || []).some(function (p) { return (Number(p.lvl) || 1) >= 2; }); } }
+        { label: 'Upgrade any placed item to Lv.2 Deluxe (â˜…â˜…)', test: function (st) { return (st.placed || []).some(function (p) { return (Number(p.lvl) || 1) >= 2; }); } }
       ]
     },
     {
@@ -882,7 +882,7 @@
       qs: pool,
       idx: 0,
       isBuilderBoost: true,
-      reason: '🧠 Smart Builder Boost: Answer 3 English questions to earn +2 Wood, +2 Stone, +2 Flower, +1 Shell, +1 Berry & +1 Crystal!'
+      reason: 'ðŸ§  Smart Builder Boost: Answer 3 English questions to earn +2 Wood, +2 Stone, +2 Flower, +1 Shell, +1 Berry & +1 Crystal!'
     };
     document.body.classList.add('isl-modal-open');
     renderEnergyStep();
@@ -920,7 +920,7 @@
       var hPx = Math.round((rec.h || 110) * (studioView === 'inside' ? 0.44 : 0.36) * lvScale);
       var isSel = (idx === studioSelectedIdx);
       var zIdx = rec.flat ? 4 : Math.round(topPct);
-      var starsBadge = itemLv > 1 ? '<span class="wg-item-lv-pill">' + '★'.repeat(itemLv) + '</span>' : '';
+      var starsBadge = itemLv > 1 ? '<span class="wg-item-lv-pill">' + 'â˜…'.repeat(itemLv) + '</span>' : '';
       return '<button type="button" class="wg-studio-item' + (isSel ? ' selected' : '') + ' lv-' + itemLv + '" style="left:' + leftPct + '%;top:' + topPct + '%;z-index:' + zIdx + '" title="Drag or tap to move ' + esc(rec.name) + ' Lv.' + itemLv + '" onpointerdown="WorldGame.startStudioDrag(' + idx + ', event)" onpointermove="WorldGame.moveStudioDrag(event)" onpointerup="WorldGame.endStudioDrag(event)" onpointercancel="WorldGame.endStudioDrag(event)" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">' +
         '<img src="' + FLAT + rec.id + '.webp" alt="" draggable="false" style="height:' + hPx + 'px;' + (p.flip ? 'transform:scaleX(-1)' : '') + '">' +
         starsBadge +
@@ -937,22 +937,22 @@
     var stageToolbarHtml = selRec
       ? '<div class="wg-studio-toolbar">' +
           '<img src="' + FLAT + selRec.id + '.webp" style="width:28px;height:28px;object-fit:contain" alt="" draggable="false">' +
-          '<div class="wg-st-txt"><b>' + esc(selRec.name) + ' (' + '★'.repeat(selLv) + ')</b><small>Drag it, tap floor, or use arrows:</small></div>' +
+          '<div class="wg-st-txt"><b>' + esc(selRec.name) + ' (' + 'â˜…'.repeat(selLv) + ')</b><small>Drag it, tap floor, or use arrows:</small></div>' +
           '<div style="display:flex;gap:3px">' +
-            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(-65, 0, event)" title="Move Left">◀</button>' +
-            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(0, -55, event)" title="Move Up">▲</button>' +
-            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(0, 55, event)" title="Move Down">▼</button>' +
-            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(65, 0, event)" title="Move Right">▶</button>' +
+            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(-65, 0, event)" title="Move Left">â—€</button>' +
+            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(0, -55, event)" title="Move Up">â–²</button>' +
+            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(0, 55, event)" title="Move Down">â–¼</button>' +
+            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(65, 0, event)" title="Move Right">â–¶</button>' +
           '</div>' +
           (selLv < 3
-            ? '<button type="button" class="isl-btn ' + (canSelUp ? 'amber' : '') + '" style="min-height:32px;padding:3px 8px;font-size:0.76rem" onclick="WorldGame.upgradeStudioItem(event)" title="Upgrade to Lv.' + (selLv + 1) + '">⬆ Lv.' + (selLv + 1) + ' ★</button>'
-            : '<span class="wg-job-done-badge" style="font-size:0.72rem">👑 Max</span>') +
-          '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 8px;font-size:0.76rem" onclick="WorldGame.flipStudioItem(event)">↔</button>' +
-          '<button type="button" class="isl-btn" style="min-height:32px;padding:3px 8px;font-size:0.76rem;background:#e11d48;border-bottom-color:#881337" onclick="WorldGame.storeStudioItem(event)">📥</button>' +
-          '<button type="button" class="isl-btn emerald" style="min-height:32px;padding:3px 8px;font-size:0.76rem" onclick="WorldGame.selectStudioPlaced(-1, event)">✓</button>' +
+            ? '<button type="button" class="isl-btn ' + (canSelUp ? 'amber' : '') + '" style="min-height:32px;padding:3px 8px;font-size:0.76rem" onclick="WorldGame.upgradeStudioItem(event)" title="Upgrade to Lv.' + (selLv + 1) + '">â¬† Lv.' + (selLv + 1) + ' â˜…</button>'
+            : '<span class="wg-job-done-badge" style="font-size:0.72rem">ðŸ‘‘ Max</span>') +
+          '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 8px;font-size:0.76rem" onclick="WorldGame.flipStudioItem(event)">â†”</button>' +
+          '<button type="button" class="isl-btn" style="min-height:32px;padding:3px 8px;font-size:0.76rem;background:#e11d48;border-bottom-color:#881337" onclick="WorldGame.storeStudioItem(event)">ðŸ“¥</button>' +
+          '<button type="button" class="isl-btn emerald" style="min-height:32px;padding:3px 8px;font-size:0.76rem" onclick="WorldGame.selectStudioPlaced(-1, event)">âœ“</button>' +
         '</div>'
       : '<div class="wg-studio-toolbar hint">' +
-          '<span>✋ <b>' + (studioView === 'inside' ? '🛋️ Inside Room' : '🌳 Outside Garden') + ':</b> Drag any item with your mouse/finger, or tap an item then tap where to put it!</span>' +
+          '<span>âœ‹ <b>' + (studioView === 'inside' ? 'ðŸ›‹ï¸ Inside Room' : 'ðŸŒ³ Outside Garden') + ':</b> Drag any item with your mouse/finger, or tap an item then tap where to put it!</span>' +
         '</div>';
 
     var canvasInnerHtml = '';
@@ -960,13 +960,13 @@
       canvasInnerHtml =
         '<div class="wg-room-wall tier-' + curTier.level + '">' +
           '<div class="wg-room-win left"></div>' +
-          '<div class="wg-room-crest">🛋️ Level ' + curTier.level + ' Room · ' + esc(curTier.name) + '</div>' +
+          '<div class="wg-room-crest">ðŸ›‹ï¸ Level ' + curTier.level + ' Room Â· ' + esc(curTier.name) + '</div>' +
           '<div class="wg-room-win right"></div>' +
         '</div>' +
         '<div class="wg-room-floor">' +
-          '<span class="wg-room-side-hint left">⬅ Left Side</span>' +
-          '<span class="wg-room-side-hint right">Right Side ➡</span>' +
-          '<div class="wg-room-doormat">🚪 Front Door</div>' +
+          '<span class="wg-room-side-hint left">â¬… Left Side</span>' +
+          '<span class="wg-room-side-hint right">Right Side âž¡</span>' +
+          '<div class="wg-room-doormat">ðŸšª Front Door</div>' +
         '</div>' +
         stageItemsHtml;
     } else {
@@ -974,12 +974,12 @@
         '<div class="wg-studio-path-h"></div>' +
         '<div class="wg-studio-path-v"></div>' +
         '<div class="wg-studio-stone-pad"></div>' +
-        '<span class="wg-studio-garden-tag">🌳 Sunny Garden Yard</span>' +
+        '<span class="wg-studio-garden-tag">ðŸŒ³ Sunny Garden Yard</span>' +
         '<div class="wg-studio-npc" style="left:9.5%;top:34%" title="Grandpa Bolt"><img src="' + FLAT + 'c_bolt_happy.webp" alt="" draggable="false"></div>' +
         '<div class="wg-studio-wb" style="left:21.8%;top:36.4%" title="Crafting Workbench"><img src="' + FLAT + 'o_workbench.webp" alt="" draggable="false"></div>' +
         '<div class="wg-studio-house" style="left:46.7%;top:34.3%;cursor:pointer;pointer-events:auto" onclick="WorldGame.setStudioView(\'inside\')" title="Tap to look Inside your ' + esc(curTier.name) + '!">' +
           '<img src="' + FLAT + curTier.id + '.webp" alt="" draggable="false">' +
-          '<span class="wg-studio-house-tag">🚪 ' + esc(curTier.name) + '</span>' +
+          '<span class="wg-studio-house-tag">ðŸšª ' + esc(curTier.name) + '</span>' +
         '</div>' +
         stageItemsHtml;
     }
@@ -988,10 +988,10 @@
       '<div class="wg-studio-stage-wrap">' +
         '<div class="wg-studio-stage-head">' +
           '<div class="wg-view-toggle">' +
-            '<button type="button" class="isl-btn ' + (studioView === 'inside' ? 'amber' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.82rem" onclick="WorldGame.setStudioView(\'inside\')">🛋️ Inside Room (' + indoorPlaced.length + ')</button>' +
-            '<button type="button" class="isl-btn ' + (studioView === 'outside' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.82rem" onclick="WorldGame.setStudioView(\'outside\')">🌳 Outside Garden (' + gardenPlaced.length + ')</button>' +
+            '<button type="button" class="isl-btn ' + (studioView === 'inside' ? 'amber' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.82rem" onclick="WorldGame.setStudioView(\'inside\')">ðŸ›‹ï¸ Inside Room (' + indoorPlaced.length + ')</button>' +
+            '<button type="button" class="isl-btn ' + (studioView === 'outside' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.82rem" onclick="WorldGame.setStudioView(\'outside\')">ðŸŒ³ Outside Garden (' + gardenPlaced.length + ')</button>' +
           '</div>' +
-          '<span class="wg-st-badge">⭐ Architect Score: ' + comfortStars + '</span>' +
+          '<span class="wg-st-badge">â­ Architect Score: ' + comfortStars + '</span>' +
         '</div>' +
         '<div class="wg-studio-canvas ' + (studioView === 'inside' ? 'is-room' : 'is-yard') + '" id="wg-studio-canvas" onpointermove="WorldGame.moveStudioDrag(event)" onpointerup="WorldGame.endStudioDrag(event)" onpointercancel="WorldGame.endStudioDrag(event)" onclick="WorldGame.tapStudioStage(event)">' +
           canvasInnerHtml +
@@ -1005,23 +1005,23 @@
         var isDone = !!st.blueprintsDone[bp.id];
         var checkRows = bp.checks.map(function (c) {
           var ok = c.test(st);
-          return '<div class="wg-bp-check' + (ok ? ' ok' : '') + '">' + (ok ? '✅ ' : '⬜ ') + esc(c.label) + '</div>';
+          return '<div class="wg-bp-check' + (ok ? ' ok' : '') + '">' + (ok ? 'âœ… ' : 'â¬œ ') + esc(c.label) + '</div>';
         }).join('');
         var allReady = !isDone && bp.checks.every(function (c) { return c.test(st); });
         return '<div class="wg-bp-card' + (isDone ? ' done' : (allReady ? ' ready' : '')) + '">' +
           '<div class="wg-bp-head">' +
             '<b>' + esc(bp.title) + '</b>' +
-            '<span class="wg-bp-view-pill ' + bp.view + '">' + (bp.view === 'inside' ? '🛋️ Inside Room' : '🌳 Outside Garden') + '</span>' +
+            '<span class="wg-bp-view-pill ' + bp.view + '">' + (bp.view === 'inside' ? 'ðŸ›‹ï¸ Inside Room' : 'ðŸŒ³ Outside Garden') + '</span>' +
           '</div>' +
-          '<div class="wg-bp-clue">"' + esc(bp.clue) + '" <button type="button" class="wg-bp-speak" onclick="IslandAudio.speak(\'' + esc(bp.clue) + '\')">🔊</button></div>' +
+          '<div class="wg-bp-clue">"' + esc(bp.clue) + '" <button type="button" class="wg-bp-speak" onclick="IslandAudio.speak(\'' + esc(bp.clue) + '\')">ðŸ”Š</button></div>' +
           '<div class="wg-bp-checks">' + checkRows + '</div>' +
           '<div class="wg-bp-foot">' +
-            '<span class="wg-reward-tag">🎁 +' + bp.coins + ' 🪙 · +' + bp.energy + ' ⚡ · +' + bp.xp + ' XP</span>' +
+            '<span class="wg-reward-tag">ðŸŽ +' + bp.coins + ' ðŸª™ Â· +' + bp.energy + ' âš¡ Â· +' + bp.xp + ' XP</span>' +
             (isDone
-              ? '<span class="wg-job-done-badge">★ Completed!</span>'
+              ? '<span class="wg-job-done-badge">â˜… Completed!</span>'
               : (allReady
-                ? '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 12px;font-size:0.84rem" onclick="WorldGame.claimBlueprint(\'' + bp.id + '\')">🎁 Claim Reward!</button>'
-                : '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.setStudioView(\'' + bp.view + '\'); WorldGame.openWorkshop(\'craft\')">🔨 Build This</button>')) +
+                ? '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 12px;font-size:0.84rem" onclick="WorldGame.claimBlueprint(\'' + bp.id + '\')">ðŸŽ Claim Reward!</button>'
+                : '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.setStudioView(\'' + bp.view + '\'); WorldGame.openWorkshop(\'craft\')">ðŸ”¨ Build This</button>')) +
           '</div>' +
         '</div>';
       }).join('');
@@ -1030,10 +1030,10 @@
         '<div class="wg-bp-banner">' +
           '<img src="' + FLAT + 'c_bolt_happy.webp" style="width:48px;height:48px;object-fit:contain" alt="">' +
           '<div style="flex:1;min-width:0">' +
-            '<b style="color:#fde047;display:block">📜 Grandpa Bolt\'s Smart Blueprints (' + bpDoneCount + '/6 ★)</b>' +
+            '<b style="color:#fde047;display:block">ðŸ“œ Grandpa Bolt\'s Smart Blueprints (' + bpDoneCount + '/6 â˜…)</b>' +
             '<small style="color:#cbd5e1">Read the English clues, craft &amp; drag items in your Room or Garden, and claim rewards!</small>' +
           '</div>' +
-          '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.82rem" onclick="WorldGame.openSmartBuilderQuiz()">🧠 +Materials Quiz</button>' +
+          '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.82rem" onclick="WorldGame.openSmartBuilderQuiz()">ðŸ§  +Materials Quiz</button>' +
         '</div>' +
         '<div class="wg-bp-list">' + bpCards + '</div>';
     } else if (workshopTab === 'home') {
@@ -1044,7 +1044,7 @@
         return '<div class="wg-tier-step' + (curr ? ' current' : (done ? ' done' : '')) + '">' +
           '<img src="' + FLAT + t.id + '.webp" alt="">' +
           '<b>Lv.' + t.level + ' ' + esc(t.name) + '</b>' +
-          '<em>' + (curr ? '📍 Current' : (done ? '✓ Built' : '🔒 Locked')) + '</em>' +
+          '<em>' + (curr ? 'ðŸ“ Current' : (done ? 'âœ“ Built' : 'ðŸ”’ Locked')) + '</em>' +
         '</div>';
       }).join('');
 
@@ -1052,20 +1052,20 @@
         '<div class="wg-home-upgrade-card">' +
           '<div class="wg-home-pics">' +
             '<div class="wg-home-stage"><img src="' + FLAT + curTier.id + '.webp" alt=""><span>Level ' + curTier.level + ': ' + esc(curTier.name) + '</span></div>' +
-            (nextTier ? '<div class="wg-home-arrow">➡</div><div class="wg-home-stage next"><img src="' + FLAT + nextTier.id + '.webp" alt=""><span>Level ' + nextTier.level + ': ' + esc(nextTier.name) + '</span></div>' : '') +
+            (nextTier ? '<div class="wg-home-arrow">âž¡</div><div class="wg-home-stage next"><img src="' + FLAT + nextTier.id + '.webp" alt=""><span>Level ' + nextTier.level + ': ' + esc(nextTier.name) + '</span></div>' : '') +
           '</div>' +
           (nextTier
             ? '<div style="margin:10px 0"><div style="font-weight:800;color:#fde68a;margin-bottom:6px">Materials needed for Level ' + nextTier.level + ' (' + esc(nextTier.name) + '):</div><div class="wg-cost-row">' + costPillsHtml(nextTier.cost, bag) + '</div></div>' +
               '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">' +
                 '<button type="button" class="isl-btn ' + (canUp ? 'emerald' : '') + '" id="wg-btn-upgrade-home" style="min-height:44px;font-size:0.95rem;padding:6px 18px" ' + (canUp ? 'onclick="WorldGame.upgradeHome()"' : 'disabled aria-disabled="true"') + '>' +
-                  (canUp ? '🔨 Upgrade to ' + esc(nextTier.name) + '!' : '🔒 Need More Materials') +
+                  (canUp ? 'ðŸ”¨ Upgrade to ' + esc(nextTier.name) + '!' : 'ðŸ”’ Need More Materials') +
                 '</button>' +
-                (!canUp ? '<button type="button" class="isl-btn amber" style="min-height:44px;font-size:0.9rem;padding:6px 14px" onclick="WorldGame.openSmartBuilderQuiz()">🧠 Earn Materials (Quiz)</button>' : '') +
+                (!canUp ? '<button type="button" class="isl-btn amber" style="min-height:44px;font-size:0.9rem;padding:6px 14px" onclick="WorldGame.openSmartBuilderQuiz()">ðŸ§  Earn Materials (Quiz)</button>' : '') +
               '</div>'
-            : '<div style="font-size:1.15rem;font-weight:800;color:#6ee7b7;margin-top:10px">🏰 Maximum Level! You built the Royal Fairy-Tale Castle!</div>') +
+            : '<div style="font-size:1.15rem;font-weight:800;color:#6ee7b7;margin-top:10px">ðŸ° Maximum Level! You built the Royal Fairy-Tale Castle!</div>') +
         '</div>' +
         '<div class="wg-roadmap-wrap">' +
-          '<div class="wg-sec-title">🏰 5-Stage Home Evolution Roadmap (Upgrades Both Outside &amp; Inside Room!)</div>' +
+          '<div class="wg-sec-title">ðŸ° 5-Stage Home Evolution Roadmap (Upgrades Both Outside &amp; Inside Room!)</div>' +
           '<div class="wg-tier-roadmap">' + roadmapHtml + '</div>' +
         '</div>';
     } else if (workshopTab === 'craft') {
@@ -1080,17 +1080,17 @@
         var inBag = Math.max(0, ownedCount - placedCount);
         var canCraft = hasMaterials(r.cost);
         return '<div class="wg-recipe-card">' +
-          '<span class="wg-rec-kind ' + r.kind + '">' + (r.kind === 'patio' ? '🛋️ Inside Room' : '🌳 Outside Garden') + '</span>' +
+          '<span class="wg-rec-kind ' + r.kind + '">' + (r.kind === 'patio' ? 'ðŸ›‹ï¸ Inside Room' : 'ðŸŒ³ Outside Garden') + '</span>' +
           '<img src="' + FLAT + r.id + '.webp" class="wg-recipe-pic" alt="" draggable="false" onclick="IslandAudio.speak(\'' + esc(r.name) + '\')">' +
           '<div class="wg-recipe-name">' + esc(r.name) + '</div>' +
-          '<div class="wg-rec-counts">Owned: <b>' + ownedCount + '</b> · Placed: <b>' + placedCount + '</b></div>' +
+          '<div class="wg-rec-counts">Owned: <b>' + ownedCount + '</b> Â· Placed: <b>' + placedCount + '</b></div>' +
           '<div class="wg-cost-row">' + costPillsHtml(r.cost, bag) + '</div>' +
           '<div class="wg-recipe-actions">' +
-            '<button type="button" class="isl-btn ' + (canCraft ? 'amber' : '') + '" style="min-height:36px;padding:4px 9px;font-size:0.8rem" ' + (canCraft ? 'onclick="WorldGame.craftItem(\'' + r.id + '\')"' : 'disabled') + '>🔨 Craft</button>' +
+            '<button type="button" class="isl-btn ' + (canCraft ? 'amber' : '') + '" style="min-height:36px;padding:4px 9px;font-size:0.8rem" ' + (canCraft ? 'onclick="WorldGame.craftItem(\'' + r.id + '\')"' : 'disabled') + '>ðŸ”¨ Craft</button>' +
             (inBag > 0
-              ? '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 9px;font-size:0.8rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">📍 Place (+' + inBag + ')</button>'
+              ? '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 9px;font-size:0.8rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">ðŸ“ Place (+' + inBag + ')</button>'
               : (placedCount > 0
-                ? '<button type="button" class="isl-btn cyan" style="min-height:36px;padding:4px 9px;font-size:0.8rem" onclick="WorldGame.focusPlacedItem(\'' + r.id + '\')">✋ Move</button>'
+                ? '<button type="button" class="isl-btn cyan" style="min-height:36px;padding:4px 9px;font-size:0.8rem" onclick="WorldGame.focusPlacedItem(\'' + r.id + '\')">âœ‹ Move</button>'
                 : '')) +
           '</div>' +
         '</div>';
@@ -1098,9 +1098,9 @@
       rightHtml =
         '<div class="wg-craft-filters">' +
           '<button type="button" class="isl-btn ' + (craftFilter === 'all' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.8rem" onclick="WorldGame.setCraftFilter(\'all\')">All (16)</button>' +
-          '<button type="button" class="isl-btn ' + (craftFilter === 'patio' ? 'amber' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.8rem" onclick="WorldGame.setCraftFilter(\'patio\')">🛋️ Inside Room (6)</button>' +
-          '<button type="button" class="isl-btn ' + (craftFilter === 'garden' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.8rem" onclick="WorldGame.setCraftFilter(\'garden\')">🌳 Outside Garden (10)</button>' +
-          '<button type="button" class="isl-btn amber" style="margin-left:auto;min-height:34px;padding:4px 10px;font-size:0.78rem" onclick="WorldGame.openSmartBuilderQuiz()">🧠 +Materials</button>' +
+          '<button type="button" class="isl-btn ' + (craftFilter === 'patio' ? 'amber' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.8rem" onclick="WorldGame.setCraftFilter(\'patio\')">ðŸ›‹ï¸ Inside Room (6)</button>' +
+          '<button type="button" class="isl-btn ' + (craftFilter === 'garden' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.8rem" onclick="WorldGame.setCraftFilter(\'garden\')">ðŸŒ³ Outside Garden (10)</button>' +
+          '<button type="button" class="isl-btn amber" style="margin-left:auto;min-height:34px;padding:4px 10px;font-size:0.78rem" onclick="WorldGame.openSmartBuilderQuiz()">ðŸ§  +Materials</button>' +
         '</div>' +
         '<div class="wg-recipes-grid">' + cards + '</div>';
     } else {
@@ -1112,8 +1112,8 @@
         if (avail <= 0) return '';
         return '<div class="wg-bag-row">' +
           '<img src="' + FLAT + r.id + '.webp" style="width:42px;height:42px;object-fit:contain" alt="" draggable="false">' +
-          '<div style="flex:1;min-width:0"><b>' + esc(r.name) + '</b><small style="display:block;color:#94a3b8">' + avail + ' in bag · ' + (r.kind === 'patio' ? '🛋️ Inside Room' : '🌳 Outside Garden') + '</small></div>' +
-          '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">📍 Place</button>' +
+          '<div style="flex:1;min-width:0"><b>' + esc(r.name) + '</b><small style="display:block;color:#94a3b8">' + avail + ' in bag Â· ' + (r.kind === 'patio' ? 'ðŸ›‹ï¸ Inside Room' : 'ðŸŒ³ Outside Garden') + '</small></div>' +
+          '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">ðŸ“ Place</button>' +
         '</div>';
       }).join('');
 
@@ -1124,17 +1124,17 @@
         var itemLv = Math.max(1, Math.min(3, Number(p.lvl) || 1));
         return '<div class="wg-bag-row' + (isSel ? ' active' : '') + '" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)" style="cursor:pointer">' +
           '<img src="' + FLAT + rec.id + '.webp" style="width:40px;height:40px;object-fit:contain" alt="" draggable="false">' +
-          '<div style="flex:1;min-width:0"><b>' + esc(rec.name) + ' <span style="color:#fde047">' + '★'.repeat(itemLv) + '</span></b><small style="display:block;color:#6ee7b7">' + (rec.kind === 'patio' ? '🛋️ Inside Room' : '🌳 Outside Garden') + ' · ' + (isSel ? '✋ Drag on preview map or use ◀ ▲ ▼ ▶!' : 'Tap to move or upgrade') + '</small></div>' +
-          '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:3px 9px;font-size:0.78rem" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">✋ Move</button>' +
+          '<div style="flex:1;min-width:0"><b>' + esc(rec.name) + ' <span style="color:#fde047">' + 'â˜…'.repeat(itemLv) + '</span></b><small style="display:block;color:#6ee7b7">' + (rec.kind === 'patio' ? 'ðŸ›‹ï¸ Inside Room' : 'ðŸŒ³ Outside Garden') + ' Â· ' + (isSel ? 'âœ‹ Drag on preview map or use â—€ â–² â–¼ â–¶!' : 'Tap to move or upgrade') + '</small></div>' +
+          '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:3px 9px;font-size:0.78rem" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">âœ‹ Move</button>' +
         '</div>';
       }).join('');
 
       rightHtml =
         '<div class="wg-decor-lists">' +
-          '<div class="wg-sec-title">🎒 Ready in Your Bag (Tap to Place)</div>' +
+          '<div class="wg-sec-title">ðŸŽ’ Ready in Your Bag (Tap to Place)</div>' +
           (bagItemsHtml || '<div class="wg-empty-note">All your crafted items are placed! Drag any item on the left preview to move it.</div>') +
-          '<div class="wg-sec-title" style="margin-top:12px">🪑 Placed Items (' + indoorPlaced.length + ' Inside Room · ' + gardenPlaced.length + ' Outside Garden)</div>' +
-          (placedListHtml || '<div class="wg-empty-note">Nothing placed yet — tap Place above or craft new items!</div>') +
+          '<div class="wg-sec-title" style="margin-top:12px">ðŸª‘ Placed Items (' + indoorPlaced.length + ' Inside Room Â· ' + gardenPlaced.length + ' Outside Garden)</div>' +
+          (placedListHtml || '<div class="wg-empty-note">Nothing placed yet â€” tap Place above or craft new items!</div>') +
         '</div>';
     }
 
@@ -1146,20 +1146,20 @@
             '<div style="display:flex;align-items:center;gap:8px;font-size:1.18rem;font-weight:800"><img src="' + FLAT + 'o_workbench.webp" style="width:32px;height:32px;object-fit:contain" alt=""> Home &amp; Crafting Studio</div>' +
             '<div class="wg-studio-mats">' + matBar + '</div>' +
             '<div style="margin-left:auto;display:flex;gap:5px;align-items:center;flex-wrap:wrap">' +
-              '<button type="button" class="isl-btn cyan" id="wg-btn-open-sports" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.openSportsArena(\'soccer\', \'2v2\')">⚽ Sports Arena</button>' +
-              '<button type="button" class="isl-btn amber" id="wg-btn-enter-room" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.seeHomeInWorld(true)">🚪 Walk Inside Room!</button>' +
-              '<button type="button" class="isl-btn emerald" id="wg-btn-see-world" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.seeHomeInWorld(false)">🌳 Walk in Garden!</button>' +
-              '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:4px 9px" onclick="WorldGame.closeModal()">✕</button>' +
+              '<button type="button" class="isl-btn cyan" id="wg-btn-open-sports" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.openSportsArena(\'soccer\', \'2v2\')">âš½ Sports Arena</button>' +
+              '<button type="button" class="isl-btn amber" id="wg-btn-enter-room" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.seeHomeInWorld(true)">ðŸšª Walk Inside Room!</button>' +
+              '<button type="button" class="isl-btn emerald" id="wg-btn-see-world" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.seeHomeInWorld(false)">ðŸŒ³ Walk in Garden!</button>' +
+              '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:4px 9px" onclick="WorldGame.closeModal()">âœ•</button>' +
             '</div>' +
           '</div>' +
           '<div class="wg-studio-body">' +
             stageHtml +
             '<div class="wg-studio-panel">' +
               '<div class="wg-studio-tabs cols-4">' +
-                '<button type="button" class="isl-btn ' + (workshopTab === 'blueprints' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'blueprints\')">📜 Blueprints (' + bpDoneCount + '/6)</button>' +
-                '<button type="button" class="isl-btn ' + (workshopTab === 'home' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'home\')">🏰 House</button>' +
-                '<button type="button" class="isl-btn ' + (workshopTab === 'craft' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'craft\')">🔨 Craft (16)</button>' +
-                '<button type="button" class="isl-btn ' + (workshopTab === 'decorate' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'decorate\')">🎨 Arrange (' + placed.length + ')</button>' +
+                '<button type="button" class="isl-btn ' + (workshopTab === 'blueprints' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'blueprints\')">ðŸ“œ Blueprints (' + bpDoneCount + '/6)</button>' +
+                '<button type="button" class="isl-btn ' + (workshopTab === 'home' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'home\')">ðŸ° House</button>' +
+                '<button type="button" class="isl-btn ' + (workshopTab === 'craft' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'craft\')">ðŸ”¨ Craft (16)</button>' +
+                '<button type="button" class="isl-btn ' + (workshopTab === 'decorate' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'decorate\')">ðŸŽ¨ Arrange (' + placed.length + ')</button>' +
               '</div>' +
               '<div class="wg-studio-tab-content">' + rightHtml + '</div>' +
             '</div>' +
@@ -1246,15 +1246,15 @@
       return '<div class="wg-job-card' + (done ? ' done' : '') + '">' +
         '<img src="' + FLAT + (done ? v.happy : v.art) + '.webp" class="wg-job-pic" alt="">' +
         '<div class="wg-job-main">' +
-          '<div class="wg-job-title"><b>' + esc(v.name) + '</b> <small>· Zone ' + v.zone + '</small></div>' +
+          '<div class="wg-job-title"><b>' + esc(v.name) + '</b> <small>Â· Zone ' + v.zone + '</small></div>' +
           '<div class="wg-job-line">"' + esc(v.line) + '"</div>' +
-          '<div class="wg-cost-row">' + costPillsHtml(v.need, bag) + ' <span class="wg-reward-tag">🎁 ' + esc(rec ? rec.name : v.gift) + ' + ⚡' + v.energy + '</span></div>' +
+          '<div class="wg-cost-row">' + costPillsHtml(v.need, bag) + ' <span class="wg-reward-tag">ðŸŽ ' + esc(rec ? rec.name : v.gift) + ' + âš¡' + v.energy + '</span></div>' +
         '</div>' +
         '<div class="wg-job-act">' +
           (done
-            ? '<span class="wg-job-done-badge">✓ Friend!</span>'
+            ? '<span class="wg-job-done-badge">âœ“ Friend!</span>'
             : '<button type="button" class="isl-btn ' + (canGive ? 'emerald' : 'cyan') + '" style="min-height:42px;padding:6px 12px" onclick="WorldGame.trackVillager(\'' + v.id + '\')">' +
-                (canGive ? (inSameZone ? '🎁 Walk & Give' : '🎁 Visit & Give') : '📍 Track') +
+                (canGive ? (inSameZone ? 'ðŸŽ Walk & Give' : 'ðŸŽ Visit & Give') : 'ðŸ“ Track') +
               '</button>') +
         '</div>' +
       '</div>';
@@ -1267,11 +1267,11 @@
           '<div class="isl-mission-top">' +
             '<div style="display:flex;align-items:center;gap:8px;font-size:1.35rem;font-weight:800"><img src="' + FLAT + 'u_jobs.webp" style="width:38px;height:38px;object-fit:contain" alt=""> Island Villager Quests</div>' +
             '<div style="margin-left:auto;display:flex;gap:8px">' +
-              '<button type="button" class="isl-btn amber" style="min-height:42px;padding:6px 12px;font-size:0.9rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openStickerBook()">📒 Sticker Book</button>' +
-              '<button type="button" class="isl-btn" style="min-height:42px;min-width:44px;padding:6px 12px" onclick="WorldGame.closeModal()">✕</button>' +
+              '<button type="button" class="isl-btn amber" style="min-height:42px;padding:6px 12px;font-size:0.9rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openStickerBook()">ðŸ“’ Sticker Book</button>' +
+              '<button type="button" class="isl-btn" style="min-height:42px;min-width:44px;padding:6px 12px" onclick="WorldGame.closeModal()">âœ•</button>' +
             '</div>' +
           '</div>' +
-          '<div style="color:#bae6fd;font-size:0.92rem;font-weight:700;margin-bottom:8px">💡 Walk up to a villager in the world to hand them materials and catch their gift box!</div>' +
+          '<div style="color:#bae6fd;font-size:0.92rem;font-weight:700;margin-bottom:8px">ðŸ’¡ Walk up to a villager in the world to hand them materials and catch their gift box!</div>' +
           '<div class="wg-jobs-list">' + rows + '</div>' +
         '</div>' +
       '</div>';
@@ -1322,7 +1322,7 @@
     var b = BATTLES.filter(function (x) { return x.id === bid; })[0];
     if (!b) return;
     if (getEnergy() < 10) {
-      openEnergyCharge('⚡ Charge your monster energy (+30) to start the friendly battle with ' + b.name + '!', function () {
+      openEnergyCharge('âš¡ Charge your monster energy (+30) to start the friendly battle with ' + b.name + '!', function () {
         openBattle(bid);
       });
       return;
@@ -1359,12 +1359,12 @@
         '<div class="isl-modal-backdrop" id="wg-battle-win">' +
           '<div class="isl-card-modal" style="max-width:520px;text-align:center">' +
             '<img src="' + FLAT + b.art + '.webp" style="width:130px;height:130px;object-fit:contain;margin:0 auto" alt="">' +
-            '<h2 style="font-size:1.75rem;margin:8px 0;color:#6ee7b7">🎉 Friendly Victory!</h2>' +
+            '<h2 style="font-size:1.75rem;margin:8px 0;color:#6ee7b7">ðŸŽ‰ Friendly Victory!</h2>' +
             '<p style="color:#e2e8f0;font-weight:700;margin-bottom:12px">' + esc(b.name) + ' cheered for your English spells and shared treasure with you!</p>' +
-            '<div class="wg-cost-row" style="justify-content:center;margin-bottom:14px">' + lootTxt + ' <span class="wg-reward-tag">🪙 +' + b.coins + ' Coins</span></div>' +
+            '<div class="wg-cost-row" style="justify-content:center;margin-bottom:14px">' + lootTxt + ' <span class="wg-reward-tag">ðŸª™ +' + b.coins + ' Coins</span></div>' +
             '<div style="display:flex;gap:10px;justify-content:center">' +
-              '<button type="button" class="isl-btn amber" onclick="WorldGame.closeModal(); WorldGame.openWorkshop(\'blueprints\')">📜 Open Blueprints</button>' +
-              '<button type="button" class="isl-btn emerald" onclick="WorldGame.closeModal()">Continue ▶</button>' +
+              '<button type="button" class="isl-btn amber" onclick="WorldGame.closeModal(); WorldGame.openWorkshop(\'blueprints\')">ðŸ“œ Open Blueprints</button>' +
+              '<button type="button" class="isl-btn emerald" onclick="WorldGame.closeModal()">Continue â–¶</button>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -1372,24 +1372,24 @@
     }
 
     var q = battleRun.qs[battleRun.idx];
-    var hearts = '❤️'.repeat(battleRun.hp) + '🖤'.repeat(battleRun.maxHp - battleRun.hp);
+    var hearts = 'â¤ï¸'.repeat(battleRun.hp) + 'ðŸ–¤'.repeat(battleRun.maxHp - battleRun.hp);
     var opts = q.options.map(function (o, i) {
-      return '<button type="button" class="isl-btn wg-choice-btn" onclick="WorldGame.answerBattle(' + i + ', this)">✨ ' + esc(o) + '</button>';
+      return '<button type="button" class="isl-btn wg-choice-btn" onclick="WorldGame.answerBattle(' + i + ', this)">âœ¨ ' + esc(o) + '</button>';
     }).join('');
 
     modalRoot().innerHTML =
       '<div class="isl-modal-backdrop" id="wg-battle-backdrop">' +
         '<div class="isl-card-modal" style="max-width:660px">' +
           '<div class="isl-mission-top">' +
-            '<div style="font-size:1.25rem;font-weight:800;color:#fda4af">⚔️ Friendly Battle: ' + esc(b.name) + '</div>' +
+            '<div style="font-size:1.25rem;font-weight:800;color:#fda4af">âš”ï¸ Friendly Battle: ' + esc(b.name) + '</div>' +
             '<div style="margin-left:auto;font-size:1.2rem">' + hearts + '</div>' +
-            '<button type="button" class="isl-btn" style="margin-left:10px;min-height:40px;min-width:42px;padding:4px 10px" onclick="WorldGame.closeModal()">✕</button>' +
+            '<button type="button" class="isl-btn" style="margin-left:10px;min-height:40px;min-width:42px;padding:4px 10px" onclick="WorldGame.closeModal()">âœ•</button>' +
           '</div>' +
           '<div class="wg-battle-arena">' +
             '<div class="wg-fighter"><img src="' + FLAT + b.art + '.webp" id="wg-boss-img" alt=""><span>' + esc(b.name) + '</span></div>' +
           '</div>' +
           '<div class="wg-q-card">' +
-            '<button type="button" class="isl-btn amber" style="min-height:42px;padding:6px 14px;margin-bottom:8px" onclick="IslandAudio.speak(\'' + esc(q.speak) + '\')">🔊 Hear Spell</button>' +
+            '<button type="button" class="isl-btn amber" style="min-height:42px;padding:6px 14px;margin-bottom:8px" onclick="IslandAudio.speak(\'' + esc(q.speak) + '\')">ðŸ”Š Hear Spell</button>' +
             '<div style="font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:12px">' + esc(q.q) + '</div>' +
             '<div class="wg-choices-grid">' + opts + '</div>' +
           '</div>' +
@@ -1429,7 +1429,7 @@
     updateStatusHud();
   }
 
-  /* ---------- 7. 2.5D Island Sports Arena (⚽ Pro Arcade Football & 🏐 4v4 Giant Beach Volleyball) ---------- */
+  /* ---------- 7. 2.5D Island Sports Arena (âš½ Pro Arcade Football & ðŸ 4v4 Giant Beach Volleyball) ---------- */
   var sportsRaf = 0;
   var sportsState = null;
   var sportsSport = 'soccer'; // 'soccer' | 'volleyball'
@@ -1480,47 +1480,47 @@
         '<div class="isl-card-modal wg-sports-modal">' +
           '<div class="isl-mission-top wg-sports-top">' +
             '<div style="display:flex;align-items:center;gap:8px;font-size:1.12rem;font-weight:800;color:#fde047">' +
-              '<img src="' + FLAT + 'o_ball.webp" style="width:28px;height:28px;object-fit:contain" alt=""> 🏆 Island Pro Sports Stadium' +
+              '<img src="' + FLAT + 'o_ball.webp" style="width:28px;height:28px;object-fit:contain" alt=""> ðŸ† Island Pro Sports Stadium' +
             '</div>' +
             '<div class="wg-sports-selectors">' +
-              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsSport === 'soccer' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.openSportsArena(\'soccer\', \'\', \'' + sportsControl + '\')">⚽ Football</button>' +
-              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsSport === 'volleyball' ? 'amber' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.openSportsArena(\'volleyball\', \'4v4\', \'' + sportsControl + '\')">🏐 Volleyball (4v4)</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsSport === 'soccer' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.openSportsArena(\'soccer\', \'\', \'' + sportsControl + '\')">âš½ Football</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsSport === 'volleyball' ? 'amber' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.openSportsArena(\'volleyball\', \'4v4\', \'' + sportsControl + '\')">ðŸ Volleyball (4v4)</button>' +
               '<button type="button" tabindex="-1" class="isl-btn ' + (sportsMode === '1v1' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'1v1\', \'' + sportsControl + '\')">1 vs 1</button>' +
               '<button type="button" tabindex="-1" class="isl-btn ' + (sportsMode === '2v2' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'2v2\', \'' + sportsControl + '\')">2 vs 2</button>' +
               '<button type="button" tabindex="-1" class="isl-btn ' + (sportsMode === '4v4' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'4v4\', \'' + sportsControl + '\')">4 vs 4 Squad</button>' +
-              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsControl === '2p' ? 'amber' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'' + sportsMode + '\', \'' + (sportsControl === '2p' ? '1p' : '2p') + '\')">' + (sportsControl === '2p' ? '👥 2P Same Screen' : '🤖 1P vs AI') + '</button>' +
+              '<button type="button" tabindex="-1" class="isl-btn ' + (sportsControl === '2p' ? 'amber' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="this.blur();WorldGame.openSportsArena(\'' + sportsSport + '\', \'' + sportsMode + '\', \'' + (sportsControl === '2p' ? '1p' : '2p') + '\')">' + (sportsControl === '2p' ? 'ðŸ‘¥ 2P Same Screen' : 'ðŸ¤– 1P vs AI') + '</button>' +
             '</div>' +
             '<div style="margin-left:auto;display:flex;gap:6px;align-items:center">' +
-              '<span class="wg-st-badge">🏆 Wins: <b id="wg-sp-wins">' + trophies + '</b></span>' +
-              '<span class="wg-st-badge" style="color:#fde047">⚡ <b id="wg-sp-energy">' + eNow + '</b></span>' +
-              '<button type="button" tabindex="-1" class="isl-btn" style="min-height:36px;min-width:38px;padding:4px 9px" onclick="WorldGame.closeModal()">✕</button>' +
+              '<span class="wg-st-badge">ðŸ† Wins: <b id="wg-sp-wins">' + trophies + '</b></span>' +
+              '<span class="wg-st-badge" style="color:#fde047">âš¡ <b id="wg-sp-energy">' + eNow + '</b></span>' +
+              '<button type="button" tabindex="-1" class="isl-btn" style="min-height:36px;min-width:38px;padding:4px 9px" onclick="WorldGame.closeModal()">âœ•</button>' +
             '</div>' +
           '</div>' +
           '<div class="wg-sports-scoreboard">' +
-            '<div class="wg-sp-team blue"><span>🟦 ' + (sportsMode === '4v4' ? 'YOUR 4v4 SQUAD' : (sportsMode === '2v2' ? 'YOU + SKY' : 'YOU (BLUE)')) + '</span><b id="wg-sp-score-a">0</b></div>' +
+            '<div class="wg-sp-team blue"><span>ðŸŸ¦ ' + (sportsMode === '4v4' ? 'YOUR 4v4 SQUAD' : (sportsMode === '2v2' ? 'YOU + SKY' : 'YOU (BLUE)')) + '</span><b id="wg-sp-score-a">0</b></div>' +
             '<div class="wg-sp-vs">' +
-              '<span id="wg-sp-status">' + (sportsSport === 'soccer' ? '⚽ Dribble Past Defenders &amp; Walk In or Shoot! First to 3 Goals Wins +25 🪙!' : '🏐 Giant 4v4 Beach Court! Move to Target Ring &amp; Press SPACE to Spike!') + '</span>' +
-              '<small>' + (sportsSport === 'soccer' ? '🕹️ Move: WASD / Arrows / Click / Stick · ⚽ Space or Click Goal = Shoot · Your Dribble Bumps Defenders Aside!' : '🕹️ Slow Floaty Ball · Teammates Set to YOU · Move (WASD/Arrows/Click) &amp; Press SPACE to Spike!') + '</small>' +
+              '<span id="wg-sp-status">' + (sportsSport === 'soccer' ? 'âš½ Dribble Past Defenders &amp; Walk In or Shoot! First to 3 Goals Wins +25 ðŸª™!' : 'ðŸ Giant 4v4 Beach Court! Move to Target Ring &amp; Press SPACE to Spike!') + '</span>' +
+              '<small>' + (sportsSport === 'soccer' ? 'ðŸ•¹ï¸ Move: WASD / Arrows / Click / Stick Â· âš½ Space or Click Goal = Shoot Â· Your Dribble Bumps Defenders Aside!' : 'ðŸ•¹ï¸ Slow Floaty Ball Â· Teammates Set to YOU Â· Move (WASD/Arrows/Click) &amp; Press SPACE to Spike!') + '</small>' +
             '</div>' +
-            '<div class="wg-sp-team red"><b id="wg-sp-score-b">0</b><span>' + (sportsControl === '2p' ? 'P2 (ARROWS+ENTER)' : (sportsMode === '4v4' ? 'RIVAL 4v4 SQUAD' : 'LEO &amp; SUNNY')) + ' 🟥</span></div>' +
+            '<div class="wg-sp-team red"><b id="wg-sp-score-b">0</b><span>' + (sportsControl === '2p' ? 'P2 (ARROWS+ENTER)' : (sportsMode === '4v4' ? 'RIVAL 4v4 SQUAD' : 'LEO &amp; SUNNY')) + ' ðŸŸ¥</span></div>' +
           '</div>' +
           '<div class="wg-sports-stage-wrap">' +
-            '<canvas id="wg-sports-canvas" width="1040" height="500"></canvas>' +
+            '<canvas id="wg-sports-canvas" width="1280" height="600"></canvas>' +
             '<div class="wg-sports-controls">' +
               '<div class="wg-sp-joy-wrap">' +
                 '<div class="wg-sp-joy" id="wg-sp-joy" aria-label="360 Analog Joystick">' +
                   '<div class="wg-sp-joy-ring"></div>' +
-                  '<div class="wg-sp-joy-knob" id="wg-sp-knob">🕹️</div>' +
+                  '<div class="wg-sp-joy-knob" id="wg-sp-knob">ðŸ•¹ï¸</div>' +
                 '</div>' +
-                '<div class="wg-sp-joy-hint"><b>360° Stick</b><small>or WASD / Arrows / Click</small></div>' +
+                '<div class="wg-sp-joy-hint"><b>360Â° Stick</b><small>or WASD / Arrows / Click</small></div>' +
               '</div>' +
               '<div class="wg-sp-action-group">' +
-                '<button type="button" tabindex="-1" class="isl-btn cyan wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'pass\')">' + (sportsSport === 'soccer' ? '👟 PASS / CHIP (E)' : '🙌 HIGH SET (E)') + '</button>' +
-                '<button type="button" tabindex="-1" class="isl-btn emerald wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'dash\')">💨 SPRINT BOOST (Shift)</button>' +
-                '<button type="button" tabindex="-1" class="isl-btn amber wg-act-btn shoot" onpointerdown="this.blur();WorldGame.sportsAction(\'power\')">' + (sportsSport === 'soccer' ? '🔥 SHOOT / STEAL! (Space)' : '🔥 JUMP SPIKE! (Space)') + '</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn cyan wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'pass\')">' + (sportsSport === 'soccer' ? 'ðŸ‘Ÿ PASS / CHIP (E)' : 'ðŸ™Œ HIGH SET (E)') + '</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn emerald wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'dash\')">ðŸ’¨ SPRINT BOOST (Shift)</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn amber wg-act-btn shoot" onpointerdown="this.blur();WorldGame.sportsAction(\'power\')">' + (sportsSport === 'soccer' ? 'ðŸ”¥ SHOOT / STEAL! (Space)' : 'ðŸ”¥ JUMP SPIKE! (Space)') + '</button>' +
               '</div>' +
               '<div style="display:flex;gap:5px;margin-left:auto">' +
-                '<button type="button" tabindex="-1" class="isl-btn" style="min-height:38px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.restartSportsMatch()">🔄 Play Again</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn" style="min-height:38px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.restartSportsMatch()">ðŸ”„ Play Again</button>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -1608,7 +1608,7 @@
       var fSize = Math.round(sheet.width / 7);
       var col = frameIdx % 7;
       var row = Math.floor(frameIdx / 7);
-      var size = isMe ? 90 : 82;
+      var size = isMe ? 72 : 66;
       ctx.drawImage(sheet, col * fSize, row * fSize, fSize, fSize, -size / 2, -size + 22, size, size);
     } else {
       var pImg = getSportImg(fallbackPic || 'c_bolt_happy');
@@ -1653,7 +1653,7 @@
       netRippleA: 0,
       netRippleB: 0,
       tick: 0,
-      bannerText: sp === 'soccer' ? '⚽ DRIBBLE PAST LEO & WALK IN OR PRESS SPACE TO SHOOT!' : '🏐 4v4 GIANT COURT! MOVE TO THE RING & PRESS SPACE TO SPIKE!',
+      bannerText: sp === 'soccer' ? 'âš½ DRIBBLE PAST LEO & WALK IN OR PRESS SPACE TO SHOOT!' : 'ðŸ 4v4 GIANT COURT! MOVE TO THE RING & PRESS SPACE TO SPIKE!',
       bannerTimer: 100,
       joyX: 0,
       joyY: 0,
@@ -1672,7 +1672,7 @@
       ball: { x: Wc / 2, y: Hc / 2 + 18, z: 0, vx: 0, vy: 0, vz: 0, r: 16, spin: 0 }
     };
 
-    // Wire 360° Virtual Analog Thumbstick (#wg-sp-joy)
+    // Wire 360Â° Virtual Analog Thumbstick (#wg-sp-joy)
     var joyEl = document.getElementById('wg-sp-joy');
     var knobEl = document.getElementById('wg-sp-knob');
     if (joyEl && knobEl) {
@@ -1822,7 +1822,7 @@
           st.ball.vx = 0.3;
           st.ball.vy = 0;
           st.ball.vz = 3.8;
-          st.bannerText = '🏐 BALL TOSSED TO YOU! PRESS SPACE OR CLICK TO SPIKE!';
+          st.bannerText = 'ðŸ BALL TOSSED TO YOU! PRESS SPACE OR CLICK TO SPIKE!';
           st.bannerTimer = 85;
         }
       }
@@ -1929,14 +1929,14 @@
         st.scoreA++;
         st.netRippleB = 32;
         sound('playFanfare');
-        st.bannerText = (sp === 'soccer' ? '⚽ GOAL FOR YOUR TEAM! 🌟' : '🏐 ACE POINT FOR YOUR SQUAD! 🌟');
+        st.bannerText = (sp === 'soccer' ? 'âš½ GOAL FOR YOUR TEAM! ðŸŒŸ' : 'ðŸ ACE POINT FOR YOUR SQUAD! ðŸŒŸ');
         st.players.forEach(function (p) { if (p.team === 'A') p.cheerTimer = 45; });
         spawnBurst(Wc - 60, Hc / 2, '#fde047', 32);
       } else {
         st.scoreB++;
         st.netRippleA = 32;
         sound('playPop');
-        st.bannerText = (sp === 'soccer' ? '⚽ RIVAL GOAL! YOUR BALL NOW!' : '🏐 RIVAL POINT! YOUR SERVE!');
+        st.bannerText = (sp === 'soccer' ? 'âš½ RIVAL GOAL! YOUR BALL NOW!' : 'ðŸ RIVAL POINT! YOUR SERVE!');
         st.players.forEach(function (p) { if (p.team === 'B') p.cheerTimer = 45; });
         spawnBurst(60, Hc / 2, '#f43f5e', 22);
       }
@@ -1959,13 +1959,13 @@
           addBonusCoins(25);
           sound('playFanfare');
           say('Championship victory! Your team won the match! Plus twenty five coins!');
-          st.bannerText = '🏆 VICTORY! +25 🪙 COINS! (CLICK OR PRESS SPACE TO PLAY AGAIN)';
+          st.bannerText = 'ðŸ† VICTORY! +25 ðŸª™ COINS! (CLICK OR PRESS SPACE TO PLAY AGAIN)';
           var wEl = document.getElementById('wg-sp-wins');
           if (wEl) wEl.textContent = String(wSt.sportsWins);
         } else {
           sound('playSoftFail');
           say('Close match! Tap Play Again!');
-          st.bannerText = '👏 CLOSE MATCH! CLICK OR PRESS SPACE TO PLAY AGAIN!';
+          st.bannerText = 'ðŸ‘ CLOSE MATCH! CLICK OR PRESS SPACE TO PLAY AGAIN!';
         }
         var stEl = document.getElementById('wg-sp-status');
         if (stEl) stEl.textContent = st.bannerText;
@@ -1980,7 +1980,7 @@
       var me = st.players[0];
       var b = st.ball;
 
-      // Read Player 1 movement (WASD + Arrows in 1P mode + 360° Joystick + Click/Drag target)
+      // Read Player 1 movement (WASD + Arrows in 1P mode + 360Â° Joystick + Click/Drag target)
       var useArrowsP1 = (st.ctrl !== '2p');
       var kx = ((keys.KeyD || (useArrowsP1 && keys.ArrowRight)) ? 1 : 0) -
                ((keys.KeyA || (useArrowsP1 && keys.ArrowLeft))  ? 1 : 0);
@@ -2061,11 +2061,11 @@
 
               if (st.actionKind === 'pass') {
                 kickSoccerBall(me, aimX * 10.5, aimY * 10.5, 6.8, '#38bdf8');
-                st.bannerText = '🚀 CHIP / LOB PASS!';
+                st.bannerText = 'ðŸš€ CHIP / LOB PASS!';
                 st.bannerTimer = 35;
               } else {
                 kickSoccerBall(me, aimX * 15.2, aimY * 15.2, 3.5, '#fde047');
-                st.bannerText = '🔥 SUPER POWER SHOT!';
+                st.bannerText = 'ðŸ”¥ SUPER POWER SHOT!';
                 st.bannerTimer = 35;
               }
             } else {
@@ -2082,7 +2082,7 @@
                 st.holder = me;
                 st.stealCooldown = 45;
                 spawnBurst(b.x, b.y, '#34d399', 18);
-                st.bannerText = '⚡ CLEAN TACKLE! YOUR BALL!';
+                st.bannerText = 'âš¡ CLEAN TACKLE! YOUR BALL!';
                 st.bannerTimer = 40;
                 sound('playCorrect');
               }
@@ -2129,7 +2129,7 @@
                 if (p.team === 'A') {
                   var toMeX = me.x - p.x, toMeY = me.y - p.y, toMeL = Math.hypot(toMeX, toMeY) || 1;
                   kickSoccerBall(p, (toMeX / toMeL) * 9.5, (toMeY / toMeL) * 9.5, 2.2, '#38bdf8');
-                  st.bannerText = '📣 SKY PASSES TO YOU!';
+                  st.bannerText = 'ðŸ“£ SKY PASSES TO YOU!';
                   st.bannerTimer = 40;
                 } else {
                   kickSoccerBall(p, -7.2, (Math.random() - 0.5) * 3.5, 2.8, '#f43f5e');
@@ -2192,7 +2192,7 @@
                   st.holder = me;
                   st.stealCooldown = 45;
                   spawnBurst(b.x, b.y, '#38bdf8', 14);
-                  st.bannerText = '⚡ BALL STOLEN! GO SCORE!';
+                  st.bannerText = 'âš¡ BALL STOLEN! GO SCORE!';
                   st.bannerTimer = 35;
                   sound('playHop');
                 } else if (st.holder === me) {
@@ -2205,7 +2205,7 @@
                     p.x += p.vx * 2;
                     p.y += p.vy * 2;
                     spawnBurst(p.x, p.y, '#34d399', 12);
-                    st.bannerText = '💨 SMOOTH DRIBBLE PAST ' + p.name.toUpperCase() + '!';
+                    st.bannerText = 'ðŸ’¨ SMOOTH DRIBBLE PAST ' + p.name.toUpperCase() + '!';
                     st.bannerTimer = 35;
                     sound('playHop');
                   } else {
@@ -2390,7 +2390,7 @@
                 b.vy = (targetRY - b.y) / flightT;
                 b.vz = isSpike ? 4.4 : 6.2;
                 spawnBurst(b.x, b.y - b.z, isSpike ? '#fde047' : '#38bdf8', isSpike ? 22 : 12);
-                st.bannerText = isSpike ? '🔥 MONSTER POWER SPIKE!' : '🏐 NICE OVERHEAD SEND!';
+                st.bannerText = isSpike ? 'ðŸ”¥ MONSTER POWER SPIKE!' : 'ðŸ NICE OVERHEAD SEND!';
                 st.bannerTimer = 45;
                 sound(isSpike ? 'playCorrect' : 'playPop');
               } else if (p.team === 'A') {
@@ -2400,7 +2400,7 @@
                   b.vy = (me.y - b.y) / setT;
                   b.vz = 5.8;
                   spawnBurst(b.x, b.y - b.z, '#38bdf8', 12);
-                  st.bannerText = '🙌 ' + p.name.toUpperCase() + ' SETS TO YOU! PRESS SPACE TO SPIKE!';
+                  st.bannerText = 'ðŸ™Œ ' + p.name.toUpperCase() + ' SETS TO YOU! PRESS SPACE TO SPIKE!';
                   st.bannerTimer = 60;
                   sound('playPop');
                 } else {
@@ -2654,11 +2654,11 @@
         var labelY = Math.round(p.y - (p.z || 0) - 62);
         var canSpikeNow = (!st.finished && sp === 'volleyball' && p.id === 'me' && b.x < Wc / 2 + 20 && Math.hypot(b.x - p.x, b.y - p.y) < 110);
         var labelTxt = p.stunTimer > 0
-          ? '💫 Dizzied!'
+          ? 'ðŸ’« Dizzied!'
           : (p.id === 'me'
               ? (sp === 'soccer'
-                  ? (st.holder === p ? '⚽ YOU (SPACE = SHOOT!)' : '▼ YOU')
-                  : (canSpikeNow ? '🔥 SPACE = SPIKE!' : '▼ YOU'))
+                  ? (st.holder === p ? 'âš½ YOU (SPACE = SHOOT!)' : 'â–¼ YOU')
+                  : (canSpikeNow ? 'ðŸ”¥ SPACE = SPIKE!' : 'â–¼ YOU'))
               : p.name);
         ctx.strokeStyle = '#060911';
         ctx.lineWidth = 4.5;
@@ -2807,3 +2807,4 @@
     wireWorldHud();
   }
 })(typeof window !== 'undefined' ? window : this);
+
