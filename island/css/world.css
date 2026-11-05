@@ -473,3 +473,433 @@ body.w-on #w-vignette { display: block; }
   background: rgba(16,185,129,.3);
   box-shadow: 0 0 16px rgba(16,185,129,.4);
 }
+
+
+/* ========================================================
+   FULL-SCREEN HOME & CRAFTING STUDIO PAGE
+   ======================================================== */
+.wg-studio-modal {
+  max-width: 1180px;
+  width: 96vw;
+  height: min(92vh, 740px);
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  overflow: hidden;
+  border: 2.5px solid rgba(56, 189, 248, 0.48);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.78);
+}
+.wg-studio-top {
+  background: rgba(15, 23, 42, 0.92);
+  padding: 8px 12px;
+  border-radius: 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.wg-studio-mats {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.wg-studio-mats .wg-mat-chip {
+  padding: 3px 8px;
+  font-size: 13px;
+}
+.wg-studio-mats .wg-mat-chip img {
+  width: 20px;
+  height: 20px;
+}
+.wg-studio-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.08fr 1fr;
+  gap: 12px;
+}
+.wg-studio-stage-wrap {
+  display: flex;
+  flex-direction: column;
+  background: rgba(6, 9, 17, 0.72);
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 8px 10px;
+  min-height: 0;
+}
+.wg-studio-stage-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font: 700 14px Fredoka, sans-serif;
+  color: #fde047;
+  margin-bottom: 6px;
+}
+.wg-st-badge {
+  background: rgba(16, 185, 129, 0.22);
+  border: 1.5px solid #10b981;
+  color: #6ee7b7;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+.wg-studio-canvas {
+  position: relative;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 280px;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 25% 30%, rgba(190, 242, 100, 0.35) 0%, transparent 40%),
+    radial-gradient(circle at 75% 75%, rgba(190, 242, 100, 0.3) 0%, transparent 45%),
+    linear-gradient(180deg, #7cc63f 0%, #8fd14f 45%, #76bf38 100%);
+  border: 3px solid #3f6212;
+  box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.25);
+}
+/* Connected Wooden Foundation & Veranda Deck directly under House (matches Zone 0 x: 940..1920, y: 440..840) */
+.wg-studio-deck {
+  position: absolute;
+  left: 32.7%;
+  top: 8.1%;
+  width: 59.4%;
+  height: 40.4%;
+  background: repeating-linear-gradient(
+    90deg,
+    #c8924b 0px,
+    #c8924b 18px,
+    #b67e38 18px,
+    #b67e38 20px
+  );
+  border: 4px solid #6f4316;
+  border-radius: 16px;
+  box-shadow: 0 6px 0 rgba(40, 20, 5, 0.35);
+  z-index: 1;
+}
+.wg-studio-pad {
+  position: absolute;
+  left: 7%;
+  top: 18%;
+  width: 34%;
+  height: 62%;
+  background: rgba(71, 85, 105, 0.42);
+  border: 2.5px dashed rgba(226, 232, 240, 0.55);
+  border-radius: 50%;
+}
+.wg-studio-steps {
+  position: absolute;
+  left: 41.8%;
+  top: 47.5%;
+  width: 9.8%;
+  height: 3.8%;
+  background: #d69e5c;
+  border: 3px solid #6f4316;
+  border-radius: 4px;
+  z-index: 2;
+}
+.wg-studio-path-h {
+  position: absolute;
+  left: 8%;
+  top: 47.5%;
+  width: 58%;
+  height: 9%;
+  background: #f4e4ae;
+  border: 3px solid #c7a463;
+  border-radius: 999px;
+  z-index: 0;
+}
+.wg-studio-path-v {
+  position: absolute;
+  left: 43.5%;
+  top: 48%;
+  width: 6.5%;
+  height: 30%;
+  background: #f4e4ae;
+  border: 3px solid #c7a463;
+  border-radius: 999px;
+  z-index: 0;
+}
+.wg-studio-zone-tag {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #fde68a;
+  font: 700 10px Fredoka, sans-serif;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+.wg-studio-garden-tag {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #bbf7d0;
+  font: 700 11px Fredoka, sans-serif;
+  padding: 2px 8px;
+  border-radius: 999px;
+  z-index: 2;
+}
+.wg-studio-house {
+  position: absolute;
+  transform: translate(-50%, -92%);
+  z-index: 25;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.wg-studio-house img {
+  height: 118px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.45));
+}
+.wg-studio-house-tag {
+  background: rgba(15, 23, 42, 0.9);
+  color: #fde047;
+  font: 800 11px Fredoka, sans-serif;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(250, 204, 21, 0.5);
+  margin-top: -4px;
+  white-space: nowrap;
+}
+.wg-studio-wb, .wg-studio-npc {
+  position: absolute;
+  transform: translate(-50%, -90%);
+  z-index: 20;
+  pointer-events: none;
+}
+.wg-studio-wb img {
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.4));
+}
+.wg-studio-npc img {
+  height: 58px;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.4));
+}
+.wg-studio-item {
+  position: absolute;
+  transform: translate(-50%, -90%);
+  background: transparent;
+  border: 0;
+  padding: 2px;
+  cursor: pointer;
+  transition: transform 0.14s var(--w-spring), filter 0.14s;
+}
+.wg-studio-item:hover {
+  transform: translate(-50%, -94%) scale(1.08);
+  filter: brightness(1.12);
+}
+.wg-studio-item img {
+  display: block;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.42));
+}
+.wg-studio-item.selected {
+  outline: 3px solid #fde047;
+  background: rgba(250, 204, 21, 0.25);
+  border-radius: 12px;
+  z-index: 95 !important;
+}
+.wg-studio-sel-tag {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: #fde047;
+  font: 800 10px Fredoka, sans-serif;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid #fde047;
+  white-space: nowrap;
+}
+.wg-studio-toolbar {
+  margin-top: 7px;
+  background: rgba(15, 23, 42, 0.94);
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  border-radius: 14px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f8fafc;
+  font: 600 12px Fredoka, sans-serif;
+}
+.wg-studio-toolbar.hint {
+  border-color: rgba(250, 204, 21, 0.35);
+  color: #fde68a;
+}
+.wg-st-txt {
+  flex: 1;
+  min-width: 0;
+}
+.wg-st-txt b {
+  display: block;
+  color: #fde047;
+  font-size: 13px;
+}
+.wg-st-txt small {
+  display: block;
+  color: #bae6fd;
+  font-size: 11px;
+}
+
+.wg-studio-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: rgba(6, 9, 17, 0.65);
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 10px;
+}
+.wg-studio-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.wg-studio-tabs .isl-btn {
+  min-height: 40px;
+  padding: 5px 8px;
+  font-size: 0.84rem;
+}
+.wg-studio-tab-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.wg-sec-title {
+  font: 800 14px Fredoka, sans-serif;
+  color: #fde047;
+  margin-bottom: 6px;
+}
+.wg-roadmap-wrap {
+  margin-top: 10px;
+  background: rgba(15, 23, 42, 0.82);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 10px;
+}
+.wg-tier-roadmap {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+.wg-tier-step {
+  background: rgba(30, 41, 59, 0.78);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 6px 4px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  opacity: 0.65;
+}
+.wg-tier-step.done, .wg-tier-step.current {
+  opacity: 1;
+}
+.wg-tier-step.current {
+  border-color: #fde047;
+  background: rgba(250, 204, 21, 0.14);
+}
+.wg-tier-step img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+.wg-tier-step b {
+  font: 700 11px Fredoka, sans-serif;
+  color: #fff;
+}
+.wg-tier-step em {
+  font: 700 10px Fredoka, sans-serif;
+  font-style: normal;
+  color: #6ee7b7;
+}
+.wg-craft-filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.wg-rec-kind {
+  font: 700 10px Fredoka, sans-serif;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.2);
+  color: #fde68a;
+}
+.wg-rec-kind.garden {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+.wg-rec-counts {
+  font: 600 11px Fredoka, sans-serif;
+  color: #94a3b8;
+}
+.wg-rec-counts b {
+  color: #e2e8f0;
+}
+.wg-studio-panel .wg-recipes-grid {
+  max-height: none;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+}
+.wg-decor-lists {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.wg-bag-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 7px 10px;
+  color: #fff;
+  font-family: Fredoka, sans-serif;
+}
+.wg-bag-row.active {
+  border-color: #fde047;
+  background: rgba(250, 204, 21, 0.16);
+}
+.wg-empty-note {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 10px;
+  color: #94a3b8;
+  font: 600 12px Fredoka, sans-serif;
+  text-align: center;
+}
+@media (max-width: 880px) {
+  .wg-studio-modal {
+    height: 94vh;
+    overflow-y: auto;
+  }
+  .wg-studio-body {
+    grid-template-columns: 1fr;
+    overflow-y: visible;
+  }
+  .wg-studio-canvas {
+    min-height: 220px;
+  }
+  .wg-tier-roadmap {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
