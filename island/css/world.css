@@ -1155,3 +1155,152 @@ body.w-on #w-vignette { display: block; }
   margin-top: 8px;
   flex-wrap: wrap;
 }
+
+
+/* Clean transparent labels & smooth drag-and-drop */
+.wg-studio-canvas {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.wg-studio-item {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  cursor: grab;
+}
+.wg-studio-item:active,
+.wg-studio-item.dragging {
+  cursor: grabbing;
+  transition: none !important;
+}
+.wg-studio-sel-tag,
+.wg-studio-house-tag,
+.wg-studio-garden-tag,
+.wg-room-crest,
+.wg-room-doormat {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.95), 0 0 8px rgba(0,0,0,0.85) !important;
+}
+.wg-sp-dpad {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.wg-dpad-btn {
+  min-width: 42px !important;
+  min-height: 40px !important;
+  padding: 4px 10px !important;
+  font-size: 0.95rem !important;
+  user-select: none;
+  touch-action: manipulation;
+}
+.wg-sp-action-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+
+/* Clean transparent labels & smooth drag-and-drop */
+.wg-studio-canvas {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.wg-studio-item {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  cursor: grab;
+}
+.wg-studio-item:active,
+.wg-studio-item.dragging {
+  cursor: grabbing;
+  transition: none !important;
+}
+.wg-studio-sel-tag,
+.wg-studio-house-tag,
+.wg-studio-garden-tag,
+.wg-room-crest,
+.wg-room-doormat {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.95), 0 0 8px rgba(0,0,0,0.85) !important;
+}
+.wg-sp-dpad {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.wg-dpad-btn {
+  min-width: 42px !important;
+  min-height: 40px !important;
+  padding: 4px 10px !important;
+  font-size: 0.95rem !important;
+  user-select: none;
+  touch-action: manipulation;
+}
+.wg-sp-action-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.wg-sports-selectors {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.wg-sports-scoreboard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  padding: 6px 14px;
+  margin-bottom: 8px;
+  font-family: Fredoka, sans-serif;
+}
+.wg-sp-team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+.wg-sp-team b {
+  font-size: 1.45rem;
+  background: rgba(6, 9, 17, 0.75);
+  padding: 2px 11px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #fde047;
+}
+.wg-sp-vs {
+  text-align: center;
+  flex: 1;
+}
+.wg-sp-vs span {
+  display: block;
+  color: #fde047;
+  font-weight: 800;
+  font-size: 0.92rem;
+}
+.wg-sp-vs small {
+  display: block;
+  color: #cbd5e1;
+  font-size: 0.74rem;
+}
+#wg-sports-canvas {
+  border-radius: 14px;
+  border: 2.5px solid rgba(255, 255, 255, 0.22);
+  background: #090d16;
+}

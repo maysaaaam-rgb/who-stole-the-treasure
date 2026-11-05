@@ -523,11 +523,12 @@
     }
   }
 
-  /* ---------- 4. Full-Screen Home & Crafting Studio (Inside Room, Outside Garden, Furniture Upgrades & Smart Blueprints) ---------- */
+  /* ---------- 4. Full-Screen Home & Crafting Studio (Inside Room, Outside Garden, Live Drag-and-Drop, Furniture Upgrades & Smart Blueprints) ---------- */
   var workshopTab = 'blueprints';
   var craftFilter = 'all';
   var studioView = 'inside'; // 'inside' (Indoor Room) or 'outside' (Outdoor Garden)
   var studioSelectedIdx = -1;
+  var studioDragState = null;
 
   var PLOT_X0 = 400, PLOT_W = 1650, PLOT_Y0 = 360, PLOT_H = 990;
   var ROOM_X0 = 520, ROOM_W = 1360, ROOM_Y0 = 340, ROOM_H = 840;
@@ -644,6 +645,7 @@
 
   function selectStudioPlaced(idx, ev) {
     if (ev && ev.stopPropagation) ev.stopPropagation();
+    if (studioDragState && studioDragState.moved) return;
     sound('playTap');
     var st = readState();
     if (idx >= 0 && st.placed && st.placed[idx]) {
@@ -654,20 +656,28 @@
     renderWorkshop();
   }
 
-  function tapStudioStage(ev) {
-    if (studioSelectedIdx < 0) return;
-    var canvas = document.getElementById('wg-studio-canvas');
-    if (!canvas) return;
-    var rect = canvas.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
-    var rx = Math.max(0.06, Math.min(0.94, (ev.clientX - rect.left) / rect.width));
-    var ry = Math.max(0.14, Math.min(0.92, (ev.clientY - rect.top) / rect.height));
+  function focusPlacedItem(id) {
+    sound('playTap');
     var st = readState();
-    var item = st.placed && st.placed[studioSelectedIdx];
-    if (!item) return;
-    var rec = RECIPES.filter(function (r) { return r.id === item.id; })[0];
+    var foundIdx = -1;
+    (st.placed || []).forEach(function (p, i) { if (p.id === id && foundIdx === -1) foundIdx = i; });
+    if (foundIdx >= 0) {
+      var rec = RECIPES.filter(function (r) { return r.id === id; })[0];
+      if (rec) studioView = (rec.kind === 'patio') ? 'inside' : 'outside';
+      studioSelectedIdx = foundIdx;
+      renderWorkshop();
+    }
+  }
+
+  function clientToWorldCoords(clientX, clientY, isIndoor) {
+    var canvas = document.getElementById('wg-studio-canvas');
+    if (!canvas) return null;
+    var rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+    var rx = Math.max(0.06, Math.min(0.94, (clientX - rect.left) / rect.width));
+    var ry = Math.max(0.16, Math.min(0.92, (clientY - rect.top) / rect.height));
     var wx, wy;
-    if (rec && rec.kind === 'patio') {
+    if (isIndoor) {
       wx = Math.round(ROOM_X0 + rx * ROOM_W);
       wy = Math.round(ROOM_Y0 + ry * ROOM_H);
       wx = Math.max(610, Math.min(1790, wx));
@@ -677,8 +687,106 @@
       wy = Math.round(PLOT_Y0 + ry * PLOT_H);
       if (wx > 1020 && wx < 1320 && wy > 450 && wy < 735) wy = 785;
     }
-    item.x = wx;
-    item.y = wy;
+    return { wx: wx, wy: wy, leftPct: (rx * 100).toFixed(1), topPct: (ry * 100).toFixed(1) };
+  }
+
+  function startStudioDrag(idx, ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    var st = readState();
+    if (!st.placed || !st.placed[idx]) return;
+    var item = st.placed[idx];
+    var rec = RECIPES.filter(function (r) { return r.id === item.id; })[0];
+    var btnEl = ev.currentTarget || (ev.target && ev.target.closest ? ev.target.closest('.wg-studio-item') : null);
+    studioSelectedIdx = idx;
+    studioDragState = {
+      idx: idx,
+      isIndoor: !!(rec && rec.kind === 'patio'),
+      startX: ev.clientX,
+      startY: ev.clientY,
+      moved: false,
+      wx: item.x,
+      wy: item.y,
+      el: btnEl
+    };
+    if (btnEl && btnEl.setPointerCapture && ev.pointerId !== undefined) {
+      try { btnEl.setPointerCapture(ev.pointerId); } catch (e) {}
+    }
+  }
+
+  function moveStudioDrag(ev) {
+    if (!studioDragState) return;
+    var dist = Math.hypot(ev.clientX - studioDragState.startX, ev.clientY - studioDragState.startY);
+    if (!studioDragState.moved && dist > 5) {
+      studioDragState.moved = true;
+      if (studioDragState.el) studioDragState.el.classList.add('selected', 'dragging');
+    }
+    if (studioDragState.moved) {
+      var mapped = clientToWorldCoords(ev.clientX, ev.clientY, studioDragState.isIndoor);
+      if (!mapped) return;
+      studioDragState.wx = mapped.wx;
+      studioDragState.wy = mapped.wy;
+      if (studioDragState.el) {
+        studioDragState.el.style.left = mapped.leftPct + '%';
+        studioDragState.el.style.top = mapped.topPct + '%';
+        studioDragState.el.style.zIndex = '99';
+      }
+    }
+  }
+
+  function endStudioDrag(ev) {
+    if (!studioDragState) return;
+    var ds = studioDragState;
+    if (ds.moved) {
+      var st = readState();
+      if (st.placed && st.placed[ds.idx]) {
+        st.placed[ds.idx].x = ds.wx;
+        st.placed[ds.idx].y = ds.wy;
+        writeState(st);
+        sound('playPop');
+        if (W() && W().refreshHome) W().refreshHome(false);
+      }
+      setTimeout(function () { studioDragState = null; }, 40);
+      renderWorkshop();
+    } else {
+      studioDragState = null;
+    }
+  }
+
+  function tapStudioStage(ev) {
+    if (studioDragState && studioDragState.moved) return;
+    if (studioSelectedIdx < 0) return;
+    var st = readState();
+    var item = st.placed && st.placed[studioSelectedIdx];
+    if (!item) return;
+    var rec = RECIPES.filter(function (r) { return r.id === item.id; })[0];
+    var mapped = clientToWorldCoords(ev.clientX, ev.clientY, !!(rec && rec.kind === 'patio'));
+    if (!mapped) return;
+    item.x = mapped.wx;
+    item.y = mapped.wy;
+    writeState(st);
+    sound('playPop');
+    if (W() && W().refreshHome) W().refreshHome(false);
+    renderWorkshop();
+  }
+
+  function nudgeStudioItem(dx, dy, ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    var st = readState();
+    if (studioSelectedIdx < 0 || !st.placed || !st.placed[studioSelectedIdx]) return;
+    var item = st.placed[studioSelectedIdx];
+    var rec = RECIPES.filter(function (r) { return r.id === item.id; })[0];
+    var isIndoor = !!(rec && rec.kind === 'patio');
+    var nx = item.x + dx;
+    var ny = item.y + dy;
+    if (isIndoor) {
+      nx = Math.max(610, Math.min(1790, nx));
+      ny = Math.max(585, Math.min(1080, ny));
+    } else {
+      nx = Math.max(420, Math.min(2000, nx));
+      ny = Math.max(400, Math.min(1320, ny));
+    }
+    item.x = Math.round(nx);
+    item.y = Math.round(ny);
     writeState(st);
     sound('playPop');
     if (W() && W().refreshHome) W().refreshHome(false);
@@ -793,7 +901,7 @@
     var comfortStars = (curTier.level * 2) + placed.length + starUpgrades + (bpDoneCount * 3);
 
     var matBar = Object.keys(MAT_ICONS).map(function (k) {
-      return '<span class="wg-mat-chip"><img src="' + FLAT + MAT_ICONS[k] + '.webp" alt=""><b>' + (Number(bag[k]) || 0) + '</b><small>' + k + '</small></span>';
+      return '<span class="wg-mat-chip"><img src="' + FLAT + MAT_ICONS[k] + '.webp" alt="" draggable="false"><b>' + (Number(bag[k]) || 0) + '</b><small>' + k + '</small></span>';
     }).join('');
 
     var stageItemsHtml = placed.map(function (p, idx) {
@@ -813,8 +921,8 @@
       var isSel = (idx === studioSelectedIdx);
       var zIdx = rec.flat ? 4 : Math.round(topPct);
       var starsBadge = itemLv > 1 ? '<span class="wg-item-lv-pill">' + '★'.repeat(itemLv) + '</span>' : '';
-      return '<button type="button" class="wg-studio-item' + (isSel ? ' selected' : '') + ' lv-' + itemLv + '" style="left:' + leftPct + '%;top:' + topPct + '%;z-index:' + zIdx + '" title="' + esc(rec.name) + ' Lv.' + itemLv + ' (Tap to select, move, or upgrade)" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">' +
-        '<img src="' + FLAT + rec.id + '.webp" alt="" style="height:' + hPx + 'px;' + (p.flip ? 'transform:scaleX(-1)' : '') + '">' +
+      return '<button type="button" class="wg-studio-item' + (isSel ? ' selected' : '') + ' lv-' + itemLv + '" style="left:' + leftPct + '%;top:' + topPct + '%;z-index:' + zIdx + '" title="Drag or tap to move ' + esc(rec.name) + ' Lv.' + itemLv + '" onpointerdown="WorldGame.startStudioDrag(' + idx + ', event)" onpointermove="WorldGame.moveStudioDrag(event)" onpointerup="WorldGame.endStudioDrag(event)" onpointercancel="WorldGame.endStudioDrag(event)" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">' +
+        '<img src="' + FLAT + rec.id + '.webp" alt="" draggable="false" style="height:' + hPx + 'px;' + (p.flip ? 'transform:scaleX(-1)' : '') + '">' +
         starsBadge +
         (isSel ? '<span class="wg-studio-sel-tag">' + esc(rec.name) + ' Lv.' + itemLv + '</span>' : '') +
       '</button>';
@@ -828,17 +936,23 @@
 
     var stageToolbarHtml = selRec
       ? '<div class="wg-studio-toolbar">' +
-          '<img src="' + FLAT + selRec.id + '.webp" style="width:30px;height:30px;object-fit:contain" alt="">' +
-          '<div class="wg-st-txt"><b>' + esc(selRec.name) + ' (' + '★'.repeat(selLv) + ')</b><small>Tap anywhere in the ' + (studioView === 'inside' ? 'Room' : 'Garden') + ' to move it!</small></div>' +
+          '<img src="' + FLAT + selRec.id + '.webp" style="width:28px;height:28px;object-fit:contain" alt="" draggable="false">' +
+          '<div class="wg-st-txt"><b>' + esc(selRec.name) + ' (' + '★'.repeat(selLv) + ')</b><small>Drag it, tap floor, or use arrows:</small></div>' +
+          '<div style="display:flex;gap:3px">' +
+            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(-65, 0, event)" title="Move Left">◀</button>' +
+            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(0, -55, event)" title="Move Up">▲</button>' +
+            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(0, 55, event)" title="Move Down">▼</button>' +
+            '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 7px;font-size:0.75rem" onclick="WorldGame.nudgeStudioItem(65, 0, event)" title="Move Right">▶</button>' +
+          '</div>' +
           (selLv < 3
-            ? '<button type="button" class="isl-btn ' + (canSelUp ? 'amber' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.upgradeStudioItem(event)" title="Upgrade to Lv.' + (selLv + 1) + ' (' + (selLv === 1 ? '1 Wood + 1 Flower' : '1 Stone + 1 Crystal') + ')">⬆ Lv.' + (selLv + 1) + ' ★</button>'
-            : '<span class="wg-job-done-badge" style="font-size:0.75rem">👑 Max Lv.3</span>') +
-          '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.flipStudioItem(event)">↔ Flip</button>' +
-          '<button type="button" class="isl-btn" style="min-height:34px;padding:4px 9px;font-size:0.78rem;background:#e11d48;border-bottom-color:#881337" onclick="WorldGame.storeStudioItem(event)">📥 Bag</button>' +
-          '<button type="button" class="isl-btn emerald" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.selectStudioPlaced(-1, event)">✓</button>' +
+            ? '<button type="button" class="isl-btn ' + (canSelUp ? 'amber' : '') + '" style="min-height:32px;padding:3px 8px;font-size:0.76rem" onclick="WorldGame.upgradeStudioItem(event)" title="Upgrade to Lv.' + (selLv + 1) + '">⬆ Lv.' + (selLv + 1) + ' ★</button>'
+            : '<span class="wg-job-done-badge" style="font-size:0.72rem">👑 Max</span>') +
+          '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 8px;font-size:0.76rem" onclick="WorldGame.flipStudioItem(event)">↔</button>' +
+          '<button type="button" class="isl-btn" style="min-height:32px;padding:3px 8px;font-size:0.76rem;background:#e11d48;border-bottom-color:#881337" onclick="WorldGame.storeStudioItem(event)">📥</button>' +
+          '<button type="button" class="isl-btn emerald" style="min-height:32px;padding:3px 8px;font-size:0.76rem" onclick="WorldGame.selectStudioPlaced(-1, event)">✓</button>' +
         '</div>'
       : '<div class="wg-studio-toolbar hint">' +
-          '<span>💡 <b>' + (studioView === 'inside' ? '🛋️ Inside Room Preview' : '🌳 Outside Garden Preview') + ':</b> Tap any item to move, flip, or <b>⬆ Upgrade (Lv.1 → Lv.3 ★)</b>!</span>' +
+          '<span>✋ <b>' + (studioView === 'inside' ? '🛋️ Inside Room' : '🌳 Outside Garden') + ':</b> Drag any item with your mouse/finger, or tap an item then tap where to put it!</span>' +
         '</div>';
 
     var canvasInnerHtml = '';
@@ -852,7 +966,7 @@
         '<div class="wg-room-floor">' +
           '<span class="wg-room-side-hint left">⬅ Left Side</span>' +
           '<span class="wg-room-side-hint right">Right Side ➡</span>' +
-          '<div class="wg-room-doormat">🚪 Front Door (Exit to Garden)</div>' +
+          '<div class="wg-room-doormat">🚪 Front Door</div>' +
         '</div>' +
         stageItemsHtml;
     } else {
@@ -861,11 +975,11 @@
         '<div class="wg-studio-path-v"></div>' +
         '<div class="wg-studio-stone-pad"></div>' +
         '<span class="wg-studio-garden-tag">🌳 Sunny Garden Yard</span>' +
-        '<div class="wg-studio-npc" style="left:9.5%;top:34%" title="Grandpa Bolt"><img src="' + FLAT + 'c_bolt_happy.webp" alt=""></div>' +
-        '<div class="wg-studio-wb" style="left:21.8%;top:36.4%" title="Crafting Workbench"><img src="' + FLAT + 'o_workbench.webp" alt=""></div>' +
+        '<div class="wg-studio-npc" style="left:9.5%;top:34%" title="Grandpa Bolt"><img src="' + FLAT + 'c_bolt_happy.webp" alt="" draggable="false"></div>' +
+        '<div class="wg-studio-wb" style="left:21.8%;top:36.4%" title="Crafting Workbench"><img src="' + FLAT + 'o_workbench.webp" alt="" draggable="false"></div>' +
         '<div class="wg-studio-house" style="left:46.7%;top:34.3%;cursor:pointer;pointer-events:auto" onclick="WorldGame.setStudioView(\'inside\')" title="Tap to look Inside your ' + esc(curTier.name) + '!">' +
-          '<img src="' + FLAT + curTier.id + '.webp" alt="">' +
-          '<span class="wg-studio-house-tag">🚪 ' + esc(curTier.name) + ' (Tap for Inside!)</span>' +
+          '<img src="' + FLAT + curTier.id + '.webp" alt="" draggable="false">' +
+          '<span class="wg-studio-house-tag">🚪 ' + esc(curTier.name) + '</span>' +
         '</div>' +
         stageItemsHtml;
     }
@@ -879,7 +993,7 @@
           '</div>' +
           '<span class="wg-st-badge">⭐ Architect Score: ' + comfortStars + '</span>' +
         '</div>' +
-        '<div class="wg-studio-canvas ' + (studioView === 'inside' ? 'is-room' : 'is-yard') + '" id="wg-studio-canvas" onclick="WorldGame.tapStudioStage(event)">' +
+        '<div class="wg-studio-canvas ' + (studioView === 'inside' ? 'is-room' : 'is-yard') + '" id="wg-studio-canvas" onpointermove="WorldGame.moveStudioDrag(event)" onpointerup="WorldGame.endStudioDrag(event)" onpointercancel="WorldGame.endStudioDrag(event)" onclick="WorldGame.tapStudioStage(event)">' +
           canvasInnerHtml +
         '</div>' +
         stageToolbarHtml +
@@ -917,7 +1031,7 @@
           '<img src="' + FLAT + 'c_bolt_happy.webp" style="width:48px;height:48px;object-fit:contain" alt="">' +
           '<div style="flex:1;min-width:0">' +
             '<b style="color:#fde047;display:block">📜 Grandpa Bolt\'s Smart Blueprints (' + bpDoneCount + '/6 ★)</b>' +
-            '<small style="color:#cbd5e1">Read the English clues, craft &amp; upgrade items in your Room or Garden, and claim big rewards!</small>' +
+            '<small style="color:#cbd5e1">Read the English clues, craft &amp; drag items in your Room or Garden, and claim rewards!</small>' +
           '</div>' +
           '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.82rem" onclick="WorldGame.openSmartBuilderQuiz()">🧠 +Materials Quiz</button>' +
         '</div>' +
@@ -967,15 +1081,17 @@
         var canCraft = hasMaterials(r.cost);
         return '<div class="wg-recipe-card">' +
           '<span class="wg-rec-kind ' + r.kind + '">' + (r.kind === 'patio' ? '🛋️ Inside Room' : '🌳 Outside Garden') + '</span>' +
-          '<img src="' + FLAT + r.id + '.webp" class="wg-recipe-pic" alt="" onclick="IslandAudio.speak(\'' + esc(r.name) + '\')">' +
+          '<img src="' + FLAT + r.id + '.webp" class="wg-recipe-pic" alt="" draggable="false" onclick="IslandAudio.speak(\'' + esc(r.name) + '\')">' +
           '<div class="wg-recipe-name">' + esc(r.name) + '</div>' +
           '<div class="wg-rec-counts">Owned: <b>' + ownedCount + '</b> · Placed: <b>' + placedCount + '</b></div>' +
           '<div class="wg-cost-row">' + costPillsHtml(r.cost, bag) + '</div>' +
           '<div class="wg-recipe-actions">' +
-            '<button type="button" class="isl-btn ' + (canCraft ? 'amber' : '') + '" style="min-height:36px;padding:4px 10px;font-size:0.82rem" ' + (canCraft ? 'onclick="WorldGame.craftItem(\'' + r.id + '\')"' : 'disabled') + '>🔨 Craft</button>' +
+            '<button type="button" class="isl-btn ' + (canCraft ? 'amber' : '') + '" style="min-height:36px;padding:4px 9px;font-size:0.8rem" ' + (canCraft ? 'onclick="WorldGame.craftItem(\'' + r.id + '\')"' : 'disabled') + '>🔨 Craft</button>' +
             (inBag > 0
-              ? '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">📍 Place (+' + inBag + ')</button>'
-              : '') +
+              ? '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 9px;font-size:0.8rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">📍 Place (+' + inBag + ')</button>'
+              : (placedCount > 0
+                ? '<button type="button" class="isl-btn cyan" style="min-height:36px;padding:4px 9px;font-size:0.8rem" onclick="WorldGame.focusPlacedItem(\'' + r.id + '\')">✋ Move</button>'
+                : '')) +
           '</div>' +
         '</div>';
       }).join('');
@@ -995,7 +1111,7 @@
         var avail = Math.max(0, ownedCount - placedCount);
         if (avail <= 0) return '';
         return '<div class="wg-bag-row">' +
-          '<img src="' + FLAT + r.id + '.webp" style="width:42px;height:42px;object-fit:contain" alt="">' +
+          '<img src="' + FLAT + r.id + '.webp" style="width:42px;height:42px;object-fit:contain" alt="" draggable="false">' +
           '<div style="flex:1;min-width:0"><b>' + esc(r.name) + '</b><small style="display:block;color:#94a3b8">' + avail + ' in bag · ' + (r.kind === 'patio' ? '🛋️ Inside Room' : '🌳 Outside Garden') + '</small></div>' +
           '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">📍 Place</button>' +
         '</div>';
@@ -1007,16 +1123,16 @@
         var isSel = (idx === studioSelectedIdx);
         var itemLv = Math.max(1, Math.min(3, Number(p.lvl) || 1));
         return '<div class="wg-bag-row' + (isSel ? ' active' : '') + '" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)" style="cursor:pointer">' +
-          '<img src="' + FLAT + rec.id + '.webp" style="width:40px;height:40px;object-fit:contain" alt="">' +
-          '<div style="flex:1;min-width:0"><b>' + esc(rec.name) + ' <span style="color:#fde047">' + '★'.repeat(itemLv) + '</span></b><small style="display:block;color:#6ee7b7">' + (rec.kind === 'patio' ? '🛋️ Inside Room' : '🌳 Outside Garden') + ' · ' + (isSel ? '✋ Tap preview map to move or ⬆ Upgrade!' : 'Tap to move or upgrade') + '</small></div>' +
-          '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:3px 9px;font-size:0.78rem" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">✋ Edit</button>' +
+          '<img src="' + FLAT + rec.id + '.webp" style="width:40px;height:40px;object-fit:contain" alt="" draggable="false">' +
+          '<div style="flex:1;min-width:0"><b>' + esc(rec.name) + ' <span style="color:#fde047">' + '★'.repeat(itemLv) + '</span></b><small style="display:block;color:#6ee7b7">' + (rec.kind === 'patio' ? '🛋️ Inside Room' : '🌳 Outside Garden') + ' · ' + (isSel ? '✋ Drag on preview map or use ◀ ▲ ▼ ▶!' : 'Tap to move or upgrade') + '</small></div>' +
+          '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:3px 9px;font-size:0.78rem" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">✋ Move</button>' +
         '</div>';
       }).join('');
 
       rightHtml =
         '<div class="wg-decor-lists">' +
           '<div class="wg-sec-title">🎒 Ready in Your Bag (Tap to Place)</div>' +
-          (bagItemsHtml || '<div class="wg-empty-note">All your crafted items are placed! Craft more in the <b>🔨 Craft</b> tab.</div>') +
+          (bagItemsHtml || '<div class="wg-empty-note">All your crafted items are placed! Drag any item on the left preview to move it.</div>') +
           '<div class="wg-sec-title" style="margin-top:12px">🪑 Placed Items (' + indoorPlaced.length + ' Inside Room · ' + gardenPlaced.length + ' Outside Garden)</div>' +
           (placedListHtml || '<div class="wg-empty-note">Nothing placed yet — tap Place above or craft new items!</div>') +
         '</div>';
@@ -1080,7 +1196,7 @@
     studioSelectedIdx = st.placed.length - 1;
     writeState(st);
     sound('playCorrect');
-    say('You crafted a ' + r.name + '! Tap the ' + (r.kind === 'patio' ? 'room' : 'garden') + ' preview to move it!');
+    say('You crafted a ' + r.name + '! Drag it on the preview map to move it!');
     if (W() && W().refreshHome) W().refreshHome(true);
     renderWorkshop();
   }
@@ -1164,314 +1280,177 @@
   function trackVillager(vid) {
     var v = VILLAGERS.filter(function (x) { return x.id === vid; })[0];
     if (!v) return;
-    if (v.zone > 1 && W() && W().isOpen && !W().isOpen(v.zone)) {
-      sound('playSoftFail');
-      say('Finish four stops in the previous place to unlock Zone ' + v.zone + '!');
-      return;
-    }
+    sound('playTap');
     closeModal();
     if (W() && W().focusVillager) W().focusVillager(v);
   }
 
-  function completeJob(vid, fromBoard) {
+  function completeJob(vid, fromModal) {
     var v = VILLAGERS.filter(function (x) { return x.id === vid; })[0];
     if (!v) return;
     var st = readState();
     if (st.jobsDone && st.jobsDone[vid]) return;
-    if (!hasMaterials(v.need)) {
-      sound('playSoftFail');
-      say(v.line);
-      return;
-    }
+    if (!hasMaterials(v.need)) return;
     spendMaterials(v.need);
     st.jobsDone = st.jobsDone || {};
     st.jobsDone[vid] = 1;
     st.ownedFurniture = st.ownedFurniture || {};
     st.ownedFurniture[v.gift] = (Number(st.ownedFurniture[v.gift]) || 0) + 1;
     var rec = RECIPES.filter(function (r) { return r.id === v.gift; })[0];
-    if (rec) {
+    if (rec && !(st.placed || []).some(function (p) { return p.id === rec.id; })) {
       st.placed = st.placed || [];
-      if (!st.placed.some(function (p) { return p.id === v.gift; })) {
-        st.placed.push({ id: v.gift, x: rec.defPos.x, y: rec.defPos.y, flip: false });
-      }
+      st.placed.push({ id: rec.id, x: rec.defPos.x, y: rec.defPos.y, flip: false, lvl: 1 });
     }
     writeState(st);
-    addEnergy(v.energy || 15);
-    addBonusCoins(10);
-    if (App() && App().awardIslandXP) App().awardIslandXP(5, 'job_' + vid);
+    addEnergy(v.energy);
+    if (App() && App().awardIslandXP) App().awardIslandXP(5, 'villager_' + vid);
+    if (root.IslandRewards && root.IslandRewards.unlockVillagerSticker) {
+      root.IslandRewards.unlockVillagerSticker(vid, v.name, FLAT + v.happy + '.webp');
+    }
     sound('playFanfare');
-    say('Thank you so much! Here is a ' + (rec ? rec.name : 'gift') + ' for your home!');
+    say('Thank you! Here is a ' + (rec ? rec.name : 'gift') + ' for your home!');
+    updateJobsBadge();
     if (W() && W().refreshVillagers) W().refreshVillagers(vid, rec);
-    if (fromBoard) openJobsBoard();
+    if (W() && W().refreshHome) W().refreshHome(false);
+    if (fromModal) openJobsBoard();
   }
 
-  /* ---------- 6. Turn-Based RPG Monster Battles (HP Bars, 4 Spells, Enemy Counter-Turns & Grounded Stage) ---------- */
+  /* ---------- 6. Friendly Monster Battles (b_*) ---------- */
   var battleRun = null;
 
-  function cleanBattleMonsterSvg(prof, eq) {
-    if (!root.MonsterRenderer || !root.MonsterRenderer.renderMonsterSVG) return '';
-    try {
-      var raw = root.MonsterRenderer.renderMonsterSVG({
-        stage: 'growing',
-        color: prof.baseColor || 'blue',
-        equipped: eq,
-        size: 155,
-        animated: true,
-        isAvatar: true
-      });
-      var doc = new DOMParser().parseFromString(raw, 'image/svg+xml').documentElement;
-      ['.monster-pedestal-stage', '.mon-rig-shadow'].forEach(function (sel) {
-        var el = doc.querySelector(sel);
-        if (el) el.remove();
-      });
-      return new XMLSerializer().serializeToString(doc);
-    } catch (e) {
-      return '';
-    }
-  }
-
   function openBattle(bid) {
-    var b = BATTLES.filter(function (x) { return x.id === bid; })[0] || BATTLES[0];
-    sound('playTap');
-    var qs = pickQuestions(6, b.zone);
-    battleRun = {
-      foe: b,
-      qs: qs,
-      idx: 0,
-      myHp: 100,
-      myMaxHp: 100,
-      foeHp: b.hp || 90,
-      foeMaxHp: b.hp || 90,
-      spellId: 'star',
-      shielded: false,
-      firstTry: true,
-      combo: 0,
-      busy: false,
-      won: false
-    };
-    renderBattle();
-  }
-
-  function pickSpell(spId) {
-    if (!battleRun || battleRun.busy || battleRun.won) return;
-    sound('playTap');
-    battleRun.spellId = spId;
-    var btns = document.querySelectorAll('.wg-spell-pick');
-    for (var i = 0; i < btns.length; i++) {
-      btns[i].classList.toggle('active', btns[i].getAttribute('data-spell') === spId);
+    var b = BATTLES.filter(function (x) { return x.id === bid; })[0];
+    if (!b) return;
+    if (getEnergy() < 10) {
+      openEnergyCharge('⚡ Charge your monster energy (+30) to start the friendly battle with ' + b.name + '!', function () {
+        openBattle(bid);
+      });
+      return;
     }
+    useEnergy(10);
+    var pool = SPELLS.slice().sort(function () { return Math.random() - 0.5; }).slice(0, 3);
+    battleRun = { b: b, qs: pool, idx: 0, hp: 3, maxHp: 3 };
+    document.body.classList.add('isl-modal-open');
+    renderBattleStep();
   }
 
-  function renderBattle() {
+  function renderBattleStep() {
     if (!battleRun) return;
-    var b = battleRun.foe;
-    var s = ses(), prof = (s && s.student && s.student.monsterProfile) || {};
-    var eq = Object.assign({}, prof.equipped || {}, (s && s.doc && s.doc.look) || {});
-    delete eq.background;
-    var monSvg = cleanBattleMonsterSvg(prof, eq);
-
-    var myPct = Math.max(0, Math.min(100, Math.round(battleRun.myHp / battleRun.myMaxHp * 100)));
-    var foePct = Math.max(0, Math.min(100, Math.round(battleRun.foeHp / battleRun.foeMaxHp * 100)));
-
-    document.body.classList.add('isl-modal-open');
-    if (battleRun.won) {
-      var dropBadges = Object.keys(b.drop || {}).map(function (k) {
-        var icon = MAT_ICONS[k] || 'i_wood';
-        return '<span class="wg-mat-badge"><img src="' + FLAT + icon + '.webp" alt=""> +' + b.drop[k] + ' ' + esc(k) + '</span>';
-      }).join('');
+    var b = battleRun.b;
+    if (battleRun.hp <= 0 || battleRun.idx >= battleRun.qs.length) {
+      var st = readState();
+      var firstWin = !(st.battlesWon && st.battlesWon[b.id]);
+      st.battlesWon = st.battlesWon || {};
+      st.battlesWon[b.id] = 1;
+      writeState(st);
+      giveMaterials(b.loot);
+      addBonusCoins(b.coins);
+      if (firstWin && App() && App().awardIslandXP) App().awardIslandXP(5, 'battle_' + b.id);
+      if (root.IslandRewards && root.IslandRewards.unlockBattleSticker) {
+        root.IslandRewards.unlockBattleSticker(b.id, b.name, FLAT + b.art + '.webp');
+      }
+      sound('playFanfare');
+      say('Victory! ' + b.name + ' is your friend now!');
+      if (W() && W().refreshBattles) W().refreshBattles(b.id);
+      var lootTxt = Object.keys(b.loot).map(function (k) {
+        return '<span class="wg-cost-pill ok"><img src="' + FLAT + MAT_ICONS[k] + '.webp" alt="">+' + b.loot[k] + ' ' + k + '</span>';
+      }).join(' ');
       modalRoot().innerHTML =
-        '<div class="isl-modal-backdrop" id="wg-battle-backdrop">' +
-          '<div class="isl-card-modal wg-battle-modal" style="background-image:url(' + FLAT + b.bg + '.webp)">' +
-            '<div class="wg-battle-stage">' +
-              '<div class="wg-b-side"><div class="wg-b-fighter me cheer"><div class="wg-b-ground-shadow"></div>' + monSvg + '</div></div>' +
-              '<div class="wg-b-side"><div class="wg-b-fighter foe dizzy"><div class="wg-b-ground-shadow"></div><img src="' + FLAT + b.dizzy + '.webp" alt=""></div></div>' +
-            '</div>' +
-            '<div class="wg-battle-card" style="text-align:center">' +
-              '<h2 style="margin:4px 0;font-size:1.75rem;color:#fde047">🎉 Victory! ' + esc(b.name) + ' is your friend!</h2>' +
-              '<div style="color:#6ee7b7;font-size:1.15rem;font-weight:800;margin:6px 0">⚡ +' + b.energy + ' Energy &amp; 🪙 +10 Coins earned!</div>' +
-              '<div class="wg-mat-badges" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0">' + dropBadges + '</div>' +
-              '<button type="button" class="isl-btn emerald" id="wg-battle-done" style="min-width:190px;font-size:1.15rem;margin-top:8px" onclick="WorldGame.closeModal()">Awesome! 🚀</button>' +
+        '<div class="isl-modal-backdrop" id="wg-battle-win">' +
+          '<div class="isl-card-modal" style="max-width:520px;text-align:center">' +
+            '<img src="' + FLAT + b.art + '.webp" style="width:130px;height:130px;object-fit:contain;margin:0 auto" alt="">' +
+            '<h2 style="font-size:1.75rem;margin:8px 0;color:#6ee7b7">🎉 Friendly Victory!</h2>' +
+            '<p style="color:#e2e8f0;font-weight:700;margin-bottom:12px">' + esc(b.name) + ' cheered for your English spells and shared treasure with you!</p>' +
+            '<div class="wg-cost-row" style="justify-content:center;margin-bottom:14px">' + lootTxt + ' <span class="wg-reward-tag">🪙 +' + b.coins + ' Coins</span></div>' +
+            '<div style="display:flex;gap:10px;justify-content:center">' +
+              '<button type="button" class="isl-btn amber" onclick="WorldGame.closeModal(); WorldGame.openWorkshop(\'blueprints\')">📜 Open Blueprints</button>' +
+              '<button type="button" class="isl-btn emerald" onclick="WorldGame.closeModal()">Continue ▶</button>' +
             '</div>' +
           '</div>' +
         '</div>';
       return;
     }
 
-    var q = battleRun.qs[battleRun.idx % battleRun.qs.length];
-    var promptText = q.q || (q.type === 'listen' ? (q.pic ? q.pic + ' ' : '') + 'Listen and cast: "' + (q.word || q.a) + '"' : q.prompt);
-    var speakText = q.speak || q.word || q.q || promptText;
-
-    var spellBarHtml = SPELLS.map(function (sp) {
-      var act = battleRun.spellId === sp.id;
-      return '<button type="button" class="wg-spell-pick' + (act ? ' active' : '') + '" data-spell="' + sp.id + '" onclick="WorldGame.pickSpell(\'' + sp.id + '\')">' +
-        '<img src="' + FLAT + sp.icon + '.webp" alt="">' +
-        '<div><div>' + esc(sp.name) + '</div><small>' + esc(sp.sub) + '</small></div>' +
-      '</button>';
-    }).join('');
-
-    var opts = q.options || q.choices || [];
-    var choices = opts.map(function (c, idx) {
-      var label = typeof c === 'object' ? (c.word || c.text || c.label) : String(c);
-      var pic = typeof c === 'object' && c.pic ? '<span style="font-size:1.35rem">' + esc(c.pic) + '</span>' : '';
-      return '<button type="button" class="isl-btn wg-choice-btn wg-spell-btn" data-idx="' + idx + '" onclick="WorldGame.castBattleSpell(' + idx + ',this)">' +
-        pic + '<span>' + esc(label) + '</span>' +
-      '</button>';
+    var q = battleRun.qs[battleRun.idx];
+    var hearts = '❤️'.repeat(battleRun.hp) + '🖤'.repeat(battleRun.maxHp - battleRun.hp);
+    var opts = q.options.map(function (o, i) {
+      return '<button type="button" class="isl-btn wg-choice-btn" onclick="WorldGame.answerBattle(' + i + ', this)">✨ ' + esc(o) + '</button>';
     }).join('');
 
     modalRoot().innerHTML =
       '<div class="isl-modal-backdrop" id="wg-battle-backdrop">' +
-        '<div class="isl-card-modal wg-battle-modal" style="background-image:url(' + FLAT + b.bg + '.webp)">' +
-          '<div class="isl-mission-top wg-battle-top">' +
-            '<div style="font-size:1.2rem;font-weight:800;color:#fff">⚔️ Friendly Duel · ' + esc(b.name) + '</div>' +
-            '<div style="margin-left:auto;color:#fde68a;font:700 13px Fredoka,sans-serif">1. Pick a Spell ➔ 2. Answer to Cast!</div>' +
-            '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:4px 10px" onclick="WorldGame.closeModal()">✕</button>' +
+        '<div class="isl-card-modal" style="max-width:660px">' +
+          '<div class="isl-mission-top">' +
+            '<div style="font-size:1.25rem;font-weight:800;color:#fda4af">⚔️ Friendly Battle: ' + esc(b.name) + '</div>' +
+            '<div style="margin-left:auto;font-size:1.2rem">' + hearts + '</div>' +
+            '<button type="button" class="isl-btn" style="margin-left:10px;min-height:40px;min-width:42px;padding:4px 10px" onclick="WorldGame.closeModal()">✕</button>' +
           '</div>' +
-          '<div class="wg-battle-stage" id="wg-battle-stage">' +
-            '<div class="wg-b-side">' +
-              '<div class="wg-b-hpbox">' +
-                '<div class="wg-b-hpname"><b>My Monster ' + (battleRun.shielded ? '🛡️' : '') + '</b><span id="wg-hp-me-txt">❤️ ' + battleRun.myHp + '/' + battleRun.myMaxHp + '</span></div>' +
-                '<div class="wg-b-hpbar"><div class="wg-b-hpfill" id="wg-hp-me-bar" style="width:' + myPct + '%"></div></div>' +
-              '</div>' +
-              '<div class="wg-b-fighter me" id="wg-b-me"><div class="wg-b-ground-shadow"></div>' + monSvg + '</div>' +
-            '</div>' +
-            '<div class="wg-b-fx" id="wg-b-fx"></div>' +
-            '<div class="wg-b-side">' +
-              '<div class="wg-b-hpbox">' +
-                '<div class="wg-b-hpname"><b>' + esc(b.name) + '</b><span id="wg-hp-foe-txt">❤️ ' + battleRun.foeHp + '/' + battleRun.foeMaxHp + '</span></div>' +
-                '<div class="wg-b-hpbar"><div class="wg-b-hpfill foe" id="wg-hp-foe-bar" style="width:' + foePct + '%"></div></div>' +
-              '</div>' +
-              '<div class="wg-b-fighter foe" id="wg-b-foe"><div class="wg-b-ground-shadow"></div><img src="' + FLAT + b.art + '.webp" alt=""></div>' +
-            '</div>' +
+          '<div class="wg-battle-arena">' +
+            '<div class="wg-fighter"><img src="' + FLAT + b.art + '.webp" id="wg-boss-img" alt=""><span>' + esc(b.name) + '</span></div>' +
           '</div>' +
-          '<div class="wg-battle-card">' +
-            '<div class="wg-spell-bar">' + spellBarHtml + '</div>' +
-            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
-              '<button type="button" class="isl-btn amber" style="min-height:40px;padding:4px 12px" onclick="IslandAudio.speak(\'' + esc(speakText) + '\')">🔊</button>' +
-              '<div style="font-size:1.2rem;font-weight:800;color:#fff">' + esc(promptText) + '</div>' +
-            '</div>' +
-            '<div class="wg-choices-grid">' + choices + '</div>' +
+          '<div class="wg-q-card">' +
+            '<button type="button" class="isl-btn amber" style="min-height:42px;padding:6px 14px;margin-bottom:8px" onclick="IslandAudio.speak(\'' + esc(q.speak) + '\')">🔊 Hear Spell</button>' +
+            '<div style="font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:12px">' + esc(q.q) + '</div>' +
+            '<div class="wg-choices-grid">' + opts + '</div>' +
           '</div>' +
         '</div>' +
       '</div>';
-    say(speakText);
+    say(q.speak);
   }
 
-  function showDmgPopup(targetEl, text, color) {
-    if (!targetEl) return;
-    var pop = document.createElement('div');
-    pop.className = 'wg-b-dmg';
-    if (color) pop.style.color = color;
-    pop.textContent = text;
-    targetEl.appendChild(pop);
-    setTimeout(function () { if (pop.parentNode) pop.parentNode.removeChild(pop); }, 850);
-  }
-
-  function castBattleSpell(idx, btnEl) {
-    if (!battleRun || battleRun.busy) return;
-    var q = battleRun.qs[battleRun.idx % battleRun.qs.length];
-    var opts = q.options || q.choices || [];
-    var chosen = opts[idx];
-    var chosenVal = typeof chosen === 'object' ? (chosen.word || chosen.text || chosen.label) : String(chosen);
-    var correctVal = q.answer || q.word || q.a;
-    var fxBox = $('wg-b-fx'), meBox = $('wg-b-me'), foeBox = $('wg-b-foe');
-    var sp = SPELLS.filter(function (s) { return s.id === battleRun.spellId; })[0] || SPELLS[0];
-
-    if (String(chosenVal).trim().toLowerCase() === String(correctVal).trim().toLowerCase()) {
-      battleRun.busy = true;
+  function answerBattle(idx, btnEl) {
+    if (!battleRun) return;
+    var q = battleRun.qs[battleRun.idx];
+    var chosen = q.options[idx];
+    if (chosen === q.a) {
       sound('playCorrect');
-      if (battleRun.firstTry) battleRun.combo = (battleRun.combo || 0) + 1;
-      else battleRun.combo = 0;
-      var crit = battleRun.firstTry ? 10 : 0;
-      var comboBonus = (battleRun.combo > 1) ? (battleRun.combo * 5) : 0;
-      var dmg = sp.dmg + crit + comboBonus;
-      battleRun.foeHp = Math.max(0, battleRun.foeHp - dmg);
-      useEnergy(sp.energy || 5);
-
-      var stg = $('wg-battle-stage');
-      if (stg) {
-        stg.classList.add('wg-shake');
-        setTimeout(function () { stg.classList.remove('wg-shake'); }, 300);
-      }
-      if (sp.heal) battleRun.myHp = Math.min(battleRun.myMaxHp, battleRun.myHp + sp.heal);
-      if (sp.shield) battleRun.shielded = true;
-
-      if (meBox) meBox.classList.add('lunge');
-      if (fxBox) {
-        fxBox.innerHTML = '<img src="' + FLAT + sp.icon + '.webp" class="wg-spell-fly" alt=""><img src="' + FLAT + 'x_pow.webp" class="wg-spell-pow" alt="">';
-      }
-      if (foeBox) {
-        foeBox.classList.add('hit');
-        var comboTag = (battleRun.combo > 1) ? ' 🔥x' + battleRun.combo : '';
-        showDmgPopup(foeBox, '-' + dmg + ' HP' + (crit ? ' ✨CRIT!' : '') + comboTag, '#fde047');
-      }
-      if (sp.heal && meBox) showDmgPopup(meBox, '+' + sp.heal + ' HP 💖', '#6ee7b7');
-      if (sp.shield && meBox) showDmgPopup(meBox, '🛡️ SHIELD UP!', '#38bdf8');
-
-      var foeBar = $('wg-hp-foe-bar'), foeTxt = $('wg-hp-foe-txt');
-      if (foeBar) foeBar.style.width = Math.max(0, Math.round(battleRun.foeHp / battleRun.foeMaxHp * 100)) + '%';
-      if (foeTxt) foeTxt.textContent = '❤️ ' + battleRun.foeHp + '/' + battleRun.foeMaxHp;
-
-      setTimeout(function () {
-        if (!battleRun) return;
-        if (battleRun.foeHp <= 0) {
-          battleRun.busy = false;
-          battleRun.won = true;
-          var b = battleRun.foe, st = readState();
-          st.battlesWon = st.battlesWon || {};
-          st.battlesWon[b.id] = 1;
-          writeState(st);
-          giveMaterials(b.drop);
-          addEnergy(b.energy || 20);
-          addBonusCoins(10);
-          if (App() && App().awardIslandXP) App().awardIslandXP(5, 'battle_' + b.id);
-          sound('playFanfare');
-          say('Hooray! ' + b.name + ' is now your friend!');
-          if (W() && W().refreshBattles) W().refreshBattles(b.id);
-          renderBattle();
-          return;
-        }
-        /* Enemy Counter-Attack Turn! */
-        if (foeBox) { foeBox.classList.remove('hit'); foeBox.classList.add('lunge'); }
-        if (battleRun.shielded) {
-          battleRun.shielded = false;
-          if (fxBox) fxBox.innerHTML = '<img src="' + FLAT + 'x_shield.webp" class="wg-spell-shield" alt="">';
-          if (meBox) showDmgPopup(meBox, '🛡️ BLOCKED!', '#38bdf8');
-        } else {
-          battleRun.myHp = Math.max(25, battleRun.myHp - 15);
-          if (meBox) {
-            meBox.classList.add('hit');
-            showDmgPopup(meBox, '-15 HP (' + (battleRun.foe.move || 'Bonk!') + ')', '#fda4af');
-          }
-        }
-        setTimeout(function () {
-          if (!battleRun) return;
-          battleRun.busy = false;
-          battleRun.idx++;
-          battleRun.firstTry = true;
-          renderBattle();
-        }, 560);
-      }, 620);
+      battleRun.hp--;
+      battleRun.idx++;
+      var bossImg = document.getElementById('wg-boss-img');
+      if (bossImg) { bossImg.style.transform = 'scale(0.82) rotate(8deg)'; }
+      setTimeout(renderBattleStep, 260);
     } else {
-      battleRun.firstTry = false;
       sound('playSoftFail');
-      if (fxBox) {
-        fxBox.innerHTML = '<img src="' + FLAT + 'x_shield.webp" class="wg-spell-shield" alt="">';
-        setTimeout(function () { if (fxBox) fxBox.innerHTML = ''; }, 520);
-      }
       if (btnEl) {
         btnEl.classList.remove('wobble'); void btnEl.offsetWidth; btnEl.classList.add('wobble');
         btnEl.style.opacity = '0.45';
       }
-      say('Listen again: ' + (q.speak || correctVal));
+      say('Try again! ' + q.speak);
     }
   }
 
-  /* ---------- 7. Island Sports Arena: ⚽ Football & 🏐 Beach Volleyball (1v1 Duel & 2v2 Team Match!) ---------- */
-  var sportsState = null;
+  function closeModal() {
+    sound('playTap');
+    battleRun = null;
+    energyRun = null;
+    stopSportsLoop();
+    document.body.classList.remove('isl-modal-open');
+    if (modalRoot()) modalRoot().innerHTML = '';
+    updateStatusHud();
+  }
+
+  /* ---------- 7. 2.5D Island Sports Arena (⚽ Football & 🏐 Beach Volleyball — Animated 3D Monsters, 3D Ball Arc & Full Player Control) ---------- */
   var sportsRaf = 0;
+  var sportsState = null;
+  var sportsSport = 'soccer'; // 'soccer' | 'volleyball'
+  var sportsMode = '2v2';     // '1v1' | '2v2'
+  var sportsControl = '1p';   // '1p' (vs AI) | '2p' (2-Player Local Same Screen)
+  var sportImgs = {};
+
+  function getSportImg(name) {
+    if (!sportImgs[name]) {
+      var im = new Image();
+      im.src = FLAT + name + '.webp';
+      sportImgs[name] = im;
+    }
+    return sportImgs[name];
+  }
 
   function stopSportsLoop() {
-    if (sportsRaf) { cancelAnimationFrame(sportsRaf); sportsRaf = 0; }
+    if (sportsRaf) {
+      cancelAnimationFrame(sportsRaf);
+      sportsRaf = 0;
+    }
     if (sportsState && sportsState.keyHandler) {
       root.removeEventListener('keydown', sportsState.keyHandler);
       root.removeEventListener('keyup', sportsState.keyUpHandler);
@@ -1479,36 +1458,15 @@
     sportsState = null;
   }
 
-  var sportsImgs = {};
-  function getSportImg(name) {
-    if (!sportsImgs[name]) {
-      var im = new Image();
-      im.src = FLAT + name + '.webp';
-      sportsImgs[name] = im;
-    }
-    return sportsImgs[name];
-  }
-
-  function openSportsArena(sport, mode) {
+  function openSportsArena(sport, mode, ctrl) {
     stopSportsLoop();
     sound('playTap');
-    var sp = (sport === 'volleyball') ? 'volleyball' : 'soccer';
-    var md = (mode === '1v1') ? '1v1' : '2v2';
+    if (sport) sportsSport = sport;
+    if (mode) sportsMode = mode;
+    if (ctrl) sportsControl = ctrl;
+    var eNow = getEnergy();
     var st = readState();
-    if ((Number(st.energy) || 0) < 10) {
-      energyRun = {
-        qs: pickQuestions(3),
-        idx: 0,
-        afterSport: { sport: sp, mode: md },
-        reason: '⚽ Sports Arena Ticket: Answer 3 quick English questions to earn +30 ⚡ Energy and unlock Football & Volleyball!'
-      };
-      renderEnergyStep();
-      return;
-    }
-    useEnergy(5);
-    st = readState();
-    var wins = Number(st.sportsWins) || 0;
-    var curE = Number(st.energy) || 0;
+    var trophies = Number(st.sportsWins) || 0;
     ['c_bolt_happy', 'c_lulu_happy', 'c_nutty_happy', 'c_ember_happy', 'o_ball'].forEach(getSportImg);
 
     document.body.classList.add('isl-modal-open');
@@ -1516,45 +1474,153 @@
       '<div class="isl-modal-backdrop" id="wg-sports-backdrop">' +
         '<div class="isl-card-modal wg-sports-modal">' +
           '<div class="isl-mission-top wg-sports-top">' +
-            '<div style="display:flex;align-items:center;gap:8px;font-size:1.22rem;font-weight:800"><img src="' + FLAT + 'o_ball.webp" style="width:32px;height:32px;object-fit:contain" alt=""> 🏆 Island Sports Arena</div>' +
-            '<div class="wg-sports-tabs">' +
-              '<button type="button" class="isl-btn ' + (sp === 'soccer' ? 'emerald' : '') + '" style="min-height:36px;padding:4px 12px;font-size:0.84rem" onclick="WorldGame.openSportsArena(\'soccer\', \'' + md + '\')">⚽ Football</button>' +
-              '<button type="button" class="isl-btn ' + (sp === 'volleyball' ? 'amber' : '') + '" style="min-height:36px;padding:4px 12px;font-size:0.84rem" onclick="WorldGame.openSportsArena(\'volleyball\', \'' + md + '\')">🏐 Volleyball</button>' +
-              '<button type="button" class="isl-btn ' + (md === '1v1' ? 'cyan' : '') + '" style="min-height:36px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.openSportsArena(\'' + sp + '\', \'1v1\')">⚡ 1 vs 1</button>' +
-              '<button type="button" class="isl-btn ' + (md === '2v2' ? 'cyan' : '') + '" style="min-height:36px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.openSportsArena(\'' + sp + '\', \'2v2\')">👥 2 vs 2 Team</button>' +
+            '<div style="display:flex;align-items:center;gap:8px;font-size:1.15rem;font-weight:800;color:#fde047">' +
+              '<img src="' + FLAT + 'o_ball.webp" style="width:30px;height:30px;object-fit:contain" alt=""> 🏆 2.5D Island Sports Stadium' +
             '</div>' +
-            '<div style="margin-left:auto;display:flex;gap:8px;align-items:center">' +
-              '<span class="wg-st-badge">🏆 Wins: ' + wins + ' · ⚡ ' + curE + '</span>' +
-              '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:4px 10px" onclick="WorldGame.closeModal()">✕</button>' +
+            '<div class="wg-sports-selectors">' +
+              '<button type="button" class="isl-btn ' + (sportsSport === 'soccer' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.openSportsArena(\'soccer\', \'' + sportsMode + '\', \'' + sportsControl + '\')">⚽ Football</button>' +
+              '<button type="button" class="isl-btn ' + (sportsSport === 'volleyball' ? 'amber' : '') + '" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.openSportsArena(\'volleyball\', \'' + sportsMode + '\', \'' + sportsControl + '\')">🏐 Volleyball</button>' +
+              '<button type="button" class="isl-btn ' + (sportsMode === '1v1' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.openSportsArena(\'' + sportsSport + '\', \'1v1\', \'' + sportsControl + '\')">1 vs 1</button>' +
+              '<button type="button" class="isl-btn ' + (sportsMode === '2v2' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.openSportsArena(\'' + sportsSport + '\', \'2v2\', \'' + sportsControl + '\')">2 vs 2 Team</button>' +
+              '<button type="button" class="isl-btn ' + (sportsControl === '2p' ? 'amber' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.openSportsArena(\'' + sportsSport + '\', \'' + sportsMode + '\', \'' + (sportsControl === '2p' ? '1p' : '2p') + '\')">' + (sportsControl === '2p' ? '👥 2P Local (WASD vs Arrows)' : '🤖 1P vs AI') + '</button>' +
+            '</div>' +
+            '<div style="margin-left:auto;display:flex;gap:6px;align-items:center">' +
+              '<span class="wg-st-badge">🏆 Wins: <b id="wg-sp-wins">' + trophies + '</b></span>' +
+              '<span class="wg-st-badge" style="color:#fde047">⚡ <b id="wg-sp-energy">' + eNow + '</b></span>' +
+              '<button type="button" class="isl-btn" style="min-height:36px;min-width:38px;padding:4px 9px" onclick="WorldGame.closeModal()">✕</button>' +
             '</div>' +
           '</div>' +
-          '<div class="wg-sports-scorebar">' +
-            '<div class="wg-sp-team blue">🔵 ' + (md === '2v2' ? 'Team You + Sky' : 'You') + ': <b id="wg-sp-score-a">0</b></div>' +
-            '<div class="wg-sp-status" id="wg-sp-status">' + (sp === 'soccer' ? '⚽ First to 3 Goals Wins! (+25 🪙)' : '🏐 First to 5 Points Wins! (+25 🪙)') + '</div>' +
-            '<div class="wg-sp-team red"><b id="wg-sp-score-b">0</b> : ' + (md === '2v2' ? 'Leo + Sunny 🔴' : 'Leo 🔴') + '</div>' +
+          '<div class="wg-sports-scoreboard">' +
+            '<div class="wg-sp-team blue"><span>🟦 ' + (sportsMode === '2v2' ? 'YOU + SKY' : 'YOU (P1)') + '</span><b id="wg-sp-score-a">0</b></div>' +
+            '<div class="wg-sp-vs">' +
+              '<span id="wg-sp-status">' + (sportsSport === 'soccer' ? '⚽ First to 3 Goals Wins +25 🪙!' : '🏐 First to 5 Points Wins +25 🪙!') + '</span>' +
+              '<small>⚡ Earned by your English effort! You control your monster — tap field, use D-Pad, or WASD/Arrows!</small>' +
+            '</div>' +
+            '<div class="wg-sp-team red"><b id="wg-sp-score-b">0</b><span>' + (sportsControl === '2p' ? 'PLAYER 2 (ARROWS)' : (sportsMode === '2v2' ? 'LEO &amp; SUNNY' : 'LEO (RIVAL)')) + ' 🟥</span></div>' +
           '</div>' +
-          '<div class="wg-sports-pitch-wrap">' +
-            '<canvas id="wg-sports-canvas" width="820" height="420"></canvas>' +
-          '</div>' +
-          '<div class="wg-sports-controls">' +
-            '<span style="color:#cbd5e1;font-size:0.85rem;font-weight:700">🎮 Drag on the pitch or use <b>Arrow Keys / WASD</b> to move!</span>' +
-            '<div style="display:flex;gap:8px;align-items:center">' +
-              '<button type="button" class="isl-btn amber" style="min-height:40px;padding:6px 16px;font-size:0.9rem" onclick="WorldGame.sportsAction()">' + (sp === 'soccer' ? '⚡ Power Kick!' : '⬆ Jump &amp; Spike!') + '</button>' +
-              '<button type="button" class="isl-btn cyan" style="min-height:40px;padding:6px 14px;font-size:0.86rem" onclick="WorldGame.openSportsArena(\'' + sp + '\', \'' + md + '\')">🔄 Restart Match</button>' +
+          '<div class="wg-sports-stage-wrap">' +
+            '<canvas id="wg-sports-canvas" width="820" height="430"></canvas>' +
+            '<div class="wg-sports-controls">' +
+              '<div class="wg-sp-dpad" aria-label="Directional Pad">' +
+                '<button type="button" class="isl-btn cyan wg-dpad-btn" onpointerdown="WorldGame.setSportDir(-1,0,true)" onpointerup="WorldGame.setSportDir(-1,0,false)" onpointerleave="WorldGame.setSportDir(-1,0,false)">◀</button>' +
+                '<button type="button" class="isl-btn cyan wg-dpad-btn" onpointerdown="WorldGame.setSportDir(0,-1,true)" onpointerup="WorldGame.setSportDir(0,-1,false)" onpointerleave="WorldGame.setSportDir(0,-1,false)">▲</button>' +
+                '<button type="button" class="isl-btn cyan wg-dpad-btn" onpointerdown="WorldGame.setSportDir(0,1,true)" onpointerup="WorldGame.setSportDir(0,1,false)" onpointerleave="WorldGame.setSportDir(0,1,false)">▼</button>' +
+                '<button type="button" class="isl-btn cyan wg-dpad-btn" onpointerdown="WorldGame.setSportDir(1,0,true)" onpointerup="WorldGame.setSportDir(1,0,false)" onpointerleave="WorldGame.setSportDir(1,0,false)">▶</button>' +
+              '</div>' +
+              '<div class="wg-sp-action-group">' +
+                '<button type="button" class="isl-btn cyan" style="min-height:40px;padding:5px 12px;font-size:0.84rem" onclick="WorldGame.sportsAction(\'lob\')">' + (sportsSport === 'soccer' ? '🚀 Lob / Pass' : '🙌 High Set') + '</button>' +
+                '<button type="button" class="isl-btn emerald" style="min-height:40px;padding:5px 12px;font-size:0.84rem" onclick="WorldGame.sportsAction(\'dash\')">💨 Turbo Dash</button>' +
+                '<button type="button" class="isl-btn amber" style="min-height:40px;padding:5px 14px;font-size:0.88rem" onclick="WorldGame.sportsAction(\'power\')">' + (sportsSport === 'soccer' ? '🔥 SUPER SHOT! (Space)' : '🔥 JUMP SPIKE! (Space)') + '</button>' +
+              '</div>' +
+              '<div style="display:flex;gap:5px;margin-left:auto">' +
+                '<button type="button" class="isl-btn amber" style="min-height:38px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.openEnergyCharge(\'⚡ Answer 3 English questions to boost +30 Energy!\', function(){ WorldGame.openSportsArena(\'' + sportsSport + '\', \'' + sportsMode + '\', \'' + sportsControl + '\'); })">⚡ +Energy</button>' +
+                '<button type="button" class="isl-btn" style="min-height:38px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.restartSportsMatch()">🔄 Kick Off</button>' +
+              '</div>' +
             '</div>' +
           '</div>' +
         '</div>' +
       '</div>';
 
-    startSportsMatch(sp, md);
+    startSportsMatch(sportsSport, sportsMode, sportsControl);
   }
 
-  function sportsAction() {
+  function restartSportsMatch() {
+    if (getEnergy() < 10) {
+      openEnergyCharge('⚡ Charge +30 Energy with 3 quick English questions to play another match!', function () {
+        openSportsArena(sportsSport, sportsMode, sportsControl);
+      });
+      return;
+    }
+    useEnergy(10);
+    openSportsArena(sportsSport, sportsMode, sportsControl);
+  }
+
+  function setSportDir(dx, dy, isDown) {
     if (!sportsState) return;
+    if (isDown) sportsState.waitingKickoff = false;
+    if (dx < 0) sportsState.pad.left = isDown;
+    if (dx > 0) sportsState.pad.right = isDown;
+    if (dy < 0) sportsState.pad.up = isDown;
+    if (dy > 0) sportsState.pad.down = isDown;
+  }
+
+  function sportsAction(kind) {
+    if (!sportsState) return;
+    sportsState.waitingKickoff = false;
+    var me = sportsState.players[0];
+    if (!me) return;
+    if (kind === 'dash') {
+      me.dashTimer = 18;
+      sound('playHop');
+      return;
+    }
+    sportsState.actionKind = kind || 'power';
     sportsState.actionPressed = true;
   }
 
-  function startSportsMatch(sp, md) {
+  function drawMonsterSpriteFrame(ctx, sheetKey, fallbackPic, x, y, z, vx, vy, flipX, animTick, cheering, teamColor, isMe) {
+    var sheet = (W() && W().getMonsterSheet) ? W().getMonsterSheet(sheetKey) : null;
+    var speed = Math.hypot(vx, vy);
+    var moving = speed > 0.25;
+    var frameIdx = 0;
+    if (cheering) {
+      frameIdx = 20;
+    } else if (moving) {
+      var step4 = Math.floor(animTick * 0.25) % 4;
+      if (Math.abs(vx) > Math.abs(vy) * 1.35) {
+        frameIdx = 11 + step4; // Side profile run cycle
+      } else if (vy < -0.5 && Math.abs(vx) < 0.6) {
+        frameIdx = 16 + step4; // Up/back run cycle
+      } else if (Math.abs(vx) > 0.35 && Math.abs(vy) > 0.35) {
+        frameIdx = 6 + step4;  // 3/4 diagonal run cycle
+      } else {
+        frameIdx = 1 + step4;  // Front run cycle
+      }
+    } else {
+      frameIdx = 10; // Side profile athletic ready stance
+    }
+
+    var bounceY = moving ? Math.abs(Math.sin(animTick * 0.42)) * 6 : Math.sin(animTick * 0.08) * 2;
+    var drawY = y - z - bounceY;
+    var squashX = moving ? (1 + Math.sin(animTick * 0.42) * 0.06) : 1;
+    var squashY = moving ? (1 - Math.sin(animTick * 0.42) * 0.06) : 1;
+
+    ctx.save();
+    // 1. Ground shadow on the turf/sand (shrinks as player jumps higher in z)
+    var shScale = Math.max(0.45, 1 - z / 160);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.36)';
+    ctx.beginPath();
+    ctx.ellipse(x, y + 18, 24 * shScale, 8 * shScale, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. Glowing 3D Stadium Pedestal Ring under player
+    ctx.strokeStyle = isMe ? '#fde047' : teamColor;
+    ctx.lineWidth = isMe ? 3.2 : 2.2;
+    ctx.beginPath();
+    ctx.ellipse(x, y + 18, 26 * shScale, 9 * shScale, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 3. Draw 25-frame 3D-shaded Monster Spritesheet frame (or fallback raster)
+    ctx.translate(x, drawY);
+    if (flipX) ctx.scale(-1, 1);
+    ctx.scale(squashX, squashY);
+
+    if (sheet && sheet.width >= 1000) {
+      var fSize = Math.round(sheet.width / 7);
+      var col = frameIdx % 7;
+      var row = Math.floor(frameIdx / 7);
+      var size = 88;
+      ctx.drawImage(sheet, col * fSize, row * fSize, fSize, fSize, -size / 2, -size + 22, size, size);
+    } else {
+      var pImg = getSportImg(fallbackPic || 'c_bolt_happy');
+      if (pImg && pImg.complete && pImg.naturalWidth > 0) {
+        ctx.drawImage(pImg, -30, -38, 60, 60);
+      }
+    }
+    ctx.restore();
+  }
+
+  function startSportsMatch(sp, md, ctrlMode) {
     var canvas = document.getElementById('wg-sports-canvas');
     if (!canvas) return;
     var ctx = canvas.getContext('2d');
@@ -1564,52 +1630,86 @@
     var st = {
       sport: sp,
       mode: md,
+      ctrl: ctrlMode || '1p',
       scoreA: 0,
       scoreB: 0,
       targetScore: sp === 'soccer' ? 3 : 5,
       finished: false,
+      waitingKickoff: true,
       goalCooldown: 0,
-      bannerText: sp === 'soccer' ? '⚽ KICK OFF!' : '🏐 SERVE!',
-      bannerTimer: 70,
-      pointer: null,
+      netRippleA: 0,
+      netRippleB: 0,
+      tick: 0,
+      bannerText: sp === 'soccer' ? '⚡ TAP FIELD OR PRESS ARROW / WASD TO KICK OFF!' : '⚡ TAP COURT OR PRESS SPACE / ARROW TO SERVE!',
+      bannerTimer: 120,
+      targetPos: null,
+      pad: { left: false, right: false, up: false, down: false },
       actionPressed: false,
+      actionKind: 'power',
+      particles: [],
+      ballTrail: [],
       players: [],
-      ball: { x: Wc / 2, y: sp === 'soccer' ? Hc / 2 : 130, vx: sp === 'soccer' ? 0 : 2.8, vy: sp === 'soccer' ? 0 : -4, r: 16 }
+      ball: { x: Wc / 2, y: Hc / 2 + 15, z: 0, vx: 0, vy: 0, vz: 0, r: 15, spin: 0 }
+    };
+
+    var spawnBurst = function (x, y, color, count) {
+      for (var i = 0; i < (count || 14); i++) {
+        var ang = Math.random() * Math.PI * 2;
+        var spd = 1.5 + Math.random() * 4.5;
+        st.particles.push({
+          x: x, y: y,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd - 1.2,
+          r: 2.5 + Math.random() * 3.5,
+          life: 18 + Math.random() * 14,
+          maxLife: 32,
+          color: color || '#fde047'
+        });
+      }
     };
 
     var resetPositions = function (servingSide) {
+      st.waitingKickoff = true;
+      st.targetPos = null;
+      st.ballTrail = [];
       if (sp === 'soccer') {
+        var midY = Hc / 2 + 18;
         st.players = [
-          { id: 'me',   team: 'A', role: 'fwd', name: 'You',   pic: 'c_bolt_happy',  color: '#38bdf8', x: 245, y: Hc / 2, vx: 0, vy: 0, r: 24 },
-          { id: 'opp1', team: 'B', role: 'fwd', name: 'Leo',   pic: 'c_ember_happy', color: '#f43f5e', x: Wc - 245, y: Hc / 2, vx: 0, vy: 0, r: 24 }
+          { id: 'me',   sheet: 'me', pic: 'c_bolt_happy',  team: 'A', role: 'fwd', name: 'YOU',   color: '#38bdf8', x: 255, y: midY, z: 0, vx: 0, vy: 0, vz: 0, r: 24, flipX: false, dashTimer: 0, cheerTimer: 0 },
+          { id: 'opp1', sheet: 'c1', pic: 'c_ember_happy', team: 'B', role: 'fwd', name: st.ctrl === '2p' ? 'P2' : 'Leo', color: '#f43f5e', x: Wc - 255, y: midY, z: 0, vx: 0, vy: 0, vz: 0, r: 24, flipX: true, dashTimer: 0, cheerTimer: 0 }
         ];
         if (md === '2v2') {
           st.players.push(
-            { id: 'ally', team: 'A', role: 'gk', name: 'Sky',   pic: 'c_lulu_happy',  color: '#a855f7', x: 105, y: Hc / 2, vx: 0, vy: 0, r: 22 },
-            { id: 'opp2', team: 'B', role: 'gk', name: 'Sunny', pic: 'c_nutty_happy', color: '#f59e0b', x: Wc - 105, y: Hc / 2, vx: 0, vy: 0, r: 22 }
+            { id: 'ally', sheet: 'c0', pic: 'c_lulu_happy',  team: 'A', role: 'gk', name: 'Sky',   color: '#38bdf8', x: 112, y: midY, z: 0, vx: 0, vy: 0, vz: 0, r: 22, flipX: false, dashTimer: 0, cheerTimer: 0 },
+            { id: 'opp2', sheet: 'c2', pic: 'c_nutty_happy', team: 'B', role: 'gk', name: 'Sunny', color: '#f43f5e', x: Wc - 112, y: midY, z: 0, vx: 0, vy: 0, vz: 0, r: 22, flipX: true, dashTimer: 0, cheerTimer: 0 }
           );
         }
         st.ball.x = Wc / 2;
-        st.ball.y = Hc / 2;
-        st.ball.vx = (servingSide === 'B' ? -1.5 : 1.5);
-        st.ball.vy = (Math.random() - 0.5) * 2;
+        st.ball.y = midY;
+        st.ball.z = 0;
+        st.ball.vx = 0;
+        st.ball.vy = 0;
+        st.ball.vz = 0;
       } else {
-        // Beach Volleyball: ground is y = 365, net at x = Wc/2 (height 125)
-        var groundY = 360;
+        // 2.5D Beach Volleyball Court (players move in x and depth y: 265..385, jump in z)
+        var baseY = 330;
         st.players = [
-          { id: 'me',   team: 'A', name: 'You',   pic: 'c_bolt_happy',  color: '#38bdf8', x: 280, y: groundY, vx: 0, vy: 0, r: 24, groundY: groundY },
-          { id: 'opp1', team: 'B', name: 'Leo',   pic: 'c_ember_happy', color: '#f43f5e', x: Wc - 280, y: groundY, vx: 0, vy: 0, r: 24, groundY: groundY }
+          { id: 'me',   sheet: 'me', pic: 'c_bolt_happy',  team: 'A', name: 'YOU',   color: '#38bdf8', x: 270, y: baseY, z: 0, vx: 0, vy: 0, vz: 0, r: 25, flipX: false, dashTimer: 0, cheerTimer: 0 },
+          { id: 'opp1', sheet: 'c1', pic: 'c_ember_happy', team: 'B', name: st.ctrl === '2p' ? 'P2' : 'Leo', color: '#f43f5e', x: Wc - 270, y: baseY, z: 0, vx: 0, vy: 0, vz: 0, r: 25, flipX: true, dashTimer: 0, cheerTimer: 0 }
         ];
         if (md === '2v2') {
           st.players.push(
-            { id: 'ally', team: 'A', name: 'Sky',   pic: 'c_lulu_happy',  color: '#a855f7', x: 130, y: groundY, vx: 0, vy: 0, r: 22, groundY: groundY },
-            { id: 'opp2', team: 'B', name: 'Sunny', pic: 'c_nutty_happy', color: '#f59e0b', x: Wc - 130, y: groundY, vx: 0, vy: 0, r: 22, groundY: groundY }
+            { id: 'ally', sheet: 'c0', pic: 'c_lulu_happy',  team: 'A', name: 'Sky',   color: '#38bdf8', x: 145, y: baseY + 28, z: 0, vx: 0, vy: 0, vz: 0, r: 23, flipX: false, dashTimer: 0, cheerTimer: 0 },
+            { id: 'opp2', sheet: 'c2', pic: 'c_nutty_happy', team: 'B', name: 'Sunny', color: '#f43f5e', x: Wc - 145, y: baseY + 28, z: 0, vx: 0, vy: 0, vz: 0, r: 23, flipX: true, dashTimer: 0, cheerTimer: 0 }
           );
         }
-        st.ball.x = servingSide === 'B' ? (Wc * 0.72) : (Wc * 0.28);
-        st.ball.y = 140;
-        st.ball.vx = servingSide === 'B' ? -3.4 : 3.4;
-        st.ball.vy = -5.5;
+        st.ball.x = servingSide === 'B' ? (Wc - 270) : 270;
+        st.ball.y = baseY;
+        st.ball.z = 48;
+        st.ball.vx = 0;
+        st.ball.vy = 0;
+        st.ball.vz = 0;
+        st.servingSide = servingSide || 'A';
       }
     };
 
@@ -1617,7 +1717,23 @@
 
     st.keyHandler = function (e) {
       keys[e.code] = true;
-      if (e.code === 'Space') st.actionPressed = true;
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'Space'].indexOf(e.code) >= 0) {
+        if (st.waitingKickoff) {
+          st.waitingKickoff = false;
+          if (sp === 'volleyball' && st.ball.vx === 0 && st.ball.vz === 0) {
+            st.ball.vx = st.servingSide === 'B' ? -4.8 : 4.8;
+            st.ball.vy = (Math.random() - 0.5) * 1.2;
+            st.ball.vz = 7.8;
+            sound('playHop');
+          }
+        }
+      }
+      if (e.code === 'Space') {
+        st.actionKind = 'power';
+        st.actionPressed = true;
+      } else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.code === 'KeyE') {
+        if (st.players[0]) { st.players[0].dashTimer = 16; sound('playHop'); }
+      }
     };
     st.keyUpHandler = function (e) {
       keys[e.code] = false;
@@ -1625,31 +1741,51 @@
     root.addEventListener('keydown', st.keyHandler);
     root.addEventListener('keyup', st.keyUpHandler);
 
-    var updatePointer = function (e) {
+    var setPointerTarget = function (e, isTap) {
       var rect = canvas.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
-      st.pointer = {
-        x: ((e.clientX - rect.left) / rect.width) * Wc,
-        y: ((e.clientY - rect.top) / rect.height) * Hc
-      };
+      var px = ((e.clientX - rect.left) / rect.width) * Wc;
+      var py = ((e.clientY - rect.top) / rect.height) * Hc;
+      if (st.waitingKickoff) {
+        st.waitingKickoff = false;
+        if (sp === 'volleyball' && st.ball.vx === 0 && st.ball.vz === 0) {
+          st.ball.vx = st.servingSide === 'B' ? -4.8 : 4.8;
+          st.ball.vy = (Math.random() - 0.5) * 1.2;
+          st.ball.vz = 7.8;
+          sound('playHop');
+        }
+      }
+      st.targetPos = { x: px, y: py };
+      if (isTap) {
+        var me = st.players[0];
+        if (me && Math.hypot(px - st.ball.x, py - st.ball.y) < 75) {
+          st.actionKind = 'power';
+          st.actionPressed = true;
+        }
+      }
     };
-    canvas.addEventListener('pointerdown', function (e) { updatePointer(e); st.actionPressed = true; });
-    canvas.addEventListener('pointermove', function (e) { if (e.buttons) updatePointer(e); });
-    canvas.addEventListener('pointerup', function () { st.pointer = null; });
+    canvas.addEventListener('pointerdown', function (e) { setPointerTarget(e, true); });
+    canvas.addEventListener('pointermove', function (e) { if (e.buttons) setPointerTarget(e, false); });
 
     var onScore = function (team) {
       if (st.finished) return;
       if (team === 'A') {
         st.scoreA++;
-        sound('playCorrect');
-        st.bannerText = (sp === 'soccer' ? '⚽ GOAL FOR YOUR TEAM!' : '🏐 POINT FOR YOUR TEAM!');
+        st.netRippleB = 26;
+        sound('playFanfare');
+        st.bannerText = (sp === 'soccer' ? '⚽ GOAL FOR YOUR TEAM! 🌟' : '🏐 ACE POINT FOR YOUR TEAM! 🌟');
+        st.players.forEach(function (p) { if (p.team === 'A') p.cheerTimer = 55; });
+        spawnBurst(Wc - 60, Hc / 2, '#fde047', 28);
       } else {
         st.scoreB++;
+        st.netRippleA = 26;
         sound('playPop');
-        st.bannerText = (sp === 'soccer' ? '⚽ RIVAL GOAL!' : '🏐 RIVAL POINT!');
+        st.bannerText = (sp === 'soccer' ? '⚽ RIVAL GOAL! TAP TO KICK OFF!' : '🏐 RIVAL POINT! TAP TO SERVE!');
+        st.players.forEach(function (p) { if (p.team === 'B') p.cheerTimer = 55; });
+        spawnBurst(60, Hc / 2, '#f43f5e', 22);
       }
-      st.bannerTimer = 65;
-      st.goalCooldown = 45;
+      st.bannerTimer = 75;
+      st.goalCooldown = 50;
       var elA = document.getElementById('wg-sp-score-a');
       var elB = document.getElementById('wg-sp-score-b');
       if (elA) elA.textContent = String(st.scoreA);
@@ -1664,12 +1800,14 @@
           writeState(wSt);
           addBonusCoins(25);
           sound('playFanfare');
-          say('Victory! Your team won the match! Plus twenty five coins!');
-          st.bannerText = '🏆 VICTORY! +25 🪙 COINS!';
+          say('Championship victory! Your team won the match! Plus twenty five coins!');
+          st.bannerText = '🏆 CHAMPIONSHIP VICTORY! +25 🪙 COINS!';
+          var wEl = document.getElementById('wg-sp-wins');
+          if (wEl) wEl.textContent = String(wSt.sportsWins);
         } else {
           sound('playSoftFail');
-          say('Good match! Tap Restart to play again!');
-          st.bannerText = '👏 CLOSE MATCH! TRY AGAIN!';
+          say('Close match! Tap Kick Off to play again!');
+          st.bannerText = '👏 CLOSE MATCH! TAP KICK OFF TO REMATCH!';
         }
         var stEl = document.getElementById('wg-sp-status');
         if (stEl) stEl.textContent = st.bannerText;
@@ -1680,248 +1818,547 @@
 
     var step = function () {
       if (!document.getElementById('wg-sports-canvas')) { stopSportsLoop(); return; }
+      st.tick++;
       var me = st.players[0];
       var b = st.ball;
 
-      if (!st.finished) {
+      // Read Player 1 input (WASD + On-screen D-Pad + Arrows if 1P mode)
+      var useArrowsForP1 = (st.ctrl !== '2p');
+      var dx = ((keys.KeyD || st.pad.right || (useArrowsForP1 && keys.ArrowRight)) ? 1 : 0) -
+               ((keys.KeyA || st.pad.left  || (useArrowsForP1 && keys.ArrowLeft))  ? 1 : 0);
+      var dy = ((keys.KeyS || st.pad.down  || (useArrowsForP1 && keys.ArrowDown))  ? 1 : 0) -
+               ((keys.KeyW || st.pad.up    || (useArrowsForP1 && keys.ArrowUp))    ? 1 : 0);
+
+      if (dx || dy) {
+        st.targetPos = null;
+        if (st.waitingKickoff) {
+          st.waitingKickoff = false;
+          if (sp === 'volleyball' && b.vx === 0 && b.vz === 0) {
+            b.vx = st.servingSide === 'B' ? -4.8 : 4.8;
+            b.vy = (Math.random() - 0.5) * 1.2;
+            b.vz = 7.8;
+          }
+        }
+      } else if (st.targetPos && me) {
+        var tdx = st.targetPos.x - me.x;
+        var tdy = st.targetPos.y - me.y;
+        var tdist = Math.hypot(tdx, tdy);
+        if (tdist > 10) {
+          dx = tdx / tdist;
+          dy = tdy / tdist;
+        } else {
+          st.targetPos = null;
+        }
+      }
+
+      if (!st.finished && !st.waitingKickoff) {
         if (st.goalCooldown > 0) st.goalCooldown--;
-        var dx = ((keys.ArrowRight || keys.KeyD) ? 1 : 0) - ((keys.ArrowLeft || keys.KeyA) ? 1 : 0);
-        var dy = ((keys.ArrowDown || keys.KeyS) ? 1 : 0) - ((keys.ArrowUp || keys.KeyW) ? 1 : 0);
+        if (st.netRippleA > 0) st.netRippleA *= 0.88;
+        if (st.netRippleB > 0) st.netRippleB *= 0.88;
+
+        var dashBoost = (me.dashTimer && me.dashTimer > 0) ? 1.55 : 1.0;
+        if (me.dashTimer > 0) me.dashTimer--;
 
         if (sp === 'soccer') {
-          if (st.pointer) {
-            var pdx = st.pointer.x - me.x, pdy = st.pointer.y - me.y, plen = Math.hypot(pdx, pdy);
-            if (plen > 10) { dx = pdx / plen; dy = pdy / plen; }
-          }
-          me.vx = dx * 4.7;
-          me.vy = dy * 4.7;
+          var len1 = Math.hypot(dx, dy) || 1;
+          if (dx || dy) { dx /= len1; dy /= len1; }
+          me.vx = dx * 5.2 * dashBoost;
+          me.vy = dy * 5.2 * dashBoost;
+          if (Math.abs(me.vx) > 0.2) me.flipX = me.vx < 0;
 
-          // AI Teammates & Opponents for Soccer
+          // Dust particles when sprinting
+          if (Math.hypot(me.vx, me.vy) > 3.5 && st.tick % 4 === 0) {
+            st.particles.push({ x: me.x, y: me.y + 16, vx: -me.vx * 0.2, vy: -0.4, r: 4, life: 12, maxLife: 12, color: 'rgba(255,255,255,0.45)' });
+          }
+
+          // Teammate & Opponents
           st.players.slice(1).forEach(function (p) {
+            if (p.id === 'opp1' && st.ctrl === '2p') {
+              // Human Player 2 on Arrow Keys!
+              var p2x = (keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0);
+              var p2y = (keys.ArrowDown ? 1 : 0) - (keys.ArrowUp ? 1 : 0);
+              var l2 = Math.hypot(p2x, p2y) || 1;
+              p.vx = (p2x / l2) * 5.2;
+              p.vy = (p2y / l2) * 5.2;
+              if (Math.abs(p.vx) > 0.2) p.flipX = p.vx < 0;
+              return;
+            }
             var tx = b.x, ty = b.y;
             if (p.role === 'gk') {
-              tx = p.team === 'A' ? 88 : (Wc - 88);
-              ty = Math.max(135, Math.min(Hc - 135, b.y));
+              tx = p.team === 'A' ? 104 : (Wc - 104);
+              ty = Math.max(150, Math.min(Hc - 120, b.y));
             } else if (p.team === 'B') {
-              tx = b.x + 12;
+              // Fair AI rival: approaches ball to challenge
+              tx = b.x + 14;
               ty = b.y;
             }
             var adx = tx - p.x, ady = ty - p.y, alen = Math.hypot(adx, ady) || 1;
-            var spd = p.role === 'gk' ? 3.2 : 3.4;
+            var spd = p.role === 'gk' ? 2.7 : 2.95;
             p.vx = (adx / alen) * Math.min(spd, alen);
             p.vy = (ady / alen) * Math.min(spd, alen);
+            if (Math.abs(p.vx) > 0.2) p.flipX = p.vx < 0;
           });
 
-          // Move soccer players & collide with ball
+          // Move soccer players & 3D ball collision
           st.players.forEach(function (p) {
-            p.x = Math.max(46, Math.min(Wc - 46, p.x + p.vx));
-            p.y = Math.max(46, Math.min(Hc - 46, p.y + p.vy));
+            p.x = Math.max(58, Math.min(Wc - 58, p.x + p.vx));
+            p.y = Math.max(88, Math.min(Hc - 38, p.y + p.vy));
+            if (p.cheerTimer > 0) p.cheerTimer--;
+
             var bdx = b.x - p.x, bdy = b.y - p.y, dist = Math.hypot(bdx, bdy);
-            if (dist < p.r + b.r && dist > 0.01) {
+            if (dist < p.r + b.r && b.z < 38 && dist > 0.01) {
               var nx = bdx / dist, ny = bdy / dist;
-              b.x = p.x + nx * (p.r + b.r + 2);
-              b.y = p.y + ny * (p.r + b.r + 2);
-              var kickPower = (p.id === 'me' && st.actionPressed) ? 10.5 : (p.team === 'A' ? 7.2 : 6.6);
-              if (p.team === 'B') {
-                // Aim toward left goal
-                var gdx = 30 - p.x, gdy = (Hc / 2) - p.y, glen = Math.hypot(gdx, gdy) || 1;
-                b.vx = (gdx / glen) * kickPower;
-                b.vy = (gdy / glen) * kickPower + (Math.random() - 0.5) * 2;
+              b.x = p.x + nx * (p.r + b.r + 3);
+              b.y = p.y + ny * (p.r + b.r + 3);
+
+              if (p.id === 'me') {
+                if (st.actionPressed) {
+                  // Aim toward right goal with blazing 3D arc!
+                  var gx = Wc - 42 - p.x, gy = (Hc / 2 + 18) - p.y + (dy * 55), glen = Math.hypot(gx, gy) || 1;
+                  var pwr = st.actionKind === 'lob' ? 8.5 : 12.2;
+                  b.vx = (gx / glen) * pwr;
+                  b.vy = (gy / glen) * pwr;
+                  b.vz = st.actionKind === 'lob' ? 7.8 : 4.2;
+                  spawnBurst(b.x, b.y, '#38bdf8', 12);
+                  sound('playCorrect');
+                } else {
+                  // Controlled dribble / push forward
+                  b.vx = nx * 6.8 + p.vx * 0.55;
+                  b.vy = ny * 6.8 + p.vy * 0.55;
+                  b.vz = Math.max(b.vz, 1.8);
+                  sound('playHop');
+                }
               } else if (p.id === 'ally') {
-                // Pass forward toward right goal
-                var adx2 = (Wc - 30) - p.x, ady2 = (Hc / 2) - p.y, alen2 = Math.hypot(adx2, ady2) || 1;
-                b.vx = (adx2 / alen2) * kickPower;
-                b.vy = (ady2 / alen2) * kickPower;
+                // Sky passes straight to YOU!
+                var pdx = (me.x + 40) - p.x, pdy = me.y - p.y, plen = Math.hypot(pdx, pdy) || 1;
+                b.vx = (pdx / plen) * 8.2;
+                b.vy = (pdy / plen) * 8.2;
+                b.vz = 3.6;
+                st.bannerText = '📣 SKY PASSES TO YOU! SHOOT!';
+                st.bannerTimer = 40;
+                sound('playHop');
               } else {
-                b.vx = nx * kickPower + p.vx * 0.4;
-                b.vy = ny * kickPower + p.vy * 0.4;
+                // Rival kick toward left goal
+                var rgx = 42 - p.x, rgy = (Hc / 2 + 18) - p.y + (Math.random() - 0.5) * 70, rlen = Math.hypot(rgx, rgy) || 1;
+                b.vx = (rgx / rlen) * 7.2;
+                b.vy = (rgy / rlen) * 7.2;
+                b.vz = 2.6;
+                sound('playHop');
               }
-              sound('playHop');
             }
           });
+
+          // If Player pressed Super Shot / Lob within 68px of ball even without direct overlap
+          if (st.actionPressed && me && Math.hypot(b.x - me.x, b.y - me.y) < 68 && b.z < 46) {
+            var gx2 = Wc - 42 - me.x, gy2 = (Hc / 2 + 18) - me.y + (dy * 55), glen2 = Math.hypot(gx2, gy2) || 1;
+            var pwr2 = st.actionKind === 'lob' ? 8.8 : 12.6;
+            b.vx = (gx2 / glen2) * pwr2;
+            b.vy = (gy2 / glen2) * pwr2;
+            b.vz = st.actionKind === 'lob' ? 8.2 : 4.5;
+            spawnBurst(b.x, b.y, '#fde047', 16);
+            sound('playCorrect');
+          }
           st.actionPressed = false;
 
-          // Ball physics on soccer turf
+          // 3D Ball Physics on Soccer Pitch
           b.x += b.vx;
           b.y += b.vy;
-          b.vx *= 0.982;
-          b.vy *= 0.982;
-
-          // Goal mouth is y: 140..280
-          var inGoalY = (b.y > 140 && b.y < 280);
-          if (b.y < 36 + b.r) { b.y = 36 + b.r; b.vy *= -0.85; }
-          if (b.y > Hc - 36 - b.r) { b.y = Hc - 36 - b.r; b.vy *= -0.85; }
-          if (b.x < 38 + b.r) {
-            if (inGoalY && st.goalCooldown <= 0) onScore('B');
-            else { b.x = 38 + b.r; b.vx *= -0.85; }
+          b.z += b.vz;
+          if (b.z > 0 || b.vz !== 0) {
+            b.vz -= 0.36; // 3D Gravity
+            if (b.z <= 0) {
+              b.z = 0;
+              if (Math.abs(b.vz) > 1.2) {
+                b.vz = -b.vz * 0.58;
+                sound('playPop');
+              } else {
+                b.vz = 0;
+              }
+            }
           }
-          if (b.x > Wc - 38 - b.r) {
+          b.vx *= (b.z > 2 ? 0.992 : 0.978);
+          b.vy *= (b.z > 2 ? 0.992 : 0.978);
+          b.spin += Math.hypot(b.vx, b.vy) * 0.06;
+
+          if (Math.hypot(b.vx, b.vy) > 6.5) {
+            st.ballTrail.push({ x: b.x, y: b.y, z: b.z, life: 10 });
+          }
+
+          // Goal mouth y: 165..315
+          var inGoalY = (b.y > 165 && b.y < 315 && b.z < 55);
+          if (b.y < 84 + b.r) { b.y = 84 + b.r; b.vy *= -0.85; }
+          if (b.y > Hc - 30 - b.r) { b.y = Hc - 30 - b.r; b.vy *= -0.85; }
+          if (b.x < 52 + b.r) {
+            if (inGoalY && st.goalCooldown <= 0) onScore('B');
+            else { b.x = 52 + b.r; b.vx *= -0.85; }
+          }
+          if (b.x > Wc - 52 - b.r) {
             if (inGoalY && st.goalCooldown <= 0) onScore('A');
-            else { b.x = Wc - 38 - b.r; b.vx *= -0.85; }
+            else { b.x = Wc - 52 - b.r; b.vx *= -0.85; }
           }
         } else {
-          // Beach Volleyball physics
-          var groundY = 360;
-          if (st.pointer) {
-            dx = st.pointer.x < me.x - 10 ? -1 : (st.pointer.x > me.x + 10 ? 1 : 0);
-          }
-          me.vx = dx * 5.2;
-          if ((dy < 0 || st.actionPressed) && me.y >= groundY - 1) {
-            me.vy = -10.5;
+          // 2.5D Beach Volleyball Physics (x: court width, y: depth 245..390, z: jump height)
+          var lenV = Math.hypot(dx, dy) || 1;
+          if (dx || dy) { dx /= lenV; dy /= lenV; }
+          me.vx = dx * 5.0 * dashBoost;
+          me.vy = dy * 3.8 * dashBoost;
+          if (Math.abs(me.vx) > 0.2) me.flipX = me.vx < 0;
+
+          if (st.actionPressed && me.z <= 1) {
+            me.vz = 9.2; // High Jump for Spike/Block!
             sound('playHop');
           }
-          st.actionPressed = false;
 
           st.players.slice(1).forEach(function (p) {
+            if (p.id === 'opp1' && st.ctrl === '2p') {
+              var p2x = (keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0);
+              var p2y = (keys.ArrowDown ? 1 : 0) - (keys.ArrowUp ? 1 : 0);
+              p.vx = p2x * 5.0;
+              p.vy = p2y * 3.8;
+              if (keys.Enter && p.z <= 1) p.vz = 9.0;
+              return;
+            }
             var onMyHalf = (p.team === 'A' && b.x < Wc / 2) || (p.team === 'B' && b.x >= Wc / 2);
-            var homeX = p.team === 'A' ? 125 : (p.id === 'opp1' ? Wc - 265 : Wc - 125);
-            var targetX = onMyHalf ? (p.team === 'A' ? Math.min(200, b.x) : b.x) : homeX;
-            var diff = targetX - p.x;
-            p.vx = Math.max(-4.3, Math.min(4.3, diff * 0.12));
-            if (onMyHalf && Math.abs(b.x - p.x) < 48 && b.y > 210 && p.y >= groundY - 1) {
-              p.vy = -10.0;
+            var homeX = p.team === 'A' ? 140 : (p.id === 'opp1' ? Wc - 260 : Wc - 135);
+            var homeY = p.id === 'ally' || p.id === 'opp2' ? 355 : 315;
+            var targetX = onMyHalf ? (p.team === 'A' ? Math.min(220, b.x) : b.x) : homeX;
+            var targetY = onMyHalf ? b.y : homeY;
+            p.vx = Math.max(-3.8, Math.min(3.8, (targetX - p.x) * 0.12));
+            p.vy = Math.max(-2.8, Math.min(2.8, (targetY - p.y) * 0.12));
+            if (onMyHalf && Math.hypot(b.x - p.x, b.y - p.y) < 48 && b.z < 55 && b.vz < 0 && p.z <= 1) {
+              p.vz = 8.4;
             }
           });
 
           st.players.forEach(function (p) {
             p.x += p.vx;
-            if (p.team === 'A') p.x = Math.max(45, Math.min(Wc / 2 - 34, p.x));
-            else p.x = Math.max(Wc / 2 + 34, Math.min(Wc - 45, p.x));
-            p.vy += 0.48;
-            p.y = Math.min(groundY, p.y + p.vy);
-            if (p.y >= groundY) p.vy = 0;
+            p.y = Math.max(255, Math.min(390, p.y + p.vy));
+            if (p.team === 'A') p.x = Math.max(55, Math.min(Wc / 2 - 34, p.x));
+            else p.x = Math.max(Wc / 2 + 34, Math.min(Wc - 55, p.x));
 
-            var bdx = b.x - p.x, bdy = b.y - (p.y - 14), dist = Math.hypot(bdx, bdy);
-            if (dist < p.r + b.r && dist > 0.01) {
-              b.y = p.y - 14 - (p.r + b.r);
-              b.vy = -8.6;
-              b.vx = (p.team === 'A' ? 4.4 : -4.4) + (bdx * 0.08);
+            p.z += p.vz;
+            if (p.z > 0 || p.vz !== 0) {
+              p.vz -= 0.46;
+              if (p.z <= 0) { p.z = 0; p.vz = 0; }
+            }
+
+            var bdx = b.x - p.x, bdy = b.y - p.y, bdz = b.z - (p.z + 28);
+            var dist3d = Math.hypot(bdx, bdy, bdz * 0.7);
+            if (dist3d < p.r + b.r + 6 && b.vz <= 2) {
+              b.z = Math.max(b.z, p.z + 36);
+              var isSpike = (p.id === 'me' && (p.z > 18 || st.actionPressed) && st.actionKind === 'power');
+              if (p.id === 'ally') {
+                // Teammate sets the ball high to YOU!
+                b.vx = (me.x + 25 - b.x) * 0.045;
+                b.vy = (me.y - b.y) * 0.045;
+                b.vz = 8.8;
+                st.bannerText = '🙌 HIGH SET TO YOU! JUMP & SPIKE!';
+                st.bannerTimer = 45;
+              } else if (isSpike) {
+                b.vx = 7.4;
+                b.vy = (dx ? dy * 2.2 : (Math.random() - 0.5) * 2.4);
+                b.vz = 5.4;
+                spawnBurst(b.x, b.y - b.z, '#fde047', 18);
+                st.bannerText = '🔥 MONSTER POWER SPIKE!';
+                st.bannerTimer = 40;
+              } else {
+                b.vx = (p.team === 'A' ? 5.0 : -5.0) + (bdx * 0.05);
+                b.vy = Math.max(-2.2, Math.min(2.2, bdy * 0.08));
+                b.vz = 8.4;
+              }
               sound('playPop');
             }
           });
+          st.actionPressed = false;
 
           b.x += b.vx;
           b.y += b.vy;
-          b.vy += 0.22; // gravity
+          b.z += b.vz;
+          b.vz -= 0.22; // Volleyball float gravity
+          b.spin += b.vx * 0.05;
 
-          if (b.x < 30 + b.r) { b.x = 30 + b.r; b.vx *= -0.9; }
-          if (b.x > Wc - 30 - b.r) { b.x = Wc - 30 - b.r; b.vx *= -0.9; }
-          if (b.y < 24 + b.r) { b.y = 24 + b.r; b.vy *= -0.8; }
+          if (b.x < 45 + b.r) { b.x = 45 + b.r; b.vx *= -0.85; }
+          if (b.x > Wc - 45 - b.r) { b.x = Wc - 45 - b.r; b.vx *= -0.85; }
+          if (b.y < 250) { b.y = 250; b.vy *= -0.85; }
+          if (b.y > 392) { b.y = 392; b.vy *= -0.85; }
 
-          // Net collision at x = Wc/2, y: 235..365
-          if (Math.abs(b.x - Wc / 2) < b.r + 6 && b.y > 235) {
-            if (b.y < 248) { b.y = 235 - b.r; b.vy = -Math.abs(b.vy) * 0.85; }
-            else { b.vx *= -0.85; b.x = b.x < Wc / 2 ? (Wc / 2 - b.r - 7) : (Wc / 2 + b.r + 7); }
+          // 3D Net collision at x = Wc/2 (net height = 56 in z)
+          if (Math.abs(b.x - Wc / 2) < b.r + 6 && b.z < 56) {
+            if (b.z > 42) {
+              b.z = 57;
+              b.vz = Math.abs(b.vz) * 0.75 + 2;
+            } else {
+              b.vx *= -0.8;
+              b.x = b.x < Wc / 2 ? (Wc / 2 - b.r - 7) : (Wc / 2 + b.r + 7);
+            }
           }
 
-          // Sand hit = point for the other side!
-          if (b.y >= groundY + 6 && st.goalCooldown <= 0) {
+          // Ball hits the sand (z <= 0) -> Point!
+          if (b.z <= 0 && st.goalCooldown <= 0) {
+            b.z = 0;
+            spawnBurst(b.x, b.y, '#fde047', 16);
             onScore(b.x < Wc / 2 ? 'B' : 'A');
           }
         }
       }
 
-      // Render Frame
+      // ======================================================================
+      // RENDER 2.5D STADIUM FRAME
+      // ======================================================================
       ctx.clearRect(0, 0, Wc, Hc);
+
       if (sp === 'soccer') {
-        // Striped green stadium pitch
-        for (var i = 0; i < 10; i++) {
-          ctx.fillStyle = i % 2 === 0 ? '#15803d' : '#166534';
-          ctx.fillRect(i * (Wc / 10), 0, Wc / 10 + 1, Hc);
+        // 1. 3D Stadium Crowd Stands & Night Sky Header (y: 0..76)
+        var standG = ctx.createLinearGradient(0, 0, 0, 78);
+        standG.addColorStop(0, '#090d16');
+        standG.addColorStop(1, '#1e293b');
+        ctx.fillStyle = standG;
+        ctx.fillRect(0, 0, Wc, 78);
+
+        // Stadium crowd rows & animated cheering fans
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(0, 56, Wc, 22);
+        for (var cf = 0; cf < 26; cf++) {
+          var fx = 24 + cf * 31;
+          var fy = 38 + (cf % 2) * 10 - Math.abs(Math.sin(st.tick * 0.08 + cf)) * (st.bannerTimer > 0 ? 7 : 2);
+          ctx.fillStyle = ['#38bdf8', '#fde047', '#f43f5e', '#34d399', '#a855f7'][cf % 5];
+          ctx.beginPath();
+          ctx.arc(fx, fy, 6.5, 0, Math.PI * 2);
+          ctx.fill();
         }
-        ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+
+        // 2. 2.5D Perspective Turf Pitch (y: 78..Hc)
+        var bgGrass = ctx.createLinearGradient(0, 78, 0, Hc);
+        bgGrass.addColorStop(0, '#14532d');
+        bgGrass.addColorStop(1, '#166534');
+        ctx.fillStyle = bgGrass;
+        ctx.fillRect(0, 78, Wc, Hc - 78);
+
+        // Perspective mowed grass stripes
+        for (var s = 0; s < 10; s++) {
+          if (s % 2 === 0) {
+            ctx.fillStyle = 'rgba(34, 197, 94, 0.16)';
+            var topX1 = 70 + s * ((Wc - 140) / 10);
+            var topX2 = 70 + (s + 1) * ((Wc - 140) / 10);
+            var botX1 = 28 + s * ((Wc - 56) / 10);
+            var botX2 = 28 + (s + 1) * ((Wc - 56) / 10);
+            ctx.beginPath();
+            ctx.moveTo(topX1, 84);
+            ctx.lineTo(topX2, 84);
+            ctx.lineTo(botX2, Hc - 22);
+            ctx.lineTo(botX1, Hc - 22);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+
+        // Perspective pitch boundary trapezoid
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.88)';
         ctx.lineWidth = 3;
-        ctx.strokeRect(38, 36, Wc - 76, Hc - 72);
         ctx.beginPath();
-        ctx.moveTo(Wc / 2, 36); ctx.lineTo(Wc / 2, Hc - 36);
+        ctx.moveTo(68, 84);
+        ctx.lineTo(Wc - 68, 84);
+        ctx.lineTo(Wc - 34, Hc - 24);
+        ctx.lineTo(34, Hc - 24);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Halfway line & perspective center ellipse
+        ctx.beginPath();
+        ctx.moveTo(Wc / 2, 84);
+        ctx.lineTo(Wc / 2, Hc - 24);
         ctx.stroke();
         ctx.beginPath();
-        ctx.arc(Wc / 2, Hc / 2, 54, 0, Math.PI * 2);
+        ctx.ellipse(Wc / 2, Hc / 2 + 18, 62, 44, 0, 0, Math.PI * 2);
         ctx.stroke();
-        // Left & Right Goals (y: 140..280)
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
-        ctx.fillRect(8, 140, 30, 140);
-        ctx.strokeRect(8, 140, 30, 140);
-        ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
-        ctx.fillRect(Wc - 38, 140, 30, 140);
-        ctx.strokeRect(Wc - 38, 140, 30, 140);
+
+        // Penalty boxes
+        ctx.strokeRect(48, 138, 86, 200);
+        ctx.strokeRect(Wc - 134, 138, 86, 200);
+
+        // 3. 3D Goal Cages with Dynamic Net Ripple (y: 165..315)
+        var rA = Math.sin(st.tick * 0.5) * st.netRippleA;
+        var rB = Math.sin(st.tick * 0.5) * st.netRippleB;
+
+        // Left Goal (Your Team A Goal)
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.22)';
+        ctx.beginPath();
+        ctx.moveTo(52, 165); ctx.lineTo(14 - rA * 0.4, 152); ctx.lineTo(14 - rA * 0.4, 302); ctx.lineTo(52, 315);
+        ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3.5; ctx.stroke();
+
+        // Right Goal (Rival Team B Goal)
+        ctx.fillStyle = 'rgba(244, 63, 94, 0.22)';
+        ctx.beginPath();
+        ctx.moveTo(Wc - 52, 165); ctx.lineTo(Wc - 14 + rB * 0.4, 152); ctx.lineTo(Wc - 14 + rB * 0.4, 302); ctx.lineTo(Wc - 52, 315);
+        ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 3.5; ctx.stroke();
       } else {
-        // Sunny Beach Volleyball Court
-        var skyG = ctx.createLinearGradient(0, 0, 0, 230);
+        // 2.5D Sunny Tropical Beach Volleyball Court
+        var skyG = ctx.createLinearGradient(0, 0, 0, 195);
         skyG.addColorStop(0, '#0284c7');
-        skyG.addColorStop(1, '#38bdf8');
+        skyG.addColorStop(1, '#7dd3fc');
         ctx.fillStyle = skyG;
-        ctx.fillRect(0, 0, Wc, 230);
+        ctx.fillRect(0, 0, Wc, 195);
+
+        // Animated rolling ocean waves
         ctx.fillStyle = '#0ea5e9';
-        ctx.fillRect(0, 200, Wc, 45);
-        var sandG = ctx.createLinearGradient(0, 245, 0, Hc);
-        sandG.addColorStop(0, '#fde047');
+        ctx.fillRect(0, 175, Wc, 45);
+        ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+        ctx.lineWidth = 2.5;
+        var waveOff = Math.sin(st.tick * 0.05) * 8;
+        ctx.beginPath();
+        ctx.moveTo(0, 212 + waveOff * 0.3);
+        ctx.lineTo(Wc, 212 - waveOff * 0.3);
+        ctx.stroke();
+
+        // Golden Beach Sand
+        var sandG = ctx.createLinearGradient(0, 218, 0, Hc);
+        sandG.addColorStop(0, '#fde68a');
         sandG.addColorStop(1, '#f59e0b');
         ctx.fillStyle = sandG;
-        ctx.fillRect(0, 245, Wc, Hc - 245);
-        // Net
-        ctx.fillStyle = '#f8fafc';
-        ctx.fillRect(Wc / 2 - 4, 235, 8, 135);
-        ctx.strokeStyle = '#334155';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(Wc / 2 - 4, 235, 8, 135);
-      }
+        ctx.fillRect(0, 218, Wc, Hc - 218);
 
-      // Draw Players using real transparent 3D character sprites
-      st.players.forEach(function (p) {
-        ctx.save();
-        // Ground reflection pedestal disc
-        ctx.fillStyle = p.team === 'A' ? 'rgba(56, 189, 248, 0.38)' : 'rgba(244, 63, 94, 0.38)';
+        // 2.5D Perspective Sand Court Lines
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.ellipse(p.x, p.y + p.r - 2, p.r * 1.05, 8, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = p.id === 'me' ? '#fde047' : (p.team === 'A' ? '#38bdf8' : '#f43f5e');
+        ctx.moveTo(85, 245);
+        ctx.lineTo(Wc - 85, 245);
+        ctx.lineTo(Wc - 42, 398);
+        ctx.lineTo(42, 398);
+        ctx.closePath();
         ctx.stroke();
 
-        var pImg = getSportImg(p.pic || 'c_bolt_happy');
-        if (pImg && pImg.complete && pImg.naturalWidth > 0) {
-          var sw = 54, sh = 54;
-          ctx.drawImage(pImg, p.x - sw / 2, p.y - sh + 14, sw, sh);
-        }
+        // Pulsing Ball Landing Shadow Target on Sand
+        ctx.strokeStyle = b.x < Wc / 2 ? '#38bdf8' : '#fde047';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(b.x, b.y, 18 + Math.sin(st.tick * 0.2) * 3, 7, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
 
-        // Nameplate pill
-        ctx.font = '700 11px Fredoka, sans-serif';
+      // Target click ring for Player 1
+      if (st.targetPos) {
+        ctx.save();
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.ellipse(st.targetPos.x, st.targetPos.y, 18, 8, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Draw 3D Ball Shadow on the ground at (b.x, b.y)
+      ctx.save();
+      var bShScale = Math.max(0.35, 1 - b.z / 180);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.34)';
+      ctx.beginPath();
+      ctx.ellipse(b.x, b.y + 10, b.r * 0.95 * bShScale, 5.5 * bShScale, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Depth-sort Players & Net & Ball by y coordinate for true 2.5D overlap!
+      var sortedPlayers = st.players.slice().sort(function (a, b2) { return a.y - b2.y; });
+      sortedPlayers.forEach(function (p) {
+        drawMonsterSpriteFrame(
+          ctx,
+          p.sheet,
+          p.pic,
+          p.x, p.y, p.z || 0,
+          p.vx, p.vy,
+          !!p.flipX,
+          st.tick,
+          p.cheerTimer > 0,
+          p.color,
+          p.id === 'me'
+        );
+
+        // Clean Transparent Nameplate (NO black rectangle box!)
+        ctx.save();
+        ctx.font = '800 13px Fredoka, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-        ctx.fillRect(p.x - 24, p.y - p.r - 28, 48, 16);
-        ctx.fillStyle = p.id === 'me' ? '#fde047' : '#ffffff';
-        ctx.fillText(p.name, p.x, p.y - p.r - 16);
+        var labelY = p.y - (p.z || 0) - 62;
+        var labelTxt = p.id === 'me' ? '▼ YOU' : p.name;
+        ctx.strokeStyle = '#060911';
+        ctx.lineWidth = 4.5;
+        ctx.strokeText(labelTxt, p.x, labelY);
+        ctx.fillStyle = p.id === 'me' ? '#fde047' : (p.team === 'A' ? '#7dd3fc' : '#fda4af');
+        ctx.fillText(labelTxt, p.x, labelY);
         ctx.restore();
       });
 
-      // Draw Ball using real o_ball.webp sprite
-      ctx.save();
-      ctx.fillStyle = 'rgba(0,0,0,0.28)';
-      ctx.beginPath();
-      ctx.ellipse(b.x, sp === 'soccer' ? (b.y + b.r) : 366, b.r * 0.85, 5, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // Draw 3D Volleyball Net in the middle of the court
+      if (sp === 'volleyball') {
+        ctx.save();
+        // Net posts in perspective
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillRect(Wc / 2 - 4, 192, 8, 208);
+        // Net mesh band
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
+        ctx.fillRect(Wc / 2 - 3, 200, 6, 155);
+        // Top white net tape
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(Wc / 2 - 5, 195, 10, 12);
+        ctx.restore();
+      }
 
+      // Draw Ball Comet Trail
+      for (var ti = st.ballTrail.length - 1; ti >= 0; ti--) {
+        var tr = st.ballTrail[ti];
+        tr.life--;
+        if (tr.life <= 0) { st.ballTrail.splice(ti, 1); continue; }
+        ctx.save();
+        ctx.fillStyle = 'rgba(253, 224, 71, ' + (tr.life / 16) + ')';
+        ctx.beginPath();
+        ctx.arc(tr.x, tr.y - tr.z, b.r * (tr.life / 12), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Draw 3D Ball at (b.x, b.y - b.z) scaled by height z
+      ctx.save();
+      var bScale = 1 + (b.z || 0) / 220;
+      var drawR = (b.r + 2) * bScale;
+      ctx.translate(b.x, b.y - (b.z || 0));
+      ctx.rotate(b.spin || 0);
       var bImg = getSportImg('o_ball');
       if (bImg && bImg.complete && bImg.naturalWidth > 0) {
-        ctx.drawImage(bImg, b.x - b.r - 2, b.y - b.r - 2, (b.r + 2) * 2, (b.r + 2) * 2);
+        ctx.drawImage(bImg, -drawR, -drawR, drawR * 2, drawR * 2);
       }
       ctx.restore();
 
-      // Banner Overlay
-      if (st.bannerTimer > 0 || st.finished) {
-        if (st.bannerTimer > 0) st.bannerTimer--;
+      // Update & Draw Burst Particles
+      for (var pi = st.particles.length - 1; pi >= 0; pi--) {
+        var pt = st.particles[pi];
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.life--;
+        if (pt.life <= 0) { st.particles.splice(pi, 1); continue; }
         ctx.save();
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.82)';
-        ctx.fillRect(Wc / 2 - 190, 14, 380, 38);
-        ctx.strokeStyle = '#fde047';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(Wc / 2 - 190, 14, 380, 38);
-        ctx.font = '800 18px Fredoka, sans-serif';
-        ctx.fillStyle = '#fde047';
+        ctx.globalAlpha = Math.max(0, pt.life / pt.maxLife);
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Kickoff / Banner Overlay (Clean translucent text banner)
+      if (st.waitingKickoff || st.bannerTimer > 0 || st.finished) {
+        if (st.bannerTimer > 0 && !st.waitingKickoff) st.bannerTimer--;
+        ctx.save();
+        var msg = st.waitingKickoff
+          ? (sp === 'soccer' ? '⚡ READY! TAP FIELD, D-PAD, OR PRESS WASD / ARROWS TO KICK OFF!' : '⚡ READY! TAP COURT OR PRESS SPACE / ARROWS TO SERVE!')
+          : st.bannerText;
+        ctx.font = '800 17px Fredoka, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(st.bannerText, Wc / 2, 33);
+        ctx.strokeStyle = '#060911';
+        ctx.lineWidth = 5;
+        ctx.strokeText(msg, Wc / 2, 32);
+        ctx.fillStyle = '#fde047';
+        ctx.fillText(msg, Wc / 2, 32);
         ctx.restore();
       }
 
@@ -1958,20 +2395,22 @@
     goClassicMap: goClassicMap,
     openEnergyCharge: openEnergyCharge,
     answerEnergy: answerEnergy,
-    BLUEPRINTS: BLUEPRINTS,
     openWorkshop: openWorkshop,
     setStudioView: setStudioView,
     setCraftFilter: setCraftFilter,
     selectStudioPlaced: selectStudioPlaced,
+    focusPlacedItem: focusPlacedItem,
+    startStudioDrag: startStudioDrag,
+    moveStudioDrag: moveStudioDrag,
+    endStudioDrag: endStudioDrag,
     tapStudioStage: tapStudioStage,
+    nudgeStudioItem: nudgeStudioItem,
     flipStudioItem: flipStudioItem,
     upgradeStudioItem: upgradeStudioItem,
     storeStudioItem: storeStudioItem,
     seeHomeInWorld: seeHomeInWorld,
     claimBlueprint: claimBlueprint,
     openSmartBuilderQuiz: openSmartBuilderQuiz,
-    openSportsArena: openSportsArena,
-    sportsAction: sportsAction,
     upgradeHome: upgradeHome,
     craftItem: craftItem,
     placeItem: placeItem,
@@ -1981,8 +2420,17 @@
     trackVillager: trackVillager,
     completeJob: completeJob,
     openBattle: openBattle,
-    pickSpell: pickSpell,
-    castBattleSpell: castBattleSpell,
+    answerBattle: answerBattle,
+    openSportsArena: openSportsArena,
+    restartSportsMatch: restartSportsMatch,
+    setSportDir: setSportDir,
+    sportsAction: sportsAction,
     closeModal: closeModal
   };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wireWorldHud);
+  } else {
+    wireWorldHud();
+  }
 })(typeof window !== 'undefined' ? window : this);
