@@ -1119,7 +1119,7 @@
 
       var spImg = sc.add.image(1150, 1140, FLAT + 'o_ball').setOrigin(.5, .9).setDepth(1140);
       spImg.setScale(72 / spImg.height);
-      var spLabel = makeWorldLabel(sc, 1150, 1068, '⚽ Sports Arena (1v1 / 2v2)', '#34d399');
+      var spLabel = makeWorldLabel(sc, 1150, 1068, '⚽ 3D Sports Stadium (4v4)', '#34d399');
       sc.sportsSpot = { kind: 'sports', img: spImg, label: spLabel, x: 1150, y: 1140, def: { h: 90, sw: 110 } };
       sc.homeObjs.push(sc.houseSpot, sc.workbenchSpot, sc.sportsSpot);
     }
@@ -1584,7 +1584,7 @@
       say('Welcome to ' + fr.first_name + 's Home Island!');
     } else if (t.kind === 'sports') {
       panel(FLAT + 'o_ball', '🏆 Island Sports Arena', 'Use your English Energy (⚡ 15) to play 1v1 or 2v2 Football ⚽ & Beach Volleyball 🏐 with classmates!', 'Play Sports ⚽', function () {
-        if (root.WorldGame && root.WorldGame.openSportsArena) root.WorldGame.openSportsArena('soccer', '2v2');
+        if (root.WorldGame && root.WorldGame.openSportsArena) root.WorldGame.openSportsArena('soccer', '4v4');
       });
       say('Let us play football or volleyball in the Sports Arena!');
     } else if (t.kind === 'door_out') {
@@ -1764,7 +1764,7 @@
         } else if (hit.kind === 'door_out') {
           exitHouse();
         } else if (hit.kind === 'sports' && root.WorldGame && root.WorldGame.openSportsArena) {
-          root.WorldGame.openSportsArena('soccer', '2v2');
+          root.WorldGame.openSportsArena('soccer', '4v4');
         } else if (!S.visitingFriend && root.WorldGame && hit.kind === 'workbench') {
           root.WorldGame.openWorkshop('blueprints');
         } else {
