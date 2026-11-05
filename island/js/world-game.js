@@ -1514,9 +1514,9 @@
                 '<div class="wg-sp-joy-hint"><b>360° Stick</b><small>or WASD / Arrows / Drag</small></div>' +
               '</div>' +
               '<div class="wg-sp-action-group">' +
-                '<button type="button" tabindex="-1" class="isl-btn cyan wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'pass\')">' + (sportsSport === 'soccer' ? '👟 1-2 PASS / LOB (E)' : '🙌 HIGH SET (E)') + '</button>' +
-                '<button type="button" tabindex="-1" class="isl-btn emerald wg-act-btn" onpointerdown="this.blur();WorldGame.sportsAction(\'dash\')">💨 SKILL FEINT / SPRINT (Shift)</button>' +
-                '<button type="button" tabindex="-1" class="isl-btn amber wg-act-btn shoot" onpointerdown="this.blur();WorldGame.sportsAction(\'power\')">' + (sportsSport === 'soccer' ? '🔥 SHOOT / TACKLE! (Space)' : '🔥 JUMP SPIKE! (Space)') + '</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn cyan wg-act-btn" onpointerdown="event.preventDefault();this.blur();WorldGame.sportsAction(\'pass\')" onclick="this.blur();WorldGame.sportsAction(\'pass\')">' + (sportsSport === 'soccer' ? '👟 PASS TO TEAMMATE (E)' : '🙌 HIGH SET (E)') + '</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn emerald wg-act-btn" onpointerdown="event.preventDefault();this.blur();WorldGame.sportsAction(\'dash\')" onclick="this.blur();WorldGame.sportsAction(\'dash\')">💨 SPEED / DRIBBLE FEINT (Shift)</button>' +
+                '<button type="button" tabindex="-1" class="isl-btn amber wg-act-btn shoot" onpointerdown="event.preventDefault();this.blur();WorldGame.sportsAction(\'power\')" onclick="this.blur();WorldGame.sportsAction(\'power\')">' + (sportsSport === 'soccer' ? '🔥 POWER SHOOT / TACKLE (Space)' : '🔥 JUMP SPIKE! (Space)') + '</button>' +
               '</div>' +
               '<div style="display:flex;gap:5px;margin-left:auto">' +
                 '<button type="button" tabindex="-1" class="isl-btn" style="min-height:38px;padding:4px 10px;font-size:0.8rem" onclick="this.blur();WorldGame.restartSportsMatch()">🔄 Play Again</button>' +
@@ -1545,8 +1545,12 @@
     }
   }
 
+  var lastSportsActionTime = 0;
   function sportsAction(kind) {
     if (!sportsState) return;
+    var now = Date.now();
+    if (now - lastSportsActionTime < 65 && sportsState.actionPressed) return;
+    lastSportsActionTime = now;
     if (sportsState.finished) {
       restartSportsMatch();
       return;
@@ -1900,16 +1904,21 @@
       }
     });
 
-    var kickSoccerBall = function (kicker, vx, vy, vz, burstColor) {
+    var kickSoccerBall = function (kicker, vx, vy, vz, burstColor, targetMate) {
       st.holder = null;
-      st.stealCooldown = 20;
+      st.stealCooldown = 24;
       st.allyHoldFrames = 0;
-      st.ball.x = kicker.x + (vx / (Math.hypot(vx, vy) || 1)) * 28;
-      st.ball.y = kicker.y + (vy / (Math.hypot(vx, vy) || 1)) * 18;
+      st.passTarget = targetMate || null;
+      kicker.kickCooldown = 24;
+      var kLen = Math.hypot(vx, vy) || 1;
+      var nx = vx / kLen, ny = vy / kLen;
+      st.ball.x = kicker.x + nx * 42;
+      st.ball.y = kicker.y + ny * 32;
+      st.ball.z = Math.max(4, st.ball.z || 0);
       st.ball.vx = vx;
       st.ball.vy = vy;
-      st.ball.vz = vz || 2.5;
-      spawnBurst(st.ball.x, st.ball.y, burstColor || '#fde047', 16);
+      st.ball.vz = vz || 3.2;
+      spawnBurst(st.ball.x, st.ball.y, burstColor || '#fde047', 18);
       sound('playCorrect');
     };
 
@@ -2000,18 +2009,45 @@
           // DYNAMIC SOFT-TOUCH DRIBBLING + SMART TACTICAL AI ENGINE
           // ==================================================================
           if (st.actionPressed && st.actionKind === 'dash' && me) {
-            me.dashTimer = 20;
+            st.actionPressed = false;
+            me.dashTimer = 26;
             sound('playHop');
-            // Skill Feint burst when sprinting with the ball!
+            // Immediate velocity burst in facing/movement direction so clicking the Speed button works even without arrow keys!
+            var dashDirX = (Math.hypot(dx, dy) > 0.05) ? (dx / Math.hypot(dx, dy)) : (me.dirX || 1);
+            var dashDirY = (Math.hypot(dx, dy) > 0.05) ? (dy / Math.hypot(dx, dy)) : (me.dirY || 0);
+            // Add a crisp diagonal feint juke if an opponent is right in front of you!
+            var frontOpp = st.players.find(function (q) {
+              return q.team === 'B' && Math.hypot(q.x - me.x, q.y - me.y) < 135 && q.x > me.x - 20;
+            });
+            if (frontOpp && Math.abs(dashDirY) < 0.35) {
+              dashDirY = (me.y > Hc / 2 + 20) ? -0.55 : 0.55;
+              var dNorm = Math.hypot(dashDirX, dashDirY) || 1;
+              dashDirX /= dNorm;
+              dashDirY /= dNorm;
+            }
+            me.dirX = dashDirX;
+            me.dirY = dashDirY;
+            me.vx = dashDirX * 9.6;
+            me.vy = dashDirY * 9.6;
+            spawnBurst(me.x, me.y + 12, '#34d399', 14);
             if (st.holder === me) {
-              spawnBurst(me.x, me.y + 12, '#38bdf8', 10);
-              st.bannerText = '💨 SKILL FEINT BOOST!';
+              // Stun nearby defenders when executing a skill feint dash!
+              st.players.slice(1).forEach(function (opp) {
+                if (opp.team === 'B' && Math.hypot(opp.x - me.x, opp.y - me.y) < 145) {
+                  opp.stunTimer = 28;
+                  opp.vx = -dashDirX * 3.5;
+                  opp.vy = -dashDirY * 4.5;
+                }
+              });
+              st.bannerText = '💨 SKILL FEINT & SPEED BURST!';
+              st.bannerTimer = 35;
+            } else {
+              st.bannerText = '💨 TURBO SPRINT!';
               st.bannerTimer = 28;
             }
-            st.actionPressed = false;
           }
 
-          var dashBoost = (me.dashTimer && me.dashTimer > 0) ? 1.55 : 1.0;
+          var dashBoost = (me.dashTimer && me.dashTimer > 0) ? 1.62 : 1.0;
           if (me.dashTimer > 0) me.dashTimer--;
 
           var mag = Math.hypot(dx, dy);
@@ -2019,14 +2055,11 @@
             var nx = dx / Math.max(1, mag), ny = dy / Math.max(1, mag);
             var targetVx = nx * 5.8 * dashBoost;
             var targetVy = ny * 5.8 * dashBoost;
-            // Responsive acceleration with smooth carving turns
-            me.vx = me.vx * 0.42 + targetVx * 0.58;
-            me.vy = me.vy * 0.42 + targetVy * 0.58;
+            me.vx = me.vx * 0.40 + targetVx * 0.60;
+            me.vy = me.vy * 0.40 + targetVy * 0.60;
             var newDirX = dx / mag, newDirY = dy / mag;
-            // Detect sharp cut / directional feint ("مراوغة")!
             var cutDot = me.dirX * newDirX + me.dirY * newDirY;
-            if (st.holder === me && cutDot < 0.35 && Math.hypot(me.vx, me.vy) > 2.5) {
-              // Ankle-breaker feint: nearby AI defenders get faked out in the old direction!
+            if (st.holder === me && cutDot < 0.35 && Math.hypot(me.vx, me.vy) > 2.4) {
               st.players.slice(1).forEach(function (opp) {
                 if (opp.team === 'B' && Math.hypot(opp.x - me.x, opp.y - me.y) < 135) {
                   opp.vx = me.dirX * 5.2;
@@ -2041,65 +2074,106 @@
             me.dirX = newDirX;
             me.dirY = newDirY;
             if (Math.abs(me.vx) > 0.15) me.flipX = me.vx < 0;
+          } else if (me.dashTimer > 12) {
+            // Keep high speed during button-triggered dash burst even when no arrow keys are held!
+            me.vx *= 0.92;
+            me.vy *= 0.92;
           } else {
-            // Smooth natural turf glide
             me.vx *= 0.72;
             me.vy *= 0.72;
             if (Math.hypot(me.vx, me.vy) < 0.2) { me.vx = 0; me.vy = 0; }
           }
 
-          if (Math.hypot(me.vx, me.vy) > 3.8 && st.tick % 4 === 0) {
-            st.particles.push({ x: me.x, y: me.y + 16, vx: -me.vx * 0.2, vy: -0.4, r: 4, life: 12, maxLife: 12, color: 'rgba(255,255,255,0.45)' });
+          if ((Math.hypot(me.vx, me.vy) > 3.6 || me.dashTimer > 0) && st.tick % 3 === 0) {
+            st.particles.push({ x: me.x, y: me.y + 16, vx: -me.vx * 0.2, vy: -0.4, r: me.dashTimer > 0 ? 5.5 : 4, life: 14, maxLife: 14, color: me.dashTimer > 0 ? '#34d399' : 'rgba(255,255,255,0.45)' });
           }
 
-          // Handle Player 1 Shoot / 1-2 Pass / Slide Tackle Action!
+          // Handle Player 1 Shoot / Pass / Call-for-Pass / Slide Tackle Action!
           if (st.actionPressed && me) {
             st.actionPressed = false;
-            if (st.holder === me || Math.hypot(b.x - me.x, b.y - me.y) < 66) {
+            var myDistToBall = Math.hypot(b.x - me.x, b.y - me.y);
+
+            // Case 1: Teammate currently has the ball and YOU press PASS or SHOOT -> Teammate immediately acts!
+            if (st.holder && st.holder.team === 'A' && st.holder !== me) {
+              var holderMate = st.holder;
+              if (st.actionKind === 'pass' || holderMate.x < Wc - 320) {
+                var leadToMeX = Math.min(Wc - 120, me.x + 35) - holderMate.x;
+                var leadToMeY = me.y - holderMate.y;
+                var leadLen = Math.hypot(leadToMeX, leadToMeY) || 1;
+                kickSoccerBall(holderMate, (leadToMeX / leadLen) * 12.5, (leadToMeY / leadLen) * 12.5, 3.2, '#38bdf8', me);
+                st.bannerText = '👟 ' + holderMate.name.toUpperCase() + ' PASSES TO YOU!';
+                st.bannerTimer = 40;
+              } else {
+                var mShotX = (Wc - 38) - holderMate.x, mShotY = (Hc / 2 + 20) - holderMate.y, mShotL = Math.hypot(mShotX, mShotY) || 1;
+                kickSoccerBall(holderMate, (mShotX / mShotL) * 14.5, (mShotY / mShotL) * 14.5, 3.6, '#fde047', null);
+                st.bannerText = '🔥 ' + holderMate.name.toUpperCase() + ' FIRES A SHOT!';
+                st.bannerTimer = 40;
+              }
+            }
+            // Case 2: YOU have the ball (or it is within kicking reach)
+            else if (st.holder === me || (!st.holder && myDistToBall < 92)) {
               if (st.actionKind === 'pass') {
-                // Smart 1-2 Pass to open teammate (Sky or Pip) who will cross it back to YOU!
                 var mates = st.players.filter(function (q) { return q.team === 'A' && q.id !== 'me'; });
+                // Pick the best open teammate
                 var mate = mates[0];
+                if (mates.length > 1) {
+                  mates.sort(function (a, b2) { return Math.abs(a.x - (me.x + 120)) - Math.abs(b2.x - (me.x + 120)); });
+                  mate = mates[0];
+                }
                 if (mate) {
-                  var pmx = (mate.x + 50) - me.x, pmy = mate.y - me.y, pml = Math.hypot(pmx, pmy) || 1;
-                  kickSoccerBall(me, (pmx / pml) * 11.2, (pmy / pml) * 11.2, 2.8, '#38bdf8');
-                  st.bannerText = '👟 1-2 GIVE & GO PASS TO ' + mate.name.toUpperCase() + '!';
-                  st.bannerTimer = 35;
+                  var targetMateX = Math.min(Wc - 140, Math.max(mate.x + 25, me.x + 65));
+                  var targetMateY = mate.y;
+                  var pmx = targetMateX - me.x, pmy = targetMateY - me.y, pml = Math.hypot(pmx, pmy) || 1;
+                  kickSoccerBall(me, (pmx / pml) * 12.6, (pmy / pml) * 12.6, 3.6, '#38bdf8', mate);
+                  st.bannerText = '👟 CRISP PASS TO ' + mate.name.toUpperCase() + '!';
+                  st.bannerTimer = 42;
                 } else {
-                  kickSoccerBall(me, me.dirX * 10.5, me.dirY * 10.5, 6.2, '#38bdf8');
+                  // In 1v1 mode: chip/lob pass ahead of yourself!
+                  kickSoccerBall(me, me.dirX * 10.5, me.dirY * 10.5, 6.2, '#38bdf8', null);
+                  st.bannerText = '👟 CHIP LOB OVER DEFENDER!';
+                  st.bannerTimer = 35;
                 }
               } else {
-                var aimX = me.dirX, aimY = me.dirY;
+                // POWER SHOT! Aim toward opponent goal (right side) into the open corner!
                 var gkOpp = st.players.find(function (q) { return q.team === 'B' && q.role === 'gk'; });
                 var openGY = gkOpp ? ((gkOpp.y > Hc / 2 + 20) ? 185 : 335) : (Hc / 2 + 20 + dy * 75);
-                if (st.mouseAim && st.mouseAim.x > me.x + 20) {
-                  var mdx = st.mouseAim.x - me.x, mdy = st.mouseAim.y - me.y, mlen = Math.hypot(mdx, mdy) || 1;
-                  aimX = mdx / mlen; aimY = mdy / mlen;
-                } else if (aimX >= -0.25) {
-                  var gx = (Wc - 38) - me.x, gy = openGY - me.y, glen = Math.hypot(gx, gy) || 1;
-                  aimX = gx / glen; aimY = gy / glen;
+                var gx = (Wc - 38) - me.x;
+                var gy = openGY - me.y;
+                if (st.mouseAim && st.mouseAim.x > me.x + 60 && st.mouseAim.y > 90 && st.mouseAim.y < Hc - 30) {
+                  gx = (Wc - 38) - me.x;
+                  gy = Math.max(165, Math.min(355, st.mouseAim.y)) - me.y;
                 }
-                kickSoccerBall(me, aimX * 15.0, aimY * 15.0, 3.6, '#fde047');
+                var glen = Math.hypot(gx, gy) || 1;
+                var aimX = gx / glen, aimY = gy / glen;
+                me.dirX = aimX;
+                me.dirY = aimY;
+                me.flipX = false;
+                kickSoccerBall(me, aimX * 15.8, aimY * 15.8, 3.8, '#fde047', null);
                 st.bannerText = '🔥 SUPER POWER SHOT!';
-                st.bannerTimer = 35;
+                st.bannerTimer = 40;
               }
-            } else {
-              // Slide Tackle Lunge
+            }
+            // Case 3: Opponent has the ball or ball is far -> Slide Tackle / Lunge toward the ball!
+            else {
               var bdx0 = b.x - me.x, bdy0 = b.y - me.y, blen0 = Math.hypot(bdx0, bdy0) || 1;
               me.dirX = bdx0 / blen0;
               me.dirY = bdy0 / blen0;
-              me.vx = me.dirX * 9.2;
-              me.vy = me.dirY * 9.2;
-              me.dashTimer = 16;
+              me.vx = me.dirX * 9.8;
+              me.vy = me.dirY * 9.8;
+              me.dashTimer = 18;
               sound('playHop');
-              if (blen0 < 105) {
-                if (st.holder && st.holder.team === 'B') st.holder.stunTimer = 50;
+              if (blen0 < 125) {
+                if (st.holder && st.holder.team === 'B') st.holder.stunTimer = 52;
                 st.holder = me;
-                st.stealCooldown = 38;
-                spawnBurst(b.x, b.y, '#34d399', 16);
-                st.bannerText = '⚡ CLEAN TACKLE! YOUR BALL!';
-                st.bannerTimer = 40;
+                st.passTarget = null;
+                st.stealCooldown = 40;
+                spawnBurst(b.x, b.y, '#34d399', 18);
+                st.bannerText = '⚡ CLEAN SLIDE TACKLE! YOUR BALL!';
+                st.bannerTimer = 42;
                 sound('playCorrect');
+              } else {
+                st.bannerText = '⚡ LUNGING FOR THE BALL!';
+                st.bannerTimer = 25;
               }
             }
           }
@@ -2128,7 +2202,7 @@
               } else { p.vx *= 0.7; p.vy *= 0.7; }
               if (keys.Enter && st.holder === p) {
                 var g2x = 42 - p.x, g2y = (Hc / 2 + 20) - p.y, g2l = Math.hypot(g2x, g2y) || 1;
-                kickSoccerBall(p, (g2x / g2l) * 13.5, (g2y / g2l) * 13.5, 3.6, '#f43f5e');
+                kickSoccerBall(p, (g2x / g2l) * 13.5, (g2y / g2l) * 13.5, 3.6, '#f43f5e', null);
               }
               return;
             }
@@ -2144,49 +2218,52 @@
               if (st.holder === p) {
                 if (p.team === 'A') {
                   var toMeX = (me.x + 30) - p.x, toMeY = me.y - p.y, toMeL = Math.hypot(toMeX, toMeY) || 1;
-                  kickSoccerBall(p, (toMeX / toMeL) * 10.0, (toMeY / toMeL) * 10.0, 2.2, '#38bdf8');
+                  kickSoccerBall(p, (toMeX / toMeL) * 11.0, (toMeY / toMeL) * 11.0, 2.5, '#38bdf8', me);
                   st.bannerText = '📣 GOALKEEPER PASS TO YOU!';
                   st.bannerTimer = 40;
                 } else {
                   var fwdOpp = st.players.find(function (q) { return q.team === 'B' && q.role !== 'gk'; }) || p;
                   var fox = fwdOpp.x - p.x, foy = fwdOpp.y - p.y, fol = Math.hypot(fox, foy) || 1;
-                  kickSoccerBall(p, (fox / fol) * 8.5, (foy / fol) * 8.5, 2.6, '#f43f5e');
+                  kickSoccerBall(p, (fox / fol) * 8.5, (foy / fol) * 8.5, 2.6, '#f43f5e', fwdOpp);
                 }
               }
             } else if (p.team === 'A') {
               // SMART AI TEAMMATE (Sky / Pip):
-              // When teammate has the ball: dribbles upfield for 0.6s then plays a smart through-ball to YOU!
               if (st.holder === p) {
                 st.allyHoldFrames++;
-                p.vx = 4.4;
+                p.vx = 4.5;
                 p.vy = Math.sin(st.tick * 0.08 + p.aiPhase) * 1.8;
                 p.dirX = 1;
                 p.dirY = p.vy * 0.2;
                 p.flipX = false;
-                if (st.allyHoldFrames > 28 || p.x > Wc - 220) {
-                  var leadX = Math.min(Wc - 140, me.x + 75);
+                if (st.allyHoldFrames > 34 || p.x > Wc - 220) {
+                  var leadX = Math.min(Wc - 140, me.x + 65);
                   var leadY = me.y;
                   var pmX = leadX - p.x, pmY = leadY - p.y, pmL = Math.hypot(pmX, pmY) || 1;
-                  kickSoccerBall(p, (pmX / pmL) * 10.2, (pmY / pmL) * 10.2, 2.2, '#38bdf8');
-                  st.bannerText = '👟 ' + p.name.toUpperCase() + ' THROUGH-BALL TO YOU!';
-                  st.bannerTimer = 42;
+                  kickSoccerBall(p, (pmX / pmL) * 11.2, (pmY / pmL) * 11.2, 2.5, '#38bdf8', me);
+                  st.bannerText = '👟 ' + p.name.toUpperCase() + ' RETURN PASS TO YOU! PRESS SPACE TO SHOOT!';
+                  st.bannerTimer = 48;
                 }
+              } else if (st.passTarget === p && !st.holder) {
+                // Actively sprint to meet the pass from YOU!
+                var rdx = b.x - p.x, rdy = b.y - p.y, rlen = Math.hypot(rdx, rdy) || 1;
+                p.vx = (rdx / rlen) * Math.min(5.6, rlen * 0.25);
+                p.vy = (rdy / rlen) * Math.min(5.6, rlen * 0.25);
+                if (Math.abs(p.vx) > 0.2) p.flipX = p.vx < 0;
               } else {
                 // Make intelligent overlapping runs on the opposite wing from YOU!
                 var wingY = (me.y > Hc / 2 + 20) ? 165 : 375;
                 if (p.id === 'ally2') wingY = (me.y > Hc / 2 + 20) ? 385 : 155;
                 var wingX = Math.min(Wc - 200, Math.max(240, me.x + 85 + Math.sin(st.tick * 0.04 + p.aiPhase) * 35));
-                p.vx = (wingX - p.x) * 0.075;
-                p.vy = (wingY - p.y) * 0.075;
+                p.vx = (wingX - p.x) * 0.085;
+                p.vy = (wingY - p.y) * 0.085;
                 if (Math.abs(p.vx) > 0.2) p.flipX = p.vx < 0;
               }
             } else if (p.team === 'B') {
               // SMART RIVAL AI (Leo / Ember / Nutty):
               if (st.holder === p) {
-                // AI dribbles with dynamic weaving & feints around YOU instead of walking in a straight line!
                 var rgx = 68 - p.x;
                 var weaveOffset = Math.sin(st.tick * 0.075 + p.aiPhase) * 65;
-                // Dodge away from 'me' if 'me' is right in front of AI!
                 var distMe = Math.hypot(me.x - p.x, me.y - p.y);
                 if (distMe < 130 && me.x < p.x) {
                   weaveOffset += (p.y < me.y ? -75 : 75);
@@ -2202,18 +2279,15 @@
                 if (p.x < 260 && st.tick % 32 === 0) {
                   var shotY = (Hc / 2 + 20) + (Math.random() - 0.5) * 90 - p.y;
                   var slen = Math.hypot(rgx, shotY) || 1;
-                  kickSoccerBall(p, (rgx / slen) * 10.8, (shotY / slen) * 10.8, 3.0, '#f43f5e');
+                  kickSoccerBall(p, (rgx / slen) * 10.8, (shotY / slen) * 10.8, 3.0, '#f43f5e', null);
                   st.bannerText = '⚠️ ' + p.name.toUpperCase() + ' TAKES A SHOT!';
                   st.bannerTimer = 35;
                 }
               } else if (st.holder === me) {
-                // Tactical Jockeying: AI shadows the space between YOU and the goal with lateral weaving,
-                // leaving realistic angles for you to cut & dribble around them!
                 var jockeyX = Math.min(Wc - 130, me.x + 105);
                 var jockeyY = me.y + Math.sin(st.tick * 0.055 + p.aiPhase) * 58;
                 if (p.id === 'opp3') { jockeyX = Math.max(480, me.x + 150); jockeyY = 175; }
                 if (p.id === 'opp4') { jockeyX = Math.max(480, me.x + 150); jockeyY = 365; }
-                // Only close in slowly if you hold the ball near the box
                 if (me.x > Wc - 320 && p.id === 'opp1') {
                   jockeyX = b.x + 18;
                   jockeyY = b.y;
@@ -2226,7 +2300,6 @@
                 p.vy = p.vy * 0.90 + tvy * 0.10;
                 p.flipX = (me.x < p.x);
               } else {
-                // Free ball: chase toward ball
                 var cdx = b.x - p.x, cdy = b.y - p.y, clen = Math.hypot(cdx, cdy) || 1;
                 var freeSpd = (p.id === 'opp1') ? 2.85 : 2.2;
                 p.vx = p.vx * 0.88 + ((cdx / clen) * Math.min(freeSpd, clen)) * 0.12;
@@ -2241,15 +2314,24 @@
             p.x = Math.max(54, Math.min(Wc - 54, p.x + p.vx));
             p.y = Math.max(92, Math.min(Hc - 34, p.y + p.vy));
             if (p.cheerTimer > 0) p.cheerTimer--;
+            if (p.kickCooldown > 0) p.kickCooldown--;
             if (p.stunTimer > 0) return;
+            // CRITICAL FIX: Never let the kicker immediately re-pickup the ball they just kicked!
+            if (p.kickCooldown > 0) return;
 
             var distToBall = Math.hypot(b.x - p.x, b.y - p.y);
-            if (distToBall < p.r + b.r + 6 && b.z < 36) {
+            var pickupR = (st.passTarget === p) ? (p.r + b.r + 18) : (p.r + b.r + 6);
+            if (distToBall < pickupR && b.z < 42) {
               if (!st.holder) {
                 if (p.team === 'B' && p.role === 'gk' && Math.hypot(b.vx, b.vy) > 10.5) {
                   return;
                 }
+                // Don't let opponent intercept a fast pass meant for your teammate right at the start of the kick!
+                if (st.passTarget && st.passTarget.team === 'A' && p.team === 'B' && Math.hypot(b.vx, b.vy) > 8.5) {
+                  return;
+                }
                 st.holder = p;
+                st.passTarget = null;
                 st.allyHoldFrames = 0;
                 b.vx = 0; b.vy = 0; b.vz = 0; b.z = 0;
                 sound('playPop');
@@ -2257,13 +2339,13 @@
                 if (p.id === 'me') {
                   st.holder.stunTimer = 45;
                   st.holder = me;
+                  st.passTarget = null;
                   st.stealCooldown = 38;
                   spawnBurst(b.x, b.y, '#38bdf8', 14);
                   st.bannerText = '⚡ GREAT INTERCEPTION!';
                   st.bannerTimer = 35;
                   sound('playHop');
                 } else if (st.holder === me && p.role !== 'gk') {
-                  // If YOU are sprinting or cutting at speed, you brush right past the defender!
                   var mySpd = Math.hypot(me.vx, me.vy);
                   if (mySpd > 2.2 || me.dashTimer > 0) {
                     p.stunTimer = 30;
@@ -2273,8 +2355,8 @@
                     spawnBurst(b.x, b.y, '#34d399', 8);
                     sound('playHop');
                   } else if (distToBall < p.r + b.r - 4) {
-                    // Only if you stop moving right on top of the defender can he dispossess you
                     st.holder = p;
+                    st.passTarget = null;
                     st.stealCooldown = 42;
                     sound('playPop');
                   }
