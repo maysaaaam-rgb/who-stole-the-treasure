@@ -1304,3 +1304,80 @@ body.w-on #w-vignette { display: block; }
   border: 2.5px solid rgba(255, 255, 255, 0.22);
   background: #090d16;
 }
+
+
+/* 360 Virtual Analog Thumbstick & Pro Arcade Buttons */
+.wg-sp-joy-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.wg-sp-joy {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(30, 41, 59, 0.95) 0%, rgba(6, 9, 17, 0.98) 100%);
+  border: 2.5px solid rgba(56, 189, 248, 0.65);
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+.wg-sp-joy:active {
+  cursor: grabbing;
+  border-color: #fde047;
+}
+.wg-sp-joy-ring {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(148, 163, 184, 0.4);
+  pointer-events: none;
+}
+.wg-sp-joy-knob {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+  border: 2px solid #e0f2fe;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  pointer-events: none;
+  transition: transform 0.04s linear;
+}
+.wg-sp-joy-hint {
+  font-family: Fredoka, sans-serif;
+  line-height: 1.2;
+}
+.wg-sp-joy-hint b {
+  display: block;
+  color: #38bdf8;
+  font-size: 0.82rem;
+}
+.wg-sp-joy-hint small {
+  color: #94a3b8;
+  font-size: 0.72rem;
+}
+.wg-act-btn {
+  min-height: 46px !important;
+  padding: 6px 14px !important;
+  font-size: 0.86rem !important;
+  touch-action: manipulation;
+  user-select: none;
+}
+.wg-act-btn.shoot {
+  font-size: 0.94rem !important;
+  padding: 6px 18px !important;
+}
+
+#wg-sports-canvas { max-height: 47vh !important; width: auto !important; margin: 0 auto; }
+.wg-sp-joy { width: 56px !important; height: 56px !important; }
+.wg-sports-controls { flex-wrap: nowrap !important; gap: 8px !important; margin-top: 6px !important; }
