@@ -242,7 +242,7 @@
     muted = !!val;
     try {
       localStorage.setItem('eaa_island_mute', muted ? '1' : '0');
-      if (muted && 'speechSynthesis' in root) root.speechSynthesis.cancel();
+      if (muted) { stopAmbient(); if ('speechSynthesis' in root) root.speechSynthesis.cancel(); }
     } catch (e) {}
     return muted;
   }
@@ -266,48 +266,41 @@
     });
   }
 
-  /* Soft sound of each zone while its game is open: birds, waves, leaves, a low rumble */
+  /* Gentle low-volume background music box melody while a game / multiple-choice mission is open (Zero white-noise static!) */
   var ambient = null;
+  var ZONE_MELODIES = {
+    1: [523.25, 659.25, 783.99, 659.25, 587.33, 659.25, 523.25, 392.00],
+    2: [392.00, 493.88, 587.33, 783.99, 659.25, 587.33, 493.88, 392.00],
+    3: [440.00, 523.25, 659.25, 783.99, 659.25, 523.25, 587.33, 440.00],
+    4: [523.25, 587.33, 659.25, 783.99, 880.00, 783.99, 659.25, 523.25]
+  };
   function startAmbient(zone) {
     stopAmbient();
+    if (muted) return;
     var c = ensureCtx();
     if (!c) return;
-    var len = c.sampleRate * 3, buf = c.createBuffer(1, len, c.sampleRate), data = buf.getChannelData(0);
-    for (var i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
-    var src = c.createBufferSource();
-    src.buffer = buf;
-    src.loop = true;
-    var filter = c.createBiquadFilter(), gain = c.createGain();
-    var cfg = { 1: ['highpass', 3200, 0.006], 2: ['lowpass', 620, 0.03], 3: ['highpass', 2200, 0.009], 4: ['lowpass', 150, 0.05] }[zone] || ['lowpass', 500, 0.01];
-    filter.type = cfg[0];
-    filter.frequency.value = cfg[1];
-    gain.gain.value = cfg[2];
-    src.connect(filter);
-    filter.connect(gain);
-    gain.connect(c.destination);
-    var lfo = null;
-    if (zone === 2) {
-      lfo = c.createOscillator();
-      var depth = c.createGain();
-      lfo.frequency.value = 0.16;
-      depth.gain.value = 0.016;
-      lfo.connect(depth);
-      depth.connect(gain.gain);
-      lfo.start();
-    }
-    src.start();
-    var chirps = (zone === 1 || zone === 3) ? setInterval(function () {
-      if (document.visibilityState !== 'visible' || Math.random() < 0.45) return;
-      playNote(1760 + Math.random() * 600, 0, 0.07, 0.012, 'sine', 'sine');
-      playNote(2200 + Math.random() * 500, 0.09, 0.07, 0.01, 'sine', 'sine');
-    }, 2600) : null;
-    ambient = { src: src, lfo: lfo, chirps: chirps, gain: gain };
+    var melody = ZONE_MELODIES[zone] || ZONE_MELODIES[1];
+    var step = 0;
+    var tick = function () {
+      if (muted || document.visibilityState !== 'visible') return;
+      // Duck background music softly while TTS voice clip or speechSynthesis is speaking
+      var speakingNow = !!(clipEl && !clipEl.paused) || ('speechSynthesis' in root && root.speechSynthesis.speaking);
+      var gainLevel = speakingNow ? 0.009 : 0.026;
+      var note = melody[step % melody.length];
+      var harmony = note * 0.5;
+      playNote(note, 0, 0.52, gainLevel, 'sine', 'triangle');
+      if (step % 2 === 0) {
+        playNote(harmony, 0.02, 0.65, gainLevel * 0.65, 'sine', 'sine');
+      }
+      step++;
+    };
+    var timer = setInterval(tick, 680);
+    ambient = { timer: timer, zone: zone };
   }
 
   function stopAmbient() {
     if (!ambient) return;
-    try { ambient.src.stop(); ambient.gain.disconnect(); if (ambient.lfo) ambient.lfo.stop(); } catch (e) {}
-    if (ambient.chirps) clearInterval(ambient.chirps);
+    if (ambient.timer) clearInterval(ambient.timer);
     ambient = null;
   }
 

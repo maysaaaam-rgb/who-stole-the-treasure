@@ -28,12 +28,12 @@
 
   /* Default positions placed neatly on the Veranda Deck (x: 1420..1920, y: 520..820) or Fenced Garden Lawn (x: 420..1920, y: 880..1280) */
   var RECIPES = [
-    { id: 'f_bed',       name: 'Cosy Bed',       kind: 'patio',  h: 115, sw: 110, cost: { wood: 2, flower: 1 },            defPos: { x: 1510, y: 590 } },
-    { id: 'f_table',     name: 'Round Table',    kind: 'patio',  h: 95,  sw: 85,  cost: { wood: 2 },                       defPos: { x: 1710, y: 690 } },
-    { id: 'f_chair',     name: 'Cushion Chair',  kind: 'patio',  h: 95,  sw: 65,  cost: { wood: 1, flower: 1 },            defPos: { x: 1590, y: 700 } },
-    { id: 'f_lamp',      name: 'Warm Lamp',      kind: 'patio',  h: 140, sw: 50,  cost: { stone: 1, crystal: 1 },          defPos: { x: 1860, y: 580 } },
-    { id: 'f_rug',       name: 'Striped Rug',    kind: 'patio',  h: 85,  sw: 0,   cost: { flower: 2, berry: 1 },           defPos: { x: 1680, y: 765 }, flat: true },
-    { id: 'f_plant',     name: 'Potted Plant',   kind: 'patio',  h: 105, sw: 55,  cost: { stone: 1, flower: 2 },           defPos: { x: 1880, y: 790 } },
+    { id: 'f_bed',       name: 'Cosy Bed',       kind: 'patio',  h: 125, sw: 110, cost: { wood: 2, flower: 1 },            defPos: { x: 820,  y: 700 } },
+    { id: 'f_table',     name: 'Round Table',    kind: 'patio',  h: 100, sw: 85,  cost: { wood: 2 },                       defPos: { x: 1480, y: 760 } },
+    { id: 'f_chair',     name: 'Cushion Chair',  kind: 'patio',  h: 100, sw: 65,  cost: { wood: 1, flower: 1 },            defPos: { x: 1350, y: 775 } },
+    { id: 'f_lamp',      name: 'Warm Lamp',      kind: 'patio',  h: 145, sw: 50,  cost: { stone: 1, crystal: 1 },          defPos: { x: 1640, y: 650 } },
+    { id: 'f_rug',       name: 'Striped Rug',    kind: 'patio',  h: 95,  sw: 0,   cost: { flower: 2, berry: 1 },           defPos: { x: 1200, y: 830 }, flat: true },
+    { id: 'f_plant',     name: 'Potted Plant',   kind: 'patio',  h: 110, sw: 55,  cost: { stone: 1, flower: 2 },           defPos: { x: 1020, y: 640 } },
     { id: 'g_mailbox',   name: 'Red Mailbox',    kind: 'garden', h: 120, sw: 55,  cost: { wood: 1, stone: 1 },             defPos: { x: 960,  y: 690 } },
     { id: 'g_flowerbed', name: 'Flowerbed',      kind: 'garden', h: 85,  sw: 0,   cost: { flower: 2 },                     defPos: { x: 580,  y: 920 }, flat: true },
     { id: 'g_fence',     name: 'White Fence',    kind: 'garden', h: 90,  sw: 95,  cost: { wood: 1 },                       defPos: { x: 740,  y: 920 } },
@@ -91,9 +91,11 @@
       bonusCoins: 0,
       ownedFurniture: { f_rug: 1, g_flowerbed: 1 },
       placed: [
-        { id: 'f_rug', x: 1680, y: 765, flip: false },
-        { id: 'g_flowerbed', x: 580, y: 920, flip: false }
+        { id: 'f_rug', x: 1200, y: 830, flip: false, lvl: 1 },
+        { id: 'g_flowerbed', x: 580, y: 920, flip: false, lvl: 1 }
       ],
+      blueprintsDone: {},
+      sportsWins: 0,
       jobsDone: {},
       battlesWon: {},
       day: ''
@@ -286,6 +288,7 @@
   function modalRoot() { return $('isl-modal-root'); }
   function closeModal() {
     sound('playTap');
+    stopSportsLoop();
     if (modalRoot()) modalRoot().innerHTML = '';
     document.body.classList.remove('isl-modal-open');
   }
@@ -385,6 +388,7 @@
             '<div style="font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:8px"><img src="' + FLAT + 'u_map.webp" style="width:34px;height:34px;object-fit:contain" alt=""> Practice Island World Map</div>' +
             demoBtns +
             '<div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
+              '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.openSportsArena(\'soccer\', \'2v2\')">⚽ Sports Arena</button>' +
               '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openStickerBook()">📒 Sticker Book</button>' +
               '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openCorner()">🏖️ Trophy Camp</button>' +
               '<a class="isl-btn cyan" style="min-height:38px;padding:5px 11px;font-size:0.86rem;text-decoration:none;display:inline-flex;align-items:center" href="../index.html">🏫 School Hub</a>' +
@@ -441,19 +445,33 @@
     if (!energyRun) return;
     document.body.classList.add('isl-modal-open');
     if (energyRun.idx >= energyRun.qs.length) {
+      var wasBoost = !!energyRun.isBuilderBoost;
+      var afterSport = energyRun.afterSport || null;
+      energyRun = null;
+      if (wasBoost) {
+        giveMaterials({ wood: 2, stone: 2, flower: 2, shell: 1, berry: 1, crystal: 1 });
+        addEnergy(15);
+        sound('playFanfare');
+        say('Smart Builder Boost complete! You earned building materials and fifteen energy!');
+        openWorkshop(workshopTab || 'blueprints');
+        return;
+      }
       var newE = addEnergy(30);
       sound('playFanfare');
       say('Great job! Plus thirty energy!');
+      if (afterSport) {
+        openSportsArena(afterSport.sport, afterSport.mode);
+        return;
+      }
       modalRoot().innerHTML =
         '<div class="isl-modal-backdrop" id="wg-energy-backdrop">' +
           '<div class="isl-card-modal" style="max-width:480px;text-align:center">' +
             '<img src="' + FLAT + 'i_energy.webp" style="width:88px;height:88px;object-fit:contain;animation:idleBob 1.2s ease-in-out infinite" alt="">' +
             '<h2 style="margin:6px 0;font-size:1.8rem;color:#fde047">+30 Energy Charged! ⚡</h2>' +
-            '<p style="color:#cbd5e1;font-size:1.08rem;margin:0 0 16px">You now have <b style="color:#fde047">⚡ ' + newE + ' Energy</b> to harvest trees, rocks, and explore!</p>' +
+            '<p style="color:#cbd5e1;font-size:1.08rem;margin:0 0 16px">You now have <b style="color:#fde047">⚡ ' + newE + ' Energy</b> to harvest trees, build, or play Sports!</p>' +
             '<button type="button" class="isl-btn emerald" id="wg-energy-done" style="min-width:190px;font-size:1.15rem" onclick="WorldGame.closeModal()">Let\'s Go! 🚀</button>' +
           '</div>' +
         '</div>';
-      energyRun = null;
       return;
     }
     var q = energyRun.qs[energyRun.idx];
@@ -505,32 +523,133 @@
     }
   }
 
-  /* ---------- 4. Full-Screen Home & Crafting Studio Page (House Upgrade, 16 Recipes & Live Interactive Yard Preview) ---------- */
-  var workshopTab = 'home';
+  /* ---------- 4. Full-Screen Home & Crafting Studio (Inside Room, Outside Garden, Furniture Upgrades & Smart Blueprints) ---------- */
+  var workshopTab = 'blueprints';
   var craftFilter = 'all';
+  var studioView = 'inside'; // 'inside' (Indoor Room) or 'outside' (Outdoor Garden)
   var studioSelectedIdx = -1;
 
-  // Studio Preview Stage maps 1:1 to Zone 0 Home Plot: worldX 400..2050 (w=1650), worldY 360..1350 (h=990)
   var PLOT_X0 = 400, PLOT_W = 1650, PLOT_Y0 = 360, PLOT_H = 990;
+  var ROOM_X0 = 520, ROOM_W = 1360, ROOM_Y0 = 340, ROOM_H = 840;
+
+  /* Grandpa Bolt's 6 Smart English Design Blueprints */
+  var BLUEPRINTS = [
+    {
+      id: 'bp_bedroom',
+      title: '1. The Cosy Bedroom',
+      view: 'inside',
+      clue: 'Inside your room, put a Cosy Bed on the LEFT side and a Striped Rug in the MIDDLE or RIGHT!',
+      coins: 25, energy: 20, xp: 10,
+      checks: [
+        { label: 'Place a Cosy Bed inside on the left', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'f_bed' && p.x < 1200; }); } },
+        { label: 'Place a Striped Rug in the middle/right', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'f_rug' && p.x >= 1050; }); } }
+      ]
+    },
+    {
+      id: 'bp_study',
+      title: '2. Study & Reading Corner',
+      view: 'inside',
+      clue: 'Every smart student needs a study spot! Place a Round Table, a Cushion Chair, and a Warm Lamp inside your room.',
+      coins: 30, energy: 25, xp: 15,
+      checks: [
+        { label: 'Place a Round Table inside', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'f_table'; }); } },
+        { label: 'Place a Cushion Chair inside', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'f_chair'; }); } },
+        { label: 'Place a Warm Lamp inside', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'f_lamp'; }); } }
+      ]
+    },
+    {
+      id: 'bp_hut',
+      title: '3. The Builder\'s Hut & Star Upgrade',
+      view: 'inside',
+      clue: 'Upgrade your home to Level 2 (Straw Hut) and upgrade ANY placed furniture item to Lv.2 Deluxe (★★)!',
+      coins: 35, energy: 25, xp: 15,
+      checks: [
+        { label: 'Upgrade House to Level 2+ (Straw Hut)', test: function (st) { return (Number(st.houseTier) || 1) >= 2; } },
+        { label: 'Upgrade any placed item to Lv.2 Deluxe (★★)', test: function (st) { return (st.placed || []).some(function (p) { return (Number(p.lvl) || 1) >= 2; }); } }
+      ]
+    },
+    {
+      id: 'bp_garden',
+      title: '4. Sunny Welcome Garden',
+      view: 'outside',
+      clue: 'Let us decorate outside! Place a Red Mailbox, a Flowerbed, and a Garden Bench in your outdoor yard.',
+      coins: 35, energy: 30, xp: 15,
+      checks: [
+        { label: 'Place a Red Mailbox outside', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'g_mailbox'; }); } },
+        { label: 'Place a Flowerbed outside', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'g_flowerbed'; }); } },
+        { label: 'Place a Garden Bench outside', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'g_bench'; }); } }
+      ]
+    },
+    {
+      id: 'bp_park',
+      title: '5. Playground & Pet Park',
+      view: 'outside',
+      clue: 'Make a fun yard for your pet companion! Place a Pet House, a Wooden Swing, and an Apple Tree outside.',
+      coins: 45, energy: 35, xp: 20,
+      checks: [
+        { label: 'Place a Pet House outside', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'g_pethouse'; }); } },
+        { label: 'Place a Wooden Swing outside', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'g_swing'; }); } },
+        { label: 'Place an Apple Tree outside', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'g_tree'; }); } }
+      ]
+    },
+    {
+      id: 'bp_master',
+      title: '6. Royal Master Architect',
+      view: 'outside',
+      clue: 'Upgrade your home to Level 3+ (Cottage, House, or Castle) and build a Lily Pond or Stone Fountain outside!',
+      coins: 60, energy: 50, xp: 25,
+      checks: [
+        { label: 'Upgrade House to Level 3+ (Red-Roof Cottage)', test: function (st) { return (Number(st.houseTier) || 1) >= 3; } },
+        { label: 'Place a Lily Pond or Stone Fountain outside', test: function (st) { return (st.placed || []).some(function (p) { return p.id === 'g_pond' || p.id === 'g_fountain'; }); } }
+      ]
+    }
+  ];
+
+  var SMART_BUILDER_QS = [
+    { q: 'Where do we sleep at night inside our house?', speak: 'Where do we sleep at night inside our house?', a: 'On the cosy bed', options: ['On the cosy bed', 'In the mailbox', 'Under the pond', 'On the fence'] },
+    { q: 'What gives warm light when the room is dark?', speak: 'What gives warm light when the room is dark?', a: 'A warm lamp', options: ['A warm lamp', 'A stone', 'A wooden swing', 'A flowerbed'] },
+    { q: 'Where do we put chairs so we can eat or read?', speak: 'Where do we put chairs so we can eat or read?', a: 'Next to the round table', options: ['Next to the round table', 'On the roof', 'Inside the mailbox', 'Under the tree'] },
+    { q: 'What grows red fruit outside in the sunny garden?', speak: 'What grows red fruit outside in the sunny garden?', a: 'An apple tree', options: ['An apple tree', 'A striped rug', 'A cushion chair', 'A warm lamp'] },
+    { q: 'Where does your pet sleep in the garden?', speak: 'Where does your pet sleep in the garden?', a: 'In the pet house', options: ['In the pet house', 'On the lamp', 'In the mailbox', 'On the fence'] },
+    { q: 'What is soft and colourful on the wooden floor?', speak: 'What is soft and colourful on the wooden floor?', a: 'A striped rug', options: ['A striped rug', 'A stone fountain', 'A white fence', 'A mailbox'] }
+  ];
 
   function openWorkshop(tab) {
     sound('playTap');
+    stopSportsLoop();
     if (W() && W().closeDecorDock) W().closeDecorDock(true);
     if (tab) workshopTab = tab;
+    if (W() && W().S && W().S.zone === 0 && !tab) {
+      studioView = W().S.inHouse ? 'inside' : studioView;
+    }
     var st = readState();
     if (studioSelectedIdx >= (st.placed || []).length) studioSelectedIdx = -1;
+    renderWorkshop();
+  }
+
+  function setStudioView(v) {
+    sound('playTap');
+    studioView = (v === 'outside') ? 'outside' : 'inside';
+    studioSelectedIdx = -1;
     renderWorkshop();
   }
 
   function setCraftFilter(f) {
     sound('playTap');
     craftFilter = f || 'all';
+    if (f === 'patio') studioView = 'inside';
+    else if (f === 'garden') studioView = 'outside';
     renderWorkshop();
   }
 
   function selectStudioPlaced(idx, ev) {
     if (ev && ev.stopPropagation) ev.stopPropagation();
     sound('playTap');
+    var st = readState();
+    if (idx >= 0 && st.placed && st.placed[idx]) {
+      var rec = RECIPES.filter(function (r) { return r.id === st.placed[idx].id; })[0];
+      if (rec) studioView = (rec.kind === 'patio') ? 'inside' : 'outside';
+    }
     studioSelectedIdx = (studioSelectedIdx === idx) ? -1 : idx;
     renderWorkshop();
   }
@@ -541,23 +660,29 @@
     if (!canvas) return;
     var rect = canvas.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
-    var rx = Math.max(0.05, Math.min(0.95, (ev.clientX - rect.left) / rect.width));
-    var ry = Math.max(0.12, Math.min(0.93, (ev.clientY - rect.top) / rect.height));
-    var wx = Math.round(PLOT_X0 + rx * PLOT_W);
-    var wy = Math.round(PLOT_Y0 + ry * PLOT_H);
-    // Prevent dropping directly over the House roof/door (x: 1030..1310, y: 460..715)
-    if (wx > 1030 && wx < 1310 && wy > 460 && wy < 715) {
-      wy = 765;
-    }
+    var rx = Math.max(0.06, Math.min(0.94, (ev.clientX - rect.left) / rect.width));
+    var ry = Math.max(0.14, Math.min(0.92, (ev.clientY - rect.top) / rect.height));
     var st = readState();
-    if (st.placed && st.placed[studioSelectedIdx]) {
-      st.placed[studioSelectedIdx].x = wx;
-      st.placed[studioSelectedIdx].y = wy;
-      writeState(st);
-      sound('playPop');
-      if (W() && W().refreshHome) W().refreshHome(false);
-      renderWorkshop();
+    var item = st.placed && st.placed[studioSelectedIdx];
+    if (!item) return;
+    var rec = RECIPES.filter(function (r) { return r.id === item.id; })[0];
+    var wx, wy;
+    if (rec && rec.kind === 'patio') {
+      wx = Math.round(ROOM_X0 + rx * ROOM_W);
+      wy = Math.round(ROOM_Y0 + ry * ROOM_H);
+      wx = Math.max(610, Math.min(1790, wx));
+      wy = Math.max(585, Math.min(1080, wy));
+    } else {
+      wx = Math.round(PLOT_X0 + rx * PLOT_W);
+      wy = Math.round(PLOT_Y0 + ry * PLOT_H);
+      if (wx > 1020 && wx < 1320 && wy > 450 && wy < 735) wy = 785;
     }
+    item.x = wx;
+    item.y = wy;
+    writeState(st);
+    sound('playPop');
+    if (W() && W().refreshHome) W().refreshHome(false);
+    renderWorkshop();
   }
 
   function flipStudioItem(ev) {
@@ -570,6 +695,30 @@
       if (W() && W().refreshHome) W().refreshHome(false);
       renderWorkshop();
     }
+  }
+
+  function upgradeStudioItem(ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    var st = readState();
+    if (studioSelectedIdx < 0 || !st.placed || !st.placed[studioSelectedIdx]) return;
+    var item = st.placed[studioSelectedIdx];
+    var curLv = Math.max(1, Math.min(3, Number(item.lvl) || 1));
+    if (curLv >= 3) return;
+    var upCost = curLv === 1 ? { wood: 1, flower: 1 } : { stone: 1, crystal: 1 };
+    if (!hasMaterials(upCost)) {
+      sound('playSoftFail');
+      say('Need more materials! Try the Smart Builder Quiz!');
+      return;
+    }
+    spendMaterials(upCost);
+    item.lvl = curLv + 1;
+    writeState(st);
+    addEnergy(10);
+    sound('playFanfare');
+    var rec = RECIPES.filter(function (r) { return r.id === item.id; })[0];
+    say('Awesome! Upgraded ' + (rec ? rec.name : 'furniture') + ' to Level ' + item.lvl + '!');
+    if (W() && W().refreshHome) W().refreshHome(true);
+    renderWorkshop();
   }
 
   function storeStudioItem(ev) {
@@ -586,87 +735,194 @@
     }
   }
 
-  function seeHomeInWorld() {
+  function seeHomeInWorld(insideRoom) {
+    var wantInside = (insideRoom !== undefined) ? !!insideRoom : (studioView === 'inside');
     sound('playFanfare');
     closeModal();
     if (W()) {
-      if (W().S && W().S.zone === 0) {
+      if (W().S && W().S.zone === 0 && !!W().S.inHouse === wantInside) {
         if (W().refreshHome) W().refreshHome(true);
       } else if (W().goZone) {
-        W().goZone(0, 0);
+        W().goZone(0, 0, wantInside);
       }
     }
   }
 
+  function claimBlueprint(bpId) {
+    var st = readState();
+    st.blueprintsDone = st.blueprintsDone || {};
+    if (st.blueprintsDone[bpId]) return;
+    var bp = BLUEPRINTS.filter(function (b) { return b.id === bpId; })[0];
+    if (!bp) return;
+    var allOk = bp.checks.every(function (c) { return c.test(st); });
+    if (!allOk) return;
+    st.blueprintsDone[bpId] = 1;
+    writeState(st);
+    addBonusCoins(bp.coins);
+    addEnergy(bp.energy);
+    if (App() && App().awardIslandXP) App().awardIslandXP(bp.xp, 'blueprint_' + bpId);
+    updateStatusHud();
+    sound('playFanfare');
+    say('Awesome job, Smart Architect! You completed ' + bp.title + '!');
+    renderWorkshop();
+  }
+
+  function openSmartBuilderQuiz() {
+    sound('playTap');
+    var pool = SMART_BUILDER_QS.slice().sort(function () { return Math.random() - 0.5; }).slice(0, 3);
+    energyRun = {
+      qs: pool,
+      idx: 0,
+      isBuilderBoost: true,
+      reason: '🧠 Smart Builder Boost: Answer 3 English questions to earn +2 Wood, +2 Stone, +2 Flower, +1 Shell, +1 Berry & +1 Crystal!'
+    };
+    document.body.classList.add('isl-modal-open');
+    renderEnergyStep();
+  }
+
   function renderWorkshop() {
     var st = readState(), bag = readBag().items || {};
+    st.blueprintsDone = st.blueprintsDone || {};
     var curTier = HOUSE_TIERS[Math.max(0, Math.min(HOUSE_TIERS.length - 1, (st.houseTier || 1) - 1))];
     var nextTier = HOUSE_TIERS[st.houseTier || 1] || null;
     var placed = st.placed || [];
+    var indoorPlaced = placed.filter(function (p) { var r = RECIPES.filter(function (x) { return x.id === p.id; })[0]; return r && r.kind === 'patio'; });
+    var gardenPlaced = placed.filter(function (p) { var r = RECIPES.filter(function (x) { return x.id === p.id; })[0]; return r && r.kind === 'garden'; });
+    var bpDoneCount = BLUEPRINTS.filter(function (b) { return !!st.blueprintsDone[b.id]; }).length;
+    var starUpgrades = placed.reduce(function (acc, p) { return acc + ((Number(p.lvl) || 1) - 1) * 2; }, 0);
+    var comfortStars = (curTier.level * 2) + placed.length + starUpgrades + (bpDoneCount * 3);
 
     var matBar = Object.keys(MAT_ICONS).map(function (k) {
       return '<span class="wg-mat-chip"><img src="' + FLAT + MAT_ICONS[k] + '.webp" alt=""><b>' + (Number(bag[k]) || 0) + '</b><small>' + k + '</small></span>';
     }).join('');
 
-    // Build Live Interactive Home & Yard Preview Stage
-    var placedNodesHtml = placed.map(function (p, idx) {
+    var stageItemsHtml = placed.map(function (p, idx) {
       var rec = RECIPES.filter(function (r) { return r.id === p.id; })[0];
       if (!rec) return '';
-      var leftPct = Math.max(4, Math.min(96, ((p.x - PLOT_X0) / PLOT_W) * 100)).toFixed(1);
-      var topPct = Math.max(10, Math.min(94, ((p.y - PLOT_Y0) / PLOT_H) * 100)).toFixed(1);
-      var hPx = Math.round((rec.h || 110) * 0.36);
+      if (studioView === 'inside' && rec.kind !== 'patio') return '';
+      if (studioView === 'outside' && rec.kind !== 'garden') return '';
+      var x0 = (studioView === 'inside') ? ROOM_X0 : PLOT_X0;
+      var wSpan = (studioView === 'inside') ? ROOM_W : PLOT_W;
+      var y0 = (studioView === 'inside') ? ROOM_Y0 : PLOT_Y0;
+      var hSpan = (studioView === 'inside') ? ROOM_H : PLOT_H;
+      var leftPct = Math.max(5, Math.min(95, ((p.x - x0) / wSpan) * 100)).toFixed(1);
+      var topPct = Math.max(14, Math.min(92, ((p.y - y0) / hSpan) * 100)).toFixed(1);
+      var itemLv = Math.max(1, Math.min(3, Number(p.lvl) || 1));
+      var lvScale = 1 + (itemLv - 1) * 0.12;
+      var hPx = Math.round((rec.h || 110) * (studioView === 'inside' ? 0.44 : 0.36) * lvScale);
       var isSel = (idx === studioSelectedIdx);
       var zIdx = rec.flat ? 4 : Math.round(topPct);
-      return '<button type="button" class="wg-studio-item' + (isSel ? ' selected' : '') + '" style="left:' + leftPct + '%;top:' + topPct + '%;z-index:' + zIdx + '" title="' + esc(rec.name) + ' (Tap to select & move)" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">' +
+      var starsBadge = itemLv > 1 ? '<span class="wg-item-lv-pill">' + '★'.repeat(itemLv) + '</span>' : '';
+      return '<button type="button" class="wg-studio-item' + (isSel ? ' selected' : '') + ' lv-' + itemLv + '" style="left:' + leftPct + '%;top:' + topPct + '%;z-index:' + zIdx + '" title="' + esc(rec.name) + ' Lv.' + itemLv + ' (Tap to select, move, or upgrade)" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">' +
         '<img src="' + FLAT + rec.id + '.webp" alt="" style="height:' + hPx + 'px;' + (p.flip ? 'transform:scaleX(-1)' : '') + '">' +
-        (isSel ? '<span class="wg-studio-sel-tag">' + esc(rec.name) + '</span>' : '') +
+        starsBadge +
+        (isSel ? '<span class="wg-studio-sel-tag">' + esc(rec.name) + ' Lv.' + itemLv + '</span>' : '') +
       '</button>';
     }).join('');
 
     var selObj = (studioSelectedIdx >= 0 && placed[studioSelectedIdx]) ? placed[studioSelectedIdx] : null;
     var selRec = selObj ? RECIPES.filter(function (r) { return r.id === selObj.id; })[0] : null;
+    var selLv = selObj ? Math.max(1, Math.min(3, Number(selObj.lvl) || 1)) : 1;
+    var selUpCost = selLv === 1 ? { wood: 1, flower: 1 } : { stone: 1, crystal: 1 };
+    var canSelUp = selObj && selLv < 3 && hasMaterials(selUpCost);
 
     var stageToolbarHtml = selRec
       ? '<div class="wg-studio-toolbar">' +
           '<img src="' + FLAT + selRec.id + '.webp" style="width:30px;height:30px;object-fit:contain" alt="">' +
-          '<div class="wg-st-txt"><b>' + esc(selRec.name) + '</b><small>Tap anywhere on the Veranda or Garden to move it!</small></div>' +
-          '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.flipStudioItem(event)">↔ Flip</button>' +
-          '<button type="button" class="isl-btn" style="min-height:34px;padding:4px 10px;font-size:0.8rem;background:#e11d48;border-bottom-color:#881337" onclick="WorldGame.storeStudioItem(event)">📥 Bag</button>' +
-          '<button type="button" class="isl-btn emerald" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.selectStudioPlaced(-1, event)">✓ Done</button>' +
+          '<div class="wg-st-txt"><b>' + esc(selRec.name) + ' (' + '★'.repeat(selLv) + ')</b><small>Tap anywhere in the ' + (studioView === 'inside' ? 'Room' : 'Garden') + ' to move it!</small></div>' +
+          (selLv < 3
+            ? '<button type="button" class="isl-btn ' + (canSelUp ? 'amber' : '') + '" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.upgradeStudioItem(event)" title="Upgrade to Lv.' + (selLv + 1) + ' (' + (selLv === 1 ? '1 Wood + 1 Flower' : '1 Stone + 1 Crystal') + ')">⬆ Lv.' + (selLv + 1) + ' ★</button>'
+            : '<span class="wg-job-done-badge" style="font-size:0.75rem">👑 Max Lv.3</span>') +
+          '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.flipStudioItem(event)">↔ Flip</button>' +
+          '<button type="button" class="isl-btn" style="min-height:34px;padding:4px 9px;font-size:0.78rem;background:#e11d48;border-bottom-color:#881337" onclick="WorldGame.storeStudioItem(event)">📥 Bag</button>' +
+          '<button type="button" class="isl-btn emerald" style="min-height:34px;padding:4px 9px;font-size:0.78rem" onclick="WorldGame.selectStudioPlaced(-1, event)">✓</button>' +
         '</div>'
       : '<div class="wg-studio-toolbar hint">' +
-          '<span>💡 <b>Live Home &amp; Yard Preview:</b> Tap any item on the map to move, flip, or pack it — then tap <b>🌍 See in Real World!</b></span>' +
+          '<span>💡 <b>' + (studioView === 'inside' ? '🛋️ Inside Room Preview' : '🌳 Outside Garden Preview') + ':</b> Tap any item to move, flip, or <b>⬆ Upgrade (Lv.1 → Lv.3 ★)</b>!</span>' +
         '</div>';
+
+    var canvasInnerHtml = '';
+    if (studioView === 'inside') {
+      canvasInnerHtml =
+        '<div class="wg-room-wall tier-' + curTier.level + '">' +
+          '<div class="wg-room-win left"></div>' +
+          '<div class="wg-room-crest">🛋️ Level ' + curTier.level + ' Room · ' + esc(curTier.name) + '</div>' +
+          '<div class="wg-room-win right"></div>' +
+        '</div>' +
+        '<div class="wg-room-floor">' +
+          '<span class="wg-room-side-hint left">⬅ Left Side</span>' +
+          '<span class="wg-room-side-hint right">Right Side ➡</span>' +
+          '<div class="wg-room-doormat">🚪 Front Door (Exit to Garden)</div>' +
+        '</div>' +
+        stageItemsHtml;
+    } else {
+      canvasInnerHtml =
+        '<div class="wg-studio-path-h"></div>' +
+        '<div class="wg-studio-path-v"></div>' +
+        '<div class="wg-studio-stone-pad"></div>' +
+        '<span class="wg-studio-garden-tag">🌳 Sunny Garden Yard</span>' +
+        '<div class="wg-studio-npc" style="left:9.5%;top:34%" title="Grandpa Bolt"><img src="' + FLAT + 'c_bolt_happy.webp" alt=""></div>' +
+        '<div class="wg-studio-wb" style="left:21.8%;top:36.4%" title="Crafting Workbench"><img src="' + FLAT + 'o_workbench.webp" alt=""></div>' +
+        '<div class="wg-studio-house" style="left:46.7%;top:34.3%;cursor:pointer;pointer-events:auto" onclick="WorldGame.setStudioView(\'inside\')" title="Tap to look Inside your ' + esc(curTier.name) + '!">' +
+          '<img src="' + FLAT + curTier.id + '.webp" alt="">' +
+          '<span class="wg-studio-house-tag">🚪 ' + esc(curTier.name) + ' (Tap for Inside!)</span>' +
+        '</div>' +
+        stageItemsHtml;
+    }
 
     var stageHtml =
       '<div class="wg-studio-stage-wrap">' +
         '<div class="wg-studio-stage-head">' +
-          '<span>🏡 <b>Level ' + curTier.level + ': ' + esc(curTier.name) + '</b></span>' +
-          '<span class="wg-st-badge">🪑 ' + placed.length + ' items in yard</span>' +
+          '<div class="wg-view-toggle">' +
+            '<button type="button" class="isl-btn ' + (studioView === 'inside' ? 'amber' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.82rem" onclick="WorldGame.setStudioView(\'inside\')">🛋️ Inside Room (' + indoorPlaced.length + ')</button>' +
+            '<button type="button" class="isl-btn ' + (studioView === 'outside' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.82rem" onclick="WorldGame.setStudioView(\'outside\')">🌳 Outside Garden (' + gardenPlaced.length + ')</button>' +
+          '</div>' +
+          '<span class="wg-st-badge">⭐ Architect Score: ' + comfortStars + '</span>' +
         '</div>' +
-        '<div class="wg-studio-canvas" id="wg-studio-canvas" onclick="WorldGame.tapStudioStage(event)">' +
-          '<div class="wg-studio-path-h"></div>' +
-          '<div class="wg-studio-path-v"></div>' +
-          '<div class="wg-studio-deck" title="Connected Wooden Foundation & Veranda Patio">' +
-            '<div class="wg-studio-pad"></div>' +
-            '<span class="wg-studio-zone-tag">🏠 Veranda Deck</span>' +
-          '</div>' +
-          '<div class="wg-studio-steps"></div>' +
-          '<span class="wg-studio-garden-tag">🌳 Sunny Garden Lawn</span>' +
-          '<div class="wg-studio-npc" style="left:9.5%;top:34%" title="Grandpa Bolt"><img src="' + FLAT + 'c_bolt_happy.webp" alt=""></div>' +
-          '<div class="wg-studio-wb" style="left:21.8%;top:36.4%" title="Crafting Workbench"><img src="' + FLAT + 'o_workbench.webp" alt=""></div>' +
-          '<div class="wg-studio-house" style="left:46.7%;top:34.3%" title="Level ' + curTier.level + ': ' + esc(curTier.name) + '">' +
-            '<img src="' + FLAT + curTier.id + '.webp" alt="">' +
-            '<span class="wg-studio-house-tag">🏰 ' + esc(curTier.name) + '</span>' +
-          '</div>' +
-          placedNodesHtml +
+        '<div class="wg-studio-canvas ' + (studioView === 'inside' ? 'is-room' : 'is-yard') + '" id="wg-studio-canvas" onclick="WorldGame.tapStudioStage(event)">' +
+          canvasInnerHtml +
         '</div>' +
         stageToolbarHtml +
       '</div>';
 
-    // Build Right-Side Tab Panel (1: Upgrade House, 2: Craft Items, 3: Decorate & Bag)
     var rightHtml = '';
-    if (workshopTab === 'home') {
+    if (workshopTab === 'blueprints') {
+      var bpCards = BLUEPRINTS.map(function (bp) {
+        var isDone = !!st.blueprintsDone[bp.id];
+        var checkRows = bp.checks.map(function (c) {
+          var ok = c.test(st);
+          return '<div class="wg-bp-check' + (ok ? ' ok' : '') + '">' + (ok ? '✅ ' : '⬜ ') + esc(c.label) + '</div>';
+        }).join('');
+        var allReady = !isDone && bp.checks.every(function (c) { return c.test(st); });
+        return '<div class="wg-bp-card' + (isDone ? ' done' : (allReady ? ' ready' : '')) + '">' +
+          '<div class="wg-bp-head">' +
+            '<b>' + esc(bp.title) + '</b>' +
+            '<span class="wg-bp-view-pill ' + bp.view + '">' + (bp.view === 'inside' ? '🛋️ Inside Room' : '🌳 Outside Garden') + '</span>' +
+          '</div>' +
+          '<div class="wg-bp-clue">"' + esc(bp.clue) + '" <button type="button" class="wg-bp-speak" onclick="IslandAudio.speak(\'' + esc(bp.clue) + '\')">🔊</button></div>' +
+          '<div class="wg-bp-checks">' + checkRows + '</div>' +
+          '<div class="wg-bp-foot">' +
+            '<span class="wg-reward-tag">🎁 +' + bp.coins + ' 🪙 · +' + bp.energy + ' ⚡ · +' + bp.xp + ' XP</span>' +
+            (isDone
+              ? '<span class="wg-job-done-badge">★ Completed!</span>'
+              : (allReady
+                ? '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 12px;font-size:0.84rem" onclick="WorldGame.claimBlueprint(\'' + bp.id + '\')">🎁 Claim Reward!</button>'
+                : '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:4px 10px;font-size:0.8rem" onclick="WorldGame.setStudioView(\'' + bp.view + '\'); WorldGame.openWorkshop(\'craft\')">🔨 Build This</button>')) +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      rightHtml =
+        '<div class="wg-bp-banner">' +
+          '<img src="' + FLAT + 'c_bolt_happy.webp" style="width:48px;height:48px;object-fit:contain" alt="">' +
+          '<div style="flex:1;min-width:0">' +
+            '<b style="color:#fde047;display:block">📜 Grandpa Bolt\'s Smart Blueprints (' + bpDoneCount + '/6 ★)</b>' +
+            '<small style="color:#cbd5e1">Read the English clues, craft &amp; upgrade items in your Room or Garden, and claim big rewards!</small>' +
+          '</div>' +
+          '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.82rem" onclick="WorldGame.openSmartBuilderQuiz()">🧠 +Materials Quiz</button>' +
+        '</div>' +
+        '<div class="wg-bp-list">' + bpCards + '</div>';
+    } else if (workshopTab === 'home') {
       var canUp = nextTier && hasMaterials(nextTier.cost);
       var roadmapHtml = HOUSE_TIERS.map(function (t) {
         var done = t.level < curTier.level;
@@ -686,13 +942,16 @@
           '</div>' +
           (nextTier
             ? '<div style="margin:10px 0"><div style="font-weight:800;color:#fde68a;margin-bottom:6px">Materials needed for Level ' + nextTier.level + ' (' + esc(nextTier.name) + '):</div><div class="wg-cost-row">' + costPillsHtml(nextTier.cost, bag) + '</div></div>' +
-              '<button type="button" class="isl-btn ' + (canUp ? 'emerald' : '') + '" id="wg-btn-upgrade-home" style="min-height:46px;font-size:1rem;padding:8px 20px" ' + (canUp ? 'onclick="WorldGame.upgradeHome()"' : 'disabled aria-disabled="true"') + '>' +
-                (canUp ? '🔨 Upgrade to ' + esc(nextTier.name) + ' Now!' : '🔒 Gather Materials in Zones 1–4 to Upgrade!') +
-              '</button>'
+              '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">' +
+                '<button type="button" class="isl-btn ' + (canUp ? 'emerald' : '') + '" id="wg-btn-upgrade-home" style="min-height:44px;font-size:0.95rem;padding:6px 18px" ' + (canUp ? 'onclick="WorldGame.upgradeHome()"' : 'disabled aria-disabled="true"') + '>' +
+                  (canUp ? '🔨 Upgrade to ' + esc(nextTier.name) + '!' : '🔒 Need More Materials') +
+                '</button>' +
+                (!canUp ? '<button type="button" class="isl-btn amber" style="min-height:44px;font-size:0.9rem;padding:6px 14px" onclick="WorldGame.openSmartBuilderQuiz()">🧠 Earn Materials (Quiz)</button>' : '') +
+              '</div>'
             : '<div style="font-size:1.15rem;font-weight:800;color:#6ee7b7;margin-top:10px">🏰 Maximum Level! You built the Royal Fairy-Tale Castle!</div>') +
         '</div>' +
         '<div class="wg-roadmap-wrap">' +
-          '<div class="wg-sec-title">🏰 5-Stage Home Evolution Roadmap</div>' +
+          '<div class="wg-sec-title">🏰 5-Stage Home Evolution Roadmap (Upgrades Both Outside &amp; Inside Room!)</div>' +
           '<div class="wg-tier-roadmap">' + roadmapHtml + '</div>' +
         '</div>';
     } else if (workshopTab === 'craft') {
@@ -707,7 +966,7 @@
         var inBag = Math.max(0, ownedCount - placedCount);
         var canCraft = hasMaterials(r.cost);
         return '<div class="wg-recipe-card">' +
-          '<span class="wg-rec-kind ' + r.kind + '">' + (r.kind === 'patio' ? '🏠 Veranda' : '🌳 Garden') + '</span>' +
+          '<span class="wg-rec-kind ' + r.kind + '">' + (r.kind === 'patio' ? '🛋️ Inside Room' : '🌳 Outside Garden') + '</span>' +
           '<img src="' + FLAT + r.id + '.webp" class="wg-recipe-pic" alt="" onclick="IslandAudio.speak(\'' + esc(r.name) + '\')">' +
           '<div class="wg-recipe-name">' + esc(r.name) + '</div>' +
           '<div class="wg-rec-counts">Owned: <b>' + ownedCount + '</b> · Placed: <b>' + placedCount + '</b></div>' +
@@ -722,13 +981,14 @@
       }).join('');
       rightHtml =
         '<div class="wg-craft-filters">' +
-          '<button type="button" class="isl-btn ' + (craftFilter === 'all' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.setCraftFilter(\'all\')">All Items (16)</button>' +
-          '<button type="button" class="isl-btn ' + (craftFilter === 'patio' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.setCraftFilter(\'patio\')">🏠 Veranda Patio (6)</button>' +
-          '<button type="button" class="isl-btn ' + (craftFilter === 'garden' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.setCraftFilter(\'garden\')">🌳 Garden Lawn (10)</button>' +
+          '<button type="button" class="isl-btn ' + (craftFilter === 'all' ? 'cyan' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.8rem" onclick="WorldGame.setCraftFilter(\'all\')">All (16)</button>' +
+          '<button type="button" class="isl-btn ' + (craftFilter === 'patio' ? 'amber' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.8rem" onclick="WorldGame.setCraftFilter(\'patio\')">🛋️ Inside Room (6)</button>' +
+          '<button type="button" class="isl-btn ' + (craftFilter === 'garden' ? 'emerald' : '') + '" style="min-height:34px;padding:4px 11px;font-size:0.8rem" onclick="WorldGame.setCraftFilter(\'garden\')">🌳 Outside Garden (10)</button>' +
+          '<button type="button" class="isl-btn amber" style="margin-left:auto;min-height:34px;padding:4px 10px;font-size:0.78rem" onclick="WorldGame.openSmartBuilderQuiz()">🧠 +Materials</button>' +
         '</div>' +
         '<div class="wg-recipes-grid">' + cards + '</div>';
     } else {
-      // Tab 3: Decorate & Bag
+      // Tab 4: Arrange & Upgrade
       var bagItemsHtml = RECIPES.map(function (r) {
         var ownedCount = Number((st.ownedFurniture || {})[r.id]) || 0;
         var placedCount = placed.filter(function (p) { return p.id === r.id; }).length;
@@ -736,8 +996,8 @@
         if (avail <= 0) return '';
         return '<div class="wg-bag-row">' +
           '<img src="' + FLAT + r.id + '.webp" style="width:42px;height:42px;object-fit:contain" alt="">' +
-          '<div style="flex:1;min-width:0"><b>' + esc(r.name) + '</b><small style="display:block;color:#94a3b8">' + avail + ' in bag · ' + (r.kind === 'patio' ? '🏠 Veranda' : '🌳 Garden') + '</small></div>' +
-          '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">📍 Place on Map</button>' +
+          '<div style="flex:1;min-width:0"><b>' + esc(r.name) + '</b><small style="display:block;color:#94a3b8">' + avail + ' in bag · ' + (r.kind === 'patio' ? '🛋️ Inside Room' : '🌳 Outside Garden') + '</small></div>' +
+          '<button type="button" class="isl-btn emerald" style="min-height:36px;padding:4px 12px;font-size:0.82rem" onclick="WorldGame.placeItem(\'' + r.id + '\')">📍 Place</button>' +
         '</div>';
       }).join('');
 
@@ -745,18 +1005,19 @@
         var rec = RECIPES.filter(function (r) { return r.id === p.id; })[0];
         if (!rec) return '';
         var isSel = (idx === studioSelectedIdx);
+        var itemLv = Math.max(1, Math.min(3, Number(p.lvl) || 1));
         return '<div class="wg-bag-row' + (isSel ? ' active' : '') + '" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)" style="cursor:pointer">' +
           '<img src="' + FLAT + rec.id + '.webp" style="width:40px;height:40px;object-fit:contain" alt="">' +
-          '<div style="flex:1;min-width:0"><b>' + esc(rec.name) + '</b><small style="display:block;color:#6ee7b7">' + (isSel ? '✋ Selected — Tap map to move!' : 'Tap to select & move on map') + '</small></div>' +
-          '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:3px 9px;font-size:0.78rem" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">✋ Move</button>' +
+          '<div style="flex:1;min-width:0"><b>' + esc(rec.name) + ' <span style="color:#fde047">' + '★'.repeat(itemLv) + '</span></b><small style="display:block;color:#6ee7b7">' + (rec.kind === 'patio' ? '🛋️ Inside Room' : '🌳 Outside Garden') + ' · ' + (isSel ? '✋ Tap preview map to move or ⬆ Upgrade!' : 'Tap to move or upgrade') + '</small></div>' +
+          '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:3px 9px;font-size:0.78rem" onclick="WorldGame.selectStudioPlaced(' + idx + ', event)">✋ Edit</button>' +
         '</div>';
       }).join('');
 
       rightHtml =
         '<div class="wg-decor-lists">' +
           '<div class="wg-sec-title">🎒 Ready in Your Bag (Tap to Place)</div>' +
-          (bagItemsHtml || '<div class="wg-empty-note">All your crafted items are placed in the yard! Craft more in the <b>🔨 Craft Items</b> tab.</div>') +
-          '<div class="wg-sec-title" style="margin-top:12px">🪑 Placed on Your Island (' + placed.length + ')</div>' +
+          (bagItemsHtml || '<div class="wg-empty-note">All your crafted items are placed! Craft more in the <b>🔨 Craft</b> tab.</div>') +
+          '<div class="wg-sec-title" style="margin-top:12px">🪑 Placed Items (' + indoorPlaced.length + ' Inside Room · ' + gardenPlaced.length + ' Outside Garden)</div>' +
           (placedListHtml || '<div class="wg-empty-note">Nothing placed yet — tap Place above or craft new items!</div>') +
         '</div>';
     }
@@ -766,20 +1027,23 @@
       '<div class="isl-modal-backdrop" id="wg-workshop-backdrop">' +
         '<div class="isl-card-modal wg-studio-modal">' +
           '<div class="isl-mission-top wg-studio-top">' +
-            '<div style="display:flex;align-items:center;gap:8px;font-size:1.28rem;font-weight:800"><img src="' + FLAT + 'o_workbench.webp" style="width:36px;height:36px;object-fit:contain" alt=""> My Home &amp; Crafting Studio</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;font-size:1.18rem;font-weight:800"><img src="' + FLAT + 'o_workbench.webp" style="width:32px;height:32px;object-fit:contain" alt=""> Home &amp; Crafting Studio</div>' +
             '<div class="wg-studio-mats">' + matBar + '</div>' +
-            '<div style="margin-left:auto;display:flex;gap:8px;align-items:center">' +
-              '<button type="button" class="isl-btn emerald" id="wg-btn-see-world" style="min-height:42px;padding:6px 14px;font-size:0.92rem" onclick="WorldGame.seeHomeInWorld()">🌍 See in Real World!</button>' +
-              '<button type="button" class="isl-btn" style="min-height:42px;min-width:44px;padding:6px 12px" onclick="WorldGame.closeModal()">✕</button>' +
+            '<div style="margin-left:auto;display:flex;gap:5px;align-items:center;flex-wrap:wrap">' +
+              '<button type="button" class="isl-btn cyan" id="wg-btn-open-sports" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.openSportsArena(\'soccer\', \'2v2\')">⚽ Sports Arena</button>' +
+              '<button type="button" class="isl-btn amber" id="wg-btn-enter-room" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.seeHomeInWorld(true)">🚪 Walk Inside Room!</button>' +
+              '<button type="button" class="isl-btn emerald" id="wg-btn-see-world" style="min-height:38px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.seeHomeInWorld(false)">🌳 Walk in Garden!</button>' +
+              '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:4px 9px" onclick="WorldGame.closeModal()">✕</button>' +
             '</div>' +
           '</div>' +
           '<div class="wg-studio-body">' +
             stageHtml +
             '<div class="wg-studio-panel">' +
-              '<div class="wg-studio-tabs">' +
-                '<button type="button" class="isl-btn ' + (workshopTab === 'home' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'home\')">🏰 1. Upgrade House</button>' +
-                '<button type="button" class="isl-btn ' + (workshopTab === 'craft' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'craft\')">🔨 2. Craft Items (16)</button>' +
-                '<button type="button" class="isl-btn ' + (workshopTab === 'decorate' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'decorate\')">🎨 3. Arrange (' + placed.length + ')</button>' +
+              '<div class="wg-studio-tabs cols-4">' +
+                '<button type="button" class="isl-btn ' + (workshopTab === 'blueprints' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'blueprints\')">📜 Blueprints (' + bpDoneCount + '/6)</button>' +
+                '<button type="button" class="isl-btn ' + (workshopTab === 'home' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'home\')">🏰 House</button>' +
+                '<button type="button" class="isl-btn ' + (workshopTab === 'craft' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'craft\')">🔨 Craft (16)</button>' +
+                '<button type="button" class="isl-btn ' + (workshopTab === 'decorate' ? 'amber' : '') + '" onclick="WorldGame.openWorkshop(\'decorate\')">🎨 Arrange (' + placed.length + ')</button>' +
               '</div>' +
               '<div class="wg-studio-tab-content">' + rightHtml + '</div>' +
             '</div>' +
@@ -811,11 +1075,12 @@
     var countSame = st.placed.filter(function (p) { return p.id === id; }).length;
     var px = r.defPos.x + (countSame ? (countSame * 90) % 240 : 0);
     var py = r.defPos.y + (countSame ? Math.floor(countSame / 3) * 75 : 0);
-    st.placed.push({ id: id, x: px, y: py, flip: false });
+    st.placed.push({ id: id, x: px, y: py, flip: false, lvl: 1 });
+    studioView = (r.kind === 'patio') ? 'inside' : 'outside';
     studioSelectedIdx = st.placed.length - 1;
     writeState(st);
     sound('playCorrect');
-    say('You crafted a ' + r.name + '! Tap the preview map to move it!');
+    say('You crafted a ' + r.name + '! Tap the ' + (r.kind === 'patio' ? 'room' : 'garden') + ' preview to move it!');
     if (W() && W().refreshHome) W().refreshHome(true);
     renderWorkshop();
   }
@@ -826,7 +1091,8 @@
     var st = readState();
     st.placed = st.placed || [];
     var countSame = st.placed.filter(function (p) { return p.id === id; }).length;
-    st.placed.push({ id: id, x: r.defPos.x + countSame * 85, y: r.defPos.y, flip: false });
+    st.placed.push({ id: id, x: r.defPos.x + countSame * 85, y: r.defPos.y, flip: false, lvl: 1 });
+    studioView = (r.kind === 'patio') ? 'inside' : 'outside';
     studioSelectedIdx = st.placed.length - 1;
     writeState(st);
     sound('playTap');
@@ -1200,6 +1466,472 @@
     }
   }
 
+  /* ---------- 7. Island Sports Arena: ⚽ Football & 🏐 Beach Volleyball (1v1 Duel & 2v2 Team Match!) ---------- */
+  var sportsState = null;
+  var sportsRaf = 0;
+
+  function stopSportsLoop() {
+    if (sportsRaf) { cancelAnimationFrame(sportsRaf); sportsRaf = 0; }
+    if (sportsState && sportsState.keyHandler) {
+      root.removeEventListener('keydown', sportsState.keyHandler);
+      root.removeEventListener('keyup', sportsState.keyUpHandler);
+    }
+    sportsState = null;
+  }
+
+  var sportsImgs = {};
+  function getSportImg(name) {
+    if (!sportsImgs[name]) {
+      var im = new Image();
+      im.src = FLAT + name + '.webp';
+      sportsImgs[name] = im;
+    }
+    return sportsImgs[name];
+  }
+
+  function openSportsArena(sport, mode) {
+    stopSportsLoop();
+    sound('playTap');
+    var sp = (sport === 'volleyball') ? 'volleyball' : 'soccer';
+    var md = (mode === '1v1') ? '1v1' : '2v2';
+    var st = readState();
+    if ((Number(st.energy) || 0) < 10) {
+      energyRun = {
+        qs: pickQuestions(3),
+        idx: 0,
+        afterSport: { sport: sp, mode: md },
+        reason: '⚽ Sports Arena Ticket: Answer 3 quick English questions to earn +30 ⚡ Energy and unlock Football & Volleyball!'
+      };
+      renderEnergyStep();
+      return;
+    }
+    useEnergy(5);
+    st = readState();
+    var wins = Number(st.sportsWins) || 0;
+    var curE = Number(st.energy) || 0;
+    ['c_bolt_happy', 'c_lulu_happy', 'c_nutty_happy', 'c_ember_happy', 'o_ball'].forEach(getSportImg);
+
+    document.body.classList.add('isl-modal-open');
+    modalRoot().innerHTML =
+      '<div class="isl-modal-backdrop" id="wg-sports-backdrop">' +
+        '<div class="isl-card-modal wg-sports-modal">' +
+          '<div class="isl-mission-top wg-sports-top">' +
+            '<div style="display:flex;align-items:center;gap:8px;font-size:1.22rem;font-weight:800"><img src="' + FLAT + 'o_ball.webp" style="width:32px;height:32px;object-fit:contain" alt=""> 🏆 Island Sports Arena</div>' +
+            '<div class="wg-sports-tabs">' +
+              '<button type="button" class="isl-btn ' + (sp === 'soccer' ? 'emerald' : '') + '" style="min-height:36px;padding:4px 12px;font-size:0.84rem" onclick="WorldGame.openSportsArena(\'soccer\', \'' + md + '\')">⚽ Football</button>' +
+              '<button type="button" class="isl-btn ' + (sp === 'volleyball' ? 'amber' : '') + '" style="min-height:36px;padding:4px 12px;font-size:0.84rem" onclick="WorldGame.openSportsArena(\'volleyball\', \'' + md + '\')">🏐 Volleyball</button>' +
+              '<button type="button" class="isl-btn ' + (md === '1v1' ? 'cyan' : '') + '" style="min-height:36px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.openSportsArena(\'' + sp + '\', \'1v1\')">⚡ 1 vs 1</button>' +
+              '<button type="button" class="isl-btn ' + (md === '2v2' ? 'cyan' : '') + '" style="min-height:36px;padding:4px 10px;font-size:0.82rem" onclick="WorldGame.openSportsArena(\'' + sp + '\', \'2v2\')">👥 2 vs 2 Team</button>' +
+            '</div>' +
+            '<div style="margin-left:auto;display:flex;gap:8px;align-items:center">' +
+              '<span class="wg-st-badge">🏆 Wins: ' + wins + ' · ⚡ ' + curE + '</span>' +
+              '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:4px 10px" onclick="WorldGame.closeModal()">✕</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="wg-sports-scorebar">' +
+            '<div class="wg-sp-team blue">🔵 ' + (md === '2v2' ? 'Team You + Sky' : 'You') + ': <b id="wg-sp-score-a">0</b></div>' +
+            '<div class="wg-sp-status" id="wg-sp-status">' + (sp === 'soccer' ? '⚽ First to 3 Goals Wins! (+25 🪙)' : '🏐 First to 5 Points Wins! (+25 🪙)') + '</div>' +
+            '<div class="wg-sp-team red"><b id="wg-sp-score-b">0</b> : ' + (md === '2v2' ? 'Leo + Sunny 🔴' : 'Leo 🔴') + '</div>' +
+          '</div>' +
+          '<div class="wg-sports-pitch-wrap">' +
+            '<canvas id="wg-sports-canvas" width="820" height="420"></canvas>' +
+          '</div>' +
+          '<div class="wg-sports-controls">' +
+            '<span style="color:#cbd5e1;font-size:0.85rem;font-weight:700">🎮 Drag on the pitch or use <b>Arrow Keys / WASD</b> to move!</span>' +
+            '<div style="display:flex;gap:8px;align-items:center">' +
+              '<button type="button" class="isl-btn amber" style="min-height:40px;padding:6px 16px;font-size:0.9rem" onclick="WorldGame.sportsAction()">' + (sp === 'soccer' ? '⚡ Power Kick!' : '⬆ Jump &amp; Spike!') + '</button>' +
+              '<button type="button" class="isl-btn cyan" style="min-height:40px;padding:6px 14px;font-size:0.86rem" onclick="WorldGame.openSportsArena(\'' + sp + '\', \'' + md + '\')">🔄 Restart Match</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    startSportsMatch(sp, md);
+  }
+
+  function sportsAction() {
+    if (!sportsState) return;
+    sportsState.actionPressed = true;
+  }
+
+  function startSportsMatch(sp, md) {
+    var canvas = document.getElementById('wg-sports-canvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var Wc = canvas.width, Hc = canvas.height;
+    var keys = {};
+
+    var st = {
+      sport: sp,
+      mode: md,
+      scoreA: 0,
+      scoreB: 0,
+      targetScore: sp === 'soccer' ? 3 : 5,
+      finished: false,
+      goalCooldown: 0,
+      bannerText: sp === 'soccer' ? '⚽ KICK OFF!' : '🏐 SERVE!',
+      bannerTimer: 70,
+      pointer: null,
+      actionPressed: false,
+      players: [],
+      ball: { x: Wc / 2, y: sp === 'soccer' ? Hc / 2 : 130, vx: sp === 'soccer' ? 0 : 2.8, vy: sp === 'soccer' ? 0 : -4, r: 16 }
+    };
+
+    var resetPositions = function (servingSide) {
+      if (sp === 'soccer') {
+        st.players = [
+          { id: 'me',   team: 'A', role: 'fwd', name: 'You',   pic: 'c_bolt_happy',  color: '#38bdf8', x: 245, y: Hc / 2, vx: 0, vy: 0, r: 24 },
+          { id: 'opp1', team: 'B', role: 'fwd', name: 'Leo',   pic: 'c_ember_happy', color: '#f43f5e', x: Wc - 245, y: Hc / 2, vx: 0, vy: 0, r: 24 }
+        ];
+        if (md === '2v2') {
+          st.players.push(
+            { id: 'ally', team: 'A', role: 'gk', name: 'Sky',   pic: 'c_lulu_happy',  color: '#a855f7', x: 105, y: Hc / 2, vx: 0, vy: 0, r: 22 },
+            { id: 'opp2', team: 'B', role: 'gk', name: 'Sunny', pic: 'c_nutty_happy', color: '#f59e0b', x: Wc - 105, y: Hc / 2, vx: 0, vy: 0, r: 22 }
+          );
+        }
+        st.ball.x = Wc / 2;
+        st.ball.y = Hc / 2;
+        st.ball.vx = (servingSide === 'B' ? -1.5 : 1.5);
+        st.ball.vy = (Math.random() - 0.5) * 2;
+      } else {
+        // Beach Volleyball: ground is y = 365, net at x = Wc/2 (height 125)
+        var groundY = 360;
+        st.players = [
+          { id: 'me',   team: 'A', name: 'You',   pic: 'c_bolt_happy',  color: '#38bdf8', x: 280, y: groundY, vx: 0, vy: 0, r: 24, groundY: groundY },
+          { id: 'opp1', team: 'B', name: 'Leo',   pic: 'c_ember_happy', color: '#f43f5e', x: Wc - 280, y: groundY, vx: 0, vy: 0, r: 24, groundY: groundY }
+        ];
+        if (md === '2v2') {
+          st.players.push(
+            { id: 'ally', team: 'A', name: 'Sky',   pic: 'c_lulu_happy',  color: '#a855f7', x: 130, y: groundY, vx: 0, vy: 0, r: 22, groundY: groundY },
+            { id: 'opp2', team: 'B', name: 'Sunny', pic: 'c_nutty_happy', color: '#f59e0b', x: Wc - 130, y: groundY, vx: 0, vy: 0, r: 22, groundY: groundY }
+          );
+        }
+        st.ball.x = servingSide === 'B' ? (Wc * 0.72) : (Wc * 0.28);
+        st.ball.y = 140;
+        st.ball.vx = servingSide === 'B' ? -3.4 : 3.4;
+        st.ball.vy = -5.5;
+      }
+    };
+
+    resetPositions('A');
+
+    st.keyHandler = function (e) {
+      keys[e.code] = true;
+      if (e.code === 'Space') st.actionPressed = true;
+    };
+    st.keyUpHandler = function (e) {
+      keys[e.code] = false;
+    };
+    root.addEventListener('keydown', st.keyHandler);
+    root.addEventListener('keyup', st.keyUpHandler);
+
+    var updatePointer = function (e) {
+      var rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      st.pointer = {
+        x: ((e.clientX - rect.left) / rect.width) * Wc,
+        y: ((e.clientY - rect.top) / rect.height) * Hc
+      };
+    };
+    canvas.addEventListener('pointerdown', function (e) { updatePointer(e); st.actionPressed = true; });
+    canvas.addEventListener('pointermove', function (e) { if (e.buttons) updatePointer(e); });
+    canvas.addEventListener('pointerup', function () { st.pointer = null; });
+
+    var onScore = function (team) {
+      if (st.finished) return;
+      if (team === 'A') {
+        st.scoreA++;
+        sound('playCorrect');
+        st.bannerText = (sp === 'soccer' ? '⚽ GOAL FOR YOUR TEAM!' : '🏐 POINT FOR YOUR TEAM!');
+      } else {
+        st.scoreB++;
+        sound('playPop');
+        st.bannerText = (sp === 'soccer' ? '⚽ RIVAL GOAL!' : '🏐 RIVAL POINT!');
+      }
+      st.bannerTimer = 65;
+      st.goalCooldown = 45;
+      var elA = document.getElementById('wg-sp-score-a');
+      var elB = document.getElementById('wg-sp-score-b');
+      if (elA) elA.textContent = String(st.scoreA);
+      if (elB) elB.textContent = String(st.scoreB);
+
+      if (st.scoreA >= st.targetScore || st.scoreB >= st.targetScore) {
+        st.finished = true;
+        var won = st.scoreA >= st.targetScore;
+        if (won) {
+          var wSt = readState();
+          wSt.sportsWins = (Number(wSt.sportsWins) || 0) + 1;
+          writeState(wSt);
+          addBonusCoins(25);
+          sound('playFanfare');
+          say('Victory! Your team won the match! Plus twenty five coins!');
+          st.bannerText = '🏆 VICTORY! +25 🪙 COINS!';
+        } else {
+          sound('playSoftFail');
+          say('Good match! Tap Restart to play again!');
+          st.bannerText = '👏 CLOSE MATCH! TRY AGAIN!';
+        }
+        var stEl = document.getElementById('wg-sp-status');
+        if (stEl) stEl.textContent = st.bannerText;
+        return;
+      }
+      resetPositions(team === 'A' ? 'B' : 'A');
+    };
+
+    var step = function () {
+      if (!document.getElementById('wg-sports-canvas')) { stopSportsLoop(); return; }
+      var me = st.players[0];
+      var b = st.ball;
+
+      if (!st.finished) {
+        if (st.goalCooldown > 0) st.goalCooldown--;
+        var dx = ((keys.ArrowRight || keys.KeyD) ? 1 : 0) - ((keys.ArrowLeft || keys.KeyA) ? 1 : 0);
+        var dy = ((keys.ArrowDown || keys.KeyS) ? 1 : 0) - ((keys.ArrowUp || keys.KeyW) ? 1 : 0);
+
+        if (sp === 'soccer') {
+          if (st.pointer) {
+            var pdx = st.pointer.x - me.x, pdy = st.pointer.y - me.y, plen = Math.hypot(pdx, pdy);
+            if (plen > 10) { dx = pdx / plen; dy = pdy / plen; }
+          }
+          me.vx = dx * 4.7;
+          me.vy = dy * 4.7;
+
+          // AI Teammates & Opponents for Soccer
+          st.players.slice(1).forEach(function (p) {
+            var tx = b.x, ty = b.y;
+            if (p.role === 'gk') {
+              tx = p.team === 'A' ? 88 : (Wc - 88);
+              ty = Math.max(135, Math.min(Hc - 135, b.y));
+            } else if (p.team === 'B') {
+              tx = b.x + 12;
+              ty = b.y;
+            }
+            var adx = tx - p.x, ady = ty - p.y, alen = Math.hypot(adx, ady) || 1;
+            var spd = p.role === 'gk' ? 3.2 : 3.4;
+            p.vx = (adx / alen) * Math.min(spd, alen);
+            p.vy = (ady / alen) * Math.min(spd, alen);
+          });
+
+          // Move soccer players & collide with ball
+          st.players.forEach(function (p) {
+            p.x = Math.max(46, Math.min(Wc - 46, p.x + p.vx));
+            p.y = Math.max(46, Math.min(Hc - 46, p.y + p.vy));
+            var bdx = b.x - p.x, bdy = b.y - p.y, dist = Math.hypot(bdx, bdy);
+            if (dist < p.r + b.r && dist > 0.01) {
+              var nx = bdx / dist, ny = bdy / dist;
+              b.x = p.x + nx * (p.r + b.r + 2);
+              b.y = p.y + ny * (p.r + b.r + 2);
+              var kickPower = (p.id === 'me' && st.actionPressed) ? 10.5 : (p.team === 'A' ? 7.2 : 6.6);
+              if (p.team === 'B') {
+                // Aim toward left goal
+                var gdx = 30 - p.x, gdy = (Hc / 2) - p.y, glen = Math.hypot(gdx, gdy) || 1;
+                b.vx = (gdx / glen) * kickPower;
+                b.vy = (gdy / glen) * kickPower + (Math.random() - 0.5) * 2;
+              } else if (p.id === 'ally') {
+                // Pass forward toward right goal
+                var adx2 = (Wc - 30) - p.x, ady2 = (Hc / 2) - p.y, alen2 = Math.hypot(adx2, ady2) || 1;
+                b.vx = (adx2 / alen2) * kickPower;
+                b.vy = (ady2 / alen2) * kickPower;
+              } else {
+                b.vx = nx * kickPower + p.vx * 0.4;
+                b.vy = ny * kickPower + p.vy * 0.4;
+              }
+              sound('playHop');
+            }
+          });
+          st.actionPressed = false;
+
+          // Ball physics on soccer turf
+          b.x += b.vx;
+          b.y += b.vy;
+          b.vx *= 0.982;
+          b.vy *= 0.982;
+
+          // Goal mouth is y: 140..280
+          var inGoalY = (b.y > 140 && b.y < 280);
+          if (b.y < 36 + b.r) { b.y = 36 + b.r; b.vy *= -0.85; }
+          if (b.y > Hc - 36 - b.r) { b.y = Hc - 36 - b.r; b.vy *= -0.85; }
+          if (b.x < 38 + b.r) {
+            if (inGoalY && st.goalCooldown <= 0) onScore('B');
+            else { b.x = 38 + b.r; b.vx *= -0.85; }
+          }
+          if (b.x > Wc - 38 - b.r) {
+            if (inGoalY && st.goalCooldown <= 0) onScore('A');
+            else { b.x = Wc - 38 - b.r; b.vx *= -0.85; }
+          }
+        } else {
+          // Beach Volleyball physics
+          var groundY = 360;
+          if (st.pointer) {
+            dx = st.pointer.x < me.x - 10 ? -1 : (st.pointer.x > me.x + 10 ? 1 : 0);
+          }
+          me.vx = dx * 5.2;
+          if ((dy < 0 || st.actionPressed) && me.y >= groundY - 1) {
+            me.vy = -10.5;
+            sound('playHop');
+          }
+          st.actionPressed = false;
+
+          st.players.slice(1).forEach(function (p) {
+            var onMyHalf = (p.team === 'A' && b.x < Wc / 2) || (p.team === 'B' && b.x >= Wc / 2);
+            var homeX = p.team === 'A' ? 125 : (p.id === 'opp1' ? Wc - 265 : Wc - 125);
+            var targetX = onMyHalf ? (p.team === 'A' ? Math.min(200, b.x) : b.x) : homeX;
+            var diff = targetX - p.x;
+            p.vx = Math.max(-4.3, Math.min(4.3, diff * 0.12));
+            if (onMyHalf && Math.abs(b.x - p.x) < 48 && b.y > 210 && p.y >= groundY - 1) {
+              p.vy = -10.0;
+            }
+          });
+
+          st.players.forEach(function (p) {
+            p.x += p.vx;
+            if (p.team === 'A') p.x = Math.max(45, Math.min(Wc / 2 - 34, p.x));
+            else p.x = Math.max(Wc / 2 + 34, Math.min(Wc - 45, p.x));
+            p.vy += 0.48;
+            p.y = Math.min(groundY, p.y + p.vy);
+            if (p.y >= groundY) p.vy = 0;
+
+            var bdx = b.x - p.x, bdy = b.y - (p.y - 14), dist = Math.hypot(bdx, bdy);
+            if (dist < p.r + b.r && dist > 0.01) {
+              b.y = p.y - 14 - (p.r + b.r);
+              b.vy = -8.6;
+              b.vx = (p.team === 'A' ? 4.4 : -4.4) + (bdx * 0.08);
+              sound('playPop');
+            }
+          });
+
+          b.x += b.vx;
+          b.y += b.vy;
+          b.vy += 0.22; // gravity
+
+          if (b.x < 30 + b.r) { b.x = 30 + b.r; b.vx *= -0.9; }
+          if (b.x > Wc - 30 - b.r) { b.x = Wc - 30 - b.r; b.vx *= -0.9; }
+          if (b.y < 24 + b.r) { b.y = 24 + b.r; b.vy *= -0.8; }
+
+          // Net collision at x = Wc/2, y: 235..365
+          if (Math.abs(b.x - Wc / 2) < b.r + 6 && b.y > 235) {
+            if (b.y < 248) { b.y = 235 - b.r; b.vy = -Math.abs(b.vy) * 0.85; }
+            else { b.vx *= -0.85; b.x = b.x < Wc / 2 ? (Wc / 2 - b.r - 7) : (Wc / 2 + b.r + 7); }
+          }
+
+          // Sand hit = point for the other side!
+          if (b.y >= groundY + 6 && st.goalCooldown <= 0) {
+            onScore(b.x < Wc / 2 ? 'B' : 'A');
+          }
+        }
+      }
+
+      // Render Frame
+      ctx.clearRect(0, 0, Wc, Hc);
+      if (sp === 'soccer') {
+        // Striped green stadium pitch
+        for (var i = 0; i < 10; i++) {
+          ctx.fillStyle = i % 2 === 0 ? '#15803d' : '#166534';
+          ctx.fillRect(i * (Wc / 10), 0, Wc / 10 + 1, Hc);
+        }
+        ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(38, 36, Wc - 76, Hc - 72);
+        ctx.beginPath();
+        ctx.moveTo(Wc / 2, 36); ctx.lineTo(Wc / 2, Hc - 36);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(Wc / 2, Hc / 2, 54, 0, Math.PI * 2);
+        ctx.stroke();
+        // Left & Right Goals (y: 140..280)
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+        ctx.fillRect(8, 140, 30, 140);
+        ctx.strokeRect(8, 140, 30, 140);
+        ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
+        ctx.fillRect(Wc - 38, 140, 30, 140);
+        ctx.strokeRect(Wc - 38, 140, 30, 140);
+      } else {
+        // Sunny Beach Volleyball Court
+        var skyG = ctx.createLinearGradient(0, 0, 0, 230);
+        skyG.addColorStop(0, '#0284c7');
+        skyG.addColorStop(1, '#38bdf8');
+        ctx.fillStyle = skyG;
+        ctx.fillRect(0, 0, Wc, 230);
+        ctx.fillStyle = '#0ea5e9';
+        ctx.fillRect(0, 200, Wc, 45);
+        var sandG = ctx.createLinearGradient(0, 245, 0, Hc);
+        sandG.addColorStop(0, '#fde047');
+        sandG.addColorStop(1, '#f59e0b');
+        ctx.fillStyle = sandG;
+        ctx.fillRect(0, 245, Wc, Hc - 245);
+        // Net
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(Wc / 2 - 4, 235, 8, 135);
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(Wc / 2 - 4, 235, 8, 135);
+      }
+
+      // Draw Players using real transparent 3D character sprites
+      st.players.forEach(function (p) {
+        ctx.save();
+        // Ground reflection pedestal disc
+        ctx.fillStyle = p.team === 'A' ? 'rgba(56, 189, 248, 0.38)' : 'rgba(244, 63, 94, 0.38)';
+        ctx.beginPath();
+        ctx.ellipse(p.x, p.y + p.r - 2, p.r * 1.05, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = p.id === 'me' ? '#fde047' : (p.team === 'A' ? '#38bdf8' : '#f43f5e');
+        ctx.stroke();
+
+        var pImg = getSportImg(p.pic || 'c_bolt_happy');
+        if (pImg && pImg.complete && pImg.naturalWidth > 0) {
+          var sw = 54, sh = 54;
+          ctx.drawImage(pImg, p.x - sw / 2, p.y - sh + 14, sw, sh);
+        }
+
+        // Nameplate pill
+        ctx.font = '700 11px Fredoka, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.fillRect(p.x - 24, p.y - p.r - 28, 48, 16);
+        ctx.fillStyle = p.id === 'me' ? '#fde047' : '#ffffff';
+        ctx.fillText(p.name, p.x, p.y - p.r - 16);
+        ctx.restore();
+      });
+
+      // Draw Ball using real o_ball.webp sprite
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,0,0,0.28)';
+      ctx.beginPath();
+      ctx.ellipse(b.x, sp === 'soccer' ? (b.y + b.r) : 366, b.r * 0.85, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      var bImg = getSportImg('o_ball');
+      if (bImg && bImg.complete && bImg.naturalWidth > 0) {
+        ctx.drawImage(bImg, b.x - b.r - 2, b.y - b.r - 2, (b.r + 2) * 2, (b.r + 2) * 2);
+      }
+      ctx.restore();
+
+      // Banner Overlay
+      if (st.bannerTimer > 0 || st.finished) {
+        if (st.bannerTimer > 0) st.bannerTimer--;
+        ctx.save();
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.82)';
+        ctx.fillRect(Wc / 2 - 190, 14, 380, 38);
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(Wc / 2 - 190, 14, 380, 38);
+        ctx.font = '800 18px Fredoka, sans-serif';
+        ctx.fillStyle = '#fde047';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(st.bannerText, Wc / 2, 33);
+        ctx.restore();
+      }
+
+      sportsRaf = requestAnimationFrame(step);
+    };
+
+    sportsState = st;
+    sportsRaf = requestAnimationFrame(step);
+  }
+
   root.WorldGame = {
     HOUSE_TIERS: HOUSE_TIERS,
     RECIPES: RECIPES,
@@ -1226,13 +1958,20 @@
     goClassicMap: goClassicMap,
     openEnergyCharge: openEnergyCharge,
     answerEnergy: answerEnergy,
+    BLUEPRINTS: BLUEPRINTS,
     openWorkshop: openWorkshop,
+    setStudioView: setStudioView,
     setCraftFilter: setCraftFilter,
     selectStudioPlaced: selectStudioPlaced,
     tapStudioStage: tapStudioStage,
     flipStudioItem: flipStudioItem,
+    upgradeStudioItem: upgradeStudioItem,
     storeStudioItem: storeStudioItem,
     seeHomeInWorld: seeHomeInWorld,
+    claimBlueprint: claimBlueprint,
+    openSmartBuilderQuiz: openSmartBuilderQuiz,
+    openSportsArena: openSportsArena,
+    sportsAction: sportsAction,
     upgradeHome: upgradeHome,
     craftItem: craftItem,
     placeItem: placeItem,
