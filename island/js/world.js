@@ -24,7 +24,10 @@
     0: {
       ground: 'meadow', look: { base: '#8fd14f', tile: 't_grass', alpha: .3, patch: 'rgba(190,232,110,.3)', edge: '#c7a463', fill: '#f4e4ae', speck: ['#e2cd8f', '#d6bd7c'], extra: ['t_floor'] },
       npc: { art: FLAT + 'c_bolt', worried: FLAT + 'c_bolt', happy: FLAT + 'c_bolt_happy', x: 540, y: 700 },
-      blocked: function (x, y) { return y < 215 || edgeOf(x, y); },
+      blocked: function (x, y) {
+        if (S.inHouse) return x < 575 || x > 1825 || y < 565 || y > 1155;
+        return y < 215 || edgeOf(x, y);
+      },
       stops: [],
       chest: null,
       decor: [
@@ -38,7 +41,7 @@
         { art: FLAT + 'o_flowers_pink', x: 1260, y: 1120, h: 54, flat: true }
       ],
       ground2: { flowers: [FLAT + 'o_flowers'], count: 26 },
-      paths: [[[540, 785], [760, 785], [960, 855], [1170, 865], [1460, 865]], [[1170, 865], [1170, 1080]]],
+      paths: [[[540, 775], [760, 775], [1170, 775], [1480, 775]], [[1170, 725], [1170, 1080]]],
       edge: { top: [FLAT + 'o_tree_round', FLAT + 'o_tree_pine'], topH: [340, 430], bottom: [FLAT + 'o_bush'], bottomH: [130, 170] },
       gather: [
         { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 420, y: 920 },
@@ -174,7 +177,73 @@
 
   /* ---------- the ground: Gemini's picture for each zone ---------- */
   // the flat cartoon ground: drawn sharp in code, so it never goes blurry
+  function paintIndoorRoom(sc) {
+    var st = (S.visitingFriend && S.visitingFriend.world) ? S.visitingFriend.world : (root.WorldGame ? root.WorldGame.readState() : { houseTier: 1 });
+    var tierLv = Math.max(1, Math.min(5, Number(st.houseTier) || 1));
+    var key = 'flat0_room_' + tierLv;
+    if (!sc.textures.exists(key)) {
+      var tex = sc.textures.createCanvas(key, W, H), c = tex.context;
+      var tile = function (name) { return c.createPattern(sc.textures.get(FLAT + name).getSourceImage(), 'repeat'); };
+      c.fillStyle = '#070b14';
+      c.fillRect(0, 0, W, H);
+      var rx = 520, ry = 340, rw = 1360, rh = 840, wallH = 210;
+      c.fillStyle = 'rgba(56, 189, 248, 0.08)';
+      c.fillRect(rx - 18, ry - 18, rw + 36, rh + 36);
+      var wallColors = {
+        1: { top: '#d97706', bot: '#b45309', trim: '#78350f' },
+        2: { top: '#b45309', bot: '#92400e', trim: '#451a03' },
+        3: { top: '#fbcfe8', bot: '#f472b6', trim: '#831843' },
+        4: { top: '#93c5fd', bot: '#3b82f6', trim: '#1e3a8a' },
+        5: { top: '#ddd6fe', bot: '#8b5cf6', trim: '#4c1d95' }
+      }[tierLv];
+      var wg = c.createLinearGradient(0, ry, 0, ry + wallH);
+      wg.addColorStop(0, wallColors.top);
+      wg.addColorStop(1, wallColors.bot);
+      c.fillStyle = wg;
+      c.fillRect(rx, ry, rw, wallH);
+      c.fillStyle = 'rgba(255,255,255,0.08)';
+      for (var sx = rx + 40; sx < rx + rw; sx += 80) {
+        c.fillRect(sx, ry, 28, wallH);
+      }
+      [860, 1540].forEach(function (wx) {
+        c.fillStyle = '#38bdf8';
+        c.fillRect(wx - 70, ry + 36, 140, 110);
+        c.fillStyle = '#bae6fd';
+        c.fillRect(wx - 62, ry + 44, 124, 50);
+        c.strokeStyle = '#fef08a';
+        c.lineWidth = 8;
+        c.strokeRect(wx - 70, ry + 36, 140, 110);
+        c.beginPath();
+        c.moveTo(wx, ry + 36); c.lineTo(wx, ry + 146);
+        c.moveTo(wx - 70, ry + 91); c.lineTo(wx + 70, ry + 91);
+        c.stroke();
+      });
+      c.fillStyle = wallColors.trim;
+      c.fillRect(rx, ry + wallH - 14, rw, 18);
+      c.save();
+      c.beginPath();
+      c.rect(rx, ry + wallH, rw, rh - wallH);
+      c.fillStyle = '#c8924b';
+      c.fill();
+      c.clip();
+      c.globalAlpha = 0.88;
+      c.fillStyle = tile('t_floor');
+      c.fillRect(rx, ry + wallH, rw, rh - wallH);
+      c.restore();
+      c.lineWidth = 14;
+      c.strokeStyle = '#5c340e';
+      c.strokeRect(rx, ry, rw, rh);
+      c.fillStyle = '#991b1b';
+      c.fillRect(1100, 1112, 200, 58);
+      c.strokeStyle = '#fde047';
+      c.lineWidth = 5;
+      c.strokeRect(1100, 1112, 200, 58);
+      tex.refresh();
+    }
+    sc.add.image(0, 0, key).setOrigin(0).setDepth(-20);
+  }
   function paintFlat(sc, z) {
+    if (z === 0 && S.inHouse) { paintIndoorRoom(sc); return; }
     var key = 'flat' + z, zone = ZONES[z], look = zone.look;
     if (!sc.textures.exists(key)) {
       var tex = sc.textures.createCanvas(key, W, H), c = tex.context, i, x, y;
@@ -184,46 +253,25 @@
       for (i = 0; i < 14; i++) { c.fillStyle = look.patch; c.beginPath(); c.ellipse(seeded(i + 200) * W, seeded(i + 230) * H, 150 + seeded(i + 260) * 220, 80 + seeded(i + 290) * 110, 0, 0, 7); c.fill(); }
       var oval = function (cx, cy, rx, ry, fill, line, lw) { c.beginPath(); c.ellipse(cx, cy, rx, ry, 0, 0, 7); c.fillStyle = fill; c.fill(); if (line) { c.lineWidth = lw; c.strokeStyle = line; c.stroke(); } };
       if (z === 0) {
-        /* Connected Wooden Foundation & Veranda Deck directly under the House (x: 940..1920, y: 440..840) */
-        var px = 940, py = 440, pw = 980, ph = 400, pr = 32;
+        /* Clean Stone & Wood Porch Foundation directly under the House (x: 1170, y: 665) — no side deck! */
         c.save();
-        c.fillStyle = 'rgba(20, 40, 15, 0.28)';
+        c.fillStyle = 'rgba(30, 41, 59, 0.25)';
         c.beginPath();
-        c.roundRect ? c.roundRect(px + 8, py + 14, pw, ph, pr) : c.rect(px + 8, py + 14, pw, ph);
+        c.ellipse(1170, 672, 178, 86, 0, 0, Math.PI * 2);
         c.fill();
-        c.restore();
-
-        c.save();
+        c.fillStyle = '#d6c7b2';
         c.beginPath();
-        c.moveTo(px + pr, py); c.lineTo(px + pw - pr, py); c.quadraticCurveTo(px + pw, py, px + pw, py + pr);
-        c.lineTo(px + pw, py + ph - pr); c.quadraticCurveTo(px + pw, py + ph, px + pw - pr, py + ph);
-        c.lineTo(px + pr, py + ph); c.quadraticCurveTo(px, py + ph, px, py + ph - pr);
-        c.lineTo(px, py + pr); c.quadraticCurveTo(px, py, px + pr, py); c.closePath();
-        c.fillStyle = '#c8924b'; c.fill();
-        c.clip();
-        c.globalAlpha = .85; c.fillStyle = tile('t_floor'); c.fillRect(px, py, pw, ph);
-        /* Subtle stone hearth foundation pad directly under the House (x: 1010..1330, y: 495..735) */
-        c.globalAlpha = 1;
-        c.fillStyle = 'rgba(71, 85, 105, 0.36)';
-        c.beginPath();
-        c.ellipse(1170, 655, 155, 86, 0, 0, Math.PI * 2);
+        c.ellipse(1170, 665, 170, 80, 0, 0, Math.PI * 2);
         c.fill();
-        c.lineWidth = 5;
-        c.strokeStyle = 'rgba(226, 232, 240, 0.45)';
+        c.lineWidth = 6;
+        c.strokeStyle = '#78716c';
         c.stroke();
-        c.restore();
-        c.lineWidth = 8; c.strokeStyle = '#6f4316'; c.stroke();
-
-        /* Welcoming front wooden porch steps below the House door (x: 1090..1250, y: 828..866) */
-        c.save();
-        c.fillStyle = '#b9823f';
+        /* Front wooden welcome step at the House door */
+        c.fillStyle = '#c8924b';
         c.strokeStyle = '#6f4316';
-        c.lineWidth = 5;
-        c.fillRect(1090, 828, 160, 20);
-        c.strokeRect(1090, 828, 160, 20);
-        c.fillStyle = '#d69e5c';
-        c.fillRect(1104, 846, 132, 18);
-        c.strokeRect(1104, 846, 132, 18);
+        c.lineWidth = 4;
+        c.fillRect(1106, 704, 128, 24);
+        c.strokeRect(1106, 704, 128, 24);
         c.restore();
       }
       if (z === 1) {
@@ -1003,10 +1051,12 @@
     if (z === 0) {
       var st = visiting && visiting.world ? visiting.world : (root.WorldGame ? root.WorldGame.readState() : { houseTier: 1, placed: [] });
       var tier = (root.WorldGame && root.WorldGame.HOUSE_TIERS[(st.houseTier || 1) - 1]) || { name: 'Cosy Tent' };
-      if (visiting) {
-        $('w-goal').innerHTML = '🏡 ' + esc(visiting.first_name) + '\'s Home Island · ' + tier.name + '<small>Walk around, tap furniture to try it, or tap 🏠 My Home to return!</small>';
+      if (S.inHouse) {
+        $('w-goal').innerHTML = '🛋️ Inside ' + (visiting ? esc(visiting.first_name) + '\'s ' : 'My ') + tier.name + '<small>Tap furniture to rest/use, tap the Blueprint Desk, or walk to the bottom door to go outside!</small>';
+      } else if (visiting) {
+        $('w-goal').innerHTML = '🏡 ' + esc(visiting.first_name) + '\'s Home Island · ' + tier.name + '<small>Tap the House to walk inside, or tap 🏠 My Home to return!</small>';
       } else {
-        $('w-goal').innerHTML = '🏡 My Home Island · ' + tier.name + '<small>Tap your House or Workbench to open the Home & Crafting Studio!</small>';
+        $('w-goal').innerHTML = '🏡 My Home Island · ' + tier.name + '<small>Walk into your House door to see your room, or tap Workbench for Blueprints & Crafting!</small>';
       }
       return;
     }
@@ -1034,32 +1084,54 @@
     var visiting = S.visitingFriend;
     var st = (visiting && visiting.world) ? visiting.world : root.WorldGame.readState();
     var tier = root.WorldGame.HOUSE_TIERS[Math.max(0, Math.min(root.WorldGame.HOUSE_TIERS.length - 1, (st.houseTier || 1) - 1))];
-    var hImg = sc.add.image(1170, 700, FLAT + tier.id).setOrigin(.5, .96).setDepth(700);
-    hImg.setScale(320 / hImg.height);
-    var hShadow = sc.add.image(1170, 700, 'shadow').setScale(2.6, 1.7).setDepth(-6);
-    solid(sc, 1170, 670, 230, 66);
-    var hLabel = makeWorldLabel(sc, 1170, 730, visiting ? ('🏡 ' + (visiting.first_name || 'Friend') + "'s House") : '🏰 My House (Tap to Build)', '#fde047');
-    sc.houseSpot = { kind: 'house', img: hImg, shadow: hShadow, label: hLabel, x: 1170, y: 700, def: { h: 320, sw: 230 } };
 
-    var wbImg = sc.add.image(760, 720, FLAT + 'o_workbench').setOrigin(.5, .96).setDepth(720);
-    wbImg.setScale(150 / wbImg.height);
-    sc.add.image(760, 720, 'shadow').setScale(1.6).setDepth(-6);
-    solid(sc, 760, 700, 110, 40);
-    var wbLabel = makeWorldLabel(sc, 760, 744, '🔨 Craft & Decorate', '#38bdf8');
-    sc.workbenchSpot = { kind: 'workbench', img: wbImg, label: wbLabel, x: 760, y: 720, def: { h: 150, sw: 120 } };
-    sc.homeObjs.push(sc.houseSpot, sc.workbenchSpot);
+    if (S.inHouse) {
+      // Inside Walkable 2D Room: Blueprint Desk + Exit Door Mat
+      var wbIn = sc.add.image(660, 600, FLAT + 'o_workbench').setOrigin(.5, .96).setDepth(600);
+      wbIn.setScale(135 / wbIn.height);
+      sc.add.image(660, 600, 'shadow').setScale(1.4).setDepth(-6);
+      solid(sc, 660, 585, 100, 36);
+      var wbInLbl = makeWorldLabel(sc, 660, 622, '📜 Blueprints & Studio', '#38bdf8');
+      sc.workbenchSpot = { kind: 'workbench', img: wbIn, label: wbInLbl, x: 660, y: 600, def: { h: 135, sw: 110 } };
+
+      var doorLbl = makeWorldLabel(sc, 1200, 1142, '🚪 Walk Outside to Garden ▼', '#fde047');
+      sc.doorOutSpot = { kind: 'door_out', label: doorLbl, x: 1200, y: 1140, def: { h: 70, sw: 140 } };
+      sc.homeObjs.push(sc.workbenchSpot, sc.doorOutSpot);
+    } else {
+      // Outdoor Home Island: Grounded House on Stone Foundation + Workbench
+      var hImg = sc.add.image(1170, 700, FLAT + tier.id).setOrigin(.5, .96).setDepth(700);
+      hImg.setScale(320 / hImg.height);
+      var hShadow = sc.add.image(1170, 700, 'shadow').setScale(2.6, 1.7).setDepth(-6);
+      solid(sc, 1170, 670, 230, 66);
+      var hLabel = makeWorldLabel(sc, 1170, 734, visiting ? ('🚪 Walk Inside ' + (visiting.first_name || 'Friend') + "'s House") : '🚪 My House (Walk Inside!)', '#fde047');
+      sc.houseSpot = { kind: 'house', img: hImg, shadow: hShadow, label: hLabel, x: 1170, y: 700, def: { h: 320, sw: 230 } };
+
+      var wbImg = sc.add.image(760, 720, FLAT + 'o_workbench').setOrigin(.5, .96).setDepth(720);
+      wbImg.setScale(150 / wbImg.height);
+      sc.add.image(760, 720, 'shadow').setScale(1.6).setDepth(-6);
+      solid(sc, 760, 700, 110, 40);
+      var wbLabel = makeWorldLabel(sc, 760, 744, '📜 Blueprints & Craft', '#38bdf8');
+      sc.workbenchSpot = { kind: 'workbench', img: wbImg, label: wbLabel, x: 760, y: 720, def: { h: 150, sw: 120 } };
+
+      var spImg = sc.add.image(1150, 1140, FLAT + 'o_ball').setOrigin(.5, .9).setDepth(1140);
+      spImg.setScale(72 / spImg.height);
+      var spLabel = makeWorldLabel(sc, 1150, 1068, '⚽ Sports Arena (1v1 / 2v2)', '#34d399');
+      sc.sportsSpot = { kind: 'sports', img: spImg, label: spLabel, x: 1150, y: 1140, def: { h: 90, sw: 110 } };
+      sc.homeObjs.push(sc.houseSpot, sc.workbenchSpot, sc.sportsSpot);
+    }
 
     if (visiting) {
       var fKey = 'friend_host_' + (visiting.id || 'pal');
+      var fx = S.inHouse ? 1020 : 1580, fy = 760;
       var spawnFriendHost = function () {
         if (!sc.scene || !sc.scene.isActive()) return;
-        var fWalker = makeWalker(sc, fKey, 1580, 760, .52);
-        var fTag = sc.add.text(1580, 650, '👋 ' + (visiting.first_name || 'Friend'), {
+        var fWalker = makeWalker(sc, fKey, fx, fy, .52);
+        var fTag = sc.add.text(fx, fy - 110, '👋 ' + (visiting.first_name || 'Friend'), {
           fontFamily: 'Fredoka, sans-serif', fontSize: '24px', fontStyle: '700', color: '#fde047',
           backgroundColor: '#0f172add', padding: { x: 10, y: 4 }
         }).setOrigin(.5).setDepth(4505);
-        sc.tweens.add({ targets: fTag, y: 642, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-        sc.homeObjs.push({ kind: 'friend_host', friend: visiting, walker: fWalker, tag: fTag, x: 1580, y: 760, def: { h: 140, sw: 90 } });
+        sc.tweens.add({ targets: fTag, y: fy - 118, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+        sc.homeObjs.push({ kind: 'friend_host', friend: visiting, walker: fWalker, tag: fTag, x: fx, y: fy, def: { h: 140, sw: 90 } });
       };
       var fStage = STAGES[Math.max(0, Math.min(6, (visiting.level || 3) - 1))];
       bakeMonster(sc, fKey, { stage: fStage, color: visiting.color || 'pink', equipped: visiting.equipped || {} }).then(spawnFriendHost);
@@ -1085,10 +1157,14 @@
     (st.placed || []).forEach(function (p, idx) {
       var rec = root.WorldGame.RECIPES.filter(function (r) { return r.id === p.id; })[0];
       if (!rec) return;
+      if (S.inHouse && rec.kind !== 'patio') return;
+      if (!S.inHouse && rec.kind !== 'garden') return;
       var artKey = FLAT + rec.id;
+      var itemLv = Math.max(1, Math.min(3, Number(p.lvl) || 1));
+      var lvScale = 1 + (itemLv - 1) * 0.12;
       var buildOne = function () {
         var im = sc.add.image(p.x, p.y, artKey).setOrigin(.5, .95).setDepth(rec.flat ? -4 : p.y);
-        im.setScale((rec.h || 110) / im.height);
+        im.setScale(((rec.h || 110) * lvScale) / im.height);
         im.setFlipX(!!p.flip);
         var sh = !rec.flat ? sc.add.image(p.x, p.y, 'shadow').setScale(Math.max(0.9, Math.min(1.6, (rec.h || 110) / 95))).setDepth(-6) : null;
         var isSeatOrRug = /chair|bed|bench|swing|rug/.test(rec.id);
@@ -1104,7 +1180,7 @@
           sc.tweens.add({ targets: glow, scale: 1.15, alpha: 0.14, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
         }
         sc.placedSprites.push({
-          kind: 'furniture', idx: idx, id: p.id, name: rec.name, img: im, shadow: sh, glow: glow, lit: lit,
+          kind: 'furniture', idx: idx, id: p.id, name: rec.name, lvl: itemLv, img: im, shadow: sh, glow: glow, lit: lit,
           x: p.x, y: p.y, h: rec.h || 110, flat: !!rec.flat, flip: !!p.flip,
           def: { h: rec.h || 110, sw: isSeatOrRug ? 60 : 80 }
         });
@@ -1124,12 +1200,13 @@
       sound('playCorrect');
       sc.fx.explode(14, ps.x, ps.y - 34);
       var now = Date.now();
-      if (!S.lastRestAt || now - S.lastRestAt > 12000) {
+      var restGain = 5 * (ps.lvl || 1);
+      if (!S.lastRestAt || now - S.lastRestAt > 10000) {
         S.lastRestAt = now;
-        if (root.WorldGame && root.WorldGame.addEnergy) root.WorldGame.addEnergy(5);
-        showWorldFloat(sc, ps.x, ps.y - 60, '🛋️ Comfy Rest! +5 ⚡', '#34d399');
+        if (root.WorldGame && root.WorldGame.addEnergy) root.WorldGame.addEnergy(restGain);
+        showWorldFloat(sc, ps.x, ps.y - 60, '🛋️ Lv.' + (ps.lvl || 1) + ' Comfy Rest! +' + restGain + ' ⚡', '#34d399');
       } else {
-        showWorldFloat(sc, ps.x, ps.y - 60, '🛋️ So cosy on the ' + ps.name + '!', '#fde047');
+        showWorldFloat(sc, ps.x, ps.y - 60, '🛋️ So cosy on the Lv.' + (ps.lvl || 1) + ' ' + ps.name + '!', '#fde047');
       }
       say('Sitting on the ' + ps.name.toLowerCase() + '!');
       return;
@@ -1499,14 +1576,15 @@
         say('High five! Thank you for visiting my island!');
       });
       say('Welcome to ' + fr.first_name + 's Home Island!');
+    } else if (t.kind === 'sports') {
+      panel(FLAT + 'o_ball', '🏆 Island Sports Arena', 'Use your English Energy (⚡ 15) to play 1v1 or 2v2 Football ⚽ & Beach Volleyball 🏐 with classmates!', 'Play Sports ⚽', function () {
+        if (root.WorldGame && root.WorldGame.openSportsArena) root.WorldGame.openSportsArena('soccer', '2v2');
+      });
+      say('Let us play football or volleyball in the Sports Arena!');
+    } else if (t.kind === 'door_out') {
+      exitHouse();
     } else if (t.kind === 'house') {
-      if (S.visitingFriend) {
-        panel(FLAT + 'o_house', S.visitingFriend.first_name + '\'s House', 'What a cool house! Want to go back to your own Home Island?', '🏠 My Home', function () { leaveFriendHome(); });
-        say('What a cool house!');
-      } else {
-        panel(FLAT + 'o_workbench', 'My Home', 'Upgrade your house or craft furniture for your garden!', 'Build 🏰', function () { if (root.WorldGame) root.WorldGame.openWorkshop('home'); });
-        say('Let us build your home!');
-      }
+      enterHouse();
     } else if (t.kind === 'workbench') {
       if (S.visitingFriend) {
         panel(FLAT + 'o_workbench', S.visitingFriend.first_name + '\'s Workbench', 'This is where ' + S.visitingFriend.first_name + ' crafts furniture!', '🏠 My Home', function () { leaveFriendHome(); });
@@ -1533,8 +1611,8 @@
       say('A friendly battle with ' + b.name + '!');
     } else if (t.kind === 'npc') {
       if (z === 0) {
-        panel(FLAT + 'c_bolt_happy', 'Grandpa Bolt', 'Welcome to your Home Island! Gather wood and stones or tap the Workbench to build!', 'Build 🔨', function () { if (root.WorldGame) root.WorldGame.openWorkshop('craft'); });
-        say('Welcome to your Home Island!');
+        panel(FLAT + 'c_bolt_happy', 'Grandpa Bolt', 'Hello Smart Builder! Check my Smart Blueprints to earn Coins, Energy, and Stars!', '📜 Blueprints', function () { if (root.WorldGame) root.WorldGame.openWorkshop('blueprints'); });
+        say('Check my Smart Blueprints to earn rewards!');
         return;
       }
       var name = root.IslandStory.CHARS[z].name, next = S.target, bag = readBag(), zoneWords = {};
@@ -1617,9 +1695,15 @@
     if (hit) {
       hidePanel(); S.near = hit;
       spawnTapRipple(sc, hit.x, hit.y + 28, true);
-      walkTo(hit.x, hit.y + 54, function () {
-        if (!S.visitingFriend && root.WorldGame && (hit.kind === 'house' || hit.kind === 'workbench')) {
-          root.WorldGame.openWorkshop(hit.kind === 'house' ? 'home' : 'craft');
+      walkTo(hit.x, hit.y + 42, function () {
+        if (hit.kind === 'house') {
+          enterHouse();
+        } else if (hit.kind === 'door_out') {
+          exitHouse();
+        } else if (hit.kind === 'sports' && root.WorldGame && root.WorldGame.openSportsArena) {
+          root.WorldGame.openSportsArena('soccer', '2v2');
+        } else if (!S.visitingFriend && root.WorldGame && hit.kind === 'workbench') {
+          root.WorldGame.openWorkshop('blueprints');
         } else {
           openThing(hit);
         }
@@ -1662,18 +1746,35 @@
     g.setLock();
     return g;
   }
-  function goZone(to, fromDir) {
+  function goZone(to, fromDir, inHouseFlag) {
     var sc = scene; if (S.leaving) return;
     S.leaving = true; S.moveMode = false; S.movingIdx = -1; sound('playHop'); hidePanel(); stopWalking();
     $('w-fade').classList.add('on');
-    setTimeout(function () { S.leaving = false; S.near = null; S.ready = false; sc.scene.restart({ zone: to, fromDir: fromDir }); }, 280);
+    setTimeout(function () { S.leaving = false; S.near = null; S.ready = false; sc.scene.restart({ zone: to, fromDir: fromDir || 0, inHouse: !!inHouseFlag }); }, 280);
+  }
+  function enterHouse() {
+    if (S.zone === 0 && S.inHouse) return;
+    say('Welcome inside your home!');
+    goZone(0, 0, true);
+  }
+  function exitHouse() {
+    if (!S.inHouse) return;
+    var sc = scene; if (S.leaving) return;
+    S.leaving = true; S.moveMode = false; S.movingIdx = -1; sound('playHop'); hidePanel(); stopWalking();
+    $('w-fade').classList.add('on');
+    setTimeout(function () { S.leaving = false; S.near = null; S.ready = false; sc.scene.restart({ zone: 0, fromDir: 0, inHouse: false, fromHouse: true }); }, 280);
   }
 
   /* ---------- the scene ---------- */
   var WorldScene = new Phaser.Class({
     Extends: Phaser.Scene,
     initialize: function WorldScene() { Phaser.Scene.call(this, { key: 'world' }); },
-    init: function (data) { if (data && data.zone !== undefined) S.zone = data.zone; S.fromDir = (data && data.fromDir) || 0; },
+    init: function (data) {
+      if (data && data.zone !== undefined) S.zone = data.zone;
+      S.fromDir = (data && data.fromDir) || 0;
+      S.inHouse = !!(data && data.inHouse && S.zone === 0);
+      S.fromHouse = !!(data && data.fromHouse);
+    },
     preload: function () { var sc = this; ART.concat(zoneArt(S.zone)).forEach(function (n) { if (!sc.textures.exists(n)) sc.load.image(n, artUrl(n)); }); },
     create: function () {
       var sc = this; scene = sc;
@@ -1685,48 +1786,56 @@
       sc.solids = []; sc.solidGroup = sc.physics.add.staticGroup();
       sc.palms = []; sc.shells = []; sc.palmShellKey = null;
 
-      zone.decor.forEach(function (d) {
-        var img = sc.add.image(d.x, d.y, d.art).setOrigin(.5, .96); img.setScale(d.h / img.height); img.setDepth(d.flat ? -5 : d.y);
-        if (!d.flat) sc.add.image(d.x, d.y, 'shadow').setScale(Math.max(.7, img.displayWidth / 120), Math.max(.7, img.displayWidth / 190)).setDepth(-6);
-        if (d.sway) { img.setOrigin(.5, 1); sc.tweens.add({ targets: img, angle: { from: -1, to: 1 }, duration: 2100 + d.x % 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' }); }
-        if (d.sw) solid(sc, d.x, d.y - 4, d.sw, 30);
-        if (d.shake) { img.hasShell = !!d.shell; sc.palms.push(img); }
-      });
-      var n = zone.npc, npc = sc.add.image(n.x, n.y, n.art).setOrigin(.5, .92); npc.setScale((n.h || 190) / npc.height).setDepth(n.y);
-      sc.add.image(n.x, n.y, 'shadow').setScale(1.8).setDepth(-6); solid(sc, n.x, n.y - 4, 90, 34);
-      sc.tweens.add({ targets: npc, scaleY: npc.scaleY * 1.05, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-      var npcName = S.zone === 0 ? 'Grandpa Bolt' : ((root.IslandStory && root.IslandStory.CHARS && root.IslandStory.CHARS[S.zone] && root.IslandStory.CHARS[S.zone].name) || 'Friend');
-      var npcLabel = makeWorldLabel(sc, n.x, S.zone === 0 ? (n.y + 24) : (n.y - (n.h || 190) - 14), '💬 ' + npcName, '#fde047');
-      sc.npcSpot = { kind: 'npc', img: npc, label: npcLabel, x: n.x, y: n.y };
+      if (!S.inHouse) {
+        zone.decor.forEach(function (d) {
+          var img = sc.add.image(d.x, d.y, d.art).setOrigin(.5, .96); img.setScale(d.h / img.height); img.setDepth(d.flat ? -5 : d.y);
+          if (!d.flat) sc.add.image(d.x, d.y, 'shadow').setScale(Math.max(.7, img.displayWidth / 120), Math.max(.7, img.displayWidth / 190)).setDepth(-6);
+          if (d.sway) { img.setOrigin(.5, 1); sc.tweens.add({ targets: img, angle: { from: -1, to: 1 }, duration: 2100 + d.x % 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' }); }
+          if (d.sw) solid(sc, d.x, d.y - 4, d.sw, 30);
+          if (d.shake) { img.hasShell = !!d.shell; sc.palms.push(img); }
+        });
+        var n = zone.npc, npc = sc.add.image(n.x, n.y, n.art).setOrigin(.5, .92); npc.setScale((n.h || 190) / npc.height).setDepth(n.y);
+        sc.add.image(n.x, n.y, 'shadow').setScale(1.8).setDepth(-6); solid(sc, n.x, n.y - 4, 90, 34);
+        sc.tweens.add({ targets: npc, scaleY: npc.scaleY * 1.05, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+        var npcName = S.zone === 0 ? 'Grandpa Bolt' : ((root.IslandStory && root.IslandStory.CHARS && root.IslandStory.CHARS[S.zone] && root.IslandStory.CHARS[S.zone].name) || 'Friend');
+        var npcLabel = makeWorldLabel(sc, n.x, S.zone === 0 ? (n.y + 24) : (n.y - (n.h || 190) - 14), '💬 ' + npcName, '#fde047');
+        sc.npcSpot = { kind: 'npc', img: npc, label: npcLabel, x: n.x, y: n.y };
+      } else {
+        sc.npcSpot = null;
+      }
       buildStops(sc, zone);
       buildHome(sc);
-      buildVillagers(sc);
-      buildBattles(sc);
-      addLife(sc, zone);
-      buildGather(sc, zone);
+      if (!S.inHouse) {
+        buildVillagers(sc);
+        buildBattles(sc);
+        addLife(sc, zone);
+        buildGather(sc, zone);
 
-      sc.crate = sc.physics.add.image(zone.crate.x, zone.crate.y, FLAT + 'o_crate').setDepth(zone.crate.y); sc.crate.setScale(112 / sc.crate.height);
-      sc.crate.body.setSize(sc.crate.width * .85, sc.crate.height * .8); sc.crate.setDrag(1400).setCollideWorldBounds(true).setMass(3).setBounce(.1);
-      sc.ball = sc.physics.add.image(zone.ball.x, zone.ball.y, FLAT + 'o_ball').setDepth(zone.ball.y); sc.ball.setScale(84 / sc.ball.height);
-      sc.ball.body.setCircle(sc.ball.width / 2); sc.ball.setDrag(170).setBounce(.8).setCollideWorldBounds(true).setMass(.4);
-      sc.ballShadow = sc.add.image(zone.ball.x, zone.ball.y, 'shadow').setDepth(-6);
-      sc.crateShadow = sc.add.image(zone.crate.x, zone.crate.y + 55, 'shadow').setScale(2.3).setDepth(-6);
+        sc.crate = sc.physics.add.image(zone.crate.x, zone.crate.y, FLAT + 'o_crate').setDepth(zone.crate.y); sc.crate.setScale(112 / sc.crate.height);
+        sc.crate.body.setSize(sc.crate.width * .85, sc.crate.height * .8); sc.crate.setDrag(1400).setCollideWorldBounds(true).setMass(3).setBounce(.1);
+        sc.ball = sc.physics.add.image(zone.ball.x, zone.ball.y, FLAT + 'o_ball').setDepth(zone.ball.y); sc.ball.setScale(84 / sc.ball.height);
+        sc.ball.body.setCircle(sc.ball.width / 2); sc.ball.setDrag(170).setBounce(.8).setCollideWorldBounds(true).setMass(.4);
+        sc.ballShadow = sc.add.image(zone.ball.x, zone.ball.y, 'shadow').setDepth(-6);
+        sc.crateShadow = sc.add.image(zone.crate.x, zone.crate.y + 55, 'shadow').setScale(2.3).setDepth(-6);
 
-      // hidden shells: a little something to find (kept on this device for now, no XP)
-      var found = foundShells();
-      zone.shells.forEach(function (sd, i) {
-        var k = 'z' + S.zone + '_' + i; if (found[k]) return;
-        var s = sc.add.image(sd.x, sd.y, FLAT + 'o_shell').setScale(.17).setDepth(sd.wet ? -12 : (sd.under ? sd.y - 100 : sd.y)); s.under = !!sd.under; s.key2 = k; sc.shells.push(s);
-      });
-      sc.palmShellKey = 'z' + S.zone + '_palm';
-      if (found[sc.palmShellKey]) sc.palms.forEach(function (p) { p.hasShell = false; });
+        // hidden shells: a little something to find (kept on this device for now, no XP)
+        var found = foundShells();
+        zone.shells.forEach(function (sd, i) {
+          var k = 'z' + S.zone + '_' + i; if (found[k]) return;
+          var s = sc.add.image(sd.x, sd.y, FLAT + 'o_shell').setScale(.17).setDepth(sd.wet ? -12 : (sd.under ? sd.y - 100 : sd.y)); s.under = !!sd.under; s.key2 = k; sc.shells.push(s);
+        });
+        sc.palmShellKey = 'z' + S.zone + '_palm';
+        if (found[sc.palmShellKey]) sc.palms.forEach(function (p) { p.hasShell = false; });
+      } else {
+        sc.villagers = []; sc.battles = []; sc.gather = []; sc.crate = null; sc.ball = null;
+      }
 
       sc.fx = sc.add.particles(0, 0, 'dot', { speed: { min: 60, max: 240 }, lifespan: 600, scale: { start: .8, end: 0 }, tint: [0xfde047, 0xffffff, 0xf472b6], emitting: false }).setDepth(5000);
       sc.party = sc.add.particles(0, 0, 'dot', { speed: { min: 140, max: 520 }, angle: { min: 200, max: 340 }, gravityY: 420, lifespan: 1500, scale: { start: 1, end: .2 }, tint: [0xfde047, 0x38bdf8, 0xf43f5e, 0x10b981, 0xa855f7], emitting: false }).setDepth(5000);
       sc.dust = sc.add.particles(0, 0, 'dot', { speed: { min: 8, max: 34 }, angle: { min: 200, max: 340 }, lifespan: 420, scale: { start: .55, end: 0 }, alpha: { start: .55, end: 0 }, tint: zone.ground === 'beach' ? 0xe6c88e : (zone.ground === 'volcano' ? 0x8c5430 : 0xd9f99d), emitting: false }).setDepth(-4);
       sc.waterFx = sc.add.particles(0, 0, 'dot', { speed: { min: 30, max: 120 }, angle: { min: 210, max: 330 }, gravityY: 240, lifespan: 480, scale: { start: .6, end: 0 }, tint: [0xffffff, 0xa5f3fc], emitting: false }).setDepth(-3);
 
-      sc.gateL = makeGate(sc, -1); sc.gateR = makeGate(sc, 1);
+      sc.gateL = S.inHouse ? null : makeGate(sc, -1); sc.gateR = S.inHouse ? null : makeGate(sc, 1);
       sc.grid = buildGrid(sc, zone);
       sc.keys = sc.input.keyboard ? sc.input.keyboard.createCursorKeys() : null;
       sc.shiftKey = sc.keys ? sc.keys.shift : null;
@@ -1737,9 +1846,10 @@
       (async function () {
         var look = monsterLook();
         if (!sc.textures.exists('me') || S.lookStamp !== JSON.stringify(look)) await bakeMonster(sc, 'me', look);
-        var isDemo = !!ses().isDemo, crowd = isDemo ? Math.max(0, Math.min(30, Number(Q.get('crowd') || 2))) : 0, colors = ['pink', 'gold', 'green', 'purple', 'orange'];
+        var crowd = Math.max(0, Math.min(30, Number(Q.get('crowd') !== null ? Q.get('crowd') : 3))), colors = ['pink', 'gold', 'green', 'purple', 'orange'], palNames = ['Sky', 'River', 'Sunny', 'Robin', 'Leo'];
         for (var i = 0; i < Math.min(crowd, colors.length); i++) if (!sc.textures.exists('c' + i)) await bakeMonster(sc, 'c' + i, { stage: ['baby', 'growing', 'adventurer', 'advanced', 'ultimate'][i % 5], color: colors[i] });
-        var sx = S.fromDir < 0 ? W - 220 : (S.fromDir > 0 ? 220 : (S.zone === 0 ? 960 : 300)), sy = S.fromDir ? 880 : (S.zone === 0 ? 850 : 1070);
+        var sx = S.inHouse ? 1200 : (S.fromHouse ? 1170 : (S.fromDir < 0 ? W - 220 : (S.fromDir > 0 ? 220 : (S.zone === 0 ? 960 : 300))));
+        var sy = S.inHouse ? 1020 : (S.fromHouse ? 775 : (S.fromDir ? 880 : (S.zone === 0 ? 830 : 1070)));
         var free = nearestFree(sc.grid, Math.floor(sx / CELL), Math.floor(sy / CELL)) || [5, 20];
         sc.player = makeWalker(sc, 'me', free[0] * CELL + 20, free[1] * CELL + 20, .54);
         sc.cameras.main.setBounds(0, 0, W, H);
@@ -1747,19 +1857,25 @@
         var fit = function () { if (!sc.cameras || !sc.cameras.main) return; var w = sc.scale.width, h = sc.scale.height; sc.cameras.main.setZoom(Math.max(w / W, h / H, .7, Math.min(1, Math.min(w / 1050, h / 640)))); };
         fit(); sc.scale.off('resize'); sc.scale.on('resize', fit);
         sc.physics.add.collider(sc.player, sc.solidGroup);
-        sc.physics.add.collider(sc.player, sc.crate);
-        sc.physics.add.collider(sc.crate, sc.solidGroup);
-        sc.physics.add.collider(sc.ball, sc.solidGroup);
-        sc.physics.add.collider(sc.ball, sc.crate);
-        sc.physics.add.collider(sc.player, sc.ball, function () {
-          var dx = sc.ball.x - sc.player.x, dy = sc.ball.y - sc.player.y, len = Math.sqrt(dx * dx + dy * dy) || 1;
-          sc.ball.setVelocity(dx / len * 620, dy / len * 620); sound('playHop');
-        });
-        for (var k = 0; k < crowd; k++) {
+        if (sc.crate && sc.ball) {
+          sc.physics.add.collider(sc.player, sc.crate);
+          sc.physics.add.collider(sc.crate, sc.solidGroup);
+          sc.physics.add.collider(sc.ball, sc.solidGroup);
+          sc.physics.add.collider(sc.ball, sc.crate);
+          sc.physics.add.collider(sc.player, sc.ball, function () {
+            var dx = sc.ball.x - sc.player.x, dy = sc.ball.y - sc.player.y, len = Math.sqrt(dx * dx + dy * dy) || 1;
+            sc.ball.setVelocity(dx / len * 620, dy / len * 620); sound('playHop');
+          });
+        }
+        var crowdCount = S.inHouse ? 0 : crowd;
+        for (var k = 0; k < crowdCount; k++) {
           var dry = nearestFree(sc.grid, Math.floor((300 + Math.random() * 1800) / CELL), Math.floor((800 + Math.random() * 550) / CELL)) || [10, 25];
           var w = makeWalker(sc, 'c' + (k % Math.min(crowd, colors.length)), dry[0] * CELL + 20, dry[1] * CELL + 20, .46);
+          w.palName = palNames[k % palNames.length];
+          w.nameTag = makeWorldLabel(sc, w.x, w.y - 96, '🟢 ' + w.palName, '#a7f3d0');
           w.wander = { x: w.x, y: w.y, wait: Math.random() * 2000 };
-          sc.physics.add.collider(w, sc.solidGroup); sc.physics.add.collider(w, sc.ball);
+          sc.physics.add.collider(w, sc.solidGroup);
+          if (sc.ball) sc.physics.add.collider(w, sc.ball);
           sc.walkers.push(w);
         }
         refreshStops(false);
@@ -1831,14 +1947,21 @@
           else { var wvx = ddx / dd, wvy = ddy / dd; w.setVelocity(wvx * 120, wvy * 120); stepWalkerAnim(w, wvx, wvy); }
         }
         pushOut(w, zone); moveSkin(w, delta, time);
+        if (w.nameTag) { w.nameTag.setPosition(w.x, w.y - 98); w.nameTag.setDepth(w.y + 5); }
       });
-      pushOut(sc.crate, zone); pushOut(sc.ball, zone);
-      sc.crate.setDepth(sc.crate.y + 54); sc.crateShadow.setPosition(sc.crate.x, sc.crate.y + 54);
-      sc.ball.setDepth(sc.ball.y + 40); sc.ball.rotation += sc.ball.body.velocity.x * delta * .00002; sc.ballShadow.setPosition(sc.ball.x, sc.ball.y + 42);
+      if (sc.crate && sc.ball) {
+        pushOut(sc.crate, zone); pushOut(sc.ball, zone);
+        sc.crate.setDepth(sc.crate.y + 54); sc.crateShadow.setPosition(sc.crate.x, sc.crate.y + 54);
+        sc.ball.setDepth(sc.ball.y + 40); sc.ball.rotation += sc.ball.body.velocity.x * delta * .00002; sc.ballShadow.setPosition(sc.ball.x, sc.ball.y + 42);
+      }
 
       updateCompass(sc);
       if (S.modal || S.leaving) return;
       if (S.cooldown > 0) { S.cooldown -= delta; return; }
+      if (S.inHouse && Math.abs(m.x - 1200) < 95 && m.y > 1105) {
+        exitHouse();
+        return;
+      }
 
       // things to gather
       for (var gi = sc.gather.length - 1; gi >= 0; gi--) {
@@ -1864,8 +1987,9 @@
         }
       }
       // the palm trees shake when you walk into them
+      var isMoving = !!(vx || vy || (m.body && (Math.abs(m.body.velocity.x) + Math.abs(m.body.velocity.y) > 20)));
       sc.palms.forEach(function (p) {
-        if (!p.shaking && Phaser.Math.Distance.Between(m.x, m.y, p.x, p.y) < 74 && moving) shakePalm(p);
+        if (!p.shaking && Phaser.Math.Distance.Between(m.x, m.y, p.x, p.y) < 74 && isMoving) shakePalm(p);
       });
       // gates
       [sc.gateL, sc.gateR].forEach(function (g) {
@@ -1883,8 +2007,17 @@
     }
   });
   function pushOut(o, zone) {
-    if (!zone.blocked(o.x, o.y)) { o.lastX = o.x; o.lastY = o.lastY; return; }
-    if (o.lastX !== undefined) { o.x = o.lastX; o.y = o.lastY; }
+    if (!o) return;
+    if (!zone.blocked(o.x, o.y)) { o.lastX = o.x; o.lastY = o.y; return; }
+    if (o.lastX !== undefined && o.lastY !== undefined && !isNaN(o.lastX) && !isNaN(o.lastY)) {
+      o.x = o.lastX;
+      o.y = o.lastY;
+    } else {
+      o.x = Math.max(90, Math.min(W - 90, Number(o.x) || 960));
+      o.y = Math.max(240, Math.min(H - 90, Number(o.y) || 820));
+      o.lastX = o.x;
+      o.lastY = o.y;
+    }
     if (o.body) { o.body.velocity.x *= -.4; o.body.velocity.y *= -.4; }
   }
   function shakePalm(p) {
@@ -2175,6 +2308,8 @@
     scene: function () { return scene; },
     walkTo: walkTo,
     goZone: goZone,
+    enterHouse: enterHouse,
+    exitHouse: exitHouse,
     isOpen: isOpen,
     drawBag: drawBag,
     refresh: refreshStops,
