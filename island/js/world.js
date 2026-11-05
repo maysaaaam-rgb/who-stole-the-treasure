@@ -32,24 +32,45 @@
       chest: null,
       decor: [
         { art: FLAT + 'o_tree_round', x: 260, y: 450, h: 360, sw: 60, sway: true },
+        { art: FLAT + 'o_tree_pine', x: 520, y: 390, h: 330, sw: 55, sway: true },
+        { art: FLAT + 'o_tree_round', x: 860, y: 410, h: 340, sw: 55, sway: true },
+        { art: FLAT + 'o_tree_pine', x: 1540, y: 410, h: 340, sw: 55, sway: true },
+        { art: FLAT + 'o_tree_round', x: 1860, y: 430, h: 350, sw: 60, sway: true },
         { art: FLAT + 'o_tree_pine', x: 2140, y: 450, h: 350, sw: 60, sway: true },
         { art: FLAT + 'o_tree_round', x: 2190, y: 1280, h: 360, sw: 60, sway: true },
         { art: FLAT + 'o_tree_pine', x: 240, y: 1320, h: 340, sw: 60, sway: true },
+        { art: FLAT + 'o_well', x: 1780, y: 690, h: 195, sw: 95 },
+        { art: FLAT + 'o_sign', x: 1420, y: 720, h: 115, sw: 35 },
+        { art: FLAT + 'o_campfire', x: 420, y: 740, h: 110, sw: 70 },
+        { art: FLAT + 'o_log', x: 330, y: 760, h: 55, sw: 80 },
+        { art: FLAT + 'o_lamp', x: 980, y: 730, h: 165, sw: 28 },
+        { art: FLAT + 'o_lamp', x: 1360, y: 730, h: 165, sw: 28 },
+        { art: FLAT + 'o_fence', x: 640, y: 580, h: 88, sw: 88 },
+        { art: FLAT + 'o_fence', x: 750, y: 580, h: 88, sw: 88 },
+        { art: FLAT + 'o_fence', x: 1580, y: 580, h: 88, sw: 88 },
+        { art: FLAT + 'o_fence', x: 1690, y: 580, h: 88, sw: 88 },
+        { art: FLAT + 'o_rock', x: 310, y: 980, h: 78, sw: 68 },
+        { art: FLAT + 'o_rock', x: 2040, y: 920, h: 82, sw: 70 },
+        { art: FLAT + 'o_mushroom', x: 360, y: 540, h: 74, sw: 40 },
+        { art: FLAT + 'o_mushroom', x: 1980, y: 620, h: 76, sw: 40 },
         { art: FLAT + 'o_bush', x: 420, y: 480, h: 105, sw: 80 },
         { art: FLAT + 'o_bush', x: 2040, y: 1290, h: 110, sw: 80 },
+        { art: FLAT + 'o_bush', x: 1940, y: 540, h: 100, sw: 75 },
         { art: FLAT + 'o_flowers_pink', x: 700, y: 980, h: 54, flat: true },
-        { art: FLAT + 'o_flowers_pink', x: 1260, y: 1120, h: 54, flat: true }
+        { art: FLAT + 'o_flowers_pink', x: 1260, y: 1120, h: 54, flat: true },
+        { art: FLAT + 'o_flowers_pink', x: 1680, y: 840, h: 54, flat: true },
+        { art: FLAT + 'o_flowers_pink', x: 520, y: 1120, h: 54, flat: true }
       ],
-      ground2: { flowers: [FLAT + 'o_flowers'], count: 26 },
-      paths: [[[540, 775], [760, 775], [1170, 775], [1480, 775]], [[1170, 725], [1170, 1080]]],
+      ground2: { flowers: [FLAT + 'o_flowers'], count: 36 },
+      paths: [[[420, 775], [540, 775], [760, 775], [1170, 775], [1480, 775], [1780, 750]], [[1170, 725], [1170, 1120]]],
       edge: { top: [FLAT + 'o_tree_round', FLAT + 'o_tree_pine'], topH: [340, 430], bottom: [FLAT + 'o_bush'], bottomH: [130, 170] },
       gather: [
-        { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 420, y: 920 },
-        { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 1240, y: 1260 },
-        { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 680, y: 1160 },
-        { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 1780, y: 1180 },
-        { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 980, y: 1120 },
-        { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 1520, y: 1020 }
+        { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 290, y: 610 },
+        { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 1980, y: 1350 },
+        { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 340, y: 1280 },
+        { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 2060, y: 780 },
+        { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 840, y: 1320 },
+        { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 1890, y: 1080 }
       ],
       crate: { x: 460, y: 1180 }, ball: { x: 1150, y: 1140 }, shells: [{ x: 460, y: 1195, under: true }, { x: 2100, y: 420 }]
     },
@@ -411,28 +432,78 @@
     sc.gather = [];
     var b = readBag(), today = new Date().toISOString().slice(0, 10);
     if (b.day !== today) { b.day = today; b.taken = {}; writeBag(b); }
+    var matActionIcon = { wood: '🪓', stone: '⛏️', crystal: '💎', flower: '🌸', shell: '🐚', berry: '🫐' };
     (zone.gather || []).forEach(function (g, i) {
       var id = 'z' + S.zone + '_' + i; if (b.taken[id]) return;
-      var im = sc.add.image(g.x, g.y, g.art).setOrigin(.5, .9).setDepth(g.y); im.setScale(g.h / im.height);
-      var shade = sc.add.image(g.x, g.y, 'shadow').setScale(.7).setDepth(-6);
-      var glow = sc.add.image(g.x, g.y - g.h * .4, 'dot').setScale(4).setAlpha(.32).setTint(0xfff3a8).setDepth(g.y - 1);
-      sc.tweens.add({ targets: glow, alpha: .08, scale: 5, duration: 900 + i * 40, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-      sc.gather.push({ id: id, word: g.word, art: g.art, img: im, shade: shade, glow: glow, x: g.x, y: g.y });
+      var im = sc.add.image(g.x, g.y, g.art).setOrigin(.5, .9).setDepth(g.y); im.setScale((g.h * 1.12) / im.height);
+      var shade = sc.add.image(g.x, g.y, 'shadow').setScale(.78).setDepth(-6);
+      var glow = sc.add.image(g.x, g.y - g.h * .4, 'dot').setScale(4.2).setAlpha(.34).setTint(0xfff3a8).setDepth(g.y - 1);
+      sc.tweens.add({ targets: glow, alpha: .08, scale: 5.2, duration: 900 + i * 40, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      var isSturdy = (g.word === 'wood' || g.word === 'stone' || g.word === 'crystal');
+      var maxH = isSturdy ? 2 : 1;
+      var capWord = g.word.charAt(0).toUpperCase() + g.word.slice(1);
+      var tag = makeWorldLabel(sc, g.x, g.y - g.h - 16, (matActionIcon[g.word] || '✨') + ' ' + capWord + (maxH > 1 ? ' (' + maxH + 'x)' : ''), '#fef08a');
+      tag.setScale(0.84);
+      sc.gather.push({
+        kind: 'gather',
+        id: id,
+        word: g.word,
+        art: g.art,
+        img: im,
+        shade: shade,
+        glow: glow,
+        tag: tag,
+        hitsLeft: maxH,
+        maxHits: maxH,
+        x: g.x,
+        y: g.y,
+        def: { h: g.h || 56, sw: 68 }
+      });
     });
     drawBag();
   }
   function takeGather(sc, g) {
+    if (!g || g.harvested) return false;
     if (root.WorldGame && root.WorldGame.getEnergy() < 5) {
       panel(FLAT + 'i_energy', 'Low Energy!', 'Answer 3 quick English questions for +30 ⚡ Energy!', 'Charge ⚡', function () { root.WorldGame.openEnergyCharge('Charge +30 ⚡ Energy to keep gathering!'); });
       say('Charge your energy first!');
       return false;
     }
-    if (root.WorldGame) root.WorldGame.useEnergy(5);
-    var b = readBag(); b.items[g.word] = (Number(b.items[g.word]) || 0) + 1; b.taken[g.id] = 1; writeBag(b);
-    sound('playCorrect'); say(g.word); cheer(sc.player, 420);
     var matEmojis = { wood: '🪵', stone: '🪨', flower: '🌸', shell: '🐚', berry: '🫐', crystal: '💎' };
-    showWorldFloat(sc, g.x, g.y - 30, '+1 ' + (g.word.charAt(0).toUpperCase() + g.word.slice(1)) + ' ' + (matEmojis[g.word] || '✨'), '#fde047'); sc.fx.explode(12, g.x, g.y - 20); g.glow.destroy(); g.shade.destroy();
-    sc.tweens.add({ targets: g.img, angle: { from: -12, to: 12 }, duration: 70, yoyo: true, repeat: 2, onComplete: function () { g.img.destroy(); } });
+    var capWord = g.word.charAt(0).toUpperCase() + g.word.slice(1);
+    if (g.hitsLeft > 1) {
+      g.hitsLeft--;
+      sound('playPop');
+      if (sc.dust) sc.dust.explode(14, g.x, g.y - 12);
+      if (sc.fx) sc.fx.explode(8, g.x, g.y - 20);
+      if (sc.player) cheer(sc.player, 320);
+      sc.tweens.add({ targets: g.img, angle: { from: -15, to: 15 }, duration: 65, yoyo: true, repeat: 2, onComplete: function () { if (g.img && g.img.active) g.img.angle = 0; } });
+      if (g.tag && g.tag.active) g.tag.setText('⚡ ' + capWord + ' (1 left!)').setColor('#38bdf8');
+      showWorldFloat(sc, g.x, g.y - 45, '⛏️ Good strike! 1 more tap to harvest ' + capWord + '!', '#38bdf8');
+      say('One more strike!');
+      setTimeout(function () {
+        if (!g.harvested) openThing(g);
+      }, 160);
+      return false;
+    }
+    g.harvested = true;
+    var idx = sc.gather ? sc.gather.indexOf(g) : -1;
+    if (idx >= 0) sc.gather.splice(idx, 1);
+    if (root.WorldGame) root.WorldGame.useEnergy(5);
+    var bonusQty = (g.maxHits > 1 && Math.random() < 0.35) ? 2 : 1;
+    var b = readBag(); b.items[g.word] = (Number(b.items[g.word]) || 0) + bonusQty; b.taken[g.id] = 1; writeBag(b);
+    if (root.WorldGame && root.WorldGame.writeBag) root.WorldGame.writeBag(b);
+    if (bonusQty > 1 && root.WorldGame && root.WorldGame.addBonusCoins) {
+      root.WorldGame.addBonusCoins(3);
+    }
+    sound('playCorrect'); say(g.word); if (sc.player) cheer(sc.player, 420);
+    var floatMsg = '+' + bonusQty + ' ' + capWord + ' ' + (matEmojis[g.word] || '✨') + (bonusQty > 1 ? ' (Lucky +3 🪙!)' : '');
+    showWorldFloat(sc, g.x, g.y - 34, floatMsg, '#fde047');
+    sc.fx.explode(16, g.x, g.y - 20);
+    if (g.glow) g.glow.destroy();
+    if (g.shade) g.shade.destroy();
+    if (g.tag) g.tag.destroy();
+    sc.tweens.add({ targets: g.img, angle: { from: -12, to: 12 }, duration: 70, yoyo: true, repeat: 2, onComplete: function () { if (g.img) g.img.destroy(); } });
     var cam = sc.cameras.main, slot = document.querySelector('.w-bag-item[data-word="' + g.word + '"]'), fly = document.createElement('img');
     fly.src = artUrl(g.art); fly.className = 'w-fly';
     fly.style.left = (g.x - cam.worldView.x) * cam.zoom + 'px'; fly.style.top = (g.y - 40 - cam.worldView.y) * cam.zoom + 'px';
@@ -441,6 +512,63 @@
     setTimeout(function () { fly.remove(); drawBag(); var s2 = document.querySelector('.w-bag-item[data-word="' + g.word + '"]'); if (s2) { s2.classList.add('pop'); setTimeout(function () { s2.classList.remove('pop'); }, 300); } }, 620);
     return true;
   }
+
+  /* ---------- Connected Island Story Landmarks (2 per Zone) ---------- */
+  var ZONE_LANDMARKS = {
+    0: [
+      { id: 'lm_z0_chronicle', x: 1420, y: 720, label: '📜 Island Chronicle', icon: 'o_sign',
+        title: '📜 The Island Restoration Chronicle',
+        story: 'A great storm scattered the 4 Power Cores across Sunny Meadow, Lighthouse Beach, Treehouse Forest, and Volcano Peak! Complete missions, help villagers, craft blueprints, and win sports matches to restore 100% Island Power!' },
+      { id: 'lm_z0_well', x: 1780, y: 690, label: '⛲ Wishing Well', icon: 'o_well',
+        title: '⛲ Ancient Wishing Well',
+        story: 'Legend says builders who upgrade their home and share kindness in the Class Plaza receive lucky stars and extra energy from the Wishing Well!' }
+    ],
+    1: [
+      { id: 'lm_z1_sign', x: 1090, y: 700, label: '🪧 Meadow Guidepost', icon: 'o_sign',
+        title: '🪧 Chapter 1: Sunny Meadow Power Core',
+        story: 'Grandpa Bolt\'s Meadow Machine powers all the workshops on Practice Island! Help Farmer Ben & Mia, defeat the Word Goblin, and finish all 5 Meadow stops to awaken the first Core!' },
+      { id: 'lm_z1_well', x: 1270, y: 720, label: '⛲ Meadow Spring', icon: 'o_well',
+        title: '⛲ Crystal Meadow Spring',
+        story: 'The clear water from this spring flows down to Lighthouse Beach and Treehouse Forest, connecting every island ecosystem together!' }
+    ],
+    2: [
+      { id: 'lm_z2_hut', x: 760, y: 770, label: '🛖 Harbour Outpost', icon: 'o_hut',
+        title: '🛖 Chapter 2: Harbour Lookout Hut',
+        story: 'Captain Pip and Lulu watch the sea from here! Collect shells along the tide, help Postman Pat deliver letters, and relight the tall Lighthouse at Stop 5!' }
+    ],
+    3: [
+      { id: 'lm_z3_treehouse', x: 450, y: 480, label: '🌳 Scout Treehouse', icon: 'o_treehouse',
+        title: '🌳 Chapter 3: Mr. Nutty\'s Treehouse Overlook',
+        story: 'From high in the canopy, Mr. Nutty watches over the Forest Market! Gather sweet forest berries for Baker Rosa and cross the wooden bridge to open the Market!' }
+    ],
+    4: [
+      { id: 'lm_z4_crystal', x: 600, y: 620, label: '💎 Magma Spire', icon: 'o_crystal_purple',
+        title: '💎 Chapter 4: Ancient Magma Crystal Spire',
+        story: 'These purple and orange crystals hold the geothermal energy of Volcano Peak! Mine crystals for Nurse Maya\'s clinic and calm the Volcano to become a Grand Island Legend!' }
+    ]
+  };
+
+  function buildLandmarks(sc) {
+    sc.landmarks = [];
+    if (S.inHouse) return;
+    var list = ZONE_LANDMARKS[S.zone] || [];
+    var st = root.WorldGame ? root.WorldGame.readState() : {};
+    var seen = st.landmarksSeen || {};
+    list.forEach(function (lm) {
+      var done = !!seen[lm.id];
+      var tag = makeWorldLabel(sc, lm.x, lm.y - 140, (done ? '✨ ' : '🔍 ') + lm.label, done ? '#a7f3d0' : '#38bdf8');
+      sc.tweens.add({ targets: tag, y: lm.y - 148, duration: 850, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      sc.landmarks.push({
+        kind: 'landmark',
+        lm: lm,
+        tag: tag,
+        x: lm.x,
+        y: lm.y,
+        def: { h: 140, sw: 95 }
+      });
+    });
+  }
+
   function showWorldFloat(sc, x, y, text, color) {
     var cam = sc && sc.cameras ? sc.cameras.main : null;
     if (!cam) return;
@@ -1550,8 +1678,10 @@
 
   /* What the pupil can do where they are standing */
   function interactables(sc) {
-    var list = (sc.stops || []).concat([sc.gift, sc.npcSpot], sc.stones || [], sc.homeObjs || [], sc.villagers || [], sc.battles || []);
+    var list = (sc.stops || []).concat([sc.gift, sc.npcSpot], sc.stones || [], sc.homeObjs || [], sc.villagers || [], sc.battles || [], sc.gather || [], sc.landmarks || []);
     if (sc.chest) list.push(sc.chest);
+    if (sc.gateL) list.push(sc.gateL);
+    if (sc.gateR) list.push(sc.gateR);
     return list.filter(Boolean);
   }
   function openThing(t) {
@@ -1583,20 +1713,68 @@
       });
       say('Welcome to ' + fr.first_name + 's Home Island!');
     } else if (t.kind === 'sports') {
-      panel(FLAT + 'o_ball', '🏆 Island Sports Arena', 'Use your English Energy (⚡ 15) to play 1v1 or 2v2 Football ⚽ & Beach Volleyball 🏐 with classmates!', 'Play Sports ⚽', function () {
+      panel(FLAT + 'o_ball', '🏆 3D Island Sports Stadium', 'Ready to enter the Giant Stadium? Play competitive 2v2 or 4v4 Football ⚽ & Beach Volleyball 🏐 with smart AI teammates!', '⚽ Enter Stadium ▶', function () {
         if (root.WorldGame && root.WorldGame.openSportsArena) root.WorldGame.openSportsArena('soccer', '2v2');
       });
-      say('Let us play football or volleyball in the Sports Arena!');
+      say('Tap Enter Stadium when you are ready to play football or volleyball!');
     } else if (t.kind === 'door_out') {
-      exitHouse();
+      panel(FLAT + 'u_map', '🚪 Front Door to Garden', 'Would you like to step outside into your sunny island garden?', '🚪 Go Outside ▶', function () {
+        exitHouse();
+      });
+      say('Tap Go Outside to walk into the garden!');
     } else if (t.kind === 'house') {
-      enterHouse();
+      var hTitle = S.visitingFriend ? (S.visitingFriend.first_name + '\'s House') : '🏡 My Island House';
+      panel(FLAT + 'u_build', hTitle, 'Would you like to walk inside the house to rest and decorate the indoor room?', '🚪 Enter House ▶', function () {
+        enterHouse();
+      });
+      say('Tap Enter House to walk inside!');
     } else if (t.kind === 'workbench') {
       if (S.visitingFriend) {
         panel(FLAT + 'o_workbench', S.visitingFriend.first_name + '\'s Workbench', 'This is where ' + S.visitingFriend.first_name + ' crafts furniture!', '🏠 My Home', function () { leaveFriendHome(); });
       } else {
-        panel(FLAT + 'o_workbench', 'Crafting Workbench', 'Use wood, stones, flowers and shells to craft 16 items!', 'Craft 🔨', function () { if (root.WorldGame) root.WorldGame.openWorkshop('craft'); });
-        say('What would you like to craft?');
+        panel(FLAT + 'o_workbench', '📜 Smart Blueprints & Crafting Studio', 'Complete Grandpa Bolt\'s Smart Blueprints, craft 16 items, or upgrade your house!', '🔨 Open Studio ▶', function () { if (root.WorldGame) root.WorldGame.openWorkshop('blueprints'); });
+        say('Tap Open Studio to craft or check blueprints!');
+      }
+    } else if (t.kind === 'gather') {
+      if (t.harvested) return;
+      var capW = t.word.charAt(0).toUpperCase() + t.word.slice(1);
+      var verb = t.word === 'wood' ? '🪓 Chop ' : (t.word === 'stone' ? '⛏️ Mine ' : (t.word === 'crystal' ? '💎 Mine ' : '🌸 Gather '));
+      var subLine = t.maxHits > 1
+        ? ('Requires ' + t.hitsLeft + ' more strike' + (t.hitsLeft > 1 ? 's' : '') + ' (5 ⚡ Energy on harvest · chance for +2x & bonus coins!)')
+        : ('Harvest fresh ' + t.word + ' for villager quests & crafting (5 ⚡ Energy)!');
+      panel(t.art, capW + ' Resource', subLine, verb + capW + ' (' + t.hitsLeft + '/' + t.maxHits + ') ▶', function () {
+        takeGather(scene, t);
+      });
+      say(capW);
+    } else if (t.kind === 'landmark') {
+      var lm = t.lm;
+      var st0 = root.WorldGame ? root.WorldGame.readState() : {};
+      st0.landmarksSeen = st0.landmarksSeen || {};
+      var firstTime = !st0.landmarksSeen[lm.id];
+      var btnTxt = firstTime ? '✨ Claim +15 ⚡ & +10 🪙' : '📖 Story Map';
+      panel(FLAT + (lm.icon || 'o_sign'), lm.title, lm.story, btnTxt, function () {
+        if (firstTime && root.WorldGame) {
+          st0.landmarksSeen[lm.id] = 1;
+          root.WorldGame.writeState(st0);
+          root.WorldGame.addEnergy(15);
+          root.WorldGame.addBonusCoins(10);
+          if (t.tag && t.tag.active) t.tag.setText('✨ ' + lm.label).setColor('#a7f3d0');
+          partyAt(t.x, t.y - 60);
+          showWorldFloat(scene, t.x, t.y - 90, '📜 Story Discovered! +15 ⚡ & +10 🪙', '#fde047');
+        } else if (root.WorldGame && root.WorldGame.openWorldMap) {
+          root.WorldGame.openWorldMap();
+        }
+      });
+      say(lm.title);
+    } else if (t.kind === 'gate') {
+      if (isOpen(t.to)) {
+        panel(FLAT + 'o_gate_arrow', 'Travel to ' + zoneName(t.to), 'Would you like to travel along the island path to ' + zoneName(t.to) + '?', '🚶 Travel ▶', function () {
+          goZone(t.to, t.dir);
+        });
+        say('Travel to ' + zoneName(t.to) + '?');
+      } else {
+        panel(FLAT + 'o_cloud_lock', zoneName(t.to), 'Finish 4 stops here first to clear the storm clouds!', 'OK', function () {});
+        say('Finish four stops here first!');
       }
     } else if (t.kind === 'villager') {
       var v = t.v, st = root.WorldGame ? root.WorldGame.readState() : {};
@@ -1759,17 +1937,7 @@
       hidePanel(); S.near = hit;
       spawnTapRipple(sc, hit.x, hit.y + 28, true);
       walkTo(hit.x, hit.y + 42, function () {
-        if (hit.kind === 'house') {
-          enterHouse();
-        } else if (hit.kind === 'door_out') {
-          exitHouse();
-        } else if (hit.kind === 'sports' && root.WorldGame && root.WorldGame.openSportsArena) {
-          root.WorldGame.openSportsArena('soccer', '2v2');
-        } else if (!S.visitingFriend && root.WorldGame && hit.kind === 'workbench') {
-          root.WorldGame.openWorkshop('blueprints');
-        } else {
-          openThing(hit);
-        }
+        openThing(hit);
       });
       return;
     }
@@ -1801,7 +1969,7 @@
     var sign = sc.add.text(x + (dir > 0 ? -40 : 40), y - 80, '', { fontFamily: 'Fredoka, sans-serif', fontSize: '26px', fontStyle: '700', color: '#fff', stroke: '#060911', strokeThickness: 5, shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,0.75)', blur: 4, stroke: true, fill: true }, align: 'center' }).setOrigin(dir > 0 ? 1 : 0, .5).setDepth(4400);
     var pic = sc.add.image(x, y, FLAT + 'o_gate_arrow').setOrigin(.5, .8).setDepth(4400); pic.setScale(130 / pic.height); pic.setFlipX(dir < 0);
     sc.tweens.add({ targets: pic, x: x + dir * 12, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-    var g = { x: x, y: y, dir: dir, to: to, sign: sign, pic: pic, setLock: function () {
+    var g = { kind: 'gate', x: x, y: y, dir: dir, to: to, def: { h: 130, sw: 110 }, sign: sign, pic: pic, setLock: function () {
       var open = isOpen(to);
       sign.setText((open ? '' : '🔒 ') + zoneName(to));
       pic.setTexture(open ? FLAT + 'o_gate_arrow' : FLAT + 'o_cloud_lock'); pic.setScale((open ? 130 : 110) / pic.height); pic.setFlipX(open && dir < 0);
@@ -1873,6 +2041,10 @@
         buildBattles(sc);
         addLife(sc, zone);
         buildGather(sc, zone);
+        buildLandmarks(sc);
+        buildLandmarks(sc);
+        buildLandmarks(sc);
+        buildLandmarks(sc);
 
         sc.crate = sc.physics.add.image(zone.crate.x, zone.crate.y, FLAT + 'o_crate').setDepth(zone.crate.y); sc.crate.setScale(112 / sc.crate.height);
         sc.crate.body.setSize(sc.crate.width * .85, sc.crate.height * .8); sc.crate.setDrag(1400).setCollideWorldBounds(true).setMass(3).setBounce(.1);
@@ -1890,7 +2062,7 @@
         sc.palmShellKey = 'z' + S.zone + '_palm';
         if (found[sc.palmShellKey]) sc.palms.forEach(function (p) { p.hasShell = false; });
       } else {
-        sc.villagers = []; sc.battles = []; sc.gather = []; sc.crate = null; sc.ball = null;
+        sc.villagers = []; sc.battles = []; sc.gather = []; sc.landmarks = []; sc.crate = null; sc.ball = null;
       }
 
       sc.fx = sc.add.particles(0, 0, 'dot', { speed: { min: 60, max: 240 }, lifespan: 600, scale: { start: .8, end: 0 }, tint: [0xfde047, 0xffffff, 0xf472b6], emitting: false }).setDepth(5000);
@@ -2023,20 +2195,7 @@
       updateCompass(sc);
       if (S.modal || S.leaving) return;
       if (S.cooldown > 0) { S.cooldown -= delta; return; }
-      if (S.inHouse && Math.abs(m.x - 1200) < 95 && m.y > 1105) {
-        exitHouse();
-        return;
-      }
-
-      // things to gather
-      for (var gi = sc.gather.length - 1; gi >= 0; gi--) {
-        var ga = sc.gather[gi];
-        if (Phaser.Math.Distance.Between(m.x, m.y, ga.x, ga.y) < 62) {
-          if (takeGather(sc, ga)) sc.gather.splice(gi, 1);
-          else S.cooldown = 1100;
-        }
-      }
-      // shells
+      // secret shells (hidden under crates or palm trees)
       for (var i = sc.shells.length - 1; i >= 0; i--) {
         var sh = sc.shells[i];
         if (sh.under && Phaser.Math.Distance.Between(sc.crate.x, sc.crate.y, sh.x, sh.y) < 92) continue;
@@ -2055,14 +2214,6 @@
       var isMoving = !!(vx || vy || (m.body && (Math.abs(m.body.velocity.x) + Math.abs(m.body.velocity.y) > 20)));
       sc.palms.forEach(function (p) {
         if (!p.shaking && Phaser.Math.Distance.Between(m.x, m.y, p.x, p.y) < 74 && isMoving) shakePalm(p);
-      });
-      // gates
-      [sc.gateL, sc.gateR].forEach(function (g) {
-        if (!g) return;
-        if (Phaser.Math.Distance.Between(m.x, m.y, g.x, g.y) < 90) {
-          if (isOpen(g.to)) goZone(g.to, g.dir);
-          else if (!g.told) { g.told = true; panel(FLAT + 'o_cloud_lock', zoneName(g.to), 'Finish 4 stops here first!', 'OK', function () {}); say('Finish four stops here first!'); }
-        } else g.told = false;
       });
       // what is here? the panel opens when you walk up to something, and closes when you walk away
       var here = null, best = 110;
