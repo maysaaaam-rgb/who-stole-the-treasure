@@ -1378,7 +1378,8 @@ body.w-on #w-vignette { display: block; }
   padding: 6px 18px !important;
 }
 
-.wg-sports-modal { max-width: min(1160px, 97vw) !important; width: min(1160px, 97vw) !important; } #wg-sports-canvas { max-height: 55vh !important; width: auto !important; max-width: 100% !important; margin: 0 auto; }
+.wg-sports-modal { max-width: 98vw !important; width: min(1360px, 98vw) !important; padding: 10px 14px !important; } #wg-sports-canvas { width: 100% !important; height: 62vh !important; max-height: 62vh !important; margin: 0 auto; display: block; }
 .wg-sp-joy { width: 56px !important; height: 56px !important; }
 .wg-sports-controls { flex-wrap: nowrap !important; gap: 8px !important; margin-top: 6px !important; }
+
 
