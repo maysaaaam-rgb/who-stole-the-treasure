@@ -7,6 +7,10 @@
   /* Ordered by Unit (Unit 4 -> Unit 3 -> Unit 2 -> Unit 1 -> Classroom/Extras -> Games),
      and within each unit & grade in strict teaching sequence (Lesson 1 -> Lesson 2 -> ... -> Review -> Quiz/Printable/Homework). */
   var CATALOG = [
+    { id: 'g3-subjects-challenge', icon: '🔬', title: 'Mystery Subject Lab: Group Challenge (Maths · Art · Science · Music)', route: 'school-subjects-challenge/index.html', g: 3, added: '2026-11-06' },
+    { id: 'g3-instructions-challenge', icon: '📢', title: 'Classroom Instructions Challenge (Normal ➔ Turbo ➔ Combos ➔ Leader)', route: 'classroom-instructions-challenge/index.html', g: 3, added: '2026-11-06' },
+    { id: 'g4-subjects-challenge', icon: '🔬', title: 'Mystery Subject Lab: Group Challenge (Maths · Art · Science · Music)', route: 'school-subjects-challenge/index.html', g: 4, added: '2026-11-06' },
+    { id: 'g4-instructions-challenge', icon: '📢', title: 'Classroom Instructions Challenge (Normal ➔ Turbo ➔ Combos ➔ Leader)', route: 'classroom-instructions-challenge/index.html', g: 4, added: '2026-11-06' },
     // =========================================================================
     // UNIT 4 — GRADE 3 (What Happened? / The Mona Lisa & The Angry Mountain)
     // =========================================================================

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystery Subject Lab · School Subjects Group Challenge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=2">
+</head>
+<body>
+  <div class="sb-shell">
+    <header class="sb-topbar">
+      <div class="sb-brand">
+        <div class="sb-brand-badge"><img src="art/subj_trophy.webp" alt="🏆" onerror="this.outerHTML='🏆'"></div>
+        <div class="sb-title-wrap">
+          <h1>🔬 Mystery Subject Lab · Group Challenge</h1>
+          <p>Maths · Art · Science · Music — Complete the Group Task, Present &amp; Guess the Subject!</p>
+        </div>
+      </div>
+      <div class="sb-teams" id="sb-teams"></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button type="button" class="btn-3d" id="sb-mute-btn" onclick="SubjectsApp.toggleMute()">🔊 Sound</button>
+        <a href="worksheet.html" target="_blank" class="btn-3d amber">🖨️ Worksheet</a>
+        <a href="../index.html" class="btn-3d cyan">🏠 Platform</a>
+      </div>
+    </header>
+
+    <nav class="sb-phase-tabs">
+      <button type="button" class="sb-phase-tab active" onclick="SubjectsApp.setPhase(1)">🧩 Phase 1 · 4 Group Challenges (Maths · Art · Science · Music)</button>
+      <button type="button" class="sb-phase-tab" onclick="SubjectsApp.setPhase(2)">🎤 Phase 2 · Group Showcase &amp; Class Subject Guess</button>
+      <button type="button" class="sb-phase-tab" onclick="SubjectsApp.setPhase(3)">🗣️ Phase 3 · Speaking Sentences ("We made a picture. It's Art!")</button>
+    </nav>
+
+    <main class="sb-stage" id="sb-stage"></main>
+  </div>
+  <div class="sb-toast" id="sb-toast" style="opacity:0"></div>
+
+  <script src="js/data.js?v=2"></script>
+  <script src="js/audio.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+</body>
+</html>
