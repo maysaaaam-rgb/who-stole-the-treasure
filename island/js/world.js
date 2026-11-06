@@ -75,43 +75,45 @@
       crate: { x: 460, y: 1180 }, ball: { x: 1150, y: 1140 }, shells: [{ x: 460, y: 1195, under: true }, { x: 2100, y: 420 }]
     },
     1: {
-      ground: 'meadow',
-      look: { base: '#6bc453', tile: 't_grass', alpha: .26, patch: 'rgba(244,228,174,.32)', edge: '#b98f4a', fill: '#f3dd9c', speck: ['#dfbe78', '#c7a463'], extra: ['t_sand', 't_water'] },
-      npc: { art: FLAT + 'c_jim', worried: FLAT + 'c_jim', happy: FLAT + 'c_jim_happy', x: 640, y: 630, h: 195 },
-      blocked: function (x, y) { return y < 220 || y > 1470 || x < 65 || x > W - 65; },
+      ground: 'harbour',
+      look: { base: '#e6c98a', tile: 't_sand', alpha: .38, patch: 'rgba(254,240,138,.18)', edge: '#5c340e', fill: '#b9823f', speck: ['#78350f', '#fde68a'], extra: ['t_water', 't_floor', 't_rock'] },
+      npc: { art: FLAT + 'c_jim', worried: FLAT + 'c_jim', happy: FLAT + 'c_jim_happy', x: 640, y: 650, h: 195 },
+      blocked: function (x, y) { return y < 370 || y > 1460 || x < 65 || x > W - 65 || (x > 2050 && y < 650) || (x > 2240 && y > 860); },
       stops: [
-        { x: 420,  y: 1020, art: FLAT + 'o_compass',     done: FLAT + 'o_compass',     h: 135 },
-        { x: 850,  y: 1220, art: FLAT + 'o_map_scroll',  done: FLAT + 'o_map_scroll',  h: 135 },
-        { x: 1280, y: 960,  art: FLAT + 'o_spyglass',    done: FLAT + 'o_spyglass',    h: 175 },
-        { x: 1660, y: 1200, art: FLAT + 'o_ship_wheel',  done: FLAT + 'o_ship_wheel',  h: 175 },
-        { x: 1980, y: 930,  art: FLAT + 'o_barrel_dock', done: FLAT + 'o_hispaniola',  h: 165 }
+        { x: 520,  y: 860,  art: FLAT + 'o_compass',     done: FLAT + 'o_compass',     h: 135 },
+        { x: 860,  y: 1180, art: FLAT + 'o_billy_chest', done: FLAT + 'o_map_scroll',  h: 145 },
+        { x: 1280, y: 1100, art: FLAT + 'o_spyglass',    done: FLAT + 'o_spyglass',    h: 180 },
+        { x: 1620, y: 840,  art: FLAT + 'o_barrel_dock', done: FLAT + 'o_barrel_dock', h: 160 },
+        { x: 1960, y: 820,  art: FLAT + 'o_ship_wheel',  done: FLAT + 'o_hispaniola',  h: 175 }
       ],
-      chest: { x: 2130, y: 1120, art: FLAT + 'o_billy_chest' },
+      chest: { x: 1920, y: 1180, art: FLAT + 'o_billy_chest' },
       decor: [
-        { art: FLAT + 'o_benbow_inn',  x: 470,  y: 590,  h: 360, sw: 240 },
-        { art: FLAT + 'o_lamp',        x: 720,  y: 610,  h: 165, sw: 28 },
-        { art: FLAT + 'o_campfire',    x: 310,  y: 660,  h: 110, sw: 70 },
-        { art: FLAT + 'o_barrel_dock', x: 1910, y: 690,  h: 135, sw: 95 },
-        { art: FLAT + 'o_palm_a',      x: 1640, y: 540,  h: 350, sw: 46, sway: true },
-        { art: FLAT + 'o_palm_b',      x: 2040, y: 490,  h: 340, sw: 46, sway: true },
-        { art: FLAT + 'o_palm_a',      x: 2220, y: 1320, h: 360, sw: 46, sway: true },
-        { art: FLAT + 'o_tree_pine',   x: 210,  y: 460,  h: 350, sw: 60, sway: true },
-        { art: FLAT + 'o_tree_round',  x: 920,  y: 450,  h: 350, sw: 60, sway: true },
-        { art: FLAT + 'o_tree_pine',   x: 1380, y: 460,  h: 340, sw: 60, sway: true },
-        { art: FLAT + 'o_rock',        x: 1470, y: 760,  h: 82,  sw: 70 },
-        { art: FLAT + 'o_rock',        x: 620,  y: 1360, h: 78,  sw: 66 },
-        { art: FLAT + 'o_starfish',    x: 1840, y: 1080, h: 46,  flat: true },
-        { art: FLAT + 'o_starfish',    x: 2040, y: 1240, h: 44,  flat: true }
+        { art: FLAT + 'o_benbow_inn',  x: 470,  y: 610,  h: 370, sw: 250 },
+        { art: FLAT + 'o_lamp',        x: 730,  y: 620,  h: 165, sw: 28 },
+        { art: FLAT + 'o_lamp',        x: 1120, y: 620,  h: 165, sw: 28 },
+        { art: FLAT + 'o_lamp',        x: 1520, y: 620,  h: 165, sw: 28 },
+        { art: FLAT + 'o_barrel_dock', x: 290,  y: 660,  h: 135, sw: 90 },
+        { art: FLAT + 'o_barrel_dock', x: 1360, y: 640,  h: 135, sw: 90 },
+        { art: FLAT + 'o_boat',        x: 1020, y: 340,  h: 150 },
+        { art: FLAT + 'o_hispaniola',  x: 2220, y: 520,  h: 280 },
+        { art: FLAT + 'o_palm_a',      x: 220,  y: 1120, h: 350, sw: 46, sway: true },
+        { art: FLAT + 'o_palm_b',      x: 1080, y: 1320, h: 340, sw: 46, sway: true },
+        { art: FLAT + 'o_palm_a',      x: 1620, y: 1320, h: 350, sw: 46, sway: true },
+        { art: FLAT + 'o_rock',        x: 340,  y: 1280, h: 86,  sw: 72 },
+        { art: FLAT + 'o_rock',        x: 1480, y: 1260, h: 82,  sw: 70 },
+        { art: FLAT + 'o_driftwood',   x: 680,  y: 1290, h: 46,  flat: true },
+        { art: FLAT + 'o_starfish',    x: 1140, y: 1220, h: 46,  flat: true },
+        { art: FLAT + 'o_starfish',    x: 1760, y: 1140, h: 44,  flat: true }
       ],
-      ground2: { flowers: [FLAT + 'o_flowers'], count: 14 },
+      ground2: null,
       paths: [
-        [[470, 650], [640, 680], [420, 1060], [850, 1260], [1280, 1000], [1660, 1240], [1980, 970], [2130, 1140]],
-        [[1980, 970], [2120, 760], [2310, 760]]
+        [[520, 680], [520, 880], [860, 1200], [1280, 1120], [1620, 860], [1960, 840], [1920, 1200]],
+        [[520, 740], [1160, 740], [1620, 740], [2280, 760]]
       ],
-      edge: { top: [FLAT + 'o_tree_round', FLAT + 'o_tree_pine'], topH: [340, 420], bottom: [FLAT + 'o_bush'], bottomH: [120, 155] },
+      edge: { noTop: true, top: [FLAT + 'o_palm_a', FLAT + 'o_palm_b'], topH: [320, 390], bottom: [FLAT + 'o_rock'], bottomH: [85, 115] },
       gather: [],
       crate: null,
-      ball: { x: 1060, y: 820 },
+      ball: { x: 980, y: 920 },
       shells: []
     },
     2: {
@@ -322,30 +324,94 @@
         c.restore();
       }
       if (z === 1) {
-        /* Golden Sandy Beach Shoreline along the Eastern Harbour */
-        oval(2180, 820, 540, 680, '#f3dd9c', '#c7a463', 6);
-        /* Deep Turquoise Admiral Benbow Sea Cove */
-        oval(2390, 780, 390, 520, '#38bdf8', '#0284c7', 8);
-        oval(2410, 780, 320, 440, '#0ea5e9');
-        oval(2430, 780, 240, 350, '#0369a1');
-        c.strokeStyle = '#e0f2fe'; c.lineWidth = 6; c.lineCap = 'round';
-        [[2120, 560, 90], [2160, 660, 110], [2150, 890, 100], [2190, 990, 95]].forEach(function (w) {
+        /* 1. Northern & Eastern Open Sea Bay (Admiral Benbow Harbour Cove) */
+        var seaPath = function (padY, padX) {
+          c.beginPath();
+          c.moveTo(0, 0);
+          c.lineTo(W, 0);
+          c.lineTo(W, H);
+          c.lineTo(2120 - padX, H);
+          c.quadraticCurveTo(1980 - padX, 1100, 2020 - padX, 820);
+          c.quadraticCurveTo(2040 - padX, 500, 1760 - padX, 410 + padY);
+          c.bezierCurveTo(1280, 360 + padY, 680, 400 + padY, 0, 370 + padY);
+          c.closePath();
+        };
+        seaPath(34, -28); c.fillStyle = '#d4af6a'; c.fill();
+        seaPath(0, 0); c.fillStyle = '#38bdf8'; c.fill();
+        c.save(); c.clip(); c.globalAlpha = 0.45; c.fillStyle = tile('t_water'); c.fillRect(0, 0, W, H); c.restore();
+        seaPath(-55, 55); c.fillStyle = '#0284c7'; c.fill();
+        c.save(); c.clip(); c.globalAlpha = 0.4; c.fillStyle = tile('t_water'); c.fillRect(0, 0, W, H); c.restore();
+        seaPath(-135, 130); c.fillStyle = '#0369a1'; c.fill();
+        seaPath(-220, 210); c.fillStyle = '#082f49'; c.fill();
+
+        /* White breaking sea-foam shoreline & harbour wave crests */
+        c.strokeStyle = 'rgba(255, 255, 255, 0.92)'; c.lineWidth = 12; c.lineCap = 'round';
+        c.beginPath();
+        c.moveTo(0, 368);
+        c.bezierCurveTo(680, 398, 1280, 358, 1760, 408);
+        c.quadraticCurveTo(2040, 498, 2020, 820);
+        c.quadraticCurveTo(1980, 1100, 2120, H);
+        c.stroke();
+
+        c.strokeStyle = 'rgba(224, 242, 254, 0.78)'; c.lineWidth = 5;
+        [[180, 220, 110], [520, 180, 130], [890, 240, 115], [1340, 190, 125], [1720, 230, 110], [2140, 310, 120], [2180, 620, 95], [2160, 940, 105], [2220, 1180, 95]].forEach(function (w) {
           c.beginPath(); c.moveTo(w[0], w[1]); c.quadraticCurveTo(w[0] + w[2] / 2, w[1] - 14, w[0] + w[2], w[1]); c.stroke();
         });
-        /* Stone Cobble Courtyard under the Admiral Benbow Inn */
-        oval(540, 620, 290, 130, '#e2cd8f', '#a18048', 5);
-        /* Sturdy Wooden Harbour Boarding Pier out to the Hispaniola */
-        c.fillStyle = 'rgba(15, 23, 42, 0.35)';
-        c.fillRect(1980, 722, 350, 98);
-        for (var px = 1980, pi2 = 0; px < 2320; px += 34, pi2++) {
-          c.fillStyle = pi2 % 2 ? '#b9823f' : '#c8924b';
-          c.fillRect(px, 708, 34, 98);
-          c.strokeStyle = '#5c340e'; c.lineWidth = 3;
-          c.strokeRect(px, 708, 34, 98);
+
+        /* 2. Grand Stone Cobblestone Courtyard under The Admiral Benbow Inn */
+        c.save();
+        c.fillStyle = 'rgba(15, 23, 42, 0.25)';
+        c.fillRect(216, 488, 790, 420);
+        c.fillStyle = '#d6c7b2';
+        c.strokeStyle = '#57534e';
+        c.lineWidth = 8;
+        c.beginPath();
+        c.roundRect ? c.roundRect(210, 480, 780, 410, 36) : c.rect(210, 480, 780, 410);
+        c.fill(); c.stroke();
+        c.strokeStyle = 'rgba(87, 83, 78, 0.22)'; c.lineWidth = 2;
+        for (var cy2 = 520; cy2 < 880; cy2 += 42) {
+          c.beginPath(); c.moveTo(222, cy2); c.lineTo(978, cy2); c.stroke();
         }
-        c.fillStyle = '#5c340e';
-        c.fillRect(1976, 700, 352, 12);
-        c.fillRect(1976, 800, 352, 12);
+        /* Ornate Golden Compass Rose on the Inn Plaza Floor */
+        var cx0 = 620, cy0 = 735;
+        c.beginPath(); c.arc(cx0, cy0, 76, 0, Math.PI * 2); c.fillStyle = 'rgba(120, 53, 15, 0.18)'; c.fill();
+        c.lineWidth = 4; c.strokeStyle = '#b45309'; c.stroke();
+        c.beginPath(); c.arc(cx0, cy0, 56, 0, Math.PI * 2); c.strokeStyle = '#d97706'; c.stroke();
+        for (var ci = 0; ci < 8; ci++) {
+          var ang = ci * Math.PI / 4, len = (ci % 2 === 0) ? 70 : 44;
+          c.beginPath();
+          c.moveTo(cx0, cy0);
+          c.lineTo(cx0 + Math.cos(ang) * len, cy0 + Math.sin(ang) * len);
+          c.strokeStyle = (ci % 2 === 0) ? '#b45309' : '#92400e';
+          c.lineWidth = (ci % 2 === 0) ? 5 : 3;
+          c.stroke();
+        }
+        c.restore();
+
+        /* 3. Broad Wooden Harbour Wharf & Hispaniola Boarding Pier */
+        c.save();
+        c.fillStyle = 'rgba(15, 23, 42, 0.38)';
+        c.fillRect(990, 594, 1360, 260);
+        for (var wx = 990, wi = 0; wx < 2340; wx += 38, wi++) {
+          c.fillStyle = wi % 2 ? '#9a5b25' : '#b06d31';
+          c.fillRect(wx, 580, 38, 254);
+          c.strokeStyle = '#451a03'; c.lineWidth = 3;
+          c.strokeRect(wx, 580, 38, 254);
+        }
+        c.fillStyle = '#451a03';
+        c.fillRect(986, 572, 1362, 14);
+        c.fillRect(986, 828, 1362, 14);
+        /* Wooden Mooring Bollards along the Wharf */
+        [1040, 1260, 1480, 1700, 1920, 2140].forEach(function (bx) {
+          c.fillStyle = '#271202';
+          c.beginPath(); c.arc(bx, 579, 10, 0, Math.PI * 2); c.fill();
+          c.beginPath(); c.arc(bx, 835, 10, 0, Math.PI * 2); c.fill();
+        });
+        c.restore();
+
+        /* 4. Southern Stone Spyglass Lookout Circle */
+        oval(1280, 1110, 155, 95, '#d6c7b2', '#78716c', 6);
+        oval(860, 1190, 135, 82, '#d6c7b2', '#78716c', 5);
       }
       if (z === 2) {
         var sea = function (off) { c.beginPath(); c.moveTo(0, 0); for (x = 0; x <= W; x += 12) c.lineTo(x, shore(x) + off); c.lineTo(W, 0); c.closePath(); };
@@ -446,18 +512,13 @@
       tint: zoneTints[S.zone] || [0xfffbe0, 0xffffff]
     }).setDepth(4200);
     // ambient flat wildlife so each place feels alive
-    var flyerKey = (S.zone === 2 || S.zone === 4) ? FLAT + 'o_bird' : FLAT + 'o_butterfly';
+    var flyerKey = (S.zone === 1 || S.zone === 2 || S.zone === 4) ? FLAT + 'o_bird' : FLAT + 'o_butterfly';
     for (i = 0; i < 4; i++) {
       var bx = 260 + seeded(i + 307) * (W - 520), by = 320 + seeded(i + 319) * 860, fl = sc.add.image(bx, by, flyerKey).setDepth(4150);
       fl.setScale((flyerKey === FLAT + 'o_bird' ? 48 : 40) / fl.height);
       sc.tweens.add({ targets: fl, x: bx + (i % 2 ? 180 : -180), y: by + (i % 2 ? -65 : 65), duration: 3600 + i * 700, yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: function (tw, t) { t.setFlipX(!t.flipX); }, onRepeat: function (tw, t) { t.setFlipX(!t.flipX); } });
     }
-    if (S.zone === 1) {
-      var dk1 = sc.add.image(1680, 480, FLAT + 'o_duck').setDepth(480); dk1.setScale(52 / dk1.height);
-      sc.tweens.add({ targets: dk1, x: 1830, duration: 4800, yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: function () { dk1.setFlipX(true); }, onRepeat: function () { dk1.setFlipX(false); } });
-      var fg1 = sc.add.image(1410, 560, FLAT + 'o_frog').setOrigin(.5, .95).setDepth(560); fg1.setScale(44 / fg1.height);
-      sc.tweens.add({ targets: fg1, y: 544, duration: 420, yoyo: true, hold: 1800, repeat: -1, ease: 'Quad.out' });
-    } else if (S.zone === 3) {
+    if (S.zone === 3) {
       var dk3 = sc.add.image(1180, 520, FLAT + 'o_duck').setDepth(520); dk3.setScale(52 / dk3.height);
       sc.tweens.add({ targets: dk3, y: 600, duration: 4400, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       var fg3 = sc.add.image(960, 960, FLAT + 'o_frog').setOrigin(.5, .95).setDepth(960); fg3.setScale(44 / fg3.height);
@@ -593,23 +654,21 @@
 
   var ZONE_COMPANIONS = {
     1: [
-      { id: 'comp_benbow', x: 780, y: 650, h: 135, art: 'c_benbow', happy: 'c_benbow_happy', label: '🐆 Benbow',
-        title: '🐆 Benbow the Baby Leopard',
-        line: 'Purr-roar! I am Jim Hawkins\'s brave leopard cub Benbow! Walk along the sandy trail to solve all 5 Map Clues!' },
-      { id: 'comp_billy', x: 1150, y: 640, h: 185, art: 'c_billy', happy: 'c_billy_happy', label: '🏴‍☠️ Billy Bones',
-        title: '🏴‍☠️ Captain Billy Bones',
-        line: 'Ahoy, young sailor! Keep a sharp eye on the sea with my brass spyglass! Solve all 5 clues to unlock my heavy Sea Chest!' },
-      { id: 'comp_flint', x: 1830, y: 660, h: 125, art: 'c_pip', happy: 'c_pip_happy', label: '🦜 Parrot Flint',
-        title: '🦜 Parrot Captain Flint',
-        line: 'Squawk! Pieces of eight! The Hispaniola ship is anchored right here at the pier! Finish the 5 clues to set sail!', isFlint: true }
+      { id: 'comp_benbow',  name: 'Benbow the Leopard 🐆', art: 'c_benbow',  happy: 'c_benbow_happy',  x: 360,  y: 830,  h: 138, line: 'Roar! Stay close to me, Captain! Let\'s check the Admiral Benbow Inn and Billy Bones\'s chest!' },
+      { id: 'comp_billy',   name: 'Captain Billy Bones 🏴‍☠️', art: 'c_billy',   happy: 'c_billy_happy',   x: 720,  y: 1150, h: 182, line: 'Ahoy, matey! Keep a sharp eye out for one-legged sailors and guard the sea chest!' },
+      { id: 'comp_silver',  name: 'Long John Silver ⚓',    art: 'c_silver',  happy: 'c_silver_happy',  x: 1480, y: 810,  h: 186, line: 'Haha! Need barrels of apples and biscuits for the voyage? Complete your harbour missions, Captain!' },
+      { id: 'comp_livesey', name: 'Dr. Livesey 📜',         art: 'c_livesey', happy: 'c_livesey_happy', x: 1820, y: 790,  h: 184, line: 'Splendid courage! Speak each English sentence clearly to earn your Captain\'s compass stars!' }
     ],
     2: [
-      { id: 'comp_flint_z2', x: 1690, y: 715, h: 115, art: 'c_pip', happy: 'c_pip_happy', label: '🦜 Parrot Flint',
-        title: '🦜 Parrot Captain Flint',
-        line: 'Squawk! Captain Silver is waiting by the bay! Light the Spyglass Beacon at Clue 5!', isFlint: true }
+      { id: 'comp_jim_2',   name: 'Jim Hawkins 🧭',       art: 'c_jim',    happy: 'c_jim_happy',    x: 1660, y: 730, h: 175, line: 'We reached Spyglass Shore! Look at the white waves along the beach!' }
+    ],
+    3: [
+      { id: 'comp_benbow_3',name: 'Benbow the Leopard 🐆',  art: 'c_benbow', happy: 'c_benbow_happy', x: 740,  y: 520, h: 135, line: 'Roar! Watch the river bridge! Let\'s cross safely to Stockade Forest!' }
+    ],
+    4: [
+      { id: 'comp_jim_4',   name: 'Jim Hawkins 🧭',       art: 'c_jim',    happy: 'c_jim_happy',    x: 640,  y: 600, h: 175, line: 'Skull Peak is right ahead! Captain Flint\'s treasure is waiting for us!' }
     ]
   };
-
   function buildCompanions(sc) {
     sc.companions = [];
     if (S.inHouse) return;

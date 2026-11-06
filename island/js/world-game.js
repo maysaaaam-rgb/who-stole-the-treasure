@@ -433,89 +433,109 @@
     sound('playTap');
     var s = ses() || {};
     var g = s.grade || 3;
-    var curZone = (W() && W().S && W().S.zone !== undefined) ? W().S.zone : 1;
-    var allOpen = isAllChaptersUnlocked();
-    var isOpen = function (z) { return z <= 1 || allOpen || (W() && W().isOpen && W().isOpen(z)); };
-    var islands = [
-      { z: 1, name: 'Ch.1: Benbow Harbour', sub: 'Stage 1 · Jim Hawkins & Benbow 🐆', img: 'm_island_meadow',  x: 22, y: 34, open: true },
-      { z: 2, name: 'Ch.2: Hispaniola Bay', sub: 'Stage 2 · Long John Silver ⚓',      img: 'm_island_beach',   x: 52, y: 26, open: isOpen(2) },
-      { z: 3, name: 'Ch.3: Stockade Island',sub: 'Stage 3 · Dr. Livesey & Gray 📜',    img: 'm_island_forest',  x: 52, y: 74, open: isOpen(3) },
-      { z: 4, name: 'Ch.4: Skull Peak',     sub: 'Stage 4 · Captain Flint\'s Gold 👑', img: 'm_island_volcano', x: 82, y: 52, open: isOpen(4) }
+    var stars = (s.doc && s.doc.stars) || {};
+    var chests = (s.doc && s.doc.chests) || {};
+    var zm = root.IslandData ? root.IslandData.getZoneMissions(g, 1, false) : { regular: [] };
+    var regular = zm.regular || [];
+
+    var stops = [
+      { idx: 0, name: '1. Admiral Benbow Inn',      sub: 'Jim Hawkins & Logbook',       img: 'o_benbow_inn',  friend: 'c_jim_happy',     x: 16, y: 66 },
+      { idx: 1, name: '2. Billy Bones\'s Sea Chest', sub: 'Unlock the Brass Locks',      img: 'o_billy_chest', friend: 'c_billy_happy',   x: 33, y: 36 },
+      { idx: 2, name: '3. The Spyglass Lookout',    sub: 'Scan the Harbour Horizon',    img: 'o_spyglass',    friend: 'c_benbow_happy',  x: 50, y: 68 },
+      { idx: 3, name: '4. Silver\'s Barrel Dock',   sub: 'Load Supplies on the Wharf',  img: 'o_barrel_dock', friend: 'c_silver_happy',  x: 67, y: 36 },
+      { idx: 4, name: '5. The Ship\'s Helm',        sub: 'Raise Anchor on Hispaniola',  img: 'o_ship_wheel',  friend: 'c_livesey_happy', x: 82, y: 64 }
     ];
-    var nodesHtml = islands.map(function (isl) {
-      var here = curZone === isl.z;
-      var prog = isl.open ? zoneProgressBadge(isl.z) : '';
-      var lockReason = '🔒 Sail unlocked after 4 Map Clues in Ch.' + (isl.z - 1);
-      return '<button type="button" class="wg-map-node' + (isl.open ? '' : ' locked') + (here ? ' here' : '') + '" style="left:' + isl.x + '%;top:' + isl.y + '%" onclick="WorldGame.jumpZone(' + isl.z + ')">' +
-        '<img src="' + FLAT + isl.img + '.webp" class="wg-map-isl-pic" alt="">' +
-        (!isl.open ? '<img src="' + FLAT + 'o_cloud_lock.webp" class="wg-map-lock" alt="">' : '') +
-        (here ? '<span class="wg-map-here">⛵ Anchored Here</span>' : '') +
-        '<span class="wg-map-label"><b>' + esc(isl.name) + '</b><small>' + esc(isl.open ? isl.sub : lockReason) + '</small>' + (prog ? '<em>' + esc(prog) + '</em>' : '') + '</span>' +
+
+    var doneCount = 0;
+    var nextIdx = -1;
+    stops.forEach(function (st, i) {
+      var m = regular[i];
+      var n = m ? (Number(stars[m.id]) || 0) : 0;
+      st.stars = n;
+      st.mid = m ? m.id : ('g' + g + '-z1-m' + (i + 1));
+      if (n > 0) doneCount++;
+      else if (nextIdx === -1) nextIdx = i;
+    });
+
+    var nodesHtml = stops.map(function (st, i) {
+      var isNext = (i === nextIdx);
+      var starTxt = st.stars > 0 ? ('★'.repeat(st.stars) + '☆'.repeat(3 - st.stars)) : (isNext ? '🧭 Next Clue!' : '⚪ Ready');
+      return '<button type="button" class="wg-map-node' + (isNext ? ' here' : '') + '" style="left:' + st.x + '%;top:' + st.y + '%" onclick="WorldGame.jumpHarbourStop(' + i + ','' + esc(st.mid) + '')">' +
+        '<div style="position:relative;display:inline-block">' +
+          '<img src="' + FLAT + st.img + '.webp" class="wg-map-isl-pic" style="width:92px;height:92px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.65))" alt="">' +
+          '<img src="' + FLAT + st.friend + '.webp" style="position:absolute;right:-10px;bottom:-4px;width:44px;height:44px;object-fit:contain;border-radius:50%;background:rgba(15,23,42,0.9);border:2px solid #f59e0b;padding:2px" alt="">' +
+        '</div>' +
+        (isNext ? '<span class="wg-map-here">📍 Active Mission</span>' : '') +
+        '<span class="wg-map-label"><b>' + esc(st.name) + '</b><small>' + esc(st.sub) + '</small><em>' + esc(starTxt) + '</em></span>' +
       '</button>';
     }).join('');
 
-    var plazaBtn = '<button type="button" class="wg-map-node" style="left:20%;top:27%" onclick="WorldGame.closeModal(); if(window.IslandWall) IslandWall.open()">' +
-      '<img src="' + FLAT + 'm_island_plaza.webp" class="wg-map-isl-pic" alt="">' +
-      '<span class="wg-map-label"><b>⚓ Crew Harbour Plaza</b><small>Classmates · Fleet</small><em>👋 Visit Shipmates</em></span>' +
-    '</button>';
-
-    var pipTipObj = (s.doc && s.doc.pipTip) || ((ZONE_GRAMMAR_TIPS[g] || ZONE_GRAMMAR_TIPS[3])[Math.max(1, curZone)] || ZONE_GRAMMAR_TIPS[3][1]);
-    var tipSpeak = 'Parrot Flint squawks: Remember, ' + pipTipObj.word + ' — ' + pipTipObj.meaning + '!';
-    var pr = getPlayerRating();
-    var pipBannerHtml =
-      '<div class="wg-map-story-bar">' +
-        '<div class="wg-map-story-left">' +
-          '<span class="wg-map-ch-pill">🗺️ ' + esc(pr.chapter.title) + '</span>' +
-          '<span class="wg-map-ch-desc">' + esc(pr.chapter.desc) + '</span>' +
-        '</div>' +
-        '<div class="wg-map-rating-cluster">' +
-          '<span class="wg-map-rate-pill" title="Captain Rank">🧭 ' + pr.ratingFixed + ' / 5.0 <small>' + esc(pr.rankTitle) + '</small></span>' +
-          '<span class="wg-map-score-pill">🪙 ' + pr.proScore + ' pts · 🗺️ ' + pr.powerPct + '% Map Restored</span>' +
-          '<button type="button" class="isl-btn amber" style="min-height:32px;padding:3px 9px;font-size:0.78rem" onclick="WorldGame.replayStoryIntro()">🎬 Story Intro</button>' +
-          '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 9px;font-size:0.78rem" onclick="IslandAudio.speak(\'' + esc(tipSpeak) + '\', null, \'pip\')">🦜 Flint\'s Clue</button>' +
-        '</div>' +
-      '</div>';
+    var chestOpened = !!chests.z1;
+    var chestReady = doneCount >= 5 && !chestOpened;
+    var chestNodeHtml =
+      '<button type="button" class="wg-map-node' + (chestReady ? ' here' : '') + '" style="left:89%;top:30%" onclick="WorldGame.jumpHarbourChest()">' +
+        '<img src="' + FLAT + (chestOpened ? 'o_treasure_gold' : 'o_billy_chest') + '.webp" class="wg-map-isl-pic" style="width:88px;height:88px;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(245,158,11,0.6))" alt="">' +
+        '<span class="wg-map-label"><b>🎁 Captain Flint\'s Chest</b><small>' + (chestOpened ? 'Opened! (+10 XP)' : (chestReady ? 'Ready to Open!' : 'Finish 5 Harbour Stops')) + '</small><em>' + (chestOpened ? '👑 Complete!' : ('⭐ ' + doneCount + ' / 5 Stops')) + '</em></span>' +
+      '</button>';
 
     var demoBtns = '';
     if (s.isDemo && s.student) {
       var curId = s.student.id;
       demoBtns =
         '<div style="display:flex;gap:4px;align-items:center;background:rgba(2,6,23,.65);padding:3px 6px;border-radius:12px;border:1px solid rgba(255,255,255,.14)">' +
-          '<button type="button" class="isl-btn ' + (curId === 'demo-g3' ? 'cyan' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-g3\')">G3</button>' +
-          '<button type="button" class="isl-btn ' + (curId === 'demo-g4' ? 'cyan' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-g4\')">G4</button>' +
+          '<button type="button" class="isl-btn ' + (curId === 'demo-g3' ? 'cyan' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-g3\')">Grade 3</button>' +
+          '<button type="button" class="isl-btn ' + (curId === 'demo-g4' ? 'cyan' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-g4\')">Grade 4</button>' +
           '<button type="button" class="isl-btn ' + (curId === 'demo-star' ? 'amber' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-star\')">⭐ Star</button>' +
         '</div>';
     }
 
+    var trailSvg =
+      '<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">' +
+        '<path d="M 16 66 Q 24 40 33 36 T 50 68 T 67 36 T 82 64 Q 87 48 89 30" fill="none" stroke="rgba(253,224,71,0.75)" stroke-width="1.1" stroke-dasharray="2.5 2" stroke-linecap="round"/>' +
+      '</svg>';
+
     document.body.classList.add('isl-modal-open');
     modalRoot().innerHTML =
       '<div class="isl-modal-backdrop" id="wg-map-backdrop">' +
-        '<div class="isl-card-modal wg-map-modal" style="background-image:url(' + FLAT + 't_map_sea.webp)">' +
+        '<div class="isl-card-modal wg-map-modal" style="background:linear-gradient(180deg,rgba(6,9,17,0.45),rgba(6,9,17,0.72)),url(art/bg_benbow.webp) center/cover no-repeat;border:3px solid #f59e0b">' +
           '<div class="isl-mission-top wg-map-top">' +
-            '<div style="font-size:1.25rem;font-weight:800;display:flex;align-items:center;gap:8px"><img src="' + FLAT + 'o_compass.webp" style="width:36px;height:36px;object-fit:contain" alt=""> 🏴‍☠️ Treasure Island Sea Chart</div>' +
+            '<div style="font-size:1.25rem;font-weight:800;display:flex;align-items:center;gap:8px"><img src="' + FLAT + 'o_compass.webp" style="width:36px;height:36px;object-fit:contain" alt=""> 🏴‍☠️ Stage 1 Sea Chart · Admiral Benbow Harbour</div>' +
             demoBtns +
             '<div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
-              '<button type="button" class="isl-btn ' + (allOpen ? 'amber' : 'cyan') + '" style="min-height:38px;padding:5px 10px;font-size:0.82rem" onclick="WorldGame.toggleAllChaptersUnlock()" title="Switch between Week 1 Stage Focus and All Chapters Unlocked">' + (allOpen ? '🔓 All Chapters Open' : '⚓ Week 1 Stage Lock') + '</button>' +
+              '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.replayStoryIntro()">🎬 Story Intro</button>' +
               '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.openSportsArena(\'soccer\', \'2v2\')">⚽ Crew Sports</button>' +
-              '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openStickerBook()">📒 Sticker Log</button>' +
               '<a class="isl-btn cyan" style="min-height:38px;padding:5px 11px;font-size:0.86rem;text-decoration:none;display:inline-flex;align-items:center" href="../index.html">🏫 School Hub</a>' +
               '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:5px 10px" onclick="WorldGame.closeModal()">✕</button>' +
             '</div>' +
           '</div>' +
-          pipBannerHtml +
-          '<div class="wg-map-canvas">' + nodesHtml + '</div>' +
+          '<div class="wg-map-story-bar">' +
+            '<div class="wg-map-story-left">' +
+              '<span class="wg-map-ch-pill">⚓ STAGE 1: ADMIRAL BENBOW HARBOUR</span>' +
+              '<span class="wg-map-ch-desc">Tap any Harbour Stop below to walk there with Jim Hawkins &amp; Benbow! (' + doneCount + ' / 5 Map Clues Solved)</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="wg-map-canvas" style="position:relative">' + trailSvg + nodesHtml + chestNodeHtml + '</div>' +
         '</div>' +
       '</div>';
   }
 
-  function jumpZone(z) {
-    if (z > 1 && W() && W().isOpen && !W().isOpen(z)) {
-      sound('playSoftFail');
-      say('Finish four stops in the previous place first!');
-      return;
-    }
+  function jumpHarbourStop(idx, missionId) {
     closeModal();
-    if (W() && W().goZone) W().goZone(z, 0);
+    if (W() && W().nextMission && missionId) {
+      W().nextMission(missionId, 1, false);
+    }
+  }
+
+  function jumpHarbourChest() {
+    closeModal();
+    if (root.IslandApp && root.IslandApp.tapChest) {
+      root.IslandApp.tapChest(1);
+    }
+  }
+
+  function jumpZone(z) {
+    closeModal();
+    if (W() && W().goZone) W().goZone(1, 0);
   }
 
   function goClassicMap() {
