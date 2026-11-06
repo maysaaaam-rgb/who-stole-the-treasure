@@ -248,7 +248,7 @@
   /* Render Main Island Map */
   /* ---------- the map: 1. the island with four big places + Social World Hub ---------- */
   var MAP_PLACES = { 1: { x: 22, y: 33 }, 2: { x: 78, y: 31 }, 3: { x: 22, y: 72 }, 4: { x: 78, y: 72 } };
-  var ZONE_MAP_PROP = { 1: 'z1/o_robot', 2: 'z2/o_lighthouse_on', 3: 'z3/o_market_open', 4: 'z4/o_rocket' };
+  var ZONE_MAP_PROP = { 1: 'o_benbow_inn', 2: 'z2/o_lighthouse_on', 3: 'z3/o_market_open', 4: 'z4/o_rocket' };
   var FRIEND_SPOTS = [{ x: 40, y: 36 }, { x: 60, y: 36 }, { x: 50, y: 25 }];
 
   function regularMissions(zoneNum) {
@@ -417,7 +417,7 @@
 
   /* ---------- the map: 2. one place, with a clear grounded trail ---------- */
   var TRAIL = [{ x: 11, y: 72, px: 22, py: 82 }, { x: 26, y: 52, px: 76, py: 71 }, { x: 42, y: 70, px: 24, py: 60 }, { x: 58, y: 52, px: 76, py: 49 }, { x: 74, y: 68, px: 24, py: 38 }, { x: 89, y: 50, px: 76, py: 26 }];
-  var ZONE_BG = { 1: 'art/z1/bg_factory.webp', 2: 'art/z2/bg_beach.webp', 3: 'art/z3/bg_river.webp', 4: 'art/z4/bg_volcano.webp' };
+  var ZONE_BG = { 1: 'art/bg_benbow.webp', 2: 'art/z2/bg_beach.webp', 3: 'art/z3/bg_river.webp', 4: 'art/z4/bg_volcano.webp' };
   var ZONE_FOCUS = { 2: '82% 28%', 3: '20% 72%', 4: '76% 66%' };
 
   function zoneScreenHtml(zoneNum) {
