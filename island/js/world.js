@@ -75,19 +75,44 @@
       crate: { x: 460, y: 1180 }, ball: { x: 1150, y: 1140 }, shells: [{ x: 460, y: 1195, under: true }, { x: 2100, y: 420 }]
     },
     1: {
-      ground: 'meadow', look: { base: '#8fd14f', tile: 't_grass', alpha: .3, patch: 'rgba(190,232,110,.3)', edge: '#c7a463', fill: '#f4e4ae', speck: ['#e2cd8f', '#d6bd7c'] }, npc: { art: FLAT + 'c_bolt', worried: FLAT + 'c_bolt_worried', happy: FLAT + 'c_bolt_happy', x: 640, y: 620 }, blocked: function (x, y) { return y < 215 || y > 1480 || x < 60 || x > W - 60 || Math.pow((x - 1762) / 381, 2) + Math.pow((y - 476) / 227, 2) < 1; },
-      stops: [{ x: 300, y: 1050, art: FLAT + 'o_machine_off', done: FLAT + 'o_machine_on', h: 210 }, { x: 700, y: 1250, art: FLAT + 'o_compass', h: 120 }, { x: 1120, y: 1040, art: FLAT + 'o_map_scroll', h: 120 }, { x: 1520, y: 1240, art: FLAT + 'o_robot', h: 190 }, { x: 1880, y: 980, art: FLAT + 'o_engine', h: 150 }],
-      chest: { x: 2120, y: 1030, art: FLAT + 'o_chest' },
-      decor: [{ art: FLAT + 'o_house', x: 930, y: 560, h: 340, sw: 230 }, { art: FLAT + 'o_well', x: 1270, y: 720, h: 200, sw: 100 }, { art: FLAT + 'o_sign', x: 1090, y: 700, h: 110, sw: 30 },
-        { art: FLAT + 'o_tree_round', x: 1160, y: 440, h: 370, sw: 60, sway: true }, { art: FLAT + 'o_tree_round', x: 2230, y: 1270, h: 380, sw: 60, sway: true }, { art: FLAT + 'o_tree_pine', x: 1860, y: 1440, h: 340, sw: 60, sway: true }, { art: FLAT + 'o_tree_pine', x: 220, y: 440, h: 340, sw: 60, sway: true }, { art: FLAT + 'o_tree_round', x: 470, y: 470, h: 330, sw: 60, sway: true },
-        { art: FLAT + 'o_bush', x: 600, y: 1430, h: 110, sw: 90 }, { art: FLAT + 'o_bush', x: 2050, y: 1260, h: 110, sw: 90 }, { art: FLAT + 'o_bush', x: 400, y: 760, h: 100, sw: 80 }, { art: FLAT + 'o_rock', x: 1450, y: 900, h: 80, sw: 70 }, { art: FLAT + 'o_campfire', x: 380, y: 640, h: 110, sw: 70 }, { art: FLAT + 'o_tent', x: 250, y: 600, h: 140, sw: 110 }, { art: FLAT + 'o_lamp', x: 780, y: 640, h: 170, sw: 26 }, { art: FLAT + 'o_mushroom', x: 1560, y: 1380, h: 80, sw: 40 }, { art: FLAT + 'o_flowers_pink', x: 700, y: 1010, h: 54, flat: true }, { art: FLAT + 'o_flowers_pink', x: 1640, y: 1180, h: 54, flat: true }, { art: FLAT + 'o_fence', x: 480, y: 910, h: 90, sw: 90 }, { art: FLAT + 'o_fence', x: 590, y: 910, h: 90, sw: 90 }, { art: FLAT + 'o_fence', x: 1660, y: 820, h: 90, sw: 90 }, { art: FLAT + 'o_fence', x: 1770, y: 820, h: 90, sw: 90 }],
-      ground2: { flowers: [FLAT + 'o_flowers'], count: 30 },
-      paths: [[[70, 760], [300, 1110], [700, 1310], [1120, 1100], [1520, 1300], [1880, 1040], [2150, 1060], [2330, 760]], [[1120, 1100], [1190, 800], [1000, 610]]],
-      edge: { top: [FLAT + 'o_tree_round', FLAT + 'o_tree_pine'], topH: [340, 430], bottom: [FLAT + 'o_bush'], bottomH: [130, 170] },
-      gather: [{ art: FLAT + 'i_wood', word: 'wood', h: 58, x: 840, y: 1010 }, { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 1990, y: 1100 }, { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 420, y: 1370 }, { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 1420, y: 620 },
-        { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 930, y: 1190 }, { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 1600, y: 1120 }, { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 620, y: 780 },
-        { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 1330, y: 1010 }, { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 240, y: 800 }, { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 2070, y: 800 }, { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 880, y: 1400 }],
-      crate: { x: 1360, y: 1180 }, ball: { x: 760, y: 950 }, shells: [{ x: 1360, y: 1195, under: true }, { x: 1352, y: 480 }, { x: 240, y: 1400 }]
+      ground: 'meadow',
+      look: { base: '#6bc453', tile: 't_grass', alpha: .26, patch: 'rgba(244,228,174,.32)', edge: '#b98f4a', fill: '#f3dd9c', speck: ['#dfbe78', '#c7a463'], extra: ['t_sand', 't_water'] },
+      npc: { art: FLAT + 'c_jim', worried: FLAT + 'c_jim', happy: FLAT + 'c_jim_happy', x: 640, y: 630, h: 195 },
+      blocked: function (x, y) { return y < 220 || y > 1470 || x < 65 || x > W - 65; },
+      stops: [
+        { x: 420,  y: 1020, art: FLAT + 'o_compass',     done: FLAT + 'o_compass',     h: 135 },
+        { x: 850,  y: 1220, art: FLAT + 'o_map_scroll',  done: FLAT + 'o_map_scroll',  h: 135 },
+        { x: 1280, y: 960,  art: FLAT + 'o_spyglass',    done: FLAT + 'o_spyglass',    h: 175 },
+        { x: 1660, y: 1200, art: FLAT + 'o_ship_wheel',  done: FLAT + 'o_ship_wheel',  h: 175 },
+        { x: 1980, y: 930,  art: FLAT + 'o_barrel_dock', done: FLAT + 'o_hispaniola',  h: 165 }
+      ],
+      chest: { x: 2130, y: 1120, art: FLAT + 'o_billy_chest' },
+      decor: [
+        { art: FLAT + 'o_benbow_inn',  x: 470,  y: 590,  h: 360, sw: 240 },
+        { art: FLAT + 'o_lamp',        x: 720,  y: 610,  h: 165, sw: 28 },
+        { art: FLAT + 'o_campfire',    x: 310,  y: 660,  h: 110, sw: 70 },
+        { art: FLAT + 'o_barrel_dock', x: 1910, y: 690,  h: 135, sw: 95 },
+        { art: FLAT + 'o_palm_a',      x: 1640, y: 540,  h: 350, sw: 46, sway: true },
+        { art: FLAT + 'o_palm_b',      x: 2040, y: 490,  h: 340, sw: 46, sway: true },
+        { art: FLAT + 'o_palm_a',      x: 2220, y: 1320, h: 360, sw: 46, sway: true },
+        { art: FLAT + 'o_tree_pine',   x: 210,  y: 460,  h: 350, sw: 60, sway: true },
+        { art: FLAT + 'o_tree_round',  x: 920,  y: 450,  h: 350, sw: 60, sway: true },
+        { art: FLAT + 'o_tree_pine',   x: 1380, y: 460,  h: 340, sw: 60, sway: true },
+        { art: FLAT + 'o_rock',        x: 1470, y: 760,  h: 82,  sw: 70 },
+        { art: FLAT + 'o_rock',        x: 620,  y: 1360, h: 78,  sw: 66 },
+        { art: FLAT + 'o_starfish',    x: 1840, y: 1080, h: 46,  flat: true },
+        { art: FLAT + 'o_starfish',    x: 2040, y: 1240, h: 44,  flat: true }
+      ],
+      ground2: { flowers: [FLAT + 'o_flowers'], count: 14 },
+      paths: [
+        [[470, 650], [640, 680], [420, 1060], [850, 1260], [1280, 1000], [1660, 1240], [1980, 970], [2130, 1140]],
+        [[1980, 970], [2120, 760], [2310, 760]]
+      ],
+      edge: { top: [FLAT + 'o_tree_round', FLAT + 'o_tree_pine'], topH: [340, 420], bottom: [FLAT + 'o_bush'], bottomH: [120, 155] },
+      gather: [],
+      crate: null,
+      ball: { x: 1060, y: 820 },
+      shells: []
     },
     2: {
       ground: 'beach', look: { base: '#f2cf6b', tile: 't_sand', alpha: .4, patch: 'rgba(255,236,170,.14)', extra: ['t_water'] }, npc: { art: FLAT + 'c_lulu', worried: FLAT + 'c_lulu_worried', happy: FLAT + 'c_lulu_happy', x: 1810, y: 700, h: 130 },
@@ -135,7 +160,7 @@
       crate: { x: 1300, y: 1000 }, ball: { x: 400, y: 1280 }, shells: [{ x: 1300, y: 1015, under: true }, { x: 2260, y: 280 }, { x: 700, y: 1460 }]
     }
   };
-  var ART = [FLAT + 'o_gift', FLAT + 'o_star_path', FLAT + 'o_chest', FLAT + 'o_chest_open', FLAT + 'o_treasure_gold', FLAT + 'o_hispaniola', FLAT + 'o_boat', FLAT + 'o_compass', FLAT + 'o_map_scroll', FLAT + 'o_pirate_hat', FLAT + 'c_benbow', FLAT + 'c_benbow_happy', FLAT + 'c_pip', FLAT + 'c_pip_happy', FLAT + 'o_ball', FLAT + 'o_crate', FLAT + 'o_shell', FLAT + 'o_coconut', FLAT + 'o_butterfly', FLAT + 'o_bird', FLAT + 'o_duck', FLAT + 'o_frog', FLAT + 'v_mark'];
+  var ART = [FLAT + 'o_gift', FLAT + 'o_star_path', FLAT + 'o_chest', FLAT + 'o_chest_open', FLAT + 'o_billy_chest', FLAT + 'o_treasure_gold', FLAT + 'o_hispaniola', FLAT + 'o_boat', FLAT + 'o_compass', FLAT + 'o_map_scroll', FLAT + 'o_pirate_hat', FLAT + 'o_benbow_inn', FLAT + 'o_spyglass', FLAT + 'o_ship_wheel', FLAT + 'o_barrel_dock', FLAT + 'c_jim', FLAT + 'c_jim_happy', FLAT + 'c_billy', FLAT + 'c_silver', FLAT + 'c_livesey', FLAT + 'c_benbow', FLAT + 'c_benbow_happy', FLAT + 'c_pip', FLAT + 'c_pip_happy', FLAT + 'o_ball', FLAT + 'o_crate', FLAT + 'o_shell', FLAT + 'o_coconut', FLAT + 'o_butterfly', FLAT + 'o_bird', FLAT + 'o_duck', FLAT + 'o_frog', FLAT + 'v_mark'];
   // only the zone you are in is loaded, so phones wait less
   function artUrl(n) { return (n.indexOf(FLAT) === 0 ? 'art/' : 'art/clean/') + n + '.webp'; }
   function zoneArt(z) {
@@ -297,21 +322,30 @@
         c.restore();
       }
       if (z === 1) {
-        oval(1762, 476, 425, 262, '#f3dd9c', '#b98f4a', 5);
-        oval(1762, 476, 385, 228, '#3fb5e2', '#1f7fae', 6);
-        oval(1740, 500, 330, 180, '#63cbee');
-        c.strokeStyle = '#d6f5ff'; c.lineWidth = 6; c.lineCap = 'round';
-        [[1500, 420, 110], [1720, 360, 140], [1900, 470, 120], [1620, 560, 130], [1840, 600, 100]].forEach(function (w) { c.beginPath(); c.moveTo(w[0], w[1]); c.quadraticCurveTo(w[0] + w[2] / 2, w[1] - 16, w[0] + w[2], w[1]); c.stroke(); });
-        /* Admiral Benbow Sea Harbour Bay & Wooden Ship Pier on the Eastern Coast */
-        oval(2360, 760, 230, 235, '#f3dd9c', '#b98f4a', 5);
-        oval(2365, 760, 195, 200, '#1680bb', '#0f4c81', 6);
-        oval(2355, 760, 155, 160, '#23a5d6');
-        for (var px = 2110, pi2 = 0; px < 2310; px += 34, pi2++) {
+        /* Golden Sandy Beach Shoreline along the Eastern Harbour */
+        oval(2180, 820, 540, 680, '#f3dd9c', '#c7a463', 6);
+        /* Deep Turquoise Admiral Benbow Sea Cove */
+        oval(2390, 780, 390, 520, '#38bdf8', '#0284c7', 8);
+        oval(2410, 780, 320, 440, '#0ea5e9');
+        oval(2430, 780, 240, 350, '#0369a1');
+        c.strokeStyle = '#e0f2fe'; c.lineWidth = 6; c.lineCap = 'round';
+        [[2120, 560, 90], [2160, 660, 110], [2150, 890, 100], [2190, 990, 95]].forEach(function (w) {
+          c.beginPath(); c.moveTo(w[0], w[1]); c.quadraticCurveTo(w[0] + w[2] / 2, w[1] - 14, w[0] + w[2], w[1]); c.stroke();
+        });
+        /* Stone Cobble Courtyard under the Admiral Benbow Inn */
+        oval(540, 620, 290, 130, '#e2cd8f', '#a18048', 5);
+        /* Sturdy Wooden Harbour Boarding Pier out to the Hispaniola */
+        c.fillStyle = 'rgba(15, 23, 42, 0.35)';
+        c.fillRect(1980, 722, 350, 98);
+        for (var px = 1980, pi2 = 0; px < 2320; px += 34, pi2++) {
           c.fillStyle = pi2 % 2 ? '#b9823f' : '#c8924b';
-          c.fillRect(px, 712, 34, 96);
-          c.strokeStyle = '#6f4316'; c.lineWidth = 3;
-          c.strokeRect(px, 712, 34, 96);
+          c.fillRect(px, 708, 34, 98);
+          c.strokeStyle = '#5c340e'; c.lineWidth = 3;
+          c.strokeRect(px, 708, 34, 98);
         }
+        c.fillStyle = '#5c340e';
+        c.fillRect(1976, 700, 352, 12);
+        c.fillRect(1976, 800, 352, 12);
       }
       if (z === 2) {
         var sea = function (off) { c.beginPath(); c.moveTo(0, 0); for (x = 0; x <= W; x += 12) c.lineTo(x, shore(x) + off); c.lineTo(W, 0); c.closePath(); };
@@ -526,7 +560,7 @@
   var ZONE_LANDMARKS = {
     0: [
       { id: 'lm_z0_chronicle', x: 1420, y: 720, label: '📜 Captain\'s Logbook', icon: 'o_map_scroll',
-        title: '📜 The Treasure Island Logbook (سجل جزيرة الكنز)',
+        title: '📜 The Treasure Island Logbook (Treasure Island Log)',
         story: 'Jim Hawkins and his baby leopard cub Benbow discovered Captain Flint\'s torn sea map at the Admiral Benbow Inn! Solve the English clues across all 4 chapters to board the Hispaniola and claim the Great Treasure!' },
       { id: 'lm_z0_well', x: 1780, y: 690, label: '🧭 Mariner\'s Well', icon: 'o_compass',
         title: '🧭 Ancient Mariner\'s Compass Well',
@@ -559,17 +593,20 @@
 
   var ZONE_COMPANIONS = {
     1: [
-      { id: 'comp_benbow', x: 765, y: 645, h: 125, art: 'c_benbow', happy: 'c_benbow_happy', label: '🐆 Benbow',
-        title: '🐆 Benbow the Baby Leopard (النمر الصغير بينبو)',
-        line: 'Purr-roar! I am Jim Hawkins\'s brave leopard cub Benbow! Let us sniff out all 5 Map Clues in Benbow Harbour so we can board the Hispaniola ship!' },
-      { id: 'comp_flint', x: 1015, y: 625, h: 118, art: 'c_pip', happy: 'c_pip_happy', label: '🦜 Parrot Flint',
-        title: '🦜 Parrot Captain Flint (الببغاء الكابتن فلينت)',
-        line: 'Squawk! Pieces of eight! Solve the English clues at the 5 stops and board the Hispaniola on the right coast!', isFlint: true }
+      { id: 'comp_benbow', x: 780, y: 650, h: 135, art: 'c_benbow', happy: 'c_benbow_happy', label: '🐆 Benbow',
+        title: '🐆 Benbow the Baby Leopard',
+        line: 'Purr-roar! I am Jim Hawkins\'s brave leopard cub Benbow! Walk along the sandy trail to solve all 5 Map Clues!' },
+      { id: 'comp_billy', x: 1150, y: 640, h: 185, art: 'c_billy', happy: 'c_billy_happy', label: '🏴‍☠️ Billy Bones',
+        title: '🏴‍☠️ Captain Billy Bones',
+        line: 'Ahoy, young sailor! Keep a sharp eye on the sea with my brass spyglass! Solve all 5 clues to unlock my heavy Sea Chest!' },
+      { id: 'comp_flint', x: 1830, y: 660, h: 125, art: 'c_pip', happy: 'c_pip_happy', label: '🦜 Parrot Flint',
+        title: '🦜 Parrot Captain Flint',
+        line: 'Squawk! Pieces of eight! The Hispaniola ship is anchored right here at the pier! Finish the 5 clues to set sail!', isFlint: true }
     ],
     2: [
       { id: 'comp_flint_z2', x: 1690, y: 715, h: 115, art: 'c_pip', happy: 'c_pip_happy', label: '🦜 Parrot Flint',
         title: '🦜 Parrot Captain Flint',
-        line: 'Squawk! Captain Silver is cooking in the galley! Light the Spyglass Beacon at Stop 5 to sail to the Stockade Forest!', isFlint: true }
+        line: 'Squawk! Captain Silver is waiting by the bay! Light the Spyglass Beacon at Clue 5!', isFlint: true }
     ]
   };
 
@@ -1239,8 +1276,8 @@
       return;
     }
     var ms = missions(z).regular, done = ms.filter(function (m) { return starsOf(m.id) > 0; }).length, total = ms.reduce(function (a, m) { return a + starsOf(m.id); }, 0);
-    var tip = done < 5 ? 'Walk to the glowing stop!' : (chestOpened(z) ? 'Next place: follow the arrow!' : 'Open the treasure!');
-    $('w-goal').innerHTML = zoneName(z) + ' · ⭐ ' + total + '<small>' + tip + '</small>';
+    var tip = done < 5 ? ('Clue ' + (done + 1) + ' of 5 · Walk to the glowing clue!') : (chestOpened(z) ? 'Board the Hispaniola at the pier!' : 'Unlock Billy Bones\'s Sea Chest!');
+    $('w-goal').innerHTML = '🏴‍☠️ ' + zoneName(z) + ' · ⭐ ' + total + '<small>' + tip + '</small>';
   }
 
   function makeWorldLabel(sc, x, y, text, color) {
@@ -1647,11 +1684,7 @@
     } else {
       sc.chest = null;
     }
-    // the daily gift, near where a pupil comes in
-    var gift = sc.add.image(170, 1120, FLAT + 'o_gift').setOrigin(.5, .96).setDepth(1120); gift.setScale(100 / gift.height);
-    makeWorldLabel(sc, 170, 1005, '🎁 Daily Quest', '#fde047');
-    sc.gift = { kind: 'gift', img: gift, x: 170, y: 1120 };
-    sc.tweens.add({ targets: gift, y: 1110, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+    sc.gift = null;
     // Star Path stones: only ever built for a pupil on the Star Path
     sc.stones = [];
     (ms.star || []).forEach(function (sm, i) {
@@ -2035,7 +2068,7 @@
   /* ---------- Harbour Ship & Boat Docks to Sail Between Islands ---------- */
   function makeGate(sc, dir) {
     var to = S.zone + dir;
-    if (to < 0 || to > 4) return null;
+    if (to < 1 || to > 4) return null;
     var x = dir > 0 ? W - 95 : 90, y = 760;
     var shipTex = dir > 0 ? (FLAT + 'o_hispaniola') : (FLAT + 'o_boat');
     var shipH = dir > 0 ? 195 : 135;
@@ -2114,19 +2147,20 @@
       buildStops(sc, zone);
       buildHome(sc);
       if (!S.inHouse) {
-        buildVillagers(sc);
-        buildBattles(sc);
+        sc.villagers = [];
+        sc.battles = [];
+        sc.gather = [];
+        sc.landmarks = [];
         addLife(sc, zone);
-        buildGather(sc, zone);
-        buildLandmarks(sc);
         buildCompanions(sc);
 
-        sc.crate = sc.physics.add.image(zone.crate.x, zone.crate.y, FLAT + 'o_crate').setDepth(zone.crate.y); sc.crate.setScale(112 / sc.crate.height);
-        sc.crate.body.setSize(sc.crate.width * .85, sc.crate.height * .8); sc.crate.setDrag(1400).setCollideWorldBounds(true).setMass(3).setBounce(.1);
-        sc.ball = sc.physics.add.image(zone.ball.x, zone.ball.y, FLAT + 'o_ball').setDepth(zone.ball.y); sc.ball.setScale(84 / sc.ball.height);
-        sc.ball.body.setCircle(sc.ball.width / 2); sc.ball.setDrag(170).setBounce(.8).setCollideWorldBounds(true).setMass(.4);
-        sc.ballShadow = sc.add.image(zone.ball.x, zone.ball.y, 'shadow').setDepth(-6);
-        sc.crateShadow = sc.add.image(zone.crate.x, zone.crate.y + 55, 'shadow').setScale(2.3).setDepth(-6);
+        sc.crate = null;
+        sc.crateShadow = null;
+        if (zone.ball) {
+          sc.ball = sc.physics.add.image(zone.ball.x, zone.ball.y, FLAT + 'o_ball').setDepth(zone.ball.y); sc.ball.setScale(84 / sc.ball.height);
+          sc.ball.body.setCircle(sc.ball.width / 2); sc.ball.setDrag(170).setBounce(.8).setCollideWorldBounds(true).setMass(.4);
+          sc.ballShadow = sc.add.image(zone.ball.x, zone.ball.y, 'shadow').setDepth(-6);
+        }
 
         // hidden shells: a little something to find (kept on this device for now, no XP)
         var found = foundShells();
@@ -2158,10 +2192,10 @@
       (async function () {
         var look = monsterLook();
         if (!sc.textures.exists('me') || S.lookStamp !== JSON.stringify(look)) await bakeMonster(sc, 'me', look);
-        var crowd = Math.max(0, Math.min(30, Number(Q.get('crowd') !== null ? Q.get('crowd') : 3))), colors = ['pink', 'gold', 'green', 'purple', 'orange'], palNames = ['Sky', 'River', 'Sunny', 'Robin', 'Leo'];
+        var crowd = Math.max(0, Math.min(30, Number(Q.get('crowd') !== null ? Q.get('crowd') : 0))), colors = ['pink', 'gold', 'green', 'purple', 'orange'], palNames = ['Sky', 'River', 'Sunny', 'Robin', 'Leo'];
         for (var i = 0; i < Math.min(crowd, colors.length); i++) if (!sc.textures.exists('c' + i)) await bakeMonster(sc, 'c' + i, { stage: ['baby', 'growing', 'adventurer', 'advanced', 'ultimate'][i % 5], color: colors[i] });
-        var sx = S.inHouse ? 1200 : (S.fromHouse ? 1170 : (S.fromDir < 0 ? W - 220 : (S.fromDir > 0 ? 220 : (S.zone === 0 ? 960 : 300))));
-        var sy = S.inHouse ? 1020 : (S.fromHouse ? 775 : (S.fromDir ? 880 : (S.zone === 0 ? 830 : 1070)));
+        var sx = S.inHouse ? 1200 : (S.fromHouse ? 1170 : (S.fromDir < 0 ? W - 260 : (S.fromDir > 0 ? 240 : (S.zone === 0 ? 960 : 560))));
+        var sy = S.inHouse ? 1020 : (S.fromHouse ? 775 : (S.fromDir ? 820 : (S.zone === 0 ? 830 : 760)));
         var free = nearestFree(sc.grid, Math.floor(sx / CELL), Math.floor(sy / CELL)) || [5, 20];
         sc.player = makeWalker(sc, 'me', free[0] * CELL + 20, free[1] * CELL + 20, .54);
         sc.cameras.main.setBounds(0, 0, W, H);
@@ -2169,14 +2203,11 @@
         var fit = function () { if (!sc.cameras || !sc.cameras.main) return; var w = sc.scale.width, h = sc.scale.height; sc.cameras.main.setZoom(Math.max(w / W, h / H, .7, Math.min(1, Math.min(w / 1050, h / 640)))); };
         fit(); sc.scale.off('resize'); sc.scale.on('resize', fit);
         sc.physics.add.collider(sc.player, sc.solidGroup);
-        if (sc.crate && sc.ball) {
-          sc.physics.add.collider(sc.player, sc.crate);
-          sc.physics.add.collider(sc.crate, sc.solidGroup);
+        if (sc.ball) {
           sc.physics.add.collider(sc.ball, sc.solidGroup);
-          sc.physics.add.collider(sc.ball, sc.crate);
           sc.physics.add.collider(sc.player, sc.ball, function () {
             var dx = sc.ball.x - sc.player.x, dy = sc.ball.y - sc.player.y, len = Math.sqrt(dx * dx + dy * dy) || 1;
-            sc.ball.setVelocity(dx / len * 620, dy / len * 620); sound('playHop');
+            sc.ball.setVelocity(dx / len * 520, dy / len * 520); sound('playHop');
           });
         }
         var crowdCount = S.inHouse ? 0 : crowd;
@@ -2196,6 +2227,16 @@
         $('w-fade').classList.remove('on');
         S.cooldown = 500;
         S.ready = true;
+        if (!S.introChecked && !Q.get('nostory') && !Q.get('fps')) {
+          S.introChecked = true;
+          var introSeen = false;
+          try { introSeen = localStorage.getItem('eaa_treasure_intro_v2') === '1'; } catch (e) {}
+          if (!introSeen && root.IslandStory && root.IslandStory.playIntro) {
+            try { localStorage.setItem('eaa_treasure_intro_v2', '1'); } catch (e) {}
+            var mHtml = (App() && App().monsterHtml) ? App().monsterHtml(92) : '';
+            setTimeout(function () { root.IslandStory.playIntro(mHtml, function () {}); }, 250);
+          }
+        }
       })().catch(function (e) { $('w-load').innerHTML = '😢 The monster could not load.<small>' + String(e && e.message || e).slice(0, 120) + '</small>'; S.error = String(e); });
     },
     update: function (time, delta) {
@@ -2261,9 +2302,8 @@
         pushOut(w, zone); moveSkin(w, delta, time);
         if (w.nameTag) { w.nameTag.setPosition(w.x, w.y - 98); w.nameTag.setDepth(w.y + 5); }
       });
-      if (sc.crate && sc.ball) {
-        pushOut(sc.crate, zone); pushOut(sc.ball, zone);
-        sc.crate.setDepth(sc.crate.y + 54); sc.crateShadow.setPosition(sc.crate.x, sc.crate.y + 54);
+      if (sc.ball) {
+        pushOut(sc.ball, zone);
         sc.ball.setDepth(sc.ball.y + 40); sc.ball.rotation += sc.ball.body.velocity.x * delta * .00002; sc.ballShadow.setPosition(sc.ball.x, sc.ball.y + 42);
       }
 
@@ -2348,6 +2388,8 @@
     if ($('w-jobs')) $('w-jobs').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openJobsBoard(); };
     if ($('w-wall')) $('w-wall').onclick = function () { sound('playTap'); if (root.IslandWall) root.IslandWall.open(); };
     if ($('w-book')) $('w-book').onclick = function () { sound('playTap'); if (root.IslandRewards) root.IslandRewards.openStickerBook(); };
+    if ($('w-story')) $('w-story').onclick = function () { sound('playTap'); if (root.WorldGame && root.WorldGame.replayStoryIntro) root.WorldGame.replayStoryIntro(); };
+    if ($('w-sports')) $('w-sports').onclick = function () { sound('playTap'); if (root.WorldGame && root.WorldGame.openSportsArena) root.WorldGame.openSportsArena('soccer', '2v2'); };
     if ($('w-dress')) $('w-dress').onclick = function () { sound('playTap'); App().openDressingRoom(); };
     if ($('w-shop')) $('w-shop').onclick = function () { sound('playTap'); root.IslandShop.open(); };
     if ($('w-status')) $('w-status').onclick = function () { sound('playTap'); if (root.IslandShop) root.IslandShop.open(); };

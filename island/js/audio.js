@@ -187,7 +187,7 @@
   var clipEl = null;
   var speakTimer = 0;
   var WHO_MAP = { 1: 'bolt', 2: 'lulu', 3: 'nutty', 4: 'ember', bolt: 'bolt', lulu: 'lulu', nutty: 'nutty', ember: 'ember', pip: 'pip', say: 'say' };
-  fetch('audio/manifest.json?v=6').then(function (r) { return r.json(); }).then(function (m) { clips = m || {}; }).catch(function () {});
+  fetch('audio/manifest.json?v=7').then(function (r) { return r.json(); }).then(function (m) { clips = m || {}; }).catch(function () {});
   function clipKey(t) { return String(t).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
   function stopSpeech() {
     clearTimeout(speakTimer);

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <meta name="theme-color" content="#060911">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Treasure Island (جزيرة الكنز) • English Adventure Academy</title>
+  <title>Treasure Island • Chapter 1: Admiral Benbow Harbour</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=w3">
@@ -21,25 +21,22 @@
   <main class="isl-main" id="isl-main"></main>
   <div id="world"></div>
 
-  <!-- Clean 3-Point Game HUD -->
+  <!-- Treasure Island HUD (Focused on Chapter 1: Admiral Benbow Harbour) -->
   <div id="w-top">
     <div class="w-hud-left">
-      <button type="button" class="w-btn w-icon-btn" id="w-back" aria-label="World Map"><img src="art/flat/u_map.webp" alt=""><span>Map</span></button>
-      <button type="button" class="w-btn w-status-chip" id="w-status" aria-label="Monster Level & Coins" title="Tap to open Store!">
+      <button type="button" class="w-btn w-icon-btn" id="w-back" aria-label="Sea Chart"><img src="art/flat/o_compass.webp" alt=""><span>Sea Chart</span></button>
+      <button type="button" class="w-btn w-status-chip" id="w-status" aria-label="Captain Level & Gold" title="Captain Progress">
         <span class="w-lvl-badge" id="w-lvl-txt">Lv.3</span>
         <span class="w-xp-track"><span class="w-xp-fill" id="w-xp-fill" style="width:35%"></span></span>
         <span class="w-coin-val" id="w-coin-txt">🪙 130</span>
       </button>
-      <button type="button" class="w-btn w-energy-chip" id="w-energy" aria-label="Monster Energy" title="Tap to charge +30 Energy!"><img src="art/flat/i_energy.webp" alt=""><b id="w-energy-val">35</b></button>
+      <button type="button" class="w-btn w-energy-chip" id="w-energy" style="display:none"><img src="art/flat/i_energy.webp" alt=""><b id="w-energy-val">100</b></button>
     </div>
     <div id="w-goal"></div>
     <div id="w-tools">
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-home" aria-label="Home & Workshop"><img src="art/flat/u_build.webp" alt=""><span>Home</span></button>
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-decor" aria-label="Decorate Yard" style="display:none"><img src="art/flat/o_workbench.webp" alt=""><span>Decorate</span></button>
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-jobs" aria-label="Villager Quests"><img src="art/flat/u_jobs.webp" alt=""><span>Quests</span><em class="w-badge" id="w-jobs-badge" hidden>0</em></button>
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-dress" aria-label="Dress up"><img src="art/flat/u_dress.webp" alt=""><span>Look</span></button>
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-shop" aria-label="Store"><img src="art/flat/u_store.webp" alt=""><span>Store</span></button>
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-wall" aria-label="Class Plaza"><img src="art/flat/u_friends.webp" alt=""><span>Plaza</span></button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-story" aria-label="Story Cutscene"><img src="art/flat/o_map_scroll.webp" alt=""><span>Story</span></button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-sports" aria-label="Crew Sports"><img src="art/flat/o_ball.webp" alt=""><span>Sports</span></button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-dress" aria-label="Costumes"><img src="art/flat/u_dress.webp" alt=""><span>Look</span></button>
       <button type="button" class="w-btn w-tool w-mute-btn" id="w-mute" aria-label="Sound On/Off" title="Sound On/Off">🔊</button>
     </div>
     <div id="w-fps"></div>
@@ -69,7 +66,7 @@
     <div class="w-dd-tray" id="w-dd-tray"></div>
   </div>
 
-  <div id="w-bag"></div>
+  <div id="w-bag" style="display:none"></div>
   <div id="w-vignette"></div>
   <div id="w-fade"></div>
   <div id="w-load">⛵ Sailing to Treasure Island...<small id="w-load-small"></small></div>
@@ -96,17 +93,17 @@
   <script src="../game-maker/js/bank.js?v=1"></script>
   <script src="js/data.js?v=w7"></script>
   <script src="js/audio.js?v=w2"></script>
-  <script src="js/story.js?v=w2"></script>
+  <script src="js/story.js?v=w5"></script>
   <script src="js/games.js?v=w1"></script>
-  <script src="js/adventure.js?v=w1"></script>
+  <script src="js/adventure.js?v=w5"></script>
   <script src="js/wall.js?v=w3"></script>
   <script src="js/rewards.js?v=w1"></script>
   <script src="js/sync.js?v=w3"></script>
-  <script src="js/app.js?v=w4"></script>
+  <script src="js/app.js?v=w6"></script>
   <script src="js/shop.js?v=7"></script>
   <script src="lib/phaser.min.js"></script>
-  <script src="js/world-game.js?v=39"></script>
-  <script src="js/world.js?v=39"></script>
+  <script src="js/world-game.js?v=41"></script>
+  <script src="js/world.js?v=41"></script>
 </body>
 </html>
 
