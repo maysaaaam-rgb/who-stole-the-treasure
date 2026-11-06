@@ -1,8 +1,10 @@
-/* Watch & Answer: video lessons where the cartoon/movie stops by itself and the class answers a question.
-   Upgraded with:
-   1. 🔮 What Happens Next? Freeze-Bet Checkpoints (4-team predictions + live video reveal + 2x stars)
-   2. 🔔 Live Word-Catcher Buzzer (spot & catch target words during playback for bonus stars)
-   3. 🖼️ Visual Scene Snapshot Retell (real movie frame captures at each story timestamp) */
+/* Watch & Answer: Interactive Classroom Cinema Dataset
+   Includes:
+   1. 🔮 Pre-Watch Prediction + Free Speaking Frame + Interactive Movie Vocabulary Deck (`vocab`)
+   2. 🎬 Timed Comprehension Stops (`quiz`), 4-Team Freeze-Bets (`bet`), and Direct Video Frame Touch-and-Spot (`spot`)
+   3. 🔔 Live Word-Catcher Buzzer (`wordHunt`)
+   4. 🖼️ Visual Scene Snapshot Story Retell (`retell` with exact timestamps)
+   5. 🎙️ Character Voice Dubbing & Speaking Prompts (`dubs`) */
 window.WatchData = (function () {
   var D = {};
   D.teams = [
@@ -25,7 +27,7 @@ window.WatchData = (function () {
       goals: [
         'I can say what the Bad Guys are doing.',
         'I can predict what happens next in the movie.',
-        'I can tell the holiday story: First, Then, Finally.'
+        'I can dub a character and tell the story: First, Then, Finally.'
       ],
       predict: {
         q: 'Look at the Bad Guys! What do they want to do on Christmas morning?',
@@ -34,8 +36,17 @@ window.WatchData = (function () {
           ['😴', 'Sleep all day.'],
           ['🏫', 'Go to school.']
         ],
+        freeFrame: 'I think the Bad Guys will ___ because ___.',
         note: 'Let\'s watch and see what happens to their holiday plan!'
       },
+      vocab: [
+        { emoji: '🏦', word: 'bank',     def: 'A safe building where people keep money.', ex: 'The Bad Guys want to rob the big bank.' },
+        { emoji: '🎈', word: 'balloon',  def: 'A big colourful bag filled with air that floats.', ex: 'There is a giant Santa balloon in the parade.' },
+        { emoji: '🎁', word: 'presents', def: 'Special gifts wrapped in colourful boxes.', ex: 'They put holiday presents at every house.' },
+        { emoji: '❄️', word: 'snow',     def: 'Soft white ice flakes falling from the sky.', ex: 'They use the ice machine to make white snow.' },
+        { emoji: '⛈️', word: 'storm',    def: 'Strong wind and dark clouds in the sky.', ex: 'The Santa balloon saves them in the big storm.' },
+        { emoji: '🧀', word: 'cheese',   def: 'A yellow food made from milk that Piranha loves.', ex: 'Santa leaves stinky cheese under the tree!' }
+      ],
       wordHunt: [
         { id: 'bg-w1', tStart: 60,   tEnd: 92,   word: 'cheese',   emoji: '🧀', phrase: 'Piranha loves stinky cheese!' },
         { id: 'bg-w2', tStart: 93,   tEnd: 135,  word: 'bank',     emoji: '🏦', phrase: 'They want to rob the bank!' },
@@ -49,7 +60,7 @@ window.WatchData = (function () {
       checkpoints: [
         { t: 82,   kind: 'quiz', q: 'What food does Piranha love?', opts: [['🧀', 'stinky cheese'], ['🍕', 'hot pizza'], ['🍎', 'red apples']], a: 0, say: 'Piranha loves stinky cheese!', hint: 'It is yellow and smelly!' },
         { t: 96,   kind: 'quiz', q: 'Where do the Bad Guys want to go?', opts: [['🏦', 'to the bank'], ['🏫', 'to school'], ['🏥', 'to the hospital']], a: 0, say: 'They want to go to the bank.', hint: 'Look at Mr. Wolf\'s big plan on the wall.' },
-        { t: 148,  kind: 'quiz', q: 'What is on top of their car?', opts: [['🎈', 'a big Santa balloon'], ['🐉', 'a green dragon'], ['🚁', 'a helicopter']], a: 0, say: 'There is a big Santa balloon on the car.', hint: 'It is huge, red, and floats in the sky!' },
+        { t: 148,  kind: 'spot', spotPrompt: '👆 Tap the GIANT SANTA BALLOON on the movie screen!', spotZones: [{ label: '🎈 Giant Santa Balloon', x: 50, y: 28, r: 22, ok: true }, { label: '🚗 Road below', x: 50, y: 82, r: 16, ok: false }], q: 'What is on top of their car?', opts: [['🎈', 'a big Santa balloon'], ['🐉', 'a green dragon'], ['🚁', 'a helicopter']], a: 0, say: 'There is a big Santa balloon on the car.', hint: 'Tap the huge floating balloon in the top half of the screen!' },
         { t: 226,  kind: 'bet',  revealSec: 9, q: '🔮 What happens next to the giant Santa balloon?!', opts: [['💥', 'It hits fire and POPS!'], ['🚀', 'It flies to the moon!'], ['🏊', 'It lands in the swimming pool!']], a: 0, say: 'Oh no! The Santa balloon popped and the people are sad!', hint: 'Watch the balloon near the fire!' },
         { t: 345,  kind: 'quiz', q: 'What did the Bad Guys make?', opts: [['🎅', 'a new Santa balloon'], ['⛄', 'a snowman'], ['🎂', 'a birthday cake']], a: 0, say: 'They made a new Santa balloon.', hint: 'Shark made it with lots of balloons!' },
         { t: 478,  kind: 'bet',  revealSec: 7, q: '🔮 What will the Bad Guys give to the houses now?', opts: [['🎁', 'Colourful Christmas presents!'], ['📚', 'Big school books!'], ['👟', 'Old smelly shoes!']], a: 0, say: 'They are giving presents to the houses!', hint: 'Look at the colourful boxes with ribbons!' },
@@ -65,6 +76,11 @@ window.WatchData = (function () {
         { e: '❄️', t: 788, sceneTitle: 'Scene 4 • 13:08', bg: 'linear-gradient(135deg,#0284c7,#0c4a6e)', s: 'They make white snow for the city.' },
         { e: '🤖', t: 1105, sceneTitle: 'Scene 5 • 18:25', bg: 'linear-gradient(135deg,#7c3aed,#4c1d95)', s: 'The Santa balloon saves them in the storm.' },
         { e: '🧀', t: 1295, sceneTitle: 'Scene 6 • 21:35', bg: 'linear-gradient(135deg,#d97706,#78350f)', s: 'Real Santa gives them presents and cheese!' }
+      ],
+      dubs: [
+        { role: '🦊 Mr. Wolf', emoji: '🏦', line: 'Today is the best morning to rob the city bank!', starter: 'Today is the best morning to ___!' },
+        { role: '🐟 Piranha',  emoji: '🧀', line: 'Wait! Is that delicious stinky cheese?!', starter: 'Wait! Is that delicious ___?!' },
+        { role: '🦈 Mr. Shark', emoji: '❄️', line: 'Look everyone! We are making real holiday snow!', starter: 'Look everyone! We are making ___!' }
       ]
     },
     {
@@ -80,7 +96,7 @@ window.WatchData = (function () {
       goals: [
         'I can say what Miles Morales is doing.',
         'I can predict what happens next in the story.',
-        'I can tell how Miles becomes Spider-Man.'
+        'I can dub Miles Morales and tell how he becomes Spider-Man.'
       ],
       predict: {
         q: 'Look at Miles Morales! What super power can Spider-Man do?',
@@ -89,8 +105,17 @@ window.WatchData = (function () {
           ['🐟', 'Breathe under water like a fish.'],
           ['❄️', 'Turn everything into ice.']
         ],
+        freeFrame: 'I think Spider-Man can ___ because ___.',
         note: 'Let\'s watch Miles\'s story and see how he gets his spider powers!'
       },
+      vocab: [
+        { emoji: '🎧', word: 'headphones', def: 'You wear them on your ears to listen to music.', ex: 'Miles is wearing blue headphones and singing.' },
+        { emoji: '🧳', word: 'suitcase',   def: 'A bag with wheels for carrying clothes.', ex: 'Miles pulls a green suitcase to his new school.' },
+        { emoji: '👮', word: 'police',     def: 'Officers who keep the city safe.', ex: 'His dad is a police officer in Brooklyn.' },
+        { emoji: '🚇', word: 'tunnel',     def: 'A dark underground road for subway trains.', ex: 'Miles and Uncle Aaron paint art in a dark tunnel.' },
+        { emoji: '🕷️', word: 'spider',     def: 'A small creature with eight legs that spins webs.', ex: 'A glowing spider bites Miles on his hand!' },
+        { emoji: '🧗', word: 'climb',      def: 'To walk or go up a high wall.', ex: 'Miles can climb right up the building wall!' }
+      ],
       wordHunt: [
         { id: 'sp-w1', tStart: 140,  tEnd: 175,  word: 'stickers',   emoji: '🎨', phrase: 'Miles is drawing on stickers!' },
         { id: 'sp-w2', tStart: 176,  tEnd: 215,  word: 'headphones', emoji: '🎧', phrase: 'He is wearing blue headphones!' },
@@ -103,7 +128,7 @@ window.WatchData = (function () {
       ],
       checkpoints: [
         { t: 158,  kind: 'quiz', q: 'What is Miles doing at his desk?', opts: [['🎨', 'drawing on stickers'], ['🍳', 'cooking breakfast'], ['⚽', 'playing football']], a: 0, say: 'Miles is drawing on stickers.', hint: 'Look at the markers in his hand.' },
-        { t: 182,  kind: 'quiz', q: 'What is Miles wearing on his ears?', opts: [['🎧', 'blue headphones'], ['👑', 'a gold crown'], ['🕶️', 'sunglasses']], a: 0, say: 'He is wearing blue headphones.', hint: 'He is listening to a song and singing!' },
+        { t: 182,  kind: 'spot', spotPrompt: '👆 Tap MILES\'S BLUE HEADPHONES on the movie screen!', spotZones: [{ label: '🎧 Blue Headphones', x: 50, y: 38, r: 22, ok: true }, { label: '🛏️ Bedroom floor', x: 20, y: 80, r: 16, ok: false }], q: 'What is Miles wearing on his ears?', opts: [['🎧', 'blue headphones'], ['👑', 'a gold crown'], ['🕶️', 'sunglasses']], a: 0, say: 'He is wearing blue headphones.', hint: 'Tap the headphones on Miles\'s head!' },
         { t: 222,  kind: 'quiz', q: 'What is Miles pulling on the street?', opts: [['🧳', 'a green suitcase'], ['🛒', 'a shopping trolley'], ['🚲', 'a red bike']], a: 0, say: 'He is pulling a green suitcase.', hint: 'He is taking his clothes to his new school.' },
         { t: 295,  kind: 'bet',  revealSec: 7, q: '🔮 Who stops behind Miles in the street with a loud siren?', opts: [['👮', 'His dad in a police car!'], ['🚒', 'A big red fire truck!'], ['🍦', 'An ice-cream van!']], a: 0, say: 'His dad is a police officer!', hint: 'Look at the flashing police lights!' },
         { t: 412,  kind: 'quiz', q: 'Where is Miles now?', opts: [['🏫', 'at his new school'], ['🏖️', 'at the beach'], ['🦁', 'at the zoo']], a: 0, say: 'Miles is at his new school.', hint: 'Look at all the students in jackets.' },
@@ -120,6 +145,11 @@ window.WatchData = (function () {
         { e: '🕷️', t: 742, sceneTitle: 'Scene 4 • 12:22', bg: 'linear-gradient(135deg,#e11d48,#881337)', s: 'A glowing spider bites Miles\'s hand.' },
         { e: '👱‍♀️', t: 902, sceneTitle: 'Scene 5 • 15:02', bg: 'linear-gradient(135deg,#d97706,#78350f)', s: 'His hand sticks to Gwen\'s hair at school.' },
         { e: '🧗', t: 1202, sceneTitle: 'Scene 6 • 20:02', bg: 'linear-gradient(135deg,#059669,#064e3b)', s: 'Miles can climb up walls like Spider-Man!' }
+      ],
+      dubs: [
+        { role: '🕷️ Miles Morales', emoji: '🎧', line: 'I am listening to my favourite song and drawing stickers!', starter: 'I am listening to ___ and ___!' },
+        { role: '👮 Officer Davis (Dad)', emoji: '🚓', line: 'Have a great first day at your new school, Miles!', starter: 'Have a great first day at ___!' },
+        { role: '🕷️ Miles Morales', emoji: '🧗', line: 'Whoa! My hands and feet can stick to the wall!', starter: 'Whoa! My hands and feet can ___!' }
       ]
     },
     {
@@ -132,8 +162,15 @@ window.WatchData = (function () {
       subtitles: '',
       vid: 'uyYIojxxljE',
       minutes: 35,
-      goals: ['I can say what Mr Bean is doing.', 'I can predict what happens next.', 'I can tell the story: First, Then, Finally.'],
-      predict: { q: 'The cartoon is called SUPER TROLLEY. What can a super trolley do?', opts: [['🚀', 'It can go very fast.'], ['🛸', 'It can fly.'], ['🎵', 'It can sing.']], note: 'There is no wrong answer. We will see!' },
+      goals: ['I can say what Mr Bean is doing.', 'I can predict what happens next.', 'I can dub Mr Bean and tell the story: First, Then, Finally.'],
+      predict: { q: 'The cartoon is called SUPER TROLLEY. What can a super trolley do?', opts: [['🚀', 'It can go very fast.'], ['🛸', 'It can fly.'], ['🎵', 'It can sing.']], freeFrame: 'I think the super trolley can ___ because ___.', note: 'There is no wrong answer. We will see!' },
+      vocab: [
+        { emoji: '🥣', word: 'cereal',   def: 'Crunchy breakfast food you eat in a bowl with milk.', ex: 'Mr Bean wants to eat cereal with milk.' },
+        { emoji: '🛒', word: 'trolley',  def: 'A metal basket on wheels in a supermarket.', ex: 'Mr Bean builds a fast super trolley!' },
+        { emoji: '🧸', word: 'Teddy',    def: 'Mr Bean\'s best friend, a little brown bear.', ex: 'Teddy rides inside the shopping trolley.' },
+        { emoji: '🥛', word: 'milk',     def: 'White drink from cows that goes in cereal.', ex: 'There is fresh milk on the shop shelf.' },
+        { emoji: '🚜', word: 'forklift', def: 'A strong yellow machine that lifts heavy boxes.', ex: 'Mr Bean drives a yellow forklift in the shop!' }
+      ],
       wordHunt: [
         { id: 'mb-w1', tStart: 30,  tEnd: 70,  word: 'cereal',   emoji: '🥣', phrase: 'Mr Bean eats crunchy cereal!' },
         { id: 'mb-w2', tStart: 75,  tEnd: 120, word: 'cat',      emoji: '🐱', phrase: 'An old lady and a cat on the stairs!' },
@@ -146,8 +183,8 @@ window.WatchData = (function () {
         { t: 42,  kind: 'quiz', q: 'What is Mr Bean eating?', opts: [['🥣', 'cereal'], ['🍕', 'pizza'], ['🍲', 'soup']], a: 0, say: 'Mr Bean is eating cereal.', hint: 'Look at the bowl and the spoon.' },
         { t: 86,  kind: 'quiz', q: 'Who is on the stairs with Mr Bean?', opts: [['👵', 'an old lady and a cat'], ['👮', 'a policeman'], ['👩‍⚕️', 'a doctor']], a: 0, say: 'An old lady and a cat are on the stairs.', hint: 'Look at the stairs.' },
         { t: 132, kind: 'quiz', q: 'Where is Mr Bean now?', opts: [['🏫', 'at school'], ['🛒', 'at the shop'], ['🌳', 'at the park']], a: 1, say: 'Mr Bean is at the shop.', hint: 'Look at the big building and the cars.' },
-        { t: 184, kind: 'bet',  revealSec: 6, q: '🔮 How will Mr Bean ride around the supermarket next?', opts: [['🛒', 'Inside a fast SUPER TROLLEY!'], ['🛴', 'On a pink scooter!'], ['🐎', 'On a brown horse!']], a: 2, say: 'Mr Bean is in a trolley.', hint: 'It is the SUPER TROLLEY!' },
-        { t: 250, kind: 'quiz', q: 'Who is with Mr Bean?', opts: [['🧸', 'Teddy'], ['🐶', 'a dog'], ['👶', 'a baby']], a: 0, say: 'Teddy is with Mr Bean.', hint: 'It is his friend. It is brown.' },
+        { t: 184, kind: 'bet',  revealSec: 6, q: '🔮 How will Mr Bean ride around the supermarket next?', opts: [['🛒', 'Inside a fast SUPER TROLLEY!'], ['🛴', 'On a pink scooter!'], ['🐎', 'On a brown horse!']], a: 0, say: 'Mr Bean is riding in a super trolley!', hint: 'It is the SUPER TROLLEY!' },
+        { t: 250, kind: 'spot', spotPrompt: '👆 Tap TEDDY inside the trolley on the screen!', spotZones: [{ label: '🧸 Teddy Bear', x: 52, y: 55, r: 22, ok: true }, { label: '🛒 Shop Ceiling', x: 50, y: 12, r: 15, ok: false }], q: 'Who is with Mr Bean?', opts: [['🧸', 'Teddy'], ['🐶', 'a dog'], ['👶', 'a baby']], a: 0, say: 'Teddy is with Mr Bean.', hint: 'It is his brown bear friend!' },
         { t: 278, kind: 'quiz', q: 'How does the shop lady feel?', opts: [['😴', 'sleepy'], ['😮', 'surprised'], ['😊', 'happy']], a: 1, say: 'The shop lady is surprised.', hint: 'Look at her face and her eyes.' },
         { t: 340, kind: 'quiz', q: 'What is on the shelf?', opts: [['🥛', 'milk'], ['🧃', 'juice'], ['🥚', 'eggs']], a: 0, say: 'There is milk on the shelf.', hint: 'There is a cow on the box.' },
         { t: 518, kind: 'bet',  revealSec: 7, q: '🔮 What big machine will Mr Bean drive next?', opts: [['🚜', 'A yellow forklift!'], ['🚌', 'A red school bus!'], ['🚁', 'A helicopter!']], a: 0, say: 'Mr Bean is driving a yellow forklift.', hint: 'It is yellow and it lifts big boxes.' },
@@ -161,6 +198,11 @@ window.WatchData = (function () {
         { e: '🧸', t: 250, sceneTitle: 'Scene 4 • 4:10', bg: 'linear-gradient(135deg,#e11d48,#881337)', s: 'He pushes a trolley with Teddy.' },
         { e: '🚜', t: 525, sceneTitle: 'Scene 5 • 8:45', bg: 'linear-gradient(135deg,#ca8a04,#713f12)', s: 'He drives a forklift.' },
         { e: '🏠', t: 588, sceneTitle: 'Scene 6 • 9:48', bg: 'linear-gradient(135deg,#059669,#064e3b)', s: 'He goes home with the shopping.' }
+      ],
+      dubs: [
+        { role: '🧸 Mr Bean', emoji: '🥣', line: 'Oh no! My milk bottle is completely empty!', starter: 'Oh no! My ___ is completely empty!' },
+        { role: '🧸 Mr Bean', emoji: '🛒', line: 'Look out Teddy! My super trolley is going very fast!', starter: 'Look out Teddy! My ___ is going very fast!' },
+        { role: '🧸 Mr Bean', emoji: '🚜', line: 'I am driving a big yellow forklift in the shop!', starter: 'I am driving a ___ in the shop!' }
       ]
     }
   ];
