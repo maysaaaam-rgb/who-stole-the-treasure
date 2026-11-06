@@ -1,10 +1,33 @@
-/* Watch & Answer: extra styles on top of the Karaoke Stage and Week Song bases. */
+/* Watch & Answer: Interactive Classroom Cinema Styles */
 .movie-tabs { display: flex; gap: 0.8vh; align-items: center; flex-wrap: wrap; margin-left: 1vh; }
 .movie-tab { font-size: 0.78em !important; padding: 0.4em 0.85em !important; --bg: #1e293b; --lip: #0f172a; opacity: 0.82; }
 .movie-tab.active { --bg: #0284c7; --lip: #0369a1; opacity: 1; outline: 2px solid #7dd3fc; }
 .vbox { position: relative; background: #000; border-radius: 2vh; overflow: hidden; border: 2px solid rgba(56, 189, 248, 0.35); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55); aspect-ratio: 16 / 9; width: 100%; }
 .vbox video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
 .vbox video::cue { background: rgba(2, 6, 23, 0.82); color: #fef08a; font-family: system-ui, sans-serif; font-weight: 800; font-size: 1.15em; }
+
+/* Touch & Spot Overlay on Paused Video Frame */
+.spot-layer { position: absolute; inset: 0; z-index: 25; background: rgba(2, 6, 23, 0.22); display: flex; flex-direction: column; justify-content: space-between; pointer-events: auto; }
+.spot-layer[hidden] { display: none !important; }
+.spot-banner { background: linear-gradient(90deg, rgba(15, 23, 42, 0.92), rgba(30, 58, 138, 0.92)); color: #fde047; font-weight: 900; font-size: 0.92em; padding: 0.55em 1em; text-align: center; border-bottom: 2px solid rgba(250, 204, 21, 0.55); box-shadow: 0 4px 14px rgba(0,0,0,0.5); }
+.spot-zone { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; border: 3px dashed rgba(250, 204, 21, 0.9); background: radial-gradient(circle, rgba(250, 204, 21, 0.28) 0%, rgba(56, 189, 248, 0.08) 70%); cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 0.8em; text-shadow: 0 2px 6px #000; animation: spotPulse 1.2s ease-in-out infinite alternate; transition: transform 0.2s, background 0.2s, border-color 0.2s; }
+.spot-zone:hover { transform: translate(-50%, -50%) scale(1.06); background: radial-gradient(circle, rgba(56, 189, 248, 0.42) 0%, rgba(15, 23, 42, 0.2) 75%); }
+.spot-zone.hit { border: 4px solid #4ade80; background: radial-gradient(circle, rgba(16, 185, 129, 0.55) 0%, rgba(6, 78, 59, 0.2) 80%); animation: none; }
+.spot-zone.miss { border-color: #f43f5e; background: rgba(244, 63, 94, 0.35); animation: wob 0.35s; }
+@keyframes spotPulse { from { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.55); } to { box-shadow: 0 0 0 12px rgba(250, 204, 21, 0); } }
+
+/* Stage 0: Pre-Watch Vocabulary Deck & Free Speaking */
+.pred-wrap { display: grid; grid-template-columns: 1.05fr 1fr; gap: 1.8vh; flex: 1; min-height: 0; overflow-y: auto; }
+.pred-col { display: flex; flex-direction: column; gap: 1vh; background: rgba(2, 6, 23, 0.45); border: 1px solid var(--glass-line); border-radius: 2vh; padding: 1.4vh 1.6vh; overflow-y: auto; }
+.pred-col h3 { margin: 0; font-size: 0.92em; color: #7dd3fc; text-transform: uppercase; letter-spacing: 0.06em; }
+.free-speak-box { background: rgba(15, 23, 42, 0.85); border: 1.5px dashed rgba(250, 204, 21, 0.5); border-radius: 1.4vh; padding: 0.8vh 1.1vh; font-size: 0.85em; color: #fef08a; display: flex; flex-direction: column; gap: 0.6vh; }
+.vocab-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85vh; }
+.vocab-card { display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 0.25vh; padding: 0.55em 0.75em !important; --bg: #1e293b; --lip: #0f172a; border-radius: 1.4vh; font-size: 0.78em !important; }
+.vocab-card .vw-top { display: flex; align-items: center; gap: 0.45em; width: 100%; font-size: 1.12em; color: #fde047; font-weight: 900; }
+.vocab-card .vw-top small { margin-left: auto; opacity: 0.75; font-size: 0.8em; }
+.vocab-card .vw-def { color: #cbd5e1; font-weight: 600; line-height: 1.25; }
+.vocab-card .vw-ex { color: #7dd3fc; font-style: italic; font-size: 0.92em; line-height: 1.2; }
+
 .cp-jump-bar { display: flex; gap: 0.6vh; flex-wrap: wrap; align-items: center; margin-top: 0.6vh; }
 .cp-jump-btn { font-size: 0.68em !important; padding: 0.25em 0.6em !important; --bg: #1e293b; --lip: #0f172a; }
 .cp-jump-btn.done { --bg: #065f46; --lip: #064e3b; }
@@ -24,25 +47,28 @@
 .wc-buzzers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5vh; }
 .wc-buzz { font-size: 0.66em !important; padding: 0.3em 0.4em !important; white-space: nowrap; }
 
-.qpanel { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 1vh; background: rgba(2, 6, 23, 0.5); border: 1px solid var(--glass-line); border-radius: 2.2vh; padding: 1.4vh 1.8vh; overflow-y: auto; }
+.qpanel { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 0.9vh; background: rgba(2, 6, 23, 0.5); border: 1px solid var(--glass-line); border-radius: 2.2vh; padding: 1.4vh 1.8vh; overflow-y: auto; }
 .qidle { margin: auto; text-align: center; color: #cbd5e1; font-size: 0.95em; line-height: 1.5; }
 .qidle .big { font-size: 3.4em; display: block; animation: bob 2.6s ease-in-out infinite; }
 @keyframes bob { 50% { transform: translateY(-1.2vh); } }
 .qn-row { display: flex; align-items: center; justify-content: space-between; gap: 0.8vh; flex-wrap: wrap; }
 .qn { font-size: 0.65em; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #7dd3fc; }
 .qn.bet-badge { color: #fde047; background: rgba(245, 158, 11, 0.2); padding: 0.25em 0.75em; border-radius: 99px; border: 1px solid rgba(250, 204, 21, 0.45); }
+.qn.spot-badge { color: #4ade80; background: rgba(16, 185, 129, 0.2); padding: 0.25em 0.75em; border-radius: 99px; border: 1px solid rgba(74, 222, 128, 0.45); }
 .mode-switch-btn { font-size: 0.62em !important; padding: 0.2em 0.65em !important; }
-.qq { font-size: 1.32em; font-weight: 900; line-height: 1.25; }
-.qopts { display: grid; gap: 0.9vh; }
-.qo { display: flex; align-items: center; gap: 1.2vh; text-align: left; --bg: #1e3a5f; --lip: #0f2742; font-size: 1.02em; padding: 0.5em 0.85em; }
-.qo b { font-size: 1.6em; line-height: 1; min-width: 1.4em; text-align: center; }
+.q-tools { display: flex; gap: 0.6vh; flex-wrap: wrap; align-items: center; }
+.q-tools .btn { font-size: 0.66em !important; padding: 0.22em 0.65em !important; }
+.qq { font-size: 1.26em; font-weight: 900; line-height: 1.25; }
+.qopts { display: grid; gap: 0.85vh; }
+.qo { display: flex; align-items: center; gap: 1.2vh; text-align: left; --bg: #1e3a5f; --lip: #0f2742; font-size: 1em; padding: 0.48em 0.85em; }
+.qo b { font-size: 1.55em; line-height: 1; min-width: 1.4em; text-align: center; }
 .qo.right { --bg: #059669; --lip: #064e3b; outline: 3px solid #86efac; }
 .qo.wrong { --bg: #7c2d12; --lip: #431407; animation: wob 0.35s; }
 .qo.dim { opacity: 0.35; }
 
 /* Freeze-Bet Team Matrix */
-.bet-opt { border-radius: 1.4vh; background: rgba(30, 58, 95, 0.78); border: 1px solid rgba(125, 211, 252, 0.25); padding: 0.45em 0.8em; }
-.bet-opt b { font-size: 1.15em; min-width: auto; color: #fde047; }
+.bet-opt { border-radius: 1.4vh; background: rgba(30, 58, 95, 0.78); border: 1px solid rgba(125, 211, 252, 0.25); padding: 0.42em 0.8em; }
+.bet-opt b { font-size: 1.12em; min-width: auto; color: #fde047; }
 .bet-picks { margin-left: auto; display: flex; gap: 0.4vh; }
 .bet-tm-pill { display: inline-flex; align-items: center; justify-content: center; width: 1.7em; height: 1.7em; border-radius: 50%; font-size: 0.9em; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
 .bet-grid { background: rgba(15, 23, 42, 0.78); border: 1px solid rgba(250, 204, 21, 0.3); border-radius: 1.6vh; padding: 0.8vh 1.1vh; display: grid; gap: 0.55vh; }
@@ -54,8 +80,8 @@
 .bet-choice.on { outline: 2px solid #fde047; transform: translateY(-1px); }
 
 @keyframes wob { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
-.qfb { min-height: 2.4em; font-weight: 800; color: #fcd34d; font-size: 0.9em; }
-.qfb.ok { color: #86efac; font-size: 1.1em; }
+.qfb { min-height: 2.2em; font-weight: 800; color: #fcd34d; font-size: 0.9em; }
+.qfb.ok { color: #86efac; font-size: 1.06em; }
 .qfb .say2 { display: inline-flex; align-items: center; gap: 0.6em; flex-wrap: wrap; }
 .award { display: flex; gap: 0.8vh; flex-wrap: wrap; align-items: center; font-size: 0.8em; }
 .award .lab { color: #94a3b8; font-weight: 700; }
@@ -65,7 +91,7 @@
 .dots i.done { background: var(--emerald); } .dots i.now { background: var(--amber); transform: scale(1.35); }
 .teams.small .tm { min-width: 11vh; padding: 0.4vh 1vh; font-size: 0.78em; }
 
-/* Visual Scene Snapshot Retell and Speak */
+/* Visual Scene Snapshot Retell */
 .rt { flex: 1; min-height: 0; display: grid; grid-template-columns: 1.15fr 1fr; gap: 2vh; }
 .rcards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1vh; align-content: start; overflow-y: auto; }
 .rc.rc-photo { display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 0 !important; overflow: hidden; --bg: #1e293b; --lip: #0f172a; border-radius: 1.6vh; text-align: left; }
@@ -86,14 +112,29 @@
 .slot .v .rt-snap-emoji { font-size: 1.3em; }
 .slot.fill { border: 2px solid var(--emerald); background: rgba(16, 185, 129, 0.14); animation: pop 0.4s var(--spring-snap); }
 @keyframes pop { from { transform: scale(0.85); opacity: 0; } }
-.frames { display: grid; gap: 1.4vh; }
-.frame { display: flex; align-items: center; gap: 2vh; background: rgba(2, 6, 23, 0.5); border: 1px solid var(--glass-line); border-radius: 2vh; padding: 1.4vh 2vh; font-size: 1.5em; font-weight: 900; }
+
+/* Stage 3: Speak & Character Voice Dubbing Studio */
+.speak-split { display: grid; grid-template-columns: 1fr 1.1fr; gap: 1.8vh; flex: 1; min-height: 0; overflow-y: auto; }
+.speak-box { display: flex; flex-direction: column; gap: 1vh; background: rgba(2, 6, 23, 0.48); border: 1px solid var(--glass-line); border-radius: 2vh; padding: 1.4vh 1.6vh; overflow-y: auto; }
+.speak-box h3 { margin: 0; font-size: 0.92em; color: #fde047; text-transform: uppercase; letter-spacing: 0.06em; }
+.frames { display: grid; gap: 1vh; }
+.frame { display: flex; align-items: center; gap: 1.4vh; background: rgba(2, 6, 23, 0.5); border: 1px solid var(--glass-line); border-radius: 1.6vh; padding: 0.9vh 1.4vh; font-size: 1.15em; font-weight: 900; }
 .frame .lead { color: #fcd34d; min-width: 3.4em; }
-.frame .gap { flex: 1; border-bottom: 4px solid var(--amber); min-height: 1.2em; }
-.bank { display: flex; flex-wrap: wrap; gap: 1.2vh; justify-content: center; }
-.bank span { display: inline-flex; align-items: center; gap: 0.5em; background: #1e3a5f; border-radius: 99px; padding: 0.3em 1em; font-size: 0.9em; font-weight: 800; }
-.bank span b { font-size: 1.5em; }
-.timer { font-size: 2.6em; font-weight: 900; color: #7dd3fc; font-variant-numeric: tabular-nums; text-align: center; }
+.frame .gap { flex: 1; border-bottom: 3px solid var(--amber); min-height: 1.1em; }
+.bank { display: flex; flex-wrap: wrap; gap: 0.8vh; justify-content: center; }
+.bank span { display: inline-flex; align-items: center; gap: 0.4em; background: #1e3a5f; border-radius: 99px; padding: 0.25em 0.85em; font-size: 0.78em; font-weight: 800; }
+.bank span b { font-size: 1.3em; }
+.timer { font-size: 2.1em; font-weight: 900; color: #7dd3fc; font-variant-numeric: tabular-nums; text-align: center; }
+
+.dub-list { display: grid; gap: 1vh; }
+.dub-card { background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 1.6vh; padding: 1vh 1.2vh; display: flex; flex-direction: column; gap: 0.55vh; }
+.dub-head { display: flex; align-items: center; justify-content: space-between; gap: 0.8vh; font-size: 0.78em; color: #7dd3fc; font-weight: 900; }
+.dub-line { font-size: 1.02em; font-weight: 900; color: #fff; }
+.dub-starter { font-size: 0.78em; color: #fcd34d; font-weight: 700; }
+.mic-meter-wrap { display: flex; align-items: center; gap: 0.8vh; background: rgba(2, 6, 23, 0.75); border: 1px solid rgba(250, 204, 21, 0.35); border-radius: 99px; padding: 0.35vh 1vh; }
+.mic-track { flex: 1; height: 1.4vh; background: #1e293b; border-radius: 99px; overflow: hidden; }
+.mic-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #38bdf8, #10b981, #fde047); transition: width 0.08s linear; border-radius: 99px; }
+.mic-pct { font-size: 0.75em; font-weight: 900; color: #fde047; min-width: 3.5em; text-align: right; }
 
 /* editor */
 .ed { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 1.2vh; }
@@ -106,4 +147,4 @@
 .edrow .tm2 { width: 9ch; text-align: center; }
 .vsmall { max-width: 56vh; }
 
-@media (max-width: 900px) { .rt { grid-template-columns: 1fr; } .rcards { grid-template-columns: 1fr; } .edrow .opts { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .rt, .pred-wrap, .speak-split { grid-template-columns: 1fr; } .rcards, .vocab-grid { grid-template-columns: 1fr; } .edrow .opts { grid-template-columns: 1fr; } }
