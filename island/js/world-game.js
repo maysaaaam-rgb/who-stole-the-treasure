@@ -1,4 +1,4 @@
-﻿/* Practice Island — World Game Engine (Stages 2–5 Overhaul: Cloud Sync, My Home & Live Decorator, In-World Villager Quests, World Map & Turn-Based Monster Battles).
+/* Practice Island — World Game Engine (Stages 2–5 Overhaul: Cloud Sync, My Home & Live Decorator, In-World Villager Quests, World Map & Turn-Based Monster Battles).
    Works alongside island/js/world.js, island/js/sync.js, and island/js/app.js. */
 (function (root) {
   'use strict';
@@ -460,7 +460,7 @@
     var nodesHtml = stops.map(function (st, i) {
       var isNext = (i === nextIdx);
       var starTxt = st.stars > 0 ? ('★'.repeat(st.stars) + '☆'.repeat(3 - st.stars)) : (isNext ? '🧭 Next Clue!' : '⚪ Ready');
-      return '<button type="button" class="wg-map-node' + (isNext ? ' here' : '') + '" style="left:' + st.x + '%;top:' + st.y + '%" onclick="WorldGame.jumpHarbourStop(' + i + ','' + esc(st.mid) + '')">' +
+      return '<button type="button" class="wg-map-node' + (isNext ? ' here' : '') + '" style="left:' + st.x + '%;top:' + st.y + '%" onclick="WorldGame.jumpHarbourStop(' + i + ',\'' + esc(st.mid) + '\')">' +
         '<div style="position:relative;display:inline-block">' +
           '<img src="' + FLAT + st.img + '.webp" class="wg-map-isl-pic" style="width:92px;height:92px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.65))" alt="">' +
           '<img src="' + FLAT + st.friend + '.webp" style="position:absolute;right:-10px;bottom:-4px;width:44px;height:44px;object-fit:contain;border-radius:50%;background:rgba(15,23,42,0.9);border:2px solid #f59e0b;padding:2px" alt="">' +
