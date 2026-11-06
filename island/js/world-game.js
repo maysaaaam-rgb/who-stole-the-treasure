@@ -437,11 +437,10 @@
     var allOpen = isAllChaptersUnlocked();
     var isOpen = function (z) { return z <= 1 || allOpen || (W() && W().isOpen && W().isOpen(z)); };
     var islands = [
-      { z: 0, name: "Captain's Cabin",      sub: 'Quarterdeck · Build & Craft',       img: 'm_island_home',    x: 20, y: 74, open: true },
-      { z: 1, name: 'Ch.1: Benbow Harbour', sub: 'Unit 1 · Jim Hawkins & Benbow 🐆',  img: 'm_island_meadow',  x: 50, y: 27, open: true },
-      { z: 2, name: 'Ch.2: Hispaniola Bay', sub: 'Unit 2 · Captain Silver ⚓',         img: 'm_island_beach',   x: 80, y: 27, open: isOpen(2) },
-      { z: 3, name: 'Ch.3: Stockade Fort',  sub: 'Unit 3 · Dr. Livesey & Gray 📜',    img: 'm_island_forest',  x: 50, y: 74, open: isOpen(3) },
-      { z: 4, name: 'Ch.4: Skull Peak',     sub: 'Unit 4 · Smollett & Ben Gunn 👑',   img: 'm_island_volcano', x: 80, y: 74, open: isOpen(4) }
+      { z: 1, name: 'Ch.1: Benbow Harbour', sub: 'Stage 1 · Jim Hawkins & Benbow 🐆', img: 'm_island_meadow',  x: 22, y: 34, open: true },
+      { z: 2, name: 'Ch.2: Hispaniola Bay', sub: 'Stage 2 · Long John Silver ⚓',      img: 'm_island_beach',   x: 52, y: 26, open: isOpen(2) },
+      { z: 3, name: 'Ch.3: Stockade Island',sub: 'Stage 3 · Dr. Livesey & Gray 📜',    img: 'm_island_forest',  x: 52, y: 74, open: isOpen(3) },
+      { z: 4, name: 'Ch.4: Skull Peak',     sub: 'Stage 4 · Captain Flint\'s Gold 👑', img: 'm_island_volcano', x: 82, y: 52, open: isOpen(4) }
     ];
     var nodesHtml = islands.map(function (isl) {
       var here = curZone === isl.z;
@@ -504,7 +503,7 @@
             '</div>' +
           '</div>' +
           pipBannerHtml +
-          '<div class="wg-map-canvas">' + plazaBtn + nodesHtml + '</div>' +
+          '<div class="wg-map-canvas">' + nodesHtml + '</div>' +
         '</div>' +
       '</div>';
   }

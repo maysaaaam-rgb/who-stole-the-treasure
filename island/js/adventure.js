@@ -8,7 +8,7 @@
   var have = {};
   var artDir = {};
   function loadZoneArt(dir) {
-    return fetch(dir + 'manifest.json?v=3').then(function (r) { return r.json(); }).then(function (l) {
+    return fetch(dir + 'manifest.json?v=6').then(function (r) { return r.json(); }).then(function (l) {
       l.forEach(function (n) { have[n] = true; artDir[n] = dir; });
     }).catch(function () {});
   }
@@ -17,52 +17,52 @@
   var ZONES_ON = { 1: true, 2: true, 3: true, 4: true };
   var ZONE_CFG = {
     1: {
-      bg: 'bg_factory', cast: 'c_bolt', name: 'Grandpa Bolt',
-      gear: 'o_gear', gearEmoji: '⚙️',
-      off: 'o_machine_off', on: 'o_machine_on',
-      buildObj: 'o_robot', vehicle: 'o_engine',
-      sparks: ['⚙️', '💨', '✨'],
-      right: ['It fits!', 'Good job! It works!', 'Clank! Great!', 'Yes! That is it!'],
-      sayGood: ['Wow! I can hear you!', 'Great voice!', 'The machine loves it!'],
-      matchDone: 'Look! The robot is ready!',
-      train: ['Choo choo!', 'All aboard!', 'Great sentence!'],
-      wake: 'It is awake! Hooray!'
+      bg: 'bg_benbow', cast: 'c_jim', name: 'Jim Hawkins',
+      gear: 'o_compass', gearEmoji: '🧭',
+      off: 'o_billy_chest', on: 'o_treasure_gold',
+      buildObj: 'o_hispaniola', vehicle: 'o_hispaniola',
+      sparks: ['🧭', '🪙', '⛵'],
+      right: ['Ahoy! That fits the clue!', 'Great job, Captain!', 'Pieces of eight! Yes!', 'You found the clue!'],
+      sayGood: ['Loud and clear, Captain!', 'Great captain voice!', 'The crew heard you!'],
+      matchDone: 'Look! The Hispaniola ship is ready!',
+      train: ['All hands on deck!', 'Set sail!', 'Great sentence, Captain!'],
+      wake: 'The Sea Chest is unlocked! Hooray!'
     },
     2: {
-      bg: 'bg_beach', cast: 'c_lulu', name: 'Lulu',
-      gear: 'o_fish', gearEmoji: '🐟',
+      bg: 'bg_beach', cast: 'c_silver', name: 'Captain Silver',
+      gear: 'o_compass', gearEmoji: '🧭',
       off: 'o_lighthouse_off', on: 'o_lighthouse_on',
       buildObj: 'o_lighthouse_on', vehicle: 'o_boat',
-      sparks: ['🐟', '💦', '✨'],
-      right: ['Yes! You caught it!', 'Good job! It works!', 'Snip snip! Great!', 'Yes! That is it!'],
-      sayGood: ['Wow! I can hear you!', 'Great voice!', 'The light loves it!'],
-      matchDone: 'Look! The lamp is fixed!',
-      train: ['Splish splash!', 'Sail away!', 'Great sentence!'],
-      wake: 'The light shines! Hooray!'
+      sparks: ['⚓', '🪙', '✨'],
+      right: ['Aye aye, Captain!', 'Good job! It works!', 'Shiver me timbers! Great!', 'Yes! That is it!'],
+      sayGood: ['Wow! I can hear you!', 'Great voice!', 'The beacon shines!'],
+      matchDone: 'Look! The Spyglass Beacon is ready!',
+      train: ['Splish splash!', 'Row ashore!', 'Great sentence!'],
+      wake: 'The Spyglass Beacon shines! Hooray!'
     },
     3: {
-      bg: 'bg_river', cast: 'c_nutty', name: 'Mr. Nutty',
-      gear: 'o_stone', gearEmoji: '🪨',
+      bg: 'bg_river', cast: 'c_livesey', name: 'Dr. Livesey',
+      gear: 'o_compass', gearEmoji: '🧭',
       off: 'o_market_closed', on: 'o_market_open',
       buildObj: 'o_basket', vehicle: 'o_stone',
-      sparks: ['🌰', '🍃', '✨'],
-      right: ['Yes! You found it!', 'Good job! It works!', 'Crunch! Great!', 'Yes! That is it!'],
-      sayGood: ['Wow! I can hear you!', 'Great voice!', 'The market loves it!'],
-      matchDone: 'Look! The market basket is ready!',
-      train: ['Hop hop!', 'Across the river!', 'Great sentence!'],
-      wake: 'The market is open! Hooray!'
+      sparks: ['📜', '🧭', '✨'],
+      right: ['Splendid work!', 'Good job! That is right!', 'Bravo, young sailor!', 'Yes! That is it!'],
+      sayGood: ['Clear and brave!', 'Great voice!', 'The Stockade is secure!'],
+      matchDone: 'Look! The Stockade supplies are ready!',
+      train: ['Steady now!', 'Across the river!', 'Great sentence!'],
+      wake: 'The Stockade Fort is open! Hooray!'
     },
     4: {
-      bg: 'bg_volcano', cast: 'c_ember', name: 'Ember',
-      gear: 'o_bubble', gearEmoji: '🫧',
-      off: 'o_volcano_angry', on: 'o_volcano_calm',
-      buildObj: 'o_launcher', vehicle: 'o_rocket',
-      sparks: ['🫧', '💧', '✨'],
-      right: ['Yes! You hit it!', 'Good job! It works!', 'Splash! Great!', 'Yes! That is it!'],
-      sayGood: ['Wow! I can hear you!', 'Great voice!', 'The mountain loves it!'],
-      matchDone: 'Look! The water rockets are ready!',
-      train: ['Whoosh!', 'Up we go!', 'Great sentence!'],
-      wake: 'The mountain is happy! Hooray!'
+      bg: 'bg_volcano', cast: 'c_billy', name: 'Captain Smollett',
+      gear: 'o_compass', gearEmoji: '🧭',
+      off: 'o_billy_chest', on: 'o_treasure_gold',
+      buildObj: 'o_treasure_gold', vehicle: 'o_hispaniola',
+      sparks: ['👑', '🪙', '✨'],
+      right: ['Steady on course!', 'Good job, Captain!', 'Golden clue found!', 'Yes! That is it!'],
+      sayGood: ['A true captain voice!', 'Great voice!', 'The vault is opening!'],
+      matchDone: 'Look! Flint\'s Golden Treasure is revealed!',
+      train: ['All hands!', 'To the peak!', 'Great sentence!'],
+      wake: 'Captain Flint\'s Golden Vault is open! Hooray!'
     }
   };
 
@@ -142,27 +142,27 @@
     [/perform the show/, 's_perform_show'], [/work together/, 's_work_together']
   ];
   var LINES = {
-    right: ['It fits!', 'Good job! It works!', 'Clank! Great!', 'Yes! That is it!'],
-    wrong: ['Boing! Try again!', 'Oops! Not that one!', 'Hmm! Look again!'],
-    wrongListen: ['Boing! Listen again!', 'Oops! Listen again!'],
+    right: ['Ahoy! That fits the clue!', 'Great job, Captain!', 'Pieces of eight! Yes!', 'You found the clue!'],
+    wrong: ['Not that clue! Try again!', 'Oops! Look closely at the map!', 'Hmm! Try another one!'],
+    wrongListen: ['Listen to the clue again!', 'Oops! Listen one more time!'],
     start: {
-      listen: 'Listen! Tap the right picture.',
-      match: 'Tap a word. Then tap its picture.',
-      read: 'Which word is missing?',
-      build: 'Tap the words in order.',
-      say: 'Listen. Then you say it!'
+      listen: 'Listen to the clue! Tap the right picture.',
+      match: 'Tap a word. Then tap its picture on the map.',
+      read: 'Read the clue! Which word is missing?',
+      build: 'Tap the words in order to build the clue.',
+      say: 'Listen to the captain. Then you say it!'
     },
     firstWord: 'Tap a word first!',
-    robot: 'Look! The robot is ready!',
-    train: ['Choo choo!', 'All aboard!', 'Great sentence!'],
+    robot: 'Look! The Hispaniola ship is ready!',
+    train: ['All hands on deck!', 'Set sail!', 'Great sentence, Captain!'],
     sayNow: 'Now you say it!',
     hearing: 'I am listening!',
-    sayGood: ['Wow! I can hear you!', 'Great voice!', 'The machine loves it!'],
+    sayGood: ['Loud and clear, Captain!', 'Great captain voice!', 'The crew heard you!'],
     sayAlmost: 'Almost! Listen and try again.',
-    sayMove: 'Great try! Let us go on!',
-    sayQuiet: 'I cannot hear you. Say it loud!',
+    sayMove: 'Great try! Let us sail on!',
+    sayQuiet: 'I cannot hear you. Say it like a captain!',
     sayByHand: 'Say it loud. Then tap the green button.',
-    machineOn: 'It is awake! Hooray!'
+    machineOn: 'The Sea Chest is unlocked! Hooray!'
   };
 
   var S = null;   // the screen of the running mission: { run, el, q, ... }
