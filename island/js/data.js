@@ -36,8 +36,8 @@
         { dx: 90,  dy: 96 }
       ],
       titles: {
-        3: { name: 'Sunny Meadow', sub: 'Unit 1 · What Does It Do?' },
-        4: { name: 'Sunny Meadow', sub: 'Unit 1 · I Love Reading' }
+        3: { name: 'Benbow Harbour', sub: 'Ch.1 · Unit 1 · What Does It Do?' },
+        4: { name: 'Benbow Harbour', sub: 'Ch.1 · Unit 1 · I Love Reading' }
       }
     },
     {
@@ -70,8 +70,8 @@
         { dx: 90,  dy: 96 }
       ],
       titles: {
-        3: { name: 'Lighthouse Beach', sub: 'Unit 2 · Thank You' },
-        4: { name: 'Lighthouse Beach', sub: 'Unit 2 · What Lives Here?' }
+        3: { name: 'Hispaniola Bay', sub: 'Ch.2 · Unit 2 · Thank You' },
+        4: { name: 'Hispaniola Bay', sub: 'Ch.2 · Unit 2 · What Lives Here?' }
       }
     },
     {
@@ -104,8 +104,8 @@
         { dx: 90,  dy: 92 }
       ],
       titles: {
-        3: { name: 'Treehouse Forest', sub: 'Unit 3 · How Much Is It?' },
-        4: { name: 'Treehouse Forest', sub: 'Unit 3 · It Keeps Changing' }
+        3: { name: 'Stockade Forest', sub: 'Ch.3 · Unit 3 · How Much Is It?' },
+        4: { name: 'Stockade Forest', sub: 'Ch.3 · Unit 3 · It Keeps Changing' }
       }
     },
     {
@@ -138,8 +138,8 @@
         { dx: 90,  dy: 92 }
       ],
       titles: {
-        3: { name: 'Volcano Peak', sub: 'Unit 4 · What Happened?' },
-        4: { name: 'Volcano Peak', sub: 'Unit 4 · We Can Do It' }
+        3: { name: 'Skull Treasure Peak', sub: 'Ch.4 · Unit 4 · What Happened?' },
+        4: { name: 'Skull Treasure Peak', sub: 'Ch.4 · Unit 4 · We Can Do It' }
       }
     }
   ];

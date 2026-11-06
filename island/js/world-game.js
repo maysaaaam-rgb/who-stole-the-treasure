@@ -47,12 +47,12 @@
   ];
 
   var VILLAGERS = [
-    { id: 'v_farmer',  zone: 1, x: 540,  y: 740, name: 'Farmer Ben',  art: 'v_farmer',  happy: 'v_farmer_happy',  line: 'Can you bring me 2 wood and 1 flower for my farm?',            need: { wood: 2, flower: 1 },    gift: 'g_flowerbed', energy: 15 },
-    { id: 'v_girl',    zone: 1, x: 1310, y: 830, name: 'Mia',         art: 'v_girl',    happy: 'v_girl_happy',    line: 'I love bright flowers! Can you find 2 flowers for me?',        need: { flower: 2 },             gift: 'f_plant',     energy: 15 },
-    { id: 'v_postman', zone: 2, x: 580,  y: 920, name: 'Postman Pat', art: 'v_postman', happy: 'v_postman_happy', line: 'Hello! Can you find 2 shells and 1 wood on the beach?',         need: { shell: 2, wood: 1 },     gift: 'g_mailbox',   energy: 15 },
-    { id: 'v_boy',     zone: 2, x: 1230, y: 920, name: 'Leo',         art: 'v_boy',     happy: 'v_boy_happy',     line: 'Let us build a bench! Can you bring 2 stones and 1 shell?',     need: { stone: 2, shell: 1 },    gift: 'g_bench',     energy: 15 },
-    { id: 'v_baker',   zone: 3, x: 1470, y: 660, name: 'Baker Rosa',  art: 'v_baker',   happy: 'v_baker_happy',   line: 'I am baking berry pie! Can you bring me 2 berries and 1 wood?', need: { berry: 2, wood: 1 },     gift: 'f_table',     energy: 15 },
-    { id: 'v_nurse',   zone: 4, x: 910,  y: 940, name: 'Nurse Maya',  art: 'v_nurse',   happy: 'v_nurse_happy',   line: 'My clinic needs light! Can you find 2 crystals and 1 stone?',   need: { crystal: 2, stone: 1 },  gift: 'f_lamp',      energy: 15 }
+    { id: 'v_farmer',  zone: 1, x: 520,  y: 840, name: 'Squire Trelawney', art: 'v_farmer',  happy: 'v_farmer_happy',  line: 'Ahoy! Can you bring 2 wood and 1 flower for the Admiral Benbow Inn?', need: { wood: 2, flower: 1 },    gift: 'g_flowerbed', energy: 15 },
+    { id: 'v_girl',    zone: 1, x: 1580, y: 820, name: 'Hawkins Helper',   art: 'v_girl',    happy: 'v_girl_happy',    line: 'We are decorating the Hispaniola pier! Can you find 2 flowers?',     need: { flower: 2 },             gift: 'f_plant',     energy: 15 },
+    { id: 'v_postman', zone: 2, x: 580,  y: 920, name: 'First Mate Arrow', art: 'v_postman', happy: 'v_postman_happy', line: 'Ahoy sailor! Can you find 2 shells and 1 wood on Hispaniola Beach?', need: { shell: 2, wood: 1 },     gift: 'g_mailbox',   energy: 15 },
+    { id: 'v_boy',     zone: 2, x: 1230, y: 920, name: 'Cabin Boy Tom',    art: 'v_boy',     happy: 'v_boy_happy',     line: 'Captain Silver wants a deck bench! Bring 2 stones and 1 shell!',     need: { stone: 2, shell: 1 },    gift: 'g_bench',     energy: 15 },
+    { id: 'v_baker',   zone: 3, x: 1470, y: 660, name: 'Galley Cook',      art: 'v_baker',   happy: 'v_baker_happy',   line: 'I am baking sea-berry pie for the Stockade! Bring 2 berries & 1 wood!', need: { berry: 2, wood: 1 },  gift: 'f_table',     energy: 15 },
+    { id: 'v_nurse',   zone: 4, x: 910,  y: 940, name: 'Dr. Livesey',      art: 'v_nurse',   happy: 'v_nurse_happy',   line: 'Our cave lantern needs crystal light! Find 2 crystals and 1 stone!', need: { crystal: 2, stone: 1 },  gift: 'f_lamp',      energy: 15 }
   ];
 
   /* Wild Monsters with patrol ranges & e_word_goblin included! */
@@ -313,11 +313,11 @@
 
   /* ---------- Connected Island Restoration Story & Player Pro Rating System ---------- */
   var STORY_CHAPTERS = [
-    { ch: 1, title: 'Chapter 1: Awakening Sunny Meadow', desc: 'Help Grandpa Bolt repair the Meadow Machine, gather wood & flowers, and build your first home furniture!', zone: 1 },
-    { ch: 2, title: 'Chapter 2: The Lighthouse Beam', desc: 'Travel to Lighthouse Beach with Lulu, collect sea shells, help Postman Pat & Leo, and relight the Lighthouse!', zone: 2 },
-    { ch: 3, title: 'Chapter 3: The Forest Market', desc: 'Cross the river in Treehouse Forest with Mr. Nutty, gather sweet berries for Baker Rosa, and open the Forest Market!', zone: 3 },
-    { ch: 4, title: 'Chapter 4: Calming Volcano Peak', desc: 'Climb Volcano Peak with Ember, mine glowing crystals for Nurse Maya, defeat the Crown Rock Giant, and calm the Volcano!', zone: 4 },
-    { ch: 5, title: 'Chapter 5: Grand Legend of Practice Island', desc: 'All 4 Island Cores are restored! Upgrade your home to a Fairy-Tale Castle, win Sports Cups, and lead the Class Plaza!', zone: 0 }
+    { ch: 1, title: 'Chapter 1: Admiral Benbow Harbour & The Torn Map', desc: 'Help Jim Hawkins, baby leopard Benbow & Parrot Flint solve 5 Map Clues to unlock Billy Bones\'s Sea Chest and board the Hispaniola!', zone: 1 },
+    { ch: 2, title: 'Chapter 2: Voyage to Hispaniola Bay & Silver\'s Galley', desc: 'Sail aboard the Hispaniola with Long John Silver, gather sea shells, and light the Spyglass Beacon!', zone: 2 },
+    { ch: 3, title: 'Chapter 3: Dr. Livesey\'s Stockade Fort', desc: 'Cross the jungle river with Dr. Livesey, Squire Trelawney & Abraham Gray to guard the Stockade Fort!', zone: 3 },
+    { ch: 4, title: 'Chapter 4: Skull Peak & Ben Gunn\'s Golden Vault', desc: 'Follow Captain Flint\'s compass pointer with Captain Smollett & Ben Gunn to claim the Great Treasure!', zone: 4 },
+    { ch: 5, title: 'Chapter 5: Grand Captain of Treasure Island', desc: 'All 4 Sea Chests are open! Upgrade your Captain\'s Cabin, play Crew Football & Volleyball, and lead the fleet!', zone: 0 }
   ];
 
   function getPlayerRating() {
@@ -409,48 +409,71 @@
     return '⭐ ' + done + '/5 Stops' + (totalStars ? ' · ★ ' + totalStars : '');
   }
 
+  function isAllChaptersUnlocked() {
+    try { return localStorage.getItem('eaa_treasure_unlock_all') === '1'; } catch (e) { return false; }
+  }
+
+  function toggleAllChaptersUnlock() {
+    var next = !isAllChaptersUnlocked();
+    try { localStorage.setItem('eaa_treasure_unlock_all', next ? '1' : '0'); } catch (e) {}
+    sound('playFanfare');
+    if (W() && W().refresh) W().refresh(false);
+    openWorldMap();
+  }
+
+  function replayStoryIntro() {
+    closeModal();
+    if (root.IslandStory && root.IslandStory.playIntro) {
+      var mHtml = (App() && App().monsterHtml) ? App().monsterHtml(92) : '🧭';
+      root.IslandStory.playIntro(mHtml, function () {});
+    }
+  }
+
   function openWorldMap() {
     sound('playTap');
     var s = ses() || {};
     var g = s.grade || 3;
     var curZone = (W() && W().S && W().S.zone !== undefined) ? W().S.zone : 1;
-    var isOpen = function (z) { return z <= 1 || (W() && W().isOpen && W().isOpen(z)); };
+    var allOpen = isAllChaptersUnlocked();
+    var isOpen = function (z) { return z <= 1 || allOpen || (W() && W().isOpen && W().isOpen(z)); };
     var islands = [
-      { z: 0, name: 'My Home Island',   sub: 'Build · Craft · Garden', img: 'm_island_home',    x: 20, y: 74, open: true },
-      { z: 1, name: 'Sunny Meadow',     sub: 'Unit 1 · Grandpa Bolt',  img: 'm_island_meadow',  x: 50, y: 27, open: true },
-      { z: 2, name: 'Lighthouse Beach', sub: 'Unit 2 · Lulu',          img: 'm_island_beach',   x: 80, y: 27, open: isOpen(2) },
-      { z: 3, name: 'Treehouse Forest', sub: 'Unit 3 · Mr. Nutty',     img: 'm_island_forest',  x: 50, y: 74, open: isOpen(3) },
-      { z: 4, name: 'Volcano Peak',     sub: 'Unit 4 · Ember',         img: 'm_island_volcano', x: 80, y: 74, open: isOpen(4) }
+      { z: 0, name: "Captain's Cabin",      sub: 'Quarterdeck · Build & Craft',       img: 'm_island_home',    x: 20, y: 74, open: true },
+      { z: 1, name: 'Ch.1: Benbow Harbour', sub: 'Unit 1 · Jim Hawkins & Benbow 🐆',  img: 'm_island_meadow',  x: 50, y: 27, open: true },
+      { z: 2, name: 'Ch.2: Hispaniola Bay', sub: 'Unit 2 · Captain Silver ⚓',         img: 'm_island_beach',   x: 80, y: 27, open: isOpen(2) },
+      { z: 3, name: 'Ch.3: Stockade Fort',  sub: 'Unit 3 · Dr. Livesey & Gray 📜',    img: 'm_island_forest',  x: 50, y: 74, open: isOpen(3) },
+      { z: 4, name: 'Ch.4: Skull Peak',     sub: 'Unit 4 · Smollett & Ben Gunn 👑',   img: 'm_island_volcano', x: 80, y: 74, open: isOpen(4) }
     ];
     var nodesHtml = islands.map(function (isl) {
       var here = curZone === isl.z;
       var prog = isl.open ? zoneProgressBadge(isl.z) : '';
+      var lockReason = '🔒 Sail unlocked after 4 Map Clues in Ch.' + (isl.z - 1);
       return '<button type="button" class="wg-map-node' + (isl.open ? '' : ' locked') + (here ? ' here' : '') + '" style="left:' + isl.x + '%;top:' + isl.y + '%" onclick="WorldGame.jumpZone(' + isl.z + ')">' +
         '<img src="' + FLAT + isl.img + '.webp" class="wg-map-isl-pic" alt="">' +
         (!isl.open ? '<img src="' + FLAT + 'o_cloud_lock.webp" class="wg-map-lock" alt="">' : '') +
-        (here ? '<span class="wg-map-here">📍 You are here</span>' : '') +
-        '<span class="wg-map-label"><b>' + esc(isl.name) + '</b><small>' + esc(isl.open ? isl.sub : '🔒 Finish 4 stops in Zone ' + (isl.z - 1)) + '</small>' + (prog ? '<em>' + esc(prog) + '</em>' : '') + '</span>' +
+        (here ? '<span class="wg-map-here">⛵ Anchored Here</span>' : '') +
+        '<span class="wg-map-label"><b>' + esc(isl.name) + '</b><small>' + esc(isl.open ? isl.sub : lockReason) + '</small>' + (prog ? '<em>' + esc(prog) + '</em>' : '') + '</span>' +
       '</button>';
     }).join('');
 
     var plazaBtn = '<button type="button" class="wg-map-node" style="left:20%;top:27%" onclick="WorldGame.closeModal(); if(window.IslandWall) IslandWall.open()">' +
       '<img src="' + FLAT + 'm_island_plaza.webp" class="wg-map-isl-pic" alt="">' +
-      '<span class="wg-map-label"><b>🌟 Class Plaza</b><small>Friends · Hangout</small><em>👋 Visit Classmates</em></span>' +
+      '<span class="wg-map-label"><b>⚓ Crew Harbour Plaza</b><small>Classmates · Fleet</small><em>👋 Visit Shipmates</em></span>' +
     '</button>';
 
     var pipTipObj = (s.doc && s.doc.pipTip) || ((ZONE_GRAMMAR_TIPS[g] || ZONE_GRAMMAR_TIPS[3])[Math.max(1, curZone)] || ZONE_GRAMMAR_TIPS[3][1]);
-    var tipSpeak = 'Captain Pip says: Remember, ' + pipTipObj.word + ' — ' + pipTipObj.meaning + '!';
+    var tipSpeak = 'Parrot Flint squawks: Remember, ' + pipTipObj.word + ' — ' + pipTipObj.meaning + '!';
     var pr = getPlayerRating();
     var pipBannerHtml =
       '<div class="wg-map-story-bar">' +
         '<div class="wg-map-story-left">' +
-          '<span class="wg-map-ch-pill">📖 ' + esc(pr.chapter.title) + '</span>' +
+          '<span class="wg-map-ch-pill">🗺️ ' + esc(pr.chapter.title) + '</span>' +
           '<span class="wg-map-ch-desc">' + esc(pr.chapter.desc) + '</span>' +
         '</div>' +
         '<div class="wg-map-rating-cluster">' +
-          '<span class="wg-map-rate-pill" title="Your Island Pro Rating">⭐ ' + pr.ratingFixed + ' / 5.0 <small>' + esc(pr.rankTitle) + '</small></span>' +
-          '<span class="wg-map-score-pill">🏆 ' + pr.proScore + ' pts · 🔋 ' + pr.powerPct + '% Island Power</span>' +
-          '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 9px;font-size:0.78rem" onclick="IslandAudio.speak(\'' + esc(tipSpeak) + '\', null, \'pip\')">🦜 Pip Tip</button>' +
+          '<span class="wg-map-rate-pill" title="Captain Rank">🧭 ' + pr.ratingFixed + ' / 5.0 <small>' + esc(pr.rankTitle) + '</small></span>' +
+          '<span class="wg-map-score-pill">🪙 ' + pr.proScore + ' pts · 🗺️ ' + pr.powerPct + '% Map Restored</span>' +
+          '<button type="button" class="isl-btn amber" style="min-height:32px;padding:3px 9px;font-size:0.78rem" onclick="WorldGame.replayStoryIntro()">🎬 Story Intro</button>' +
+          '<button type="button" class="isl-btn cyan" style="min-height:32px;padding:3px 9px;font-size:0.78rem" onclick="IslandAudio.speak(\'' + esc(tipSpeak) + '\', null, \'pip\')">🦜 Flint\'s Clue</button>' +
         '</div>' +
       '</div>';
 
@@ -470,12 +493,12 @@
       '<div class="isl-modal-backdrop" id="wg-map-backdrop">' +
         '<div class="isl-card-modal wg-map-modal" style="background-image:url(' + FLAT + 't_map_sea.webp)">' +
           '<div class="isl-mission-top wg-map-top">' +
-            '<div style="font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:8px"><img src="' + FLAT + 'u_map.webp" style="width:34px;height:34px;object-fit:contain" alt=""> Practice Island World Map</div>' +
+            '<div style="font-size:1.25rem;font-weight:800;display:flex;align-items:center;gap:8px"><img src="' + FLAT + 'o_compass.webp" style="width:36px;height:36px;object-fit:contain" alt=""> 🏴‍☠️ Treasure Island Sea Chart</div>' +
             demoBtns +
             '<div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
-              '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.openSportsArena(\'soccer\', \'2v2\')">⚽ Sports Arena</button>' +
-              '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openStickerBook()">📒 Sticker Book</button>' +
-              '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openCorner()">🏖️ Trophy Camp</button>' +
+              '<button type="button" class="isl-btn ' + (allOpen ? 'amber' : 'cyan') + '" style="min-height:38px;padding:5px 10px;font-size:0.82rem" onclick="WorldGame.toggleAllChaptersUnlock()" title="Switch between Week 1 Stage Focus and All Chapters Unlocked">' + (allOpen ? '🔓 All Chapters Open' : '⚓ Week 1 Stage Lock') + '</button>' +
+              '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.openSportsArena(\'soccer\', \'2v2\')">⚽ Crew Sports</button>' +
+              '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openStickerBook()">📒 Sticker Log</button>' +
               '<a class="isl-btn cyan" style="min-height:38px;padding:5px 11px;font-size:0.86rem;text-decoration:none;display:inline-flex;align-items:center" href="../index.html">🏫 School Hub</a>' +
               '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:5px 10px" onclick="WorldGame.closeModal()">✕</button>' +
             '</div>' +
@@ -3418,6 +3441,9 @@
     hasMaterials: hasMaterials,
     giveMaterials: giveMaterials,
     openWorldMap: openWorldMap,
+    isAllChaptersUnlocked: isAllChaptersUnlocked,
+    toggleAllChaptersUnlock: toggleAllChaptersUnlock,
+    replayStoryIntro: replayStoryIntro,
     jumpZone: jumpZone,
     goClassicMap: goClassicMap,
     openEnergyCharge: openEnergyCharge,

@@ -76,8 +76,8 @@
     },
     1: {
       ground: 'meadow', look: { base: '#8fd14f', tile: 't_grass', alpha: .3, patch: 'rgba(190,232,110,.3)', edge: '#c7a463', fill: '#f4e4ae', speck: ['#e2cd8f', '#d6bd7c'] }, npc: { art: FLAT + 'c_bolt', worried: FLAT + 'c_bolt_worried', happy: FLAT + 'c_bolt_happy', x: 640, y: 620 }, blocked: function (x, y) { return y < 215 || y > 1480 || x < 60 || x > W - 60 || Math.pow((x - 1762) / 381, 2) + Math.pow((y - 476) / 227, 2) < 1; },
-      stops: [{ x: 300, y: 1050, art: FLAT + 'o_machine_off', done: FLAT + 'o_machine_on', h: 210 }, { x: 700, y: 1250, art: FLAT + 'o_gear', h: 110 }, { x: 1120, y: 1040, art: FLAT + 'o_book', h: 110 }, { x: 1520, y: 1240, art: FLAT + 'o_robot', h: 190 }, { x: 1880, y: 980, art: FLAT + 'o_engine', h: 150 }],
-      chest: { x: 2150, y: 1000, art: FLAT + 'o_chest' },
+      stops: [{ x: 300, y: 1050, art: FLAT + 'o_machine_off', done: FLAT + 'o_machine_on', h: 210 }, { x: 700, y: 1250, art: FLAT + 'o_compass', h: 120 }, { x: 1120, y: 1040, art: FLAT + 'o_map_scroll', h: 120 }, { x: 1520, y: 1240, art: FLAT + 'o_robot', h: 190 }, { x: 1880, y: 980, art: FLAT + 'o_engine', h: 150 }],
+      chest: { x: 2120, y: 1030, art: FLAT + 'o_chest' },
       decor: [{ art: FLAT + 'o_house', x: 930, y: 560, h: 340, sw: 230 }, { art: FLAT + 'o_well', x: 1270, y: 720, h: 200, sw: 100 }, { art: FLAT + 'o_sign', x: 1090, y: 700, h: 110, sw: 30 },
         { art: FLAT + 'o_tree_round', x: 1160, y: 440, h: 370, sw: 60, sway: true }, { art: FLAT + 'o_tree_round', x: 2230, y: 1270, h: 380, sw: 60, sway: true }, { art: FLAT + 'o_tree_pine', x: 1860, y: 1440, h: 340, sw: 60, sway: true }, { art: FLAT + 'o_tree_pine', x: 220, y: 440, h: 340, sw: 60, sway: true }, { art: FLAT + 'o_tree_round', x: 470, y: 470, h: 330, sw: 60, sway: true },
         { art: FLAT + 'o_bush', x: 600, y: 1430, h: 110, sw: 90 }, { art: FLAT + 'o_bush', x: 2050, y: 1260, h: 110, sw: 90 }, { art: FLAT + 'o_bush', x: 400, y: 760, h: 100, sw: 80 }, { art: FLAT + 'o_rock', x: 1450, y: 900, h: 80, sw: 70 }, { art: FLAT + 'o_campfire', x: 380, y: 640, h: 110, sw: 70 }, { art: FLAT + 'o_tent', x: 250, y: 600, h: 140, sw: 110 }, { art: FLAT + 'o_lamp', x: 780, y: 640, h: 170, sw: 26 }, { art: FLAT + 'o_mushroom', x: 1560, y: 1380, h: 80, sw: 40 }, { art: FLAT + 'o_flowers_pink', x: 700, y: 1010, h: 54, flat: true }, { art: FLAT + 'o_flowers_pink', x: 1640, y: 1180, h: 54, flat: true }, { art: FLAT + 'o_fence', x: 480, y: 910, h: 90, sw: 90 }, { art: FLAT + 'o_fence', x: 590, y: 910, h: 90, sw: 90 }, { art: FLAT + 'o_fence', x: 1660, y: 820, h: 90, sw: 90 }, { art: FLAT + 'o_fence', x: 1770, y: 820, h: 90, sw: 90 }],
@@ -135,7 +135,7 @@
       crate: { x: 1300, y: 1000 }, ball: { x: 400, y: 1280 }, shells: [{ x: 1300, y: 1015, under: true }, { x: 2260, y: 280 }, { x: 700, y: 1460 }]
     }
   };
-  var ART = [FLAT + 'o_gift', FLAT + 'o_star_path', FLAT + 'o_chest', FLAT + 'o_chest_open', FLAT + 'o_ball', FLAT + 'o_crate', FLAT + 'o_shell', FLAT + 'o_coconut', FLAT + 'o_butterfly', FLAT + 'o_bird', FLAT + 'o_duck', FLAT + 'o_frog', FLAT + 'v_mark'];
+  var ART = [FLAT + 'o_gift', FLAT + 'o_star_path', FLAT + 'o_chest', FLAT + 'o_chest_open', FLAT + 'o_treasure_gold', FLAT + 'o_hispaniola', FLAT + 'o_boat', FLAT + 'o_compass', FLAT + 'o_map_scroll', FLAT + 'o_pirate_hat', FLAT + 'c_benbow', FLAT + 'c_benbow_happy', FLAT + 'c_pip', FLAT + 'c_pip_happy', FLAT + 'o_ball', FLAT + 'o_crate', FLAT + 'o_shell', FLAT + 'o_coconut', FLAT + 'o_butterfly', FLAT + 'o_bird', FLAT + 'o_duck', FLAT + 'o_frog', FLAT + 'v_mark'];
   // only the zone you are in is loaded, so phones wait less
   function artUrl(n) { return (n.indexOf(FLAT) === 0 ? 'art/' : 'art/clean/') + n + '.webp'; }
   function zoneArt(z) {
@@ -182,13 +182,14 @@
   function starsOf(id) { var d = ses().doc || {}; return Number((d.stars || {})[id]) || 0; }
   function isOpen(z) {
     if (z <= 1) return true;
-    if (Q.get('all') || (Q.get('demo') && Q.get('zone'))) return true;
+    if (root.WorldGame && root.WorldGame.isAllChaptersUnlocked && root.WorldGame.isAllChaptersUnlocked()) return true;
+    if (Q.get('all')) return true;
     var prev = missions(z - 1).regular.filter(function (m) { return starsOf(m.id) > 0; }).length;
     return prev >= 4;
   }
   function chestOpened(z) { var d = ses().doc || {}; return !!(d.chests && d.chests['z' + z]); }
   function zoneName(z) {
-    if (z === 0) return 'My Home Island';
+    if (z === 0) return "Captain's Cabin";
     var s = ses(), zz = root.IslandData.ZONES[z - 1];
     return (zz.titles[s.grade || 3] || zz.titles[3]).name;
   }
@@ -301,6 +302,16 @@
         oval(1740, 500, 330, 180, '#63cbee');
         c.strokeStyle = '#d6f5ff'; c.lineWidth = 6; c.lineCap = 'round';
         [[1500, 420, 110], [1720, 360, 140], [1900, 470, 120], [1620, 560, 130], [1840, 600, 100]].forEach(function (w) { c.beginPath(); c.moveTo(w[0], w[1]); c.quadraticCurveTo(w[0] + w[2] / 2, w[1] - 16, w[0] + w[2], w[1]); c.stroke(); });
+        /* Admiral Benbow Sea Harbour Bay & Wooden Ship Pier on the Eastern Coast */
+        oval(2360, 760, 230, 235, '#f3dd9c', '#b98f4a', 5);
+        oval(2365, 760, 195, 200, '#1680bb', '#0f4c81', 6);
+        oval(2355, 760, 155, 160, '#23a5d6');
+        for (var px = 2110, pi2 = 0; px < 2310; px += 34, pi2++) {
+          c.fillStyle = pi2 % 2 ? '#b9823f' : '#c8924b';
+          c.fillRect(px, 712, 34, 96);
+          c.strokeStyle = '#6f4316'; c.lineWidth = 3;
+          c.strokeRect(px, 712, 34, 96);
+        }
       }
       if (z === 2) {
         var sea = function (off) { c.beginPath(); c.moveTo(0, 0); for (x = 0; x <= W; x += 12) c.lineTo(x, shore(x) + off); c.lineTo(W, 0); c.closePath(); };
@@ -441,9 +452,7 @@
       sc.tweens.add({ targets: glow, alpha: .08, scale: 5.2, duration: 900 + i * 40, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       var isSturdy = (g.word === 'wood' || g.word === 'stone' || g.word === 'crystal');
       var maxH = isSturdy ? 2 : 1;
-      var capWord = g.word.charAt(0).toUpperCase() + g.word.slice(1);
-      var tag = makeWorldLabel(sc, g.x, g.y - g.h - 16, (matActionIcon[g.word] || '✨') + ' ' + capWord + (maxH > 1 ? ' (' + maxH + 'x)' : ''), '#fef08a');
-      tag.setScale(0.84);
+      var tag = null;
       sc.gather.push({
         kind: 'gather',
         id: id,
@@ -513,40 +522,78 @@
     return true;
   }
 
-  /* ---------- Connected Island Story Landmarks (2 per Zone) ---------- */
+  /* ---------- Connected Treasure Island Story Landmarks & Companions ---------- */
   var ZONE_LANDMARKS = {
     0: [
-      { id: 'lm_z0_chronicle', x: 1420, y: 720, label: '📜 Island Chronicle', icon: 'o_sign',
-        title: '📜 The Island Restoration Chronicle',
-        story: 'A great storm scattered the 4 Power Cores across Sunny Meadow, Lighthouse Beach, Treehouse Forest, and Volcano Peak! Complete missions, help villagers, craft blueprints, and win sports matches to restore 100% Island Power!' },
-      { id: 'lm_z0_well', x: 1780, y: 690, label: '⛲ Wishing Well', icon: 'o_well',
-        title: '⛲ Ancient Wishing Well',
-        story: 'Legend says builders who upgrade their home and share kindness in the Class Plaza receive lucky stars and extra energy from the Wishing Well!' }
+      { id: 'lm_z0_chronicle', x: 1420, y: 720, label: '📜 Captain\'s Logbook', icon: 'o_map_scroll',
+        title: '📜 The Treasure Island Logbook (سجل جزيرة الكنز)',
+        story: 'Jim Hawkins and his baby leopard cub Benbow discovered Captain Flint\'s torn sea map at the Admiral Benbow Inn! Solve the English clues across all 4 chapters to board the Hispaniola and claim the Great Treasure!' },
+      { id: 'lm_z0_well', x: 1780, y: 690, label: '🧭 Mariner\'s Well', icon: 'o_compass',
+        title: '🧭 Ancient Mariner\'s Compass Well',
+        story: 'Sailors who upgrade their Captain\'s Cabin, craft furniture, and play Crew Football & Volleyball earn bonus gold coins and energy for the voyage!' }
     ],
     1: [
-      { id: 'lm_z1_sign', x: 1090, y: 700, label: '🪧 Meadow Guidepost', icon: 'o_sign',
-        title: '🪧 Chapter 1: Sunny Meadow Power Core',
-        story: 'Grandpa Bolt\'s Meadow Machine powers all the workshops on Practice Island! Help Farmer Ben & Mia, defeat the Word Goblin, and finish all 5 Meadow stops to awaken the first Core!' },
-      { id: 'lm_z1_well', x: 1270, y: 720, label: '⛲ Meadow Spring', icon: 'o_well',
-        title: '⛲ Crystal Meadow Spring',
-        story: 'The clear water from this spring flows down to Lighthouse Beach and Treehouse Forest, connecting every island ecosystem together!' }
+      { id: 'lm_z1_sign', x: 1090, y: 700, label: '🪧 Admiral Benbow Sign', icon: 'o_map_scroll',
+        title: '🪧 Chapter 1: Admiral Benbow Harbour',
+        story: 'Welcome to Benbow Harbour! Help Jim Hawkins, Benbow the baby leopard, and Parrot Flint solve all 5 Map Clues to open Billy Bones\'s Sea Chest and unlock the Hispaniola ship at the eastern pier!' },
+      { id: 'lm_z1_well', x: 1270, y: 720, label: '⛲ Harbour Spring', icon: 'o_compass',
+        title: '⛲ Hispaniola Supply Spring',
+        story: 'Squire Trelawney and the crew fill the Hispaniola\'s water barrels here before setting sail across the sea to Hispaniola Bay!' }
     ],
     2: [
-      { id: 'lm_z2_hut', x: 760, y: 770, label: '🛖 Harbour Outpost', icon: 'o_hut',
-        title: '🛖 Chapter 2: Harbour Lookout Hut',
-        story: 'Captain Pip and Lulu watch the sea from here! Collect shells along the tide, help Postman Pat deliver letters, and relight the tall Lighthouse at Stop 5!' }
+      { id: 'lm_z2_hut', x: 760, y: 770, label: '🛖 Silver\'s Galley Hut', icon: 'o_hut',
+        title: '🛖 Chapter 2: Long John Silver\'s Beach Galley',
+        story: 'Long John Silver and Parrot Flint welcome you ashore at Hispaniola Bay! Gather sea shells, help First Mate Arrow & Cabin Boy Tom, and light the tall Spyglass Beacon at Stop 5!' }
     ],
     3: [
-      { id: 'lm_z3_treehouse', x: 450, y: 480, label: '🌳 Scout Treehouse', icon: 'o_treehouse',
-        title: '🌳 Chapter 3: Mr. Nutty\'s Treehouse Overlook',
-        story: 'From high in the canopy, Mr. Nutty watches over the Forest Market! Gather sweet forest berries for Baker Rosa and cross the wooden bridge to open the Market!' }
+      { id: 'lm_z3_treehouse', x: 450, y: 480, label: '🏰 Stockade Watchtower', icon: 'o_treehouse',
+        title: '🏰 Chapter 3: Dr. Livesey\'s Stockade Overlook',
+        story: 'From high in the Stockade Watchtower, Dr. Livesey, Squire Trelawney, and Abraham Gray guard the map! Cross the river bridge and unlock the Stockade Fort!' }
     ],
     4: [
-      { id: 'lm_z4_crystal', x: 600, y: 620, label: '💎 Magma Spire', icon: 'o_crystal_purple',
-        title: '💎 Chapter 4: Ancient Magma Crystal Spire',
-        story: 'These purple and orange crystals hold the geothermal energy of Volcano Peak! Mine crystals for Nurse Maya\'s clinic and calm the Volcano to become a Grand Island Legend!' }
+      { id: 'lm_z4_crystal', x: 600, y: 620, label: '🧭 Flint\'s Pointer Spire', icon: 'o_compass',
+        title: '🧭 Chapter 4: Captain Flint\'s Compass Spire',
+        story: 'Captain Smollett and Ben Gunn found Captain Flint\'s glowing pointer spire! Follow it to Stop 5 to open the Golden Treasure Vault!' }
     ]
   };
+
+  var ZONE_COMPANIONS = {
+    1: [
+      { id: 'comp_benbow', x: 765, y: 645, h: 125, art: 'c_benbow', happy: 'c_benbow_happy', label: '🐆 Benbow',
+        title: '🐆 Benbow the Baby Leopard (النمر الصغير بينبو)',
+        line: 'Purr-roar! I am Jim Hawkins\'s brave leopard cub Benbow! Let us sniff out all 5 Map Clues in Benbow Harbour so we can board the Hispaniola ship!' },
+      { id: 'comp_flint', x: 1015, y: 625, h: 118, art: 'c_pip', happy: 'c_pip_happy', label: '🦜 Parrot Flint',
+        title: '🦜 Parrot Captain Flint (الببغاء الكابتن فلينت)',
+        line: 'Squawk! Pieces of eight! Solve the English clues at the 5 stops and board the Hispaniola on the right coast!', isFlint: true }
+    ],
+    2: [
+      { id: 'comp_flint_z2', x: 1690, y: 715, h: 115, art: 'c_pip', happy: 'c_pip_happy', label: '🦜 Parrot Flint',
+        title: '🦜 Parrot Captain Flint',
+        line: 'Squawk! Captain Silver is cooking in the galley! Light the Spyglass Beacon at Stop 5 to sail to the Stockade Forest!', isFlint: true }
+    ]
+  };
+
+  function buildCompanions(sc) {
+    sc.companions = [];
+    if (S.inHouse) return;
+    var list = ZONE_COMPANIONS[S.zone] || [];
+    list.forEach(function (cp) {
+      var img = sc.add.image(cp.x, cp.y, FLAT + cp.art).setOrigin(.5, .92).setDepth(cp.y);
+      img.setScale((cp.h || 120) / img.height);
+      sc.add.image(cp.x, cp.y, 'shadow').setScale(1.25).setDepth(-6);
+      sc.tweens.add({ targets: img, y: cp.y - 8, duration: 820, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      var tag = makeWorldLabel(sc, cp.x, cp.y - (cp.h || 120) - 14, cp.label, '#fde047');
+      sc.companions.push({
+        kind: 'companion',
+        cp: cp,
+        img: img,
+        tag: tag,
+        x: cp.x,
+        y: cp.y,
+        def: { h: cp.h || 120, sw: 85 }
+      });
+    });
+  }
 
   function buildLandmarks(sc) {
     sc.landmarks = [];
@@ -1594,7 +1641,7 @@
     });
     if (zone.chest) {
       var cd = zone.chest;
-      var chest = sc.add.image(cd.x, cd.y, chestOpened(S.zone) ? FLAT + 'o_chest_open' : (cd.art || FLAT + 'o_chest')).setOrigin(.5, .96).setDepth(cd.y);
+      var chest = sc.add.image(cd.x, cd.y, chestOpened(S.zone) ? FLAT + 'o_treasure_gold' : (cd.art || FLAT + 'o_chest')).setOrigin(.5, .96).setDepth(cd.y);
       chest.setScale(150 / chest.height); sc.add.image(cd.x, cd.y, 'shadow').setScale(1.6).setDepth(-6);
       sc.chest = { kind: 'chest', img: chest, x: cd.x, y: cd.y };
     } else {
@@ -1642,7 +1689,7 @@
       if (n && s.def.done && s.img.texture.key !== s.def.done) { s.img.setTexture(s.def.done); if (celebrate) partyAt(s.x, s.y - s.def.h / 2); }
     });
     var chestReady = !next && sc.chest && !chestOpened(S.zone);
-    if (sc.chest) sc.chest.img.setTexture(chestOpened(S.zone) ? FLAT + 'o_chest_open' : (ZONES[S.zone].chest.art || FLAT + 'o_chest'));
+    if (sc.chest) sc.chest.img.setTexture(chestOpened(S.zone) ? FLAT + 'o_treasure_gold' : (ZONES[S.zone].chest.art || FLAT + 'o_chest'));
     (sc.stones || []).forEach(function (st) { var sn = starsOf(st.mission.id); if (st.starsText) st.starsText.setText(sn ? '★'.repeat(sn) : ''); });
     var t = next || (chestReady ? sc.chest : null);
     S.target = t;
@@ -1678,7 +1725,7 @@
 
   /* What the pupil can do where they are standing */
   function interactables(sc) {
-    var list = (sc.stops || []).concat([sc.gift, sc.npcSpot], sc.stones || [], sc.homeObjs || [], sc.villagers || [], sc.battles || [], sc.gather || [], sc.landmarks || []);
+    var list = (sc.stops || []).concat([sc.gift, sc.npcSpot], sc.stones || [], sc.homeObjs || [], sc.villagers || [], sc.battles || [], sc.gather || [], sc.landmarks || [], sc.companions || []);
     if (sc.chest) list.push(sc.chest);
     if (sc.gateL) list.push(sc.gateL);
     if (sc.gateR) list.push(sc.gateR);
@@ -1692,10 +1739,31 @@
       say(t.plot.title);
     } else if (t.kind === 'star') {
       panel(FLAT + 'o_star_path', t.mission.title, 'A star mission!', 'Play ▶', function () { App().tapPin(t.mission.id, z, true, null); });
+    } else if (t.kind === 'companion') {
+      var cp = t.cp;
+      if (t.img) t.img.setTexture(FLAT + (cp.happy || cp.art));
+      if (cp.isFlint) {
+        panel(FLAT + (cp.happy || cp.art), cp.title, cp.line, '🎬 Watch Story Intro ▶', function () {
+          if (root.WorldGame && root.WorldGame.replayStoryIntro) root.WorldGame.replayStoryIntro();
+        });
+      } else {
+        panel(FLAT + (cp.happy || cp.art), cp.title, cp.line, '🐾 Pet Benbow (+5 ⚡)', function () {
+          partyAt(t.x, t.y - 50);
+          if (!S.benbowPetted && root.WorldGame && root.WorldGame.addEnergy) {
+            S.benbowPetted = true;
+            root.WorldGame.addEnergy(5);
+            showWorldFloat(scene, t.x, t.y - 85, '🐆 Benbow Purrs! +5 ⚡ Energy!', '#34d399');
+          } else {
+            showWorldFloat(scene, t.x, t.y - 85, '🐆 Brave Benbow! ✨', '#fde047');
+          }
+          say('Benbow is ready for the treasure hunt!');
+        });
+      }
+      say(cp.line);
     } else if (t.kind === 'chest') {
-      if (chestOpened(z)) panel(FLAT + 'o_chest_open', 'Treasure', 'You opened this one!', 'OK', function () {});
-      else if (S.target === scene.chest) panel(FLAT + 'o_chest', 'Treasure', 'Open the treasure!', 'Open 🎁', function () { App().tapChest(z); refreshStops(true); });
-      else panel(FLAT + 'o_chest', 'Treasure', 'Finish all 5 stops first!', 'OK', function () {});
+      if (chestOpened(z)) panel(FLAT + 'o_treasure_gold', '🏴‍☠️ Captain Flint\'s Sea Chest', 'You unlocked this Chapter\'s Sea Chest and Map Piece!', '🗺️ Sea Chart', function () { if (root.WorldGame) root.WorldGame.openWorldMap(); });
+      else if (S.target === scene.chest) panel(FLAT + 'o_treasure_gold', '🏴‍☠️ Unlock the Sea Chest!', 'All 5 Map Clues solved! Open the Sea Chest to claim your Map Piece & Pirate Reward!', 'Open Chest 🗝️', function () { App().tapChest(z); refreshStops(true); });
+      else panel(FLAT + 'o_chest', '🔒 Locked Sea Chest', 'Solve all 5 Map Clues in this Chapter first to unlock the Sea Chest!', 'OK', function () {});
     } else if (t.kind === 'gift') {
       panel(FLAT + 'o_gift', "Today's quest", 'Five quick questions!', 'Play ▶', function () { App().startDailyQuest(); });
     } else if (t.kind === 'friend_host') {
@@ -1768,13 +1836,16 @@
       say(lm.title);
     } else if (t.kind === 'gate') {
       if (isOpen(t.to)) {
-        panel(FLAT + 'o_gate_arrow', 'Travel to ' + zoneName(t.to), 'Would you like to travel along the island path to ' + zoneName(t.to) + '?', '🚶 Travel ▶', function () {
+        var shipArt = t.dir > 0 ? (FLAT + 'o_hispaniola') : (FLAT + 'o_boat');
+        panel(shipArt, '⛵ Sail to ' + zoneName(t.to), 'All hands on deck! Board the Hispaniola ship to sail across the sea to ' + zoneName(t.to) + '!', '⛵ Set Sail ▶', function () {
           goZone(t.to, t.dir);
         });
-        say('Travel to ' + zoneName(t.to) + '?');
+        say('All hands on deck! Sail to ' + zoneName(t.to) + '!');
       } else {
-        panel(FLAT + 'o_cloud_lock', zoneName(t.to), 'Finish 4 stops here first to clear the storm clouds!', 'OK', function () {});
-        say('Finish four stops here first!');
+        panel(FLAT + 'o_cloud_lock', '🔒 ' + zoneName(t.to) + ' (Sea Route Locked)', 'Solve 4 Map Clues in ' + zoneName(S.zone) + ' first to prepare the Hispaniola for this voyage! (Or unlock all chapters in the Sea Chart).', '🗺️ Sea Chart', function () {
+          if (root.WorldGame && root.WorldGame.openWorldMap) root.WorldGame.openWorldMap();
+        });
+        say('Solve four map clues here first to set sail!');
       }
     } else if (t.kind === 'villager') {
       var v = t.v, st = root.WorldGame ? root.WorldGame.readState() : {};
@@ -1961,18 +2032,24 @@
     pad.addEventListener('pointerup', end); pad.addEventListener('pointercancel', end);
   }
 
-  /* ---------- gates to the next place ---------- */
+  /* ---------- Harbour Ship & Boat Docks to Sail Between Islands ---------- */
   function makeGate(sc, dir) {
     var to = S.zone + dir;
     if (to < 0 || to > 4) return null;
-    var x = dir > 0 ? W - 70 : 70, y = 760;
-    var sign = sc.add.text(x + (dir > 0 ? -40 : 40), y - 80, '', { fontFamily: 'Fredoka, sans-serif', fontSize: '26px', fontStyle: '700', color: '#fff', stroke: '#060911', strokeThickness: 5, shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,0.75)', blur: 4, stroke: true, fill: true }, align: 'center' }).setOrigin(dir > 0 ? 1 : 0, .5).setDepth(4400);
-    var pic = sc.add.image(x, y, FLAT + 'o_gate_arrow').setOrigin(.5, .8).setDepth(4400); pic.setScale(130 / pic.height); pic.setFlipX(dir < 0);
-    sc.tweens.add({ targets: pic, x: x + dir * 12, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-    var g = { kind: 'gate', x: x, y: y, dir: dir, to: to, def: { h: 130, sw: 110 }, sign: sign, pic: pic, setLock: function () {
+    var x = dir > 0 ? W - 95 : 90, y = 760;
+    var shipTex = dir > 0 ? (FLAT + 'o_hispaniola') : (FLAT + 'o_boat');
+    var shipH = dir > 0 ? 195 : 135;
+    var sign = sc.add.text(x + (dir > 0 ? -20 : 20), y - shipH - 18, '', { fontFamily: 'Fredoka, sans-serif', fontSize: '22px', fontStyle: '700', color: '#fef08a', stroke: '#060911', strokeThickness: 5, shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,0.8)', blur: 4, stroke: true, fill: true }, align: 'center' }).setOrigin(dir > 0 ? 1 : 0, .5).setDepth(4405);
+    var pic = sc.add.image(x, y, shipTex).setOrigin(.5, .85).setDepth(4400); pic.setScale(shipH / pic.height);
+    var lockBadge = sc.add.image(x, y - shipH * 0.55, FLAT + 'o_cloud_lock').setOrigin(.5).setDepth(4406);
+    lockBadge.setScale(76 / lockBadge.height);
+    sc.tweens.add({ targets: pic, y: y - 8, angle: { from: -1.5, to: 1.5 }, duration: 1350, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+    var g = { kind: 'gate', x: x, y: y, dir: dir, to: to, def: { h: shipH, sw: 135 }, sign: sign, pic: pic, lockBadge: lockBadge, setLock: function () {
       var open = isOpen(to);
-      sign.setText((open ? '' : '🔒 ') + zoneName(to));
-      pic.setTexture(open ? FLAT + 'o_gate_arrow' : FLAT + 'o_cloud_lock'); pic.setScale((open ? 130 : 110) / pic.height); pic.setFlipX(open && dir < 0);
+      sign.setText((open ? '⛵ Sail: ' : '🔒 ') + zoneName(to));
+      sign.setColor(open ? '#fde047' : '#cbd5e1');
+      lockBadge.setVisible(!open);
+      pic.setAlpha(open ? 1 : 0.72);
     } };
     g.setLock();
     return g;
@@ -2028,7 +2105,7 @@
         var n = zone.npc, npc = sc.add.image(n.x, n.y, n.art).setOrigin(.5, .92); npc.setScale((n.h || 190) / npc.height).setDepth(n.y);
         sc.add.image(n.x, n.y, 'shadow').setScale(1.8).setDepth(-6); solid(sc, n.x, n.y - 4, 90, 34);
         sc.tweens.add({ targets: npc, scaleY: npc.scaleY * 1.05, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-        var npcName = S.zone === 0 ? 'Grandpa Bolt' : ((root.IslandStory && root.IslandStory.CHARS && root.IslandStory.CHARS[S.zone] && root.IslandStory.CHARS[S.zone].name) || 'Friend');
+        var npcName = S.zone === 0 ? 'Quartermaster Hawkins' : ((root.IslandStory && root.IslandStory.CHARS && root.IslandStory.CHARS[S.zone] && root.IslandStory.CHARS[S.zone].name) || 'Crew');
         var npcLabel = makeWorldLabel(sc, n.x, S.zone === 0 ? (n.y + 24) : (n.y - (n.h || 190) - 14), '💬 ' + npcName, '#fde047');
         sc.npcSpot = { kind: 'npc', img: npc, label: npcLabel, x: n.x, y: n.y };
       } else {
@@ -2042,6 +2119,7 @@
         addLife(sc, zone);
         buildGather(sc, zone);
         buildLandmarks(sc);
+        buildCompanions(sc);
 
         sc.crate = sc.physics.add.image(zone.crate.x, zone.crate.y, FLAT + 'o_crate').setDepth(zone.crate.y); sc.crate.setScale(112 / sc.crate.height);
         sc.crate.body.setSize(sc.crate.width * .85, sc.crate.height * .8); sc.crate.setDrag(1400).setCollideWorldBounds(true).setMass(3).setBounce(.1);
@@ -2059,7 +2137,7 @@
         sc.palmShellKey = 'z' + S.zone + '_palm';
         if (found[sc.palmShellKey]) sc.palms.forEach(function (p) { p.hasShell = false; });
       } else {
-        sc.villagers = []; sc.battles = []; sc.gather = []; sc.landmarks = []; sc.crate = null; sc.ball = null;
+        sc.villagers = []; sc.battles = []; sc.gather = []; sc.landmarks = []; sc.companions = []; sc.crate = null; sc.ball = null;
       }
 
       sc.fx = sc.add.particles(0, 0, 'dot', { speed: { min: 60, max: 240 }, lifespan: 600, scale: { start: .8, end: 0 }, tint: [0xfde047, 0xffffff, 0xf472b6], emitting: false }).setDepth(5000);
@@ -2508,7 +2586,7 @@
     sc.party.explode(isBossStop ? 75 : 45, hit.x, hit.y - 70);
     sc.fx.explode(isBossStop ? 36 : 20, hit.x, hit.y - 50);
     if (isBossStop) {
-      var bossNames = { 1: '⚙️ Machine Awakened!', 2: '🗼 Lighthouse Shining!', 3: '🎪 Market Open!', 4: '🌋 Volcano Calm!' };
+      var bossNames = { 1: '⚓ Hispaniola Ready to Sail!', 2: '🗼 Spyglass Beacon Shining!', 3: '🏰 Stockade Fort Secured!', 4: '👑 Flint\'s Treasure Vault Open!' };
       showWorldFloat(sc, hit.x, hit.y - 120, bossNames[S.zone] || '⚡ Zone Boss Complete!', '#fde047');
       setTimeout(function () { if (sc && sc.party) sc.party.explode(60, hit.x, hit.y - 100); }, 380);
     } else {
