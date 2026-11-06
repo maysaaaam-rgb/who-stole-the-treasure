@@ -257,10 +257,26 @@ class CreatureEngine {
     };
     const glowColor = colorGlowMap[color] || 'rgba(56, 189, 248, 0.4)';
 
+    // The student's chosen colour is painted onto the creature itself
+    // (a colour layer masked to the creature's shape keeps its shading and eyes)
+    const tintMap = {
+      blue: { c: '#2563eb', mode: 'color', o: 0.85 },
+      red: { c: '#ef4444', mode: 'color', o: 0.85 },
+      green: { c: '#16a34a', mode: 'color', o: 0.85 },
+      yellow: { c: '#facc15', mode: 'color', o: 0.8 },
+      purple: { c: '#9333ea', mode: 'color', o: 0.85 },
+      black: { c: '#1f2937', mode: 'multiply', o: 0.75 },
+      white: { c: '#f8fafc', mode: 'saturation', o: 0.9 }
+    };
+    const tint = tintMap[color] || tintMap.blue;
+
     return `
       <div class="creature-display-stage ${auraClass}" style="--creature-scale: ${scale}; --custom-glow: ${glowColor};">
         <div class="creature-ground-shadow"></div>
-        <img src="${imagePath}" alt="${name}" class="creature-fullbody-img ${flipClass}">
+        <div class="creature-paint ${flipClass}">
+          <img src="${imagePath}" alt="${name}" class="creature-fullbody-img">
+          <span class="creature-tint" style="--tint: ${tint.c}; --tint-mode: ${tint.mode}; --tint-opacity: ${tint.o}; --tint-mask: url('${imagePath}');"></span>
+        </div>
         ${this.renderElementalEffects(abilities)}
       </div>
     `;
