@@ -1,0 +1,691 @@
+/* ==========================================================================
+   POKÉMON TRAINER BATTLE — DESIGN LAYER v2 (Nov 2026)
+   Loaded after style.css. One world style, one button system, big pictures,
+   smartboard-readable text, and real game feel in the battle.
+   ========================================================================== */
+
+:root {
+  --font-family: "Baloo 2", "Nunito", ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif;
+
+  /* Primary = the ONE thing to do now (yellow, 3D) */
+  --btn-p-top: #fde68a;
+  --btn-p-mid: #facc15;
+  --btn-p-bot: #eab308;
+  --btn-p-lip: #a16207;
+  --btn-p-text: #3b1d03;
+
+  /* Secondary = everything else (glass) */
+  --btn-s-bg: rgba(30, 41, 59, 0.82);
+  --btn-s-border: rgba(148, 163, 184, 0.38);
+  --btn-s-lip: rgba(2, 6, 23, 0.75);
+
+  --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --glow-cyan: 0 0 0 3px rgba(56, 189, 248, 0.55), 0 0 22px rgba(56, 189, 248, 0.45);
+}
+
+body { font-family: var(--font-family); }
+
+/* --------------------------------------------------------------------------
+   1. ONE WORLD: every screen is the same night-time Pokémon arena
+   -------------------------------------------------------------------------- */
+.training-bg,
+.lab-bg,
+.stadium-bg {
+  background:
+    radial-gradient(ellipse 55% 40% at 50% -5%, rgba(56, 189, 248, 0.30), transparent 70%),
+    radial-gradient(ellipse 35% 30% at 12% 8%, rgba(168, 85, 247, 0.22), transparent 70%),
+    radial-gradient(ellipse 35% 30% at 88% 8%, rgba(250, 204, 21, 0.14), transparent 70%),
+    radial-gradient(ellipse 90% 45% at 50% 108%, rgba(16, 185, 129, 0.28), transparent 70%),
+    linear-gradient(180deg, #070d1d 0%, #0b1834 45%, #0c2a3a 78%, #0a3326 100%);
+}
+.training-bg::before,
+.lab-bg::before,
+.stadium-bg::before {
+  /* twinkling stars */
+  content: '';
+  position: absolute;
+  inset: 0 0 45% 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 8% 20%, #fff, transparent 60%),
+    radial-gradient(1.5px 1.5px at 22% 60%, #cbd5e1, transparent 60%),
+    radial-gradient(2px 2px at 37% 15%, #fff, transparent 60%),
+    radial-gradient(1.5px 1.5px at 55% 40%, #e2e8f0, transparent 60%),
+    radial-gradient(2px 2px at 71% 12%, #fff, transparent 60%),
+    radial-gradient(1.5px 1.5px at 84% 52%, #cbd5e1, transparent 60%),
+    radial-gradient(1.5px 1.5px at 93% 25%, #fff, transparent 60%);
+  opacity: 0.7;
+  animation: starTwinkle 4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+.training-bg::after,
+.lab-bg::after,
+.stadium-bg::after {
+  /* glowing arena floor grid */
+  content: '';
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  bottom: 0;
+  height: 42%;
+  background:
+    repeating-linear-gradient(90deg, rgba(56, 189, 248, 0.16) 0 2px, transparent 2px 90px),
+    repeating-linear-gradient(0deg, rgba(56, 189, 248, 0.14) 0 2px, transparent 2px 60px);
+  transform: perspective(500px) rotateX(58deg);
+  transform-origin: bottom center;
+  -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 95%);
+  mask-image: linear-gradient(to top, #000 10%, transparent 95%);
+  pointer-events: none;
+}
+@keyframes starTwinkle { from { opacity: 0.45; } to { opacity: 0.85; } }
+
+/* --------------------------------------------------------------------------
+   2. ONE BUTTON SYSTEM
+   -------------------------------------------------------------------------- */
+.action-btn,
+.bar-btn,
+.nav-btn,
+.btn-attack,
+.btn-rubric,
+.choice-pill,
+.ability-pill,
+.cat-pill,
+.tab-btn,
+.creator-tab-btn {
+  font-family: var(--font-family);
+  transition: transform 0.14s var(--spring), box-shadow 0.14s ease, filter 0.15s ease, background 0.2s ease;
+}
+
+/* Primary: big yellow 3D */
+.action-btn.btn-primary,
+.action-btn.btn-highlight,
+.btn-start-mission,
+.bar-btn.bar-btn-next {
+  background: linear-gradient(180deg, var(--btn-p-top) 0%, var(--btn-p-mid) 45%, var(--btn-p-bot) 100%) !important;
+  color: var(--btn-p-text) !important;
+  border: none !important;
+  border-radius: 18px;
+  box-shadow: 0 6px 0 var(--btn-p-lip), 0 12px 22px rgba(0, 0, 0, 0.35) !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  font-weight: 900;
+}
+
+/* Secondary: glass */
+.action-btn.btn-secondary,
+.bar-btn,
+.nav-btn {
+  background: var(--btn-s-bg) !important;
+  color: #f1f5f9 !important;
+  border: 2px solid var(--btn-s-border) !important;
+  border-radius: 14px;
+  box-shadow: 0 5px 0 var(--btn-s-lip), 0 8px 16px rgba(0, 0, 0, 0.28) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.action-btn:hover,
+.bar-btn:hover,
+.nav-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+.action-btn:active,
+.bar-btn:active,
+.nav-btn:active,
+.btn-attack:active,
+.btn-rubric:active,
+.choice-pill:active,
+.ability-pill:active,
+.cat-pill:active,
+.tab-btn:active,
+.creator-tab-btn:active {
+  transform: translateY(5px) !important;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5) !important;
+  animation: none !important;
+}
+
+/* Only the yellow "do this now" button pulses */
+.btn-pulse:not(.btn-primary):not(.btn-highlight):not(.btn-start-mission) { animation: none; }
+.btn-pulse.btn-primary,
+.btn-pulse.btn-highlight,
+.btn-start-mission { animation: primaryPulse 1.8s ease-in-out infinite; }
+@keyframes primaryPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.045); }
+}
+
+.btn-start-mission { font-size: 2rem !important; padding: 1.1rem 3rem !important; border-radius: 24px !important; }
+
+/* Bottom bar: Skip did the same as Next, so it is removed */
+#btnNavSkip { display: none !important; }
+.bar-btn { font-size: 1.1rem; font-weight: 800; padding: 0.6rem 1.2rem; }
+.bar-btn.bar-btn-next { font-size: 1.25rem; padding: 0.65rem 1.8rem; }
+.stage-name-display { font-size: 1.25rem !important; }
+
+/* Pills and tabs: glass, active = glowing cyan */
+.choice-pill,
+.ability-pill,
+.cat-pill,
+.tab-btn,
+.creator-tab-btn {
+  background: rgba(30, 41, 59, 0.85) !important;
+  color: #f1f5f9 !important;
+  border: 2px solid rgba(148, 163, 184, 0.35) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 0 rgba(2, 6, 23, 0.7) !important;
+  font-weight: 800;
+  cursor: pointer;
+}
+.choice-pill:hover,
+.ability-pill:hover,
+.cat-pill:hover,
+.tab-btn:hover,
+.creator-tab-btn:hover { transform: translateY(-2px); border-color: rgba(125, 211, 252, 0.7) !important; }
+.choice-pill.active,
+.ability-pill.active,
+.cat-pill.active,
+.tab-btn.active,
+.creator-tab-btn.active {
+  background: linear-gradient(180deg, rgba(14, 165, 233, 0.55), rgba(2, 132, 199, 0.55)) !important;
+  border-color: #7dd3fc !important;
+  box-shadow: 0 4px 0 #075985, var(--glow-cyan) !important;
+  color: #ffffff !important;
+}
+.cat-pill, .tab-btn { font-size: 1.15rem; padding: 0.6rem 1.4rem; }
+.creator-tab-btn { font-size: 1.05rem; padding: 0.65rem 0.9rem; }
+
+/* --------------------------------------------------------------------------
+   3. TOP BAR + TEACHER MENU
+   -------------------------------------------------------------------------- */
+.top-nav-bar { position: relative; z-index: 300; }
+.nav-btn { font-size: 1rem; padding: 0.5rem 0.85rem; }
+.teacher-menu { position: relative; }
+.teacher-menu-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.75rem;
+  background: rgba(10, 16, 32, 0.97);
+  border: 2px solid rgba(148, 163, 184, 0.35);
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+  z-index: 600;
+  animation: menuPop 0.18s var(--spring);
+}
+.teacher-menu-panel .nav-btn {
+  width: 100%;
+  justify-content: flex-start;
+  gap: 0.7rem;
+  font-size: 1.05rem;
+  padding: 0.7rem 0.9rem;
+}
+.teacher-menu-panel .btn-text { display: inline !important; }
+@keyframes menuPop { from { opacity: 0; transform: translateY(-6px) scale(0.96); } to { opacity: 1; transform: none; } }
+.stage-dropdown { font-size: 1.05rem; font-family: var(--font-family); }
+
+/* --------------------------------------------------------------------------
+   4. READABLE FROM THE BACK OF THE CLASS
+   -------------------------------------------------------------------------- */
+.stage-tag { font-size: 1rem !important; padding: 0.3rem 0.9rem !important; }
+.screen-header h2 { font-size: clamp(2.1rem, 3.6vw, 2.9rem); letter-spacing: 0.5px; }
+.instruction-subtitle { font-size: clamp(1.15rem, 1.6vw, 1.4rem) !important; }
+.round-badge, .star-rating-pill { font-size: 1rem !important; }
+.clue-bar-btn { font-size: 1.2rem !important; min-height: 56px; }
+.clues-title, .choices-title { font-size: 1.2rem !important; }
+.clues-count-tracker, .feedback-hint { font-size: 1.1rem !important; }
+.vocab-word { font-size: 2.2rem !important; }
+.gesture-text, .gesture-desc { font-size: 1.15rem !important; }
+.sentence-box { font-size: 2rem !important; }
+.quiz-sentence-frame { font-size: 2rem !important; }
+.quiz-message { font-size: 1.5rem !important; }
+.movement-action-tip { font-size: 1.5rem !important; }
+.teacher-prompt-label { font-size: 1.05rem !important; }
+.bubble-tag { font-size: 1rem !important; }
+.spec-row { font-size: 1.1rem !important; }
+.creator-summary-card h4 { font-size: 1.15rem !important; }
+.step-title { font-size: 1.15rem !important; }
+.lock-desc { font-size: 1rem !important; }
+.lock-title { font-size: 1.15rem !important; }
+.turn-instruction { font-size: 1.2rem !important; }
+.turn-callout { font-size: 1.2rem !important; }
+.rubric-label { font-size: 1rem !important; }
+.btn-rubric { font-size: 1.05rem !important; padding: 0.55rem 0.9rem !important; border-radius: 12px !important; box-shadow: 0 4px 0 rgba(2, 6, 23, 0.7) !important; }
+.score-line { font-size: 1.4rem !important; }
+.points-badge { font-size: 1.25rem !important; }
+.mission-checklist li { font-size: 1.2rem; }
+.prof-greeting, .prof-callout { font-size: 1.3rem; }
+
+/* --------------------------------------------------------------------------
+   5. BIG PICTURES: the Pokémon is the hero of every screen
+   -------------------------------------------------------------------------- */
+@keyframes idleBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes idleFloat {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+@keyframes pedestalPulse {
+  0%, 100% { opacity: 0.75; transform: translateX(-50%) scaleX(1); }
+  50% { opacity: 1; transform: translateX(-50%) scaleX(1.06); }
+}
+
+/* Adjective contrast cards */
+.contrast-img-wrap {
+  position: relative;
+  width: 100% !important;
+  height: clamp(190px, 31vh, 320px) !important;
+}
+.contrast-img-wrap::after,
+.model-image-wrap::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 62%;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.55) 0%, rgba(56, 189, 248, 0.12) 55%, transparent 75%);
+  transform: translateX(-50%);
+  animation: pedestalPulse 3s ease-in-out infinite;
+  z-index: 0;
+}
+.vocab-creature-img,
+.model-pokemon-img {
+  position: relative;
+  z-index: 1;
+  height: 92%;
+  width: auto;
+  max-width: 92%;
+  animation: idleBob 3s ease-in-out infinite;
+  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.55)) !important;
+}
+#adjImgRight, #adj2ImgRight { animation-delay: -1.5s; }
+
+/* Quick game */
+.quiz-choice-card { height: clamp(300px, 46vh, 430px) !important; border-radius: 28px !important; }
+.quiz-choice-card img,
+.quiz-choice-card .choice-img {
+  width: 88% !important;
+  height: 72% !important;
+  object-fit: contain;
+  animation: idleBob 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.5));
+}
+.quiz-choice-card:nth-child(2) img { animation-delay: -1s; }
+.quiz-choice-card:nth-child(3) img { animation-delay: -2s; }
+.quiz-choice-card .choice-name { font-size: 1.6rem !important; }
+
+/* Mystery answer cards */
+.mystery-choice-card { padding: 0.8rem !important; }
+.mystery-choice-card img {
+  width: clamp(90px, 15vh, 150px) !important;
+  height: clamp(90px, 15vh, 150px) !important;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.5));
+}
+.mystery-choice-card .choice-name { font-size: 1.35rem !important; }
+.mystery-choice-card .choice-type-pill { font-size: 0.95rem !important; }
+
+/* Model description */
+.model-image-wrap { position: relative; width: clamp(220px, 24vw, 320px) !important; height: clamp(220px, 32vh, 320px) !important; }
+.model-name { font-size: 2.2rem !important; }
+
+/* Emergency intro sprites */
+.run-sprite { width: clamp(85px, 11vh, 120px) !important; height: clamp(85px, 11vh, 120px) !important; }
+
+/* Revealed answer */
+.reveal-full-sprite { max-height: clamp(200px, 38vh, 330px) !important; animation: idleBob 3s ease-in-out infinite; }
+
+/* --------------------------------------------------------------------------
+   6. WHO'S THAT POKÉMON? — the silhouette appears clue by clue
+   -------------------------------------------------------------------------- */
+.mystery-core-orb { position: relative; width: 100%; height: 100%; }
+.mystery-silhouette {
+  display: none;
+  height: 64%;
+  max-width: 82%;
+  object-fit: contain;
+  --sil-blur: 16px;
+  --sil-op: 0.5;
+  filter: brightness(0) drop-shadow(0 0 10px rgba(255, 255, 255, 0.75)) blur(var(--sil-blur));
+  opacity: var(--sil-op);
+  transition: filter 0.6s ease, opacity 0.6s ease, transform 0.6s var(--spring);
+  animation: idleFloat 3s ease-in-out infinite;
+}
+.mystery-core-orb:not([data-level="0"]) .mystery-silhouette { display: block; }
+.mystery-core-orb:not([data-level="0"]) .mystery-huge-qm { display: none; }
+.mystery-core-orb[data-level="1"] .mystery-silhouette { --sil-blur: 14px; --sil-op: 0.55; }
+.mystery-core-orb[data-level="2"] .mystery-silhouette { --sil-blur: 8px; --sil-op: 0.75; }
+.mystery-core-orb[data-level="3"] .mystery-silhouette { --sil-blur: 3px; --sil-op: 0.92; }
+.mystery-core-orb[data-level="4"] .mystery-silhouette { --sil-blur: 0px; --sil-op: 1; }
+.mystery-silhouette.revealed {
+  filter: drop-shadow(0 0 24px rgba(250, 204, 21, 0.9)) !important;
+  opacity: 1 !important;
+  transform: scale(1.15);
+}
+.mystery-flash {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, rgba(255, 255, 255, 0.7) 30%, rgba(255, 255, 255, 0) 65%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.mystery-flash.go { animation: flashBurst 0.75s ease-out; }
+@keyframes flashBurst {
+  0% { opacity: 0; transform: scale(0.4); }
+  25% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+.mystery-lock-badge { font-size: 1rem !important; position: relative; z-index: 6; }
+
+/* --------------------------------------------------------------------------
+   7. ABILITIES: 8 big cards per page
+   -------------------------------------------------------------------------- */
+.abilities-cards-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 1rem !important; flex: 0 1 auto !important; }
+.ability-card-item {
+  height: clamp(120px, 19vh, 175px) !important;
+  border-radius: 20px !important;
+  gap: 0.15rem;
+}
+.ability-card-emoji { font-size: clamp(2.4rem, 5vh, 3.3rem) !important; }
+.ability-card-name { font-size: clamp(1.2rem, 2.2vh, 1.55rem) !important; }
+.ability-card-sentence { font-size: 1.1rem !important; }
+.abilities-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin: 0.9rem 0 0.2rem;
+}
+.abilities-pager .action-btn { font-size: 1.1rem; padding: 0.6rem 1.3rem; }
+.pager-dots { display: inline-flex; gap: 0.5rem; }
+.pager-dot { width: 14px; height: 14px; border-radius: 50%; background: rgba(148, 163, 184, 0.4); }
+.pager-dot.active { background: #facc15; box-shadow: 0 0 10px #facc15; }
+.ability-spotlight-bar { border-radius: 22px !important; }
+.spotlight-info h3 { font-size: 1.8rem; }
+.spotlight-sentence { font-size: 1.5rem; }
+
+/* --------------------------------------------------------------------------
+   8. CREATOR: big picture buttons, kid words
+   -------------------------------------------------------------------------- */
+.choice-pill {
+  display: inline-flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 74px;
+  padding: 0.45rem 0.6rem !important;
+  white-space: nowrap;
+}
+.pill-emoji { font-size: 1.9rem; line-height: 1.1; }
+.pill-label { font-size: 0.95rem; letter-spacing: 0.4px; }
+.color-pill.active {
+  border-color: var(--c) !important;
+  box-shadow: 0 4px 0 rgba(2, 6, 23, 0.7), 0 0 0 3px var(--c), 0 0 22px var(--c) !important;
+  background: rgba(30, 41, 59, 0.9) !important;
+}
+.ability-pill { font-size: 1rem !important; padding: 0.55rem 0.7rem !important; }
+.ability-pill.wrong { animation: wobble 0.35s ease; }
+@keyframes wobble { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.slot-text { font-size: 1.05em; }
+
+/* The student's chosen colour painted onto their creature */
+.creature-paint {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  height: min(240px, 90%);
+  transform: scale(var(--creature-scale, 1));
+  transform-origin: bottom center;
+  isolation: isolate;
+  animation: idleFloat 3s ease-in-out infinite;
+}
+.creature-paint.creature-flip-x { transform: scale(var(--creature-scale, 1)) scaleX(-1) !important; }
+.creature-paint .creature-fullbody-img {
+  height: 100% !important;
+  width: auto;
+  max-width: none !important;
+  max-height: none !important;
+  transform: none !important;
+}
+.creature-tint {
+  position: absolute;
+  inset: 0;
+  background: var(--tint);
+  mix-blend-mode: var(--tint-mode);
+  opacity: var(--tint-opacity);
+  -webkit-mask: var(--tint-mask) center / contain no-repeat;
+  mask: var(--tint-mask) center / contain no-repeat;
+  pointer-events: none;
+  z-index: 3;
+}
+.reveal-creature-viewport { width: clamp(320px, 30vw, 420px) !important; height: clamp(260px, 38vh, 360px) !important; }
+.reveal-creature-viewport .creature-paint { height: min(270px, 82%); }
+.reveal-creature-viewport .creature-paint { --creature-scale: 1 !important; }
+
+/* --------------------------------------------------------------------------
+   9. BATTLE: real game feel
+   -------------------------------------------------------------------------- */
+#screen-battle { position: relative; }
+.battle-vs-intro {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background: radial-gradient(circle at center, rgba(250, 204, 21, 0.22), rgba(2, 6, 23, 0.92) 60%);
+  cursor: pointer;
+}
+.vs-intro-side { display: flex; flex-direction: column; gap: 0.4rem; padding: 0 3rem; }
+.vs-intro-p1 { align-items: flex-end; text-align: right; }
+.vs-intro-p2 { align-items: flex-start; }
+.vs-intro-label { font-size: 1.3rem; font-weight: 900; letter-spacing: 3px; color: #cbd5e1; }
+.vs-intro-name { font-size: clamp(2.2rem, 4.5vw, 4rem); font-weight: 900; line-height: 1; }
+.vs-intro-p1 .vs-intro-name { color: #38bdf8; text-shadow: 0 0 30px rgba(56, 189, 248, 0.8); }
+.vs-intro-p2 .vs-intro-name { color: #fb923c; text-shadow: 0 0 30px rgba(251, 146, 60, 0.8); }
+.vs-intro-slam {
+  font-size: clamp(5rem, 11vw, 9rem);
+  font-weight: 900;
+  color: #facc15;
+  text-shadow: 0 0 40px rgba(250, 204, 21, 0.9), 0 8px 0 #a16207;
+}
+.battle-vs-intro.play .vs-intro-p1 { animation: slideFromLeft 0.55s var(--spring) both; }
+.battle-vs-intro.play .vs-intro-p2 { animation: slideFromRight 0.55s var(--spring) both; }
+.battle-vs-intro.play .vs-intro-slam { animation: vsSlam 0.5s 0.45s var(--spring) both; }
+.battle-vs-intro.play { animation: introFade 2.1s ease both; }
+@keyframes slideFromLeft { from { transform: translateX(-60vw); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes slideFromRight { from { transform: translateX(60vw); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes vsSlam { from { transform: scale(3.5) rotate(-12deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+@keyframes introFade { 0%, 82% { opacity: 1; } 100% { opacity: 0; } }
+
+.battle-podium { width: clamp(300px, 30vw, 420px) !important; }
+.creature-battle-wrap { width: 100% !important; height: clamp(230px, 36vh, 360px) !important; }
+.creature-battle-wrap .creature-paint { height: min(320px, 92%); }
+.pokemon-name { font-size: 1.6rem !important; }
+.hp-bar-container {
+  width: clamp(220px, 24vw, 340px) !important;
+  height: 24px !important;
+  border: 3px solid #0f172a !important;
+  background: #1e293b !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(148, 163, 184, 0.35);
+}
+.hp-bar-fill { transition: width 0.55s var(--spring), background 0.4s ease !important; }
+.hp-bar-fill.hp-high { background: linear-gradient(180deg, #4ade80, #16a34a) !important; }
+.hp-bar-fill.hp-mid { background: linear-gradient(180deg, #fde047, #f59e0b) !important; }
+.hp-bar-fill.hp-low { background: linear-gradient(180deg, #f87171, #dc2626) !important; animation: hpLowBlink 0.7s ease-in-out infinite; }
+@keyframes hpLowBlink { 50% { filter: brightness(1.5); } }
+
+.points-badge { position: relative; display: inline-block; }
+.points-badge.points-pop { animation: pointsPop 0.45s var(--spring); }
+@keyframes pointsPop { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
+.fx-point-float {
+  position: absolute;
+  left: 50%;
+  top: -6px;
+  transform: translateX(-50%);
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fde047;
+  text-shadow: 0 2px 0 #a16207, 0 0 14px rgba(250, 204, 21, 0.9);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: floatUp 1.1s ease-out forwards;
+}
+@keyframes floatUp { from { opacity: 1; transform: translate(-50%, 0) scale(0.8); } to { opacity: 0; transform: translate(-50%, -55px) scale(1.2); } }
+
+/* Move buttons coloured by type */
+.ability-attack-buttons { gap: 1rem !important; }
+.btn-attack {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 64px;
+  font-size: 1.3rem !important;
+  border: none !important;
+  border-radius: 18px !important;
+  color: #ffffff !important;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+  box-shadow: 0 6px 0 var(--move-lip, #7c2d12), 0 10px 20px rgba(0, 0, 0, 0.35) !important;
+}
+.btn-attack .move-icon { font-size: 1.8rem; }
+.btn-attack:disabled { filter: grayscale(0.7); cursor: not-allowed; }
+.move-fire { background: linear-gradient(180deg, #fb923c, #ea580c) !important; --move-lip: #7c2d12; }
+.move-ice { background: linear-gradient(180deg, #67e8f9, #0891b2) !important; --move-lip: #155e75; }
+.move-electric { background: linear-gradient(180deg, #fde047, #eab308) !important; --move-lip: #854d0e; color: #3b1d03 !important; text-shadow: none; }
+.move-water { background: linear-gradient(180deg, #60a5fa, #2563eb) !important; --move-lip: #1e3a8a; }
+.move-wind { background: linear-gradient(180deg, #a5b4fc, #6366f1) !important; --move-lip: #312e81; }
+.move-ground { background: linear-gradient(180deg, #d6a46b, #a16207) !important; --move-lip: #713f12; }
+.move-grass { background: linear-gradient(180deg, #4ade80, #16a34a) !important; --move-lip: #14532d; }
+.move-ghost { background: linear-gradient(180deg, #c084fc, #7e22ce) !important; --move-lip: #3b0764; }
+.move-light { background: linear-gradient(180deg, #fef9c3, #facc15) !important; --move-lip: #a16207; color: #3b1d03 !important; text-shadow: none; }
+.move-normal { background: linear-gradient(180deg, #f87171, #dc2626) !important; --move-lip: #7f1d1d; }
+
+/* Hit effects */
+.battle-stadium-stage { position: relative; }
+.battle-stadium-stage.stage-shake { animation: stageShake 0.42s ease; }
+@keyframes stageShake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-10px, 4px); }
+  40% { transform: translate(9px, -5px); }
+  60% { transform: translate(-7px, 3px); }
+  80% { transform: translate(5px, -2px); }
+}
+.battle-flash { position: absolute; inset: 0; opacity: 0; pointer-events: none; z-index: 20; border-radius: 30px; }
+.battle-flash.go { animation: moveFlash 0.45s ease-out; }
+.flash-fire { background: radial-gradient(circle, rgba(249, 115, 22, 0.75), transparent 70%); }
+.flash-ice { background: radial-gradient(circle, rgba(103, 232, 249, 0.75), transparent 70%); }
+.flash-electric, .flash-light { background: radial-gradient(circle, rgba(253, 224, 71, 0.8), transparent 70%); }
+.flash-water { background: radial-gradient(circle, rgba(96, 165, 250, 0.75), transparent 70%); }
+.flash-wind { background: radial-gradient(circle, rgba(165, 180, 252, 0.75), transparent 70%); }
+.flash-ground { background: radial-gradient(circle, rgba(214, 164, 107, 0.75), transparent 70%); }
+.flash-grass { background: radial-gradient(circle, rgba(74, 222, 128, 0.75), transparent 70%); }
+.flash-ghost { background: radial-gradient(circle, rgba(192, 132, 252, 0.75), transparent 70%); }
+.flash-normal { background: radial-gradient(circle, rgba(255, 255, 255, 0.7), transparent 70%); }
+@keyframes moveFlash { 0% { opacity: 0; } 25% { opacity: 1; } 100% { opacity: 0; } }
+.fx-damage {
+  position: absolute;
+  top: 28%;
+  transform: translateX(-50%);
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 900;
+  color: #ef4444;
+  -webkit-text-stroke: 3px #ffffff;
+  text-shadow: 0 6px 0 rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  z-index: 25;
+  animation: damageUp 1.2s var(--spring) forwards;
+}
+@keyframes damageUp {
+  0% { opacity: 0; transform: translate(-50%, 20px) scale(0.5); }
+  20% { opacity: 1; transform: translate(-50%, 0) scale(1.25); }
+  100% { opacity: 0; transform: translate(-50%, -70px) scale(1); }
+}
+.battle-ko-banner {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  background: linear-gradient(180deg, #fde68a, #facc15);
+  color: #3b1d03;
+  font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+  font-weight: 900;
+  padding: 0.6rem 1.6rem;
+  border-radius: 999px;
+  box-shadow: 0 6px 0 #a16207, 0 0 40px rgba(250, 204, 21, 0.7);
+  white-space: nowrap;
+  animation: vsSlam 0.5s var(--spring) both;
+}
+
+/* --------------------------------------------------------------------------
+   10. CHAMPION MOMENT
+   -------------------------------------------------------------------------- */
+.champ-play .trophy-icon { display: inline-block; animation: trophyDrop 0.9s var(--spring) both; }
+.champ-play .champion-header-card h1 { animation: vsSlam 0.6s 0.25s var(--spring) both; }
+.champ-play .champion-winner-box { animation: slideFromLeft 0.7s 0.4s var(--spring) both; }
+.champ-play .trainer-badge-award-card { animation: slideFromRight 0.7s 0.55s var(--spring) both; }
+.champ-play .trophy-img-wrap { animation: trophyDrop 0.9s 0.8s var(--spring) both; }
+@keyframes trophyDrop {
+  0% { transform: translateY(-120px) scale(0.4) rotate(-20deg); opacity: 0; }
+  60% { transform: translateY(8px) scale(1.15) rotate(6deg); opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+.winner-title { font-size: clamp(1.7rem, 2.6vw, 2.3rem) !important; text-shadow: 0 0 22px rgba(250, 204, 21, 0.7); }
+.champion-creature-viewport { width: clamp(260px, 24vw, 340px) !important; height: clamp(200px, 28vh, 290px) !important; }
+.champion-creature-viewport .creature-paint { height: min(260px, 92%); }
+
+/* Full stops sit right after the word (no gap) */
+.scaffold-line .fixed-text.punct { margin-left: -0.6rem; }
+
+/* Reveal: read & say lines big enough to read aloud */
+.reveal-sentence-line { font-size: clamp(1.15rem, 2.2vh, 1.5rem) !important; padding: 0.5rem 0.9rem !important; }
+.sentences-header h3 { font-size: 1.3rem !important; }
+
+/* Champion: trophy no longer covers the title, everything fits */
+.trophy-img { width: clamp(56px, 8vh, 84px) !important; height: auto !important; }
+.trophy-img-wrap { margin-bottom: 0.2rem; }
+.champion-header-card h1 { font-size: clamp(2.4rem, 5.5vh, 3.4rem) !important; }
+.trophy-icon { font-size: clamp(2.2rem, 5vh, 3.2rem) !important; }
+.champion-subtitle { font-size: clamp(1.2rem, 2.6vh, 1.6rem) !important; }
+.champion-podium-showcase { gap: 1.5rem !important; }
+.champion-creature-viewport .creature-paint { --creature-scale: 1 !important; }
+.champion-layout { justify-content: flex-start !important; gap: 0.8rem; }
+.champion-header-card .trophy-icon { display: none !important; } /* the trophy lives in the winner card */
+@media (max-height: 950px) {
+  .champion-creature-viewport { height: clamp(150px, 21vh, 220px) !important; }
+  .champion-winner-box, .trainer-badge-award-card { padding-top: 0.8rem !important; padding-bottom: 0.8rem !important; }
+  .trophy-img { width: 52px !important; }
+}
+
+/* Creator: options panel uses the free space; picture buttons fill their rows */
+.creator-workspace-grid { grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr) !important; gap: 1.5rem !important; }
+.creator-options-panel { width: 100% !important; max-width: none !important; }
+.choice-pills-row { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.6rem !important; }
+.creature-base-pills { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+.creator-summary-card .spec-row strong { font-size: 1.1rem; }
+
+/* --------------------------------------------------------------------------
+   11. SMALL SCREENS
+   -------------------------------------------------------------------------- */
+@media (max-height: 800px) {
+  .screen-header h2 { font-size: clamp(1.8rem, 3vw, 2.3rem); }
+  .vs-intro-side { padding: 0 1.5rem; }
+}
+@media (max-width: 1100px) {
+  .bar-btn span:not(.icon) { display: none; }
+  .bar-btn.bar-btn-next span:not(.icon) { display: inline; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+@media print {
+  .training-bg::before, .training-bg::after, .lab-bg::before, .lab-bg::after,
+  .stadium-bg::before, .stadium-bg::after { display: none; }
+}

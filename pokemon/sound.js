@@ -105,6 +105,20 @@ class SoundEngine {
     this.playTone(880, 'sine', 0.1, 0.2, 1320);
   }
 
+  // Victory fanfare: C5 → E5 → G5 → C6 (was called by the game but missing,
+  // which stopped the Mystery Pokémon reveal from ever opening)
+  playFanfare() {
+    if (this.muted) return;
+    this.init();
+    const notes = [523.25, 659.25, 783.99, 1046.5];
+    notes.forEach((freq, i) => {
+      setTimeout(() => {
+        this.playTone(freq, 'triangle', i === notes.length - 1 ? 0.5 : 0.16, 0.22);
+        this.playTone(freq / 2, 'sine', i === notes.length - 1 ? 0.5 : 0.16, 0.12);
+      }, i * 110);
+    });
+  }
+
   playSuper() {
     if (this.muted) return;
     this.init();

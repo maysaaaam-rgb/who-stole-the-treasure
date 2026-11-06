@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Pokémon Trainer Battle | Interactive A1+ ESL Game</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="design.css?v=2">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23ef4444'/><path d='M 2 50 A 48 48 0 0 0 98 50 Z' fill='%23ffffff'/><line x1='2' y1='50' x2='98' y2='50' stroke='%230f172a' stroke-width='10'/><circle cx='50' cy='50' r='16' fill='%230f172a'/><circle cx='50' cy='50' r='10' fill='%23ffffff'/></svg>">
 </head>
 <body>
@@ -50,20 +51,30 @@
         <span class="icon">🔊</span>
         <span class="btn-text">Speak</span>
       </button>
+      <div class="teacher-menu" id="teacherMenu">
+        <button class="nav-btn teacher-menu-toggle" id="btnTeacherMenu" aria-haspopup="true" aria-expanded="false" title="Teacher tools">
+          <span class="icon">⚙️</span>
+          <span class="btn-text">Teacher</span>
+        </button>
+        <div class="teacher-menu-panel hidden" id="teacherMenuPanel" role="menu">
       <button class="nav-btn" id="btnMuteToggle" title="Toggle Sound" aria-label="Toggle Sound">
         <span class="icon" id="muteIcon">🔔</span>
+        <span class="btn-text">Sound on / off</span>
       </button>
       <button class="nav-btn btn-highlight" id="btnPokedexModal" title="Audience Pokédex" aria-label="Open Trainer's Pokédex">
         <span class="icon">📋</span>
-        <span class="btn-text">Pokédex</span>
+        <span class="btn-text">Class Pokédex</span>
       </button>
       <button class="nav-btn" id="btnPrintWorksheets" title="Print Class Worksheets" aria-label="Print Worksheets">
         <span class="icon">🖨️</span>
-        <span class="btn-text">Print</span>
+        <span class="btn-text">Print worksheets</span>
       </button>
       <button class="nav-btn" id="btnTeacherNotes" title="Teacher Guide" aria-label="Teacher Notes">
         <span class="icon">💡</span>
+        <span class="btn-text">Teacher guide</span>
       </button>
+        </div>
+      </div>
       <button class="nav-btn btn-fullscreen" id="btnFullscreen" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
         <span class="icon" id="fullscreenIcon">⛶</span>
         <span class="btn-text">Fullscreen</span>
@@ -155,8 +166,10 @@
               <div class="mystery-pod-frame theme-electric" id="mysteryPodFrame">
                 <div class="mystery-energy-orbit"></div>
                 <div class="mystery-core-orb" id="mysteryCoreOrb">
+                  <img class="mystery-silhouette" id="mysterySilhouette" alt="" aria-hidden="true">
+                  <div class="mystery-flash" id="mysteryFlash"></div>
                   <span class="mystery-huge-qm" id="mysteryHugeQm">?</span>
-                  <div class="mystery-lock-badge">🔒 HIDDEN POKÉMON</div>
+                  <div class="mystery-lock-badge" id="mysteryLockBadge">👂 LISTEN TO THE CLUES!</div>
                 </div>
                 <div class="mystery-theme-label" id="mysteryThemeLabel">⚡ ELECTRIC MYSTERY CAPSULE</div>
               </div>
@@ -379,6 +392,11 @@
         <div class="abilities-cards-grid" id="abilitiesCardsGrid">
           <!-- Populated from LESSON_DATA.abilities -->
         </div>
+        <div class="abilities-pager" id="abilitiesPager">
+          <button type="button" class="action-btn btn-secondary" id="btnAbilitiesPrev">⬅ Page 1</button>
+          <span class="pager-dots" id="abilitiesPagerDots"></span>
+          <button type="button" class="action-btn btn-primary" id="btnAbilitiesNext">Page 2 ➡</button>
+        </div>
 
         <!-- Ability Detail Spotlight Area -->
         <div class="ability-spotlight-bar" id="abilitySpotlight">
@@ -506,7 +524,7 @@
         <div class="screen-header">
           <span class="stage-tag player-tag-p1">TRAINER 1</span>
           <h2>🧬 CREATE YOUR POKÉMON!</h2>
-          <p class="instruction-subtitle">Choose characteristics to design your unique Pokémon!</p>
+          <p class="instruction-subtitle">Choose and make your own Pokémon!</p>
         </div>
 
         <div class="creator-workspace-grid">
@@ -533,7 +551,7 @@
               <div class="creator-step-section">
                 <div class="step-title">
                   <span class="step-num">1</span>
-                  <span>BODY ARCHETYPE:</span>
+                  <span>CHOOSE A BODY:</span>
                 </div>
                 <div class="choice-pills-row creature-base-pills" id="p1-base-choices">
                   <button class="choice-pill base-pill active" data-type="base" data-val="dragon">🐉 DRAGON</button>
@@ -665,8 +683,8 @@
             </div>
 
             <div class="creator-summary-card">
-              <h4>SYNTHESIS SPECIFICATION</h4>
-              <div class="spec-row"><span>Archetype:</span> <strong id="p1-spec-base">DRAGON</strong></div>
+              <h4>⭐ MY POKÉMON</h4>
+              <div class="spec-row"><span>Body:</span> <strong id="p1-spec-base">DRAGON</strong></div>
               <div class="spec-row"><span>Size:</span> <strong id="p1-spec-size">HUGE</strong></div>
               <div class="spec-row"><span>Look:</span> <strong id="p1-spec-personality">BRAVE</strong></div>
               <div class="spec-row"><span>Color:</span> <strong id="p1-spec-color">BLUE</strong></div>
@@ -711,21 +729,21 @@
               <span class="slot-text slot-adj" id="p1-slot-size">huge</span>
               <span class="fixed-text">and</span>
               <span class="slot-text slot-color" id="p1-slot-color">blue</span>
-              <span class="fixed-text">."</span>
+              <span class="fixed-text punct">."</span>
             </div>
             <div class="scaffold-line line-2">
-              <span class="fixed-text">"It is a</span>
+              <span class="fixed-text">"It is</span>
               <span class="slot-text slot-base" id="p1-slot-base">dragon</span>
-              <span class="fixed-text">. It is</span>
+              <span class="fixed-text punct">. It is</span>
               <span class="slot-text slot-adj" id="p1-slot-personality">brave</span>
-              <span class="fixed-text">."</span>
+              <span class="fixed-text punct">."</span>
             </div>
             <div class="scaffold-line line-3">
               <span class="fixed-text">"It can</span>
               <span class="slot-text slot-ab" id="p1-slot-ab1">fly</span>
               <span class="fixed-text">and</span>
               <span class="slot-text slot-ab" id="p1-slot-ab2">breathe fire</span>
-              <span class="fixed-text">."</span>
+              <span class="fixed-text punct">."</span>
             </div>
           </div>
 
@@ -743,7 +761,7 @@
         <div class="countdown-overlay hidden" id="p1-countdown-overlay">
           <div class="countdown-card">
             <div class="building-dna-spin">🧬</div>
-            <h2 class="building-text">SYNTHESIZING POKÉMON...</h2>
+            <h2 class="building-text">MAKING YOUR POKÉMON...</h2>
             <div class="countdown-digits" id="p1-countdown-number">3</div>
             <div class="countdown-traits" id="p1-countdown-traits">
               SIZE: HUGE • POWER: STRONG • ABILITY: FIRE
@@ -784,7 +802,7 @@
         <div class="screen-header">
           <span class="stage-tag player-tag-p2">TRAINER 2</span>
           <h2>🧬 CREATE YOUR POKÉMON!</h2>
-          <p class="instruction-subtitle">Trainer 2: Choose your own size, personality, power & abilities!</p>
+          <p class="instruction-subtitle">Trainer 2: Choose and make your own Pokémon!</p>
         </div>
 
         <div class="creator-workspace-grid">
@@ -809,7 +827,7 @@
               <div class="creator-step-section">
                 <div class="step-title">
                   <span class="step-num">1</span>
-                  <span>BODY ARCHETYPE:</span>
+                  <span>CHOOSE A BODY:</span>
                 </div>
                 <div class="choice-pills-row creature-base-pills" id="p2-base-choices">
                   <button class="choice-pill base-pill active" data-type="base" data-val="fox">🦊 FOX</button>
@@ -941,8 +959,8 @@
             </div>
 
             <div class="creator-summary-card">
-              <h4>SYNTHESIS SPECIFICATION</h4>
-              <div class="spec-row"><span>Archetype:</span> <strong id="p2-spec-base">FOX</strong></div>
+              <h4>⭐ MY POKÉMON</h4>
+              <div class="spec-row"><span>Body:</span> <strong id="p2-spec-base">FOX</strong></div>
               <div class="spec-row"><span>Size:</span> <strong id="p2-spec-size">SMALL</strong></div>
               <div class="spec-row"><span>Look:</span> <strong id="p2-spec-personality">CUTE</strong></div>
               <div class="spec-row"><span>Color:</span> <strong id="p2-spec-color">RED</strong></div>
@@ -986,21 +1004,21 @@
               <span class="slot-text slot-adj" id="p2-slot-size">small</span>
               <span class="fixed-text">and</span>
               <span class="slot-text slot-color" id="p2-slot-color">red</span>
-              <span class="fixed-text">."</span>
+              <span class="fixed-text punct">."</span>
             </div>
             <div class="scaffold-line line-2">
-              <span class="fixed-text">"It is a</span>
+              <span class="fixed-text">"It is</span>
               <span class="slot-text slot-base" id="p2-slot-base">fox</span>
-              <span class="fixed-text">. It is</span>
+              <span class="fixed-text punct">. It is</span>
               <span class="slot-text slot-adj" id="p2-slot-personality">cute</span>
-              <span class="fixed-text">."</span>
+              <span class="fixed-text punct">."</span>
             </div>
             <div class="scaffold-line line-3">
               <span class="fixed-text">"It can</span>
               <span class="slot-text slot-ab" id="p2-slot-ab1">swim</span>
               <span class="fixed-text">and</span>
               <span class="slot-text slot-ab" id="p2-slot-ab2">make ice</span>
-              <span class="fixed-text">."</span>
+              <span class="fixed-text punct">."</span>
             </div>
           </div>
 
@@ -1017,7 +1035,7 @@
         <div class="countdown-overlay hidden" id="p2-countdown-overlay">
           <div class="countdown-card">
             <div class="building-dna-spin">🧬</div>
-            <h2 class="building-text">SYNTHESIZING POKÉMON...</h2>
+            <h2 class="building-text">MAKING YOUR POKÉMON...</h2>
             <div class="countdown-digits" id="p2-countdown-number">3</div>
             <div class="countdown-traits" id="p2-countdown-traits">
               SIZE: SMALL • POWER: FAST • ABILITY: ICE
@@ -1048,6 +1066,12 @@
     <!-- ==================== SCREEN 12: CREATOR BATTLE ARENA ==================== -->
     <section class="screen-view" id="screen-battle">
       <div class="screen-bg stadium-bg"></div>
+
+      <div class="battle-vs-intro hidden" id="battleVsIntro">
+        <div class="vs-intro-side vs-intro-p1"><span class="vs-intro-label">TRAINER 1</span><span class="vs-intro-name" id="vsIntroP1">—</span></div>
+        <div class="vs-intro-slam">VS</div>
+        <div class="vs-intro-side vs-intro-p2"><span class="vs-intro-label">TRAINER 2</span><span class="vs-intro-name" id="vsIntroP2">—</span></div>
+      </div>
 
       <div class="screen-content battle-layout">
         <!-- Battle Top Header -->
@@ -1097,6 +1121,8 @@
 
           <!-- Battle FX Overlay for elemental attacks -->
           <div class="battle-effects-layer" id="battleFxLayer"></div>
+          <div class="battle-flash" id="battleFlash"></div>
+          <div class="battle-ko-banner hidden" id="battleKoBanner">💫 KO! Tap “Calculate Champion”!</div>
 
           <!-- Player 2 Arena Side -->
           <div class="battle-podium podium-p2" id="battlePodiumP2">
@@ -1452,9 +1478,9 @@
   </div>
 
   <!-- APPLICATION SCRIPTS -->
-  <script src="data.js"></script>
-  <script src="sound.js"></script>
-  <script src="creatures.js"></script>
-  <script src="app.js"></script>
+  <script src="data.js?v=2"></script>
+  <script src="sound.js?v=2"></script>
+  <script src="creatures.js?v=2"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>

@@ -151,6 +151,39 @@ class PokemonApp {
     });
     document.getElementById('btnPrintWorksheets').addEventListener('click', () => window.print());
 
+    // Teacher menu: one button holds Sound, Pokédex, Print and Teacher guide
+    const menuBtn = document.getElementById('btnTeacherMenu');
+    const menuPanel = document.getElementById('teacherMenuPanel');
+    if (menuBtn && menuPanel) {
+      const closeMenu = () => {
+        menuPanel.classList.add('hidden');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      };
+      menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = menuPanel.classList.toggle('hidden') === false;
+        menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        sounds.playClick();
+      });
+      menuPanel.addEventListener('click', (e) => {
+        // keep the menu open for the sound toggle, close for everything else
+        if (!e.target.closest('#btnMuteToggle')) closeMenu();
+      });
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#teacherMenu')) closeMenu();
+      });
+    }
+
+    // Big friendly picture buttons: split the emoji from the word on every choice pill
+    document.querySelectorAll('.choice-pill').forEach(pill => {
+      const text = pill.textContent.trim();
+      const parts = text.split(' ');
+      if (parts.length > 1 && !/[A-Za-z]/.test(parts[0])) {
+        const emoji = parts.shift();
+        pill.innerHTML = `<span class="pill-emoji">${emoji}</span><span class="pill-label">${parts.join(' ')}</span>`;
+      }
+    });
+
     // Screen 0 Start Mission Button
     document.getElementById('btnStartMission').addEventListener('click', () => {
       sounds.playClick();
@@ -327,6 +360,14 @@ class PokemonApp {
     this.cluesRevealed = 0;
     this.mysteryRoundScore = 3;
 
+    // Silhouette: hidden until the first clue, sharper with every clue heard
+    const sil = document.getElementById('mysterySilhouette');
+    if (sil) {
+      sil.src = round.targetImage;
+      sil.classList.remove('revealed');
+    }
+    this.setSilhouetteLevel(0);
+
     const starPill = document.getElementById('mysteryStarRatingPill');
     if (starPill) starPill.textContent = '⭐ ⭐ ⭐ (3 STARS)';
 
@@ -363,6 +404,7 @@ class PokemonApp {
 
             this.cluesRevealed++;
             if (tracker) tracker.textContent = `${this.cluesRevealed} of 4 Revealed`;
+            this.setSilhouetteLevel(this.cluesRevealed);
 
             // Star scoring updates
             if (this.cluesRevealed <= 2) {
@@ -400,6 +442,17 @@ class PokemonApp {
         card.addEventListener('click', () => {
           if (card.classList.contains('correct') || card.classList.contains('wrong')) return;
 
+          // Listening first: at least one clue must be heard before guessing
+          if (this.cluesRevealed < 1) {
+            sounds.speak('Listen first! Touch a clue!');
+            if (feedback) feedback.textContent = '👂 Listen first! Touch a clue above!';
+            if (clueContainer) {
+              clueContainer.classList.add('clue-nudge');
+              setTimeout(() => clueContainer.classList.remove('clue-nudge'), 700);
+            }
+            return;
+          }
+
           if (opt.isCorrect) {
             card.classList.add('correct');
             sounds.playCorrect();
@@ -408,10 +461,11 @@ class PokemonApp {
 
             if (feedback) feedback.textContent = `🎉 YES! IT'S ${opt.name.toUpperCase()}!`;
             this.totalMysteryStars += this.mysteryRoundScore;
+            this.flashRevealSilhouette();
 
             setTimeout(() => {
               this.renderMysteryRevealScreen(round);
-            }, 800);
+            }, 1700);
           } else {
             card.classList.add('wrong');
             sounds.playWrong();
@@ -426,6 +480,32 @@ class PokemonApp {
         choicesGrid.appendChild(card);
       });
     }
+  }
+
+  setSilhouetteLevel(level) {
+    const orb = document.getElementById('mysteryCoreOrb');
+    if (orb) orb.setAttribute('data-level', String(Math.min(4, level)));
+    const badge = document.getElementById('mysteryLockBadge');
+    if (badge) {
+      badge.textContent = level === 0 ? '👂 LISTEN TO THE CLUES!'
+        : level < 4 ? `👀 ${level} CLUE${level > 1 ? 'S' : ''} — LOOK CLOSER!`
+        : '🔎 ALL CLUES! WHO IS IT?';
+    }
+  }
+
+  flashRevealSilhouette() {
+    const orb = document.getElementById('mysteryCoreOrb');
+    const sil = document.getElementById('mysterySilhouette');
+    const flash = document.getElementById('mysteryFlash');
+    if (orb) orb.setAttribute('data-level', '4');
+    if (flash) {
+      flash.classList.remove('go');
+      void flash.offsetWidth;
+      flash.classList.add('go');
+    }
+    if (sil) setTimeout(() => sil.classList.add('revealed'), 180);
+    const badge = document.getElementById('mysteryLockBadge');
+    if (badge) badge.textContent = '🎉 YOU FOUND IT!';
   }
 
   renderMysteryRevealScreen(round) {
@@ -652,6 +732,36 @@ class PokemonApp {
 
       grid.appendChild(card);
     });
+
+    // Show 8 big cards at a time instead of 16 small ones
+    this.abilitiesPage = 0;
+    const perPage = 8;
+    const pageCount = Math.max(1, Math.ceil(LESSON_DATA.abilities.length / perPage));
+    const prevBtn = document.getElementById('btnAbilitiesPrev');
+    const nextBtn = document.getElementById('btnAbilitiesNext');
+    const dots = document.getElementById('abilitiesPagerDots');
+    const showPage = (page) => {
+      this.abilitiesPage = (page + pageCount) % pageCount;
+      grid.querySelectorAll('.ability-card-item').forEach((c, i) => {
+        c.classList.toggle('hidden', Math.floor(i / perPage) !== this.abilitiesPage);
+      });
+      if (dots) {
+        dots.innerHTML = '';
+        for (let i = 0; i < pageCount; i++) {
+          const d = document.createElement('span');
+          d.className = `pager-dot ${i === this.abilitiesPage ? 'active' : ''}`;
+          dots.appendChild(d);
+        }
+      }
+      const other = (this.abilitiesPage + 1) % pageCount + 1;
+      if (prevBtn) prevBtn.textContent = `⬅ Page ${other}`;
+      if (nextBtn) nextBtn.textContent = `Page ${other} ➡`;
+    };
+    if (prevBtn) prevBtn.addEventListener('click', () => { sounds.playClick(); showPage(this.abilitiesPage - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { sounds.playClick(); showPage(this.abilitiesPage + 1); });
+    const pager = document.getElementById('abilitiesPager');
+    if (pager && pageCount < 2) pager.classList.add('hidden');
+    showPage(0);
 
     document.getElementById('btnSpeakSpotlight').addEventListener('click', () => {
       const sentence = document.getElementById('spotlightSentence').textContent;
@@ -1023,7 +1133,7 @@ class PokemonApp {
     const prefix = `p${playerNum}`;
 
     const slotBase = document.getElementById(`${prefix}-slot-base`);
-    if (slotBase) slotBase.textContent = config.archetype || config.base || 'dragon';
+    if (slotBase) slotBase.textContent = this.baseNoun(config.archetype || config.base || 'dragon');
 
     const slotSize = document.getElementById(`${prefix}-slot-size`);
     if (slotSize) slotSize.textContent = config.size || 'big';
@@ -1049,6 +1159,16 @@ class PokemonApp {
     document.getElementById(`${prefix}-reveal-card`).classList.add('hidden');
   }
 
+  baseNoun(base) {
+    const nouns = {
+      dragon: 'a dragon', bird: 'a bird', aquatic: 'a sea creature', cat: 'a cat', fox: 'a fox',
+      dinosaur: 'a dinosaur', insect: 'an insect', robot: 'a robot', plant: 'a plant',
+      cute_round: 'a cute ball', rabbit: 'a rabbit', turtle: 'a turtle', wolf: 'a wolf',
+      frog: 'a frog', mouse: 'a mouse'
+    };
+    return nouns[base] || `a ${String(base).replace(/_/g, ' ')}`;
+  }
+
   speakPokemonDescription(playerNum) {
     const config = playerNum === 1 ? this.p1Config : this.p2Config;
     const ab1 = (config.abilities && config.abilities[0]) || 'jump';
@@ -1056,7 +1176,7 @@ class PokemonApp {
     const base = config.archetype || config.base || 'dragon';
     const look = config.look || config.personality || 'brave';
     const color = config.color || 'blue';
-    const text = `My Pokémon is ${config.size} and ${color}. It is a ${base}. It is ${look}. It can ${ab1} and ${ab2}.`;
+    const text = `My Pokémon is ${config.size} and ${color}. It is ${this.baseNoun(base)}. It is ${look}. It can ${ab1} and ${ab2}.`;
     sounds.speak(text);
   }
 
@@ -1095,7 +1215,7 @@ class PokemonApp {
 
         document.getElementById(`${prefix}-revealed-name`).textContent = creature.name.toUpperCase();
         document.getElementById(`${prefix}-revealed-traits`).textContent =
-          `${creature.base.toUpperCase()} • ${creature.size.toUpperCase()} • ${creature.power.toUpperCase()} • ${creature.personality.toUpperCase()}`;
+          `${creature.base.replace(/_/g, ' ').toUpperCase()} • ${creature.size.toUpperCase()} • ${creature.power.toUpperCase()} • ${creature.personality.toUpperCase()}`;
 
         document.getElementById(`${prefix}-creature-viewport`).innerHTML = creature.renderHTML({ isPlayer2: false });
 
@@ -1146,6 +1266,7 @@ class PokemonApp {
     this.p2Hp = 100;
     this.p1Points = 0;
     this.p2Points = 0;
+    this.attackUsedThisTurn = false;
 
     document.getElementById('battleP1Name').textContent = this.p1Creature.name.toUpperCase();
     document.getElementById('battleP2Name').textContent = this.p2Creature.name.toUpperCase();
@@ -1155,11 +1276,47 @@ class PokemonApp {
 
     this.updateBattleHUD();
     this.renderBattleAttackButtons();
+
+    const ko = document.getElementById('battleKoBanner');
+    if (ko) ko.classList.add('hidden');
+    const finishBtn = document.getElementById('btnFinishBattle');
+    if (finishBtn) finishBtn.classList.remove('btn-pulse');
+
+    // Dramatic "Trainer 1 VS Trainer 2" intro
+    const intro = document.getElementById('battleVsIntro');
+    if (intro) {
+      document.getElementById('vsIntroP1').textContent = this.p1Creature.name.toUpperCase();
+      document.getElementById('vsIntroP2').textContent = this.p2Creature.name.toUpperCase();
+      intro.classList.remove('hidden', 'play');
+      void intro.offsetWidth;
+      intro.classList.add('play');
+      sounds.playTone(220, 'sine', 0.25);
+      setTimeout(() => sounds.playHit(), 650);
+      clearTimeout(this.vsIntroTimer);
+      this.vsIntroTimer = setTimeout(() => intro.classList.add('hidden'), 2100);
+      intro.onclick = () => intro.classList.add('hidden');
+    }
+  }
+
+  moveType(abilityName) {
+    const map = {
+      'make fire': 'fire', 'breathe fire': 'fire', 'make ice': 'ice', 'freeze things': 'ice',
+      'make electricity': 'electric', 'swim': 'water', 'control water': 'water',
+      'fly': 'wind', 'create wind': 'wind', 'jump high': 'normal', 'jump': 'normal', 'run fast': 'normal',
+      'dig': 'ground', 'move rocks': 'ground', 'climb': 'ground', 'control plants': 'grass',
+      'become invisible': 'ghost', 'see in the dark': 'ghost', 'make light': 'light'
+    };
+    return map[abilityName] || 'normal';
   }
 
   updateBattleHUD() {
-    document.getElementById('battleP1HpBar').style.width = `${Math.max(0, this.p1Hp)}%`;
-    document.getElementById('battleP2HpBar').style.width = `${Math.max(0, this.p2Hp)}%`;
+    const hpState = hp => (hp > 50 ? 'hp-high' : hp > 20 ? 'hp-mid' : 'hp-low');
+    const bar1 = document.getElementById('battleP1HpBar');
+    const bar2 = document.getElementById('battleP2HpBar');
+    bar1.style.width = `${Math.max(0, this.p1Hp)}%`;
+    bar2.style.width = `${Math.max(0, this.p2Hp)}%`;
+    bar1.classList.remove('hp-high', 'hp-mid', 'hp-low'); bar1.classList.add(hpState(this.p1Hp));
+    bar2.classList.remove('hp-high', 'hp-mid', 'hp-low'); bar2.classList.add(hpState(this.p2Hp));
 
     document.getElementById('battleP1PointsBadge').textContent = `⭐ ${this.p1Points} English Pts`;
     document.getElementById('battleP2PointsBadge').textContent = `⭐ ${this.p2Points} English Pts`;
@@ -1194,10 +1351,20 @@ class PokemonApp {
     abilities.forEach(abName => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'btn-attack';
-      btn.textContent = `💥 "It can ${abName}!"`;
+      const type = this.moveType(abName);
+      btn.className = `btn-attack move-${type}`;
+      const icons = { fire: '🔥', ice: '❄️', electric: '⚡', water: '🌊', wind: '🌪️', ground: '🪨', grass: '🌿', ghost: '👻', light: '✨', normal: '💥' };
+      btn.innerHTML = `<span class="move-icon">${icons[type]}</span><span class="move-text">"It can ${abName}!"</span>`;
 
       btn.addEventListener('click', () => {
+        // One attack per turn: say the sentence once, then switch turns
+        if (this.attackUsedThisTurn) {
+          const feedback = document.getElementById('turnPromptBanner').querySelector('.turn-instruction');
+          if (feedback) feedback.textContent = '🔄 Great! Now tap "Switch Turn" for the other Trainer.';
+          return;
+        }
+        this.attackUsedThisTurn = true;
+        container.querySelectorAll('.btn-attack').forEach(b => { b.disabled = true; b.style.opacity = '0.5'; });
         this.triggerBattleAttack(this.activeBattleTrainer, abName);
       });
 
@@ -1246,15 +1413,44 @@ class PokemonApp {
       defenderEl.classList.add('hit-shake');
       sounds.playHit();
 
+      // Screen shake + move-coloured flash + floating damage number
+      const stage = document.querySelector('.battle-stadium-stage');
+      if (stage) {
+        stage.classList.remove('stage-shake');
+        void stage.offsetWidth;
+        stage.classList.add('stage-shake');
+      }
+      const flash = document.getElementById('battleFlash');
+      if (flash) {
+        flash.className = `battle-flash flash-${this.moveType(abilityName)}`;
+        void flash.offsetWidth;
+        flash.classList.add('go');
+      }
+      const dmg = document.createElement('div');
+      dmg.className = 'fx-damage';
+      dmg.textContent = '-20';
+      dmg.style.left = defenderNum === 2 ? '75%' : '25%';
+      fxLayer.appendChild(dmg);
+      setTimeout(() => dmg.remove(), 1200);
+
       // Reduce HP
-      if (defenderNum === 1) this.p1Hp -= 20;
-      else this.p2Hp -= 20;
+      if (defenderNum === 1) this.p1Hp = Math.max(0, this.p1Hp - 20);
+      else this.p2Hp = Math.max(0, this.p2Hp - 20);
 
       // Award automatic +1 attack point
       if (attackerNum === 1) this.p1Points += 1;
       else this.p2Points += 1;
 
       this.updateBattleHUD();
+      this.floatPoint(attackerNum, '+1');
+
+      if ((defenderNum === 1 ? this.p1Hp : this.p2Hp) <= 0) {
+        const ko = document.getElementById('battleKoBanner');
+        if (ko) ko.classList.remove('hidden');
+        const finishBtn = document.getElementById('btnFinishBattle');
+        if (finishBtn) finishBtn.classList.add('btn-pulse');
+        sounds.playFanfare();
+      }
 
       setTimeout(() => {
         attackerEl.classList.remove('attack-lunge-p1', 'attack-lunge-p2');
@@ -1272,13 +1468,28 @@ class PokemonApp {
     sounds.playPoint();
     sounds.playSuper();
     this.updateBattleHUD();
+    this.floatPoint(trainerNum, `+${pts} ⭐`);
 
     // Floating notification on screen
     const feedback = document.getElementById('turnPromptBanner').querySelector('.turn-instruction');
     feedback.textContent = `⭐ +${pts} ${reason}! Great English, Trainer ${trainerNum}!`;
   }
 
+  floatPoint(trainerNum, label) {
+    const badge = document.getElementById(`battleP${trainerNum}PointsBadge`);
+    if (!badge) return;
+    badge.classList.remove('points-pop');
+    void badge.offsetWidth;
+    badge.classList.add('points-pop');
+    const f = document.createElement('span');
+    f.className = 'fx-point-float';
+    f.textContent = label;
+    badge.appendChild(f);
+    setTimeout(() => f.remove(), 1100);
+  }
+
   switchBattleTurn() {
+    this.attackUsedThisTurn = false;
     this.activeBattleTrainer = this.activeBattleTrainer === 1 ? 2 : 1;
     if (this.activeBattleTrainer === 1) this.battleRound++;
     this.updateBattleHUD();
@@ -1290,15 +1501,25 @@ class PokemonApp {
      ========================================================================== */
   initChampionCeremony() {
     sounds.playVictory();
+    const champScreen = document.getElementById('screen-champion');
+    if (champScreen) {
+      champScreen.classList.remove('champ-play');
+      void champScreen.offsetWidth;
+      champScreen.classList.add('champ-play');
+    }
 
     // Determine winner based on English points
     let winner = 1;
     if (this.p2Points > this.p1Points) winner = 2;
     else if (this.p1Points === this.p2Points && this.p2Hp > this.p1Hp) winner = 2;
+    const isTie = this.p1Points === this.p2Points && this.p1Hp === this.p2Hp;
 
+    // Teacher may jump here from the menu without a battle: make sure both Pokémon exist
+    if (!this.p1Creature) this.p1Creature = creatures.create(this.p1Config, 'Trainer 1');
+    if (!this.p2Creature) this.p2Creature = creatures.create(this.p2Config, 'Trainer 2');
     const winnerCreature = winner === 1 ? this.p1Creature : this.p2Creature;
 
-    document.getElementById('champWinnerTitle').textContent = `CHAMPION TRAINER ${winner}!`;
+    document.getElementById('champWinnerTitle').textContent = isTie ? 'BOTH TRAINERS ARE CHAMPIONS!' : `CHAMPION TRAINER ${winner}!`;
     document.getElementById('champCreatureName').textContent = winnerCreature.name.toUpperCase();
     document.getElementById('champCreatureViewport').innerHTML = winnerCreature.renderHTML({ isPlayer2: false });
 
@@ -1318,15 +1539,22 @@ class PokemonApp {
     }
 
     // Handlers for champion buttons
-    document.getElementById('btnOpenClassroomWorksheets').addEventListener('click', () => {
+    // onclick (not addEventListener) so handlers don't stack each time this screen opens
+    document.getElementById('btnOpenClassroomWorksheets').onclick = () => {
       document.getElementById('modalPokedex').classList.remove('hidden');
-    });
+    };
 
-    document.getElementById('btnNextPairBattle').addEventListener('click', () => {
-      // Reset for next battle pair
+    document.getElementById('btnNextPairBattle').onclick = () => {
+      // Reset for next battle pair: fresh Pokémon, scores and turns
       sounds.playClick();
+      this.p1Creature = null;
+      this.p2Creature = null;
+      this.p1Points = 0;
+      this.p2Points = 0;
+      this.p1Hp = 100;
+      this.p2Hp = 100;
       this.goToStage(8); // Trainer 1 Create
-    });
+    };
   }
 
   /* ==========================================================================
