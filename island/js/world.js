@@ -5,7 +5,7 @@
   'use strict';
 
   var Q = new URLSearchParams(root.location.search);
-  var W = 2400, H = 1500, CELL = 40, SPEED = 250, FRAME = 256, SHALLOW = 110;
+  var W = 2400, H = 1500, CELL = 40, SPEED = 205, FRAME = 256, SHALLOW = 110;
   var STAGES = ['baby', 'baby', 'baby', 'growing', 'adventurer', 'advanced', 'ultimate'];   // eggs cannot walk, so a level 1 or 2 pupil walks as a baby here
 
   var BEACH = 'world/beach/', FLAT = 'flat/';
@@ -2042,9 +2042,6 @@
         addLife(sc, zone);
         buildGather(sc, zone);
         buildLandmarks(sc);
-        buildLandmarks(sc);
-        buildLandmarks(sc);
-        buildLandmarks(sc);
 
         sc.crate = sc.physics.add.image(zone.crate.x, zone.crate.y, FLAT + 'o_crate').setDepth(zone.crate.y); sc.crate.setScale(112 / sc.crate.height);
         sc.crate.body.setSize(sc.crate.width * .85, sc.crate.height * .8); sc.crate.setDrag(1400).setCollideWorldBounds(true).setMass(3).setBounce(.1);
@@ -2166,8 +2163,8 @@
         }
       }
       var isSprinting = !!(sc.shiftKey && sc.shiftKey.isDown) || (S.joy && Math.sqrt(S.joy.x * S.joy.x + S.joy.y * S.joy.y) > 0.85);
-      var sprintBoost = isSprinting ? 1.42 : 1.0;
-      var wet = zone.shallows ? zone.shallows(m.x, m.y) : false, hasRide = !!(m.ride && m.ride.visible), speed = SPEED * (wet ? .68 : 1) * (hasRide ? 1.22 : 1) * sprintBoost;
+      var sprintBoost = isSprinting ? 1.24 : 1.0;
+      var wet = zone.shallows ? zone.shallows(m.x, m.y) : false, hasRide = !!(m.ride && m.ride.visible), speed = SPEED * (wet ? .68 : 1) * (hasRide ? 1.15 : 1) * sprintBoost;
       var ease = Math.min(1, delta * ((vx || vy) ? .019 : .026));   // responsive acceleration & crisp landing stop
       m.setVelocity(m.body.velocity.x + (vx * speed - m.body.velocity.x) * ease, m.body.velocity.y + (vy * speed - m.body.velocity.y) * ease);
       pushOut(m, zone);
