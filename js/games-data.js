@@ -9854,6 +9854,221 @@ const GAMES_REGISTRY = [
     "lessonOrder": 1,
     "isWorksheet": true,
     "sectionOrder": 99
+  },
+  {
+    "id": "school-subjects-challenge",
+    "title": "🔬 Mystery Subject Lab: Group Challenge (Maths · Art · Science · Music)",
+    "description": "Interactive 4-Group Smartboard Challenge! Each group completes a hands-on & smartboard challenge (Maths number sorting & sums, Art geometric shape picture builder, Science float-or-sink water lab, Music rhythm clapping), presents to the class, guesses the school subject, and speaks full sentences (\"We made a picture. It's Art!\", \"We solved a problem. It's Maths!\").",
+    "type": "lesson",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": 3,
+    "grades": [
+      3,
+      4
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "school subjects",
+      "maths",
+      "art",
+      "science",
+      "music",
+      "group work",
+      "speaking"
+    ],
+    "learningObjectives": [
+      "Complete a collaborative group task linked to a school subject (Maths, Art, Science, Music)",
+      "Present group findings and guess the matching school subject in English",
+      "Say full English sentences: \"We made a picture. It's Art!\" and \"We solved a problem. It's Maths!\""
+    ],
+    "teacherInstructions": "Divide the class into 4 groups. In Phase 1, each group completes their Mystery Challenge (Maths, Art, Science, Music). In Phase 2, each group presents and the class guesses the subject. In Phase 3, students practice saying the full speaking sentences with neural audio.",
+    "studentInstructions": "Complete your group challenge, show the class what you made, and guess the school subject!",
+    "route": "school-subjects-challenge/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "Maths",
+        "Art",
+        "Science",
+        "Music",
+        "numbers",
+        "problem",
+        "picture",
+        "shapes",
+        "float",
+        "sink",
+        "rhythm"
+      ],
+      "supporting": [
+        "triangle",
+        "square",
+        "circle",
+        "clap",
+        "drum",
+        "solve",
+        "test"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "We [verb] a [noun]. It's [Subject]!",
+      "formula": "We made a picture. It's Art!",
+      "formulas": [
+        "We solved a problem. It's Maths!",
+        "We tested float and sink. It's Science!",
+        "We clapped a rhythm. It's Music!"
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🔬",
+    "formula": "We made a picture. It's Art! · We solved a problem. It's Maths!",
+    "url": "school-subjects-challenge/index.html",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)",
+    "unit": 3,
+    "track": "English",
+    "lessonOrder": 8,
+    "sectionOrder": 26,
+    "shelfThumb": "assets/shelf/school-subjects-challenge.webp"
+  },
+  {
+    "id": "classroom-instructions-challenge",
+    "title": "📢 Classroom Instructions Challenge (Normal ➔ Turbo ➔ Double Combos ➔ Student Leader)",
+    "description": "Progressive 4-Stage TPR Smartboard Challenge! Stage 1: Follow sequential classroom instructions (Open your book, Close your book, Raise your hand, Stand up, Sit down, Look at the board, Take your pencil, Write your name). Stage 2: Fast Turbo reaction round. Stage 3: Two instructions in order (\"Open your book and write your name\", \"Take your pencil and draw a circle\"). Stage 4: Student Leader Console!",
+    "type": "lesson",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": 3,
+    "grades": [
+      3,
+      4
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "classroom instructions",
+      "TPR",
+      "imperatives",
+      "student leader",
+      "team games"
+    ],
+    "learningObjectives": [
+      "Understand and immediately perform 8 core classroom instructions in English",
+      "React quickly to fast-paced classroom imperatives in Stage 2 Turbo Mode",
+      "Follow two-step compound classroom instructions in the correct sequence (\"Open your book and write your name\")",
+      "Lead the class at the smartboard by selecting and giving classroom commands"
+    ],
+    "teacherInstructions": "Start in Stage 1 to introduce and perform each instruction. Switch to Stage 2 for the fast-paced Turbo Round. Move to Stage 3 for two-step ordered instructions, and finish in Stage 4 by choosing a Student Leader to run the board!",
+    "studentInstructions": "Watch the smartboard, listen carefully, and perform each classroom instruction right away!",
+    "route": "classroom-instructions-challenge/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "open your book",
+        "close your book",
+        "raise your hand",
+        "stand up",
+        "sit down",
+        "look at the board",
+        "take your pencil",
+        "write your name",
+        "draw a circle"
+      ],
+      "supporting": [
+        "first",
+        "second",
+        "fast",
+        "leader",
+        "board",
+        "desk"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "[Imperative 1] and [Imperative 2].",
+      "formula": "Open your book and write your name.",
+      "formulas": [
+        "Take your pencil and draw a circle.",
+        "Stand up and raise your hand."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "📢",
+    "formula": "Open your book and write your name. · Take your pencil and draw a circle.",
+    "url": "classroom-instructions-challenge/index.html",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #bae6fd 100%)",
+    "unit": 3,
+    "track": "English",
+    "lessonOrder": 5,
+    "sectionOrder": 23,
+    "shelfThumb": "assets/shelf/classroom-instructions-challenge.webp"
   }
 ];
 
