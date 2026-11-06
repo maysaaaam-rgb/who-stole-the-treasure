@@ -2924,6 +2924,63 @@ body {
   display: none;
 }
 
+
+/* ==========================================================================
+   CLASSROOM FIXES (Nov 2026): readability, no cut-off screens, tablet header
+   ========================================================================== */
+/* Pokédex button: readable white text on the blue highlight */
+.nav-btn.btn-highlight { color: #ffffff; }
+
+/* Subtitles sit on a dark pill so they stay readable over sky, sun and clouds */
+.instruction-subtitle {
+  display: inline-block;
+  background: rgba(15, 23, 42, 0.78);
+  color: #ffffff;
+  padding: 0.25rem 0.9rem;
+  border-radius: 999px;
+}
+.clues-title, .choices-title {
+  display: inline-block;
+  background: rgba(15, 23, 42, 0.85);
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+}
+
+/* Nothing is ever cut off: a screen that is taller than the window scrolls */
+.screen-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+.champion-actions-bar { flex-wrap: wrap; justify-content: center; padding-bottom: 0.5rem; }
+
+/* Abilities grid: shorter cards on laptop-height screens so the spotlight bar fits */
+@media (max-height: 950px) {
+  .ability-card-item { height: 108px; padding: 0.6rem; }
+  .ability-card-emoji { font-size: 1.8rem; }
+  .ability-card-name { font-size: 1.05rem; }
+  .abilities-cards-grid { gap: 0.8rem; }
+}
+
+/* "Listen first" nudge on the clue buttons */
+.clue-nudge { animation: clueNudge 0.6s ease; }
+@keyframes clueNudge {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+/* Tablets (iPad) and small laptops: keep every header button visible */
+@media (max-width: 1400px) {
+  .top-nav-bar { padding: 0 0.8rem; gap: 0.6rem; }
+  .brand-title { display: none; }
+  .stage-progress-track { display: none; }
+  .nav-right { gap: 0.4rem; }
+}
+@media (max-width: 1100px) {
+  .nav-btn .btn-text { display: none; }
+}
+
 @media print {
   body {
     background: #ffffff !important;

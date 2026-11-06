@@ -400,6 +400,17 @@ class PokemonApp {
         card.addEventListener('click', () => {
           if (card.classList.contains('correct') || card.classList.contains('wrong')) return;
 
+          // Listening first: at least one clue must be heard before guessing
+          if (this.cluesRevealed < 1) {
+            sounds.speak('Listen first! Touch a clue!');
+            if (feedback) feedback.textContent = '👂 Listen first! Touch a clue above!';
+            if (clueContainer) {
+              clueContainer.classList.add('clue-nudge');
+              setTimeout(() => clueContainer.classList.remove('clue-nudge'), 700);
+            }
+            return;
+          }
+
           if (opt.isCorrect) {
             card.classList.add('correct');
             sounds.playCorrect();
@@ -1146,6 +1157,7 @@ class PokemonApp {
     this.p2Hp = 100;
     this.p1Points = 0;
     this.p2Points = 0;
+    this.attackUsedThisTurn = false;
 
     document.getElementById('battleP1Name').textContent = this.p1Creature.name.toUpperCase();
     document.getElementById('battleP2Name').textContent = this.p2Creature.name.toUpperCase();
@@ -1198,6 +1210,14 @@ class PokemonApp {
       btn.textContent = `💥 "It can ${abName}!"`;
 
       btn.addEventListener('click', () => {
+        // One attack per turn: say the sentence once, then switch turns
+        if (this.attackUsedThisTurn) {
+          const feedback = document.getElementById('turnPromptBanner').querySelector('.turn-instruction');
+          if (feedback) feedback.textContent = '🔄 Great! Now tap "Switch Turn" for the other Trainer.';
+          return;
+        }
+        this.attackUsedThisTurn = true;
+        container.querySelectorAll('.btn-attack').forEach(b => { b.disabled = true; b.style.opacity = '0.5'; });
         this.triggerBattleAttack(this.activeBattleTrainer, abName);
       });
 
@@ -1247,8 +1267,8 @@ class PokemonApp {
       sounds.playHit();
 
       // Reduce HP
-      if (defenderNum === 1) this.p1Hp -= 20;
-      else this.p2Hp -= 20;
+      if (defenderNum === 1) this.p1Hp = Math.max(0, this.p1Hp - 20);
+      else this.p2Hp = Math.max(0, this.p2Hp - 20);
 
       // Award automatic +1 attack point
       if (attackerNum === 1) this.p1Points += 1;
@@ -1279,6 +1299,7 @@ class PokemonApp {
   }
 
   switchBattleTurn() {
+    this.attackUsedThisTurn = false;
     this.activeBattleTrainer = this.activeBattleTrainer === 1 ? 2 : 1;
     if (this.activeBattleTrainer === 1) this.battleRound++;
     this.updateBattleHUD();
@@ -1295,10 +1316,11 @@ class PokemonApp {
     let winner = 1;
     if (this.p2Points > this.p1Points) winner = 2;
     else if (this.p1Points === this.p2Points && this.p2Hp > this.p1Hp) winner = 2;
+    const isTie = this.p1Points === this.p2Points && this.p1Hp === this.p2Hp;
 
     const winnerCreature = winner === 1 ? this.p1Creature : this.p2Creature;
 
-    document.getElementById('champWinnerTitle').textContent = `CHAMPION TRAINER ${winner}!`;
+    document.getElementById('champWinnerTitle').textContent = isTie ? 'BOTH TRAINERS ARE CHAMPIONS!' : `CHAMPION TRAINER ${winner}!`;
     document.getElementById('champCreatureName').textContent = winnerCreature.name.toUpperCase();
     document.getElementById('champCreatureViewport').innerHTML = winnerCreature.renderHTML({ isPlayer2: false });
 
@@ -1318,15 +1340,22 @@ class PokemonApp {
     }
 
     // Handlers for champion buttons
-    document.getElementById('btnOpenClassroomWorksheets').addEventListener('click', () => {
+    // onclick (not addEventListener) so handlers don't stack each time this screen opens
+    document.getElementById('btnOpenClassroomWorksheets').onclick = () => {
       document.getElementById('modalPokedex').classList.remove('hidden');
-    });
+    };
 
-    document.getElementById('btnNextPairBattle').addEventListener('click', () => {
-      // Reset for next battle pair
+    document.getElementById('btnNextPairBattle').onclick = () => {
+      // Reset for next battle pair: fresh Pokémon, scores and turns
       sounds.playClick();
+      this.p1Creature = null;
+      this.p2Creature = null;
+      this.p1Points = 0;
+      this.p2Points = 0;
+      this.p1Hp = 100;
+      this.p2Hp = 100;
       this.goToStage(8); // Trainer 1 Create
-    });
+    };
   }
 
   /* ==========================================================================
