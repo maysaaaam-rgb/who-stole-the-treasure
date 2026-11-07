@@ -50,13 +50,13 @@ const TASKS: Record<string, { max: number; prompt: (t: string, n: number) => str
       ['word', 'syllables', 'partOfSpeech', 'sentence', 'turkish', 'emoji'])
   },
   sentences: {
-    max: 120,
+    max: 300,
     prompt: (t, n) => `Write ${n} different very easy example sentences (max 8 words each) for young learners about or using: "${t}". ` +
       'Use present simple where possible. Also give the key word or pattern being practised.',
     schema: OBJ({ focus: S('STRING'), sentences: ARR(S('STRING'), { minItems: 1, maxItems: 6 }) }, ['focus', 'sentences'])
   },
   quiz: {
-    max: 120,
+    max: 300,
     prompt: (t, n) => `Make ${n} quick multiple-choice questions for a whole-class smartboard quiz about: "${t}". ` +
       'Each question is short (max 9 words) with exactly 3 short options and one correct answer copied exactly from the options. Add one fitting emoji per question.',
     schema: OBJ({

@@ -311,5 +311,6 @@
     }
   };
   api.titleOf = function (id) { var c = find(id); return c ? c.icon + ' ' + c.title : ''; };
+  api.entry = function (id) { return find(id); }; // used by the Smart Board to find today's lesson words
   root.Timetable = api;
 })(typeof window !== 'undefined' ? window : this);

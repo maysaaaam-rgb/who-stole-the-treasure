@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=2">
+  <link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body class="bg-dark">
 
@@ -24,7 +24,16 @@
   <header class="topbar">
     <a class="tb-btn" href="../index.html" title="Back to the platform" aria-label="Back to the platform">🏠</a>
     <div class="brand"><span class="brand-icon">🪄</span> Smart Board</div>
+    <div class="page-strip" aria-label="Pages">
+      <button type="button" id="pgPrev" title="Previous page (Page Up)">◀</button>
+      <span id="pgLabel">Page 1 / 1</span>
+      <button type="button" id="pgNext" title="Next page (Page Down)">▶</button>
+      <button type="button" id="pgAdd" title="New page">＋</button>
+      <button type="button" id="pgDel" title="Delete this page">🗑</button>
+    </div>
     <div class="tb-spacer"></div>
+    <button type="button" id="btnLessons" class="tb-btn wide" title="Today's lesson words">📚 <span>Words</span></button>
+    <button type="button" id="btnBoards" class="tb-btn wide" title="Save, open and share boards">📂 <span>Boards</span></button>
     <button type="button" id="aiChip" class="ai-chip" title="AI status"><span class="ai-dot"></span><span id="aiChipText">AI off</span></button>
     <button type="button" id="btnMute" class="tb-btn" title="Sound on/off" aria-label="Sound on or off">🔔</button>
     <button type="button" id="btnSettings" class="tb-btn" title="Settings" aria-label="Settings">⚙️</button>
@@ -36,6 +45,7 @@
     <button type="button" class="tool-btn active" data-tool="pen" title="Pen">✏️</button>
     <button type="button" class="tool-btn" data-tool="hl" title="Highlighter">🖍️</button>
     <button type="button" class="tool-btn" data-tool="eraser" title="Eraser">🧽</button>
+    <button type="button" class="tool-btn" data-tool="stamp" id="btnStamp" title="Stamps and stickers">⭐</button>
     <div class="tool-sep"></div>
     <div class="swatches" id="swatches" aria-label="Colours"></div>
     <div class="tool-sep"></div>
@@ -55,7 +65,7 @@
     <div class="quick-chips" id="quickChips"></div>
     <form class="cmd-wrap" id="cmdForm" autocomplete="off">
       <div class="cmd-suggest hidden" id="cmdSuggest" role="listbox"></div>
-      <span class="cmd-magic">🪄</span>
+      <button type="button" class="mic-btn" id="btnMic" title="Say it, see it: speak and it appears on the board">🎤</button>
       <input id="cmdInput" class="cmd-input" type="text" spellcheck="false" enterkeyhint="go"
              placeholder="Type / for magic…  e.g.  /draw bird" aria-label="Board command">
       <button type="submit" class="btn-primary cmd-go" id="cmdGo">Go ➜</button>
@@ -85,6 +95,11 @@
       <h3>✍️ Writing</h3>
       <label class="switch"><input type="checkbox" id="optAutoNeat" checked><span></span> Make writing neat by itself (after you stop writing)</label>
       <label class="switch"><input type="checkbox" id="optShapes" checked><span></span> Perfect shapes (hold the pen still at the end of a shape)</label>
+      <label class="range">✍️ Wait before writing becomes neat <output id="neatOut">2.2 s</output>
+        <input type="range" id="optNeatWait" min="1000" max="6000" step="200" value="2200"></label>
+      <label class="range">⭕ Hold the pen still for a shape <output id="holdOut">0.5 s</output>
+        <input type="range" id="optHold" min="300" max="1500" step="100" value="500"></label>
+      <label class="switch"><input type="checkbox" id="optPalm" checked><span></span> Ignore a resting hand (palm rejection). While a pen is used, fingers do not draw.</label>
       <label class="switch"><input type="checkbox" id="optSpeak" checked><span></span> Read results aloud</label>
       <label class="switch"><input type="checkbox" id="optTurkish" checked><span></span> Show Turkish meanings</label>
     </section>
@@ -106,6 +121,8 @@
         <li>Write a word with the pen and wait: it becomes neat, and spelling mistakes are fixed.</li>
         <li>Draw a circle, line, arrow, square, triangle or star and <b>hold the pen still</b> for a moment: it becomes perfect.</li>
         <li>Draw a circle <b>around a word</b>: the circle glows and the word is read aloud.</li>
+        <li><b>✍️ Challenge</b> and <b>🏁 Race</b> use today's lesson words (📚). Two children can write at the same time in a race.</li>
+        <li><b>Page Down</b> / <b>Page Up</b> move between pages. 📂 saves the board for the class and date.</li>
         <li>Draw a picture and wait: tap <b>🎨 Make a picture</b> to turn it into a real one.</li>
         <li>Type <b>/</b> to see all commands. Drag cards to move them, the corner dot to resize.</li>
         <li>Keys: <b>/</b> commands · <b>Ctrl+Z</b> undo · <b>Delete</b> removes the selected card.</li>
@@ -113,12 +130,37 @@
     </section>
   </aside>
 
+  <!-- Today's lesson words -->
+  <aside id="lessonPanel" class="settings left hidden" aria-label="Lesson words">
+    <div class="set-head"><h2>📚 Lesson words</h2><button type="button" class="tb-btn" id="btnCloseLessons" aria-label="Close">✕</button></div>
+    <div id="lessonBody"></div>
+  </aside>
+
+  <!-- Saved boards -->
+  <aside id="boardsPanel" class="settings hidden" aria-label="Boards">
+    <div class="set-head"><h2>📂 Boards</h2><button type="button" class="tb-btn" id="btnCloseBoards" aria-label="Close">✕</button></div>
+    <div id="boardsBody"></div>
+  </aside>
+
+  <!-- Stamps and stickers -->
+  <div id="stampPal" class="stamp-pal hidden" role="dialog" aria-label="Stamps and stickers">
+    <div class="pal-head"><b>⭐ Stamps</b><button type="button" class="pal-close" aria-label="Close">✕</button></div>
+    <div class="pal-stamps"></div>
+    <div class="pal-words"></div>
+    <div class="pal-head"><b>🖼️ Stickers</b></div>
+    <input class="pal-search sb-input" type="search" placeholder="Find a picture: cat, ship…">
+    <div class="pal-stickers"></div>
+  </div>
+
   <script src="../js/supabase-config.js"></script>
   <script src="js/art-index.js?v=1"></script>
-  <script src="js/data.js?v=1"></script>
+  <script src="js/data.js?v=2"></script>
   <script src="js/audio.js?v=1"></script>
   <script src="js/ai.js?v=1"></script>
   <script src="js/shapes.js?v=1"></script>
-  <script src="js/app.js?v=2"></script>
+  <script src="js/app.js?v=3"></script>
+  <script src="js/lessons.js?v=1"></script>
+  <script src="js/features.js?v=1"></script>
+  <script src="js/pages.js?v=1"></script>
 </body>
 </html>

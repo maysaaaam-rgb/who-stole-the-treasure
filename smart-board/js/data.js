@@ -21,6 +21,14 @@
       desc: 'A short answer the whole class can understand.' },
     { name: 'neat', aliases: ['n', 'tidy'], icon: '✨', label: 'Neat writing', arg: '', ai: true,
       desc: 'Turns the handwriting on the board into neat, correct letters (it also happens by itself after you stop writing).' },
+    { name: 'challenge', aliases: ['spelling', 'test', 'dictation'], icon: '✍️', label: 'Spelling challenge', arg: '', ai: 'maybe',
+      desc: 'The board says a word, a child writes it, the board checks it. Team points. Uses today\'s lesson words, or yours: /challenge cat, dog, bird' },
+    { name: 'race', aliases: ['board-race', 'versus', 'vs'], icon: '🏁', label: 'Board race', arg: '', ai: 'maybe',
+      desc: 'Two children write the same word on two halves of the board. First correct word wins! /race cat, dog' },
+    { name: 'words', aliases: ['lesson', 'vocab', 'bank'], icon: '📚', label: 'Lesson words', arg: '', ai: false,
+      desc: 'Shows today\'s lesson words. Tap a word to hear it.' },
+    { name: 'listen', aliases: ['mic', 'voice', 'talk'], icon: '🎤', label: 'Say it', arg: '', ai: false,
+      desc: 'Say a word or sentence into the microphone: it appears on the board.' },
     { name: 'spell', aliases: ['letters'], icon: '🔡', label: 'Spell', arg: 'school', ai: false,
       desc: 'Shows and says the word letter by letter.' },
     { name: 'say', aliases: ['speak', 'read'], icon: '🔊', label: 'Say', arg: 'Good morning, class!', ai: false,
@@ -40,7 +48,7 @@
   ];
 
   // The chips above the command bar (most used first)
-  root.SMART_QUICK = ['draw', 'word', 'sentences', 'quiz', 'story', 'tr', 'check', 'spell', 'timer', 'pick', 'help'];
+  root.SMART_QUICK = ['draw', 'challenge', 'race', 'words', 'listen', 'word', 'sentences', 'quiz', 'story', 'tr', 'check', 'spell', 'timer', 'pick', 'help'];
 
   root.SMART_INK = {
     dark: ['ink', '#fde047', '#38bdf8', '#f472b6', '#4ade80', '#fb923c', '#f87171'],

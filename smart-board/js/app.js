@@ -19,7 +19,7 @@
   function lsGet(k, fallback) { try { const v = root.localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
   function lsSet(k, v) { try { root.localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
 
-  const opts = Object.assign({ autoNeat: true, shapes: true, speak: true, turkish: true, bg: 'dark', muted: false }, lsGet(OPT_KEY, {}));
+  const opts = Object.assign({ autoNeat: true, shapes: true, speak: true, turkish: true, bg: 'dark', muted: false, holdMs: 500, neatMs: 2200, palm: true }, lsGet(OPT_KEY, {}));
   let state = { strokes: [], objects: [] };
   let tool = 'pen', color = 'ink', size = 7;
   let uid = Math.floor(Math.random() * 1e6);
@@ -28,7 +28,7 @@
   const hist = { undo: [], redo: [] };
   const els = new Map();
   const bbCache = new Map();
-  let selectedId = null, neatTimer = null, holdTimer = null, dpr = 1, W = 0, H = 0;
+  let selectedId = null, neatTimer = null, dpr = 1, W = 0, H = 0, lastPenAt = 0;
 
   /* ------------------------------------------------------------------ helpers */
   const isLight = () => LIGHT_BGS.includes(opts.bg);
@@ -149,9 +149,10 @@
       lsSet(SAVE_KEY, { v: 1, strokes: state.strokes, objects: state.objects.filter((o) => !(o.data && /^data:/.test(o.data.src || o.data.pic || ''))) });
     }
   }
-  function save() { clearTimeout(saveTimer); saveTimer = setTimeout(saveNow, 700); }
-  root.addEventListener('pagehide', () => { if (saveTimer) saveNow(); });
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && saveTimer) saveNow(); });
+  function save() { clearTimeout(saveTimer); saveTimer = setTimeout(() => (root.SB && root.SB.saveBoard ? root.SB.saveBoard() : saveNow()), 700); }
+  const flush = () => { if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; if (root.SB && root.SB.saveBoard) root.SB.saveBoard(); else saveNow(); } };
+  root.addEventListener('pagehide', flush);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
   function loadSaved() {
     const d = lsGet(SAVE_KEY, null);
     if (!d || !Array.isArray(d.strokes) || !Array.isArray(d.objects)) return;
@@ -159,30 +160,45 @@
   }
 
   /* ------------------------------------------------------------------ pen input */
-  let cur = null, erasing = null;
+  // Several pens/fingers can write at once (needed for the Board race); otherwise only one.
+  const curs = new Map();
+  let erasing = null;
+  const hooks = { write: null, multi: false };
   function pt(e) {
     const r = board.getBoundingClientRect();
     const pr = e.pointerType === 'pen' ? (e.pressure || 0.5) : 0.5;
     return [Math.round((e.clientX - r.left) * 10) / 10, Math.round((e.clientY - r.top) * 10) / 10, Math.round(pr * 100) / 100];
   }
+  // Palm rejection: a resting hand is a big touch; and while a pen is in use, fingers do not draw
+  function isPalm(e) {
+    if (e.pointerType === 'pen') { lastPenAt = Date.now(); return false; }
+    if (!opts.palm || e.pointerType !== 'touch') return false;
+    if ((e.width || 0) > 38 || (e.height || 0) > 38) return true;
+    return Date.now() - lastPenAt < 4000;
+  }
 
   ink.addEventListener('pointerdown', (e) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
-    if (cur || erasing) return; // ignore a second finger
+    if (isPalm(e)) return;
+    if (erasing) return;
+    if (curs.size && !hooks.multi) return; // one writer at a time (two during a race)
+    if (tool === 'stamp' && SB.onStampTap) { SB.onStampTap(pt(e)); return; }
     select(null); closeSuggest();
     if (document.activeElement === cmdInput) cmdInput.blur();
     clearTimeout(neatTimer);
     try { ink.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
     const p = pt(e);
     if (tool === 'eraser') { erasing = { pid: e.pointerId, snapped: false }; eraseAt(p); return; }
-    cur = { id: newId('s'), tool, color, size, pts: [p], pid: e.pointerId };
+    const t = tool === 'stamp' ? 'pen' : tool;
+    curs.set(e.pointerId, { id: newId('s'), tool: t, color, size, pts: [p], pid: e.pointerId });
     fab.classList.add('hidden');
   });
   ink.addEventListener('pointermove', (e) => {
     const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
     if (erasing && e.pointerId === erasing.pid) { evs.forEach((ev) => eraseAt(pt(ev))); return; }
     if (tool === 'eraser' && !erasing) { drawEraserRing(pt(e)); return; }
-    if (!cur || e.pointerId !== cur.pid) return;
+    const cur = curs.get(e.pointerId);
+    if (!cur) return;
     evs.forEach((ev) => {
       const p = pt(ev), last = cur.pts[cur.pts.length - 1];
       if (Math.hypot(p[0] - last[0], p[1] - last[1]) >= 1.2) cur.pts.push(p);
@@ -191,19 +207,20 @@
     if (cur.shape && cur.snapAt && Math.hypot(tip[0] - cur.snapAt[0], tip[1] - cur.snapAt[1]) > 14) cur.shape = null; // moved on: not a shape
     if (!cur.anchor || Math.hypot(tip[0] - cur.anchor[0], tip[1] - cur.anchor[1]) > 4) {
       cur.anchor = tip;
-      clearTimeout(holdTimer);
-      if (cur.tool === 'pen' && opts.shapes) holdTimer = setTimeout(tryShape, 480);
+      clearTimeout(cur.holdTimer);
+      if (cur.tool === 'pen' && opts.shapes) cur.holdTimer = setTimeout(() => tryShape(cur), opts.holdMs);
     }
     drawLive();
   });
   function drawLive() {
     lctx.clearRect(0, 0, W, H);
-    if (!cur) return;
-    drawStroke(lctx, cur.shape ? { tool: 'pen', color: cur.color, size: cur.size, paths: cur.shape.paths, pts: cur.shape.dense } : cur);
+    curs.forEach((cur) => {
+      drawStroke(lctx, cur.shape ? { tool: 'pen', color: cur.color, size: cur.size, paths: cur.shape.paths, pts: cur.shape.dense } : cur);
+    });
   }
   // The pen stayed still at the end of a stroke: if it looks like a shape, make it perfect
-  function tryShape() {
-    if (!cur || cur.shape || cur.tool !== 'pen' || !root.SmartShapes) return;
+  function tryShape(cur) {
+    if (!curs.has(cur.pid) || cur.shape || cur.tool !== 'pen' || !root.SmartShapes) return;
     const r = root.SmartShapes.recognize(cur.pts);
     if (!r) return;
     cur.shape = r;
@@ -213,22 +230,26 @@
   }
   function endPointer(e) {
     if (erasing && e.pointerId === erasing.pid) { erasing = null; lctx.clearRect(0, 0, W, H); if (tool === 'eraser') drawEraserRing(pt(e)); save(); return; }
-    if (!cur || e.pointerId !== cur.pid) return;
-    clearTimeout(holdTimer);
+    const cur = curs.get(e.pointerId);
+    if (!cur) return;
+    curs.delete(e.pointerId);
+    clearTimeout(cur.holdTimer);
     const shape = cur.shape;
     const s = shape
-      ? { id: cur.id, tool: 'pen', color: cur.color, size: cur.size, shape: shape.type, paths: shape.paths, pts: shape.dense }
-      : { id: cur.id, tool: cur.tool, color: cur.color, size: cur.size, pts: cur.pts };
-    cur = null;
-    lctx.clearRect(0, 0, W, H);
+      ? { id: cur.id, tool: 'pen', color: cur.color, size: cur.size, shape: shape.type, paths: shape.paths, pts: shape.dense, t: Date.now() }
+      : { id: cur.id, tool: cur.tool, color: cur.color, size: cur.size, pts: cur.pts, t: Date.now() };
+    drawLive();
     pushHistory();
     state.strokes.push(s);
     if (shape && (shape.type === 'circle' || shape.type === 'ellipse')) circleAWord(s, shape);
     drawStroke(ictx, s);
     if (s.tool === 'pen' && !shape) pending.add(s.id);
-    scheduleNeat();
+    if (!curs.size || hooks.multi) scheduleNeat();
     updateFab(); save();
   }
+  ink.addEventListener('pointerup', endPointer);
+  ink.addEventListener('pointercancel', endPointer);
+  ink.addEventListener('pointerleave', () => { if (tool === 'eraser' && !erasing) lctx.clearRect(0, 0, W, H); });
 
   // A circle drawn around a word: the circle glows and the word is read aloud
   function circleAWord(s, sh) {
@@ -257,9 +278,6 @@
       if (AI.ready) { clearTimeout(neatTimer); clusters(inks).slice(0, 3).forEach((g) => neatGroup(g)); } // the neat word is read aloud
     }
   }
-  ink.addEventListener('pointerup', endPointer);
-  ink.addEventListener('pointercancel', endPointer);
-  ink.addEventListener('pointerleave', () => { if (tool === 'eraser' && !erasing) lctx.clearRect(0, 0, W, H); });
 
   function drawEraserRing(p) {
     lctx.clearRect(0, 0, W, H);
@@ -287,11 +305,11 @@
   /* ------------------------------------------------------------------ ✨ neat handwriting */
   function scheduleNeat() {
     clearTimeout(neatTimer);
-    if (opts.autoNeat && AI.ready && pending.size) neatTimer = setTimeout(() => runNeat(false), 2200);
+    if (pending.size && ((opts.autoNeat && AI.ready) || hooks.write)) neatTimer = setTimeout(() => runNeat(false), hooks.write ? Math.max(1200, opts.neatMs) : opts.neatMs);
   }
   function updateFab() {
     const list = [...pending].map(strokeById).filter(Boolean);
-    if (!AI.ready || !list.length || cur) { fab.classList.add('hidden'); return; }
+    if (!AI.ready || !list.length || curs.size || hooks.write) { fab.classList.add('hidden'); return; }
     const b = unionBox(list);
     fab.style.left = clamp(b.x + b.w + 10, 90, W - 150) + 'px';
     fab.style.top = clamp(b.y + b.h - 10, 70, H - 220) + 'px';
@@ -341,6 +359,20 @@
 
   function runNeat(manual) {
     clearTimeout(neatTimer);
+    if (hooks.write) {
+      // A spelling challenge or a race is running: the writing is checked instead of made neat
+      const list = [...pending].map(strokeById).filter((s) => s && s.tool === 'pen');
+      pending.clear(); updateFab();
+      if (!list.length) return;
+      // The hook says which strokes it took; the rest (e.g. a child still writing in a race) wait for the next pause
+      const used = hooks.write(list);
+      if (Array.isArray(used)) {
+        const took = new Set(used);
+        list.forEach((x) => { if (!took.has(x.id)) pending.add(x.id); });
+        if (pending.size) scheduleNeat();
+      }
+      return;
+    }
     if (!AI.ready) {
       if (manual) { toast('Switch on the AI in ⚙️ to make writing neat.'); openSettings(); }
       return;
@@ -510,6 +542,13 @@
     o.ver += 1;
     renderObjects(); save();
   }
+  function scaleObj(id, f) {
+    const o = getObj(id); if (!o) return;
+    pushHistory();
+    o.s = clamp(o.s * f, 0.25, 6);
+    const el = els.get(id); if (el) applyTransform(o, el);
+    save(); AU.tick();
+  }
   function removeObj(id) {
     if (!getObj(id)) return;
     pushHistory();
@@ -537,6 +576,8 @@
         els.set(o.id, nel); el = nel;
       }
       applyTransform(o, el);
+      const bd = el.querySelector('.obj-body');
+      if (bd && bd.offsetWidth) { o.w = bd.offsetWidth; o.h = bd.offsetHeight; }
       el.style.zIndex = String(10 + i);
       el.classList.toggle('selected', o.id === selectedId);
     });
@@ -578,6 +619,10 @@
     if (speakTextOf(o)) ctrl.appendChild(ctrlBtn('🔊', 'Read aloud', () => AU.speak(speakTextOf(o))));
     if (o.type === 'image' && o.data.subject) {
       ctrl.appendChild(ctrlBtn(o.data.source === 'ai' ? '🔁 Another' : '✨ AI picture', 'Make a new AI picture', () => aiPicture(o.data.subject, { replaceId: o.id })));
+    }
+    if (o.type === 'text' || o.type === 'stamp') {
+      ctrl.appendChild(ctrlBtn('A−', 'Smaller', () => scaleObj(o.id, 1 / 1.2)));
+      ctrl.appendChild(ctrlBtn('A+', 'Bigger', () => scaleObj(o.id, 1.2)));
     }
     ctrl.appendChild(ctrlBtn('🗑️', 'Remove', () => removeObj(o.id), 'danger'));
     el.appendChild(ctrl);
@@ -1225,10 +1270,12 @@
   function setTool(t) {
     tool = t;
     document.querySelectorAll('.tool-btn[data-tool]').forEach((b) => b.classList.toggle('active', b.dataset.tool === t));
+    board.classList.toggle('tool-stamp', t === 'stamp');
+    if (t !== 'stamp' && root.SB && root.SB.onToolChange) root.SB.onToolChange(t);
     board.classList.toggle('tool-eraser', t === 'eraser');
     lctx.clearRect(0, 0, W, H);
   }
-  document.querySelectorAll('.tool-btn[data-tool]').forEach((b) => b.addEventListener('click', () => setTool(b.dataset.tool)));
+  document.querySelectorAll('.tool-btn[data-tool]').forEach((b) => b.addEventListener('click', () => { if (b.dataset.tool !== 'stamp') setTool(b.dataset.tool); }));
   document.querySelectorAll('.size-btn').forEach((b) => b.addEventListener('click', () => {
     size = Number(b.dataset.size);
     document.querySelectorAll('.size-btn').forEach((x) => x.classList.toggle('active', x === b));
@@ -1262,7 +1309,13 @@
   $('#btnSettings').addEventListener('click', () => ($('#settings').classList.contains('hidden') ? openSettings() : closeSettings()));
   $('#btnCloseSettings').addEventListener('click', closeSettings);
   $('#aiChip').addEventListener('click', openSettings);
-  [['#optAutoNeat', 'autoNeat'], ['#optShapes', 'shapes'], ['#optSpeak', 'speak'], ['#optTurkish', 'turkish']].forEach(([sel, key]) => {
+  [['#optHold', 'holdMs', 'holdOut'], ['#optNeatWait', 'neatMs', 'neatOut']].forEach(([sel, key, out]) => {
+    const el = $(sel), o = $('#' + out);
+    const show = () => { o.textContent = (opts[key] / 1000).toFixed(1) + ' s'; };
+    el.value = String(opts[key]); show();
+    el.addEventListener('input', () => { opts[key] = Number(el.value); show(); lsSet(OPT_KEY, opts); });
+  });
+  [['#optAutoNeat', 'autoNeat'], ['#optShapes', 'shapes'], ['#optPalm', 'palm'], ['#optSpeak', 'speak'], ['#optTurkish', 'turkish']].forEach(([sel, key]) => {
     const el = $(sel);
     el.checked = !!opts[key];
     el.addEventListener('change', () => { opts[key] = el.checked; lsSet(OPT_KEY, opts); if (key === 'autoNeat') scheduleNeat(); });
@@ -1320,17 +1373,43 @@
   root.addEventListener('online', () => { if (AI.hasPin()) AI.status(); });
   root.addEventListener('offline', () => AI.set('offline'));
 
-  /* ------------------------------------------------------------------ start */
-  AU.muted = !!opts.muted;
-  $('#btnMute').textContent = AU.muted ? '🔕' : '🔔';
-  loadSaved();
-  setBg(opts.bg);
-  buildChips();
-  resize();
-  renderObjects();
-  updateUndo();
-  updateAIUI();
-  if (AI.hasPin()) AI.status();
+  /* ------------------------------------------------------------------ shared with the feature files */
+  const SB = {
+    opts, hooks, BUILDERS, HANDLERS, AI, AU, $, esc, clamp, toast, speak, save, saveNow, lsGet, lsSet,
+    addObject, updateObjData, removeObj, getObj, renderObjects, redrawInk, drawStroke, resolveColor, isLight,
+    pushHistory, updateUndo, updateFab, select, bb, unionBox, strokesPNG, strokeById, freeSpot, bounds,
+    findArt, aiError, needAI, loadingCard, aiCard, aiPicture, speakTextOf, runCommand, fillCommand, findCmd, setTool, setBg,
+    get state() { return state; },
+    set state(v) { state = v; },
+    hist, pending, els, bbCache, curs, runNeat, neatGroup, clusters, scheduleNeat, scaleObj,
+    size: () => ({ W, H }),
+    get tool() { return tool; },
+    get color() { return color; },
+    onStampTap: null,
+    removeStrokes(ids) {
+      const set = new Set(ids);
+      state.strokes = state.strokes.filter((x) => !set.has(x.id));
+      set.forEach((id) => pending.delete(id));
+      redrawInk();
+    },
+    restore
+  };
+  root.SB = SB;
+
+  function start() {
+    AU.muted = !!opts.muted;
+    $('#btnMute').textContent = AU.muted ? '🔕' : '🔔';
+    if (SB.loadBoard) SB.loadBoard(); else loadSaved();
+    setBg(opts.bg);
+    buildChips();
+    resize();
+    renderObjects();
+    updateUndo();
+    updateAIUI();
+    if (AI.hasPin()) AI.status();
+    (SB.onStart || []).forEach((fn) => { try { fn(); } catch (err) { console.error(err); } });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else setTimeout(start, 0);
 
   // For tests and the teacher's console
   root.SmartBoard = { runCommand, state: () => state, undo, redo, setBg };
