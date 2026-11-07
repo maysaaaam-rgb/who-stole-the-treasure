@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=1">
+  <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body class="bg-dark">
 
@@ -84,6 +84,7 @@
     <section class="set-sec">
       <h3>✍️ Writing</h3>
       <label class="switch"><input type="checkbox" id="optAutoNeat" checked><span></span> Make writing neat by itself (after you stop writing)</label>
+      <label class="switch"><input type="checkbox" id="optShapes" checked><span></span> Perfect shapes (hold the pen still at the end of a shape)</label>
       <label class="switch"><input type="checkbox" id="optSpeak" checked><span></span> Read results aloud</label>
       <label class="switch"><input type="checkbox" id="optTurkish" checked><span></span> Show Turkish meanings</label>
     </section>
@@ -103,6 +104,8 @@
       <h3>💡 Tips</h3>
       <ul class="tips">
         <li>Write a word with the pen and wait: it becomes neat, and spelling mistakes are fixed.</li>
+        <li>Draw a circle, line, arrow, square, triangle or star and <b>hold the pen still</b> for a moment: it becomes perfect.</li>
+        <li>Draw a circle <b>around a word</b>: the circle glows and the word is read aloud.</li>
         <li>Draw a picture and wait: tap <b>🎨 Make a picture</b> to turn it into a real one.</li>
         <li>Type <b>/</b> to see all commands. Drag cards to move them, the corner dot to resize.</li>
         <li>Keys: <b>/</b> commands · <b>Ctrl+Z</b> undo · <b>Delete</b> removes the selected card.</li>
@@ -115,6 +118,7 @@
   <script src="js/data.js?v=1"></script>
   <script src="js/audio.js?v=1"></script>
   <script src="js/ai.js?v=1"></script>
-  <script src="js/app.js?v=1"></script>
+  <script src="js/shapes.js?v=1"></script>
+  <script src="js/app.js?v=2"></script>
 </body>
 </html>

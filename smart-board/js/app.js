@@ -19,7 +19,7 @@
   function lsGet(k, fallback) { try { const v = root.localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
   function lsSet(k, v) { try { root.localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
 
-  const opts = Object.assign({ autoNeat: true, speak: true, turkish: true, bg: 'dark', muted: false }, lsGet(OPT_KEY, {}));
+  const opts = Object.assign({ autoNeat: true, shapes: true, speak: true, turkish: true, bg: 'dark', muted: false }, lsGet(OPT_KEY, {}));
   let state = { strokes: [], objects: [] };
   let tool = 'pen', color = 'ink', size = 7;
   let uid = Math.floor(Math.random() * 1e6);
@@ -28,7 +28,7 @@
   const hist = { undo: [], redo: [] };
   const els = new Map();
   const bbCache = new Map();
-  let selectedId = null, neatTimer = null, dpr = 1, W = 0, H = 0;
+  let selectedId = null, neatTimer = null, holdTimer = null, dpr = 1, W = 0, H = 0;
 
   /* ------------------------------------------------------------------ helpers */
   const isLight = () => LIGHT_BGS.includes(opts.bg);
@@ -68,6 +68,17 @@
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     ctx.strokeStyle = col; ctx.fillStyle = col;
     if (o.alpha) ctx.globalAlpha = o.alpha;
+    if (s.paths) {
+      ctx.lineWidth = Math.max(o.minW || 0, s.size * 1.05 * k);
+      if (s.ring && !o.color) { ctx.shadowColor = col; ctx.shadowBlur = 22 * k; ctx.lineWidth *= 1.25; }
+      s.paths.forEach((path) => {
+        ctx.beginPath();
+        path.forEach((q, i) => (i ? ctx.lineTo(X(q), Y(q)) : ctx.moveTo(X(q), Y(q))));
+        ctx.stroke();
+        if (s.ring && !o.color) ctx.stroke(); // twice = brighter glow
+      });
+      ctx.restore(); return;
+    }
     if (s.tool === 'hl') {
       ctx.globalAlpha = (o.alpha || 1) * 0.33;
       ctx.lineWidth = s.size * 3.2 * k;
@@ -176,20 +187,75 @@
       const p = pt(ev), last = cur.pts[cur.pts.length - 1];
       if (Math.hypot(p[0] - last[0], p[1] - last[1]) >= 1.2) cur.pts.push(p);
     });
-    lctx.clearRect(0, 0, W, H);
-    drawStroke(lctx, cur);
+    const tip = cur.pts[cur.pts.length - 1];
+    if (cur.shape && cur.snapAt && Math.hypot(tip[0] - cur.snapAt[0], tip[1] - cur.snapAt[1]) > 14) cur.shape = null; // moved on: not a shape
+    if (!cur.anchor || Math.hypot(tip[0] - cur.anchor[0], tip[1] - cur.anchor[1]) > 4) {
+      cur.anchor = tip;
+      clearTimeout(holdTimer);
+      if (cur.tool === 'pen' && opts.shapes) holdTimer = setTimeout(tryShape, 480);
+    }
+    drawLive();
   });
+  function drawLive() {
+    lctx.clearRect(0, 0, W, H);
+    if (!cur) return;
+    drawStroke(lctx, cur.shape ? { tool: 'pen', color: cur.color, size: cur.size, paths: cur.shape.paths, pts: cur.shape.dense } : cur);
+  }
+  // The pen stayed still at the end of a stroke: if it looks like a shape, make it perfect
+  function tryShape() {
+    if (!cur || cur.shape || cur.tool !== 'pen' || !root.SmartShapes) return;
+    const r = root.SmartShapes.recognize(cur.pts);
+    if (!r) return;
+    cur.shape = r;
+    cur.snapAt = cur.pts[cur.pts.length - 1];
+    drawLive();
+    AU.pop();
+  }
   function endPointer(e) {
     if (erasing && e.pointerId === erasing.pid) { erasing = null; lctx.clearRect(0, 0, W, H); if (tool === 'eraser') drawEraserRing(pt(e)); save(); return; }
     if (!cur || e.pointerId !== cur.pid) return;
-    const s = { id: cur.id, tool: cur.tool, color: cur.color, size: cur.size, pts: cur.pts };
+    clearTimeout(holdTimer);
+    const shape = cur.shape;
+    const s = shape
+      ? { id: cur.id, tool: 'pen', color: cur.color, size: cur.size, shape: shape.type, paths: shape.paths, pts: shape.dense }
+      : { id: cur.id, tool: cur.tool, color: cur.color, size: cur.size, pts: cur.pts };
     cur = null;
     lctx.clearRect(0, 0, W, H);
     pushHistory();
     state.strokes.push(s);
+    if (shape && (shape.type === 'circle' || shape.type === 'ellipse')) circleAWord(s, shape);
     drawStroke(ictx, s);
-    if (s.tool === 'pen') { pending.add(s.id); scheduleNeat(); }
+    if (s.tool === 'pen' && !shape) pending.add(s.id);
+    scheduleNeat();
     updateFab(); save();
+  }
+
+  // A circle drawn around a word: the circle glows and the word is read aloud
+  function circleAWord(s, sh) {
+    const inside = (x, y) => ((x - sh.cx) / sh.rx) ** 2 + ((y - sh.cy) / sh.ry) ** 2 <= 1;
+    const objs = state.objects.filter((o) => {
+      const el = els.get(o.id); if (!el) return false;
+      const b = el.querySelector('.obj-body').getBoundingClientRect();
+      return inside(b.left + b.width / 2, b.top + b.height / 2) && b.width < sh.rx * 2.6 && b.height < sh.ry * 2.6;
+    });
+    const inks = [...pending].map(strokeById).filter((x) => {
+      if (!x) return false;
+      const b = bb(x);
+      return inside(b.x + b.w / 2, b.y + b.h / 2);
+    });
+    if (!objs.length && !inks.length) return;
+    s.ring = true;
+    AU.sparkle();
+    objs.forEach((o) => {
+      const el = els.get(o.id);
+      el.classList.remove('ring-pulse'); void el.offsetWidth; el.classList.add('ring-pulse');
+    });
+    const words = objs.map(speakTextOf).filter(Boolean).join('. ');
+    if (words) AU.speak(words);
+    if (inks.length) {
+      inks.forEach((x) => pending.delete(x.id));
+      if (AI.ready) { clearTimeout(neatTimer); clusters(inks).slice(0, 3).forEach((g) => neatGroup(g)); } // the neat word is read aloud
+    }
   }
   ink.addEventListener('pointerup', endPointer);
   ink.addEventListener('pointercancel', endPointer);
@@ -307,7 +373,6 @@
         state.objects.push(o);
         redrawInk(); renderObjects(); sparkle(o.id);
         AU.sparkle();
-        if (d.changed) setTimeout(() => AU.correct(), 250);
         speak(lines.join(' '));
         save();
       } else if (d.kind === 'drawing') {
@@ -355,8 +420,13 @@
     const go = () => {
       const subject = chip.querySelector('input').value.trim() || 'the drawing';
       chip.remove();
-      const strokes = g.strokes.filter((s) => strokeById(s.id));
+      let strokes = g.strokes.filter((s) => strokeById(s.id));
       if (!strokes.length) { toast('The drawing was erased.'); return; }
+      const gb = unionBox(strokes);
+      const ids = new Set(strokes.map((s) => s.id));
+      strokes = strokes.concat(state.strokes.filter((s) => s.paths && !ids.has(s.id) && (() => {
+        const b = bb(s); return b.x < gb.x + gb.w + 30 && b.x + b.w > gb.x - 30 && b.y < gb.y + gb.h + 30 && b.y + b.h > gb.y - 30;
+      })()));
       const box = unionBox(strokes);
       const right = box.x + box.w + 30;
       const pos = right + 380 < W - 20 ? { x: right, y: clamp(box.y, 80, H - 600) } : null;
@@ -547,22 +617,13 @@
   const BUILDERS = {
     text(body, o) {
       const d = o.data;
-      const readWords = new Set(String(d.read || '').split(/\s+/).map(normWord));
+      // Just the neat, correct words: no notes and no marks
       const t = document.createElement('div');
       t.className = 'neat-text';
       t.style.fontSize = (d.fs || 64) + 'px';
       t.style.color = d.color === 'ink' ? 'var(--ink)' : d.color;
-      t.innerHTML = (d.lines || []).map((line) => '<div>' + line.split(/(\s+)/).map((w) => {
-        if (/^\s+$/.test(w)) return w;
-        return d.changed && d.read && !readWords.has(normWord(w)) ? `<span class="fixw">${esc(w)}</span>` : esc(w);
-      }).join('') + '</div>').join('');
+      t.innerHTML = (d.lines || []).map((line) => '<div>' + esc(line) + '</div>').join('');
       body.appendChild(t);
-      if (d.changed && d.read) {
-        const n = document.createElement('div');
-        n.className = 'neat-note';
-        n.innerHTML = `✏️ You wrote: “${esc(d.read)}”${d.tip ? ' · ' + esc(d.tip) : ''}`;
-        body.appendChild(n);
-      }
     },
 
     image(body, o) {
@@ -1201,7 +1262,7 @@
   $('#btnSettings').addEventListener('click', () => ($('#settings').classList.contains('hidden') ? openSettings() : closeSettings()));
   $('#btnCloseSettings').addEventListener('click', closeSettings);
   $('#aiChip').addEventListener('click', openSettings);
-  [['#optAutoNeat', 'autoNeat'], ['#optSpeak', 'speak'], ['#optTurkish', 'turkish']].forEach(([sel, key]) => {
+  [['#optAutoNeat', 'autoNeat'], ['#optShapes', 'shapes'], ['#optSpeak', 'speak'], ['#optTurkish', 'turkish']].forEach(([sel, key]) => {
     const el = $(sel);
     el.checked = !!opts[key];
     el.addEventListener('change', () => { opts[key] = el.checked; lsSet(OPT_KEY, opts); if (key === 'autoNeat') scheduleNeat(); });

@@ -369,6 +369,14 @@ body.light .neat-note { color: #065f46; background: rgba(16, 185, 129, 0.14); }
 }
 @keyframes sparkle { from { opacity: 1; transform: scale(1.4); } to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); } }
 
+/* A word circled on the board shines */
+.obj.ring-pulse .obj-body { animation: ringPulse 1.6s ease; }
+@keyframes ringPulse {
+  0%, 100% { filter: none; transform: none; }
+  30% { filter: drop-shadow(0 0 18px #fde047) brightness(1.25); transform: scale(1.08); }
+  60% { filter: drop-shadow(0 0 10px #fde047); transform: scale(1); }
+}
+
 /* Glass cards */
 .card {
   position: relative;
