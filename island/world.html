@@ -7,13 +7,16 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Treasure Island • Chapter 1: Admiral Benbow Harbour</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=ti100">
-  <link rel="stylesheet" href="css/games.css?v=ti100">
-  <link rel="stylesheet" href="css/adventure.css?v=ti100">
-  <link rel="stylesheet" href="css/wall.css?v=ti100">
-  <link rel="stylesheet" href="css/shop.css?v=ti100">
-  <link rel="stylesheet" href="css/world.css?v=ti100">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=ch1-20261107c">
+  <link rel="stylesheet" href="css/map.css?v=ch1-20261107c">
+  <link rel="stylesheet" href="css/story.css?v=ch1-20261107c">
+  <link rel="stylesheet" href="css/games.css?v=ch1-20261107c">
+  <link rel="stylesheet" href="css/adventure.css?v=ch1-20261107c">
+  <link rel="stylesheet" href="css/wall.css?v=ch1-20261107c">
+  <link rel="stylesheet" href="css/shop.css?v=ch1-20261107c">
+  <link rel="stylesheet" href="css/world.css?v=ch1-20261107c">
+  <link rel="stylesheet" href="css/chapter1.css?v=ch1-20261107c">
 </head>
 <body class="w-page">
   <!-- Practice Island 2D Adventure World (unified entry point). -->
@@ -35,8 +38,8 @@
     <div id="w-goal"></div>
     <div id="w-tools">
       <button type="button" class="w-btn w-tool w-icon-btn" id="w-story" aria-label="Story Cutscene"><img src="art/flat/o_map_scroll.webp" alt=""><span>Story</span></button>
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-sports" aria-label="Crew Sports"><img src="art/flat/o_ball.webp" alt=""><span>Sports</span></button>
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-dress" aria-label="Costumes"><img src="art/flat/u_dress.webp" alt=""><span>Look</span></button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-sports" style="display:none" aria-label="Crew Sports"><img src="art/flat/o_compass.webp" alt=""><span>Sports</span></button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-dress" style="display:none" aria-label="Costumes"><img src="art/flat/u_dress.webp" alt=""><span>Look</span></button>
       <button type="button" class="w-btn w-tool w-mute-btn" id="w-mute" aria-label="Sound On/Off" title="Sound On/Off">🔊</button>
     </div>
     <div id="w-fps"></div>
@@ -73,39 +76,52 @@
   <div id="isl-modal-root"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=ti100"></script>
-  <script src="../js/supabase-client.js?v=ti100"></script>
-  <script src="../js/voice.js?v=ti100"></script>
-  <script src="../js/evolution-levels.js?v=ti100"></script>
-  <script src="../js/monster-costumes.js?v=ti100"></script>
-  <script src="../js/monster-costumes2.js?v=ti100"></script>
-  <script src="../js/monster-costumes3.js?v=ti100"></script>
-  <script src="../js/monster-costumes4.js?v=ti100"></script>
-  <script src="../js/monster-pets.js?v=ti100"></script>
-  <script src="../js/monster-renderer.js?v=ti100"></script>
+  <script src="../js/supabase-config.js?v=ch1-20261107c"></script>
+  <script src="../js/supabase-client.js?v=ch1-20261107c"></script>
+  <script src="../js/voice.js?v=ch1-20261107c"></script>
+  <script src="../js/evolution-levels.js?v=ch1-20261107c"></script>
+  <script src="../js/monster-costumes.js?v=ch1-20261107c"></script>
+  <script src="../js/monster-costumes2.js?v=ch1-20261107c"></script>
+  <script src="../js/monster-costumes3.js?v=ch1-20261107c"></script>
+  <script src="../js/monster-costumes4.js?v=ch1-20261107c"></script>
+  <script src="../js/monster-pets.js?v=ch1-20261107c"></script>
+  <script src="../js/monster-renderer.js?v=ch1-20261107c"></script>
   <script>window.GM = window.GM || {};</script>
-  <script src="../bamboozle/data.js?v=ti100"></script>
-  <script src="../unit2-arcade/data.js?v=ti100"></script>
-  <script src="../unit3-data/data.js?v=ti100"></script>
-  <script src="../game-maker/js/data.js?v=ti100"></script>
-  <script src="../game-maker/js/sets-unit4.js?v=ti100"></script>
-  <script src="../game-maker/js/sets-units14.js?v=ti100"></script>
-  <script src="../game-maker/js/bank.js?v=ti100"></script>
-  <script src="js/data.js?v=ti100"></script>
-  <script src="js/audio.js?v=ti100"></script>
-  <script src="js/story.js?v=ti100"></script>
-  <script src="js/games.js?v=ti100"></script>
-  <script src="js/adventure.js?v=ti100"></script>
-  <script src="js/wall.js?v=ti100"></script>
-  <script src="js/rewards.js?v=ti100"></script>
-  <script src="js/sync.js?v=ti100"></script>
-  <script src="js/app.js?v=ti100"></script>
-  <script src="js/shop.js?v=ti100"></script>
+  <script src="../bamboozle/data.js?v=ch1-20261107c"></script>
+  <script src="../unit2-arcade/data.js?v=ch1-20261107c"></script>
+  <script src="../unit3-data/data.js?v=ch1-20261107c"></script>
+  <script src="../game-maker/js/data.js?v=ch1-20261107c"></script>
+  <script src="../game-maker/js/sets-unit4.js?v=ch1-20261107c"></script>
+  <script src="../game-maker/js/sets-units14.js?v=ch1-20261107c"></script>
+  <script src="../game-maker/js/bank.js?v=ch1-20261107c"></script>
+  <script src="js/config.js?v=ch1-20261107c"></script>
+  <script src="js/data.js?v=ch1-20261107c"></script>
+  <script src="js/audio.js?v=ch1-20261107c"></script>
+  <script src="js/story.js?v=ch1-20261107c"></script>
+  <script src="js/games.js?v=ch1-20261107c"></script>
+  <script src="js/adventure.js?v=ch1-20261107c"></script>
+  <script src="js/wall.js?v=ch1-20261107c"></script>
+  <script src="js/rewards.js?v=ch1-20261107c"></script>
+  <script src="js/sync.js?v=ch1-20261107c"></script>
+  <script src="js/app.js?v=ch1-20261107c"></script>
+  <script src="js/shop.js?v=ch1-20261107c"></script>
   <script src="lib/phaser.min.js"></script>
-  <script src="js/world-game.js?v=ti100"></script>
-  <script src="js/world.js?v=ti100"></script>
+  <script src="js/world-game.js?v=ch1-20261107c"></script>
+  <script src="js/world.js?v=ch1-20261107fix"></script>
+  <!-- Chapter 1 Clean Architecture Modules -->
+  <script src="js/core/audio.js?v=ch1-20261107fix"></script>
+  <script src="js/core/progress.js?v=ch1-20261107c"></script>
+  <script src="js/core/feedback.js?v=ch1-20261107c"></script>
+  <script src="js/minigames/listenTap.js?v=ch1-20261107c"></script>
+  <script src="js/minigames/dragMatch.js?v=ch1-20261107fix"></script>
+  <script src="js/minigames/wordOrder.js?v=ch1-20261107c"></script>
+  <script src="js/minigames/flintSays.js?v=ch1-20261107c"></script>
+  <script src="js/minigames/countTap.js?v=ch1-20261107c"></script>
+  <script src="js/minigames/dialLock.js?v=ch1-20261107fix"></script>
+  <script src="js/minigames/wheelOrder.js?v=ch1-20261107c"></script>
+  <script src="js/minigames/telescopeSpot.js?v=ch1-20261107c"></script>
+  <script src="js/chapter1/content-g3.js?v=ch1-20261107fix"></script>
+  <script src="js/chapter1/content-g4.js?v=ch1-20261107c"></script>
+  <script src="js/chapter1/chapter1.js?v=ch1-20261107c"></script>
 </body>
 </html>
-
-
-

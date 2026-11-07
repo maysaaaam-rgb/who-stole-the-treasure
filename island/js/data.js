@@ -764,8 +764,8 @@
       cap: 30,
       monsterProfile: {
         baseColor: 'blue',
-        equipped: { hat: 'hat-bow', clothing: 'clothing-scarf', aura: 'aura-sparkle', pet: 'pet-crew-orange' },
-        unlockedItems: ['cs-chef-hat', 'pet-crew-orange']
+        equipped: { hat: 'hat-bow', clothing: 'clothing-scarf', aura: 'aura-sparkle' },
+        unlockedItems: ['cs-chef-hat']
       }
     },
     'demo-g4': {
@@ -779,8 +779,8 @@
       cap: 30,
       monsterProfile: {
         baseColor: 'orange',
-        equipped: { hat: 'hat-explorer', glasses: 'glasses-sun', clothing: 'clothing-vest', aura: 'aura-flame', pet: 'pet-crew-cyan' },
-        unlockedItems: ['cs-space-helmet', 'cs-space-suit', 'pet-crew-cyan']
+        equipped: { hat: 'hat-explorer', glasses: 'glasses-sun', clothing: 'clothing-vest', aura: 'aura-flame' },
+        unlockedItems: ['cs-space-helmet', 'cs-space-suit']
       }
     },
     'demo-star': {
@@ -795,7 +795,7 @@
       monsterProfile: {
         baseColor: 'purple',
         equipped: { hat: 'hat-star-clip', clothing: 'clothing-hoodie', aura: 'aura-blossom' },
-        unlockedItems: ['pet-crew-orange']
+        unlockedItems: []
       }
     }
   };

@@ -182,25 +182,47 @@
     });
   }
 
-  /* Recorded voices: island/audio/manifest.json maps a line to its file. A line with no recording falls back to the browser's voice. */
+  /* Recorded neural voices: delegates to Ch1Audio (or plays directly from manifest.json / ch1/manifest.json). Never falls back to robotic browser TTS. */
   var clips = {};
   var clipEl = null;
   var speakTimer = 0;
   var WHO_MAP = { 1: 'bolt', 2: 'lulu', 3: 'nutty', 4: 'ember', bolt: 'bolt', lulu: 'lulu', nutty: 'nutty', ember: 'ember', pip: 'pip', say: 'say' };
-  fetch('audio/manifest.json?v=7').then(function (r) { return r.json(); }).then(function (m) { clips = m || {}; }).catch(function () {});
-  function clipKey(t) { return String(t).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+  fetch('audio/manifest.json?v=7').then(function (r) { return r.json(); }).then(function (m) {
+    Object.keys(m || {}).forEach(function (k) {
+      if (typeof m[k] === 'string' && m[k].indexOf('story/') !== 0) {
+        clips[k] = m[k].indexOf('audio/') === 0 ? m[k] : ('audio/' + m[k]);
+      }
+    });
+  }).catch(function () {});
+  fetch('audio/ch1/manifest.json?v=ch1-20261107c').then(function (r) { return r.json(); }).then(function (m) {
+    var lines = (m && (m.lines || m)) || {};
+    Object.keys(lines).forEach(function (id) {
+      var item = lines[id];
+      if (item && item.text && item.file) {
+        clips[clipKey(item.text)] = item.file.indexOf('audio/') === 0 ? item.file : ('audio/ch1/' + item.file);
+      }
+    });
+  }).catch(function () {});
+  function clipKey(t) { return String(t).toLowerCase().replace(/[\u2018\u2019']/g, "'").replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
   function stopSpeech() {
     clearTimeout(speakTimer);
     if (clipEl) { try { clipEl.onended = clipEl.onerror = null; clipEl.pause(); } catch (e) {} clipEl = null; }
+    if (root.Ch1Audio && typeof root.Ch1Audio.stopVoice === 'function') {
+      try { root.Ch1Audio.stopVoice(); } catch (e) {}
+    }
     try { if ('speechSynthesis' in root) root.speechSynthesis.cancel(); } catch (e) {}
   }
 
-  /* Calibrated TTS Narration (rate: 0.88, pitch: 1.05, lang: en-US). onEnd runs when the voice has finished (also when muted). */
+  /* Neural Voice Narration — delegates to Ch1Audio so every line uses recorded character MP3s */
   function speak(text, onEnd, who) {
     var done = typeof onEnd === 'function' ? onEnd : null;
     if (muted || !text) { if (done) done(); return; }
     var clean = String(text).replace(/[_*#]/g, ' ').trim();
     if (!clean) { if (done) done(); return; }
+    if (root.Ch1Audio && typeof root.Ch1Audio.speak === 'function') {
+      root.Ch1Audio.speak(clean, { who: who }, done);
+      return;
+    }
     stopSpeech();
     var w = who != null ? WHO_MAP[who] : '';
     var k = clipKey(clean);
@@ -209,33 +231,16 @@
       var fired = false;
       var finish = function () { if (fired) return; fired = true; clearTimeout(speakTimer); if (done) done(); };
       try {
-        clipEl = new root.Audio('audio/' + file);
+        clipEl = new root.Audio(file);
         clipEl.onended = finish;
-        clipEl.onerror = function () { clipEl = null; speakBrowser(clean); speakTimer = setTimeout(finish, 900 + clean.length * 70); };
+        clipEl.onerror = function () { clipEl = null; speakTimer = setTimeout(finish, 400); };
         var p = clipEl.play();
-        if (p && p.catch) p.catch(function () { speakTimer = setTimeout(finish, 300); });
+        if (p && p.catch) p.catch(function () { speakTimer = setTimeout(finish, 350); });
         speakTimer = setTimeout(finish, 15000);
         return;
-      } catch (e) { /* use the browser voice */ }
+      } catch (e) {}
     }
-    speakBrowser(clean);
-    if (done) speakTimer = setTimeout(done, 900 + clean.length * 70);
-  }
-  function speakBrowser(clean) {
-    try {
-      if (root.EAAVoice && typeof root.EAAVoice.say === 'function') {
-        root.EAAVoice.say(clean, { rate: 0.88 });
-        return;
-      }
-      if ('speechSynthesis' in root && typeof root.SpeechSynthesisUtterance === 'function') {
-        root.speechSynthesis.cancel();
-        var u = new root.SpeechSynthesisUtterance(clean);
-        u.lang = 'en-US';
-        u.rate = 0.88;
-        u.pitch = 1.05;
-        root.speechSynthesis.speak(u);
-      }
-    } catch (e) {}
+    if (done) speakTimer = setTimeout(done, 450);
   }
 
   function setMuted(val) {

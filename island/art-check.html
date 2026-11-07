@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treasure Island • Chapter 1 Art & Style Lineup Check</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060911;
+      --glass: rgba(15, 23, 42, 0.86);
+      --gold: #f59e0b;
+      --cyan: #38bdf8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 32px 48px;
+      background: radial-gradient(circle at 50% 25%, #0d1527 0%, #060911 100%);
+      color: #f8fafc;
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid rgba(245, 158, 11, 0.35);
+    }
+    h1 {
+      margin: 0;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 28px;
+      color: #fde68a;
+    }
+    .sub {
+      color: #94a3b8;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      min-height: 48px;
+      padding: 10px 18px;
+      border-radius: 14px;
+      border: 2px solid #fef3c7;
+      border-bottom: 5px solid #b45309;
+      background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+      color: #060911;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn.cyan {
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+      border-color: #bae6fd;
+      border-bottom-color: #0369a1;
+    }
+    h2 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 20px;
+      color: #38bdf8;
+      margin: 22px 0 12px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 18px;
+    }
+    .card {
+      background: var(--glass);
+      border: 2px solid rgba(245, 158, 11, 0.42);
+      border-radius: 22px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    }
+    .viewport {
+      height: 190px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 16px;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.16) 0%, rgba(6, 9, 17, 0.4) 75%);
+    }
+    body.checker .viewport {
+      background-image:
+        linear-gradient(45deg, #1e293b 25%, transparent 25%),
+        linear-gradient(-45deg, #1e293b 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1e293b 75%),
+        linear-gradient(-45deg, transparent 75%, #1e293b 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+    }
+    .sprite-wrap {
+      width: 138px;
+      height: 138px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      animation: idleBob 3s ease-in-out infinite;
+    }
+    .sprite-wrap img,
+    .sprite-wrap svg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.55));
+    }
+    .pedestal {
+      width: 110px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.55) 0%, rgba(245, 158, 11, 0.25) 50%, transparent 75%);
+      margin-top: -10px;
+      z-index: 1;
+    }
+    .caption {
+      padding: 12px 14px;
+      background: rgba(6, 9, 17, 0.82);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+    .caption b {
+      display: block;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 16px;
+      color: #fef3c7;
+    }
+    .caption small {
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    @keyframes idleBob {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-6px) scale(1.02, 0.98); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>🎨 Chapter 1 Art Lineup — Unified Chibi Cartoon Style</h1>
+      <div class="sub">Zero white sticker borders · Zero weapons · Soft dark-brown outlines · 512×512 transparent WebP with 28px safe margin</div>
+    </div>
+    <div class="controls">
+      <button type="button" class="btn cyan" id="toggle-state">😄 Toggle Idle / Happy State</button>
+      <button type="button" class="btn" id="toggle-bg">🏁 Toggle Alpha Checkerboard</button>
+    </div>
+  </header>
+
+  <h2>1. Chapter 1 Cast (Standing Side-by-Side with Student Monster Hero)</h2>
+  <div class="grid" id="cast-grid">
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap" id="hero-monster-slot"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Student's Monster Hero</b>
+        <small>MonsterRenderer (Dynamic SVG)</small>
+      </div>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img class="state-img" data-idle="art/flat/c_benbow.webp" data-happy="art/flat/c_benbow_happy.webp" src="art/flat/c_benbow.webp" alt="Benbow"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Benbow the Leopard Cub</b>
+        <small>c_benbow.webp / c_benbow_happy.webp</small>
+      </div>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img class="state-img" data-idle="art/flat/c_jim.webp" data-happy="art/flat/c_jim_happy.webp" src="art/flat/c_jim.webp" alt="Jim Hawkins"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Jim Hawkins</b>
+        <small>c_jim.webp / c_jim_happy.webp</small>
+      </div>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img class="state-img" data-idle="art/flat/c_flint.webp" data-happy="art/flat/c_flint_happy.webp" src="art/flat/c_flint.webp" alt="Captain Flint"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Captain Flint (Parrot)</b>
+        <small>c_flint.webp / c_pip.webp</small>
+      </div>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img class="state-img" data-idle="art/flat/c_billy.webp" data-happy="art/flat/c_billy_happy.webp" src="art/flat/c_billy.webp" alt="Billy Bones"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Billy Bones</b>
+        <small>c_billy.webp / c_billy_happy.webp</small>
+      </div>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img class="state-img" data-idle="art/flat/c_silver.webp" data-happy="art/flat/c_silver_happy.webp" src="art/flat/c_silver.webp" alt="Long John Silver"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Long John Silver</b>
+        <small>c_silver.webp / c_silver_happy.webp</small>
+      </div>
+    </div>
+  </div>
+
+  <h2>2. The 5 Harbour Trail Stops & Chapter 1 Rewards</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img src="art/flat/o_benbow_inn.webp" alt="Admiral Benbow Inn"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Stop 1: Admiral Benbow Inn</b>
+        <small>o_benbow_inn.webp</small>
+      </div>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img src="art/flat/o_notice_board.webp" alt="Harbour Notice Board"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Stop 2: Harbour Notice Board</b>
+        <small>o_notice_board.webp</small>
+      </div>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img src="art/flat/o_ship_wheel.webp" alt="Ship Wheel"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Stop 3: 12-Spoke Ship Wheel</b>
+        <small>o_ship_wheel.webp</small>
+      </div>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img src="art/flat/o_spyglass.webp" alt="Brass Telescope"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Stop 4: Brass Telescope</b>
+        <small>o_spyglass.webp</small>
+      </div>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img class="state-img" data-idle="art/flat/o_billy_chest.webp" data-happy="art/flat/o_chest_open.webp" src="art/flat/o_billy_chest.webp" alt="Billy Bones Sea Chest"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Stop 5: Billy Bones's Sea Chest</b>
+        <small>o_billy_chest.webp → o_chest_open.webp</small>
+      </div>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img src="art/flat/o_map_stamp.webp" alt="Golden Map Stamp"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Reward: Golden Map Stamp</b>
+        <small>o_map_stamp.webp (1/5 → 5/5)</small>
+      </div>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="sprite-wrap"><img src="art/flat/o_map_piece1.webp" alt="Map Piece #1"></div>
+        <div class="pedestal"></div>
+      </div>
+      <div class="caption">
+        <b>Finale: Map Piece #1</b>
+        <small>o_map_piece1.webp</small>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/evolution-levels.js"></script>
+  <script src="../js/monster-costumes.js"></script>
+  <script src="../js/monster-costumes2.js"></script>
+  <script src="../js/monster-costumes3.js"></script>
+  <script src="../js/monster-costumes4.js"></script>
+  <script src="../js/monster-pets.js"></script>
+  <script src="../js/monster-renderer.js"></script>
+  <script>
+    (function () {
+      var slot = document.getElementById('hero-monster-slot');
+      if (window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
+        slot.innerHTML = window.MonsterRenderer.renderMonsterSVG({
+          stage: 'growing',
+          color: 'blue',
+          equipped: { headwear: 'hat-pirate' },
+          size: 132,
+          animated: true,
+          isAvatar: true
+        });
+      }
+      var isHappy = false;
+      document.getElementById('toggle-state').onclick = function () {
+        isHappy = !isHappy;
+        var imgs = document.querySelectorAll('.state-img');
+        for (var i = 0; i < imgs.length; i++) {
+          imgs[i].src = (isHappy ? imgs[i].getAttribute('data-happy') : imgs[i].getAttribute('data-idle')) + '?t=' + Date.now();
+        }
+      };
+      document.getElementById('toggle-bg').onclick = function () {
+        document.body.classList.toggle('checker');
+      };
+    })();
+  </script>
+</body>
+</html>

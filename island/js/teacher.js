@@ -332,8 +332,124 @@
       );
     }).join('');
 
+    renderCh1Table(list);
     renderWeekTable(list);
     renderPrintSheet(list, revCodes);
+  }
+
+  /* Render Chapter 1: Admiral Benbow Harbour 5-Clue Matrix */
+  function renderCh1Table(list) {
+    var ch1Head = document.getElementById('tch-ch1-head');
+    var ch1Body = document.getElementById('tch-ch1-body');
+    var ch1Sum = document.getElementById('tch-ch1-summary');
+    var ch1Title = document.getElementById('tch-ch1-heading');
+    if (!ch1Head || !ch1Body) return;
+
+    var isG4 = String(state.activeClass || '').indexOf('4') === 0;
+    var g = isG4 ? 4 : 3;
+    if (ch1Title) {
+      ch1Title.textContent = '🏴‍☠️ Chapter 1: Admiral Benbow Harbour — Class ' + state.activeClass + ' (Grade ' + g + ')';
+    }
+
+    var stopLabels = isG4
+      ? ['1. Inn Door (Permission)', '2. Crates (Requests)', '3. Wheel (Flint Says)', '4. Spyglass (1–50)', '5. Chest (Lock+Review)']
+      : ['1. Inn Door (Greetings)', '2. Board (School Rooms)', '3. Wheel (12 Months)', '4. Spyglass (Birthdays)', '5. Chest (National Days)'];
+
+    ch1Head.innerHTML =
+      '<tr>' +
+        '<th>Pupil (A–Z)</th>' +
+        stopLabels.map(function (lbl) { return '<th>' + esc(lbl) + '</th>'; }).join('') +
+        '<th>Stamps / Stars</th>' +
+        '<th>Total Time</th>' +
+        '<th>Most-Missed Items</th>' +
+      '</tr>';
+
+    var localLog = {};
+    try {
+      localLog = parseJsonSafe(localStorage.getItem('eaa_ch1_teacher_log_v1'), {}) || {};
+    } catch (e) { localLog = {}; }
+
+    var classMissedCounts = {};
+    var completedPupils = 0;
+
+    ch1Body.innerHTML = list.map(function (stu) {
+      var pDoc = state.islandDocs[stu.id] || {};
+      var ch1Rec = pDoc.ch1 || localLog[stu.id] || null;
+      try {
+        var directRaw = localStorage.getItem('eaa_ch1_progress_v1_' + stu.id);
+        if (directRaw) {
+          var directParsed = parseJsonSafe(directRaw, null);
+          if (directParsed) ch1Rec = directParsed;
+        }
+      } catch (e) {}
+
+      var clues = (ch1Rec && ch1Rec.clues) || {};
+      var legacyStars = pDoc.stars || {};
+      var totalStars = 0;
+      var stamps = 0;
+      var totalMs = 0;
+      var missedArr = [];
+
+      var cellsHtml = [1, 2, 3, 4, 5].map(function (sNum) {
+        var cid = 'g' + g + '_c' + sNum;
+        var easyObj = clues[cid + '_easy'];
+        var starObj = clues[cid + '_star'];
+        var legEasy = Number(legacyStars['m_g' + g + '_z1_' + sNum]) || 0;
+        var legStar = Number(legacyStars['s_g' + g + '_z1_' + sNum]) || 0;
+
+        var st = Math.max(
+          (easyObj && Number(easyObj.stars)) || 0,
+          (starObj && Number(starObj.stars)) || 0,
+          legEasy,
+          legStar
+        );
+        var hasStarMode = !!((starObj && starObj.stars > 0) || legStar > 0);
+        if (st > 0) {
+          stamps++;
+          totalStars += st;
+        }
+        if (easyObj && easyObj.timeMs) totalMs += Number(easyObj.timeMs) || 0;
+        if (starObj && starObj.timeMs) totalMs += Number(starObj.timeMs) || 0;
+        [easyObj, starObj].forEach(function (obj) {
+          if (obj && Array.isArray(obj.missedItems)) {
+            obj.missedItems.forEach(function (m) {
+              if (m && missedArr.indexOf(m) === -1) missedArr.push(m);
+              if (m) classMissedCounts[m] = (classMissedCounts[m] || 0) + 1;
+            });
+          }
+        });
+
+        if (st === 0) {
+          return '<td style="color:#64748b">—</td>';
+        }
+        var starsTxt = '★'.repeat(st) + '☆'.repeat(Math.max(0, 3 - st));
+        var modeBadge = hasStarMode
+          ? ' <span style="background:#f59e0b;color:#060911;padding:1px 6px;border-radius:999px;font-size:0.72rem;font-weight:900">⭐ STAR</span>'
+          : ' <span style="background:#0ea5e9;color:#060911;padding:1px 6px;border-radius:999px;font-size:0.72rem;font-weight:800">EASY</span>';
+        return '<td style="color:#fde047;white-space:nowrap">' + starsTxt + modeBadge + '</td>';
+      }).join('');
+
+      if (stamps >= 5) completedPupils++;
+
+      var sec = Math.round(totalMs / 1000);
+      var timeStr = sec > 0 ? (Math.floor(sec / 60) + 'm ' + (sec % 60) + 's') : '—';
+      var missedStr = missedArr.length ? esc(missedArr.slice(0, 3).join(', ')) : '<span style="color:#6ee7b7">✓ None</span>';
+
+      return (
+        '<tr data-ch1-student="' + esc(stu.id) + '">' +
+          '<td>' + esc(stu.name) + '</td>' +
+          cellsHtml +
+          '<td><b style="color:#fbbf24">' + stamps + '/5</b> · ⭐ ' + totalStars + '/15</td>' +
+          '<td>' + timeStr + '</td>' +
+          '<td>' + missedStr + '</td>' +
+        '</tr>'
+      );
+    }).join('');
+
+    if (ch1Sum) {
+      var topMissed = Object.keys(classMissedCounts).sort(function (a, b) { return classMissedCounts[b] - classMissedCounts[a]; })[0];
+      ch1Sum.textContent = completedPupils + '/' + list.length + ' finished Ch.1' + (topMissed ? (' · Top review: "' + topMissed + '"') : '');
+    }
   }
 
   /* Render "This week" table: per pupil, island XP per day, streak and last day played, sorted by name */

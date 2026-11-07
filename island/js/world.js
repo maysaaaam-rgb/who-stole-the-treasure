@@ -76,44 +76,50 @@
     },
     1: {
       ground: 'harbour',
-      look: { base: '#e6c98a', tile: 't_sand', alpha: .38, patch: 'rgba(254,240,138,.18)', edge: '#5c340e', fill: '#b9823f', speck: ['#78350f', '#fde68a'], extra: ['t_water', 't_floor', 't_rock'] },
+      look: { base: '#e6c98a', tile: 't_sand', alpha: .38, patch: 'rgba(254,240,138,.18)', edge: '#78350f', fill: '#c8924b', speck: ['#78350f', '#fde68a'], extra: ['t_water', 't_floor', 't_rock'] },
       npc: { art: FLAT + 'c_jim', worried: FLAT + 'c_jim', happy: FLAT + 'c_jim_happy', x: 640, y: 650, h: 195 },
-      blocked: function (x, y) { return y < 370 || y > 1460 || x < 65 || x > W - 65 || (x > 2050 && y < 650) || (x > 2240 && y > 860); },
+      blocked: function (x, y) { return y < 395 || y > 1395 || x < 115 || x > W - 65 || (x > 2050 && y < 575) || (x > 2100 && y > 845); },
       stops: [
-        { x: 520,  y: 860,  art: FLAT + 'o_compass',     done: FLAT + 'o_compass',     h: 135 },
-        { x: 860,  y: 1180, art: FLAT + 'o_billy_chest', done: FLAT + 'o_map_scroll',  h: 145 },
-        { x: 1280, y: 1100, art: FLAT + 'o_spyglass',    done: FLAT + 'o_spyglass',    h: 180 },
-        { x: 1620, y: 840,  art: FLAT + 'o_barrel_dock', done: FLAT + 'o_barrel_dock', h: 160 },
-        { x: 1960, y: 820,  art: FLAT + 'o_ship_wheel',  done: FLAT + 'o_hispaniola',  h: 175 }
+        { x: 520,  y: 850,  art: FLAT + 'o_compass',      done: FLAT + 'o_map_stamp',   h: 140 },
+        { x: 860,  y: 1180, art: FLAT + 'o_notice_board', done: FLAT + 'o_notice_board',h: 175 },
+        { x: 1280, y: 1100, art: FLAT + 'o_ship_wheel',   done: FLAT + 'o_ship_wheel',  h: 175 },
+        { x: 1620, y: 1010, art: FLAT + 'o_spyglass',     done: FLAT + 'o_spyglass',    h: 180 },
+        { x: 1960, y: 740,  art: FLAT + 'o_billy_chest',  done: FLAT + 'o_chest_open',  h: 165 }
       ],
-      chest: { x: 1920, y: 1180, art: FLAT + 'o_billy_chest' },
+      chest: null,
       decor: [
         { art: FLAT + 'o_benbow_inn',  x: 470,  y: 610,  h: 370, sw: 250 },
         { art: FLAT + 'o_lamp',        x: 730,  y: 620,  h: 165, sw: 28 },
         { art: FLAT + 'o_lamp',        x: 1120, y: 620,  h: 165, sw: 28 },
-        { art: FLAT + 'o_lamp',        x: 1520, y: 620,  h: 165, sw: 28 },
+        { art: FLAT + 'o_lamp',        x: 1560, y: 620,  h: 165, sw: 28 },
+        { art: FLAT + 'o_lamp',        x: 2040, y: 620,  h: 165, sw: 28 },
         { art: FLAT + 'o_barrel_dock', x: 290,  y: 660,  h: 135, sw: 90 },
-        { art: FLAT + 'o_barrel_dock', x: 1360, y: 640,  h: 135, sw: 90 },
-        { art: FLAT + 'o_boat',        x: 1020, y: 340,  h: 150 },
-        { art: FLAT + 'o_hispaniola',  x: 2220, y: 520,  h: 280 },
-        { art: FLAT + 'o_palm_a',      x: 220,  y: 1120, h: 350, sw: 46, sway: true },
-        { art: FLAT + 'o_palm_b',      x: 1080, y: 1320, h: 340, sw: 46, sway: true },
-        { art: FLAT + 'o_palm_a',      x: 1620, y: 1320, h: 350, sw: 46, sway: true },
+        { art: FLAT + 'o_barrel_dock', x: 1280, y: 640,  h: 135, sw: 90 },
+        { art: FLAT + 'o_boat',        x: 1020, y: 310,  h: 150 },
+        { art: FLAT + 'o_palm_a',      x: 155,  y: 520,  h: 330, sw: 46, sway: true },
+        { art: FLAT + 'o_palm_b',      x: 180,  y: 820,  h: 340, sw: 46, sway: true },
+        { art: FLAT + 'o_palm_a',      x: 220,  y: 1140, h: 350, sw: 46, sway: true },
+        { art: FLAT + 'o_palm_b',      x: 1080, y: 1340, h: 340, sw: 46, sway: true },
+        { art: FLAT + 'o_palm_a',      x: 1640, y: 1340, h: 350, sw: 46, sway: true },
+        { art: FLAT + 'o_palm_b',      x: 2010, y: 1220, h: 330, sw: 46, sway: true },
+        { art: FLAT + 'o_rock',        x: 140,  y: 430,  h: 88,  sw: 74 },
         { art: FLAT + 'o_rock',        x: 340,  y: 1280, h: 86,  sw: 72 },
         { art: FLAT + 'o_rock',        x: 1480, y: 1260, h: 82,  sw: 70 },
+        { art: FLAT + 'o_rock',        x: 2040, y: 1020, h: 86,  sw: 72 },
+        { art: FLAT + 'o_bush',        x: 170,  y: 660,  h: 105, sw: 80 },
+        { art: FLAT + 'o_bush',        x: 1960, y: 1350, h: 110, sw: 85 },
         { art: FLAT + 'o_driftwood',   x: 680,  y: 1290, h: 46,  flat: true },
         { art: FLAT + 'o_starfish',    x: 1140, y: 1220, h: 46,  flat: true },
-        { art: FLAT + 'o_starfish',    x: 1760, y: 1140, h: 44,  flat: true }
+        { art: FLAT + 'o_starfish',    x: 1820, y: 1120, h: 44,  flat: true }
       ],
       ground2: null,
       paths: [
-        [[520, 680], [520, 880], [860, 1200], [1280, 1120], [1620, 860], [1960, 840], [1920, 1200]],
-        [[520, 740], [1160, 740], [1620, 740], [2280, 760]]
+        [[520, 895], [640, 1060], [860, 1190], [1280, 1110], [1620, 1020], [1860, 852]]
       ],
-      edge: { noTop: true, top: [FLAT + 'o_palm_a', FLAT + 'o_palm_b'], topH: [320, 390], bottom: [FLAT + 'o_rock'], bottomH: [85, 115] },
+      edge: { noTop: true, noSides: false, noBottom: false, top: [FLAT + 'o_palm_a', FLAT + 'o_palm_b'], topH: [310, 380], bottom: [FLAT + 'o_bush', FLAT + 'o_rock'], bottomH: [90, 125] },
       gather: [],
       crate: null,
-      ball: { x: 980, y: 920 },
+      ball: null,
       shells: []
     },
     2: {
@@ -162,7 +168,7 @@
       crate: { x: 1300, y: 1000 }, ball: { x: 400, y: 1280 }, shells: [{ x: 1300, y: 1015, under: true }, { x: 2260, y: 280 }, { x: 700, y: 1460 }]
     }
   };
-  var ART = [FLAT + 'o_gift', FLAT + 'o_star_path', FLAT + 'o_chest', FLAT + 'o_chest_open', FLAT + 'o_billy_chest', FLAT + 'o_treasure_gold', FLAT + 'o_hispaniola', FLAT + 'o_boat', FLAT + 'o_compass', FLAT + 'o_map_scroll', FLAT + 'o_pirate_hat', FLAT + 'o_benbow_inn', FLAT + 'o_spyglass', FLAT + 'o_ship_wheel', FLAT + 'o_barrel_dock', FLAT + 'c_jim', FLAT + 'c_jim_happy', FLAT + 'c_billy', FLAT + 'c_silver', FLAT + 'c_livesey', FLAT + 'c_benbow', FLAT + 'c_benbow_happy', FLAT + 'c_pip', FLAT + 'c_pip_happy', FLAT + 'o_ball', FLAT + 'o_crate', FLAT + 'o_shell', FLAT + 'o_coconut', FLAT + 'o_butterfly', FLAT + 'o_bird', FLAT + 'o_duck', FLAT + 'o_frog', FLAT + 'v_mark'];
+  var ART = [FLAT + 'o_gift', FLAT + 'o_star_path', FLAT + 'o_chest', FLAT + 'o_chest_open', FLAT + 'o_billy_chest', FLAT + 'o_treasure_gold', FLAT + 'o_hispaniola', FLAT + 'o_boat', FLAT + 'o_compass', FLAT + 'o_map_scroll', FLAT + 'o_pirate_hat', FLAT + 'o_benbow_inn', FLAT + 'o_notice_board', FLAT + 'o_spyglass', FLAT + 'o_ship_wheel', FLAT + 'o_barrel_dock', FLAT + 'o_map_stamp', FLAT + 'o_map_piece1', FLAT + 'c_flint', FLAT + 'c_flint_happy', FLAT + 'c_billy_happy', FLAT + 'c_silver_happy', FLAT + 'c_jim', FLAT + 'c_jim_happy', FLAT + 'c_billy', FLAT + 'c_silver', FLAT + 'c_livesey', FLAT + 'c_benbow', FLAT + 'c_benbow_happy', FLAT + 'c_pip', FLAT + 'c_pip_happy', FLAT + 'o_ball', FLAT + 'o_crate', FLAT + 'o_shell', FLAT + 'o_coconut', FLAT + 'o_butterfly', FLAT + 'o_bird', FLAT + 'o_duck', FLAT + 'o_frog', FLAT + 'v_mark'];
   // only the zone you are in is loaded, so phones wait less
   function artUrl(n) { return (n.indexOf(FLAT) === 0 ? 'art/' : 'art/clean/') + n + '.webp'; }
   function zoneArt(z) {
@@ -192,7 +198,8 @@
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
   var App = function () { return root.IslandApp; };
-  var ses = function () { var st = App() && App().state(); return st && st.session; };
+  var ses = function () { var st = App() && App().state(); return (st && st.session) || {}; };
+  var feat = function (k) { return !!(root.FEATURES && root.FEATURES[k]); };
   var A = function () { return root.IslandAudio || {}; };
   function sound(n) { if (A()[n]) { try { A()[n](); } catch (e) { /* no sound */ } } }
   function say(t) { if (A().speak) A().speak(t); }
@@ -324,54 +331,135 @@
         c.restore();
       }
       if (z === 1) {
-        /* 1. Northern & Eastern Open Sea Bay (Admiral Benbow Harbour Cove) */
-        var seaPath = function (padY, padX) {
+        /* 1. Four-Sided Smooth Organic Island Coastline & Harbour Cove (Zero canvas seam, zero sharp corners) */
+        c.fillStyle = '#082f49';
+        c.fillRect(0, 0, W, H);
+
+        var islandPath = function (padTop, padRight, padBot, padLeft) {
+          var l = 102 - padLeft;
+          var t = 376 - padTop;
+          var r = 2135 + padRight;
+          var b = 1420 + padBot;
+          var raw = [
+            [l + 90,  t + 8],
+            [620,     t + 14],
+            [1260,    t - 14],
+            [1830 + padRight * 0.45, t + 18],
+            [r - 10,  520],
+            [r + 8,   840],
+            [r - 20,  1180],
+            [r - 130, b - 18],
+            [1520,    b + 12],
+            [820,     b + 14],
+            [l + 110, b - 16],
+            [l - 10,  1160],
+            [l - 14,  680]
+          ];
+          /* Repeat first 3 control points for a C2-continuous closed spline loop */
+          var loopPts = raw.concat([raw[0], raw[1], raw[2]]).map(function (q) {
+            return new Phaser.Math.Vector2(q[0], q[1]);
+          });
+          var curve = new Phaser.Curves.Spline(loopPts);
+          var total = raw.length;
+          var nSamples = 140;
           c.beginPath();
-          c.moveTo(0, 0);
-          c.lineTo(W, 0);
-          c.lineTo(W, H);
-          c.lineTo(2120 - padX, H);
-          c.quadraticCurveTo(1980 - padX, 1100, 2020 - padX, 820);
-          c.quadraticCurveTo(2040 - padX, 500, 1760 - padX, 410 + padY);
-          c.bezierCurveTo(1280, 360 + padY, 680, 400 + padY, 0, 370 + padY);
+          for (var si = 0; si <= nSamples; si++) {
+            var u = (1 + (si / nSamples) * total) / (total + 2);
+            var pt = curve.getPoint(u);
+            if (si === 0) c.moveTo(pt.x, pt.y);
+            else c.lineTo(pt.x, pt.y);
+          }
           c.closePath();
         };
-        seaPath(34, -28); c.fillStyle = '#d4af6a'; c.fill();
-        seaPath(0, 0); c.fillStyle = '#38bdf8'; c.fill();
-        c.save(); c.clip(); c.globalAlpha = 0.45; c.fillStyle = tile('t_water'); c.fillRect(0, 0, W, H); c.restore();
-        seaPath(-55, 55); c.fillStyle = '#0284c7'; c.fill();
-        c.save(); c.clip(); c.globalAlpha = 0.4; c.fillStyle = tile('t_water'); c.fillRect(0, 0, W, H); c.restore();
-        seaPath(-135, 130); c.fillStyle = '#0369a1'; c.fill();
-        seaPath(-220, 210); c.fillStyle = '#082f49'; c.fill();
 
-        /* White breaking sea-foam shoreline & harbour wave crests */
-        c.strokeStyle = 'rgba(255, 255, 255, 0.92)'; c.lineWidth = 12; c.lineCap = 'round';
-        c.beginPath();
-        c.moveTo(0, 368);
-        c.bezierCurveTo(680, 398, 1280, 358, 1760, 408);
-        c.quadraticCurveTo(2040, 498, 2020, 820);
-        c.quadraticCurveTo(1980, 1100, 2120, H);
+        /* Deep harbour channel */
+        islandPath(145, 130, 46, 58);
+        c.fillStyle = '#0369a1';
+        c.fill();
+        c.save(); c.clip(); c.globalAlpha = 0.35; c.fillStyle = tile('t_water'); c.fillRect(0, 0, W, H); c.restore();
+
+        /* Mid-depth cerulean water */
+        islandPath(86, 78, 30, 38);
+        c.fillStyle = '#0284c7';
+        c.fill();
+        c.save(); c.clip(); c.globalAlpha = 0.42; c.fillStyle = tile('t_water'); c.fillRect(0, 0, W, H); c.restore();
+
+        /* Shallow turquoise water */
+        islandPath(36, 34, 15, 18);
+        c.fillStyle = '#38bdf8';
+        c.fill();
+        c.save(); c.clip(); c.globalAlpha = 0.48; c.fillStyle = tile('t_water'); c.fillRect(0, 0, W, H); c.restore();
+
+        /* Wet golden-tan tidal sand band + crisp white breaking sea-foam shoreline all around the island */
+        islandPath(0, 0, 0, 0);
+        c.fillStyle = '#d4af6a';
+        c.fill();
+        c.lineWidth = 12;
+        c.strokeStyle = 'rgba(255, 255, 255, 0.94)';
+        c.lineJoin = 'round';
+        c.lineCap = 'round';
         c.stroke();
 
-        c.strokeStyle = 'rgba(224, 242, 254, 0.78)'; c.lineWidth = 5;
-        [[180, 220, 110], [520, 180, 130], [890, 240, 115], [1340, 190, 125], [1720, 230, 110], [2140, 310, 120], [2180, 620, 95], [2160, 940, 105], [2220, 1180, 95]].forEach(function (w) {
+        /* Dry golden island beach sand inside the tidal band */
+        islandPath(-26, -26, -18, -20);
+        c.fillStyle = look.base;
+        c.fill();
+        c.save();
+        c.clip();
+        c.globalAlpha = look.alpha;
+        c.fillStyle = tile(look.tile);
+        c.fillRect(0, 0, W, H);
+        c.globalAlpha = 1;
+        for (i = 0; i < 14; i++) {
+          c.fillStyle = look.patch;
+          c.beginPath();
+          c.ellipse(seeded(i + 200) * W, seeded(i + 230) * H, 150 + seeded(i + 260) * 220, 80 + seeded(i + 290) * 110, 0, 0, 7);
+          c.fill();
+        }
+        c.restore();
+
+        /* Subtle ocean wave crests in the surrounding bay */
+        c.strokeStyle = 'rgba(224, 242, 254, 0.76)';
+        c.lineWidth = 5;
+        [[180, 200, 110], [520, 170, 130], [890, 225, 115], [1340, 180, 125], [1720, 215, 110], [2140, 285, 120], [2235, 520, 95], [2235, 940, 100], [2245, 1220, 95]].forEach(function (w) {
           c.beginPath(); c.moveTo(w[0], w[1]); c.quadraticCurveTo(w[0] + w[2] / 2, w[1] - 14, w[0] + w[2], w[1]); c.stroke();
         });
-
+      }
+      /* Draw sandy beach paths BEFORE the Stone Courtyard, Wooden Wharf, and Stone Lookout Plazas so dirt never overlaps stone or wood */
+      if (z === 1 && zone.paths) {
+        c.lineCap = 'round'; c.lineJoin = 'round';
+        [[86, look.edge], [72, look.fill]].forEach(function (st) {
+          zone.paths.forEach(function (pts) {
+            var line = new Phaser.Curves.Spline(pts.map(function (q) { return new Phaser.Math.Vector2(q[0], q[1]); })).getPoints(pts.length * 22);
+            c.strokeStyle = st[1]; c.lineWidth = st[0]; c.beginPath(); line.forEach(function (q, n) { if (n) c.lineTo(q.x, q.y); else c.moveTo(q.x, q.y); }); c.stroke();
+          });
+        });
+        zone.paths.forEach(function (pts, pi) {
+          var line = new Phaser.Curves.Spline(pts.map(function (q) { return new Phaser.Math.Vector2(q[0], q[1]); })).getPoints(pts.length * 8);
+          line.forEach(function (q, n) { c.fillStyle = look.speck[n % 3 ? 0 : 1]; c.beginPath(); c.ellipse(q.x + (seeded(n + pi * 50) - .5) * 46, q.y + (seeded(n + pi * 50 + 7) - .5) * 46, 5 + seeded(n) * 7, 3 + seeded(n + 3) * 4, 0, 0, 7); c.fill(); });
+        });
+      }
+      if (z === 1) {
         /* 2. Grand Stone Cobblestone Courtyard under The Admiral Benbow Inn */
         c.save();
         c.fillStyle = 'rgba(15, 23, 42, 0.25)';
-        c.fillRect(216, 488, 790, 420);
+        c.fillRect(216, 488, 784, 412);
         c.fillStyle = '#d6c7b2';
         c.strokeStyle = '#57534e';
         c.lineWidth = 8;
         c.beginPath();
-        c.roundRect ? c.roundRect(210, 480, 780, 410, 36) : c.rect(210, 480, 780, 410);
+        c.roundRect ? c.roundRect(210, 480, 780, 404, 32) : c.rect(210, 480, 780, 404);
         c.fill(); c.stroke();
         c.strokeStyle = 'rgba(87, 83, 78, 0.22)'; c.lineWidth = 2;
-        for (var cy2 = 520; cy2 < 880; cy2 += 42) {
+        for (var cy2 = 520; cy2 < 875; cy2 += 42) {
           c.beginPath(); c.moveTo(222, cy2); c.lineTo(978, cy2); c.stroke();
         }
+        /* Southern Stone Threshold Steps leading onto the Beach Trail at Stop 1 */
+        c.fillStyle = '#c7b69e';
+        c.strokeStyle = '#57534e';
+        c.lineWidth = 4;
+        c.fillRect(466, 876, 108, 22);
+        c.strokeRect(466, 876, 108, 22);
         /* Ornate Golden Compass Rose on the Inn Plaza Floor */
         var cx0 = 620, cy0 = 735;
         c.beginPath(); c.arc(cx0, cy0, 76, 0, Math.PI * 2); c.fillStyle = 'rgba(120, 53, 15, 0.18)'; c.fill();
@@ -390,28 +478,44 @@
 
         /* 3. Broad Wooden Harbour Wharf & Hispaniola Boarding Pier */
         c.save();
-        c.fillStyle = 'rgba(15, 23, 42, 0.38)';
-        c.fillRect(990, 594, 1360, 260);
-        for (var wx = 990, wi = 0; wx < 2340; wx += 38, wi++) {
+        /* Sturdy timber pilings underneath the southern & eastern pier edges */
+        for (var px = 1020; px <= 2260; px += 110) {
+          c.fillStyle = '#271202';
+          c.fillRect(px - 9, 832, 18, 34);
+          c.fillStyle = '#451a03';
+          c.fillRect(px - 6, 832, 12, 30);
+        }
+        c.fillStyle = 'rgba(15, 23, 42, 0.34)';
+        c.fillRect(986, 592, 1296, 256);
+        for (var wx = 986, wi = 0; wx < 2278; wx += 38, wi++) {
           c.fillStyle = wi % 2 ? '#9a5b25' : '#b06d31';
           c.fillRect(wx, 580, 38, 254);
           c.strokeStyle = '#451a03'; c.lineWidth = 3;
           c.strokeRect(wx, 580, 38, 254);
         }
         c.fillStyle = '#451a03';
-        c.fillRect(986, 572, 1362, 14);
-        c.fillRect(986, 828, 1362, 14);
+        c.fillRect(982, 572, 1300, 14);
+        c.fillRect(982, 828, 1300, 14);
+        c.fillRect(2270, 572, 14, 270);
+        /* Southern Wooden Wharf Stairs where the Beach Trail climbs up to Stop 5 */
+        for (var si = 0; si < 3; si++) {
+          c.fillStyle = si % 2 ? '#9a5b25' : '#b87638';
+          c.strokeStyle = '#451a03'; c.lineWidth = 3;
+          c.fillRect(1812 + si * 4, 834 + si * 11, 96 - si * 8, 11);
+          c.strokeRect(1812 + si * 4, 834 + si * 11, 96 - si * 8, 11);
+        }
         /* Wooden Mooring Bollards along the Wharf */
-        [1040, 1260, 1480, 1700, 1920, 2140].forEach(function (bx) {
+        [1040, 1260, 1480, 1700, 1940, 2180].forEach(function (bx) {
           c.fillStyle = '#271202';
           c.beginPath(); c.arc(bx, 579, 10, 0, Math.PI * 2); c.fill();
           c.beginPath(); c.arc(bx, 835, 10, 0, Math.PI * 2); c.fill();
         });
         c.restore();
 
-        /* 4. Southern Stone Spyglass Lookout Circle */
-        oval(1280, 1110, 155, 95, '#d6c7b2', '#78716c', 6);
+        /* 4. Southern Stone Plazas under Stops 2, 3, and 4 */
         oval(860, 1190, 135, 82, '#d6c7b2', '#78716c', 5);
+        oval(1280, 1110, 155, 95, '#d6c7b2', '#78716c', 6);
+        oval(1620, 1020, 145, 88, '#d6c7b2', '#78716c', 5);
       }
       if (z === 2) {
         var sea = function (off) { c.beginPath(); c.moveTo(0, 0); for (x = 0; x <= W; x += 12) c.lineTo(x, shore(x) + off); c.lineTo(W, 0); c.closePath(); };
@@ -442,7 +546,7 @@
         c.fillStyle = '#4a3f3a'; c.fill(); c.lineWidth = 7; c.strokeStyle = '#2b211c'; c.stroke();
         c.save(); c.clip(); c.globalAlpha = .85; c.fillStyle = tile('t_lava_rock'); c.fillRect(0, 0, W, H); c.restore();
       }
-      if (zone.paths) {
+      if (z !== 1 && zone.paths) {
         c.lineCap = 'round'; c.lineJoin = 'round';
         [[92, look.edge], [78, look.fill]].forEach(function (st) {
           zone.paths.forEach(function (pts) {
@@ -485,9 +589,22 @@
         if (n % 2) t.setFlipX(true);
         if (!ed.still) sc.tweens.add({ targets: t, angle: { from: -.9, to: .9 }, duration: 1900 + seeded(n) * 1500, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       };
-      if (!ed.noTop) for (i = 0; i < 17; i++) { tree(i * 150 + seeded(i) * 40, 110 + seeded(i + 30) * 30, i); tree(i * 150 + 70 + seeded(i + 9) * 40, 205 + seeded(i + 40) * 22, i + 50); }
-      for (i = 0; i < 9; i++) { var y = 300 + i * 135 + seeded(i + 70) * 40; if ((y > 590 && y < 930) || zone.blocked(120, y)) continue; tree(-14 - seeded(i + 2) * 20, y, i + 3); tree(W + 14 + seeded(i + 4) * 20, y, i + 8); }
-      for (i = 0; i < 22; i++) { im = sc.add.image(i * 115 + seeded(i + 80) * 50, 1560, ed.bottom[0]).setOrigin(.5, 1).setDepth(1560); im.setScale((ed.bottomH[0] + seeded(i + 20) * (ed.bottomH[1] - ed.bottomH[0])) / im.height); }
+      if (!ed.noTop) for (i = 0; i < 17; i++) { tree(Math.max(85, Math.min(W - 85, i * 150 + seeded(i) * 40)), 150 + seeded(i + 30) * 30, i); tree(Math.max(85, Math.min(W - 85, i * 150 + 70 + seeded(i + 9) * 40)), 215 + seeded(i + 40) * 22, i + 50); }
+      if (!ed.noSides) for (i = 0; i < 9; i++) {
+        var y = 300 + i * 135 + seeded(i + 70) * 40;
+        if (S.zone !== 1 && y > 590 && y < 930) continue;
+        var lx = S.zone === 1 ? (145 + seeded(i + 2) * 22) : (85 + seeded(i + 2) * 18);
+        if (!zone.blocked(lx, y)) tree(lx, y, i + 3);
+        if (S.zone !== 1 && !zone.blocked(W - 120, y)) tree(W - 85 - seeded(i + 4) * 18, y, i + 8);
+      }
+      if (!ed.noBottom) for (i = 0; i < 20; i++) {
+        var bx = Math.max(85, Math.min(W - 85, i * 115 + 40 + seeded(i + 80) * 40));
+        if (S.zone === 1 && (bx < 210 || bx > 1960)) continue;
+        var by = S.zone === 1 ? (1395 + (i % 2) * 10) : (H - 18);
+        var bArt = ed.bottom[i % ed.bottom.length];
+        im = sc.add.image(bx, by, bArt).setOrigin(.5, 1).setDepth(by);
+        im.setScale((ed.bottomH[0] + seeded(i + 20) * (ed.bottomH[1] - ed.bottomH[0])) / im.height);
+      }
     }
     for (i = 0; i < 4; i++) {
       var cl = sc.add.image(seeded(i + 11) * W, 200 + seeded(i + 12) * 1100, 'dot').setDepth(4300).setTint(0x1e293b).setAlpha(.1); cl.setScale(26 + seeded(i + 13) * 14, 13 + seeded(i + 14) * 8);
@@ -654,19 +771,20 @@
 
   var ZONE_COMPANIONS = {
     1: [
-      { id: 'comp_benbow',  name: 'Benbow the Leopard 🐆', art: 'c_benbow',  happy: 'c_benbow_happy',  x: 360,  y: 830,  h: 138, line: 'Roar! Stay close to me, Captain! Let\'s check the Admiral Benbow Inn and Billy Bones\'s chest!' },
-      { id: 'comp_billy',   name: 'Captain Billy Bones 🏴‍☠️', art: 'c_billy',   happy: 'c_billy_happy',   x: 720,  y: 1150, h: 182, line: 'Ahoy, matey! Keep a sharp eye out for one-legged sailors and guard the sea chest!' },
-      { id: 'comp_silver',  name: 'Long John Silver ⚓',    art: 'c_silver',  happy: 'c_silver_happy',  x: 1480, y: 810,  h: 186, line: 'Haha! Need barrels of apples and biscuits for the voyage? Complete your harbour missions, Captain!' },
-      { id: 'comp_livesey', name: 'Dr. Livesey 📜',         art: 'c_livesey', happy: 'c_livesey_happy', x: 1820, y: 790,  h: 184, line: 'Splendid courage! Speak each English sentence clearly to earn your Captain\'s compass stars!' }
+      { id: 'comp_benbow',  name: 'Benbow the Leopard 🐆',  label: '🐆 Benbow',         title: '🐆 Benbow the Baby Leopard', art: 'c_benbow',  happy: 'c_benbow_happy',  x: 310,  y: 820,  h: 138, line: 'Purr! Stay close to me, Captain! Let\'s check the Admiral Benbow Inn and Billy Bones\'s chest!' },
+      { id: 'comp_flint',   name: 'Parrot Captain Flint 🦜', label: '🦜 Parrot Flint',   title: '🦜 Parrot Captain Flint',    art: 'c_flint',   happy: 'c_flint_happy',   x: 455,  y: 660,  h: 112, isFlint: true, line: 'Squawk! Pieces of eight! Tap to watch how Jim Hawkins and Benbow found Captain Flint\'s map!' },
+      { id: 'comp_billy',   name: 'Captain Billy Bones 🏴‍☠️', label: '🏴‍☠️ Billy Bones',    title: '🏴‍☠️ Captain Billy Bones',     art: 'c_billy',   happy: 'c_billy_happy',   x: 710,  y: 1150, h: 182, line: 'Ahoy, matey! Keep a sharp eye out for one-legged sailors and guard my brass-bound sea chest!' },
+      { id: 'comp_silver',  name: 'Long John Silver ⚓',     label: '⚓ Long John Silver', title: '⚓ Long John Silver',       art: 'c_silver',  happy: 'c_silver_happy',  x: 1420, y: 700,  h: 186, line: 'Haha! Need barrels of apples and biscuits for the voyage? Complete your harbour clues, Captain!' },
+      { id: 'comp_livesey', name: 'Dr. Livesey 📜',          label: '📜 Dr. Livesey',     title: '📜 Dr. Livesey',             art: 'c_livesey', happy: 'c_livesey_happy', x: 1760, y: 700,  h: 184, line: 'Splendid courage! Solve each English clue clearly to earn your five golden map stamps!' }
     ],
     2: [
-      { id: 'comp_jim_2',   name: 'Jim Hawkins 🧭',       art: 'c_jim',    happy: 'c_jim_happy',    x: 1660, y: 730, h: 175, line: 'We reached Spyglass Shore! Look at the white waves along the beach!' }
+      { id: 'comp_jim_2',   name: 'Jim Hawkins 🧭',       label: '🧭 Jim Hawkins',    title: '🧭 Jim Hawkins',            art: 'c_jim',    happy: 'c_jim_happy',    x: 1660, y: 730, h: 175, line: 'We reached Spyglass Shore! Look at the white waves along the beach!' }
     ],
     3: [
-      { id: 'comp_benbow_3',name: 'Benbow the Leopard 🐆',  art: 'c_benbow', happy: 'c_benbow_happy', x: 740,  y: 520, h: 135, line: 'Roar! Watch the river bridge! Let\'s cross safely to Stockade Forest!' }
+      { id: 'comp_benbow_3',name: 'Benbow the Leopard 🐆',  label: '🐆 Benbow',         title: '🐆 Benbow the Baby Leopard', art: 'c_benbow', happy: 'c_benbow_happy', x: 740,  y: 520, h: 135, line: 'Purr! Watch the river bridge! Let\'s cross safely to Stockade Forest!' }
     ],
     4: [
-      { id: 'comp_jim_4',   name: 'Jim Hawkins 🧭',       art: 'c_jim',    happy: 'c_jim_happy',    x: 640,  y: 600, h: 175, line: 'Skull Peak is right ahead! Captain Flint\'s treasure is waiting for us!' }
+      { id: 'comp_jim_4',   name: 'Jim Hawkins 🧭',       label: '🧭 Jim Hawkins',    title: '🧭 Jim Hawkins',            art: 'c_jim',    happy: 'c_jim_happy',    x: 640,  y: 600, h: 175, line: 'Skull Peak is right ahead! Captain Flint\'s treasure is waiting for us!' }
     ]
   };
   function buildCompanions(sc) {
@@ -676,13 +794,14 @@
     list.forEach(function (cp) {
       var img = sc.add.image(cp.x, cp.y, FLAT + cp.art).setOrigin(.5, .92).setDepth(cp.y);
       img.setScale((cp.h || 120) / img.height);
-      sc.add.image(cp.x, cp.y, 'shadow').setScale(1.25).setDepth(-6);
+      var sh = sc.add.image(cp.x, cp.y, 'shadow').setScale(1.25).setDepth(-6);
       sc.tweens.add({ targets: img, y: cp.y - 8, duration: 820, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-      var tag = makeWorldLabel(sc, cp.x, cp.y - (cp.h || 120) - 14, cp.label, '#fde047');
+      var tag = makeWorldLabel(sc, cp.x, cp.y - (cp.h || 120) - 14, cp.label || cp.name || 'Friend', '#fde047');
       sc.companions.push({
         kind: 'companion',
         cp: cp,
         img: img,
+        shadow: sh,
         tag: tag,
         x: cp.x,
         y: cp.y,
@@ -1065,6 +1184,7 @@
   function syncPet(sc, m) {
     if (!m || m.monKey !== 'me') return;
     var eq = monsterLook().equipped || {}, pid = eq.pet || null;
+    if (pid && String(pid).indexOf('pet-crew') === 0) pid = null;
     if (!pid || !root.MonsterPets || typeof root.MonsterPets.getDataUri !== 'function') {
       if (m.pet) m.pet.setVisible(false);
       if (m.petShadow) m.petShadow.setVisible(false);
@@ -2215,7 +2335,7 @@
 
         sc.crate = null;
         sc.crateShadow = null;
-        if (zone.ball) {
+        if (zone.ball && feat('sports')) {
           sc.ball = sc.physics.add.image(zone.ball.x, zone.ball.y, FLAT + 'o_ball').setDepth(zone.ball.y); sc.ball.setScale(84 / sc.ball.height);
           sc.ball.body.setCircle(sc.ball.width / 2); sc.ball.setDrag(170).setBounce(.8).setCollideWorldBounds(true).setMass(.4);
           sc.ballShadow = sc.add.image(zone.ball.x, zone.ball.y, 'shadow').setDepth(-6);
@@ -2441,16 +2561,16 @@
     $('w-load').classList.add('on');
     setupJoystick();
     if ($('w-back')) $('w-back').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openWorldMap(); else { var u = new URLSearchParams(root.location.search); u.delete('zone'); root.location.href = 'index.html?' + u.toString(); } };
-    if ($('w-energy')) $('w-energy').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openEnergyCharge(); };
-    if ($('w-home')) $('w-home').onclick = function () { sound('playTap'); if (S.visitingFriend) { leaveFriendHome(); } else if (root.WorldGame) { root.WorldGame.openWorkshop('home'); } };
-    if ($('w-decor')) $('w-decor').onclick = function () { sound('playTap'); if (S.moveMode) closeDecorDock(); else openDecorDock(); };
-    if ($('w-jobs')) $('w-jobs').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openJobsBoard(); };
+    if ($('w-energy')) { $('w-energy').style.display = feat('energy') ? '' : 'none'; $('w-energy').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openEnergyCharge(); }; }
+    if ($('w-home')) { $('w-home').style.display = feat('home') ? '' : 'none'; $('w-home').onclick = function () { sound('playTap'); if (S.visitingFriend) { leaveFriendHome(); } else if (root.WorldGame) { root.WorldGame.openWorkshop('home'); } }; }
+    if ($('w-decor')) { $('w-decor').style.display = feat('crafting') ? '' : 'none'; $('w-decor').onclick = function () { sound('playTap'); if (S.moveMode) closeDecorDock(); else openDecorDock(); }; }
+    if ($('w-jobs')) { $('w-jobs').style.display = feat('villagers') ? '' : 'none'; $('w-jobs').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openJobsBoard(); }; }
     if ($('w-wall')) $('w-wall').onclick = function () { sound('playTap'); if (root.IslandWall) root.IslandWall.open(); };
     if ($('w-book')) $('w-book').onclick = function () { sound('playTap'); if (root.IslandRewards) root.IslandRewards.openStickerBook(); };
     if ($('w-story')) $('w-story').onclick = function () { sound('playTap'); if (root.WorldGame && root.WorldGame.replayStoryIntro) root.WorldGame.replayStoryIntro(); };
-    if ($('w-sports')) $('w-sports').onclick = function () { sound('playTap'); if (root.WorldGame && root.WorldGame.openSportsArena) root.WorldGame.openSportsArena('soccer', '2v2'); };
-    if ($('w-dress')) $('w-dress').onclick = function () { sound('playTap'); App().openDressingRoom(); };
-    if ($('w-shop')) $('w-shop').onclick = function () { sound('playTap'); root.IslandShop.open(); };
+    if ($('w-sports')) { $('w-sports').style.display = feat('sports') ? '' : 'none'; $('w-sports').onclick = function () { sound('playTap'); if (root.WorldGame && root.WorldGame.openSportsArena) root.WorldGame.openSportsArena('soccer', '2v2'); }; }
+    if ($('w-dress')) { $('w-dress').style.display = feat('look') ? '' : 'none'; $('w-dress').onclick = function () { sound('playTap'); App().openDressingRoom(); }; }
+    if ($('w-shop')) { $('w-shop').style.display = feat('store') ? '' : 'none'; $('w-shop').onclick = function () { sound('playTap'); root.IslandShop.open(); }; }
     if ($('w-status')) $('w-status').onclick = function () { sound('playTap'); if (root.IslandShop) root.IslandShop.open(); };
     if ($('w-mute')) $('w-mute').onclick = function () { sound('playTap'); if (root.WorldGame && root.WorldGame.toggleWorldMute) root.WorldGame.toggleWorldMute(); };
     if ($('w-goal')) $('w-goal').onclick = function () { sound('playTap'); walkToActiveGoal(); };
@@ -2461,7 +2581,7 @@
     }
     if (Q.get('fps') && $('w-fps')) $('w-fps').style.display = 'block';
     root.WORLD.game = new Phaser.Game({
-      type: Phaser.AUTO, parent: 'world', backgroundColor: '#0f6fb0',
+      type: Phaser.AUTO, parent: 'world', backgroundColor: '#082f49',
       scale: { mode: Phaser.Scale.RESIZE, width: root.innerWidth, height: root.innerHeight },
       physics: { default: 'arcade', arcade: { debug: !!Q.get('debug') } },
       render: { antialias: true }, scene: [WorldScene]
