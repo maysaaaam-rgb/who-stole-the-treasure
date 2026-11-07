@@ -94,7 +94,7 @@
     var k = norm(textKey);
     if (!k || !fileRel) return;
     var full = fileRel.indexOf('audio/') === 0 ? fileRel : (prefix + fileRel);
-    manifestByText[k] = full;
+    manifestByText[k] = full.indexOf('audio/ch1/') === 0 ? full + '?v=2' : full;
   }
 
   function loadManifest() {
@@ -108,7 +108,7 @@
     var pLegacy = fetch('audio/manifest.json?v=7')
       .then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; });
-    var pCh1 = fetch('audio/ch1/manifest.json?v=ch1-20261107c')
+    var pCh1 = fetch('audio/ch1/manifest.json?v=ch1-20261107d')
       .then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; });
 
@@ -292,7 +292,7 @@
     if (lineId && manifest[lineId]) {
       var entry = manifest[lineId];
       var f = typeof entry === 'string' ? entry : entry.file;
-      if (f) return f.indexOf('audio/') === 0 ? f : ('audio/ch1/' + f);
+      if (f) return f.indexOf('audio/') === 0 ? f : ('audio/ch1/' + f + '?v=2');
     }
     // Fallback lookup without ellipsis or speaker prefix
     var noDots = norm(cleanText.replace(/\.\.\./g, ' '));
