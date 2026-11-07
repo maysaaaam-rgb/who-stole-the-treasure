@@ -34,7 +34,7 @@
     <div class="tb-spacer"></div>
     <button type="button" id="btnLessons" class="tb-btn wide" title="Today's lesson words">📚 <span>Words</span></button>
     <button type="button" id="btnBoards" class="tb-btn wide" title="Save, open and share boards">📂 <span>Boards</span></button>
-    <button type="button" id="aiChip" class="ai-chip" title="AI status"><span class="ai-dot"></span><span id="aiChipText">AI off</span></button>
+    <button type="button" id="aiChip" class="ai-chip" data-state="ready" title="AI status"><span class="ai-dot"></span><span id="aiChipText">AI ready</span></button>
     <button type="button" id="btnMute" class="tb-btn" title="Sound on/off" aria-label="Sound on or off">🔔</button>
     <button type="button" id="btnSettings" class="tb-btn" title="Settings" aria-label="Settings">⚙️</button>
     <button type="button" id="btnFull" class="tb-btn" title="Fullscreen" aria-label="Fullscreen">⛶</button>
@@ -84,9 +84,9 @@
 
     <section class="set-sec">
       <h3>🤖 AI helper</h3>
-      <p class="set-status" id="aiStatusText">The AI is off. The pen, library pictures, timer and picker still work.</p>
+      <p class="set-status ok" id="aiStatusText">✅ Built-in Smart AI &amp; Curriculum Engine is active (100% Free — No PIN needed).</p>
       <div class="pin-row">
-        <input id="pinInput" type="password" inputmode="numeric" placeholder="Your AI PIN" autocomplete="off" aria-label="AI PIN">
+        <input id="pinInput" type="password" placeholder="Optional: Gemini key (AIza…) or PIN" autocomplete="off" aria-label="Optional Gemini key or AI PIN">
         <button type="button" class="btn-primary" id="btnConnect">Connect</button>
       </div>
       <p class="set-hint">One-time setup by the teacher: <a href="https://github.com/maysaaaam-rgb/who-stole-the-treasure/blob/main/supabase/functions/smartboard-ai/README.md" target="_blank" rel="noopener">how to switch on the AI</a>.</p>
@@ -130,6 +130,7 @@
         <li><b>Page Down</b> / <b>Page Up</b> move between pages. 📂 saves the board for the class and date.</li>
         <li>Draw a picture and wait: tap <b>🎨 Make a picture</b> to turn it into a real one.</li>
         <li>Type <b>/</b> to see all commands. Drag cards to move them, the corner dot to resize.</li>
+        <li><b>Paste (Ctrl+V)</b> or drag-and-drop any picture or text (e.g. from Gemini) right onto the board.</li>
         <li>Keys: <b>/</b> commands · <b>Ctrl+Z</b> undo · <b>Delete</b> removes the selected card.</li>
       </ul>
     </section>
@@ -161,7 +162,7 @@
   <script src="js/art-index.js?v=1"></script>
   <script src="js/data.js?v=4"></script>
   <script src="js/audio.js?v=2"></script>
-  <script src="js/ai.js?v=1"></script>
+  <script src="js/ai.js?v=2"></script>
   <script src="js/shapes.js?v=1"></script>
   <script src="js/app.js?v=6"></script>
   <script src="js/lessons.js?v=1"></script>
