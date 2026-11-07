@@ -23,9 +23,9 @@
   function pictureFor(word) { const p = SB.findArt(word); return p ? '../' + p : ''; }
 
   // Reads handwriting with the AI: what the child actually wrote (spelling kept)
-  async function readWriting(strokes) {
+  async function readWriting(strokes, targetWord) {
     const box = SB.unionBox(strokes);
-    const d = await AI.call('neat', { image: SB.strokesPNG(strokes, box, true) }, 30000);
+    const d = await AI.call('neat', { image: SB.strokesPNG(strokes, box, true), targetWord }, 30000);
     return { read: String(d.read || ''), kind: d.kind, box };
   }
   // Puts a neat word on the board where the writing was (returns the new object's id)
@@ -219,7 +219,7 @@
       g.phase = 'checking';
       g.lastStrokes = list.map((s) => s.id);
       setStatus(id, '<span class="spinner"></span> Checking…');
-      readWriting(list).then((r) => judge(id, isRight(r.read, wordOf(id)), r)).catch((err) => { g.phase = 'write'; SB.aiError(err); setStatus(id, '👩‍🏫 Teacher: tap ✅ or ❌.'); });
+      readWriting(list, wordOf(id)).then((r) => judge(id, isRight(r.read, wordOf(id)), r)).catch((err) => { g.phase = 'write'; SB.aiError(err); setStatus(id, '👩‍🏫 Teacher: tap ✅ or ❌.'); });
       return list.map((s) => s.id);
     };
   }
@@ -413,7 +413,7 @@
       race.busy[lane] = true;
       badge(lane, '<span class="spinner"></span>');
       const word = raceWord();
-      readWriting(strokes).then((r) => {
+      readWriting(strokes, word).then((r) => {
         race && (race.busy[lane] = false);
         if (!race || raceWord() !== word) return;
         if (isRight(r.read, word)) winLane(lane, lastT, false, r.box);
