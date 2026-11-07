@@ -10069,6 +10069,78 @@ const GAMES_REGISTRY = [
     "lessonOrder": 5,
     "sectionOrder": 23,
     "shelfThumb": "assets/shelf/classroom-instructions-challenge.webp"
+  },
+  {
+    "id": "smart-board",
+    "title": "🪄 Smart Board (AI): neat handwriting, /draw, word cards, quizzes",
+    "description": "A smartboard with an AI helper. Write a word with the pen: it becomes neat letters and spelling mistakes are fixed. Type /draw bird for a picture (our own library first, the AI draws anything else), /word, /sentences, /quiz, /story, /tr (Turkish ⇄ English), /check, /ask, plus /spell, /timer, /pick and /dice that work without the AI.",
+    "type": "game",
+    "category": "Classroom Tools",
+    "categoryLabel": "🪄 Teacher Tools",
+    "level": "Pre-A1–A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–10",
+    "ageGroup": "8-10",
+    "grade": 3,
+    "grades": [
+      3,
+      4
+    ],
+    "duration": 35,
+    "durationText": "Any time",
+    "estimatedMinutes": 10,
+    "xp": 0,
+    "skills": [
+      "Writing",
+      "Spelling",
+      "Vocabulary",
+      "Speaking",
+      "Listening"
+    ],
+    "topic": "Any lesson",
+    "topics": [
+      "Any lesson"
+    ],
+    "languageFocus": "Whatever the class needs: spelling, words, example sentences",
+    "activityMode": "Whole class, one smartboard",
+    "interactionType": "Teacher-led board with an AI helper",
+    "difficulty": "Any",
+    "tags": [
+      "smartboard",
+      "AI",
+      "whiteboard",
+      "handwriting",
+      "spelling",
+      "draw",
+      "quiz",
+      "story",
+      "translate",
+      "teacher tool"
+    ],
+    "learningObjectives": [
+      "See handwriting turned into neat, correct spelling with the mistake shown kindly",
+      "Get an instant picture, word card or example sentences for any word",
+      "Answer quick whole-class quizzes made on the spot"
+    ],
+    "teacherInstructions": "Open the board on the smartboard. Write with the pen and wait 2 seconds, or type a command such as /draw bird. Switch on the AI once in ⚙️ with your PIN (setup guide: supabase/functions/smartboard-ai/README.md).",
+    "studentInstructions": "Write a word on the board and watch it become neat!",
+    "route": "smart-board/index.html",
+    "worksheet": "smart-board/worksheet.html",
+    "worksheetRoute": "smart-board/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": false,
+    "supportsProgress": false,
+    "featured": true,
+    "categoryGroup": "Teacher Tools",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🪄",
+    "url": "smart-board/index.html",
+    "worksheetUrl": "smart-board/worksheet.html",
+    "gradient": "linear-gradient(135deg, #060911 0%, #312e81 55%, #a855f7 100%)",
+    "track": "English",
+    "sectionOrder": 1
   }
 ];
 

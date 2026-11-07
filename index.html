@@ -1910,7 +1910,7 @@
         <span class="dock-btn-label">Roll Call</span>
       </button>
       <div class="dock-more-wrap" id="dock-more-wrap">
-        <button type="button" class="dock-pill-btn" id="dock-more-trigger" onclick="toggleDockMore(event)" title="More classroom tools: Random picker, Groups, Voice changer" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="dock-pill-btn" id="dock-more-trigger" onclick="toggleDockMore(event)" title="More classroom tools: Smart Board, Random picker, Groups, Voice changer" aria-haspopup="true" aria-expanded="false">
           <span class="dock-btn-icon">⋯</span>
           <span class="dock-btn-label">More ▾</span>
         </button>
@@ -1926,6 +1926,10 @@
       <button type="button" class="dock-pill-btn dock-more-item" onclick="switchClassroomSubTab('groups')" title="Classroom Group Work">
         <span class="dock-btn-icon">👥</span>
         <span class="dock-btn-label">Groups</span>
+      </button>
+      <button type="button" class="dock-pill-btn dock-more-item" onclick="window.open('smart-board/index.html', 'smartboard')" title="Smart Board with AI: neat handwriting, /draw pictures, word cards, quizzes">
+        <span class="dock-btn-icon">🪄</span>
+        <span class="dock-btn-label">Smart Board</span>
       </button>
       <button type="button" class="dock-pill-btn dock-more-item" onclick="VoiceFX.toggle()" title="Voice Changer: talk into the microphone and sound like a funny character">
         <span class="dock-btn-icon">🎙️</span>
@@ -3052,7 +3056,7 @@
        4. SCRIPTS & ARCHITECTURE (GAMES REGISTRY -> STORE -> APP)
        ======================================================================== -->
   <!-- 1. Central 15-game Registry -->
-  <script src="js/games-data.js?v=ti101"></script>
+  <script src="js/games-data.js?v=sb1"></script>
 
   <!-- Supabase PostgreSQL Client SDK (Authoritative Shared Database) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

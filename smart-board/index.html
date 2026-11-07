@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Smart Board · English Adventure Academy</title>
+  <meta name="description" content="A smartboard with AI: neat handwriting, /draw pictures, word cards, quizzes and stories for young English learners.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body class="bg-dark">
+
+  <!-- The writing surface -->
+  <main id="board" class="board" aria-label="Smart board. Write with the pen.">
+    <canvas id="inkCanvas"></canvas>
+    <canvas id="liveCanvas"></canvas>
+    <div id="objLayer" class="obj-layer"></div>
+    <button type="button" id="neatFab" class="neat-fab hidden" title="Make the writing neat">✨ Neat</button>
+  </main>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <a class="tb-btn" href="../index.html" title="Back to the platform" aria-label="Back to the platform">🏠</a>
+    <div class="brand"><span class="brand-icon">🪄</span> Smart Board</div>
+    <div class="tb-spacer"></div>
+    <button type="button" id="aiChip" class="ai-chip" title="AI status"><span class="ai-dot"></span><span id="aiChipText">AI off</span></button>
+    <button type="button" id="btnMute" class="tb-btn" title="Sound on/off" aria-label="Sound on or off">🔔</button>
+    <button type="button" id="btnSettings" class="tb-btn" title="Settings" aria-label="Settings">⚙️</button>
+    <button type="button" id="btnFull" class="tb-btn" title="Fullscreen" aria-label="Fullscreen">⛶</button>
+  </header>
+
+  <!-- Pen tools -->
+  <nav class="toolbar" id="toolbar" aria-label="Pen tools">
+    <button type="button" class="tool-btn active" data-tool="pen" title="Pen">✏️</button>
+    <button type="button" class="tool-btn" data-tool="hl" title="Highlighter">🖍️</button>
+    <button type="button" class="tool-btn" data-tool="eraser" title="Eraser">🧽</button>
+    <div class="tool-sep"></div>
+    <div class="swatches" id="swatches" aria-label="Colours"></div>
+    <div class="tool-sep"></div>
+    <div class="sizes" aria-label="Pen size">
+      <button type="button" class="size-btn" data-size="4" title="Thin"><span style="--d:6px"></span></button>
+      <button type="button" class="size-btn active" data-size="7" title="Medium"><span style="--d:11px"></span></button>
+      <button type="button" class="size-btn" data-size="12" title="Thick"><span style="--d:17px"></span></button>
+    </div>
+    <div class="tool-sep"></div>
+    <button type="button" class="tool-btn" id="btnUndo" title="Undo (Ctrl+Z)" disabled>↶</button>
+    <button type="button" class="tool-btn" id="btnRedo" title="Redo (Ctrl+Y)" disabled>↷</button>
+    <button type="button" class="tool-btn" id="btnClear" title="Clear the board">🧹</button>
+  </nav>
+
+  <!-- Command bar -->
+  <footer class="cmdbar">
+    <div class="quick-chips" id="quickChips"></div>
+    <form class="cmd-wrap" id="cmdForm" autocomplete="off">
+      <div class="cmd-suggest hidden" id="cmdSuggest" role="listbox"></div>
+      <span class="cmd-magic">🪄</span>
+      <input id="cmdInput" class="cmd-input" type="text" spellcheck="false" enterkeyhint="go"
+             placeholder="Type / for magic…  e.g.  /draw bird" aria-label="Board command">
+      <button type="submit" class="btn-primary cmd-go" id="cmdGo">Go ➜</button>
+    </form>
+  </footer>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <!-- Settings drawer -->
+  <aside id="settings" class="settings hidden" aria-label="Settings">
+    <div class="set-head">
+      <h2>⚙️ Smart Board</h2>
+      <button type="button" class="tb-btn" id="btnCloseSettings" aria-label="Close">✕</button>
+    </div>
+
+    <section class="set-sec">
+      <h3>🤖 AI helper</h3>
+      <p class="set-status" id="aiStatusText">The AI is off. The pen, library pictures, timer and picker still work.</p>
+      <div class="pin-row">
+        <input id="pinInput" type="password" inputmode="numeric" placeholder="Your AI PIN" autocomplete="off" aria-label="AI PIN">
+        <button type="button" class="btn-primary" id="btnConnect">Connect</button>
+      </div>
+      <p class="set-hint">One-time setup by the teacher: <a href="https://github.com/maysaaaam-rgb/who-stole-the-treasure/blob/main/supabase/functions/smartboard-ai/README.md" target="_blank" rel="noopener">how to switch on the AI</a>.</p>
+    </section>
+
+    <section class="set-sec">
+      <h3>✍️ Writing</h3>
+      <label class="switch"><input type="checkbox" id="optAutoNeat" checked><span></span> Make writing neat by itself (after you stop writing)</label>
+      <label class="switch"><input type="checkbox" id="optSpeak" checked><span></span> Read results aloud</label>
+      <label class="switch"><input type="checkbox" id="optTurkish" checked><span></span> Show Turkish meanings</label>
+    </section>
+
+    <section class="set-sec">
+      <h3>🖼️ Board</h3>
+      <div class="bg-choices" id="bgChoices">
+        <button type="button" data-bg="dark" class="bg-choice">🌌 Dark</button>
+        <button type="button" data-bg="chalk" class="bg-choice">🟩 Chalk</button>
+        <button type="button" data-bg="white" class="bg-choice">⬜ White</button>
+        <button type="button" data-bg="lines" class="bg-choice">📝 Lines</button>
+        <button type="button" data-bg="grid" class="bg-choice">🔲 Grid</button>
+      </div>
+    </section>
+
+    <section class="set-sec">
+      <h3>💡 Tips</h3>
+      <ul class="tips">
+        <li>Write a word with the pen and wait: it becomes neat, and spelling mistakes are fixed.</li>
+        <li>Draw a picture and wait: tap <b>🎨 Make a picture</b> to turn it into a real one.</li>
+        <li>Type <b>/</b> to see all commands. Drag cards to move them, the corner dot to resize.</li>
+        <li>Keys: <b>/</b> commands · <b>Ctrl+Z</b> undo · <b>Delete</b> removes the selected card.</li>
+      </ul>
+    </section>
+  </aside>
+
+  <script src="../js/supabase-config.js"></script>
+  <script src="js/art-index.js?v=1"></script>
+  <script src="js/data.js?v=1"></script>
+  <script src="js/audio.js?v=1"></script>
+  <script src="js/ai.js?v=1"></script>
+  <script src="js/app.js?v=1"></script>
+</body>
+</html>
