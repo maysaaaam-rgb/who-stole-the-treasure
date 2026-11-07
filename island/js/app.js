@@ -252,15 +252,15 @@
   var FRIEND_SPOTS = [{ x: 40, y: 36 }, { x: 60, y: 36 }, { x: 50, y: 25 }];
 
   function regularMissions(zoneNum) {
-    return root.IslandData.getZoneMissions(state.session.grade || 3, zoneNum, false).regular;
+    var ses = state.session || {}; return root.IslandData.getZoneMissions(ses.grade || 3, zoneNum, false).regular;
   }
   function doneCount(missions) {
-    var stars = (state.session.doc && state.session.doc.stars) || {};
+    var ses = state.session || {}, stars = (ses.doc && ses.doc.stars) || {};
     return missions.filter(function (m) { return (Number(stars[m.id]) || 0) > 0; }).length;
   }
   /* the place to play next: the first open zone with a mission or chest still to do */
   function currentZone() {
-    var chests = (state.session.doc && state.session.doc.chests) || {};
+    var ses = state.session || {}, chests = (ses.doc && ses.doc.chests) || {};
     for (var z = 4; z >= 1; z--) {
       if (isZoneUnlocked(z)) {
         for (var k = 1; k <= z; k++) {
@@ -352,7 +352,7 @@
   }
 
   function islandScreenHtml(dailyBannerHtml, pipTipHtml, today) {
-    var ses = state.session, g = ses.grade || 3, cur = currentZone();
+    var ses = state.session || {}, g = ses.grade || 3, cur = currentZone();
     var chests = (ses.doc && ses.doc.chests) || {};
     var placesHtml = root.IslandData.ZONES.map(function (z) {
       var open = isZoneUnlocked(z.num), t = z.titles[g] || z.titles[3], p = MAP_PLACES[z.num];
@@ -421,7 +421,7 @@
   var ZONE_FOCUS = { 2: '82% 28%', 3: '20% 72%', 4: '76% 66%' };
 
   function zoneScreenHtml(zoneNum) {
-    var ses = state.session, g = ses.grade || 3, z = root.IslandData.ZONES[zoneNum - 1], t = z.titles[g] || z.titles[3];
+    var ses = state.session || {}, g = ses.grade || 3, z = root.IslandData.ZONES[zoneNum - 1], t = z.titles[g] || z.titles[3];
     var zm = root.IslandData.getZoneMissions(g, zoneNum, ses.star);
     var stars = (ses.doc && ses.doc.stars) || {}, chests = (ses.doc && ses.doc.chests) || {};
     var nextIdx = -1;
@@ -1511,7 +1511,7 @@
   }
 
   function zoneSleep(zoneNum, missions) {
-    var doc = state.session.doc || {};
+    var doc = (state.session && state.session.doc) || {};
     if (doc.chests && doc.chests['z' + zoneNum]) return 0;
     if (!isZoneUnlocked(zoneNum)) return 1;
     var done = missions.filter(function (m) { return doc.stars && doc.stars[m.id]; }).length;
@@ -1519,7 +1519,7 @@
   }
 
   function shellsHtml() {
-    var n = shellCount(), title = state.session.doc.story && state.session.doc.story.title;
+    var doc = (state.session && state.session.doc) || {}, n = shellCount(), title = doc.story && doc.story.title;
     var out = '';
     for (var i = 0; i < 4; i++) out += '<span class="gm-shell' + (i < n ? ' on' : '') + '">' + root.IslandStory.pic('o_shell', '🐚') + '</span>';
     return '<div class="gm-shells" id="gm-shells" aria-label="' + n + ' of 4 magic shells">' + out + (title ? ' 🏅 ' + esc(title) : ' ' + n + ' / 4') + '</div>';

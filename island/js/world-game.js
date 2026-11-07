@@ -8,14 +8,14 @@
   var App = function () { return root.IslandApp; };
   var W = function () { return root.WORLD; };
   var A = function () { return root.IslandAudio || {}; };
-  var ses = function () { var st = App() && App().state && App().state(); return st && st.session; };
+  var ses = function () { var st = App() && App().state && App().state(); return (st && st.session) || {}; };
   function sound(n) { if (A()[n]) { try { A()[n](); } catch (e) { /* ignore */ } } }
   function say(t) { if (A().speak) A().speak(t); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
   /* ---------- 1. Persistent World State + Cloud Sync (ses().doc.world via IslandSync) ---------- */
-  var STATE_KEY = function () { var s = ses(); return 'eaa_world_game_' + ((s && s.student && s.student.id) || 'demo'); };
-  var BAG_KEY = function () { var s = ses(); return 'eaa_world_bag_' + ((s && s.student && s.student.id) || 'x'); };
+  var STATE_KEY = function () { var s = ses() || {}; return 'eaa_world_game_' + ((s && s.student && s.student.id) || 'demo'); };
+  var BAG_KEY = function () { var s = ses() || {}; return 'eaa_world_bag_' + ((s && s.student && s.student.id) || 'x'); };
   var syncTimer = null;
 
   var HOUSE_TIERS = [
@@ -75,7 +75,7 @@
   var MAT_ICONS = { wood: 'i_wood', stone: 'i_stone', flower: 'i_flower', shell: 'i_shell', berry: 'i_berry', crystal: 'i_crystal' };
 
   function scheduleCloudSync() {
-    var s = ses();
+    var s = ses() || {};
     if (!s || !s.doc || !root.IslandSync || typeof root.IslandSync.saveIslandDoc !== 'function') return;
     if (syncTimer) clearTimeout(syncTimer);
     syncTimer = setTimeout(function () {
@@ -101,7 +101,7 @@
       day: ''
     };
     try {
-      var s = ses();
+      var s = ses() || {};
       var docWorld = (s && s.doc && s.doc.world) ? s.doc.world : null;
       var raw = JSON.parse(localStorage.getItem(STATE_KEY()));
       var merged = Object.assign({}, def, docWorld || {}, raw || {});
@@ -125,7 +125,7 @@
     try {
       st.day = new Date().toISOString().slice(0, 10);
       localStorage.setItem(STATE_KEY(), JSON.stringify(st));
-      var s = ses();
+      var s = ses() || {};
       if (s && s.doc) {
         var b = readBag();
         s.doc.world = Object.assign({}, s.doc.world || {}, st, { bag: b.items || {} });
@@ -137,8 +137,10 @@
     updateStatusHud();
   }
 
-  function getEnergy() { return readState().energy; }
+  function isEnergyEnabled() { return !(root.FEATURES && root.FEATURES.energy === false); }
+  function getEnergy() { return isEnergyEnabled() ? readState().energy : 100; }
   function addEnergy(n) {
+    if (!isEnergyEnabled()) return 100;
     var st = readState();
     st.energy = Math.max(0, Math.min(st.maxEnergy || 100, (Number(st.energy) || 0) + n));
     writeState(st);
@@ -147,6 +149,7 @@
     return st.energy;
   }
   function useEnergy(n) {
+    if (!isEnergyEnabled()) return true;
     var st = readState();
     if ((Number(st.energy) || 0) < n) return false;
     st.energy = Math.max(0, Number(st.energy) - n);
@@ -163,8 +166,10 @@
   }
 
   function updateEnergyChip() {
+    var chip = $('w-energy');
+    if (chip) chip.style.display = isEnergyEnabled() ? '' : 'none';
     var el = $('w-energy-val');
-    if (el) el.textContent = String(readState().energy);
+    if (el) el.textContent = String(getEnergy());
   }
 
   function updateStatusHud(pop) {
@@ -223,7 +228,7 @@
   function readBag() {
     try {
       var raw = JSON.parse(localStorage.getItem(BAG_KEY())) || { items: {}, day: '', taken: {} };
-      var s = ses();
+      var s = ses() || {};
       if (s && s.doc && s.doc.world && s.doc.world.bag) {
         raw.items = raw.items || {};
         Object.keys(s.doc.world.bag).forEach(function (k) {
@@ -236,7 +241,7 @@
   function writeBag(b) {
     try {
       localStorage.setItem(BAG_KEY(), JSON.stringify(b));
-      var s = ses();
+      var s = ses() || {};
       if (s && s.doc) {
         s.doc.world = Object.assign({}, s.doc.world || {}, readState(), { bag: b.items || {} });
         scheduleCloudSync();
@@ -388,7 +393,7 @@
   }
 
   function zoneProgressBadge(z) {
-    var s = ses();
+    var s = ses() || {};
     if (!s || !s.doc) return '';
     if (z === 0) {
       var st = readState();
@@ -1470,8 +1475,10 @@
       st.battlesWon = st.battlesWon || {};
       st.battlesWon[b.id] = 1;
       writeState(st);
-      giveMaterials(b.loot);
-      addBonusCoins(b.coins);
+      var loot = b.loot || b.drop || {};
+      var bCoins = b.coins || 15;
+      giveMaterials(loot);
+      addBonusCoins(bCoins);
       if (firstWin && App() && App().awardIslandXP) App().awardIslandXP(5, 'battle_' + b.id);
       if (root.IslandRewards && root.IslandRewards.unlockBattleSticker) {
         root.IslandRewards.unlockBattleSticker(b.id, b.name, FLAT + b.art + '.webp');
@@ -1479,8 +1486,8 @@
       sound('playFanfare');
       say('Victory! ' + b.name + ' is your friend now!');
       if (W() && W().refreshBattles) W().refreshBattles(b.id);
-      var lootTxt = Object.keys(b.loot).map(function (k) {
-        return '<span class="wg-cost-pill ok"><img src="' + FLAT + MAT_ICONS[k] + '.webp" alt="">+' + b.loot[k] + ' ' + k + '</span>';
+      var lootTxt = Object.keys(loot).map(function (k) {
+        return '<span class="wg-cost-pill ok"><img src="' + FLAT + MAT_ICONS[k] + '.webp" alt="">+' + loot[k] + ' ' + k + '</span>';
       }).join(' ');
       modalRoot().innerHTML =
         '<div class="isl-modal-backdrop" id="wg-battle-win">' +
@@ -1488,7 +1495,7 @@
             '<img src="' + FLAT + b.art + '.webp" style="width:130px;height:130px;object-fit:contain;margin:0 auto" alt="">' +
             '<h2 style="font-size:1.75rem;margin:8px 0;color:#6ee7b7">🎉 Friendly Victory!</h2>' +
             '<p style="color:#e2e8f0;font-weight:700;margin-bottom:12px">' + esc(b.name) + ' cheered for your English spells and shared treasure with you!</p>' +
-            '<div class="wg-cost-row" style="justify-content:center;margin-bottom:14px">' + lootTxt + ' <span class="wg-reward-tag">🪙 +' + b.coins + ' Coins</span></div>' +
+            '<div class="wg-cost-row" style="justify-content:center;margin-bottom:14px">' + lootTxt + ' <span class="wg-reward-tag">🪙 +' + (b.coins || 15) + ' Coins</span></div>' +
             '<div style="display:flex;gap:10px;justify-content:center">' +
               '<button type="button" class="isl-btn amber" onclick="WorldGame.closeModal(); WorldGame.openWorkshop(\'blueprints\')">📜 Open Blueprints</button>' +
               '<button type="button" class="isl-btn emerald" onclick="WorldGame.closeModal()">Continue ▶</button>' +

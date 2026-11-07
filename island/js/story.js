@@ -63,27 +63,27 @@
 
   var PLOTS = {
     /* ==================== GRADE 3 ==================== */
-    /* Chapter 1 — Admiral Benbow Harbour (Unit 1: What Does It Do?) */
-    'g3-z1-m1': { title: "Clue 1: Billy Bones's Brass Compass", prop: 'o_compass', propDone: 'o_compass',
-      intro: ["Jim Hawkins and baby leopard Benbow found a brass compass outside the Admiral Benbow Inn!", "Listen to the clue and tap the right picture!"],
-      outro: "Click-clack! The brass compass points east toward the harbour pier!",
-      thanks: "Click-clack! The brass compass points east toward the harbour pier!" },
-    'g3-z1-m2': { title: 'Clue 2: The Torn Sea Map', prop: 'o_map_scroll', propDone: 'o_map_scroll',
-      intro: ["Parrot Captain Flint flutters down: 'Pieces of eight! Match the words on the torn parchment!'", "Match each word and picture to piece the map together!"],
-      outro: "Well done! The torn sea map is pieced together!",
-      thanks: "Well done! The torn sea map is pieced together!" },
-    'g3-z1-m3': { title: "Clue 3: The Cliff Spyglass", prop: 'o_spyglass', propDone: 'o_spyglass',
-      intro: ["Captain Billy Bones looks through his brass spyglass on the cliff.", "Read the sentences carefully to spot the ship in the bay!"],
-      outro: "Great reading! We spotted the Hispaniola through the spyglass!",
-      thanks: "Great reading! We spotted the Hispaniola through the spyglass!" },
-    'g3-z1-m4': { title: "Clue 4: The Ship's Helm & Anchor", prop: 'o_ship_wheel', propDone: 'o_ship_wheel',
-      intro: ["Benbow the leopard cub ran to the wooden ship wheel on the dock!", "Put the words in order to steer the ship into the harbour!"],
-      outro: "Awesome sentence building! The helm is locked on course!",
-      thanks: "Awesome sentence building! The helm is locked on course!" },
-    'g3-z1-m5': { title: 'Clue 5: Boarding the Hispaniola', prop: 'o_barrel_dock', propDone: 'o_hispaniola',
-      intro: ["The Hispaniola is waiting at the pier! Speak with a brave captain's voice to give the sailing order!"],
-      outro: "Hooray! Billy Bones's Sea Chest is unlocked and the Hispaniola is ready to sail!",
-      thanks: "Hooray! Billy Bones's Sea Chest is unlocked and the Hispaniola is ready to sail!" },
+    /* Chapter 1 — Admiral Benbow Harbour */
+    'g3-z1-m1': { title: "Clue 1: The Admiral Benbow Inn Door", prop: 'o_benbow_inn', propDone: 'o_benbow_inn',
+      intro: ["Jim Hawkins and baby leopard Benbow welcome you to the Admiral Benbow Inn!", "Listen to the greeting clue and tap the matching card!"],
+      outro: "Well done! The Admiral Benbow Inn door opens wide!",
+      thanks: "Well done! The Admiral Benbow Inn door opens wide!" },
+    'g3-z1-m2': { title: 'Clue 2: The Harbour Notice Board', prop: 'o_map_scroll', propDone: 'o_map_scroll',
+      intro: ["Parrot Captain Flint flutters onto the Harbour Notice Board: 'Pieces of eight! Who is where at school?'", "Listen and match each person and school room!"],
+      outro: "Splendid! You unlocked the Harbour Notice Board clue!",
+      thanks: "Splendid! You unlocked the Harbour Notice Board clue!" },
+    'g3-z1-m3': { title: "Clue 3: The Ship's Calendar Wheel", prop: 'o_ship_wheel', propDone: 'o_ship_wheel',
+      intro: ["Benbow the spotted leopard cub points to the 12 spokes on the wooden Ship's Wheel!", "Put the months of the year in the right order on the wheel!"],
+      outro: "Click-clack! The 12-spoke Calendar Wheel spins into place!",
+      thanks: "Click-clack! The 12-spoke Calendar Wheel spins into place!" },
+    'g3-z1-m4': { title: 'Clue 4: The Brass Harbour Telescope', prop: 'o_spyglass', propDone: 'o_spyglass',
+      intro: ["Jim Hawkins peers through the brass telescope on the harbour lookout.", "Spot the right birthday clue, age, and party items through the lens!"],
+      outro: "Sharp eyes, Captain! We spotted the secret birthday signal!",
+      thanks: "Sharp eyes, Captain! We spotted the secret birthday signal!" },
+    'g3-z1-m5': { title: "Clue 5: Billy Bones's Sea Chest", prop: 'o_billy_chest', propDone: 'o_treasure_gold',
+      intro: ["We reached Billy Bones's brass-bound Sea Chest! Match the National Days and pass the final harbour review to open it!"],
+      outro: "Hooray! Billy Bones's Sea Chest bursts open and Map Piece #1 is yours!",
+      thanks: "Hooray! Billy Bones's Sea Chest bursts open and Map Piece #1 is yours!" },
 
     /* Chapter 2 — Hispaniola Bay (Unit 2: Thank You) */
     'g3-z2-m1': { title: "Clue 1: Rations in Silver's Galley", prop: 'o_barrel_dock',
@@ -137,27 +137,27 @@
       outro: "Click-boom! Captain Flint's Golden Vault opens wide!", thanks: "Click-boom! Captain Flint's Golden Vault opens wide!" },
 
     /* ==================== GRADE 4 ==================== */
-    /* Chapter 1 — Admiral Benbow Harbour (Unit 1: I Love Reading) */
-    'g4-z1-m1': { title: "Clue 1: Billy Bones's Sea Log", prop: 'o_compass', propDone: 'o_compass',
-      intro: ["Jim Hawkins and baby leopard Benbow found an old sea log outside the Admiral Benbow Inn!", "Listen to the clue to begin our voyage!"],
-      outro: "The sea log reveals the first secret of Treasure Island!",
-      thanks: "The sea log reveals the first secret of Treasure Island!" },
-    'g4-z1-m2': { title: 'Clue 2: Sorting the Map Pages', prop: 'o_map_scroll', propDone: 'o_map_scroll',
-      intro: ["Parrot Captain Flint squawks: 'Match the pages to read the captain's chart!'"],
-      outro: "Every page of the sea chart is in place!",
-      thanks: "Every page of the sea chart is in place!" },
-    'g4-z1-m3': { title: 'Clue 3: The Cliff Spyglass Clue', prop: 'o_spyglass', propDone: 'o_spyglass',
-      intro: ["Read the story clue with Jim Hawkins and Captain Billy Bones to find which ship is sailing tonight!"],
-      outro: "It is the Hispaniola! You read the clue!",
-      thanks: "It is the Hispaniola! You read the clue!" },
-    'g4-z1-m4': { title: "Clue 4: Squire Trelawney's Helm Order", prop: 'o_ship_wheel', propDone: 'o_ship_wheel',
-      intro: ["Put the words in order to complete Squire Trelawney's sailing instructions!"],
-      outro: "The instructions are ready and the crew is aboard!",
-      thanks: "The instructions are ready and the crew is aboard!" },
-    'g4-z1-m5': { title: 'Clue 5: All Hands on the Hispaniola', prop: 'o_barrel_dock', propDone: 'o_hispaniola',
-      intro: ["Speak the captain's oath aloud with Jim Hawkins and Benbow to unlock the harbour!"],
-      outro: "Hooray! Billy Bones's Sea Chest is open and the Hispaniola sets sail!",
-      thanks: "Hooray! Billy Bones's Sea Chest is open and the Hispaniola sets sail!" },
+    /* Chapter 1 — Admiral Benbow Harbour */
+    'g4-z1-m1': { title: "Clue 1: The Admiral Benbow Inn Door", prop: 'o_benbow_inn', propDone: 'o_benbow_inn',
+      intro: ["Jim Hawkins and baby leopard Benbow stand at the Admiral Benbow Inn door!", "Listen to each polite permission question and tap the right clue!"],
+      outro: "Yes, you can! The Admiral Benbow Inn door opens!",
+      thanks: "Yes, you can! The Admiral Benbow Inn door opens!" },
+    'g4-z1-m2': { title: 'Clue 2: The Harbour Supply Crates', prop: 'o_barrel_dock', propDone: 'o_barrel_dock',
+      intro: ["Parrot Captain Flint squawks: 'Pass the supplies, please! Match each polite request at the harbour crates!'"],
+      outro: "Here you are! Every harbour crate is packed and ready!",
+      thanks: "Here you are! Every harbour crate is packed and ready!" },
+    'g4-z1-m3': { title: 'Clue 3: Captain Flint Says at the Helm', prop: 'o_ship_wheel', propDone: 'o_ship_wheel',
+      intro: ["Captain Flint perches on the Ship's Wheel! Follow only the instructions when 'Flint says'!"],
+      outro: "Sharp listening, Captain! You mastered every classroom command at the helm!",
+      thanks: "Sharp listening, Captain! You mastered every classroom command at the helm!" },
+    'g4-z1-m4': { title: 'Clue 4: Counting Through the Brass Telescope', prop: 'o_spyglass', propDone: 'o_spyglass',
+      intro: ["Look through the brass telescope with Jim Hawkins and count the ships, barrels, and gulls up to 50!"],
+      outro: "Brilliant counting! We have the exact numbers for the sea lock!",
+      thanks: "Brilliant counting! We have the exact numbers for the sea lock!" },
+    'g4-z1-m5': { title: "Clue 5: Billy Bones's Number-Lock Chest", prop: 'o_billy_chest', propDone: 'o_treasure_gold',
+      intro: ["Spin the three brass number dials (1–50) and pass the final harbour review to unlock Billy Bones's Sea Chest!"],
+      outro: "Hooray! Billy Bones's Sea Chest is open and Map Piece #1 is yours!",
+      thanks: "Hooray! Billy Bones's Sea Chest is open and Map Piece #1 is yours!" },
 
     /* Chapter 2 — Hispaniola Bay (Unit 2: What Lives Here?) */
     'g4-z2-m1': { title: 'Clue 1: Creatures of the Coral Reef', prop: 'o_compass',
@@ -213,14 +213,91 @@
 
   function plotOf(missionId) { return PLOTS[missionId] || null; }
 
+  /* Parse mission IDs such as 'g3-z1-m2' or 'g4-z1-s1' */
+  function parseId(missionId) {
+    var m = /^g([34])-z([1-4])-([ms])(\d+)$/.exec(String(missionId || ''));
+    if (!m) return { grade: 3, zone: 1, kind: 'm', num: 1, isStar: false };
+    return {
+      grade: Number(m[1]),
+      zone: Number(m[2]),
+      kind: m[3],
+      num: Number(m[4]),
+      isStar: m[3] === 's'
+    };
+  }
+
+  /* Build intro cutscene steps for a mission (called by app.js before launching a mission) */
+  function missionSteps(mission, docOrZone, gradeOpt, monsterHtmlOpt) {
+    if (!mission) return [];
+    var parsed = parseId(mission.id);
+    var zoneNum = parsed.zone || 1;
+    var c = CHARS[zoneNum] || CHARS[1];
+    var p = PLOTS[mission.id];
+    var mHtml = typeof monsterHtmlOpt === 'string'
+      ? monsterHtmlOpt
+      : (root.IslandApp && root.IslandApp.monsterHtml ? root.IslandApp.monsterHtml(92) : '');
+    if (!p || !p.intro || !p.intro.length) {
+      return [{
+        bg: 'benbow',
+        speaker: c.name,
+        charKey: c.idle,
+        prop: 'o_compass',
+        voice: c.voice || 'pip',
+        monsterHtml: mHtml,
+        text: (mission.title ? (mission.title + ' — ') : '') + 'Ready for this harbour clue, Captain?'
+      }];
+    }
+    return p.intro.map(function (line, idx) {
+      return {
+        bg: 'benbow',
+        speaker: idx === 0 ? c.name : 'Parrot Flint',
+        charKey: idx === 0 ? c.idle : 'c_pip_happy',
+        prop: p.prop || 'o_compass',
+        voice: idx === 0 ? (c.voice || 'bolt') : 'pip',
+        monsterHtml: mHtml,
+        text: line
+      };
+    });
+  }
+
+  /* Show a cutscene from an options object { steps, lastLabel, onDone } */
+  function showScene(opts) {
+    opts = opts || {};
+    var steps = opts.steps || [];
+    var onDone = opts.onDone || function () {};
+    if (!steps.length) {
+      onDone();
+      return;
+    }
+    var mHtml = (steps[0] && steps[0].monsterHtml) || (root.IslandApp && root.IslandApp.monsterHtml ? root.IslandApp.monsterHtml(92) : '');
+    showCutscene(steps, mHtml, onDone, opts.lastLabel);
+  }
+
+  /* Return spoken completion praise object { text, who } for a finished mission */
+  function thanks(mission) {
+    if (!mission) return null;
+    var parsed = parseId(mission.id);
+    var c = CHARS[parsed.zone || 1] || CHARS[1];
+    var p = PLOTS[mission.id];
+    var text = (p && (p.thanks || p.outro)) || 'Splendid work, Captain! You solved the clue!';
+    return { text: text, who: c.voice || 'pip' };
+  }
+
+  /* Return HTML banner for the reward modal after completing a mission */
+  function thanksHtml(mission) {
+    if (!mission) return '';
+    var parsed = parseId(mission.id);
+    return missionOutroHtml(mission.id, parsed.zone || 1);
+  }
+
   function playIntro(monsterHtml, onDone) {
     var slides = [
-      { bg: 'benbow', speaker: 'Jim Hawkins & Benbow', charKey: 'c_jim_happy', prop: 'o_map_scroll', voice: 'bolt',
-        text: "Ahoy! Welcome to Admiral Benbow Harbour! My baby leopard Benbow and I just discovered Captain Flint's secret Treasure Map inside Billy Bones's sea chest!" },
-      { bg: 'benbow', speaker: 'Parrot Captain Flint', charKey: 'c_pip_happy', prop: 'o_hispaniola', voice: 'pip',
-        text: "Squawk! Pieces of eight! The great sailing ship Hispaniola is anchored at the harbour pier! Solve the 5 Map Clues along the coast to unlock the voyage!" },
-      { bg: 'benbow', speaker: 'Captain Billy Bones', charKey: 'c_billy', prop: 'o_treasure_gold', voice: 'bolt',
-        text: "Guard the map well, young captain! Walk along Benbow Harbour, use your English power at each glowing clue, and claim the gold of Treasure Island!" }
+      { bg: 'benbow', speaker: 'Jim Hawkins & Benbow', charKey: 'c_jim_happy', prop: 'c_benbow_happy', voice: 'bolt',
+        text: "Ahoy! Welcome to Admiral Benbow Harbour! My spotted leopard cub Benbow and I found Billy Bones's mysterious sea chest at the inn!" },
+      { bg: 'benbow', speaker: 'Parrot Captain Flint', charKey: 'c_pip_happy', prop: 'o_map_scroll', voice: 'pip',
+        text: "Squawk! Pieces of eight! Solve the 5 Harbour Clues in order — from the Benbow Inn door to Billy Bones's chest — to claim Map Piece #1!" },
+      { bg: 'benbow', speaker: 'Captain Billy Bones', charKey: 'c_billy', prop: 'o_billy_chest', voice: 'bolt',
+        text: "Keep a sharp eye out for a one-legged sailor, young captain! Use your English skills at every stop to unlock my sea chest!" }
     ];
     showCutscene(slides, monsterHtml, onDone);
   }
@@ -230,12 +307,15 @@
     var nextZone = CHARS[zoneNum + 1];
     var slides = [
       { bg: 'benbow', speaker: c.name, charKey: c.happy, prop: 'o_treasure_gold', voice: c.voice,
-        text: "Shiver me timbers! You solved all 5 Map Clues in " + c.zoneName + " and unlocked the Sea Chest! Inside is: " + rewardName + "!" },
-      nextZone
-        ? { bg: 'benbow', speaker: 'Parrot Flint', charKey: 'c_pip_happy', prop: 'o_hispaniola', voice: 'pip',
-            text: "All hands on deck! The Hispaniola is ready at the pier! Set sail for " + nextZone.zoneName + " to meet " + nextZone.name + "!" }
-        : { bg: 'benbow', speaker: 'Parrot Flint', charKey: 'c_pip_happy', prop: 'o_treasure_gold', voice: 'pip',
-            text: "Pieces of eight! All 4 Sea Chests are open! You found the Great Treasure of Captain Flint!" }
+        text: "Shiver me timbers! You solved all 5 Map Clues in " + c.zoneName + " and unlocked Billy Bones's Sea Chest! Inside is: " + rewardName + "!" },
+      zoneNum === 1
+        ? { bg: 'benbow', speaker: 'Long John Silver', charKey: 'c_silver', prop: 'o_hispaniola', voice: 'lulu',
+            text: "A shadow falls across the harbour pier... Long John Silver tips his hat: 'Well done with Map Piece #1, young captain! See you aboard the Hispaniola in Chapter 2!'" }
+        : (nextZone
+          ? { bg: 'benbow', speaker: 'Parrot Flint', charKey: 'c_pip_happy', prop: 'o_hispaniola', voice: 'pip',
+              text: "All hands on deck! The Hispaniola is ready at the pier! Set sail for " + nextZone.zoneName + " to meet " + nextZone.name + "!" }
+          : { bg: 'benbow', speaker: 'Parrot Flint', charKey: 'c_pip_happy', prop: 'o_treasure_gold', voice: 'pip',
+              text: "Pieces of eight! All 4 Sea Chests are open! You found the Great Treasure of Captain Flint!" })
     ];
     showCutscene(slides, monsterHtml, function () {
       if (!nextZone) playEnding(monsterHtml, onDone);
@@ -246,69 +326,79 @@
   function playEnding(monsterHtml, onDone) {
     var rootEl = document.getElementById('isl-modal-root');
     if (!rootEl) { if (onDone) onDone(); return; }
-    root.IslandAudio.playFanfare();
+    if (root.IslandAudio && root.IslandAudio.playFanfare) root.IslandAudio.playFanfare();
     var line = "Three cheers for the Grand Captain of Treasure Island! You sailed the Hispaniola and found Captain Flint's gold!";
-    root.IslandAudio.speak(line, null, 'pip');
+    if (root.IslandAudio && root.IslandAudio.speak) root.IslandAudio.speak(line, null, 'pip');
     rootEl.innerHTML =
-      '<div class="isl-modal-backdrop st-backdrop">' +
-        '<div class="st-stage st-ending" style="--st-bg:url(../art/bg_benbow.webp)">' +
-          '<div class="st-confetti">🎉 ✨ 🏆 🪙 ⛵ 🎉</div>' +
+      '<div id="st-overlay" class="open">' +
+        '<div class="st-backdrop" style="--st-bg:url(../art/bg_benbow.webp)"></div>' +
+        '<div class="st-stage st-ending">' +
+          '<div class="st-confetti"></div>' +
           '<h2 class="st-end-title">🏴‍☠️ Heroes of Treasure Island!</h2>' +
           '<div class="st-parade">' +
             '<div class="st-parade-mon">' + (monsterHtml || '') + '</div>' +
-            art('c_jim_happy', 'st-parade-char') +
-            art('c_benbow_happy', 'st-parade-char') +
-            art('c_pip_happy', 'st-parade-char') +
-            art('c_silver', 'st-parade-char') +
-            art('c_livesey', 'st-parade-char') +
-            art('c_billy', 'st-parade-char') +
+            '<div class="st-parade-mon">' + art('c_jim_happy', 'st-parade-char') + '</div>' +
+            '<div class="st-parade-mon">' + art('c_benbow_happy', 'st-parade-char') + '</div>' +
+            '<div class="st-parade-mon">' + art('c_pip_happy', 'st-parade-char') + '</div>' +
           '</div>' +
-          '<p class="st-line">' + line + '</p>' +
+          '<div class="st-outro"><p class="st-outro-line">' + line + '</p></div>' +
           '<button type="button" class="isl-btn amber st-next" id="st-end-done">⚓ Back to the Harbour! 🚀</button>' +
         '</div>' +
       '</div>';
     document.getElementById('st-end-done').onclick = function () {
-      root.IslandAudio.playTap();
+      if (root.IslandAudio && root.IslandAudio.playTap) root.IslandAudio.playTap();
       rootEl.innerHTML = '';
       if (onDone) onDone();
     };
   }
 
-  function showCutscene(slides, monsterHtml, onDone) {
+  function showCutscene(slides, monsterHtml, onDone, customLastLabel) {
     var rootEl = document.getElementById('isl-modal-root');
     if (!rootEl) { if (onDone) onDone(); return; }
     var i = 0;
     function render() {
       var s = slides[i];
       var bgFile = s.bg === 'benbow' ? 'bg_benbow.webp' : (MANIFEST['bg_' + s.bg] || ('bg_' + s.bg + '.webp'));
+      var lastBtnText = customLastLabel || "Let's Set Sail! ⛵";
       rootEl.innerHTML =
-        '<div class="isl-modal-backdrop st-backdrop">' +
-          '<div class="st-stage" style="--st-bg:url(../art/' + bgFile + ')">' +
+        '<div id="st-overlay" class="open">' +
+          '<div class="st-backdrop" style="--st-bg:url(../art/' + bgFile + ')"></div>' +
+          '<div class="st-stage">' +
             '<button type="button" class="st-skip" id="st-skip">Skip ⏭</button>' +
             '<div class="st-actors">' +
-              '<div class="st-monster">' + (monsterHtml || '') + '</div>' +
-              art(s.charKey, 'st-friend') +
-              (s.prop ? art(s.prop, 'st-prop') : '') +
+              '<div class="st-actor left"><div class="st-monster">' + (monsterHtml || '') + '</div></div>' +
+              '<div class="st-actor center">' + art(s.charKey, 'st-friend') + '</div>' +
+              (s.prop ? '<div class="st-actor right">' + art(s.prop, 'st-prop') + '</div>' : '') +
             '</div>' +
             '<div class="st-dialog">' +
-              '<div class="st-speaker">' + s.speaker + ' <button type="button" class="st-say" id="st-say" title="Listen">🔊</button></div>' +
+              '<div class="st-speaker">' + s.speaker + '</div>' +
+              '<button type="button" class="st-say" id="st-say" title="Listen">🔊</button>' +
               '<div class="st-line">' + s.text + '</div>' +
-              '<div class="st-dots">' + slides.map(function (_, idx) { return '<span class="' + (idx === i ? 'on' : '') + '"></span>'; }).join('') + '</div>' +
-              '<button type="button" class="isl-btn emerald st-next" id="st-next">' + (i < slides.length - 1 ? 'Next ▶' : "Let's Set Sail! ⛵") + '</button>' +
+              '<div class="st-dots">' + slides.map(function (_, idx) { return '<span class="st-dot ' + (idx === i ? 'on' : '') + '"></span>'; }).join('') + '</div>' +
+              '<button type="button" class="st-next" id="st-next">' + (i < slides.length - 1 ? 'Next ▶' : lastBtnText) + '</button>' +
             '</div>' +
           '</div>' +
         '</div>';
-      root.IslandAudio.speak(s.text, null, s.voice || 'pip');
-      document.getElementById('st-say').onclick = function () { root.IslandAudio.speak(s.text, null, s.voice || 'pip'); };
+      var speakSlide = function () {
+        if (root.Ch1Audio && typeof root.Ch1Audio.speak === 'function') {
+          root.Ch1Audio.speak(s.text);
+        } else if (root.IslandAudio && root.IslandAudio.speak) {
+          root.IslandAudio.speak(s.text, null, s.voice || 'pip');
+        }
+      };
+      speakSlide();
+      document.getElementById('st-say').onclick = function () {
+        speakSlide();
+      };
       document.getElementById('st-skip').onclick = finish;
       document.getElementById('st-next').onclick = function () {
-        root.IslandAudio.playTap();
+        if (root.IslandAudio && root.IslandAudio.playTap) root.IslandAudio.playTap();
         i++;
         if (i < slides.length) render(); else finish();
       };
     }
     function finish() {
-      root.IslandAudio.playTap();
+      if (root.IslandAudio && root.IslandAudio.playTap) root.IslandAudio.playTap();
       rootEl.innerHTML = '';
       if (onDone) onDone();
     }
@@ -325,7 +415,7 @@
       '<div class="st-mission-banner" onclick="IslandAudio.speak(' + JSON.stringify(line).replace(/"/g, '&quot;') + ',null,' + JSON.stringify(c.voice).replace(/"/g, '&quot;') + ')">' +
         art(c.idle, 'st-mb-char') +
         '<div class="st-mb-bubble">' +
-          '<b>' + c.name + ' · ' + p.title + '</b>' +
+          '<b>' + c.name + ' · ' + p.title + '</b><br>' +
           '<span>' + line + ' 🔊</span>' +
         '</div>' +
         art(propKey, 'st-mb-prop') +
@@ -340,8 +430,10 @@
     var propKey = p.propDone || p.prop || 'o_compass';
     return (
       '<div class="st-outro">' +
-        art(c.happy, 'st-outro-char') +
-        art(propKey, 'st-outro-prop') +
+        '<div style="display:flex;align-items:center;justify-content:center;gap:12px">' +
+          '<div style="width:64px;height:64px">' + art(c.happy, 'st-outro-char') + '</div>' +
+          '<div style="width:56px;height:56px">' + art(propKey, 'st-outro-prop') + '</div>' +
+        '</div>' +
         '<p class="st-outro-line">' + p.outro + '</p>' +
       '</div>'
     );
@@ -356,6 +448,11 @@
     charPic: charPic,
     pipLine: pipLine,
     plotOf: plotOf,
+    parseId: parseId,
+    missionSteps: missionSteps,
+    showScene: showScene,
+    thanks: thanks,
+    thanksHtml: thanksHtml,
     playIntro: playIntro,
     playChestCutscene: playChestCutscene,
     playEnding: playEnding,

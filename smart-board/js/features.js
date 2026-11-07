@@ -364,8 +364,8 @@
     el.className = 'race';
     el.id = 'raceOverlay';
     el.innerHTML = `<div class="race-line"></div>
-      <div class="race-lane l0"><div class="race-name">🔵 Team 1 <b class="rs">0</b></div><div class="race-badge"></div><button type="button" class="ctrl-btn race-win">🏆</button></div>
-      <div class="race-lane l1"><div class="race-name">🟠 Team 2 <b class="rs">0</b></div><div class="race-badge"></div><button type="button" class="ctrl-btn race-win">🏆</button></div>
+      <div class="race-lane l0"><div class="race-head"><div class="race-name">🔵 Team 1 <b class="rs">0</b></div><button type="button" class="ctrl-btn race-win" title="Teacher: this team is right">🏆</button></div><div class="race-badge"></div></div>
+      <div class="race-lane l1"><div class="race-head"><div class="race-name">🟠 Team 2 <b class="rs">0</b></div><button type="button" class="ctrl-btn race-win" title="Teacher: this team is right">🏆</button></div><div class="race-badge"></div></div>
       <div class="race-top"><span class="race-round"></span><div class="race-pic"></div>
         <button type="button" class="btn-primary race-listen">🔊 Listen</button>
         <button type="button" class="ctrl-btn race-next">⏭ Next</button><button type="button" class="ctrl-btn race-end">✖ End</button></div>`;
@@ -409,7 +409,7 @@
       const lastT = Math.max(...strokes.map((s) => s.t || 0));
       if (writing[lane] || race.busy[lane] || now - lastT < wait) return; // still writing: wait
       strokes.forEach((s) => used.push(s.id));
-      if (!AI.ready) { badge(lane, '👩‍🏫 🏆?'); return; }
+      if (!AI.ready) { badge(lane, '👩‍🏫 Right? Tap 🏆'); return; }
       race.busy[lane] = true;
       badge(lane, '<span class="spinner"></span>');
       const word = raceWord();

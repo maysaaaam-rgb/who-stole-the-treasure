@@ -33,7 +33,7 @@
   };
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-  function ses() { var st = root.IslandApp && root.IslandApp.state(); return st && st.session; }
+  function ses() { var st = root.IslandApp && root.IslandApp.state(); return (st && st.session) || {}; }
   function client() { return root.AdventureSupabase && root.AdventureSupabase.client; }
   function $(id) { return document.getElementById(id); }
   function tap() { if (root.IslandAudio && root.IslandAudio.playTap) root.IslandAudio.playTap(); }
@@ -91,19 +91,19 @@
   /* ---------- talking to the cloud (or the demo) ---------- */
   var api = {
     feed: async function () {
-      var s = ses();
+      var s = ses() || {};
       if (s.isDemo) return demoLoad().posts.slice().sort(function (a, b) { return String(b.created_at).localeCompare(a.created_at); }).map(function (p) { return Object.assign({ mine: p.student_id === s.student.id }, p); });
       var r = await client().rpc('wall_feed', { p_code: s.code });
       return r.error ? null : (r.data || []);
     },
     photo: async function (id) {
-      var s = ses();
+      var s = ses() || {};
       if (s.isDemo) return demoLoad().photos[id] || null;
       var r = await client().rpc('wall_photo', { p_code: s.code, p_id: id });
       return r.error ? null : r.data;
     },
     post: async function (body, photo) {
-      var s = ses();
+      var s = ses() || {};
       if (s.isDemo) {
         var d = demoLoad(), id = 'p' + Date.now();
         if (photo) d.photos[id] = photo;
@@ -115,7 +115,7 @@
       return r.error ? { ok: false, why: 'net' } : r.data;
     },
     react: async function (id, emoji) {
-      var s = ses();
+      var s = ses() || {};
       if (s.isDemo) {
         var d = demoLoad(), p = d.posts.filter(function (x) { return x.id === id; })[0];
         if (p) { if (p.my_reaction) p.reactions[p.my_reaction] = Math.max(0, (p.reactions[p.my_reaction] || 1) - 1); p.my_reaction = emoji; p.reactions[emoji] = (p.reactions[emoji] || 0) + 1; demoSave(d); }
@@ -125,7 +125,7 @@
       return !r.error && r.data;
     },
     people: async function () {
-      var s = ses();
+      var s = ses() || {};
       if (s.isDemo) {
         var d = demoLoad(), doc = s.doc || {}, stars = doc.stars || {};
         var mine = Object.keys(stars).filter(function (k) { return /-m\d+$/.test(k); });
@@ -139,19 +139,19 @@
       return r.error ? null : r.data;
     },
     gift: async function (to, sticker) {
-      var s = ses();
+      var s = ses() || {};
       if (s.isDemo) return { ok: true };
       var r = await client().rpc('wall_gift', { p_code: s.code, p_to: to, p_sticker: sticker });
       return r.error ? { ok: false, why: 'net' } : r.data;
     },
     openGifts: async function () {
-      var s = ses();
+      var s = ses() || {};
       if (s.isDemo) { var d = demoLoad(), g = d.gifts || []; d.gifts = []; demoSave(d); return g; }
       var r = await client().rpc('wall_open_gifts', { p_code: s.code });
       return r.error ? [] : (r.data || []);
     },
     news: async function (kind, n) {
-      var s = ses();
+      var s = ses() || {};
       if (s.isDemo) {
         var d = demoLoad(), text = kind === 'stars' ? 'got 3 stars on a mission!' : kind === 'level' ? 'has a stronger monster now: Level ' + n + '!' : 'opened a treasure chest in Zone ' + n + '!';
         d.posts.unshift({ id: 'n' + Date.now(), student_id: s.student.id, first_name: s.student.firstName || 'Me', kind: 'news', body: text, status: 'approved', created_at: new Date().toISOString(), reactions: {}, my_reaction: null, has_photo: false });
@@ -406,7 +406,7 @@
   }
   function teamView() {
     var t = W.people || {}, teams = t.teams || [], mine = teams.filter(function (x) { return (x.members || []).indexOf(W.me) !== -1; })[0];
-    var s = ses(), solo = !!(s.doc && s.doc.solo);
+    var s = ses() || {}, solo = !!(s.doc && s.doc.solo);
     var starsOf = function (team) { return (team.members || []).reduce(function (a, id) { var p = byId(id); return a + (p && !p.solo ? (p.stars || 0) : 0); }, 0); };
     var top = Math.max.apply(null, [1].concat(teams.map(starsOf)));
     var choice = '<div class="wl-choice"><button type="button" class="wl-btn' + (solo ? '' : ' on') + '" onclick="IslandWall.setSolo(false)">🚀 Play for my team</button><button type="button" class="wl-btn' + (solo ? ' on' : '') + '" onclick="IslandWall.setSolo(true)">🦸 Play solo</button></div>';
@@ -518,7 +518,7 @@
   /* ---------- gifts ---------- */
   function stickerList() {
     var R = root.IslandRewards, cat = (R && R.STICKERS) || [];
-    var s = ses(), owned = (s.doc && s.doc.collection && s.doc.collection.stickers) || {};
+    var s = ses() || {}, owned = (s.doc && s.doc.collection && s.doc.collection.stickers) || {};
     return cat.filter(function (x) { return owned[x.id] && /^st_z/.test(x.id); });
   }
   function stickerName(id) {
@@ -526,7 +526,7 @@
     return cat.filter(function (x) { return x.id === id; })[0];
   }
   async function checkGifts() {
-    var s = ses(); if (!s) return;
+    var s = ses() || {}; if (!s) return;
     var got = await api.openGifts();
     if (!got || !got.length) return;
     s.doc.collection = s.doc.collection || {}; s.doc.collection.stickers = s.doc.collection.stickers || {};
@@ -556,7 +556,7 @@
   }
   var pub = {
     open: async function () {
-      var s = ses(); if (!s) return;
+      var s = ses() || {}; if (!s) return;
       tap();
       W.tab = 'wall'; W.visiting = null; W.compose = null;
       document.documentElement.classList.add('adv-on');
@@ -567,7 +567,7 @@
       checkGifts();
     },
     openFriend: async function (id) {
-      var s = ses(); if (!s) return;
+      var s = ses() || {}; if (!s) return;
       tap();
       W.tab = 'friends'; W.visiting = id; W.compose = null;
       document.documentElement.classList.add('adv-on');
@@ -633,7 +633,7 @@
       }
     },
     peekFriends: function () {
-      var s = ses();
+      var s = ses() || {};
       if (!s) return [];
       var list = [];
       if (W.people && Array.isArray(W.people.people)) {
@@ -659,7 +659,7 @@
       });
     },
     hasGifts: function () {
-      var s = ses();
+      var s = ses() || {};
       if (!s || !s.isDemo) return false;
       var d = demoLoad();
       return !!(d.gifts && d.gifts.length);
@@ -772,13 +772,13 @@
     },
     setSolo: function (v) {
       tap();
-      var s = ses(); if (!s || !s.doc) return;
+      var s = ses() || {}; if (!s || !s.doc) return;
       s.doc.solo = !!v;
       if (!s.isDemo) root.IslandSync.saveIslandDoc(s);
       var me = byId(W.me); if (me) me.solo = !!v;
       draw();
     },
-    news: function (kind, n) { var s = ses(); if (s && !(s.doc && s.doc.quiet)) api.news(kind, n); },
+    news: function (kind, n) { var s = ses() || {}; if (s && !(s.doc && s.doc.quiet)) api.news(kind, n); },
     _state: W
   };
   void client;

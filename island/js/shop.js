@@ -5,13 +5,14 @@
 
   var S = { data: null, tab: 'hat', ask: null, note: '', busy: false };
   var App = function () { return root.IslandApp; };
-  var ses = function () { var st = App() && App().state && App().state(); return st && st.session; };
+  var ses = function () { var st = App() && App().state && App().state(); return (st && st.session) || {}; };
   var A = function () { return root.IslandAudio || {}; };
   function sound(n) { if (A()[n]) { try { A()[n](); } catch (e) { /* no sound */ } } }
   function say(t) { if (A().speak) A().speak(t); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function sb() { return root.AdventureSupabase && root.AdventureSupabase.client; }
   function wearable() { var m = {}; root.IslandData.getAllMonsterItems().forEach(function (i) { m[i.id] = i; }); return m; }
+  function isStoreEnabled() { return !(root.FEATURES && root.FEATURES.store === false); }
 
   /* In demo mode nothing leaves the device */
   var RETIRED = { 'cs-gat': 1, 'cs-hanbok': 1, 'cs-lantern': 1 };
@@ -29,7 +30,7 @@
   }
 
   async function load() {
-    var s = ses();
+    var s = ses() || {};
     if (s.isDemo) {
       var pid = (s.student && s.student.id) || 'demo';
       if (!S.demo || S.demoPid !== pid) {
@@ -56,7 +57,7 @@
     return res.data;
   }
   async function buy(item) {
-    var s = ses();
+    var s = ses() || {};
     if (s.isDemo) {
       if (S.demo.coins < item.price) return { ok: false, error: 'coins' };
       S.demo.coins -= item.price; S.demo.owned.push(item.id);
@@ -68,7 +69,9 @@
   }
   /* The Dressing Room reads this list, so a new item can be worn straight away */
   function rememberOwned(id) {
-    var st = ses().student; st.monsterProfile = st.monsterProfile || {};
+    var s = ses() || {}, st = s.student;
+    if (!st) return;
+    st.monsterProfile = st.monsterProfile || {};
     var list = st.monsterProfile.unlockedItems = st.monsterProfile.unlockedItems || [];
     if (list.indexOf(id) === -1) list.push(id);
   }
@@ -89,7 +92,7 @@
   function message(icon, text) { frame('<div class="isl-shop-msg"><div class="isl-shop-msg-icon">' + icon + '</div>' + esc(text) + '</div>'); }
 
   function draw() {
-    var d = S.data, known = wearable(), cats = root.IslandData.MONSTER_CATEGORIES, owned = {}, colorKey = ((ses().student.monsterProfile || {}).baseColor) || 'blue';
+    var s = ses() || {}, d = S.data, known = wearable(), owned = {}, colorKey = (((s.student && s.student.monsterProfile) || {}).baseColor) || 'blue';
     (d.owned || []).forEach(function (id) { owned[id] = 1; });
     /* Only what a pupil can really wear here. What they own is in the Dressing Room, not on sale. */
     var sale = (d.items || []).filter(function (i) { return known[i.id] && !owned[i.id] && !RETIRED[i.id]; });
@@ -117,7 +120,7 @@
   }
   /* The dream in full colour: the pupil's own monster in the whole Mythic set. It is a picture, not a card, so the locked cards keep their lock. */
   function mythicHero() {
-    var R = root.MonsterRenderer, s = ses(), prof = s.student.monsterProfile || {};
+    var R = root.MonsterRenderer, s = ses() || {}, prof = (s.student && s.student.monsterProfile) || {};
     if (!R || !R.renderMonsterSVG) return '';
     var eq = Object.assign({}, prof.equipped || {}, (s.doc && s.doc.look) || {}); delete eq.background;
     eq.hat = 'cs-my-rainbow-crown'; eq.backpack = 'cs-my-phoenix-wings'; eq.aura = 'cs-my-aurora';
@@ -140,7 +143,7 @@
   }
   /* Try it on: the pupil's own monster wearing the item, before buying */
   function tryOn(a) {
-    var R = root.MonsterRenderer, s = ses(), prof = s.student.monsterProfile || {};
+    var R = root.MonsterRenderer, s = ses() || {}, prof = (s.student && s.student.monsterProfile) || {};
     if (!R || !R.renderMonsterSVG || !a.category) return '';
     if (a.category === 'trail') return '';
     if (a.category === 'ride') {
@@ -157,7 +160,7 @@
     try { return '<div class="isl-shop-try">' + R.renderMonsterSVG({ stage: stages[Math.max(0, Math.min(6, Number(S.data.level) - 1))], color: prof.baseColor || 'blue', equipped: eq, size: 170, animated: true, isAvatar: true }) + '</div>'; }
     catch (e) { return ''; }
   }
-  function isDream(id) { var d = ses().doc; return !!(d && d.dream && d.dream.id === id); }
+  function isDream(id) { var s = ses() || {}, d = s.doc; return !!(d && d.dream && d.dream.id === id); }
   function treasureHtml(known, colorKey, owned) {
     var d = S.data, t = d.treasure, item = t && (d.items || []).filter(function (i) { return i.id === t.id; })[0];
     if (!item || !known[item.id] || owned[item.id]) return '';
@@ -186,7 +189,8 @@
   }
 
   async function open(tab) {
-    if (!ses() || !ses().student) return;
+    var s = ses() || {};
+    if (!s.student) return;
     sound('playTap');
     if (tab) S.tab = tab;
     S.ask = null; S.data = null;
@@ -245,9 +249,9 @@
 
   /* ---------- the dream: one thing a pupil is saving for, always on screen ---------- */
   function saveDoc() { try { root.IslandSync.saveIslandDoc(ses()); } catch (e) { /* it saves next time */ } }
-  function clearDream() { var doc = ses().doc; if (doc) { delete doc.dream; doc.updatedAt = new Date().toISOString(); saveDoc(); } }
+  function clearDream() { var s = ses() || {}, doc = s.doc; if (doc) { delete doc.dream; doc.updatedAt = new Date().toISOString(); saveDoc(); } }
   function setDream() {
-    var a = S.ask, doc = ses().doc; if (!a || !a.id || !doc) return;
+    var s = ses() || {}, a = S.ask, doc = s.doc; if (!a || !a.id || !doc) return;
     doc.dream = { id: a.id, name: a.name, icon: a.icon, price: a.price, at: new Date().toISOString() };
     doc.updatedAt = doc.dream.at; saveDoc();
     S.ask = null; sound('playFanfare'); say('Your dream!');
@@ -264,7 +268,13 @@
   }
   var lastCoins = null;
   function drawBar() {
-    var s = ses(); if (!s || !s.student || !S.data) return;
+    var s = ses() || {}; if (!s.student || !S.data) return;
+    if (!isStoreEnabled()) {
+      var existing = document.getElementById('isl-dream');
+      if (existing) existing.style.display = 'none';
+      if (root.WorldGame && root.WorldGame.updateStatusHud) root.WorldGame.updateStatusHud(false);
+      return;
+    }
     var el = barEl(), dr = s.doc && s.doc.dream, coins = Number(S.data.coins) || 0, gain = lastCoins !== null && coins > lastCoins ? coins - lastCoins : 0;
     lastCoins = coins;
     var live = dr && (S.data.items || []).filter(function (i) { return i.id === dr.id; })[0];
@@ -283,7 +293,8 @@
     if (root.WorldGame && root.WorldGame.updateStatusHud) root.WorldGame.updateStatusHud(gain > 0);
   }
   async function refreshBar() {
-    if (S.refreshing || !ses() || !ses().student) return;
+    var s = ses() || {};
+    if (S.refreshing || !s.student) return;
     S.refreshing = true;
     try { var fresh = await load(); if (!root2().querySelector('#isl-shop-backdrop')) S.data = fresh; (fresh.owned || []).forEach(rememberOwned); drawBar(); }
     catch (e) { /* no bar until the store can be reached */ }
@@ -292,6 +303,7 @@
 
   /* A Store button beside Dress up on the island map, and inside the Dressing Room */
   function addButtons() {
+    if (!isStoreEnabled()) return;
     var bar = document.getElementById('isl-btn-dress');
     if (bar && !document.getElementById('isl-btn-shop')) {
       var b = document.createElement('button'); b.type = 'button'; b.id = 'isl-btn-shop'; b.className = 'isl-btn amber'; b.textContent = '🛒 Store'; b.onclick = function () { open(); };
@@ -312,7 +324,7 @@
       if (wasOpen && !openNow) refreshBar();
       wasOpen = openNow;
     };
-    var first = setInterval(function () { if (ses() && ses().student) { clearInterval(first); refreshBar(); } }, 400);
+    var first = setInterval(function () { var s = ses() || {}; if (s.student) { clearInterval(first); refreshBar(); } }, 400);
     ['isl-modal-root', 'isl-topbar'].forEach(function (id) { var el = document.getElementById(id); if (el) new MutationObserver(run).observe(el, { childList: true, subtree: id === 'isl-topbar' }); });
     run();
   }
