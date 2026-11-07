@@ -2557,6 +2557,8 @@
     var z = want === 0 ? 0 : 1;
     for (var i = 1; i <= 4; i++) if (i <= want && isOpen(i)) z = i;
     S.zone = z;
+    // Chapter 1 has its own painted harbour (js/harbour). ?oldmap=1 opens the older map.
+    if (z === 1 && root.Harbour && Q.get('oldmap') !== '1') { root.Harbour.start(); return; }
     document.body.classList.add('w-on');
     $('w-load').classList.add('on');
     setupJoystick();
