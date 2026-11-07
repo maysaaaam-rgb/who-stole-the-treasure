@@ -28,6 +28,7 @@
   const hist = { undo: [], redo: [] };
   const els = new Map();
   const bbCache = new Map();
+  let neatHintShown = false;
   let selectedId = null, neatTimer = null, dpr = 1, W = 0, H = 0, lastPenAt = 0;
 
   /* ------------------------------------------------------------------ helpers */
@@ -307,6 +308,10 @@
     if (shape && (shape.type === 'circle' || shape.type === 'ellipse')) circleAWord(s, shape);
     drawStroke(ictx, s);
     if (s.tool === 'pen' && !shape) pending.add(s.id);
+    if (s.tool === 'pen' && !shape && opts.autoNeat && !AI.ready && !hooks.write && !neatHintShown) {
+      neatHintShown = true; // say once why the writing stays as it is
+      setTimeout(() => toast('✍️ Neat writing needs the AI. Tap "AI off" at the top to switch it on.', 5200), 900);
+    }
     if (!curs.size || hooks.multi) scheduleNeat();
     updateFab(); save();
   }
