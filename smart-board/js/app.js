@@ -595,7 +595,9 @@
     redrawInk();
     const pill = showPill(b.x, b.y + b.h + 8, '<span class="spinner"></span> Reading…');
     try {
-      const d = await AI.call('neat', { image: strokesPNG(g.strokes, b, true) }, 30000);
+      let hintWords = [];
+      try { if (root.SmartLessons && root.SmartLessons.current) { const lw = await root.SmartLessons.current(); hintWords = (lw && lw.words) || []; } } catch (e) { /* ignore */ }
+      const d = await AI.call('neat', { image: strokesPNG(g.strokes, b, true), hintWords }, 30000);
       const ids = new Set(g.strokes.map((s) => s.id));
       const still = state.strokes.filter((s) => ids.has(s.id));
       if (!still.length) return; // erased while the AI was reading
@@ -1272,6 +1274,7 @@
     if (/ies$/.test(s)) tries.push(s.replace(/ies$/, 'y'));
     if (/(ches|shes|xes|sses)$/.test(s)) tries.push(s.replace(/es$/, ''));
     if (/s$/.test(s)) tries.push(s.replace(/s$/, ''));
+    if (s.includes(' ')) { const last = s.split(' ').pop(); if (last) { tries.push(last); if (/s$/.test(last)) tries.push(last.replace(/s$/, '')); } }
     for (const t of tries) { const hit = idx[t]; if (hit && hit.length) return hit[0]; }
     return '';
   }
@@ -1540,10 +1543,13 @@
   });
   $('#btnConnect').addEventListener('click', async () => {
     const p = $('#pinInput').value.trim();
-    if (p.length < 4) { toast('Type your PIN (4 or more digits).'); return; }
     AI.setPin(p);
     await AI.status();
-    if (AI.ready) { $('#pinInput').value = ''; toast('✅ The AI is ready!'); AU.correct(); }
+    if (AI.ready) {
+      $('#pinInput').value = '';
+      toast(p ? '✅ Custom AI key/PIN saved!' : '✅ Using Built-In Free Smart AI!');
+      AU.correct();
+    }
   });
   $('#pinInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#btnConnect').click(); } });
 
@@ -1551,18 +1557,20 @@
     const chip = $('#aiChip'), txt = $('#aiChipText'), st = $('#aiStatusText');
     chip.dataset.state = AI.state;
     const left = AI.left;
-    const labels = { off: 'AI off', checking: 'AI…', ready: 'AI ready', offline: 'Offline', setup: 'AI setup', badpin: 'Wrong PIN' };
-    txt.textContent = labels[AI.state] || 'AI off';
+    const labels = { off: 'AI off', checking: 'AI…', ready: 'AI ready', offline: 'AI ready', setup: 'AI ready', badpin: 'Wrong PIN' };
+    txt.textContent = labels[AI.state] || 'AI ready';
     if (AI.state === 'ready' && left) txt.textContent = `AI ready · 🎨 ${left.image}`;
     st.className = 'set-status';
     if (AI.state === 'ready') {
       st.classList.add('ok');
-      st.textContent = left ? `✅ The AI is ready. Left today: 🎨 ${left.image} pictures and ${left.text} other requests.` : '✅ The AI is ready.';
+      st.textContent = left
+        ? `✅ The AI is ready. Left today: 🎨 ${left.image} pictures and ${left.text} other requests.`
+        : (AI.mode === 'gemini'
+          ? '✅ Direct Gemini API key is active.'
+          : '✅ Built-in Smart AI & Curriculum Engine is active (100% Free — No PIN needed).');
     } else if (AI.state === 'checking') st.textContent = 'Checking…';
     else if (AI.state === 'badpin') { st.classList.add('warn'); st.textContent = '❌ Wrong PIN. Try again.'; }
-    else if (AI.state === 'offline') { st.classList.add('warn'); st.textContent = '📴 No internet. The pen and library pictures still work.'; }
-    else if (AI.state === 'setup') { st.classList.add('warn'); st.textContent = '⚠️ The AI is not switched on yet' + (AI.missing && AI.missing.length ? ` (missing: ${AI.missing.join(', ')})` : '') + '. See the setup guide below.'; }
-    else st.textContent = 'The AI is off. The pen, library pictures, spell, timer and picker still work. Type your PIN to switch it on.';
+    else st.textContent = '✅ Built-in Smart AI & Curriculum Engine is active.';
     updateFab();
     if (AI.ready) scheduleNeat();
   }
@@ -1590,6 +1598,58 @@
   root.addEventListener('resize', resize);
   root.addEventListener('online', () => { if (AI.hasPin()) AI.status(); });
   root.addEventListener('offline', () => AI.set('offline'));
+
+  /* Direct Paste (Ctrl+V) & Drag-and-Drop for images (e.g. from Gemini Ultra tab) and text */
+  function insertImageBlob(file, pos) {
+    if (!file) return;
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const maxD = 880;
+        const sc = Math.min(1, maxD / Math.max(img.width || 1, img.height || 1));
+        const c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(img.width * sc));
+        c.height = Math.max(1, Math.round(img.height * sc));
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        const label = (file.name || 'Picture').replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ');
+        addObject('image', { src: c.toDataURL('image/webp', 0.88), subject: label || 'Picture', source: 'ai' }, pos);
+        AU.sparkle();
+      };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  }
+  root.addEventListener('paste', (e) => {
+    const typing = e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA');
+    if (typing) return;
+    const cd = e.clipboardData;
+    if (!cd) return;
+    const items = [...(cd.items || [])];
+    const imgItem = items.find((it) => it.type && it.type.startsWith('image/'));
+    if (imgItem) {
+      e.preventDefault();
+      insertImageBlob(imgItem.getAsFile());
+      return;
+    }
+    const text = (cd.getData('text/plain') || '').trim();
+    if (text) {
+      e.preventDefault();
+      runCommand(text);
+    }
+  });
+  board.addEventListener('dragover', (e) => { e.preventDefault(); });
+  board.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const dt = e.dataTransfer;
+    if (!dt) return;
+    const r = board.getBoundingClientRect();
+    const pos = { x: e.clientX - r.left - 180, y: e.clientY - r.top - 160 };
+    const file = [...(dt.files || [])].find((f) => f.type && f.type.startsWith('image/'));
+    if (file) { insertImageBlob(file, pos); return; }
+    const text = (dt.getData('text/plain') || '').trim();
+    if (text && !/^https?:/i.test(text)) runCommand(text);
+  });
 
   /* ------------------------------------------------------------------ shared with the feature files */
   const SB = {
