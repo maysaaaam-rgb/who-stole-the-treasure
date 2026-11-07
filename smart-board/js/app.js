@@ -19,7 +19,7 @@
   function lsGet(k, fallback) { try { const v = root.localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
   function lsSet(k, v) { try { root.localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
 
-  const opts = Object.assign({ autoNeat: true, shapes: true, speak: true, turkish: true, bg: 'dark', muted: false, holdMs: 500, neatMs: 2200, palm: true, chalkSound: true }, lsGet(OPT_KEY, {}));
+  const opts = Object.assign({ autoNeat: true, shapes: true, speak: true, turkish: true, bg: 'dark', muted: false, holdMs: 500, neatMs: 2200, palm: true, chalkSound: true, bigUI: false }, lsGet(OPT_KEY, {}));
   let state = { strokes: [], objects: [] };
   let tool = 'pen', color = 'ink', size = 7;
   let uid = Math.floor(Math.random() * 1e6);
@@ -1533,10 +1533,10 @@
     el.value = String(opts[key]); show();
     el.addEventListener('input', () => { opts[key] = Number(el.value); show(); lsSet(OPT_KEY, opts); });
   });
-  [['#optAutoNeat', 'autoNeat'], ['#optShapes', 'shapes'], ['#optPalm', 'palm'], ['#optSpeak', 'speak'], ['#optTurkish', 'turkish'], ['#optChalkSound', 'chalkSound']].forEach(([sel, key]) => {
+  [['#optAutoNeat', 'autoNeat'], ['#optShapes', 'shapes'], ['#optPalm', 'palm'], ['#optSpeak', 'speak'], ['#optTurkish', 'turkish'], ['#optChalkSound', 'chalkSound'], ['#optBigUI', 'bigUI']].forEach(([sel, key]) => {
     const el = $(sel);
     el.checked = !!opts[key];
-    el.addEventListener('change', () => { opts[key] = el.checked; lsSet(OPT_KEY, opts); if (key === 'autoNeat') scheduleNeat(); });
+    el.addEventListener('change', () => { opts[key] = el.checked; lsSet(OPT_KEY, opts); if (key === 'autoNeat') scheduleNeat(); if (key === 'bigUI') applyUISize(); });
   });
   $('#btnConnect').addEventListener('click', async () => {
     const p = $('#pinInput').value.trim();
@@ -1614,7 +1614,10 @@
   };
   root.SB = SB;
 
+  // Small buttons by default; the teacher can switch to big buttons in Settings
+  function applyUISize() { document.body.classList.toggle('ui-small', !opts.bigUI); }
   function start() {
+    applyUISize();
     AU.muted = !!opts.muted;
     $('#btnMute').textContent = AU.muted ? '🔕' : '🔔';
     if (SB.loadBoard) SB.loadBoard(); else loadSaved();
