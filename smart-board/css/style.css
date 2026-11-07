@@ -909,8 +909,9 @@ body.light .neat-note { color: #065f46; background: rgba(16, 185, 129, 0.14); }
     var(--slate-noise, none);
 }
 .bg-classic.has-slate-art .board {
-  background-image: radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.03), transparent 70%), var(--slate-img);
-  background-size: auto, 640px;
+  background-image: var(--slate-noise, none), var(--slate-img);
+  background-size: auto, cover;
+  background-position: 0 0, center;
 }
 /* The slate sits a little deeper than its frame */
 .bg-classic .board::before {
@@ -936,7 +937,7 @@ body.light .neat-note { color: #065f46; background: rgba(16, 185, 129, 0.14); }
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) padding-box exclude, linear-gradient(#000 0 0);
 }
-.bg-classic.has-wood-art .classic-frame { background: var(--wood-img) 0 0 / 360px border-box, #a8703a; }
+.bg-classic.has-wood-art .classic-frame { background: var(--wood-img) 0 0 / 260px auto border-box, #a8703a; }
 .classic-frame .screw {
   position: absolute; width: 10px; height: 10px; border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, #f3e3c3, #8f7a55 60%, #4f3f25);
@@ -959,7 +960,7 @@ body.light .neat-note { color: #065f46; background: rgba(16, 185, 129, 0.14); }
   box-shadow: 0 -8px 14px rgba(0, 0, 0, 0.45), inset 0 3px 0 rgba(255, 255, 255, 0.2);
   z-index: 35;
 }
-.bg-classic.has-wood-art .chalk-tray { background: var(--wood-img) 0 0 / 360px, #a8703a; }
+.bg-classic.has-wood-art .chalk-tray { background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(0,0,0,0.18)), var(--wood-img) 0 0 / 260px auto, #a8703a; }
 .tray-dust {
   position: absolute; inset: 0; pointer-events: none;
   background:

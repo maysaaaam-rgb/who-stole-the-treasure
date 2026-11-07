@@ -57,5 +57,5 @@
     chalk: ['ink', '#fff1a6', '#ffc4d8', '#aeddff', '#bff3c6', '#ffd2a3']
   };
   // Processed Gemini pictures for the classic board (smart-board/art/<name>.webp). Empty = drawn fallbacks.
-  root.SMART_CLASSIC_ART = [];
+  root.SMART_CLASSIC_ART = ['o_chalk_blue', 'o_chalk_green', 'o_chalk_orange', 'o_chalk_pink', 'o_chalk_white', 'o_chalk_yellow', 'o_dust_puff', 'o_duster_top', 't_slate', 't_wood'];
 })(window);

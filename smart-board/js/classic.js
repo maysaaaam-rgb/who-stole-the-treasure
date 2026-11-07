@@ -9,7 +9,7 @@
   const $ = (s) => document.querySelector(s);
   const ART = root.SMART_CLASSIC_ART || [];
   const has = (n) => ART.includes(n);
-  const artUrl = (n) => 'art/' + n + '.webp';
+  const artUrl = (n) => new URL('art/' + n + '.webp', document.baseURI).href; // absolute: CSS would read it from css/
   const CHALK_NAMES = { ink: 'white', '#fff1a6': 'yellow', '#ffc4d8': 'pink', '#aeddff': 'blue', '#bff3c6': 'green', '#ffd2a3': 'orange' };
 
   /* ---------------------------------------------------------------- textures made in the browser */
@@ -151,9 +151,11 @@
     }
     fctx.globalAlpha = 1;
     if (cur && cur.puff > 0 && ready(puffImg)) {
-      fctx.globalAlpha = cur.puff * 0.7;
+      fctx.globalAlpha = cur.puff * 0.55;
+      fctx.globalCompositeOperation = 'screen'; // dust only ever lightens the board
       const s = cur.w * 0.9;
       fctx.drawImage(puffImg, cur.x - s / 2, cur.y - s * 0.1, s, s);
+      fctx.globalCompositeOperation = 'source-over';
       fctx.globalAlpha = 1;
       cur.puff -= 0.04;
     }
