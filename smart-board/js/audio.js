@@ -49,6 +49,59 @@
     chime() { this.chord([1200, 1850, 2400], 0.12, 1.6, 'sine', 0.09); },
     fanfare() { this.chord([523.25, 659.25, 783.99, 1046.5, 1318.5], 0.11, 0.6, 'triangle', 0.13); },
 
+    clack() { this.chord([196, 293.66], 0.025, 0.12, 'triangle', 0.11); },
+
+    /* Board sounds made from filtered noise (no recordings): the felt duster's soft swish and the
+       light scratch of chalk. Each is a quiet loop whose volume follows how fast the hand moves. */
+    loops: {},
+    noise() {
+      if (this._noise) return this._noise;
+      const c = this.ctx, n = c.sampleRate * 2, b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0);
+      let brown = 0;
+      for (let i = 0; i < n; i++) {
+        const w = Math.random() * 2 - 1;
+        brown = (brown + 0.02 * w) / 1.02;
+        d[i] = w * 0.55 + brown * 2.6;
+      }
+      this._noise = b;
+      return b;
+    },
+    loop(name) {
+      if (this.loops[name]) return this.loops[name];
+      const c = this.ctx, src = c.createBufferSource(), g = c.createGain();
+      src.buffer = this.noise(); src.loop = true;
+      src.playbackRate.value = name === 'chalk' ? 1.6 : 0.9;
+      let node = src;
+      const filters = name === 'chalk'
+        ? [['highpass', 2200, 0.7], ['bandpass', 3600, 2.2]]
+        : [['lowpass', 2600, 0.6], ['bandpass', 950, 0.6]];
+      filters.forEach(([type, f, q]) => { const bq = c.createBiquadFilter(); bq.type = type; bq.frequency.value = f; bq.Q.value = q; node.connect(bq); node = bq; });
+      g.gain.value = 0.0001;
+      node.connect(g); g.connect(c.destination);
+      src.start();
+      const L = { src, g, stop: null };
+      this.loops[name] = L;
+      return L;
+    },
+    level(name, v) {
+      this.init();
+      const c = this.ctx;
+      if (!c || this.muted) return;
+      const L = this.loop(name);
+      clearTimeout(L.stop);
+      L.g.gain.setTargetAtTime(Math.max(0.0001, v), c.currentTime, 0.03);
+      L.stop = setTimeout(() => this.quiet(name), 160); // the hand stopped moving
+    },
+    quiet(name) {
+      const L = this.loops[name], c = this.ctx;
+      if (!L || !c) return;
+      clearTimeout(L.stop);
+      L.g.gain.setTargetAtTime(0.0001, c.currentTime, 0.05);
+      L.stop = setTimeout(() => { try { L.src.stop(); } catch (e) { /* already stopped */ } delete this.loops[name]; }, 600);
+    },
+    wipe(v) { this.level('wipe', 0.05 + v * 0.2); },
+    chalk(v) { if (v > 0.05) this.level('chalk', v * 0.045 * (0.7 + Math.random() * 0.6)); },
+
     pickVoice() {
       const s = root.speechSynthesis; if (!s) return;
       const vs = s.getVoices().filter((v) => /^en[-_]US/i.test(v.lang));

@@ -40,7 +40,7 @@
     { name: 'dice', aliases: ['roll'], icon: '🎲', label: 'Dice', arg: '', ai: false,
       desc: 'Rolls a dice.' },
     { name: 'bg', aliases: ['board', 'paper'], icon: '🖼️', label: 'Board', arg: 'lines', ai: false,
-      desc: 'Changes the board: dark, chalk, white, lines (handwriting lines) or grid.' },
+      desc: 'Changes the board: classic (old school blackboard with a duster), dark, chalk, white, lines or grid.' },
     { name: 'clear', aliases: ['new', 'clean'], icon: '🧹', label: 'Clear', arg: '', ai: false,
       desc: 'Clears the board (Undo brings it back).' },
     { name: 'help', aliases: ['h', '?'], icon: '💡', label: 'Help', arg: '', ai: false,
@@ -52,6 +52,10 @@
 
   root.SMART_INK = {
     dark: ['ink', '#fde047', '#38bdf8', '#f472b6', '#4ade80', '#fb923c', '#f87171'],
-    light: ['ink', '#2563eb', '#dc2626', '#16a34a', '#9333ea', '#ea580c', '#0891b2']
+    light: ['ink', '#2563eb', '#dc2626', '#16a34a', '#9333ea', '#ea580c', '#0891b2'],
+    // Soft pastel chalk for the classic blackboard (white, yellow, pink, blue, green, orange)
+    chalk: ['ink', '#fff1a6', '#ffc4d8', '#aeddff', '#bff3c6', '#ffd2a3']
   };
+  // Processed Gemini pictures for the classic board (smart-board/art/<name>.webp). Empty = drawn fallbacks.
+  root.SMART_CLASSIC_ART = [];
 })(window);

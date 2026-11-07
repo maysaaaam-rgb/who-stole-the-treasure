@@ -182,8 +182,27 @@
     });
     return out;
   }
+  function paintFrame(x, W, H) {
+    const f = 22;
+    const g = x.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#b77a40'); g.addColorStop(1, '#8a5527');
+    x.save();
+    x.fillStyle = g;
+    x.fillRect(0, 0, W, f); x.fillRect(0, H - f - 18, W, f + 18); x.fillRect(0, 0, f, H); x.fillRect(W - f, 0, f, H);
+    x.fillStyle = 'rgba(0,0,0,0.25)'; x.fillRect(f, H - f - 18, W - 2 * f, 3);
+    x.restore();
+  }
   function paintBg(x, W, H) {
     const bg = SB.opts.bg;
+    if (bg === 'classic') {
+      x.fillStyle = '#1f2b26'; x.fillRect(0, 0, W, H);
+      [[0.28, 0.3, 0.45], [0.72, 0.62, 0.4], [0.5, 0.85, 0.35]].forEach(([cx, cy, r]) => {
+        const s = x.createRadialGradient(W * cx, H * cy, 0, W * cx, H * cy, Math.max(W, H) * r);
+        s.addColorStop(0, 'rgba(255,255,255,0.045)'); s.addColorStop(1, 'rgba(255,255,255,0)');
+        x.fillStyle = s; x.fillRect(0, 0, W, H);
+      });
+      return;
+    }
     if (bg === 'dark') {
       const g = x.createRadialGradient(W * 0.5, H * 0.3, 0, W * 0.5, H * 0.3, Math.max(W, H) * 0.8);
       g.addColorStop(0, '#0d1527'); g.addColorStop(1, '#060911');
@@ -275,7 +294,15 @@
     const x = c.getContext('2d');
     x.scale(scale, scale);
     paintBg(x, W, H);
-    (p.strokes || []).forEach((s) => SB.drawStroke(x, s));
+    // Ink goes on its own layer first, so a duster wipe only removes ink, never the board under it
+    const lay = document.createElement('canvas');
+    lay.width = c.width; lay.height = c.height;
+    const lx = lay.getContext('2d');
+    lx.scale(scale, scale);
+    (p.strokes || []).forEach((s) => SB.drawStroke(lx, s));
+    if (SB.chalkGrain) SB.chalkGrain(lx, W, H);
+    x.drawImage(lay, 0, 0, W, H);
+    if (SB.opts.bg === 'classic') paintFrame(x, W, H);
     for (const o of p.objects || []) { try { await paintObj(x, o); } catch (e) { /* skip one card, keep the page */ } }
     return c;
   }

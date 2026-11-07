@@ -19,7 +19,7 @@
   function lsGet(k, fallback) { try { const v = root.localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
   function lsSet(k, v) { try { root.localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
 
-  const opts = Object.assign({ autoNeat: true, shapes: true, speak: true, turkish: true, bg: 'dark', muted: false, holdMs: 500, neatMs: 2200, palm: true }, lsGet(OPT_KEY, {}));
+  const opts = Object.assign({ autoNeat: true, shapes: true, speak: true, turkish: true, bg: 'dark', muted: false, holdMs: 500, neatMs: 2200, palm: true, chalkSound: true }, lsGet(OPT_KEY, {}));
   let state = { strokes: [], objects: [] };
   let tool = 'pen', color = 'ink', size = 7;
   let uid = Math.floor(Math.random() * 1e6);
@@ -32,7 +32,10 @@
 
   /* ------------------------------------------------------------------ helpers */
   const isLight = () => LIGHT_BGS.includes(opts.bg);
-  const resolveColor = (c) => (c === 'ink' ? (isLight() ? '#0f172a' : '#f8fafc') : c);
+  const isChalk = () => opts.bg === 'classic';
+  const resolveColor = (c) => (c === 'ink' ? (isLight() ? '#0f172a' : isChalk() ? '#f4f4ea' : '#f8fafc') : c);
+  const reducedMotion = () => !!(root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const fxCall = (name, ...a) => { const f = root.SB && root.SB.fx; if (f && f[name]) f[name](...a); };
   const getObj = (id) => state.objects.find((o) => o.id === id);
   const strokeById = (id) => state.strokes.find((s) => s.id === id);
   function speak(t) { if (opts.speak && t) AU.speak(t); }
@@ -62,6 +65,7 @@
     o = o || {};
     const k = o.k || 1, ox = o.ox || 0, oy = o.oy || 0, pts = s.pts, n = pts.length;
     if (!n) return;
+    if (s.tool === 'wipe') { drawWipe(ctx, s, k, ox, oy); return; }
     const X = (p) => (p[0] - ox) * k, Y = (p) => (p[1] - oy) * k;
     const col = o.color || resolveColor(s.color);
     ctx.save();
@@ -99,6 +103,56 @@
     ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(X(pts[n - 1]), Y(pts[n - 1]));
     ctx.lineWidth = w(pts[n - 1]); ctx.stroke();
     ctx.restore();
+  }
+
+  /* The duster: a wipe is a vector stroke of felt-sized rectangles, cut out of the ink below it.
+     Like a real board, one pass leaves a faint ghost; a second pass cleans it. */
+  const WIPE_ALPHA = 0.9;
+  let wipeMask = null;
+  const dusterSize = () => { const w = 70 + size * 5; return { w, h: Math.round(w * 0.45) }; };
+  function wipeStamps(s) {
+    const out = [], pts = s.pts;
+    for (let i = 0; i < pts.length; i++) {
+      const a = pts[i], b = pts[i + 1];
+      out.push(a);
+      if (!b) break;
+      const n = Math.floor(Math.hypot(b[0] - a[0], b[1] - a[1]) / 4);
+      for (let j = 1; j < n; j++) out.push([a[0] + ((b[0] - a[0]) * j) / n, a[1] + ((b[1] - a[1]) * j) / n]);
+    }
+    return out;
+  }
+  function stampFelt(m, list, w, h, k, ox, oy) {
+    const hw = (w / 2) * k, hh = (h / 2) * k, r = Math.min(hw, hh) * 0.35;
+    list.forEach((p) => {
+      const x = (p[0] - ox) * k - hw, y = (p[1] - oy) * k - hh;
+      m.beginPath();
+      if (m.roundRect) m.roundRect(x, y, hw * 2, hh * 2, r); else m.rect(x, y, hw * 2, hh * 2);
+      m.fill();
+    });
+  }
+  function maskFor(ctx) {
+    const cw = ctx.canvas.width, ch = ctx.canvas.height;
+    if (!wipeMask) wipeMask = document.createElement('canvas');
+    if (wipeMask.width !== cw || wipeMask.height !== ch) { wipeMask.width = cw; wipeMask.height = ch; }
+    const m = wipeMask.getContext('2d');
+    m.setTransform(1, 0, 0, 1, 0, 0); m.clearRect(0, 0, cw, ch);
+    m.setTransform(ctx.getTransform()); m.fillStyle = '#000';
+    return m;
+  }
+  function cutWith(ctx, mask, alpha, k) {
+    const sc = Math.abs(ctx.getTransform().a) || 1;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.globalAlpha = alpha;
+    ctx.filter = 'blur(' + (2.5 * sc * (k || 1)).toFixed(1) + 'px)';
+    ctx.drawImage(mask, 0, 0);
+    ctx.restore();
+  }
+  function drawWipe(ctx, s, k, ox, oy) {
+    const m = maskFor(ctx);
+    stampFelt(m, wipeStamps(s), s.w, s.h, k, ox, oy);
+    cutWith(ctx, wipeMask, s.a || WIPE_ALPHA, k);
   }
 
   function redrawInk() {
@@ -180,7 +234,7 @@
   ink.addEventListener('pointerdown', (e) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     if (isPalm(e)) return;
-    if (erasing) return;
+    if (erasing || dusting || sweeping) return;
     if (curs.size && !hooks.multi) return; // one writer at a time (two during a race)
     if (tool === 'stamp' && SB.onStampTap) { SB.onStampTap(pt(e)); return; }
     select(null); closeSuggest();
@@ -189,6 +243,7 @@
     try { ink.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
     const p = pt(e);
     if (tool === 'eraser') { erasing = { pid: e.pointerId, snapped: false }; eraseAt(p); return; }
+    if (tool === 'duster') { startDust(e.pointerId, p); return; }
     const t = tool === 'stamp' ? 'pen' : tool;
     curs.set(e.pointerId, { id: newId('s'), tool: t, color, size, pts: [p], pid: e.pointerId });
     fab.classList.add('hidden');
@@ -196,7 +251,9 @@
   ink.addEventListener('pointermove', (e) => {
     const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
     if (erasing && e.pointerId === erasing.pid) { evs.forEach((ev) => eraseAt(pt(ev))); return; }
+    if (dusting && e.pointerId === dusting.pid) { evs.forEach((ev) => moveDust(pt(ev))); return; }
     if (tool === 'eraser' && !erasing) { drawEraserRing(pt(e)); return; }
+    if (tool === 'duster' && !dusting) { if (e.pointerType !== 'touch') fxCall('duster', pt(e), false, dusterSize()); return; }
     const cur = curs.get(e.pointerId);
     if (!cur) return;
     evs.forEach((ev) => {
@@ -209,6 +266,10 @@
       cur.anchor = tip;
       clearTimeout(cur.holdTimer);
       if (cur.tool === 'pen' && opts.shapes) cur.holdTimer = setTimeout(() => tryShape(cur), opts.holdMs);
+    }
+    if (isChalk() && opts.chalkSound && cur.tool !== 'hl' && evs.length) {
+      const a = evs[0], b = evs[evs.length - 1], dt = Math.max(8, (b.timeStamp - a.timeStamp) || 16);
+      if (AU.chalk) AU.chalk(Math.min(1, Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY) / dt / 1.6));
     }
     drawLive();
   });
@@ -229,6 +290,8 @@
     AU.pop();
   }
   function endPointer(e) {
+    if (dusting && e.pointerId === dusting.pid) { endDust(); return; }
+    if (AU.quiet) AU.quiet('chalk');
     if (erasing && e.pointerId === erasing.pid) { erasing = null; lctx.clearRect(0, 0, W, H); if (tool === 'eraser') drawEraserRing(pt(e)); save(); return; }
     const cur = curs.get(e.pointerId);
     if (!cur) return;
@@ -249,7 +312,148 @@
   }
   ink.addEventListener('pointerup', endPointer);
   ink.addEventListener('pointercancel', endPointer);
-  ink.addEventListener('pointerleave', () => { if (tool === 'eraser' && !erasing) lctx.clearRect(0, 0, W, H); });
+  ink.addEventListener('pointerleave', () => { if (tool === 'eraser' && !erasing) lctx.clearRect(0, 0, W, H); if (!dusting) fxCall('hide'); });
+
+  /* ------------------------------------------------------------------ 🧽 the duster */
+  let dusting = null, sweeping = false;
+  function snapshotInk() {
+    const c = document.createElement('canvas');
+    c.width = ink.width; c.height = ink.height;
+    c.getContext('2d').drawImage(ink, 0, 0);
+    return c;
+  }
+  function paintCut(base, mask, alpha) {
+    ictx.save(); ictx.setTransform(1, 0, 0, 1, 0, 0);
+    ictx.clearRect(0, 0, ink.width, ink.height); ictx.drawImage(base, 0, 0);
+    ictx.restore();
+    cutWith(ictx, mask, alpha, 1);
+  }
+  function newMask() {
+    const c = document.createElement('canvas');
+    c.width = ink.width; c.height = ink.height;
+    const m = c.getContext('2d'); m.setTransform(dpr, 0, 0, dpr, 0, 0); m.fillStyle = '#000';
+    return { c, m };
+  }
+  function startDust(pid, p) {
+    const d = dusterSize();
+    select(null);
+    dusting = { pid, s: { id: newId('w'), tool: 'wipe', w: d.w, h: d.h, pts: [p], t: Date.now() }, base: snapshotInk(), mask: newMask(), wiped: new Set(), raf: 0, lastT: performance.now() };
+    stampFelt(dusting.mask.m, [p], d.w, d.h, 1, 0, 0);
+    wipeCards(p);
+    paintCut(dusting.base, dusting.mask.c, WIPE_ALPHA);
+    fxCall('duster', p, true, d);
+  }
+  function moveDust(p) {
+    const D = dusting, last = D.s.pts[D.s.pts.length - 1];
+    const dist = Math.hypot(p[0] - last[0], p[1] - last[1]);
+    if (dist < 3) return;
+    D.s.pts.push(p);
+    stampFelt(D.mask.m, wipeStamps({ pts: [last, p] }).slice(1), D.s.w, D.s.h, 1, 0, 0);
+    wipeCards(p);
+    const now = performance.now(), speed = dist / Math.max(8, now - D.lastT);
+    D.lastT = now;
+    if (opts.chalkSound && AU.wipe) AU.wipe(Math.min(1, 0.25 + speed / 1.4));
+    fxCall('duster', p, true, { w: D.s.w, h: D.s.h }, speed);
+    if (!D.raf) D.raf = requestAnimationFrame(() => { if (dusting === D) { D.raf = 0; paintCut(D.base, D.mask.c, WIPE_ALPHA); } });
+  }
+  // Neat words (text cards) under the felt are wiped away too
+  function wipeCards(p) {
+    const d = dusting, r = board.getBoundingClientRect();
+    state.objects.forEach((o) => {
+      if (o.type !== 'text' || d.wiped.has(o.id)) return;
+      const el = els.get(o.id), body = el && el.querySelector('.obj-body');
+      if (!body) return;
+      const b = body.getBoundingClientRect();
+      const cx = b.left - r.left + b.width / 2, cy = b.top - r.top + b.height / 2;
+      if (Math.abs(cx - p[0]) < d.s.w / 2 + b.width * 0.25 && Math.abs(cy - p[1]) < d.s.h / 2 + b.height * 0.25) {
+        d.wiped.add(o.id); el.classList.add('wiped-away');
+      }
+    });
+  }
+  // Which strokes the wipe covers completely (removed) and which it only touches (they keep a faint ghost)
+  function wipeHits(ws) {
+    const st = wipeStamps(ws), hw = ws.w / 2, hh = ws.h / 2;
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    st.forEach((p) => { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); });
+    const covered = [], touched = [];
+    state.strokes.forEach((s) => {
+      if (s.tool === 'wipe') return;
+      const b = bb(s);
+      if (b.x > x1 + hw || b.x + b.w < x0 - hw || b.y > y1 + hh || b.y + b.h < y0 - hh) return;
+      const pad = s.size * (s.tool === 'hl' ? 1.6 : 0.6);
+      const near = st.filter((p) => p[0] > b.x - hw && p[0] < b.x + b.w + hw && p[1] > b.y - hh && p[1] < b.y + b.h + hh);
+      let any = false, all = true;
+      for (const q of s.pts) {
+        const full = near.some((p) => Math.abs(q[0] - p[0]) < hw - pad && Math.abs(q[1] - p[1]) < hh - pad);
+        if (full || near.some((p) => Math.abs(q[0] - p[0]) < hw + pad && Math.abs(q[1] - p[1]) < hh + pad)) any = true;
+        if (!full) all = false;
+        if (any && !all) break;
+      }
+      if (any && all) covered.push(s.id); else if (any) touched.push(s.id);
+    });
+    return { covered, touched };
+  }
+  function endDust() {
+    const D = dusting;
+    dusting = null;
+    cancelAnimationFrame(D.raf);
+    if (AU.quiet) AU.quiet('wipe');
+    fxCall('lift');
+    const { covered, touched } = wipeHits(D.s);
+    if (!covered.length && !touched.length && !D.wiped.size) { redrawInk(); return; }
+    pushHistory();
+    const gone = new Set(covered);
+    state.strokes = state.strokes.filter((s) => !gone.has(s.id));
+    covered.concat(touched).forEach((id) => pending.delete(id));
+    if (touched.length) state.strokes.push(D.s);
+    if (D.wiped.size) { state.objects = state.objects.filter((o) => !D.wiped.has(o.id)); renderObjects(); }
+    redrawInk(); updateFab(); save();
+  }
+
+  // Clear on the classic board: the duster sweeps the whole board, row by row
+  function sweepClear(done) {
+    sweeping = true;
+    const w = Math.max(160, Math.min(260, W * 0.14)), h = Math.round(w * 0.45), step = h * 0.8;
+    const path = [];
+    let row = 0;
+    for (let y = h * 0.4; y < H + h * 0.4; y += step, row++) {
+      path.push(row % 2 ? [W + w * 0.3, y] : [-w * 0.3, y], row % 2 ? [-w * 0.3, y] : [W + w * 0.3, y]);
+    }
+    const segs = [];
+    let total = 0;
+    for (let i = 1; i < path.length; i++) { const l = Math.hypot(path[i][0] - path[i - 1][0], path[i][1] - path[i - 1][1]); segs.push(l); total += l; }
+    const dur = clamp(total / 5.5, 900, 2200);
+    const base = snapshotInk(), mk = newMask();
+    const t0 = performance.now();
+    let doneLen = 0, seg = 0, prev = path[0];
+    layer.classList.add('sweep-out');
+    const frame = (now) => {
+      const goal = Math.min(1, (now - t0) / dur) * total;
+      let p = prev;
+      while (seg < segs.length && doneLen + segs[seg] <= goal) {
+        stampFelt(mk.m, wipeStamps({ pts: [prev, path[seg + 1]] }), w, h, 1, 0, 0);
+        doneLen += segs[seg]; prev = path[seg + 1]; seg++;
+        p = prev;
+      }
+      if (seg < segs.length) {
+        const f = (goal - doneLen) / segs[seg], a = path[seg], b = path[seg + 1];
+        p = [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+        stampFelt(mk.m, wipeStamps({ pts: [prev, p] }), w, h, 1, 0, 0);
+        prev = p;
+      }
+      paintCut(base, mk.c, 1);
+      fxCall('duster', p, true, { w, h }, 1.2);
+      if (opts.chalkSound && AU.wipe) AU.wipe(0.8);
+      if (goal < total) { requestAnimationFrame(frame); return; }
+      if (AU.quiet) AU.quiet('wipe');
+      fxCall('lift'); fxCall('hide');
+      layer.classList.remove('sweep-out');
+      sweeping = false;
+      done();
+    };
+    requestAnimationFrame(frame);
+  }
+
 
   // A circle drawn around a word: the circle glows and the word is read aloud
   function circleAWord(s, sh) {
@@ -289,6 +493,7 @@
     drawEraserRing(p);
     const r = eraserR();
     const hit = state.strokes.filter((s) => {
+      if (s.tool === 'wipe') return false;
       const b = bb(s);
       if (p[0] < b.x - r || p[0] > b.x + b.w + r || p[1] < b.y - r || p[1] > b.y + b.h + r) return false;
       const rr = r + s.size * (s.tool === 'hl' ? 1.6 : 0.6);
@@ -1158,8 +1363,8 @@
     dice() { addObject('dice', {}); },
     bg(arg) {
       const b = arg.trim().toLowerCase();
-      const map = { dark: 'dark', black: 'dark', chalk: 'chalk', green: 'chalk', white: 'white', lines: 'lines', line: 'lines', grid: 'grid' };
-      if (!map[b]) { toast('Try /bg dark, chalk, white, lines or grid'); return; }
+      const map = { dark: 'dark', black: 'dark', chalk: 'chalk', green: 'chalk', white: 'white', lines: 'lines', line: 'lines', grid: 'grid', classic: 'classic', old: 'classic', blackboard: 'classic', school: 'classic' };
+      if (!map[b]) { toast('Try /bg classic, dark, chalk, white, lines or grid'); return; }
       setBg(map[b]);
     },
     clear() { clearBoard(); },
@@ -1255,7 +1460,7 @@
   /* ------------------------------------------------------------------ toolbar, settings, keys */
   function buildSwatches() {
     const box = $('#swatches');
-    const pal = root.SMART_INK[isLight() ? 'light' : 'dark'];
+    const pal = root.SMART_INK[isLight() ? 'light' : isChalk() ? 'chalk' : 'dark'];
     if (!pal.includes(color)) color = 'ink';
     box.innerHTML = '';
     pal.forEach((c) => {
@@ -1263,9 +1468,15 @@
       b.type = 'button'; b.className = 'swatch' + (c === color ? ' active' : '');
       b.style.background = resolveColor(c);
       b.title = c === 'ink' ? 'Ink' : c;
-      b.addEventListener('click', () => { color = c; if (tool === 'eraser') setTool('pen'); buildSwatches(); });
+      b.addEventListener('click', () => setColor(c));
       box.appendChild(b);
     });
+    if (root.SB && root.SB.onPalette) root.SB.onPalette();
+  }
+  function setColor(c) {
+    color = c;
+    if (tool === 'eraser' || tool === 'duster') setTool('pen');
+    buildSwatches();
   }
   function setTool(t) {
     tool = t;
@@ -1273,6 +1484,8 @@
     board.classList.toggle('tool-stamp', t === 'stamp');
     if (t !== 'stamp' && root.SB && root.SB.onToolChange) root.SB.onToolChange(t);
     board.classList.toggle('tool-eraser', t === 'eraser');
+    board.classList.toggle('tool-duster', t === 'duster');
+    if (t !== 'duster') fxCall('hide');
     lctx.clearRect(0, 0, W, H);
   }
   document.querySelectorAll('.tool-btn[data-tool]').forEach((b) => b.addEventListener('click', () => { if (b.dataset.tool !== 'stamp') setTool(b.dataset.tool); }));
@@ -1286,6 +1499,11 @@
 
   function clearBoard() {
     if (!state.strokes.length && !state.objects.length) return;
+    if (sweeping) return;
+    if (isChalk() && !reducedMotion() && !curs.size) { sweepClear(doClear); return; }
+    doClear();
+  }
+  function doClear() {
     pushHistory();
     state = { strokes: [], objects: [] };
     pending.clear(); selectedId = null;
@@ -1315,7 +1533,7 @@
     el.value = String(opts[key]); show();
     el.addEventListener('input', () => { opts[key] = Number(el.value); show(); lsSet(OPT_KEY, opts); });
   });
-  [['#optAutoNeat', 'autoNeat'], ['#optShapes', 'shapes'], ['#optPalm', 'palm'], ['#optSpeak', 'speak'], ['#optTurkish', 'turkish']].forEach(([sel, key]) => {
+  [['#optAutoNeat', 'autoNeat'], ['#optShapes', 'shapes'], ['#optPalm', 'palm'], ['#optSpeak', 'speak'], ['#optTurkish', 'turkish'], ['#optChalkSound', 'chalkSound']].forEach(([sel, key]) => {
     const el = $(sel);
     el.checked = !!opts[key];
     el.addEventListener('change', () => { opts[key] = el.checked; lsSet(OPT_KEY, opts); if (key === 'autoNeat') scheduleNeat(); });
@@ -1378,7 +1596,7 @@
     opts, hooks, BUILDERS, HANDLERS, AI, AU, $, esc, clamp, toast, speak, save, saveNow, lsGet, lsSet,
     addObject, updateObjData, removeObj, getObj, renderObjects, redrawInk, drawStroke, resolveColor, isLight,
     pushHistory, updateUndo, updateFab, select, bb, unionBox, strokesPNG, strokeById, freeSpot, bounds,
-    findArt, aiError, needAI, loadingCard, aiCard, aiPicture, speakTextOf, runCommand, fillCommand, findCmd, setTool, setBg,
+    findArt, aiError, needAI, loadingCard, aiCard, aiPicture, speakTextOf, runCommand, fillCommand, findCmd, setTool, setBg, setColor, isChalk,
     get state() { return state; },
     set state(v) { state = v; },
     hist, pending, els, bbCache, curs, runNeat, neatGroup, clusters, scheduleNeat, scaleObj,

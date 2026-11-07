@@ -890,3 +890,147 @@ body.light .neat-note { color: #065f46; background: rgba(16, 185, 129, 0.14); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+
+/* ==========================================================================
+   v4: the classic old-school blackboard, the chalk tray and the duster
+   ========================================================================== */
+:root {
+  --wood:
+    repeating-linear-gradient(177deg, rgba(255, 255, 255, 0.05) 0 3px, rgba(60, 30, 10, 0.08) 3px 7px, transparent 7px 13px),
+    repeating-linear-gradient(91deg, rgba(60, 30, 10, 0.07) 0 1px, transparent 1px 23px),
+    linear-gradient(180deg, #c68b50, #9a5f2e);
+}
+.bg-classic .board {
+  background-color: #1f2b26;
+  background-image:
+    radial-gradient(ellipse 45% 30% at 28% 30%, rgba(255, 255, 255, 0.05), transparent 70%),
+    radial-gradient(ellipse 40% 26% at 72% 62%, rgba(255, 255, 255, 0.04), transparent 70%),
+    radial-gradient(ellipse 60% 20% at 50% 88%, rgba(255, 255, 255, 0.035), transparent 70%),
+    var(--slate-noise, none);
+}
+.bg-classic.has-slate-art .board {
+  background-image: radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.03), transparent 70%), var(--slate-img);
+  background-size: auto, 640px;
+}
+/* The slate sits a little deeper than its frame */
+.bg-classic .board::before {
+  content: ""; position: absolute; inset: 22px 22px 46px;
+  box-shadow: inset 0 0 26px rgba(0, 0, 0, 0.65), inset 0 0 3px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+/* Chalk is grainy: the writing shows the slate through tiny gaps */
+.bg-classic #inkCanvas, .bg-classic #liveCanvas, .bg-classic .neat-text {
+  -webkit-mask-image: var(--chalk-mask); mask-image: var(--chalk-mask);
+  -webkit-mask-size: 160px; mask-size: 160px;
+}
+.bg-classic .neat-text { text-shadow: 0 0 1px rgba(255, 255, 255, 0.35); }
+
+.classic-frame { display: none; }
+.bg-classic .classic-frame {
+  display: block;
+  position: absolute; inset: 0;
+  pointer-events: none;
+  border: 22px solid transparent; border-bottom-width: 46px;
+  background: var(--wood) border-box;
+  -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) padding-box exclude, linear-gradient(#000 0 0);
+}
+.bg-classic.has-wood-art .classic-frame { background: var(--wood-img) 0 0 / 360px border-box, #a8703a; }
+.classic-frame .screw {
+  position: absolute; width: 10px; height: 10px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f3e3c3, #8f7a55 60%, #4f3f25);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+.classic-frame .screw.tl { top: -16px; left: -16px; }
+.classic-frame .screw.tr { top: -16px; right: -16px; }
+.classic-frame .screw.bl { bottom: -16px; left: -16px; }
+.classic-frame .screw.br { bottom: -16px; right: -16px; }
+.bg-classic .cmdbar { bottom: 56px; }
+
+/* The chalk tray: tap a stick to write in that colour; the duster rests on the right */
+.chalk-tray { display: none; }
+.bg-classic .chalk-tray {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  position: fixed; left: 0; right: 0; bottom: 0; height: 46px;
+  padding: 0 34px 5px 96px;
+  background: var(--wood);
+  border-top: 3px solid #6e4019;
+  box-shadow: 0 -8px 14px rgba(0, 0, 0, 0.45), inset 0 3px 0 rgba(255, 255, 255, 0.2);
+  z-index: 35;
+}
+.bg-classic.has-wood-art .chalk-tray { background: var(--wood-img) 0 0 / 360px, #a8703a; }
+.tray-dust {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 120px 6px at 18% 30%, rgba(255, 255, 255, 0.22), transparent 70%),
+    radial-gradient(ellipse 90px 5px at 64% 26%, rgba(255, 255, 255, 0.16), transparent 70%),
+    radial-gradient(ellipse 140px 7px at 88% 34%, rgba(255, 255, 255, 0.2), transparent 70%);
+}
+.tray-sticks { position: relative; display: flex; align-items: flex-end; gap: 8px; z-index: 1; }
+.chalk-stick {
+  position: relative;
+  width: 66px; height: 36px; padding: 0;
+  border: 0; background: transparent; cursor: pointer;
+  transform: rotate(var(--r, 0deg));
+  transition: transform 0.22s var(--spring);
+}
+.chalk-stick::before {
+  content: ""; position: absolute; left: 4px; right: 4px; bottom: 3px; height: 13px;
+  border-radius: 7px 4px 4px 7px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, 0.18)), var(--c);
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.45);
+}
+.chalk-stick::after { /* the worn tip */
+  content: ""; position: absolute; right: 4px; bottom: 3px; width: 7px; height: 13px;
+  border-radius: 0 6px 6px 0;
+  background: rgba(255, 255, 255, 0.35);
+}
+.chalk-stick.art::before, .chalk-stick.art::after { display: none; }
+.chalk-stick.art { background: center bottom / contain no-repeat; }
+.chalk-stick:hover { transform: translateY(-3px) rotate(var(--r, 0deg)); }
+.chalk-stick.active { transform: translateY(-12px) rotate(var(--r, 0deg)) scale(1.1); }
+.chalk-stick.active::before { box-shadow: 0 10px 10px rgba(0, 0, 0, 0.35), 0 0 14px var(--c); }
+.chalk-stick:focus-visible, .tray-duster:focus-visible { outline: 3px solid #fde047; outline-offset: 2px; border-radius: 8px; }
+
+.tray-duster {
+  position: relative; z-index: 1;
+  width: 124px; height: 40px; padding: 0; border: 0; cursor: pointer;
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.25), transparent 30%) top / 100% 72% no-repeat,
+    linear-gradient(180deg, #d39a5c, #b97a3e 60%, #8a5527) top / 100% 72% no-repeat,
+    linear-gradient(180deg, #dcd9d2, #b4afa5) bottom center / 96% 34% no-repeat;
+  filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.45));
+  transition: transform 0.22s var(--spring), opacity 0.2s;
+}
+.tray-duster::after { /* finger groove */
+  content: ""; position: absolute; left: 30%; right: 30%; top: 11px; height: 6px;
+  border-radius: 4px; background: rgba(70, 38, 14, 0.45);
+}
+.tray-duster.art { background: center / contain no-repeat; }
+.tray-duster.art::after { display: none; }
+.tray-duster:hover { transform: translateY(-3px); }
+.tray-duster.lifted { opacity: 0.22; transform: translateY(-6px); }
+
+/* The duster button in the tool column */
+.duster-ico {
+  position: relative; display: block; width: 36px; height: 20px;
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, #d39a5c, #9a5f2e) top / 100% 66% no-repeat,
+    linear-gradient(180deg, #e2dfd8, #b4afa5) bottom center / 92% 40% no-repeat;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35);
+}
+.duster-ico::after { content: ""; position: absolute; left: 30%; right: 30%; top: 4px; height: 3px; border-radius: 2px; background: rgba(70, 38, 14, 0.5); }
+
+.board.tool-duster { cursor: none; }
+#fxCanvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 38; }
+.obj.wiped-away { opacity: 0; filter: blur(5px); transition: opacity 0.35s ease, filter 0.35s ease; }
+.obj-layer.sweep-out .obj { opacity: 0; transition: opacity 1.1s ease 0.2s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chalk-stick, .tray-duster { transition: none; }
+}
+body.bg-classic { --ink: #f4f4ea; }
+.board.tool-duster .obj, .board.tool-duster .obj * { pointer-events: none !important; }

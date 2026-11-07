@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=3">
+  <link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body class="bg-dark">
 
@@ -44,7 +44,8 @@
   <nav class="toolbar" id="toolbar" aria-label="Pen tools">
     <button type="button" class="tool-btn active" data-tool="pen" title="Pen">✏️</button>
     <button type="button" class="tool-btn" data-tool="hl" title="Highlighter">🖍️</button>
-    <button type="button" class="tool-btn" data-tool="eraser" title="Eraser">🧽</button>
+    <button type="button" class="tool-btn" data-tool="eraser" title="Eraser: removes whole lines">🧽</button>
+    <button type="button" class="tool-btn" data-tool="duster" title="Duster: wipe like a real board" aria-label="Duster"><span class="duster-ico" aria-hidden="true"></span></button>
     <button type="button" class="tool-btn" data-tool="stamp" id="btnStamp" title="Stamps and stickers">⭐</button>
     <div class="tool-sep"></div>
     <div class="swatches" id="swatches" aria-label="Colours"></div>
@@ -102,11 +103,13 @@
       <label class="switch"><input type="checkbox" id="optPalm" checked><span></span> Ignore a resting hand (palm rejection). While a pen is used, fingers do not draw.</label>
       <label class="switch"><input type="checkbox" id="optSpeak" checked><span></span> Read results aloud</label>
       <label class="switch"><input type="checkbox" id="optTurkish" checked><span></span> Show Turkish meanings</label>
+      <label class="switch"><input type="checkbox" id="optChalkSound" checked><span></span> Chalk and duster sounds (classic board)</label>
     </section>
 
     <section class="set-sec">
       <h3>🖼️ Board</h3>
       <div class="bg-choices" id="bgChoices">
+        <button type="button" data-bg="classic" class="bg-choice">🏫 Classic</button>
         <button type="button" data-bg="dark" class="bg-choice">🌌 Dark</button>
         <button type="button" data-bg="chalk" class="bg-choice">🟩 Chalk</button>
         <button type="button" data-bg="white" class="bg-choice">⬜ White</button>
@@ -119,6 +122,7 @@
       <h3>💡 Tips</h3>
       <ul class="tips">
         <li>Write a word with the pen and wait: it becomes neat, and spelling mistakes are fixed.</li>
+        <li><b>🏫 Classic</b> board: tap a chalk stick on the tray to write in that colour. Pick up the <b>duster</b> and wipe, just like a real board.</li>
         <li>Draw a circle, line, arrow, square, triangle or star and <b>hold the pen still</b> for a moment: it becomes perfect.</li>
         <li>Draw a circle <b>around a word</b>: the circle glows and the word is read aloud.</li>
         <li><b>✍️ Challenge</b> and <b>🏁 Race</b> use today's lesson words (📚). Two children can write at the same time in a race.</li>
@@ -154,13 +158,14 @@
 
   <script src="../js/supabase-config.js"></script>
   <script src="js/art-index.js?v=1"></script>
-  <script src="js/data.js?v=2"></script>
-  <script src="js/audio.js?v=1"></script>
+  <script src="js/data.js?v=3"></script>
+  <script src="js/audio.js?v=2"></script>
   <script src="js/ai.js?v=1"></script>
   <script src="js/shapes.js?v=1"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/app.js?v=4"></script>
   <script src="js/lessons.js?v=1"></script>
   <script src="js/features.js?v=1"></script>
-  <script src="js/pages.js?v=1"></script>
+  <script src="js/pages.js?v=2"></script>
+  <script src="js/classic.js?v=1"></script>
 </body>
 </html>
