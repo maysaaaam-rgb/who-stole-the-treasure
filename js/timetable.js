@@ -12,6 +12,18 @@
     { id: 'g4-subjects-challenge', icon: '🔬', title: 'Mystery Subject Lab: Group Challenge (Maths · Art · Science · Music)', route: 'school-subjects-challenge/index.html', g: 4, added: '2026-11-06' },
     { id: 'g4-instructions-challenge', icon: '📢', title: 'Classroom Instructions Challenge (Normal ➔ Turbo ➔ Combos ➔ Leader)', route: 'classroom-instructions-challenge/index.html', g: 4, added: '2026-11-06' },
     // =========================================================================
+    // UNIT 5 — GRADE 3 (Let's Go Back: The Time Book & Time Capsules, pp. 72–87)
+    // =========================================================================
+    { id: 'magic-book-g3', icon: '📖', title: "Unit 5 Magic Book · Let's Go Back (pp. 72–87): 3D Pop-Out Scenes, Words, Read-Aloud, Exercises & Answers", route: 'magic-book/index.html?grade=3', g: 3, unit: 5, kind: 'lesson', order: 1, added: '2026-11-08' },
+    { id: 'gm-u5-g3', icon: '🎮', title: "Unit 5 Game Maker · Let's Go Back (40 Questions: Words, Time Book, Time Capsules & Mega Mix)", route: 'game-maker/index.html?set=g3-u5-mega&game=cannon', g: 3, unit: 5, kind: 'game', order: 2, added: '2026-11-08' },
+
+    // =========================================================================
+    // UNIT 5 — GRADE 4 (Make Some Noise: Foley Sound Studio & Beethoven, pp. 72–87)
+    // =========================================================================
+    { id: 'magic-book-g4', icon: '📖', title: 'Unit 5 Magic Book · Make Some Noise (pp. 72–87): 3D Pop-Out Scenes, Words, Read-Aloud, Exercises & Answers', route: 'magic-book/index.html?grade=4', g: 4, unit: 5, kind: 'lesson', order: 1, added: '2026-11-08' },
+    { id: 'gm-u5-g4', icon: '🎮', title: 'Unit 5 Game Maker · Make Some Noise (40 Questions: Words, Foley Studio, Beethoven & Mega Mix)', route: 'game-maker/index.html?set=g4-u5-mega&game=cannon', g: 4, unit: 5, kind: 'game', order: 2, added: '2026-11-08' },
+
+    // =========================================================================
     // UNIT 4 — GRADE 3 (What Happened? / The Mona Lisa & The Angry Mountain)
     // =========================================================================
     { id: 'u4-g3-l1', icon: '🕵️', title: 'Unit 4 Lesson 1 · Case File 1: A Picture on the Wall (What Happened?)', route: 'unit4-g3-lessons/index.html?lesson=1', g: 3, unit: 4, kind: 'lesson', order: 1, added: '2026-10-19' },
@@ -200,7 +212,8 @@
       return c.route && (c.kind === 'lesson' || c.kind === 'review') && (!c.g || !g || c.g === g);
     });
     var units = [
-      { u: 4, label: '📘 Unit 4 — Current Unit (Lessons & Reviews in Order)' },
+      { u: 5, label: '📘 Unit 5 — Current Unit (The Magic Book & Games)' },
+      { u: 4, label: '📘 Unit 4 — Complete Unit Arc (Lessons & Reviews in Order)' },
       { u: 3, label: '📘 Unit 3 — Complete Unit Arc' },
       { u: 2, label: '📘 Unit 2 — Complete Unit Arc' },
       { u: 1, label: '📘 Unit 1 — Complete Unit Arc' },
@@ -237,6 +250,7 @@
     var opts = CATALOG.filter(function (c) { return !c.g || !g || c.g === g; });
     function sel(v) {
       var groups = [
+        { label: '📘 Unit 5 Magic Book & Lessons', filter: function (c) { return c.unit === 5 && c.kind !== 'game'; } },
         { label: '📘 Unit 4 Lessons & Reviews', filter: function (c) { return c.unit === 4 && c.kind !== 'game'; } },
         { label: '📘 Unit 3 Lessons & Reviews', filter: function (c) { return c.unit === 3 && c.kind !== 'game'; } },
         { label: '📘 Unit 2 Lessons & Reviews', filter: function (c) { return c.unit === 2 && c.kind !== 'game'; } },

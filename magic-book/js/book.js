@@ -1,16 +1,12 @@
 /* The Magic Book — storybook reader with curling pages.
    Reads the Unit 5 data (MAGIC_BOOK_DATA) and page images from BASE.
-   BASE defaults to the private work folder; change with ?base=<url>. */
+   Works out-of-the-box from /magic-book/ anywhere (no manual upload needed); can also override with ?base=<url>. */
 (function () {
   'use strict';
 
   var qs = new URLSearchParams(location.search);
-  // Local (teacher's PC): pages come from the private work folder. Live site: from the private cloud folder,
-  // which only the signed-in teacher can open (signed links that expire after a few hours).
-  var LOCAL = !!qs.get('base') || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-  var BASE = new URL(qs.get('base') || '../unit5-work/magic-book/', location.href).href;
-  var VBASE = 'https://book.local/unit5-work/magic-book/';   // how paths in the data are written
-  var BUCKET = 'magic-book', SIGNED = {};
+  var defaultBase = location.pathname.indexOf('/platform-work/') !== -1 ? '../../magic-book/' : './';
+  var BASE = new URL(qs.get('base') || defaultBase, location.href).href;
   var RATIO = 1602 / 2046;             // page width / height
   var N = 14;                          // strips in a turning page (more = smoother curl)
   var CURL = 55;                       // max curl in degrees
@@ -28,11 +24,13 @@
     zoom: 1, panX: 0, panY: 0, pw: 0, ph: 0, ink: {}, inkHist: [], solved: {}
   };
 
-  function keyOf(p) { return new URL(p, VBASE).pathname.replace(/^\/unit5-work\//, ''); }
   function url(p) {
     if (!p) return '';
-    if (LOCAL) return new URL(p, BASE).href;
-    return SIGNED[keyOf(p)] || '';
+    var clean = String(p);
+    if (BASE.indexOf('unit5-work') === -1) {
+      clean = clean.replace(/^(\.\.\/)+/, '');
+    }
+    return new URL(clean, BASE).href;
   }
   function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
@@ -106,38 +104,29 @@
   })();
 
   /* ---------------- data ---------------- */
-  function ready(data) {
-    S.data = data;
-    if (!S.data) return fail('The book file has no pages.');
+  function initFromData() {
+    S.data = window.MAGIC_BOOK_DATA;
+    if (!S.data) return fail('The book file loaded but has no MAGIC_BOOK_DATA.');
     buildShelf();
-    var want = qs.get('grade'); if (want && S.data['g' + want]) openBook('g' + want, true);
+    var wantBook = qs.get('book');
+    var wantGrade = qs.get('grade');
+    var key = wantBook && S.data[wantBook] ? wantBook : (wantGrade && S.data['g' + wantGrade] ? 'g' + wantGrade : null);
+    if (key) openBook(key, true);
   }
+
   function loadData() {
-    if (!LOCAL) return loadCloud();
+    if (window.MAGIC_BOOK_DATA && !qs.get('base')) {
+      initFromData();
+      return;
+    }
     var s = document.createElement('script');
     s.src = BASE + 'js/book-data.js?t=' + Date.now();
-    s.onload = function () { ready(window.MAGIC_BOOK_DATA); };
-    s.onerror = function () { fail('I cannot find the book pages.<br>Make sure the local server is running and the folder <b>unit5-work/magic-book</b> is there.'); };
+    s.onload = initFromData;
+    s.onerror = function () {
+      if (window.MAGIC_BOOK_DATA) { initFromData(); return; }
+      fail('I cannot find the book pages.<br>Make sure the book files are in <b>magic-book/</b>.');
+    };
     document.head.appendChild(s);
-  }
-  async function loadCloud() {
-    try {
-      if (window.TeacherAuth && TeacherAuth.ready) await TeacherAuth.ready;
-      var A = window.AdventureSupabase, c = A && (A.client || (A._ensureClient && A._ensureClient()));
-      if (!c) return fail('The cloud is not connected on this device.');
-      var ses = await c.auth.getSession();
-      if (!ses || !ses.data || !ses.data.session) return fail('🔒 The Magic Book is for the teacher only.<br><a href="../index.html?next=magic-book/index.html" style="color:#ffcf5a">Sign in</a> first.');
-      var st = c.storage.from(BUCKET);
-      var m = await st.createSignedUrl('manifest.json', 600);
-      if (m.error) return fail('The book pages are not uploaded yet.<br>Open the Magic Book on your PC and use <b>upload.html</b>.');
-      var keys = await (await fetch(m.data.signedUrl)).json();
-      for (var i = 0; i < keys.length; i += 200) {
-        var r = await st.createSignedUrls(keys.slice(i, i + 200), 6 * 3600);
-        (r.data || []).forEach(function (x) { if (x.signedUrl) SIGNED[x.path] = x.signedUrl; });
-      }
-      if (!SIGNED['data.json']) return fail('The book data is missing. Upload the book again.');
-      ready(await (await fetch(SIGNED['data.json'])).json());
-    } catch (e) { fail('The book could not load: ' + esc(e.message || e)); }
   }
   function fail(msg) { var e = el('div', 'err', msg); $('room').appendChild(e); }
 
@@ -219,7 +208,7 @@
   /* ---------------- layout ---------------- */
   function layout() {
     var W = innerWidth, H = innerHeight;
-    var top = document.querySelector('.topbar').offsetHeight || 50, bot = $('ribbon').offsetHeight || 56, arw = $('btn-next').offsetWidth || 40;
+    var cs = getComputedStyle($('book-view')), top = parseFloat(cs.getPropertyValue('--top')) || 50, bot = parseFloat(cs.getPropertyValue('--bot')) || 56, arw = parseFloat(cs.getPropertyValue('--arw')) || 40;
     var availH = H - top - bot - 16, availW = W - 2 * arw - 24;
     S.single = (availW / availH) < 1.2;
     if (S.single) S.spreads = S.pageList.map(function (p) { return [null, p]; });
@@ -345,6 +334,11 @@
   /* drag a corner to turn */
   var drag = null;
   function bookDown(e) {
+    if (e.pointerType === 'pen' && !S.tool) {
+      $('tray').hidden = false; $('pencil').classList.add('open');
+      setTool('pen');
+      return;
+    }
     if (S.tool || S.busy || e.button > 0) return;
     var r = $('book').getBoundingClientRect(), x = (e.clientX - r.left) / r.width;
     if (S.zoom > 1) { drag = { pan: true, x: e.clientX, y: e.clientY, px: S.panX, py: S.panY }; $('book').setPointerCapture(e.pointerId); return; }
@@ -426,16 +420,25 @@
   function bindInk(c) {
     var cur = null;
     function pt(e) { var r = c.getBoundingClientRect(); return [clamp((e.clientX - r.left) / r.width, 0, 1), clamp((e.clientY - r.top) / r.height, 0, 1)]; }
+    var blockTouch = function (e) { if (S.tool || cur) e.preventDefault(); };
+    c.addEventListener('touchstart', blockTouch, { passive: false });
+    c.addEventListener('touchmove', blockTouch, { passive: false });
     c.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'pen' && !S.tool) {
+        $('tray').hidden = false; $('pencil').classList.add('open');
+        setTool('pen');
+      }
       if (!S.tool) return; e.stopPropagation(); e.preventDefault();
       var n = c.dataset.page, p = pt(e); S.ink[n] = S.ink[n] || [];
       if (S.tool === 'stamp') { S.ink[n].push({ t: 'stamp', s: S.stamp, x: p[0], y: p[1] }); S.inkHist.push(n); chime(true); drawInk(c); saveInk(); return; }
       if (S.tool === 'erase') { cur = { erase: true }; eraseAt(n, p); drawInk(c); }
       else { cur = { t: S.tool, c: S.color, pts: [p] }; S.ink[n].push(cur); S.inkHist.push(n); drawInk(c); }
-      c.setPointerCapture(e.pointerId);
+      try { c.setPointerCapture(e.pointerId); } catch (err) { }
     });
     c.addEventListener('pointermove', function (e) {
-      if (!cur) return; var n = c.dataset.page, p = pt(e);
+      if (!cur) return;
+      e.preventDefault();
+      var n = c.dataset.page, p = pt(e);
       if (cur.erase) { if (eraseAt(n, p)) drawInk(c); return; }
       var last = cur.pts[cur.pts.length - 1];
       if (Math.abs(p[0] - last[0]) + Math.abs(p[1] - last[1]) > .0015) { cur.pts.push(p); drawInk(c); }
@@ -589,7 +592,7 @@
     $('btn-ex').classList.toggle('empty', !items.length);
   }
 
-  /* ---------------- ribbon: words, read, video, sound ---------------- */
+  /* ---------------- ribbon: words, read, 3D scene, video, sound ---------------- */
   function buildRibbon() {
     var seen = {}, box = $('rb-words'); box.innerHTML = '';
     visiblePages().forEach(function (p) {
@@ -600,14 +603,57 @@
         box.appendChild(b);
       });
     });
+    var sc3d = visiblePages().filter(function (p) { return p.scene3d; });
     var vids = visiblePages().filter(function (p) { return p.video; });
     var snd = visiblePages().filter(function (p) { return p.sound; });
+    if ($('btn-scene')) {
+      $('btn-scene').classList.toggle('empty', !sc3d.length);
+      $('btn-scene').onclick = function () { if (sc3d.length) open3dScene(sc3d[0]); };
+    }
     $('btn-video').classList.toggle('empty', !vids.length);
     $('btn-sound').classList.toggle('empty', !snd.length);
     $('btn-video').onclick = function () { if (vids.length) playVideo(vids[0]); };
     $('btn-sound').onclick = function () { if (!snd.length) return; var a = new Audio(url(snd[0].sound)); a.play().catch(function () { toast('Sound not found'); }); };
     $('btn-answers').classList.toggle('on', S.showAns);
     updateExCount();
+  }
+
+  function open3dScene(p) {
+    var sc = p.scene3d; if (!sc) return;
+    stopRead();
+    var itemsHtml = (sc.items || []).map(function (it, idx) {
+      return '<button class="scene3d-item" data-idx="' + idx + '" style="left:' + it.x + '%;top:' + it.y + '%;width:' + it.w + '%;animation-delay:-' + (idx * 0.7).toFixed(1) + 's">' +
+        '<img alt="" src="' + url(it.img) + '">' +
+        '<span class="scene3d-speech" hidden>' + esc(it.say) + '</span>' +
+        '</button>';
+    }).join('');
+    $('modal-card').innerHTML = '<button class="x-btn" data-x style="z-index:5">✕</button>' +
+      '<div class="scene3d-wrap">' +
+      '<div class="scene3d-stage" style="background-image:url(\'' + url(sc.bg) + '\')">' +
+      itemsHtml +
+      '<div class="scene3d-badge">✨ Tap characters & objects to hear them!</div>' +
+      '</div>' +
+      '<div class="card-btns"><button data-narrate>🔊 Read Scene</button></div>' +
+      '</div>';
+    $('modal-card').classList.add('vid');
+    openModal();
+    chime(true);
+    $('modal-card').querySelector('[data-x]').onclick = closeModal;
+    $('modal-card').querySelector('[data-narrate]').onclick = function () {
+      say(p.narration || (sc.items && sc.items[0] && sc.items[0].say) || '');
+    };
+    [].forEach.call($('modal-card').querySelectorAll('.scene3d-item'), function (btn) {
+      btn.onclick = function () {
+        var idx = Number(btn.dataset.idx);
+        var it = sc.items[idx]; if (!it) return;
+        chime(true);
+        [].forEach.call($('modal-card').querySelectorAll('.scene3d-speech'), function (sp) { sp.hidden = true; });
+        var sp = btn.querySelector('.scene3d-speech');
+        if (sp) sp.hidden = false;
+        btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
+        say(it.say, { rate: .88 });
+      };
+    });
   }
 
   function popWord(w) {
@@ -694,5 +740,5 @@
   }
 
   wire(); loadData();
-  window.MagicBook = { state: S, turn: turn, open: openBook };
+  window.MagicBook = { state: S, turn: turn, open: openBook, open3dScene: open3dScene };
 })();

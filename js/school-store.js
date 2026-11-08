@@ -983,7 +983,23 @@
     { page: 20, file: 'assets/books/global-readings-2/page_20.jpg', title: "Reading 2: Work on Your Idea (Leonardo da Vinci)", unit: "Unit 1", section: "Drawing ideas to test them: da Vinci sketches" },
     { page: 21, file: 'assets/books/global-readings-2/page_21.jpg', title: "Reading 2: Improve Your Idea (Karl Benz Motorcar 1885)", unit: "Unit 1", section: "Engineering feedback cycle: Don't give up! Try again!" },
     { page: 22, file: 'assets/books/global-readings-2/page_22.jpg', title: "Explore the Reading 2: Engineering Process & Science Link", unit: "Unit 1", section: "Sequence diagram, Good Ideas Book checklist & Discussion" },
-    { page: 23, file: 'assets/books/global-readings-2/page_23.jpg', title: "Think Together: Inventors Matrix & Reading Journal", unit: "Unit 1", section: "Match inventors to reasons, Round Robin & My Reading Journal" }
+    { page: 23, file: 'assets/books/global-readings-2/page_23.jpg', title: "Think Together: Inventors Matrix & Reading Journal", unit: "Unit 1", section: "Match inventors to reasons, Round Robin & My Reading Journal" },
+    { page: 72, file: 'assets/books/global-readings-2/page_72.jpg', title: "Unit 5: Let's Go Back — Opener (Part 1)", unit: "Unit 5", section: "See, Think, Wonder: Archaeological dig site" },
+    { page: 73, file: 'assets/books/global-readings-2/page_73.jpg', title: "Unit 5: Let's Go Back — Key Concept", unit: "Unit 5", section: "How can we find out about the past? Inquiry & Categorization" },
+    { page: 74, file: 'assets/books/global-readings-2/page_74.jpg', title: "Reading 1: The Time Book (Part 1)", unit: "Unit 5", section: "Jannah finds the glowing ancient Time Book in her closet" },
+    { page: 75, file: 'assets/books/global-readings-2/page_75.jpg', title: "Reading 1: The Time Book (Part 2 — Ancient Egypt)", unit: "Unit 5", section: "Words in Context: ancient, future, disappear, appear, pharaoh, chariot, return" },
+    { page: 76, file: 'assets/books/global-readings-2/page_76.jpg', title: "Reading 1: The Time Book (Part 3 — The Pharaoh's Street)", unit: "Unit 5", section: "An old woman helps Jannah as the Pharaoh's chariot races past" },
+    { page: 77, file: 'assets/books/global-readings-2/page_77.jpg', title: "Reading 1: The Time Book (Part 4 — Return Home)", unit: "Unit 5", section: "Jannah opens the book to return to her bedroom" },
+    { page: 78, file: 'assets/books/global-readings-2/page_78.jpg', title: "Explore the Reading 1: Comprehension & Phonics (-nt)", unit: "Unit 5", section: "Story order, character traits, and final -nt blend words" },
+    { page: 79, file: 'assets/books/global-readings-2/page_79.jpg', title: "Get Ready to Read: Identifying the Main Idea", unit: "Unit 5", section: "Reading Skill: Main idea and supporting details (Rosetta Stone)" },
+    { page: 80, file: 'assets/books/global-readings-2/page_80.jpg', title: "Reading 2: Time Capsules (Part 1)", unit: "Unit 5", section: "Nonfiction: Burying a classroom time capsule in the garden" },
+    { page: 81, file: 'assets/books/global-readings-2/page_81.jpg', title: "Reading 2: Time Capsules (Part 2 — Words in Context)", unit: "Unit 5", section: "Words in Context: time capsule, bury, objects, earth, spacecraft, disc" },
+    { page: 82, file: 'assets/books/global-readings-2/page_82.jpg', title: "Reading 2: Famous Time Capsules (Crypt of Civilization)", unit: "Unit 5", section: "A room-sized 1940 time capsule sealed until the year 8113" },
+    { page: 83, file: 'assets/books/global-readings-2/page_83.jpg', title: "Reading 2: Time Capsules in Space (Voyager Golden Record)", unit: "Unit 5", section: "Gold discs launched in 1977 with sounds and images of Earth" },
+    { page: 84, file: 'assets/books/global-readings-2/page_84.jpg', title: "Reading 2: Make Your Own Time Capsule!", unit: "Unit 5", section: "5-step guide to creating and burying your own time capsule" },
+    { page: 85, file: 'assets/books/global-readings-2/page_85.jpg', title: "Reading 2: Future Finders", unit: "Unit 5", section: "What will people in the future learn from your time capsule?" },
+    { page: 86, file: 'assets/books/global-readings-2/page_86.jpg', title: "Explore the Reading 2: Main Idea & History Link", unit: "Unit 5", section: "Main idea & details check, True/False & American vs British English" },
+    { page: 87, file: 'assets/books/global-readings-2/page_87.jpg', title: "Think Together: How Can We Find Out About the Past? & Journal", unit: "Unit 5", section: "Compare time books and time capsules, Round Robin & Reading Journal" }
   ];
 
   const GLOBAL_READINGS_2_DATA = {
@@ -1119,17 +1135,17 @@
         order: 5,
         pages: '72–87',
         reading1: 'The Time Book (-nt blend)',
-        reading2: 'Time Capsules',
-        readingSkill: 'Main Idea & Details',
-        contentArea: 'History: Civilizations',
+        reading2: 'Time Capsules (Crypt of Civilization & Voyager)',
+        readingSkill: 'Identifying the Main Idea & Supporting Details',
+        contentArea: 'History: Civilizations & Archaeology',
         selFocus: 'Other views',
         keyConcept: 'How can we find out about the past?',
-        targetVocab: ['ancient', 'time capsule', 'civilization', 'past', 'history', 'memory', 'bury'],
+        targetVocab: ['ancient', 'future', 'disappear', 'appear', 'pharaoh', 'chariot', 'return', 'time capsule', 'bury', 'objects', 'earth', 'spacecraft', 'disc'],
         weeks: [
-          { weekNumber: 1, title: 'Week 1: Finding the Past & Time Keeping', focus: 'Artifacts, archaeology, time capsules, history inquiry' },
-          { weekNumber: 2, title: 'Week 2: Reading 1: The Time Book (-nt blend)', focus: 'Personal journals across generations, decoding -nt words' },
-          { weekNumber: 3, title: 'Week 3: Reading 2: Time Capsules (Ancient Civilizations)', focus: 'Main idea and detail extraction on preserved historic relics' },
-          { weekNumber: 4, title: 'Week 4: Classroom Time Capsule & Review', focus: 'Creating personal artifact letters and Unit 5 assessment' }
+          { weekNumber: 1, title: 'Week 1: Finding the Past & The Time Book (Part 1)', focus: 'Archaeological dig opener, See-Think-Wonder, Jannah & the glowing Time Book (pp. 72–75)' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Time Book (Ancient Egypt & -nt blend)', focus: 'Pharaoh and chariot in Ancient Egypt, story sequencing, final -nt consonant blend (pp. 76–78)' },
+          { weekNumber: 3, title: 'Week 3: Main Idea Skill & Reading 2: Time Capsules', focus: 'Rosetta Stone main idea, Crypt of Civilization (1940), Voyager Golden Record (1977) (pp. 79–83)' },
+          { weekNumber: 4, title: 'Week 4: Make a Time Capsule, Think Together & Journal', focus: '5 steps to make a time capsule, US/UK English (yard/garden), Reading Journal (pp. 84–87)' }
         ],
         archived: false
       },
@@ -1500,8 +1516,8 @@
       { id: 'lesson-gr2-4-2', unitId: 'unit-gr2-4', title: 'Lesson 2 · Case File 2: Where Is She? (Reading 1, pp. 58–64)', order: 2, weekNumber: 2, sourcePages: '58–64', sourceBook: 'Global Readings 2', objective: 'Act out the 1911 Mona Lisa robbery in 7 scenes, write breaking-news headlines (Madrid, Tokyo, New York), answer the 5 Detective Quiz Show questions (p. 64 A), debate in Four Corners (p. 64 B), and draw the museum worker’s two faces (p. 64 C).', duration: 35, gameRoute: 'unit4-g3-lessons/index.html?lesson=2', gameTitle: 'Case File 2 · Smartboard Lesson', worksheetRoute: 'lesson-plans/Grade3-Unit4-Case-File-1-and-2-Lesson-Plan.pdf', worksheetTitle: 'Case File 1 & 2 Lesson Plan (PDF)', archived: false },
       { id: 'lesson-gr2-4-3', unitId: 'unit-gr2-4', title: 'Reading 2: The Angry Mountain (-nd blend)', order: 3, weekNumber: 3, sourcePages: '65–71', sourceBook: 'Global Readings 2', objective: 'Understand cause and effect and how volcanic eruptions reshape geography and historical settlements.', duration: 35, archived: false },
 
-      { id: 'lesson-gr2-5-1', unitId: 'unit-gr2-5', title: "Reading 1: The Time Book (-nt blend)", order: 1, sourcePages: '72–79', sourceBook: 'Global Readings 2', objective: 'Explore personal history records and decode -nt consonant clusters.', duration: 35, archived: false },
-      { id: 'lesson-gr2-5-2', unitId: 'unit-gr2-5', title: 'Reading 2: Time Capsules (Ancient Civilizations)', order: 2, sourcePages: '80–87', sourceBook: 'Global Readings 2', objective: 'Identify main ideas and supporting details about preserved artifacts from the past.', duration: 35, archived: false },
+      { id: 'lesson-gr2-5-1', unitId: 'unit-gr2-5', title: "Reading 1: The Time Book (-nt blend)", order: 1, weekNumber: 1, sourcePages: '72–79', sourceBook: 'Global Readings 2', objective: 'Follow Jannah’s journey to Ancient Egypt with the Time Book, master 7 target words (ancient, future, disappear, appear, pharaoh, chariot, return), and decode final -nt clusters.', duration: 35, gameRoute: 'magic-book/index.html?grade=3', gameTitle: 'The Magic Book · Grade 3 Unit 5', archived: false },
+      { id: 'lesson-gr2-5-2', unitId: 'unit-gr2-5', title: 'Reading 2: Time Capsules (Crypt of Civilization & Voyager)', order: 2, weekNumber: 3, sourcePages: '80–87', sourceBook: 'Global Readings 2', objective: 'Identify main ideas and supporting details about time capsules on Earth and in space (time capsule, bury, objects, earth, spacecraft, disc).', duration: 35, gameRoute: 'magic-book/index.html?grade=3', gameTitle: 'The Magic Book · Grade 3 Unit 5', archived: false },
 
       { id: 'lesson-gr2-6-1', unitId: 'unit-gr2-6', title: 'Reading 1: The Superstar (wh- digraph)', order: 1, sourcePages: '88–95', sourceBook: 'Global Readings 2', objective: 'Read character biography highlighting perseverance and isolate wh- digraph pronunciations.', duration: 35, archived: false },
       { id: 'lesson-gr2-6-2', unitId: 'unit-gr2-6', title: 'Reading 2: Visit Gaudí’s World (Architecture)', order: 2, sourcePages: '96–103', sourceBook: 'Global Readings 2', objective: 'Distinguish facts from opinions while exploring Antoni Gaudí’s organic architectural wonders.', duration: 35, archived: false },
@@ -1581,7 +1597,23 @@
     { page: 20, file: 'assets/books/global-readings-3/page_20.jpg', title: "Reading 2: Neurons & Reading Pathways (Part 3)", unit: "Unit 1", section: "How brain cells connect when learning new words" },
     { page: 21, file: 'assets/books/global-readings-3/page_21.jpg', title: "Reading 2: Creative Brain Power (Part 4)", unit: "Unit 1", section: "Visualizing stories and building memory power" },
     { page: 22, file: 'assets/books/global-readings-3/page_22.jpg', title: "Explore the Reading 2: Brain Science Link & Phonics", unit: "Unit 1", section: "Brain facts check & Spelling pattern: final -er words" },
-    { page: 23, file: 'assets/books/global-readings-3/page_23.jpg', title: "Think Together: Why Is Reading Important? & Journal", unit: "Unit 1", section: "Synthesis discussion, Round Robin & My Reading Journal" }
+    { page: 23, file: 'assets/books/global-readings-3/page_23.jpg', title: "Think Together: Why Is Reading Important? & Journal", unit: "Unit 1", section: "Synthesis discussion, Round Robin & My Reading Journal" },
+    { page: 72, file: 'assets/books/global-readings-3/page_72.jpg', title: "Unit 5: Make Some Noise — Opener (Part 1)", unit: "Unit 5", section: "See, Think, Wonder: Giant megaphones in the forest" },
+    { page: 73, file: 'assets/books/global-readings-3/page_73.jpg', title: "Unit 5: Make Some Noise — Key Concept", unit: "Unit 5", section: "What different types of sounds are in our world? Inquiry & Categories" },
+    { page: 74, file: 'assets/books/global-readings-3/page_74.jpg', title: "Reading 1: Shh! They're Making a Movie! (Part 1)", unit: "Unit 5", section: "Nonfiction: Foley artists creating realistic movie sound effects in a studio" },
+    { page: 75, file: 'assets/books/global-readings-3/page_75.jpg', title: "Reading 1: Shh! They're Making a Movie! (Part 2 — Words in Context)", unit: "Unit 5", section: "Words in Context: studio, artist, record, realistic, knees, voices, swords, knight, eagle" },
+    { page: 76, file: 'assets/books/global-readings-3/page_76.jpg', title: "Reading 1: Shh! They're Making a Movie! (Part 3 — Thunder & Rain)", unit: "Unit 5", section: "Metal sheets for thunder, rice for rain, and plastic bottles for eagle wings" },
+    { page: 77, file: 'assets/books/global-readings-3/page_77.jpg', title: "Reading 1: Shh! They're Making a Movie! (Part 4 — Try It Yourself)", unit: "Unit 5", section: "Making sound effects at home and in the classroom" },
+    { page: 78, file: 'assets/books/global-readings-3/page_78.jpg', title: "Explore the Reading 1: Matching & Phonics (ea)", unit: "Unit 5", section: "Match props to movie sounds, True/False & ea vowel team (eagle, deaf)" },
+    { page: 79, file: 'assets/books/global-readings-3/page_79.jpg', title: "Get Ready to Read: Making Inferences", unit: "Unit 5", section: "Reading Skill: Using text clues and what you know to make inferences" },
+    { page: 80, file: 'assets/books/global-readings-3/page_80.jpg', title: "Reading 2: He Writes It All Down (Part 1 — Beethoven)", unit: "Unit 5", section: "Historical fiction: Ludwig van Beethoven composing the 9th Symphony" },
+    { page: 81, file: 'assets/books/global-readings-3/page_81.jpg', title: "Reading 2: He Writes It All Down (Part 2 — Words in Context)", unit: "Unit 5", section: "Words in Context: composer, deaf, bends, orchestra, audience" },
+    { page: 82, file: 'assets/books/global-readings-3/page_82.jpg', title: "Reading 2: He Writes It All Down (Part 3 — Feeling Vibrations)", unit: "Unit 5", section: "Beethoven feels the vibrations of the piano and conducts the orchestra" },
+    { page: 83, file: 'assets/books/global-readings-3/page_83.jpg', title: "Reading 2: He Writes It All Down (Part 4 — The Premiere)", unit: "Unit 5", section: "Beethoven turns around to see the cheering audience" },
+    { page: 84, file: 'assets/books/global-readings-3/page_84.jpg', title: "Reading 2: Beethoven's 9th Symphony (Ode to Joy)", unit: "Unit 5", section: "Why the 9th Symphony is famous around the world" },
+    { page: 85, file: 'assets/books/global-readings-3/page_85.jpg', title: "Reading 2: Music & Vibration", unit: "Unit 5", section: "How instruments and voices create vibrations" },
+    { page: 86, file: 'assets/books/global-readings-3/page_86.jpg', title: "Explore the Reading 2: Inferences & Music Link", unit: "Unit 5", section: "Character inferences, comprehension questions & US/UK English (movie/film)" },
+    { page: 87, file: 'assets/books/global-readings-3/page_87.jpg', title: "Think Together: What Different Types of Sounds Are in Our World? & Journal", unit: "Unit 5", section: "Compare Foley artists and composers, Round Robin & Reading Journal" }
   ];
 
   const GLOBAL_READINGS_3_DATA = {
@@ -1716,18 +1748,18 @@
         title: 'Unit 5: Make Some Noise',
         order: 5,
         pages: '72–87',
-        reading1: 'The Rhythm of the Jungle',
-        reading2: 'How We Hear Sound',
-        readingSkill: 'Visualizing Sensory Language',
-        contentArea: 'Arts & Humanities: Music & Sound',
+        reading1: "Shh! They're Making a Movie! (The Art of Sound / Foley Artists)",
+        reading2: "He Writes It All Down (Ludwig van Beethoven & The 9th Symphony)",
+        readingSkill: 'Making Inferences & Identifying Sound Details',
+        contentArea: 'Arts & Humanities: Movie Sound Effects & Classical Music',
         selFocus: 'Social Awareness & Self-Expression',
-        keyConcept: 'How does music express who we are?',
-        targetVocab: ['rhythm', 'melody', 'vibration', 'pitch', 'percussion', 'tempo', 'harmony', 'acoustic'],
+        keyConcept: 'What different types of sounds are in our world?',
+        targetVocab: ['studio', 'artist', 'record', 'realistic', 'knees', 'voices', 'swords', 'knight', 'eagle', 'composer', 'deaf', 'bends', 'orchestra', 'audience'],
         weeks: [
-          { weekNumber: 1, title: 'Week 1: Soundscapes & Musical Inquiry', focus: 'Exploring auditory textures, instruments, and expressive terms' },
-          { weekNumber: 2, title: 'Week 2: Reading 1: The Rhythm of the Jungle', focus: 'Narrative rich in onomatopoeia, percussion, and cultural dance' },
-          { weekNumber: 3, title: 'Week 3: Sensory Visualization & Phonics Rhythm', focus: 'Visualizing acoustic descriptions and poetic structure' },
-          { weekNumber: 4, title: 'Week 4: Science of Sound Waves & Reflection', focus: 'How sound travels into the ear, musical showcase presentation' }
+          { weekNumber: 1, title: "Week 1: World of Sounds & Shh! They're Making a Movie! (Part 1)", focus: 'Forest megaphones opener, pleasant vs noisy sounds, Foley studio introduction (pp. 72–75)' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: Foley Sound Effects & Phonics (ea)', focus: 'Coconut hooves, metal thunder, rice rain, plastic eagle wings, ea vowel team (pp. 76–78)' },
+          { weekNumber: 3, title: 'Week 3: Making Inferences & Reading 2: He Writes It All Down', focus: 'Inference clues, Ludwig van Beethoven composing while deaf, feeling vibrations (pp. 79–83)' },
+          { weekNumber: 4, title: "Week 4: Beethoven's 9th Premiere, Think Together & Journal", focus: 'Orchestra and audience premiere, US/UK English (movie/film), Reading Journal (pp. 84–87)' }
         ],
         archived: false
       },
@@ -2067,8 +2099,8 @@
       { id: 'lesson-gr3-4-1', unitId: 'unit-gr3-4', title: 'Lesson 1 · Team Players: Dream Team League Match Day 1 (pp. 56–64)', order: 1, weekNumber: 1, sourcePages: '56–64', sourceBook: 'Global Readings 3', objective: 'Assign the 5 team roles (Captain, Coach, Commentator, Scorer, Mascot) on the Teamwork Meter, play Freeze Frame (Present Continuous), shoot a paper ball in the Court Shootout (league, court, basket, score, shooting), act out Live Commentary: The Sparks, order the Morning Relay, and solve Disaster Cards (Why don\'t we…?).', duration: 35, gameRoute: 'unit4-g4-lessons/index.html', gameTitle: 'Dream Team League · Smartboard Lesson', worksheetRoute: 'lesson-plans/Grade4-Unit4-Team-Players-Lesson-Plan.pdf', worksheetTitle: 'Team Players Lesson Plan (PDF)', archived: false },
       { id: 'lesson-gr3-4-2', unitId: 'unit-gr3-4', title: 'Reading 2: Late for the Show (Play & Story Map, pp. 62–70)', order: 2, weekNumber: 3, sourcePages: '62–71', sourceBook: 'Global Readings 3', objective: 'Act out the reader’s theater play and analyze collaborative problem and solution frameworks.', duration: 35, archived: false },
 
-      { id: 'lesson-gr3-5-1', unitId: 'unit-gr3-5', title: 'Reading 1: The Rhythm of the Jungle (Sensory Narrative)', order: 1, weekNumber: 2, sourcePages: '72–79', sourceBook: 'Global Readings 3', objective: 'Visualize auditory sensory words depicting rainforest ambient melodies.', duration: 35, archived: false },
-      { id: 'lesson-gr3-5-2', unitId: 'unit-gr3-5', title: 'Reading 2: How We Hear Sound (Auditory Anatomy)', order: 2, weekNumber: 4, sourcePages: '80–87', sourceBook: 'Global Readings 3', objective: 'Diagram sound wave propagation through the outer, middle, and inner ear.', duration: 35, archived: false },
+      { id: 'lesson-gr3-5-1', unitId: 'unit-gr3-5', title: "Reading 1: Shh! They're Making a Movie! (Foley Sound Artists)", order: 1, weekNumber: 1, sourcePages: '72–79', sourceBook: 'Global Readings 3', objective: 'Discover how Foley artists record realistic movie sound effects in a studio (studio, artist, record, realistic, knees, voices, swords, knight, eagle) and practice the ea vowel team.', duration: 35, gameRoute: 'magic-book/index.html?grade=4', gameTitle: 'The Magic Book · Grade 4 Unit 5', archived: false },
+      { id: 'lesson-gr3-5-2', unitId: 'unit-gr3-5', title: 'Reading 2: He Writes It All Down (Beethoven & The 9th Symphony)', order: 2, weekNumber: 3, sourcePages: '80–87', sourceBook: 'Global Readings 3', objective: 'Make inferences from text clues and follow how deaf composer Ludwig van Beethoven wrote and conducted his 9th Symphony (composer, deaf, bends, orchestra, audience).', duration: 35, gameRoute: 'magic-book/index.html?grade=4', gameTitle: 'The Magic Book · Grade 4 Unit 5', archived: false },
 
       { id: 'lesson-gr3-6-1', unitId: 'unit-gr3-6', title: 'Reading 1: The Great Baking Festival', order: 1, weekNumber: 2, sourcePages: '88–95', sourceBook: 'Global Readings 3', objective: 'Track sequential process and measurements in competitive pastry creation.', duration: 35, archived: false },
       { id: 'lesson-gr3-6-2', unitId: 'unit-gr3-6', title: 'Reading 2: Flavors of the World (Culinary Geography)', order: 2, weekNumber: 4, sourcePages: '96–103', sourceBook: 'Global Readings 3', objective: 'Discover spice routes and cultural dining rituals worldwide.', duration: 35, archived: false },
