@@ -228,7 +228,7 @@
     { id: 'coin1',  img: 'u_coin',     x: 186, y: 604 },
     { id: 'star1',  img: 'o_starfish', x: 584, y: 646 },
     { id: 'bottle', img: '../o_bottle', x: 478, y: 700 },
-    { id: 'coin2',  img: 'u_coin',     x: 432, y: 372 }
+    { id: 'coin2',  img: 'u_coin',     x: 96,  y: 476 }
   ];
   function findKey() { return 'hb-finds-g' + grade(); }
   function foundList() { try { return JSON.parse(root.localStorage.getItem(findKey()) || '[]'); } catch (e) { return []; } }

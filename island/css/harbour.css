@@ -540,3 +540,46 @@ body.hb-on .ch1-stamp-bar { display: none !important; }
 @keyframes hlPet { 20% { scale: 1.08 0.9; } 45% { scale: 0.95 1.1; translate: 0 -8%; } 70% { scale: 1.04 0.97; translate: 0 0; } }
 .hb-hero.cheer .hb-hero-body { animation: hlCheer 0.7s var(--hb-spring); }
 @keyframes hlCheer { 40% { translate: 0 -22%; } }
+
+/* ---------------------------------------------------------------- the harbour in pieces (js/harbour/scenery.js) */
+.hs-sea { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.hs-boats { position: absolute; inset: 0; pointer-events: none; }
+.hb-ship.hs-moved { display: none; }
+.hs-boat { position: absolute; transform: translate(-50%, -88%); animation: hsBob 4.2s ease-in-out infinite; transform-origin: 50% 90%; }
+.hs-boat img { width: 100%; display: block; filter: drop-shadow(0 6px 4px rgba(0, 40, 60, 0.35));
+  -webkit-mask-image: linear-gradient(180deg, #000 78%, rgba(0, 0, 0, 0.35) 92%, transparent); mask-image: linear-gradient(180deg, #000 78%, rgba(0, 0, 0, 0.35) 92%, transparent); }
+.hs-boat img.flip { transform: scaleX(-1); }
+@keyframes hsBob { 0%, 100% { translate: 0 0; rotate: -2deg; } 50% { translate: 0 5%; rotate: 2deg; } }
+
+.hs-ship { position: absolute; padding: 0; border: 0; background: none; cursor: pointer; pointer-events: auto;
+  transform: translate(-50%, -92%); -webkit-tap-highlight-color: transparent; }
+.hs-ship img { width: 100%; display: block; }
+.hs-ship-body { position: relative; transform-origin: 50% 92%; animation: hsRock 6.5s ease-in-out infinite;
+  -webkit-mask-image: linear-gradient(180deg, #000 86%, rgba(0, 0, 0, 0.4) 93%, transparent 99%); mask-image: linear-gradient(180deg, #000 86%, rgba(0, 0, 0, 0.4) 93%, transparent 99%);
+  filter: drop-shadow(0 4px 6px rgba(0, 30, 50, 0.35)); transition: filter 0.4s; }
+.hs-ship-mirror { position: absolute; left: 0; top: 84%; transform: scaleY(-0.45); transform-origin: 50% 0; opacity: 0.22; filter: blur(2px) saturate(0.8);
+  -webkit-mask-image: linear-gradient(0deg, transparent 40%, #000); mask-image: linear-gradient(0deg, transparent 40%, #000);
+  animation: hsMirror 6.5s ease-in-out infinite; pointer-events: none; }
+@keyframes hsRock { 0%, 100% { rotate: -1.1deg; translate: 0 0; } 50% { rotate: 1.1deg; translate: 0 1.2%; } }
+@keyframes hsMirror { 0%, 100% { translate: -0.6% 0; } 50% { translate: 0.6% 0; } }
+.hs-ship.ready .hs-ship-body { filter: drop-shadow(0 0 18px rgba(253, 224, 71, 0.95)) drop-shadow(0 4px 6px rgba(0, 30, 50, 0.35)); }
+.hs-ship.sway .hs-ship-body { animation: hsSway 1s ease-in-out, hsRock 6.5s ease-in-out 1s infinite; }
+@keyframes hsSway { 30% { rotate: -3deg; } 65% { rotate: 2.5deg; } }
+
+.hs-flint { position: absolute; left: -8%; width: 6%; aspect-ratio: 1; padding: 0; border: 0; background: none; cursor: pointer; z-index: 900;
+  animation: hsFly var(--dur, 9s) linear forwards; -webkit-tap-highlight-color: transparent; }
+.hs-flint img { width: 100%; height: 100%; display: block; animation: hsGlide 1.6s ease-in-out infinite; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.3)); }
+.hs-flint.back { left: auto; right: -8%; animation-name: hsFlyBack; }
+.hs-flint.back img { transform: scaleX(-1); }
+.hs-flint.zoom { animation-duration: 2.2s; }
+@keyframes hsFly { to { translate: 2000% 60%; } }
+@keyframes hsFlyBack { to { translate: -2000% 40%; } }
+@keyframes hsGlide { 50% { translate: 0 18%; } }
+
+.hs-jim { padding: 0; border: 0; background: none; aspect-ratio: 1; -webkit-tap-highlight-color: transparent; }
+.hs-jim img { width: 100%; height: 100%; object-fit: contain; display: block; filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.35)); transform-origin: 50% 100%; }
+.hs-jim.left img { transform: scaleX(-1); }
+.hs-jim.pop img { animation: hsJimPop 0.5s var(--hb-spring); }
+@keyframes hsJimPop { 40% { scale: 1.06 0.94; translate: 0 -6%; } }
+#hb-root .hs-jim { pointer-events: auto; cursor: pointer; }
+.hs-split .hl-flag { display: none; }
