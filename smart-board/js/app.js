@@ -1553,10 +1553,29 @@
     if (AI.ready) {
       $('#pinInput').value = '';
       toast(p ? '✅ Custom AI key/PIN saved!' : '✅ Using Built-In Free Smart AI!');
+      if (AI.isGemini && AI.isGemini()) setTimeout(testGemini, 300);
       AU.correct();
     }
   });
   $('#pinInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#btnConnect').click(); } });
+  // Test the Gemini key: one small request, the answer is shown in Settings
+  async function testGemini() {
+    const st = $('#aiStatusText');
+    if (!AI.isGemini || !AI.isGemini()) { st.className = 'set-status warn'; st.textContent = 'ℹ️ No Gemini key yet: paste it above and press Connect.'; return; }
+    st.className = 'set-status'; st.textContent = '⏳ Asking Gemini…';
+    const r = await AI.testKey();
+    if (r.ok) {
+      st.className = 'set-status ok';
+      st.textContent = '✅ Gemini is answering (' + r.model + '): "' + String(r.answer || '').slice(0, 80) + '"';
+      AU.correct();
+    } else {
+      st.className = 'set-status warn';
+      st.textContent = '❌ ' + r.error + ' The board keeps working with the built-in helper.';
+    }
+    updateFab();
+    const txt = $('#aiChipText'); if (txt) txt.textContent = r.ok ? 'Gemini ✓' : 'AI ready';
+  }
+  $('#btnTestKey').addEventListener('click', testGemini);
 
   function updateAIUI() {
     const chip = $('#aiChip'), txt = $('#aiChipText'), st = $('#aiStatusText');
@@ -1564,6 +1583,7 @@
     const left = AI.left;
     const labels = { off: 'AI off', checking: 'AI…', ready: 'AI ready', offline: 'AI ready', setup: 'AI ready', badpin: 'Wrong PIN' };
     txt.textContent = labels[AI.state] || 'AI ready';
+    if (AI.state === 'ready' && AI.mode === 'gemini') txt.textContent = 'Gemini AI';
     if (AI.state === 'ready' && left) txt.textContent = `AI ready · 🎨 ${left.image}`;
     st.className = 'set-status';
     if (AI.state === 'ready') {

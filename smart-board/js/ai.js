@@ -2,7 +2,7 @@
    Smart Board AI & Built-In Curriculum Engine (Zero-Setup, 100% Free)
    --------------------------------------------------------------------------
    3-Tier Architecture:
-   1. Optional Direct Gemini Key (AIza...) or Supabase Edge Function (if set)
+   1. Optional Direct Gemini Key (AIza... or the newer AQ. keys) or Supabase Edge Function (if set)
    2. Free Keyless Cloud AI (Pollinations OpenAI-compatible JSON / Image + MyMemory)
    3. 100% Offline Built-In Grade 3 & 4 ESL Curriculum & Dictionary Engine
    ========================================================================== */
@@ -23,7 +23,26 @@
     if (pin && !isGeminiKey(pin)) h['x-board-pin'] = pin;
     return Object.assign(h, extra || {});
   }
-  function isGeminiKey(k) { return /^AIza[0-9A-Za-z_-]{20,}$/.test(String(k || '').trim()); }
+  // Google AI Studio keys: the older AIza… keys and the newer AQ.… keys. The key is typed on the board and kept only on that device.
+  function isGeminiKey(k) { return /^(AIza[0-9A-Za-z_-]{20,}|AQ\.[0-9A-Za-z_.-]{20,})$/.test(String(k || '').trim()); }
+  // Tried in order: when one model is busy or retired, the next one answers (checked 8 Nov 2026)
+  const GEMINI_MODELS = ['gemini-3.5-flash', 'gemini-flash-lite-latest', 'gemini-flash-latest'];
+  // Said before every request: the class is 8–10-year-old beginners
+  const SAFE_RULES = 'You help an English teacher on a classroom smartboard in Turkey. The pupils are 8 to 10 years old, ' +
+    'beginners (CEFR A1). Use short, simple, friendly English. Everything must be safe for young children: nothing scary, ' +
+    'violent, rude, romantic or sad, no brands, no real people, no personal questions about the pupils. ' +
+    'If a request is not suitable for a children\'s classroom, answer with a kind, simple, safe alternative. Always return only the JSON asked for.';
+  let geminiInfo = { model: '', error: '' };
+  // This week's lesson words (from the lesson chosen on the board), used where they fit
+  async function lessonWordsLine() {
+    try {
+      const L = root.SmartLessons;
+      if (!L || !L.current) return '';
+      const c = await Promise.race([L.current(), new Promise((ok) => setTimeout(() => ok(null), 800))]);
+      const w = c && c.words && c.words.length ? c.words.slice(0, 20) : [];
+      return w.length ? ' This week the class is learning these words; use some of them where they fit naturally: ' + w.join(', ') + '.' : '';
+    } catch (e) { return ''; }
+  }
 
   /* ------------------------------------------------------------------
      1. BUILT-IN GRADE 3 & 4 ESL CURRICULUM LEXICON (EN <-> TR)
@@ -1312,7 +1331,6 @@
      ------------------------------------------------------------------ */
   async function callDirectGemini(key, task, payload, timeoutMs) {
     if (task === 'draw') return callFreeDraw(payload.subject, payload.sketch, timeoutMs);
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(key)}`;
     const prompts = {
       word: `Return JSON {"word","syllables","partOfSpeech","sentence","turkish","emoji"} for A1 9-year-old Turkish learner of English for the word "${payload.text}". Simple present sentence (5-9 words).`,
       sentences: `Return JSON {"focus":"${payload.text}","sentences":["..."]} with ${payload.n || 3} simple A1 English sentences (5-9 words each) for 9-year-old learners using "${payload.text}".`,
@@ -1323,29 +1341,48 @@
       ask: `Return JSON {"answer":"...","emoji":"🦉"} answering "${payload.text}" in 1-2 simple A1 sentences for a 9-year-old.`,
       neat: `Read this handwriting or sketch on a classroom whiteboard. Return JSON {"kind":"text"|"drawing"|"unclear","read":"exact text","corrected":"spelling fixed text","lines":["..."],"changed":boolean,"tip":"short tip","drawingGuess":"if drawing, 2-4 words"}.`
     };
-    const parts = [{ text: prompts[task] || prompts.ask }];
+    const words = ['sentences', 'quiz', 'story', 'ask'].indexOf(task) !== -1 ? await lessonWordsLine() : '';
+    const parts = [{ text: (prompts[task] || prompts.ask) + words }];
     if (task === 'neat' && payload.image) {
       parts.unshift({ inlineData: { mimeType: 'image/png', data: payload.image } });
     }
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), timeoutMs || 15000);
-    try {
-      const r = await fetch(url, {
-        method: 'POST',
-        signal: ctrl.signal,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts }],
-          generationConfig: { responseMimeType: 'application/json', temperature: 0.3 }
-        })
-      });
-      if (!r.ok) throw new Error('Gemini status ' + r.status);
-      const j = await r.json();
-      const raw = j && j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts && j.candidates[0].content.parts[0] && j.candidates[0].content.parts[0].text;
-      return JSON.parse(raw);
-    } finally {
-      clearTimeout(timer);
+    const body = JSON.stringify({
+      systemInstruction: { parts: [{ text: SAFE_RULES }] },
+      contents: [{ role: 'user', parts }],
+      generationConfig: { responseMimeType: 'application/json', temperature: 0.3 }
+    });
+    const started = Date.now(), budget = timeoutMs || 15000;
+    let lastErr = null;
+    for (const model of GEMINI_MODELS) {
+      const left = budget - (Date.now() - started);
+      if (left < 1500) break;
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), Math.min(left, 9000));   // a slow model does not use up all the time
+      try {
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+          method: 'POST',
+          signal: ctrl.signal,
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+          body
+        });
+        // busy (429, 503) or retired (404): try the next model; a wrong key (400, 401, 403) stops here
+        if (!r.ok) { lastErr = new Error('Gemini status ' + r.status); if ([404, 429, 500, 503].indexOf(r.status) !== -1) continue; throw lastErr; }
+        const j = await r.json();
+        const ps = (j && j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || [];
+        const raw = ps.filter(p => p && typeof p.text === 'string' && !p.thought).map(p => p.text).join('').trim()
+          .replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '');
+        const out = JSON.parse(raw);
+        geminiInfo = { model, error: '' };
+        return out;
+      } catch (e) {
+        lastErr = e;
+        if (/status (400|401|403)/.test(String(e && e.message))) throw e;
+      } finally {
+        clearTimeout(timer);
+      }
     }
+    geminiInfo = { model: '', error: String((lastErr && lastErr.message) || 'Gemini did not answer') };
+    throw lastErr || new Error('Gemini did not answer');
   }
 
   async function callFreeMyMemoryTranslate(text) {
@@ -1379,6 +1416,20 @@
     onChange: null,
 
     hasPin() { return !!pin; },
+    // Which Gemini model answered last, or the last error (shown in Settings)
+    geminiInfo() { return Object.assign({}, geminiInfo); },
+    isGemini() { return isGeminiKey(pin); },
+    // One small request to check the key: { ok, model, error }
+    async testKey() {
+      if (!isGeminiKey(pin)) return { ok: false, model: '', error: 'no key' };
+      try {
+        const r = await callDirectGemini(pin, 'ask', { text: 'Say hello to the class' }, 20000);
+        return { ok: !!(r && r.answer), model: geminiInfo.model, error: '', answer: r && r.answer };
+      } catch (e) {
+        const m = String((e && e.message) || e);
+        return { ok: false, model: '', error: /400|401|403/.test(m) ? 'The key was refused by Google.' : 'Google is busy or offline. Try again in a minute.' };
+      }
+    },
     setPin(p) {
       pin = String(p || '').trim();
       try { if (pin) root.localStorage.setItem(PIN_KEY, pin); else root.localStorage.removeItem(PIN_KEY); } catch (e) { /* ignore */ }
@@ -1423,7 +1474,7 @@
     async call(task, payload, timeoutMs) {
       payload = payload || {};
 
-      // Tier 1A: Optional Direct Gemini API Key (AIza...)
+      // Tier 1A: Optional Direct Gemini API Key (AIza… or AQ.…)
       if (isGeminiKey(pin)) {
         try {
           return await callDirectGemini(pin, task, payload, timeoutMs);
