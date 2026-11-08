@@ -632,16 +632,23 @@
       if (d.kind === 'text' && String(d.corrected || '').trim()) {
         const lines = (Array.isArray(d.lines) && d.lines.length ? d.lines : String(d.corrected).split(/\n/))
           .map((x) => String(x).trim()).filter(Boolean).slice(0, 6);
-        const fs = clamp((b.h / lines.length) * 0.82, 26, 190);
-        pushHistory();
-        state.strokes = state.strokes.filter((s) => !ids.has(s.id));
-        const o = makeObj('text', { lines, color: majorityColor(still), fs, read: String(d.read || ''), changed: !!d.changed, tip: String(d.tip || '') },
-          b.x, b.y - fs * 0.1, 1);
-        state.objects.push(o);
-        redrawInk(); renderObjects(); sparkle(o.id);
-        AU.sparkle();
-        speak(lines.join(' '));
-        save();
+        const place = (ls) => {
+          const now = state.strokes.filter((s) => ids.has(s.id));
+          if (!now.length) return;
+          const fs = clamp((b.h / ls.length) * 0.82, 26, 190);
+          pushHistory();
+          state.strokes = state.strokes.filter((s) => !ids.has(s.id));
+          const o = makeObj('text', { lines: ls, color: majorityColor(now), fs, read: String(d.read || ''), changed: !!d.changed, tip: String(d.tip || '') },
+            b.x, b.y - fs * 0.1, 1);
+          state.objects.push(o);
+          redrawInk(); renderObjects(); sparkle(o.id);
+          AU.sparkle();
+          speak(ls.join(' '));
+          save();
+        };
+        // Only swap the handwriting by itself when the reading is sure; otherwise ask (the writing stays until you choose)
+        if (d.sure === true && d.src === 'gemini') place(lines);
+        else showReadChip(g, lines, (Array.isArray(d.alternatives) ? d.alternatives : []).map(String).filter(Boolean), place);
       } else if (d.kind === 'drawing') {
         showSketchChip(g, String(d.drawingGuess || '').slice(0, 40));
       } else {
@@ -654,6 +661,29 @@
       g.strokes.forEach((s) => processing.delete(s.id));
       redrawInk();
     }
+  }
+  // "Did you mean…?" — the teacher picks the right reading, or keeps the handwriting
+  function showReadChip(g, lines, alts, place) {
+    const b = g.box;
+    const first = lines.join(' ');
+    const opts2 = [first].concat(alts.filter((a) => a.toLowerCase() !== first.toLowerCase())).slice(0, 4);
+    const chip = document.createElement('div');
+    chip.className = 'sketch-chip read-chip';
+    chip.innerHTML = '✨ ' + opts2.map((o, i) => `<button type="button" class="${i === 0 ? 'btn-primary' : 'alt'}" data-i="${i}">${esc(o)}</button>`).join('') +
+      '<button type="button" class="x" title="Keep my handwriting" aria-label="Keep my handwriting">✕</button>';
+    chip.style.left = clamp(b.x, 90, W - 520) + 'px';
+    chip.style.top = clamp(b.y + b.h + 10, 70, H - 210) + 'px';
+    layer.appendChild(chip);
+    let touched = false;
+    const kill = setTimeout(() => { if (!touched) chip.remove(); }, 12000);
+    chip.addEventListener('pointerdown', (e) => { touched = true; clearTimeout(kill); e.stopPropagation(); });
+    chip.querySelector('.x').addEventListener('click', () => chip.remove());
+    chip.querySelectorAll('[data-i]').forEach((btn) => btn.addEventListener('click', () => {
+      const i = Number(btn.dataset.i);
+      chip.remove();
+      place(i === 0 ? lines : [opts2[i]]);
+    }));
+    AU.pop();
   }
   function majorityColor(list) {
     const n = {};

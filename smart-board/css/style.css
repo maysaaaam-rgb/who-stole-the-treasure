@@ -1086,3 +1086,7 @@ body.ui-small .classic-frame .screw.tl, body.ui-small .classic-frame .screw.tr {
 body.ui-small .classic-frame .screw.bl, body.ui-small .classic-frame .screw.br { bottom: -12px; }
 body.ui-small .classic-frame .screw.tl, body.ui-small .classic-frame .screw.bl { left: -12px; }
 body.ui-small .classic-frame .screw.tr, body.ui-small .classic-frame .screw.br { right: -12px; }
+
+.read-chip { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; max-width: 520px; }
+.read-chip button[data-i] { font-size: 1.15rem; padding: 0.35rem 0.9rem; border-radius: 12px; cursor: pointer; font-family: inherit; }
+.read-chip .alt { background: rgba(255,255,255,0.12); color: inherit; border: 2px solid rgba(255,255,255,0.3); }
