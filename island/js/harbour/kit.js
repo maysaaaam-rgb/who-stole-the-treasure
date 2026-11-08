@@ -12,7 +12,7 @@
   var P = function () { return root.Ch1Progress; };
 
   // Painted scenes from Gemini (art/ch1/<name>.webp). Listed here when they have been added.
-  H.ART = H.ART || [];
+  H.ART = H.ART || ['bg_s2_board', 'bg_s3_deck', 'bg_s4_lookout', 'bg_s5_dock', 'o_wheel_big', 'o_dial_lock'];
   // Close-ups of the harbour painting (1376x768) used until then: [left, top, width] in picture pixels
   var ZOOM = {
     board: [0, 300, 560], deck: [880, 120, 480], lookout: [420, 150, 956], dock: [470, 380, 560], harbour: [0, 0, 1376]

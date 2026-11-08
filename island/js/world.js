@@ -906,7 +906,9 @@
     c.drawImage(fc, x0, y0);
     c.restore();
   }
-  async function bakeMonster(sc, key, opts) {
+  // Draws all 21 poses of the monster into one picture sheet (7 columns, FRAME px each). Used by the old island map
+  // and by the new harbour (Chapter 1), so the monster walks the same way everywhere.
+  async function bakeSheet(opts) {
     var eq = Object.assign({}, opts.equipped || {}); delete eq.background; delete eq.aura; delete eq.pet;
     var markup = root.MonsterRenderer.renderMonsterSVG({ stage: opts.stage, color: opts.color, equipped: eq, size: FRAME, animated: false, isAvatar: true });
     var base = new DOMParser().parseFromString(markup, 'image/svg+xml').documentElement;
@@ -1137,6 +1139,16 @@
       var col = i % COLS, row = Math.floor(i / COLS);
       drawCartoon(c, img, FRAME * col, FRAME * row);
     });
+    return { canvas: canvas, cols: COLS, frame: FRAME, count: poses.length };
+  }
+  // shared with the Chapter 1 harbour (js/harbour/harbour.js)
+  root.IslandWalker = {
+    bakeSheet: bakeSheet, look: monsterLook, dirFromVec: dirFromVec, IDLE_FRAME: IDLE_FRAME,
+    WALK: { down: [1, 2, 3, 4], diag: [6, 7, 8, 9], side: [11, 12, 13, 14], up: [16, 17, 18, 19] }
+  };
+  async function bakeMonster(sc, key, opts) {
+    var sheet = await bakeSheet(opts), canvas = sheet.canvas, COLS = sheet.cols;
+    var poses = Array.apply(null, Array(sheet.count));
     var animDirs = { down: [1, 2, 3, 4], diag: [6, 7, 8, 9], side: [11, 12, 13, 14], up: [16, 17, 18, 19] };
     if (sc.textures.exists(key)) {
       ['-walk', '-walk-down', '-walk-diag', '-walk-side', '-walk-up'].forEach(function (suf) {

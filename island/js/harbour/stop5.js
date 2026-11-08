@@ -67,6 +67,8 @@
   function numberLock(ctx) {
     var S = H.scene(ctx, { stop: 5, cls: 's5 g4', bg: ['bg_s5_dock', 'dock'], npc: { art: 'c_billy', name: 'Billy' }, rounds: CODE.length + 1 });
     chest(S);
+    // Billy's brass number lock hangs on the chest until it opens
+    if (H.hasArt('o_dial_lock')) S.$('#s5-chest').insertAdjacentHTML('beforeend', '<img class="s5-padlock" src="art/ch1/o_dial_lock.webp" alt="" draggable="false">');
     var html = '<div class="s5-dials">';
     CODE.forEach(function (c, k) {
       html += '<div class="s5-dial" data-k="' + k + '"><div class="s5-val">?</div><div class="s5-opts">' +
