@@ -225,10 +225,33 @@
     return [Math.round((e.clientX - r.left) * 10) / 10, Math.round((e.clientY - r.top) * 10) / 10, Math.round(pr * 100) / 100];
   }
   // Palm rejection: a resting hand is a big touch; and while a pen is in use, fingers do not draw
+  // Big classroom boards (infrared frames) report every finger as a large contact (often 40-120px),
+  // so a fixed size limit blocked all fingers there. We learn this board's normal finger size and only
+  // call a touch a palm when it is much bigger than that; if fingers keep being refused, palm
+  // rejection switches itself off.
+  const touchSizes = [];
+  let palmRefusals = 0;
+  function fingerSize() {
+    if (touchSizes.length < 3) return 40;
+    const s = touchSizes.slice().sort((a, b) => a - b);
+    return s[Math.floor(s.length / 2)];
+  }
   function isPalm(e) {
     if (e.pointerType === 'pen') { lastPenAt = Date.now(); return false; }
     if (!opts.palm || e.pointerType !== 'touch') return false;
-    if ((e.width || 0) > 38 || (e.height || 0) > 38) return true;
+    const sz = Math.max(e.width || 0, e.height || 0);
+    if (sz > Math.max(110, fingerSize() * 2.2)) {
+      palmRefusals++;
+      if (palmRefusals >= 3) { touchSizes.push(sz); if (touchSizes.length > 25) touchSizes.shift(); }
+      if (palmRefusals >= 6) {
+        opts.palm = false; lsSet(OPT_KEY, opts);
+        const box = document.querySelector('#optPalm'); if (box) box.checked = false;
+        palmRefusals = 0; return false;
+      }
+      return true;
+    }
+    palmRefusals = 0;
+    if (sz) { touchSizes.push(sz); if (touchSizes.length > 25) touchSizes.shift(); }
     return Date.now() - lastPenAt < 4000;
   }
 
