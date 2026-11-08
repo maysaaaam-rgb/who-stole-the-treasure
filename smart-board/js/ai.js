@@ -1298,8 +1298,15 @@
       }).filter(Boolean);
       const corrected = lines.join('\n');
       const changed = corrected.toLowerCase() !== cleaned.toLowerCase();
+      const cw = cleanWord(cleaned);
+      const alternatives = hintWords.map((w) => [w, levenshtein(cw, cleanWord(w))])
+        .filter((x) => x[1] <= Math.max(2, Math.ceil(cw.length / 2)) && cleanWord(x[0]) !== cleanWord(corrected))
+        .sort((a, b) => a[1] - b[1]).slice(0, 3).map((x) => x[0]);
       return {
         kind: 'text',
+        src: 'ocr',
+        sure: confidence >= 80 && !changed,
+        alternatives,
         read: cleaned,
         corrected,
         lines,
@@ -1339,7 +1346,7 @@
       tr: `Return JSON {"from":"Turkish"|"English","to":"English"|"Turkish","translation":"..."} translating "${payload.text}" between Turkish and English for a 9-year-old classroom.`,
       check: `Return JSON {"ok":boolean,"corrected":"...","tip":"...","changes":["old -> new"]} checking A1 student sentence "${payload.text}".`,
       ask: `Return JSON {"answer":"...","emoji":"🦉"} answering "${payload.text}" in 1-2 simple A1 sentences for a 9-year-old.`,
-      neat: `Read this handwriting or sketch on a classroom whiteboard. Return JSON {"kind":"text"|"drawing"|"unclear","read":"exact text","corrected":"spelling fixed text","lines":["..."],"changed":boolean,"tip":"short tip","drawingGuess":"if drawing, 2-4 words"}.`
+      neat: `This picture is ENGLISH handwriting written with a finger or pen on a classroom smartboard (teacher or 8-10 year old pupil, A1 level). The strokes can be wobbly, big, and joined. Read it letter by letter. Words from this week's lesson are likely: ${(payload.hintWords || []).slice(0, 40).join(', ') || '(none)'}. Prefer a lesson word ONLY if the shapes really fit it; never invent words that are not there. Keep the writer's capitals and punctuation. Return JSON {"kind":"text"|"drawing"|"unclear","read":"exactly what is written","corrected":"same text with spelling fixed","lines":["one item per written line"],"changed":boolean,"sure":boolean,"alternatives":["up to 3 other possible readings"],"tip":"short spelling tip or empty","drawingGuess":"if a drawing, 2-4 words"}. Set "sure" to false if any letter is doubtful.`
     };
     const words = ['sentences', 'quiz', 'story', 'ask'].indexOf(task) !== -1 ? await lessonWordsLine() : '';
     const parts = [{ text: (prompts[task] || prompts.ask) + words }];
@@ -1372,6 +1379,7 @@
         const raw = ps.filter(p => p && typeof p.text === 'string' && !p.thought).map(p => p.text).join('').trim()
           .replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '');
         const out = JSON.parse(raw);
+        if (task === 'neat' && out && typeof out === 'object') out.src = 'gemini';
         geminiInfo = { model, error: '' };
         return out;
       } catch (e) {
