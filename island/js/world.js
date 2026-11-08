@@ -978,15 +978,15 @@
       if (p.view === 'side') {
         // TRUE 90° SIDE PROFILE (facing right; mirrored when walking left)
         [].forEach.call(svg.querySelectorAll('.mon-body-breathe'), function (el) {
-          if (!el.querySelector('.mon-arm')) el.setAttribute('transform', 'translate(104 0) scale(0.85 1) translate(-104 0)');
+          if (!el.querySelector('.mon-arm')) el.setAttribute('transform', 'translate(104 0) scale(0.97 1) translate(-104 0)');
         });
         [].forEach.call(svg.querySelectorAll('[fill^="url(#plush-belly-"], .mon-belly-mark'), function (el) {
-          el.setAttribute('transform', 'translate(26 0) translate(100 136) scale(0.72 1) translate(-100 -136)');
+          el.setAttribute('transform', 'translate(38 0) translate(100 136) scale(0.5 1) translate(-100 -136)');
           if (clipUrl) el.setAttribute('clip-path', clipUrl);
         });
         [].forEach.call(svg.querySelectorAll('.monster-bob-group > g[transform^="translate(0 "]'), function (el) {
           var prevC = el.getAttribute('transform') || '';
-          el.setAttribute('transform', 'translate(104 0) scale(0.85 1) translate(-100 0) ' + prevC);
+          el.setAttribute('transform', 'translate(104 0) scale(0.97 1) translate(-100 0) ' + prevC);
           [].forEach.call(el.querySelectorAll('path[fill="#dc2626"], line[stroke="#fef08a"]'), function (tailPart) {
             tailPart.setAttribute('transform', 'translate(200 0) scale(-1 1)');
           });
@@ -1002,7 +1002,7 @@
         if (eyes.length >= 2) {
           eyes[1].setAttribute('display', 'none');
           var prevE0 = eyes[0].getAttribute('transform') || '';
-          eyes[0].setAttribute('transform', 'translate(29 -1) translate(84 114) scale(0.82 1) translate(-84 -114) ' + prevE0);
+          eyes[0].setAttribute('transform', 'translate(40 -1) translate(84 114) scale(0.8 1) translate(-84 -114) ' + prevE0);
           [].forEach.call(eyes[0].querySelectorAll('ellipse, circle'), function (el) {
             var fill = el.getAttribute('fill') || '';
             var r = Number(el.getAttribute('r') || 0);
@@ -1014,41 +1014,41 @@
         [].forEach.call(svg.querySelectorAll('.plush-face > ellipse, .plush-face > circle'), function (el) {
           var fill = el.getAttribute('fill') || '';
           var cx = Number(el.getAttribute('cx') || 0);
-          if (fill.indexOf('url(#plush-snout-') === 0) el.setAttribute('transform', 'translate(27 -1) translate(100 121) scale(0.68 0.9) translate(-100 -121)');
-          else if (fill === '#0f172a') el.setAttribute('transform', 'translate(33 -1)');
-          else if (cx >= 98 && cx <= 101 && fill === '#ffffff') el.setAttribute('transform', 'translate(33 -1)');
+          if (fill.indexOf('url(#plush-snout-') === 0) el.setAttribute('transform', 'translate(40 0) translate(100 121) scale(0.62 0.9) translate(-100 -121)');
+          else if (fill === '#0f172a') el.setAttribute('transform', 'translate(47 0)');
+          else if (cx >= 98 && cx <= 101 && fill === '#ffffff') el.setAttribute('transform', 'translate(47 0)');
           else if (cx > 110) el.setAttribute('display', 'none');
-          else if (cx < 90) el.setAttribute('transform', 'translate(25 1)');
+          else if (cx < 90) el.setAttribute('transform', 'translate(36 1) translate(72 123) scale(0.75 1) translate(-72 -123)');
         });
         var mouthG = svg.querySelector('.plush-face .mon-mouth');
         if (mouthG) {
           var my = Number(mouthG.getAttribute('data-my') || 127);
           mouthG.innerHTML =
-            '<path d="M 116 ' + (my + 1.5) + ' Q 124 ' + (my + 5.5) + ' 131 ' + (my - 0.5) + '" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" />' +
-            '<path d="M 114.5 ' + (my - 0.5) + ' q 1.2 1.6 2 3" fill="none" stroke="#0f172a" stroke-width="1.4" stroke-linecap="round" opacity="0.6" />';
+            '<path d="M 127 ' + (my + 1.5) + ' Q 134 ' + (my + 5) + ' 140 ' + (my - 0.5) + '" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" />' +
+            '<path d="M 125.5 ' + (my - 0.5) + ' q 1.2 1.6 2 3" fill="none" stroke="#0f172a" stroke-width="1.4" stroke-linecap="round" opacity="0.6" />';
         }
-        prependSvg('.monster-eyewear', 'translate(20 -1) translate(100 112) scale(0.75 1) translate(-100 -112)');
+        prependSvg('.monster-eyewear', 'translate(30 -1) translate(100 112) scale(0.6 1) translate(-100 -112)');
         prependSvg('.monster-hat', 'translate(-22 1) rotate(-14 100 65)');
         prependSvg('.monster-tail-layer', 'translate(190 0) scale(-1 1)');
         setCss('.mon-ear-l', 'translate(10px, -2px) rotate(' + (p.ear || 0) + 'deg)');
         [].forEach.call(svg.querySelectorAll('.mon-arm-l'), function (el) { el.setAttribute('display', 'none'); });
-        setCss('.mon-arm-r', 'translate(-35px, 2px) rotate(' + (p.armL || 0) + 'deg)');
+        setCss('.mon-arm-r', 'translate(-30px, 2px) rotate(' + (p.armL || 0) + 'deg)');
       } else if (p.view === 'diag') {
         // 3/4 DIAGONAL VIEW (turned 45° toward the walking direction; both eyes visible with perspective foreshortening)
         [].forEach.call(svg.querySelectorAll('.mon-body-breathe'), function (el) {
           if (!el.querySelector('.mon-arm')) el.setAttribute('transform', 'translate(102 0) scale(0.93 1) translate(-102 0)');
         });
         [].forEach.call(svg.querySelectorAll('[fill^="url(#plush-belly-"], .mon-belly-mark'), function (el) {
-          el.setAttribute('transform', 'translate(14 0) translate(100 136) scale(0.84 1) translate(-100 -136)');
+          el.setAttribute('transform', 'translate(18 0) translate(100 136) scale(0.76 1) translate(-100 -136)');
           if (clipUrl) el.setAttribute('clip-path', clipUrl);
         });
-        prependSvg('.plush-face', 'translate(15 0)');
+        prependSvg('.plush-face', 'translate(19 0)');
         var dEyes = svg.querySelectorAll('.plush-face .mon-eye');
         if (dEyes.length >= 2) {
           var pe0 = dEyes[0].getAttribute('transform') || '';
           dEyes[0].setAttribute('transform', 'translate(3 0) ' + pe0);
           var pe1 = dEyes[1].getAttribute('transform') || '';
-          dEyes[1].setAttribute('transform', 'translate(-5 0) translate(116 114) scale(0.70 0.96) translate(-116 -114) ' + pe1);
+          dEyes[1].setAttribute('transform', 'translate(-6 0) translate(116 114) scale(0.66 0.95) translate(-116 -114) ' + pe1);
         }
         [].forEach.call(svg.querySelectorAll('.plush-face .mon-eye > ellipse, .plush-face .mon-eye > circle'), function (el) {
           var fill = el.getAttribute('fill') || '';
@@ -1059,19 +1059,24 @@
         });
         [].forEach.call(svg.querySelectorAll('.plush-face > ellipse'), function (el) {
           var cx = Number(el.getAttribute('cx') || 0);
-          if (cx > 115) el.setAttribute('opacity', '0.18');
+          if (cx > 115) el.setAttribute('display', 'none');
           else if (cx < 85 && cx > 60) el.setAttribute('transform', 'translate(5 0)');
         });
         [].forEach.call(svg.querySelectorAll('path[fill^="url(#mon-fin-"]'), function (el) {
           var d = el.getAttribute('d') || '';
-          if (/^M\s*1[1-9]\d/.test(d)) el.setAttribute('transform', 'translate(-12 0) translate(136 90) scale(0.42 0.9) translate(-136 -90)');
+          if (/^M\s*1[1-9]\d/.test(d)) el.setAttribute('transform', 'translate(-16 0) translate(136 90) scale(0.32 0.88) translate(-136 -90)');
           else el.setAttribute('transform', 'translate(2 0) rotate(-4 65 90)');
         });
-        prependSvg('.monster-eyewear', 'translate(14 0)');
+        prependSvg('.monster-eyewear', 'translate(18 0) translate(100 112) scale(0.88 1) translate(-100 -112)');
         prependSvg('.monster-hat', 'translate(-6 0) rotate(-4 100 65)');
         prependSvg('.monster-tail-layer', 'translate(194 0) scale(-1 1)');
+        // the scarf turns with the body: the band narrows and the knot moves round to the front
+        [].forEach.call(svg.querySelectorAll('.monster-bob-group > g[transform^="translate(0 "]'), function (el) {
+          el.setAttribute('transform', 'translate(102 0) scale(0.93 1) translate(-102 0) ' + (el.getAttribute('transform') || ''));
+          [].forEach.call(el.querySelectorAll('path[fill="#dc2626"], line[stroke="#fef08a"]'), function (k) { k.setAttribute('transform', 'translate(14 0)'); });
+        });
         setCss('.mon-ear-l', 'translate(7px, 0px) rotate(' + (p.ear || 0) + 'deg)');
-        setCss('.mon-ear-r', 'translate(-4px, -1px) scale(0.86, 0.95) rotate(' + (-(p.ear || 0)) + 'deg)');
+        setCss('.mon-ear-r', 'translate(-8px, 0px) scale(0.8, 0.92) rotate(' + (-(p.ear || 0)) + 'deg)');
         setCss('.mon-arm-l', 'translate(16px, -1px) rotate(' + (p.armL || 0) + 'deg)');
         setCss('.mon-arm-r', 'translate(-8px, 1px) scale(0.84, 0.92) rotate(' + (p.armR || 0) + 'deg)');
       } else if (p.view === 'up') {
@@ -1083,19 +1088,8 @@
         [].forEach.call(svg.querySelectorAll('.monster-bob-group > g[transform^="translate(0 "] path[fill="#dc2626"], .monster-bob-group > g[transform^="translate(0 "] line[stroke="#fef08a"]'), function (el) {
           el.setAttribute('display', 'none');
         });
-        // Add subtle plush back-seam & lower-back shading inside the torso group
-        var torsoG = svg.querySelector('.mon-body-breathe');
-        if (torsoG) {
-          var seam = svg.ownerDocument.createElementNS(NS, 'path');
-          seam.setAttribute('d', 'M 100 76 Q 99 108 100 138');
-          seam.setAttribute('fill', 'none');
-          seam.setAttribute('stroke', '#ffffff');
-          seam.setAttribute('stroke-width', '1.8');
-          seam.setAttribute('stroke-dasharray', '4 4');
-          seam.setAttribute('stroke-linecap', 'round');
-          seam.setAttribute('opacity', '0.28');
-          torsoG.appendChild(seam);
-        }
+        // From behind the ears show no pink insides (as in the turnaround drawing), and the back stays clean
+        [].forEach.call(svg.querySelectorAll('.mon-ear circle[fill="#f472b6"]'), function (el) { el.setAttribute('display', 'none'); });
         // Move tail to the foreground of `.monster-bob-group` and center it on the lower back so it wags in front of the camera
         var bobG = svg.querySelector('.monster-bob-group');
         var tailLayer = svg.querySelector('.monster-tail-layer');
