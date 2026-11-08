@@ -1905,12 +1905,16 @@
         <span class="dock-btn-icon">⏱</span>
         <span class="dock-btn-label">Timer</span>
       </button>
+      <button type="button" class="dock-pill-btn" onclick="window.open('smart-board/index.html', 'smartboard')" title="Smart Board with AI: neat handwriting, word cards, quizzes, stories and pictures">
+        <span class="dock-btn-icon">🪄</span>
+        <span class="dock-btn-label">Smart Board</span>
+      </button>
       <button type="button" class="dock-pill-btn" onclick="openFastAttendanceModal()" title="Quick Attendance Roll Call">
         <span class="dock-btn-icon">✓</span>
         <span class="dock-btn-label">Roll Call</span>
       </button>
       <div class="dock-more-wrap" id="dock-more-wrap">
-        <button type="button" class="dock-pill-btn" id="dock-more-trigger" onclick="toggleDockMore(event)" title="More classroom tools: Smart Board, Random picker, Groups, Voice changer" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="dock-pill-btn" id="dock-more-trigger" onclick="toggleDockMore(event)" title="More classroom tools: Sleepy Monster, Random picker, Groups, Voice changer" aria-haspopup="true" aria-expanded="false">
           <span class="dock-btn-icon">⋯</span>
           <span class="dock-btn-label">More ▾</span>
         </button>
@@ -1926,10 +1930,6 @@
       <button type="button" class="dock-pill-btn dock-more-item" onclick="switchClassroomSubTab('groups')" title="Classroom Group Work">
         <span class="dock-btn-icon">👥</span>
         <span class="dock-btn-label">Groups</span>
-      </button>
-      <button type="button" class="dock-pill-btn dock-more-item" onclick="window.open('smart-board/index.html', 'smartboard')" title="Smart Board with AI: neat handwriting, /draw pictures, word cards, quizzes">
-        <span class="dock-btn-icon">🪄</span>
-        <span class="dock-btn-label">Smart Board</span>
       </button>
       <button type="button" class="dock-pill-btn dock-more-item" onclick="VoiceFX.toggle()" title="Voice Changer: talk into the microphone and sound like a funny character">
         <span class="dock-btn-icon">🎙️</span>
@@ -1962,7 +1962,7 @@
     <div class="dock-cluster">
       <button type="button" class="dock-pill-btn dock-btn-smartboard" onclick="toggleSmartboardMode()" title="Toggle Classroom Smartboard Mode">
         <span class="dock-btn-icon">📺</span>
-        <span class="dock-btn-label" id="label-smartboard-mode">Smartboard</span>
+        <span class="dock-btn-label" id="label-smartboard-mode">Classroom Mode</span>
       </button>
     </div>
   </div>
@@ -3097,7 +3097,7 @@
   <script src="js/class-view.js?v=14"></script>
   <script src="js/class-rewards.js?v=10"></script>
   <script src="js/monster-closet.js?v=6"></script>
-  <script src="js/class-mode.js?v=17"></script>
+  <script src="js/class-mode.js?v=18"></script>
   <script src="js/birthday.js?v=3"></script>
 
   <!-- Global Sound System (Harmonic Web Audio) -->
