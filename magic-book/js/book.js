@@ -174,6 +174,7 @@
   }
 
   function goShelf() {
+    if (S.scene && window.MagicScene) MagicScene.close(true);
     stopRead(); closeModal(); setTool(null); resetZoom();
     $('book-view').hidden = true; $('shelf-view').hidden = false;
   }
@@ -208,7 +209,7 @@
   /* ---------------- layout ---------------- */
   function layout() {
     var W = innerWidth, H = innerHeight;
-    var cs = getComputedStyle($('book-view')), top = parseFloat(cs.getPropertyValue('--top')) || 50, bot = parseFloat(cs.getPropertyValue('--bot')) || 56, arw = parseFloat(cs.getPropertyValue('--arw')) || 40;
+    var top = document.querySelector('.topbar').offsetHeight || 50, bot = $('ribbon').offsetHeight || 56, arw = $('btn-next').offsetWidth || 40;
     var availH = H - top - bot - 16, availW = W - 2 * arw - 24;
     S.single = (availW / availH) < 1.2;
     if (S.single) S.spreads = S.pageList.map(function (p) { return [null, p]; });
@@ -247,6 +248,7 @@
     if (S.si === 0 && S.spreads.length > 1) $('slot-right').appendChild(el('div', 'corner-hint'));
     store('mb-pos-' + S.g, S.si);
     drawAllInk(); drawMarks(); buildRibbon(); preload();
+    if (window.MagicScene) MagicScene.onSpread();
   }
   function fillSlot(id, p) {
     var s = $(id); s.innerHTML = ''; s.classList.toggle('empty', !p);
@@ -326,6 +328,7 @@
     render();
   }
   function turn(dir) {
+    if (S.scene) return;
     var T = prepTurn(dir); if (!T) return;
     swish();
     runTurn(T, dir < 0 ? 1 : 0, function () { finishTurn(T, true); });
@@ -334,12 +337,13 @@
   /* drag a corner to turn */
   var drag = null;
   function bookDown(e) {
+    if (S.scene) return;
     if (e.pointerType === 'pen' && !S.tool) {
       $('tray').hidden = false; $('pencil').classList.add('open');
       setTool('pen');
       return;
     }
-    if (S.tool || S.busy || e.button > 0) return;
+    if (S.scene || S.tool || S.busy || e.button > 0) return;
     var r = $('book').getBoundingClientRect(), x = (e.clientX - r.left) / r.width;
     if (S.zoom > 1) { drag = { pan: true, x: e.clientX, y: e.clientY, px: S.panX, py: S.panY }; $('book').setPointerCapture(e.pointerId); return; }
     var zone = S.single ? .32 : .24;
@@ -371,14 +375,27 @@
   }
 
   /* zoom (double-tap a page) */
-  function applyZoom() {
+  // The book is a 3D object: it tilts a little toward the pointer, and the scene code takes it over in 3D mode.
+  S.tiltX = 5; S.tiltY = 0;
+  function composeBook() {
+    if (S.scene) return;
     var b = $('book');
-    b.style.transform = S.zoom > 1 ? 'translate(' + S.panX + 'px,' + S.panY + 'px) scale(' + S.zoom + ')' : '';
+    b.style.transform = (S.zoom > 1 ? 'translate(' + S.panX + 'px,' + S.panY + 'px) scale(' + S.zoom + ') ' : '') +
+      'rotateX(' + S.tiltX.toFixed(2) + 'deg) rotateY(' + S.tiltY.toFixed(2) + 'deg)';
     b.classList.toggle('zoomed', S.zoom > 1);
+  }
+  function applyZoom() { composeBook(); }
+  var tiltRaf = 0;
+  function stageTilt(e) {
+    if (S.scene || S.busy || drag || S.zoom > 1) return;
+    var r = $('stage').getBoundingClientRect();
+    var tx = 5 - ((e.clientY - r.top) / r.height - .5) * 5, ty = ((e.clientX - r.left) / r.width - .5) * 8;
+    if (tiltRaf) return;
+    tiltRaf = requestAnimationFrame(function () { tiltRaf = 0; S.tiltX = tx; S.tiltY = ty; composeBook(); });
   }
   function resetZoom() { S.zoom = 1; S.panX = S.panY = 0; applyZoom(); }
   function toggleZoom(e) {
-    if (S.tool || S.busy) return;
+    if (S.scene || S.tool || S.busy) return;
     if (S.zoom > 1) return resetZoom();
     var b = $('book'), r = b.getBoundingClientRect();
     var cx = r.left + r.width / 2, cy = r.top + r.height / 2, z = 2.1;
@@ -607,7 +624,7 @@
     var vids = visiblePages().filter(function (p) { return p.video; });
     var snd = visiblePages().filter(function (p) { return p.sound; });
     if ($('btn-scene')) {
-      $('btn-scene').classList.toggle('empty', !sc3d.length);
+      $('btn-scene').classList.toggle('empty', true);
       $('btn-scene').onclick = function () { if (sc3d.length) open3dScene(sc3d[0]); };
     }
     $('btn-video').classList.toggle('empty', !vids.length);
@@ -720,6 +737,8 @@
     b.addEventListener('pointerup', bookUp);
     b.addEventListener('pointercancel', bookUp);
     b.addEventListener('dblclick', toggleZoom);
+    $('stage').addEventListener('pointermove', stageTilt);
+    $('stage').addEventListener('pointerleave', function () { if (!S.scene) { S.tiltX = 5; S.tiltY = 0; composeBook(); } });
     $('btn-next').onclick = function () { turn(-1); };
     $('btn-prev').onclick = function () { turn(1); };
     $('btn-home').onclick = goShelf;
@@ -731,6 +750,7 @@
     addEventListener('keydown', function (e) {
       if (!$('modal').hidden) { if (e.key === 'Escape') closeModal(); return; }
       if ($('book-view').hidden) return;
+      if (S.scene) { if (e.key === 'Escape' && window.MagicScene) MagicScene.close(); return; }
       if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); turn(-1); }
       else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); turn(1); }
       else if (e.key === 'Escape') { resetZoom(); setTool(null); }
@@ -740,5 +760,10 @@
   }
 
   wire(); loadData();
-  window.MagicBook = { state: S, turn: turn, open: openBook, open3dScene: open3dScene };
+  window.MagicBook = {
+    state: S, turn: turn, open: openBook, visiblePages: visiblePages, exItems: exItems, say: say, chime: chime, toast: toast,
+    swish: swish, drawMarks: drawMarks, updateExCount: updateExCount, store: store, composeBook: composeBook,
+    resetZoom: resetZoom, setTool: setTool, stopRead: stopRead, esc: esc
+  };
+  if (window.MagicScene) MagicScene.init();
 })();
