@@ -8,6 +8,7 @@
   var IMG_W = 1376, IMG_H = 768;            // size of the painted harbour picture (art/bg_benbow.webp)
   var BG = 'art/bg_benbow.webp';
   var FLAT = 'art/flat/';
+  var KENNEY = 'art/kenney/';
 
   // The walking path, in picture pixels: from the inn door, down the hill, along the beach, onto the dock
   var PATH = [
@@ -134,8 +135,16 @@
       b.setAttribute('aria-label', p.name);
       b.style.left = pct(p.x, IMG_W); b.style.top = pct(p.y, IMG_H);
       if (p.img) b.style.setProperty('--h', (p.h * 100) + '%');
-      b.innerHTML = (p.img ? '<img src="' + FLAT + p.img + '.webp" alt="" draggable="false">' : '') +
-        '<span class="hb-ring"></span><span class="hb-num">' + p.n + '</span><span class="hb-arrow">⬇</span>';
+      b.innerHTML = (p.img ? '<img class="hb-prop" src="' + FLAT + p.img + '.webp" alt="" draggable="false">' : '') +
+        '<span class="hb-ring"></span>' +
+        '<span class="hb-sparkles" aria-hidden="true">' +
+          '<img class="hb-sp s1" src="' + KENNEY + 'p_star.webp" alt="">' +
+          '<img class="hb-sp s2" src="' + KENNEY + 'p_spark.webp" alt="">' +
+          '<img class="hb-sp s3" src="' + KENNEY + 'p_magic.webp" alt="">' +
+          '<img class="hb-sp s4" src="' + KENNEY + 'p_star.webp" alt="">' +
+        '</span>' +
+        '<span class="hb-num"><img class="hb-star" src="' + KENNEY + 'star_outline.webp" alt=""><b>' + p.n + '</b></span>' +
+        '<span class="hb-arrow"><img src="' + KENNEY + 'arrow_down.webp" alt="" draggable="false"></span>';
       b.onclick = function () { goTo(p); };
       places.appendChild(b);
     });
@@ -309,9 +318,12 @@
     var nx = nextStop();
     PLACES.forEach(function (p) {
       var b = $('hb-place-' + p.n);
-      b.classList.toggle('done', isDone(p.n));
+      var done = isDone(p.n);
+      b.classList.toggle('done', done);
       b.classList.toggle('next', p.n === nx);
       b.classList.toggle('later', p.n > nx);
+      var starImg = b.querySelector('.hb-star');
+      if (starImg) starImg.src = KENNEY + (done ? 'star_gold.webp' : 'star_outline.webp');
     });
     var st = $('hb-stamps'), html = '';
     for (var i = 1; i <= 5; i++) html += '<span class="hb-stamp' + (isDone(i) ? ' got' : '') + '"><img src="' + FLAT + 'o_map_stamp.webp" alt=""><b>' + i + '</b></span>';
@@ -326,13 +338,25 @@
     for (var i = a; i !== b + step; i += step) out.push(i);
     return out;
   }
+  function spawnDust(x, y) {
+    if (!el.stage) return;
+    var d = document.createElement('img');
+    d.className = 'hb-dust';
+    d.src = KENNEY + (Math.random() < 0.35 ? 'p_spark.webp' : 'p_smoke.webp');
+    d.alt = '';
+    d.style.left = pct(x + (Math.random() - 0.5) * 20, IMG_W);
+    d.style.top = pct(y - 4 + (Math.random() - 0.5) * 10, IMG_H);
+    d.style.zIndex = String(9 + Math.round(y));
+    el.stage.appendChild(d);
+    setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); }, 520);
+  }
   function walk(toNode, done) {
     if (hero.walking) return;
     var nodes = pathBetween(hero.node, toNode);
     if (nodes.length <= 1) { hero.node = toNode; if (done) done(); return; }
     hero.walking = true;
     el.hero.classList.add('walking'); el.cat.classList.add('walking');
-    var i = 1, speed = 0.30;   // picture pixels per millisecond
+    var i = 1, speed = 0.30, lastDust = 0;   // picture pixels per millisecond
     var from = { x: hero.x, y: hero.y }, t0 = performance.now();
     function frame(now) {
       var to = PATH[nodes[i]];
@@ -342,6 +366,10 @@
       if (Math.abs(dx) > 2) { hero.face = dx > 0 ? 1 : -1; el.hero.style.setProperty('--face', hero.face); }
       stepPose(dx, dy, now);
       place(el.hero, hero.x, hero.y);
+      if (now - lastDust > 95) {
+        lastDust = now;
+        spawnDust(hero.x, hero.y);
+      }
       // Benbow follows a little behind
       trail.push([hero.x, hero.y]); if (trail.length > 26) { var c = trail.shift(); cat.x = c[0] - 30 * hero.face; cat.y = c[1] + 6; el.cat.style.setProperty('--face', hero.face); place(el.cat, cat.x, cat.y); }
       if (f >= 1) {
@@ -405,6 +433,8 @@
   function celebrate(n) {
     var st = $('hb-stamps').children[n - 1];
     if (st && F().sparkleAt) F().sparkleAt(st, 14);
+    var placeBtn = $('hb-place-' + n);
+    if (placeBtn && F().sparkleAt) F().sparkleAt(placeBtn, n === 5 ? 26 : 18);
     if (A().sfxStamp) A().sfxStamp();
     var nx = nextStop();
     var cueNext = function () {
