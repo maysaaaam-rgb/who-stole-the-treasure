@@ -98,22 +98,28 @@ const TASKS: Record<string, { max: number; prompt: (t: string, n: number) => str
   }
 };
 
-const NEAT_PROMPT =
-  'This is a photo of handwriting or a drawing on a classroom whiteboard, written by a teacher or a young English learner. ' +
-  'If it is writing: read it exactly as written (keep the child\'s spelling in "read"), then give the correct English spelling, ' +
-  'capital letters and punctuation in "corrected" (only fix real mistakes; do not add words), split into the same lines as written. ' +
-  'Set changed=true only if "corrected" differs from what was written (ignore letter size). Give one short kind tip (max 10 words) if changed. ' +
-  'If it is a drawing and not words, set kind="drawing" and guess what it shows in 1 to 3 simple English words in drawingGuess. ' +
-  'If you cannot read it, set kind="unclear".';
+function neatPrompt(hints: string[]): string {
+  return 'This picture is ENGLISH handwriting (or a drawing) written with a finger or pen on a classroom smartboard, by a teacher or an 8-10 year old English learner. ' +
+    'The strokes can be wobbly, big and joined. Read it letter by letter. ' +
+    (hints.length ? `Words from this week's lesson are likely: ${hints.join(', ')}. Prefer one of these ONLY if the letter shapes really fit; never invent words that are not written. ` : '') +
+    'If it is writing: put exactly what is written in "read" (keep the child\'s spelling), and the correct English spelling, capital letters and punctuation in "corrected" ' +
+    '(only fix real mistakes; do not add words), split into the same lines as written. ' +
+    'Set changed=true only if "corrected" differs from what was written (ignore letter size). Give one short kind tip (max 10 words) if changed. ' +
+    'Set sure=false if ANY letter is doubtful, and give up to 3 other likely readings in "alternatives". ' +
+    'If it is a drawing and not words, set kind="drawing" and guess what it shows in 1 to 3 simple English words in drawingGuess. ' +
+    'If you cannot read it, set kind="unclear".';
+}
 const NEAT_SCHEMA = OBJ({
   kind: S('STRING', { enum: ['text', 'drawing', 'unclear'] }),
   read: S('STRING'),
   corrected: S('STRING'),
   lines: ARR(S('STRING'), { maxItems: 6 }),
   changed: S('BOOLEAN'),
+  sure: S('BOOLEAN'),
+  alternatives: ARR(S('STRING'), { maxItems: 3 }),
   tip: S('STRING'),
   drawingGuess: S('STRING')
-}, ['kind', 'read', 'corrected', 'lines', 'changed', 'tip', 'drawingGuess']);
+}, ['kind', 'read', 'corrected', 'lines', 'changed', 'sure', 'alternatives', 'tip', 'drawingGuess']);
 
 const PICTURE_STYLE =
   'Style: bright, glossy 3D cartoon like a modern children\'s picture book, soft rounded shapes, friendly big eyes if it is a living thing, ' +
@@ -206,7 +212,7 @@ function blocked(data: any): boolean {
 }
 function partsOf(data: any): any[] { return (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || []; }
 function parseJson(data: any): Json | null {
-  const text = partsOf(data).map((p: any) => p.text || '').join('').trim();
+  const text = partsOf(data).filter((p: any) => !p.thought).map((p: any) => p.text || '').join('').trim();
   if (!text) return null;
   try { return JSON.parse(text); } catch { /* fall through */ }
   const m = text.match(/\{[\s\S]*\}/);
@@ -277,7 +283,8 @@ export async function handle(req: Request, env: Env, doFetch: typeof fetch = fet
   let contents: Json[], schema: Json, temp = 0.4;
   if (task === 'neat') {
     if (!isB64Image(body.image)) return json(req, 400, { error: 'no_image', message: 'Nothing to read.' });
-    contents = [{ role: 'user', parts: [{ text: NEAT_PROMPT }, { inlineData: { mimeType: 'image/png', data: body.image } }] }];
+    const hints = (Array.isArray(body.hintWords) ? body.hintWords : []).slice(0, 40).map((w) => clean(w, 30)).filter(Boolean);
+    contents = [{ role: 'user', parts: [{ text: neatPrompt(hints) }, { inlineData: { mimeType: 'image/png', data: body.image } }] }];
     schema = NEAT_SCHEMA; temp = 0;
   } else if (TASKS[task]) {
     const t = TASKS[task], text = clean(body.text, t.max);
@@ -298,6 +305,7 @@ export async function handle(req: Request, env: Env, doFetch: typeof fetch = fet
   if (blocked(res.data)) return json(req, 422, { error: 'blocked', message: 'Let\'s try something else! 🙂', left: left() });
   const data = parseJson(res.data);
   if (!data) return json(req, 502, { error: 'bad_answer', message: 'The AI answer was not clear. Try again.', left: left() });
+  if (task === 'neat') (data as Json).src = 'gemini';
   u.text += 1;
   await addUsage(env, doFetch, 'text', u.text);
   return json(req, 200, { ok: true, task, data, left: left() });
