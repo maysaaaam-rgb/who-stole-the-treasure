@@ -42,8 +42,15 @@
     { id: 'g_lamp',      name: 'Garden Lamp',    kind: 'garden', h: 170, sw: 50,  cost: { stone: 2, crystal: 1 },          defPos: { x: 1260, y: 700 } },
     { id: 'g_swing',     name: 'Wooden Swing',   kind: 'garden', h: 190, sw: 125, cost: { wood: 3, flower: 1 },            defPos: { x: 520,  y: 1140 } },
     { id: 'g_tree',      name: 'Apple Tree',     kind: 'garden', h: 260, sw: 85,  cost: { wood: 2, berry: 2 },             defPos: { x: 1940, y: 1100 } },
-    { id: 'g_pond',      name: 'Lily Pond',      kind: 'garden', h: 135, sw: 140, cost: { stone: 3, shell: 2 },            defPos: { x: 820,  y: 1220 }, flat: true },
-    { id: 'g_fountain',  name: 'Stone Fountain', kind: 'garden', h: 190, sw: 140, cost: { stone: 4, shell: 2, crystal: 1 }, defPos: { x: 1560, y: 1160 } }
+    { id: 'g_pond',        name: 'Lily Pond',         kind: 'garden', h: 135, sw: 140, cost: { stone: 3, shell: 2 },            defPos: { x: 820,  y: 1220 }, flat: true },
+    { id: 'g_fountain',    name: 'Stone Fountain',    kind: 'garden', h: 190, sw: 140, cost: { stone: 4, shell: 2, crystal: 1 }, defPos: { x: 1560, y: 1160 } },
+    /* Kenney CC0 Tiny Town Decorator Collection */
+    { id: 'f_chest',       name: 'Treasure Chest',    kind: 'patio',  h: 105, sw: 85,  cost: { wood: 2, stone: 1 },             defPos: { x: 680,  y: 720 } },
+    { id: 'g_mushrooms',   name: 'Red Mushrooms',     kind: 'garden', h: 90,  sw: 70,  cost: { flower: 1, berry: 1 },           defPos: { x: 640,  y: 1060 } },
+    { id: 'g_wheelbarrow', name: 'Wheelbarrow',       kind: 'garden', h: 110, sw: 95,  cost: { wood: 2, flower: 1 },            defPos: { x: 1120, y: 1040 } },
+    { id: 'g_woodsign',    name: 'Direction Sign',    kind: 'garden', h: 120, sw: 65,  cost: { wood: 1 },                       defPos: { x: 1060, y: 880 } },
+    { id: 'g_beehive',     name: 'Honey Beehive',     kind: 'garden', h: 115, sw: 80,  cost: { wood: 2, flower: 2 },            defPos: { x: 1740, y: 1020 } },
+    { id: 'g_well',        name: 'Stone Wishing Well',kind: 'garden', h: 165, sw: 120, cost: { stone: 3, wood: 2 },             defPos: { x: 1240, y: 1180 } }
   ];
 
   var VILLAGERS = [
@@ -89,7 +96,7 @@
       maxEnergy: 100,
       houseTier: 1,
       bonusCoins: 0,
-      ownedFurniture: { f_rug: 1, g_flowerbed: 1 },
+      ownedFurniture: { f_rug: 1, g_flowerbed: 1, g_mushrooms: 1, g_woodsign: 1, f_chest: 1 },
       placed: [
         { id: 'f_rug', x: 1200, y: 830, flip: false, lvl: 1 },
         { id: 'g_flowerbed', x: 580, y: 920, flip: false, lvl: 1 }
