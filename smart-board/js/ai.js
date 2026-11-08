@@ -347,7 +347,29 @@
     balloon: ['bal·loon', 'noun', 'Red and blue balloons float at the party.', 'balon', '🎈', 'toys'],
     guitar: ['gui·tar', 'noun', 'She plays a happy song on her guitar.', 'gitar', '🎸', 'music'],
     piano: ['pi·an·o', 'noun', 'He presses the black and white keys on the piano.', 'piyano', '🎹', 'music'],
-    drum: ['drum', 'noun', 'Beat the drum in time with the music!', 'davul', '🥁', 'music']
+    drum: ['drum', 'noun', 'Beat the drum in time with the music!', 'davul', '🥁', 'music'],
+    ancient: ['ancient', 'adjective', 'Ancient Egypt is very, very old.', 'antik / çok eski', '🏺', 'history'],
+    chariot: ['chariot', 'noun', 'A horse pulls the fast chariot.', 'savaş arabası / atlı araba', '🐎', 'history'],
+    pharaoh: ['pharaoh', 'noun', 'The pharaoh was the king of Ancient Egypt.', 'firavun', '👑', 'history'],
+    spacecraft: ['spacecraft', 'noun', 'The Voyager spacecraft flies in space.', 'uzay aracı', '🛸', 'space'],
+    capsule: ['time capsule', 'noun', 'We put special objects inside a time capsule.', 'zaman kapsülü', '📦', 'history'],
+    earth: ['Earth', 'noun', 'Planet Earth is our blue home in space.', 'Dünya', '🌍', 'space'],
+    glasses: ['glasses', 'noun', 'She wears glasses to see clearly.', 'gözlük', '👓', 'items'],
+    surprised: ['surprised', 'adjective', 'Jannah was surprised to see Ancient Egypt!', 'şaşkın / şaşırmış', '😲', 'feelings'],
+    disc: ['disc', 'noun', 'The golden disc carries sounds and pictures of Earth.', 'disk / plak', '💿', 'space'],
+    future: ['future', 'noun', 'What will life be like in the future?', 'gelecek', '🚀', 'time'],
+    past: ['past', 'noun', 'We learn about people in the past.', 'geçmiş', '⏳', 'time'],
+    present: ['present', 'noun', 'We live in the present today.', 'şimdiki zaman', '📅', 'time'],
+    composer: ['composer', 'noun', 'Beethoven was a famous music composer.', 'besteci', '🎼', 'music'],
+    orchestra: ['orchestra', 'noun', 'Many musicians play together in an orchestra.', 'orkestra', '🎻', 'music'],
+    deaf: ['deaf', 'adjective', 'Beethoven became deaf, so he could not hear.', 'işitme engelli / sağır', '👂', 'people'],
+    studio: ['studio', 'noun', 'Foley artists make movie sounds in a studio.', 'stüdyo', '🎙️', 'music'],
+    record: ['record', 'verb', 'They record the sound with a microphone.', 'kaydetmek', '🔴', 'music'],
+    swords: ['swords', 'noun', 'Two metal knives sound like clashing swords!', 'kılıçlar', '⚔️', 'items'],
+    knight: ['knight', 'noun', 'The brave knight rides a horse in shiny armour.', 'şövalye', '🛡️', 'history'],
+    eagle: ['eagle', 'noun', 'A big eagle flies high over the mountains.', 'kartal', '🦅', 'animals'],
+    audience: ['audience', 'noun', 'The audience claps at the end of the concert.', 'seyirci / dinleyici', '👏', 'people'],
+    whistle: ['whistle', 'noun', 'Blow the whistle to make a high sound.', 'düdük', '🪈', 'music']
   };
 
   // Extra classroom phrases & Turkish <-> English lookup
