@@ -65,6 +65,16 @@
       gm.addEventListener('click', function () { openGameMaker(); });
       right.insertBefore(gm, right.firstChild);
     }
+    // The Smart Board is a main tool: one tap from every page, next to Game Maker (opens in its own tab so the platform stays open)
+    if (!document.getElementById('cm-sb-btn')) {
+      var sbb = document.createElement('button'); sbb.type = 'button'; sbb.id = 'cm-sb-btn'; sbb.className = 'cm-toggle cm-sb-btn';
+      sbb.innerHTML = '<span>🪄</span> Smart Board';
+      sbb.title = 'Open the Smart Board: neat handwriting, word cards, quizzes, stories and pictures with AI';
+      sbb.style.cssText = 'background:linear-gradient(180deg,#0ea5e9,#0369a1);color:#fff;border:1.5px solid #38bdf8;border-bottom:4px solid #075985;border-radius:12px;padding:7px 14px;font-weight:800;font-size:.86rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer';
+      sbb.addEventListener('click', function () { root.open('smart-board/index.html', 'smartboard'); });
+      var gmb = document.getElementById('cm-gm-btn');
+      right.insertBefore(sbb, gmb ? gmb.nextSibling : right.firstChild);
+    }
     if (document.getElementById('cm-toggle')) return paintToggle();
     var b = document.createElement('button'); b.type = 'button'; b.id = 'cm-toggle'; b.className = 'cm-toggle';
     b.addEventListener('click', function () { api.set(!on()); });
