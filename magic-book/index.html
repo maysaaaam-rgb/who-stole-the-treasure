@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Magic Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/book.css?v=2">
+</head>
+<body>
+<div id="room">
+  <canvas id="dust"></canvas>
+  <div class="lamp-glow"></div>
+
+  <!-- SHELF -->
+  <section id="shelf-view">
+    <h1 class="shelf-title">✨ The Magic Book ✨</h1>
+    <p class="shelf-sub">Choose a book</p>
+    <div class="shelf">
+      <div class="shelf-books" id="shelf-books"></div>
+      <div class="shelf-plank"></div>
+    </div>
+  </section>
+
+  <!-- BOOK -->
+  <section id="book-view" hidden>
+    <header class="topbar">
+      <button class="tb-btn" id="btn-home" title="Back to the shelf">📚</button>
+      <div class="tb-title" id="tb-title"></div>
+      <div class="tb-classes" id="tb-classes"></div>
+      <div class="tb-pages" id="tb-pages"></div>
+      <button class="tb-btn" id="btn-full" title="Full screen">⛶</button>
+    </header>
+
+    <div id="stage">
+      <button class="turn-arrow prev" id="btn-prev" aria-label="Previous page">‹</button>
+      <div id="book">
+        <div class="book-shadow"></div>
+        <div class="cover-board"></div>
+        <div class="page-slot left" id="slot-left"></div>
+        <div class="page-slot right" id="slot-right"></div>
+        <div class="spine"></div>
+        <div id="leaf-holder"></div>
+        <div id="cover-leaf"></div>
+      </div>
+      <button class="turn-arrow next" id="btn-next" aria-label="Next page">›</button>
+    </div>
+
+    <footer class="ribbon" id="ribbon">
+      <div class="rb-group" id="rb-words"></div>
+      <div class="rb-group rb-right">
+        <button class="rb-btn" id="btn-read">🗣️ Read to me</button>
+        <button class="rb-btn" id="btn-ex">✨ Exercises <b id="ex-count"></b></button>
+        <button class="rb-btn" id="btn-answers">👁️ Answers</button>
+        <button class="rb-btn hide-empty" id="btn-video">🎬 Video</button>
+        <button class="rb-btn hide-empty" id="btn-sound">🔊 Sound</button>
+      </div>
+    </footer>
+
+    <!-- floating pencil -->
+    <div id="pencil">
+      <button id="pencil-btn" title="Pen and tools">✏️</button>
+      <div id="tray" hidden>
+        <button class="tool" data-tool="pen" title="Pen">🖊️</button>
+        <button class="tool" data-tool="hl" title="Highlighter">🖍️</button>
+        <button class="tool" data-tool="erase" title="Eraser">🧽</button>
+        <button class="tool" data-tool="stamp" title="Stamp">⭐</button>
+        <span class="tray-sep"></span>
+        <span id="colors"></span>
+        <span class="tray-sep"></span>
+        <span id="stamps"></span>
+        <button class="tool" id="btn-undo" title="Undo">↶</button>
+        <button class="tool" id="btn-clear" title="Clear these pages">🗑️</button>
+        <button class="tool done" id="btn-done" title="Done">✔</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="caption" hidden></div>
+  <div id="modal" hidden><div class="modal-card" id="modal-card"></div></div>
+  <div id="toast" hidden></div>
+</div>
+
+<script>
+  // On the live site the pages come from the teacher's private cloud folder, so the teacher must be signed in.
+  if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && !/[?&]base=/.test(location.search)) {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>' +
+      '<script src="../js/supabase-config.js?v=2.3"><\/script><script src="../js/supabase-client.js?v=3.3"><\/script>' +
+      '<script src="../js/teacher-auth.js?v=1" data-guard="1"><\/script>');
+  }
+</script>
+<script src="js/book.js?v=3"></script>
+</body>
+</html>
