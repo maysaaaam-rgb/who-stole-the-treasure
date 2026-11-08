@@ -12,8 +12,9 @@
   var GM = window.GM = window.GM || {};
   GM.sets = GM.sets || [];
 
+  // Same item shape as the other Game Maker sets: question, answer, two wrong answers, picture.
   function q(text, a, b, c, ico) {
-    return { q: text, a: a, opts: [a, b, c], ico: ico || '❓' };
+    return { q: text, a: a, w: [b, c].filter(Boolean), pic: ico || '', unit: 5, skill: 'Reading' };
   }
 
   /* =====================================================================
@@ -180,6 +181,11 @@
   ];
 
   u5Sets.forEach(function (s) {
+    var words = /vocab/.test(s.id);
+    s.e = s.e || s.icon || '📘';
+    s.sub = s.sub || s.tag || s.desc || '';
+    s.skill = s.skill || '';
+    s.items = (s.questions || []).map(function (it) { var c = Object.assign({}, it); if (words) c.skill = 'Words'; return c; });
     var idx = GM.sets.findIndex(function (x) { return x.id === s.id; });
     if (idx >= 0) GM.sets[idx] = s;
     else GM.sets.push(s);

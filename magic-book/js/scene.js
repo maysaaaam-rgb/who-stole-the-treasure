@@ -36,14 +36,14 @@
     ],
     g4: [
       {
-        pages: [72, 73, 74, 75, 76, 77, 78, 79, 80, 81], bg: 'bg_g4_studio', title: 'A movie sound studio',
+        pages: [72, 73, 74, 75, 76, 77, 78], bg: 'bg_g4_studio', title: 'A movie sound studio',
         actors: [
           { id: 'maya', img: 'c_g4_maya', x: 36, y: 92, h: 58, word: 'sound artist', line: 'I make sounds for movies!', anim: 'breathe', hero: true },
           { id: 'props', img: 'o_g4_soundprops', x: 70, y: 86, h: 32, word: 'objects', line: 'Boots, keys and paper make great sounds!', anim: 'shake' }
         ]
       },
       {
-        pages: [82, 83, 84, 85, 86, 87], bg: 'bg_g4_stage', title: 'The concert stage',
+        pages: [79, 80, 81, 82, 83, 84, 85, 86, 87], bg: 'bg_g4_stage', title: 'The concert stage',
         actors: [
           { id: 'drum', img: 'o_g4_bigdrum', x: 66, y: 82, h: 38, word: 'drum', line: 'Boom! Boom! Can you feel it?', anim: 'pulse' },
           { id: 'lina', img: 'c_g4_lina', x: 36, y: 94, h: 58, word: 'drummer', line: 'I feel the music with my feet!', anim: 'breathe', hero: true }

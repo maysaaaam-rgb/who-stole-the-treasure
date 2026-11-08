@@ -7,7 +7,7 @@
   var DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   var TYPES = {
     lesson: ['📖', 'Lesson', '#94a3b8'], unit4: ['📘', 'Unit 4', '#38bdf8'], alice: ['🫖', 'Alice', '#f472b6'], quiz: ['📝', 'Quiz', '#f59e0b'],
-    book: ['📗', 'Gov book', '#10b981'], halloween: ['🎃', 'Halloween', '#f97316'], birthday: ['🎂', 'Birthday', '#34d399'], meeting: ['👥', 'Meeting', '#a78bfa'], task: ['✅', 'To do', '#fb923c'], chuseok: ['🌕', 'Chuseok', '#fbbf24'], other: ['📌', 'Other', '#cbd5e1']
+    book: ['📗', 'Gov book', '#10b981'], unit5: ['📙', 'Unit 5', '#a855f7'], halloween: ['🎃', 'Halloween', '#f97316'], birthday: ['🎂', 'Birthday', '#34d399'], meeting: ['👥', 'Meeting', '#a78bfa'], task: ['✅', 'To do', '#fb923c'], chuseok: ['🌕', 'Chuseok', '#fbbf24'], other: ['📌', 'Other', '#cbd5e1']
   };
   // k12 timetable (19-23 Oct 2026; the same every week): classId -> weekday (1=Mon) -> start times
   var K12 = {
@@ -516,8 +516,51 @@
       store().setCalendarFlag('seed27');
     } catch (e) { /* the calendar still works */ }
   }
+  /* Week of 9-13 Nov 2026 (MEB week 9): Unit 5 in every class with the Magic Book + Game Maker (5 lessons), and
+     2 government-book lessons per class (pages to fill in from the MEB week-9 plan). */
+  function weekNov9Once() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed30')) return;
+      var list = customEvents().slice();
+      var rows = [
+        ["2026-11-09", "09:45", "class-4b", "unit5", "Unit 5 · Lesson 1: Opener: Make Some Noise (pp. 72–73)", "Open the Magic Book (magic-book/index.html?grade=4), pp. 72–73. Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 1)."],
+        ["2026-11-09", "10:30", "class-4a", "unit5", "Unit 5 · Lesson 1: Opener: Make Some Noise (pp. 72–73)", "Open the Magic Book (magic-book/index.html?grade=4), pp. 72–73. Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 1)."],
+        ["2026-11-09", "11:15", "class-4a", "unit5", "Unit 5 · Lesson 2: Reading 1: The Art of Sound (pp. 74–77)", "Open the Magic Book (magic-book/index.html?grade=4), pp. 74–77. Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 2)."],
+        ["2026-11-09", "13:30", "class-3a", "unit5", "Unit 5 · Lesson 1: Opener: Let’s Go Back (pp. 72–73)", "Open the Magic Book (magic-book/index.html?grade=3), pp. 72–73. Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 1)."],
+        ["2026-11-09", "14:15", "class-3a", "unit5", "Unit 5 · Lesson 2: Reading 1: The Time Book (1) (pp. 74–77)", "Open the Magic Book (magic-book/index.html?grade=3), pp. 74–77. Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 2)."],
+        ["2026-11-09", "16:05", "class-3b", "unit5", "Unit 5 · Lesson 1: Opener: Let’s Go Back (pp. 72–73)", "Open the Magic Book (magic-book/index.html?grade=3), pp. 72–73. Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 1)."],
+        ["2026-11-10", "09:00", "class-4b", "unit5", "Unit 5 · Lesson 2: Reading 1: The Art of Sound (pp. 74–77)", "Open the Magic Book (magic-book/index.html?grade=4), pp. 74–77. Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 2)."],
+        ["2026-11-10", "09:45", "class-4b", "book", "Government book lesson 1 (MEB week 9) · p. ___", "MEB book, the 35-minute routine: warm-up, the book pages, a short team game with the new words. Fill in the pages from the MEB week-9 plan. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan."],
+        ["2026-11-10", "10:30", "class-3a", "book", "Government book lesson 1 (MEB week 9) · p. ___", "MEB book, the 35-minute routine: warm-up, the book pages, a short team game with the new words. Fill in the pages from the MEB week-9 plan. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan."],
+        ["2026-11-10", "11:15", "class-3a", "unit5", "Unit 5 · Lesson 3: Reading 1: The Time Book (2) + Explore (pp. 78–80)", "Open the Magic Book (magic-book/index.html?grade=3), pp. 78–80. Game: game-maker/index.html?set=g3-u5-timebook&game=cannon. Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 3)."],
+        ["2026-11-10", "15:20", "class-4a", "book", "Government book lesson 1 (MEB week 9) · p. ___", "MEB book, the 35-minute routine: warm-up, the book pages, a short team game with the new words. Fill in the pages from the MEB week-9 plan. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan."],
+        ["2026-11-11", "10:30", "class-3b", "unit5", "Unit 5 · Lesson 2: Reading 1: The Time Book (1) (pp. 74–77)", "Open the Magic Book (magic-book/index.html?grade=3), pp. 74–77. Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 2)."],
+        ["2026-11-11", "11:15", "class-3b", "book", "Government book lesson 1 (MEB week 9) · p. ___", "MEB book, the 35-minute routine: warm-up, the book pages, a short team game with the new words. Fill in the pages from the MEB week-9 plan. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan."],
+        ["2026-11-11", "12:45", "class-4b", "unit5", "Unit 5 · Lesson 3: Explore Reading 1 + spelling ou + Cause and effect (pp. 78–79)", "Open the Magic Book (magic-book/index.html?grade=4), pp. 78–79. Game: game-maker/index.html?set=g4-u5-foley&game=cannon. Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 3)."],
+        ["2026-11-11", "13:30", "class-4b", "unit5", "Unit 5 · Lesson 4: Reading 2: Beethoven’s 9th (pp. 80–85)", "Open the Magic Book (magic-book/index.html?grade=4), pp. 80–85. Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 4)."],
+        ["2026-11-11", "14:15", "class-4a", "unit5", "Unit 5 · Lesson 3: Explore Reading 1 + spelling ou + Cause and effect (pp. 78–79)", "Open the Magic Book (magic-book/index.html?grade=4), pp. 78–79. Game: game-maker/index.html?set=g4-u5-foley&game=cannon. Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 3)."],
+        ["2026-11-11", "15:20", "class-4a", "unit5", "Unit 5 · Lesson 4: Reading 2: Beethoven’s 9th (pp. 80–85)", "Open the Magic Book (magic-book/index.html?grade=4), pp. 80–85. Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 4)."],
+        ["2026-11-12", "09:45", "class-3a", "unit5", "Unit 5 · Lesson 4: Main idea + Reading 2: Time Capsules (pp. 81–85)", "Open the Magic Book (magic-book/index.html?grade=3), pp. 81–85. Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 4)."],
+        ["2026-11-12", "10:30", "class-3b", "unit5", "Unit 5 · Lesson 3: Reading 1: The Time Book (2) + Explore (pp. 78–80)", "Open the Magic Book (magic-book/index.html?grade=3), pp. 78–80. Game: game-maker/index.html?set=g3-u5-timebook&game=cannon. Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 3)."],
+        ["2026-11-12", "11:15", "class-3b", "unit5", "Unit 5 · Lesson 4: Main idea + Reading 2: Time Capsules (pp. 81–85)", "Open the Magic Book (magic-book/index.html?grade=3), pp. 81–85. Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 4)."],
+        ["2026-11-12", "16:05", "class-4a", "book", "Government book lesson 2 (MEB week 9) · p. ___", "MEB book, the 35-minute routine: warm-up, the book pages, a short team game with the new words. Fill in the pages from the MEB week-9 plan. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan."],
+        ["2026-11-12", "16:55", "class-4a", "unit5", "Unit 5 · Lesson 5: Explore Reading 2, Think Together + Review (pp. 86–87)", "Open the Magic Book (magic-book/index.html?grade=4), pp. 86–87. Game: game-maker/index.html?set=g4-u5-mega&game=cannon. Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 5)."],
+        ["2026-11-13", "09:00", "class-3b", "book", "Government book lesson 2 (MEB week 9) · p. ___", "MEB book, the 35-minute routine: warm-up, the book pages, a short team game with the new words. Fill in the pages from the MEB week-9 plan. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan."],
+        ["2026-11-13", "09:45", "class-3b", "unit5", "Unit 5 · Lesson 5: Explore Reading 2, Phonics -nt, Think Together + Review (pp. 86–87)", "Open the Magic Book (magic-book/index.html?grade=3), pp. 86–87. Game: game-maker/index.html?set=g3-u5-mega&game=cannon. Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 5)."],
+        ["2026-11-13", "10:30", "class-3a", "book", "Government book lesson 2 (MEB week 9) · p. ___", "MEB book, the 35-minute routine: warm-up, the book pages, a short team game with the new words. Fill in the pages from the MEB week-9 plan. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan."],
+        ["2026-11-13", "11:15", "class-3a", "unit5", "Unit 5 · Lesson 5: Explore Reading 2, Phonics -nt, Think Together + Review (pp. 86–87)", "Open the Magic Book (magic-book/index.html?grade=3), pp. 86–87. Game: game-maker/index.html?set=g3-u5-mega&game=cannon. Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 5)."],
+        ["2026-11-13", "14:15", "class-4b", "book", "Government book lesson 2 (MEB week 9) · p. ___", "MEB book, the 35-minute routine: warm-up, the book pages, a short team game with the new words. Fill in the pages from the MEB week-9 plan. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan."],
+        ["2026-11-13", "15:20", "class-4b", "unit5", "Unit 5 · Lesson 5: Explore Reading 2, Think Together + Review (pp. 86–87)", "Open the Magic Book (magic-book/index.html?grade=4), pp. 86–87. Game: game-maker/index.html?set=g4-u5-mega&game=cannon. Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 5)."]
+      ];
+      list = list.filter(function (e) { return !rows.some(function (r) { return e.date === r[0] && e.time === r[1] && e.classId === r[2]; }); });
+      rows.forEach(function (r, i) { list.push({ id: 'seed30-' + i, date: r[0], time: r[1], classId: r[2], type: r[3], title: r[4], note: r[5] }); });
+      list.push({ id: 'seed30-break', date: '2026-11-16', time: '', classId: '', type: 'other', title: 'Mid-term break (16-20 November)', note: '' });
+      saveEvents(list);
+      store().setCalendarFlag('seed30');
+    } catch (e) { /* the calendar still works */ }
+  }
   function ensureSeeded() {
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce(); movieAndEzPetWeekOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce(); movieAndEzPetWeekOnce(); weekNov9Once();
   }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
