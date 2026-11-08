@@ -4645,6 +4645,9 @@
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
+    { title: 'Week of 9–13 November: my lessons in order (Unit 5 + government book lessons)', grade: 'Grade 3 & 4', date: '2026-11-08', file: 'Week-9-13-November-Order', kind: 'Week', word: false },
+    { title: "Unit 5: Let's Go Back · 5 lessons with the Magic Book and Game Maker (pp. 72–87)", grade: 'Grade 3', date: '2026-11-08', file: 'Grade3-Unit5-Lets-Go-Back-Lesson-Plans', word: true, launch: 'magic-book/index.html?grade=3' },
+    { title: 'Unit 5: Make Some Noise · 5 lessons with the Magic Book and Game Maker (pp. 72–87)', grade: 'Grade 4', date: '2026-11-08', file: 'Grade4-Unit5-Make-Some-Noise-Lesson-Plans', word: true, launch: 'magic-book/index.html?grade=4' },
     { title: 'Week of 2–6 November: my lessons in order (Book lessons + Pet Vet Clinic + Movie Cinema)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Week-2-6-November-Order', kind: 'Week', word: false },
     { title: 'Movie Lesson: Spider-Man — Into the Spider-Verse (10 Auto-Pauses, Story Retell & Circle & Say Sheet)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Grade3-Grade4-Spider-Man-Spider-Verse-Movie-Lesson-Plan', word: true, launch: 'watch-answer/index.html?lesson=spider-verse' },
     { title: 'Movie Lesson: The Bad Guys — A Very Bad Holiday (10 Auto-Pauses, Subtitles, Story Retell & Circle & Say Sheet)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Grade3-Grade4-Bad-Guys-Holiday-Movie-Lesson-Plan', word: true, launch: 'watch-answer/index.html?lesson=bad-guys-holiday' },
