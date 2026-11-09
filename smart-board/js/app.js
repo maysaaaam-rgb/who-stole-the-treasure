@@ -19,7 +19,8 @@
   function lsGet(k, fallback) { try { const v = root.localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
   function lsSet(k, v) { try { root.localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
 
-  const opts = Object.assign({ autoNeat: true, shapes: true, speak: true, turkish: true, bg: 'dark', muted: false, holdMs: 500, neatMs: 2200, palm: true, chalkSound: true, bigUI: false }, lsGet(OPT_KEY, {}));
+  const opts = Object.assign({ autoNeat: true, shapes: true, speak: true, turkish: true, bg: 'dark', muted: false, holdMs: 500, neatMs: 1300, palm: true, chalkSound: true, bigUI: false }, lsGet(OPT_KEY, {}));
+  if (opts.neatMs === 2200) opts.neatMs = 1300;   // the old default waited too long before reading
   let state = { strokes: [], objects: [] };
   let tool = 'pen', color = 'ink', size = 7;
   let uid = Math.floor(Math.random() * 1e6);
@@ -625,7 +626,7 @@
     try {
       let hintWords = [];
       try { if (root.SmartLessons && root.SmartLessons.current) { const lw = await root.SmartLessons.current(); hintWords = (lw && lw.words) || []; } } catch (e) { /* ignore */ }
-      const d = await AI.call('neat', { image: strokesPNG(g.strokes, b, true), hintWords }, 30000);
+      const d = await AI.call('neat', { image: strokesPNG(g.strokes, b, true), hintWords }, 13000);
       const ids = new Set(g.strokes.map((s) => s.id));
       const still = state.strokes.filter((s) => ids.has(s.id));
       if (!still.length) return; // erased while the AI was reading
@@ -651,6 +652,9 @@
         else showReadChip(g, lines, (Array.isArray(d.alternatives) ? d.alternatives : []).map(String).filter(Boolean), place);
       } else if (d.kind === 'drawing') {
         showSketchChip(g, String(d.drawingGuess || '').slice(0, 40));
+      } else if (d.busy) {
+        g.strokes.forEach((x) => { if (state.strokes.some((y) => y.id === x.id)) pending.add(x.id); }); updateFab();
+        toast('The AI is slow right now. Your writing is kept: tap ✨ to try again.'); AU.softFail();
       } else {
         toast('I could not read that. Try bigger letters ✍️'); AU.softFail();
       }

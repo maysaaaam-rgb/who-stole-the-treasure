@@ -176,21 +176,32 @@ async function addUsage(env: Env, doFetch: typeof fetch, kind: string, n: number
 }
 
 // Calls Gemini; if the chosen model does not exist (renamed or retired), tries the fallback model once.
-async function gemini(env: Env, doFetch: typeof fetch, models: string[], body: (model: string) => Json):
+// waitMs: give each model only this long, then try the next one (a busy model must not keep the board waiting).
+async function gemini(env: Env, doFetch: typeof fetch, models: string[], body: (model: string) => Json, waitMs = 20000):
   Promise<{ ok: true; data: any } | { ok: false; status: number; error: string; message: string }> {
   const key = env('GEMINI_API_KEY') || '';
   let last = { ok: false as const, status: 502, error: 'upstream', message: 'The AI did not answer.' };
   for (const model of models) {
     let r: Response;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), waitMs);
     try {
       r = await doFetch(`${GEMINI}${encodeURIComponent(model)}:generateContent`, {
-        method: 'POST', headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' }, body: JSON.stringify(body(model))
+        method: 'POST', headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' }, body: JSON.stringify(body(model)), signal: ctrl.signal
       });
-    } catch { return { ok: false, status: 502, error: 'network', message: 'Could not reach the AI. Check the internet.' }; }
+    } catch (e) {
+      clearTimeout(timer);
+      console.error('gemini', model, ctrl.signal.aborted ? 'too slow' : 'network', String(e).slice(0, 120));
+      last = { ok: false, status: 504, error: 'slow', message: 'The AI is slow right now. Try again.' };
+      continue;
+    }
+    clearTimeout(timer);
     if (r.ok) return { ok: true, data: await r.json() };
     const t = (await r.text()).slice(0, 600);
+    console.error('gemini', model, r.status, t.slice(0, 200));
     const missingModel = r.status === 404 || (r.status === 400 && /not found|not supported|unknown model|is not available/i.test(t));
     if (missingModel) { last = { ok: false, status: 502, error: 'model', message: `The AI model "${model}" is not available.` }; continue; }
+    if (r.status >= 500) { last = { ok: false, status: 502, error: 'busy', message: 'The AI is busy. Try again in a minute.' }; continue; }
     if (r.status === 400 && /api key/i.test(t)) return { ok: false, status: 502, error: 'bad_key', message: 'The Gemini key was not accepted. Check GEMINI_API_KEY.' };
     if (r.status === 401 || r.status === 403) {
       const billing = /billing|free tier|not available in your|paid/i.test(t);
@@ -199,8 +210,8 @@ async function gemini(env: Env, doFetch: typeof fetch, models: string[], body: (
     }
     if (r.status === 429) {
       const billing = /free tier|limit: 0|billing/i.test(t);
-      return { ok: false, status: 429, error: billing ? 'billing' : 'busy',
-        message: billing ? 'Pictures need billing switched on in Google AI Studio.' : 'The AI is busy. Try again in a minute.' };
+      if (!billing) { last = { ok: false, status: 429, error: 'busy', message: 'The AI is busy. Try again in a minute.' }; continue; }
+      return { ok: false, status: 429, error: 'billing', message: 'Pictures need billing switched on in Google AI Studio.' };
     }
     return { ok: false, status: 502, error: 'upstream', message: `The AI could not answer (${r.status}).` };
   }
@@ -249,7 +260,8 @@ export async function handle(req: Request, env: Env, doFetch: typeof fetch = fet
   let body: Json;
   try { body = await req.json(); } catch { return json(req, 400, { error: 'bad_json', message: 'Bad request.' }); }
   const task = String(body.task || '');
-  const textModels = [env('TEXT_MODEL') || 'gemini-3.5-flash', 'gemini-2.5-flash'];
+  // gemini-2.5-flash is closed to new keys, so the back-ups are the always-current flash and flash-lite aliases.
+  const textModels = [env('TEXT_MODEL') || 'gemini-3.5-flash', 'gemini-flash-latest', 'gemini-flash-lite-latest'];
   const imageModels = [env('IMAGE_MODEL') || 'gemini-3.1-flash-image', 'gemini-2.5-flash-image'];
 
   // ---------- Picture (from words, or from a sketch on the board) ----------
@@ -296,11 +308,13 @@ export async function handle(req: Request, env: Env, doFetch: typeof fetch = fet
     return json(req, 400, { error: 'bad_task', message: 'Unknown command.' });
   }
 
-  const res = await gemini(env, doFetch, textModels, () => ({
+  // Handwriting must feel instant: the main model gets 6 s, then the fast lite model takes over.
+  const models = task === 'neat' ? [textModels[0], 'gemini-flash-lite-latest'] : textModels;
+  const res = await gemini(env, doFetch, models, () => ({
     systemInstruction: { parts: [{ text: CLASSROOM }] },
     contents,
     generationConfig: { responseMimeType: 'application/json', responseSchema: schema, temperature: temp, maxOutputTokens: 4096 }
-  }));
+  }), task === 'neat' ? 6000 : 12000);
   if (!res.ok) return json(req, res.status, { error: res.error, message: res.message, left: left() });
   if (blocked(res.data)) return json(req, 422, { error: 'blocked', message: 'Let\'s try something else! 🙂', left: left() });
   const data = parseJson(res.data);
