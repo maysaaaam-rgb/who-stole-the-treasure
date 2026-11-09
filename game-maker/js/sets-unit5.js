@@ -185,6 +185,7 @@
     s.e = s.e || s.icon || '📘';
     s.sub = s.sub || s.tag || s.desc || '';
     s.skill = s.skill || '';
+    s.showInAll = true;
     s.items = (s.questions || []).map(function (it) { var c = Object.assign({}, it); if (words) c.skill = 'Words'; return c; });
     var idx = GM.sets.findIndex(function (x) { return x.id === s.id; });
     if (idx >= 0) GM.sets[idx] = s;

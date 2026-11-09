@@ -29,7 +29,7 @@
     connect4: ['Two teams.', 'Answer right to drop your disc in a column.', 'Four in a row wins the round.'],
     bowling: ['Answer right, then time 3 skill steps: Stand Position, Aim Angle (at the lane arrows), and Power + Hook!', 'Angle into the 1-3 or 1-2 pocket for a STRIKE — hitting the headpin dead-center leaves a SPLIT!', 'Use your second ball to pick up spares without rolling into the gutter!'],
     pass: ['A ticking bomb goes round the teams.', 'Answer right to pass it on.', 'When it pops, everybody else wins points.'],
-    penalty: ['Answer right to step up to the 3D penalty spot.', 'Step 1: Lock the figure-8 Aim Target inside a corner (watch out for the posts & crossbar!).', 'Step 2: Hit the green sweet-spot on the Power & Curve meter to bend a Banana Shot past the diving keeper!'],
+    penalty: ['Answer right to step up to the 3D penalty spot.', 'Tap or drag anywhere on the 3D goal to aim — or swipe the ball toward the goal to shoot!', 'Watch the goalkeeper patrol and use Curve Left / Curve Right to bend your shot into the OPEN corner!'],
     whack: ['Answer right to start a 15-second 3D Whack-a-Word wave!', 'Whack ONLY the moles holding the Target Word to build a 3× Combo Streak (and tap 2-hit Boss Moles twice!).', 'Do NOT whack wrong decoy words — they reset your combo and stun your hammer!'],
     tower: ['Answer right to get crane blocks as the crane swings faster with every floor!', 'Overhanging edges are permanently sliced off — your next block is only as wide as what remains!', 'Land a 🌟 Perfect Drop (<8px) for +15 points and +10px bonus width!'],
     balloon: ['Read and listen to the question in the top banner.', 'Pop the fast-weaving answer balloon before it escapes twice — and avoid the 💣 Storm Trap balloon!', 'Right balloon scores +20 (+5 Fast Pop bonus); wrong balloons or traps score 0!'],
@@ -279,7 +279,8 @@
     fRow1.appendChild(h('span', { class: 'gm-filter-lab', text: '📘 Unit' }));
     [
       ['all', 'All Units'],
-      ['4', '⭐ Unit 4 (Current)'],
+      ['5', '⭐ Unit 5 (Current)'],
+      ['4', 'Unit 4'],
       ['3', 'Unit 3'],
       ['2', 'Unit 2'],
       ['1', 'Unit 1'],
@@ -328,7 +329,7 @@
       if (g === 3 || g === 4) {
         badges.appendChild(h('span', { class: 'gm-pbadge g' + g, text: 'Grade ' + g }));
       }
-      if (u >= 1 && u <= 4) {
+      if (u >= 1 && u <= 5) {
         badges.appendChild(h('span', { class: 'gm-pbadge u', text: 'Unit ' + u }));
       } else if (s.smart) {
         badges.appendChild(h('span', { class: 'gm-pbadge mix', text: 'Adaptive' }));
