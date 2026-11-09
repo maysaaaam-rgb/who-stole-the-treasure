@@ -588,6 +588,7 @@ function render(container) {
         '<button onclick="ClassBoard.pick2()" title="Pick 2 students head-to-head">⚔️ Pick 2</button>' +
         '<span class="cb-hat" id="cb-hat-info">0 of ' + present + ' picked</span><span class="sep"></span>' +
         '<button onclick="if(window.openGameMaker)openGameMaker();else location.href=\'game-maker/index.html\';" title="Open Game Maker with this class" style="background:linear-gradient(180deg,#ec4899,#db2777);border-bottom-color:#9d174d;font-weight:700">🎮 Game Maker</button>' +
+        '<button onclick="switchView(\'store-pupil\')" title="The pupil shop: pupils spend their coins" style="background:linear-gradient(180deg,#22c55e,#16a34a);border-bottom-color:#15803d;font-weight:700">🛍️ Shop</button>' +
         '<button onclick="ClassBoard.wall()" title="Show what pupils shared on the Island Wall (only posts you approved)" style="background:linear-gradient(180deg,#f59e0b,#d97706);border-bottom-color:#92400e;font-weight:700">🌟 Wall</button>' +
         '<button onclick="if(window.SleepyMonster&&SleepyMonster.open)SleepyMonster.open();else if(window.openSleepyMonster)openSleepyMonster();" title="Sleepy Mio classroom quiet game">😴 Sleepy Mio</button>' +
         '<button onclick="BathroomPass && BathroomPass.open()" title="Bathroom: sign out and back in">🚻 Bathroom</button>' +
@@ -600,9 +601,9 @@ function render(container) {
           '<button onclick="VoiceFX.toggle()" title="Voice Changer">🎙️ Voice FX</button>' +
           '<button onclick="ClassBoard.resetHat()" title="Reset the fair-pick hat">↺ Reset hat</button>' +
           '<button onclick="ClassBoard.addStudent()" title="Add a student">➕ Add pupil</button>' +
-          '<button onclick="switchView(\'store\')" title="Classroom Store">🛍️ Store</button>' +
+          '<button onclick="switchView(\'store-teacher\')" title="Prices, what is on sale, coins, who bought what">🪙 Store settings</button>' +
           '<button onclick="ClassBoard.full()" title="Full screen">⛶ Full screen</button>' +
-          '<button onclick="switchView(\'command\')" title="Exit the board" style="grid-column:1/-1">✕ Exit Class Board</button>' +
+          '<button onclick="switchView(\'today\')" title="Exit the board" style="grid-column:1/-1">✕ Exit Class Board</button>' +
         '</div></div></div></div>';
     paintGoal(); paintClock(); paintHat();
     // pull the newest goal from the cloud, then redraw the bar

@@ -52,7 +52,7 @@
   }
 
   // Application State
-  let currentView = 'command';
+  let currentView = 'today';
   let selectedAttDate = new Date().toISOString().split('T')[0];
   let activeArchivedFilter = 'all';
   let selectedClassDetailId = 'class-3a';
@@ -242,7 +242,7 @@
         const role = btn.getAttribute('data-role');
         store.setRole(role);
 
-        if (role === 'teacher') currentView = document.documentElement.classList.contains('class-mode') ? 'board' : 'command';
+        if (role === 'teacher') currentView = 'today';
         else if (role === 'student') currentView = 'adventure';
         else if (role === 'parent') currentView = 'parent-home';
 
@@ -882,7 +882,8 @@
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
-        'leaderboard', 'parent-home', 'parent-progress', 'parent-story', 'parent-messages', 'archived', 'settings', 'monster', 'store', 'command', 'board', 'classview', 'shelf', 'rewards', 'closet', 'calendar'
+        'leaderboard', 'parent-home', 'parent-progress', 'parent-story', 'parent-messages', 'archived', 'settings', 'monster', 'store', 'command', 'board', 'classview', 'shelf', 'rewards', 'closet', 'calendar',
+        'today', 'tools', 'more', 'lesson-archive', 'store-pupil', 'store-teacher'
       ];
       if (primaryView === 'simon-says' || primaryView === 'simon') {
         if (typeof window.openSimonSaysModal === 'function') {
@@ -4645,6 +4646,11 @@
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
+    { title: 'Talk Show printables: teacher guide, speaking cards and worksheet (Grade 3 · The Time Show)', grade: 'Grade 3', date: '2026-11-09', kind: 'Print', file: '../talk-show/print/Talk-Show-G3-Ep1-The-Time-Show', word: false, launch: 'talk-show/worksheet.html?grade=3&ep=1' },
+    { title: 'Talk Show printables: teacher guide, speaking cards and worksheet (Grade 3 · Time Capsule TV)', grade: 'Grade 3', date: '2026-11-09', kind: 'Print', file: '../talk-show/print/Talk-Show-G3-Ep2-Time-Capsule-TV', word: false, launch: 'talk-show/worksheet.html?grade=3&ep=2' },
+    { title: 'Talk Show printables: teacher guide, speaking cards and worksheet (Grade 4 · Make Some Noise!)', grade: 'Grade 4', date: '2026-11-09', kind: 'Print', file: '../talk-show/print/Talk-Show-G4-Ep1-Make-Some-Noise', word: false, launch: 'talk-show/worksheet.html?grade=4&ep=1' },
+    { title: 'Talk Show printables: teacher guide, speaking cards and worksheet (Grade 4 · Concert Night)', grade: 'Grade 4', date: '2026-11-09', kind: 'Print', file: '../talk-show/print/Talk-Show-G4-Ep2-Concert-Night', word: false, launch: 'talk-show/worksheet.html?grade=4&ep=2' },
+    { title: 'Talk Show Studio: speaking battles for Grades 3 and 4 (Tuesday 10 November, all lessons)', grade: 'Grade 3 & 4', date: '2026-11-09', file: 'Grade3-Grade4-Talk-Show-Speaking-Lesson-Plan', word: true, launch: 'talk-show/index.html' },
     { title: 'Week of 9–13 November: my lessons in order (Unit 5 + government book lessons)', grade: 'Grade 3 & 4', date: '2026-11-08', file: 'Week-9-13-November-Order', kind: 'Week', word: false },
     { title: "Unit 5: Let's Go Back · 5 lessons with the Magic Book and Game Maker (pp. 72–87)", grade: 'Grade 3', date: '2026-11-08', file: 'Grade3-Unit5-Lets-Go-Back-Lesson-Plans', word: true, launch: 'magic-book/index.html?grade=3' },
     { title: 'Unit 5: Make Some Noise · 5 lessons with the Magic Book and Game Maker (pp. 72–87)', grade: 'Grade 4', date: '2026-11-08', file: 'Grade4-Unit5-Make-Some-Noise-Lesson-Plans', word: true, launch: 'magic-book/index.html?grade=4' },
@@ -9926,7 +9932,8 @@
     if (!sidebar) return;
 
     const role = store.getRole();
-    if (role === 'teacher' && window.ClassMode && window.ClassMode.on()) { sidebar.innerHTML = window.ClassMode.rail(currentView); return; }
+    if (role === 'teacher' && window.ClassMode && window.ClassMode.on()) { sidebar.innerHTML = window.PlatformNav ? window.PlatformNav.railHtml(currentView) : window.ClassMode.rail(currentView); return; }
+    if (role === 'teacher' && window.PlatformNav) { sidebar.innerHTML = window.PlatformNav.sidebarHtml(currentView); return; }
     const counts = (store && store.getSidebarCounts) ? store.getSidebarCounts() : {
       classes: store.getClasses().length,
       students: store.getStudents().length,
@@ -10072,7 +10079,8 @@
     }
 
     try {
-      switch (currentView) {
+      if (window.PlatformViews && window.PlatformViews[currentView] && store.getRole() !== 'student' && store.getRole() !== 'parent') window.PlatformViews[currentView](container);
+      else switch (currentView) {
         case 'dashboard': renderTeacherDashboard(container); break;
         case 'classes': renderClassesView(container); break;
         case 'classroom-hub': selectedClassDetailTab = 'classroom'; renderClassDetailView(container); break;
@@ -12448,26 +12456,15 @@ window.switchClassroomSubTab = function(subTab) {
   window.updateMobileTabbar = function(viewOverride) {
     const bar = document.getElementById('eaa-mobile-tabbar');
     if (!bar) return;
-    const v = viewOverride || currentView || 'command';
-    const isCM = document.documentElement.classList.contains('class-mode');
+    const v = viewOverride || currentView || 'today';
     const sidebar = document.getElementById('app-sidebar') || document.querySelector('.app-sidebar');
     const drawerOpen = Boolean(sidebar && sidebar.classList.contains('is-mobile-open'));
-    const homeIcon = document.getElementById('eaa-mob-home-icon');
-    const homeLabel = document.getElementById('eaa-mob-home-label');
-    if (homeIcon) homeIcon.textContent = isCM ? '🏫' : '🧭';
-    if (homeLabel) homeLabel.textContent = isCM ? 'Class' : 'Command';
     const menuIcon = document.getElementById('eaa-mob-menu-icon');
     const menuLabel = document.getElementById('eaa-mob-menu-label');
     if (menuIcon) menuIcon.textContent = drawerOpen ? '✕' : '☰';
-    if (menuLabel) menuLabel.textContent = drawerOpen ? 'Close' : 'Menu';
-    let activeTab = 'menu';
-    if (!drawerOpen) {
-      if (v === 'command' || v === 'classview' || v === 'dashboard') activeTab = 'home';
-      else if (v === 'board') activeTab = 'board';
-      else if (v === 'library' || v === 'curriculum') activeTab = 'library';
-      else if (v === 'shelf') activeTab = 'shelf';
-      else activeTab = 'menu';
-    }
+    if (menuLabel) menuLabel.textContent = drawerOpen ? 'Close' : 'More';
+    const place = window.PlatformNav ? window.PlatformNav.placeOf(v) : v;
+    const activeTab = drawerOpen ? 'menu' : (['today', 'board', 'library', 'calendar'].includes(place) ? place : 'menu');
     bar.querySelectorAll('.eaa-mob-tab').forEach(btn => {
       btn.classList.toggle('is-active', btn.getAttribute('data-mob-tab') === activeTab);
     });
@@ -12479,11 +12476,6 @@ window.switchClassroomSubTab = function(subTab) {
       return;
     }
     window.closeMobileSidebar();
-    if (tab === 'home') {
-      const isCM = document.documentElement.classList.contains('class-mode');
-      window.switchView(isCM ? 'classview' : 'command');
-      return;
-    }
     window.switchView(tab);
   };
 

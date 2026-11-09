@@ -398,7 +398,7 @@
     cls: function (id) { try { S().setActiveClass(id); } catch (e) { return; } var v = (location.hash || '#board').replace(/^#/, '').split('/')[0] || 'board'; if (v === 'classview') v = 'board'; if (root.switchView) root.switchView(v); paintChips(); },
     set: function (v) {
       document.documentElement.classList.toggle('class-mode', !!v); setStored(v ? '1' : '0'); paintToggle(); paintChips(); decorate();
-      if (root.switchView) root.switchView(v ? 'board' : 'command');
+      if (root.switchView) root.switchView(v ? 'board' : 'today');
     },
     curate: function (v) {
       if (v === true) { if (!on()) { document.documentElement.classList.add('class-mode'); setStored('1'); paintToggle(); paintChips(); } shelf.curate = true; if (root.switchView) root.switchView('shelf'); return; }
@@ -424,7 +424,7 @@
       if (id === 'sleepy') { if (root.SleepyMonster && root.SleepyMonster.open) root.SleepyMonster.open(); else if (root.openSleepyMonster) root.openSleepyMonster(); return; }
       var sw = root.switchView; if (!sw) return;
       if (id === 'classview') { sw('board'); return; }
-      if (id === 'board' || id === 'library' || id === 'store' || id === 'calendar' || id === 'command' || id === 'shelf' || id === 'rewards') { sw(id); return; }
+      if (['board', 'library', 'store', 'calendar', 'command', 'shelf', 'rewards', 'today', 'tools', 'more', 'store-pupil', 'store-teacher', 'lesson-archive'].indexOf(id) >= 0) { sw(id); return; }
       if (id === 'teacher') { api.set(false); return; }
       if (id === 'timer') { if (root.openClassroomToolkitModal) root.openClassroomToolkitModal('timer'); return; }
       if (id === 'pick') { sw('board'); setTimeout(function () { try { root.ClassBoard && root.ClassBoard.pick(); } catch (e) { /* optional */ } }, 500); return; }

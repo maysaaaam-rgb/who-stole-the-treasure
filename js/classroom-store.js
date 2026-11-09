@@ -77,6 +77,8 @@
     if (!c.itemPrices.mythic) c.itemPrices.mythic = DEFAULTS.itemPrices.mythic;
     if (!c.boardGoals || typeof c.boardGoals !== 'object') c.boardGoals = {};
     if (!c.partyFunds || typeof c.partyFunds !== 'object') c.partyFunds = {};
+    if (!c.off || typeof c.off !== 'object') c.off = {};
+    ['tabs', 'cats', 'boxes'].forEach(function (k) { if (!c.off[k] || typeof c.off[k] !== 'object') c.off[k] = {}; });
     if (!d.cosmetics || typeof d.cosmetics !== 'object') d.cosmetics = {};
     if (!d.worksheets || typeof d.worksheets !== 'object') d.worksheets = {};
     return d;
@@ -157,6 +159,7 @@
   var RETIRED_ITEMS = ['cs-gat', 'cs-hanbok', 'cs-lantern'];   // the Chuseok set: no longer sold, pupils who own them keep them
   function canSell(item) {
     if (RETIRED_ITEMS.indexOf(item && item.id) !== -1) return false;
+    if (/^pet-crew-/.test(String(item && item.id))) return false;   // 9 Nov 2026: the crewmate pets look like a video-game character; not sold until the new original pets arrive (pupils keep theirs)
     if (!inSeason(item)) return false;
     if (SELL_CATEGORIES.indexOf(item.category) === -1) return false;
     var D = root.MonsterDressUp;
@@ -164,8 +167,9 @@
     return true;
   }
   /** Items the student cannot use yet, which they can buy now. */
+  function isOff(kind, key) { var o = data().config.off; return !!(o && o[kind] && o[kind][key]); }
   function shopItems(studentId) {
-    return allItems().filter(function (i) { return canSell(i) && !isAvailable(studentId, i); })
+    return allItems().filter(function (i) { return canSell(i) && !isOff('cats', i.category) && !isAvailable(studentId, i); })
       .map(function (i) { return { item: i, price: itemPrice(i), level: shopLevel(i) }; })
       .sort(function (a, b) { return a.price - b.price || a.item.name.localeCompare(b.item.name); });
   }
@@ -174,6 +178,7 @@
     var item = findItem(itemId);
     if (!item) return { success: false, error: 'Item not found' };
     if (isAvailable(studentId, item)) return { success: false, error: 'You already have this item' };
+    if (isOff('tabs', 'items') || isOff('cats', item.category)) return { success: false, error: 'Your teacher has closed this part of the shop for now' };
     if (levelOf(studentId) < shopLevel(item)) return { success: false, error: (isLevelReward(item) ? 'This is free at level ' : 'This opens at level ') + shopLevel(item) + '. Keep earning XP!' };
     var price = itemPrice(item);
     if (balance(studentId) < price) return { success: false, error: 'Not enough coins (need ' + price + ')' };
@@ -199,6 +204,7 @@
     tier = String(tier).toUpperCase();
     var price = data().config.boxPrices[tier];
     if (!price || !BOX_INFO[tier]) return { success: false, error: 'Unknown box' };
+    if (isOff('tabs', 'boxes') || isOff('boxes', tier)) return { success: false, error: 'Your teacher has closed this box for now' };
     if (balance(studentId) < price) return { success: false, error: 'Not enough coins (need ' + price + ')' };
     var box = store.grantMysteryBox(studentId, tier);
     var pid = uid('buy');
@@ -218,6 +224,7 @@
   function requestPrivilege(studentId, privId) {
     var p = privilege(privId);
     if (!p || !p.active) return { success: false, error: 'This reward is not available' };
+    if (isOff('tabs', 'rewards')) return { success: false, error: 'Class rewards are closed for now' };
     if (p.weeklyLimit && usedThisWeek(studentId, privId) >= p.weeklyLimit) return { success: false, error: 'You already used this reward ' + p.weeklyLimit + ' time(s) this week' };
     if (balance(studentId) < p.price) return { success: false, error: 'Not enough coins (need ' + p.price + ')' };
     var rid = uid('req');
@@ -307,6 +314,7 @@
     var x = findExtra(id);
     if (!x || String(id).indexOf('set-') === 0) return { success: false, error: 'This is not for sale' };
     if (extraOwned(studentId, id)) return { success: false, error: 'You already have this' };
+    if (isOff('tabs', 'extras')) return { success: false, error: 'Your teacher has closed this part of the shop for now' };
     var price = extraPrice(x);
     if (balance(studentId) < price) return { success: false, error: 'Not enough coins (need ' + price + ')' };
     var e = cosEntry(studentId), pid = uid('buy');
@@ -361,6 +369,7 @@
     var f = fundFor(classOfStudent(studentId));
     amount = Math.round(Number(amount) || 0);
     if (!f || !f.goal) return { success: false, error: 'There is no party fund yet' };
+    if (isOff('tabs', 'party')) return { success: false, error: 'The party fund is closed for now' };
     if (f.raised >= f.goal) return { success: false, error: 'The fund is already full!' };
     amount = Math.min(amount, f.goal - f.raised);
     if (amount < 1) return { success: false, error: 'Choose how many coins' };
@@ -701,7 +710,7 @@
   var shopStudentId = null;
 
   // ---------------------------------------------------------------- UI (teacher)
-  function renderTeacher(container) {
+  function renderTeacher(container, mode) {
     var d = data(), cfg = d.config;
     var cls = store.getActiveClass ? store.getActiveClass() : null;
     var students = (cls && store.getStudentsByClass ? store.getStudentsByClass(cls.id) : (store.getStudents ? store.getStudents() : [])) || [];
@@ -729,7 +738,9 @@
       '</div>';
 
     var drawerHtml = '<div id="cs-teacher-drawer" style="display:' + (teacherDrawerOpen ? 'block' : 'none') + ';margin-bottom:24px;padding:18px;border-radius:20px;background:rgba(232, 166, 48, 0.18);border:2px solid #26324a;">';
+    var marks = []; function mark(n) { marks.push([n, drawerHtml.length]); }
 
+    mark('requests');
     // pending requests
     drawerHtml += card(h2('📬 Reward requests waiting for you (' + pending.length + ')', 'Approve to keep the coins, decline to give them back.') +
       (pending.length ? pending.map(function (r) {
@@ -742,6 +753,7 @@
         return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);"><span>' + esc(r.icon) + '</span><div style="flex:1;font-size:.85rem;color:var(--text-main,#0f172a);">' + esc(r.name) + ' <span style="color:var(--text-muted,#64748b);">· ' + esc(studentName(r.studentId)) + '</span></div>' + btn('Mark as used', "ClassroomStore.ui.decide('" + r.id + "','used')", 'ghost') + '</div>';
       }).join('') : ''));
 
+    mark('clean');
     // items nobody earned (old automatic boxes, test leftovers): the teacher removes them with one press
     var unearned = findUnearned(), hasBackup = false; try { hasBackup = !!localStorage.getItem(CLEAN_KEY); } catch (e) { hasBackup = false; }
     if (unearned.total) drawerHtml += card(h2('🧹 Items nobody earned (' + unearned.total + ')', 'The platform used to give every pupil free mystery boxes on a new device, and the old "test unboxing" buttons opened real boxes for the selected pupil (Aslıhan on 5 October, Demir on 7 October). Pupils did not earn these.') +
@@ -749,6 +761,7 @@
       btn('🧹 Remove them', 'ClassroomStore.ui.cleanUnearned()', 'danger'), 'border:2px solid #f59e0b;');
     else if (hasBackup) drawerHtml += card(h2('🧹 Clean-up done', 'Unearned boxes, prizes and the test title were removed. A copy is kept on this device in case you need it back.') + btn('Undo the clean-up', 'ClassroomStore.ui.undoClean()', 'ghost'));
 
+    mark('worksheet');
     // worksheet coins (quick entry)
     drawerHtml += card(h2('📝 Worksheet coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), '1 coin for each correct answer, 0 to 10. Tap a score for every pupil who did the sheet, then press Give coins. Pupils you skip get nothing. Pressing it again only fixes the difference, so nobody is paid twice.') +
       '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;"><label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Worksheet name<input id="cs-ws-name" type="text" maxlength="40" value="' + esc(wsName) + '" onchange="ClassroomStore.ui.wsName(this.value)" style="display:block;margin-top:3px;padding:7px;border-radius:9px;border:1px solid var(--border-light,#cbd5e1);width:240px;"></label>' +
@@ -757,6 +770,7 @@
         return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px solid var(--border-light,#e2e8f0);flex-wrap:wrap;"><div style="width:130px;font-weight:800;font-size:.85rem;color:var(--text-main,#0f172a);">' + esc(studentName(s.id)) + '</div><div id="cs-ws-' + esc(s.id) + '" style="flex:1;min-width:340px;">' + wsRowHtml(s.id) + '</div></div>';
       }).join('') + '</div>');
 
+    mark('coins');
     // students & coins
     drawerHtml += card(h2('🪙 Students and coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), 'Use the class menu at the top to switch class.') +
       '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.85rem;">' +
@@ -771,6 +785,7 @@
           btn('+5', "ClassroomStore.ui.give('" + s.id + "',5)", 'ghost') + ' ' + btn('+10', "ClassroomStore.ui.give('" + s.id + "',10)", 'ghost') + ' ' + btn('−5', "ClassroomStore.ui.give('" + s.id + "',-5)", 'ghost') + ' ' + btn('Custom…', "ClassroomStore.ui.giveCustom('" + s.id + "')", 'ghost') + '</td></tr>';
       }).join('') + '</tbody></table></div>');
 
+    mark('prices');
     // settings
     drawerHtml += card(h2('⚙️ Prices and rewards', 'Change a price and it applies right away.') +
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px;">' +
@@ -785,6 +800,7 @@
           btn('Remove', "ClassroomStore.ui.removePriv('" + p.id + "')", 'ghost') + '</div>';
       }).join('') + '<div style="margin-top:10px;">' + btn('+ Add a reward', 'ClassroomStore.ui.addPriv()', 'ghost') + '</div>');
 
+    mark('party');
     // class party fund
     if (cls) {
       var fund = fundFor(cls.id);
@@ -795,6 +811,7 @@
         (fund && fund.goal ? '<div style="margin-top:12px;font-weight:800;color:var(--text-main,#0f172a);">' + fund.raised + ' / ' + fund.goal + ' coins' + (fund.raised >= fund.goal ? ' · 🎊 GOAL REACHED, time to plan the party!' : '') + '</div><div style="margin-top:6px;background:#e2e8f0;border-radius:999px;height:16px;overflow:hidden;"><div style="width:' + Math.min(100, Math.round(fund.raised / fund.goal * 100)) + '%;height:100%;background:linear-gradient(90deg,#22c55e,#facc15,#f97316);"></div></div>' : ''));
     }
 
+    mark('odds');
     // mystery box odds (information for the teacher)
     drawerHtml += card(h2('🎁 What a mystery box can hold', 'Never something the pupil already has. Free rewards show up in “Approved, not used yet” above for you to honour.') +
       '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;color:var(--text-main,#0f172a);"><thead><tr style="text-align:left;color:var(--text-muted,#64748b);"><th style="padding:5px 8px;">Box</th><th style="padding:5px 8px;">Monster item</th><th style="padding:5px 8px;">Sound / title / animal / plate</th><th style="padding:5px 8px;">Free reward</th><th style="padding:5px 8px;">Coins</th><th style="padding:5px 8px;">Jackpot</th></tr></thead><tbody>' +
@@ -803,6 +820,7 @@
         return '<tr style="border-top:1px solid var(--border-light,#e2e8f0);"><td style="padding:6px 8px;font-weight:800;">' + BOX_INFO[t].icon + ' ' + BOX_INFO[t].name + '</td><td style="padding:6px 8px;">' + o.item + '%</td><td style="padding:6px 8px;">' + o.extra + '%</td><td style="padding:6px 8px;">' + o.voucher + '% (up to ' + Math.min(BOX_VOUCHER_CAP[t], (Number(data().config.boxPrices[t]) || 10) * 3) + ' coins)</td><td style="padding:6px 8px;">' + o.coins + '% (' + boxCoins(t)[0] + ' to ' + boxCoins(t)[1] + ')</td><td style="padding:6px 8px;">' + o.jackpot + '% (legendary or ' + jackpotCoins(t) + ' coins)</td></tr>';
       }).join('') + '</tbody></table></div>');
 
+    mark('history');
     // history
     var recent = d.purchases.slice(0, 15);
     drawerHtml += card(h2('🧾 Recent purchases', 'Undo gives the coins back and removes the item or unopened box.') +
@@ -811,6 +829,7 @@
           (p.status === 'done' ? btn('Undo', "ClassroomStore.ui.undo('" + p.id + "')", 'ghost') : '<span style="font-size:.75rem;color:var(--text-muted,#64748b);">refunded</span>') + '</div>';
       }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">Nothing bought yet.</div>'));
 
+    mark('end');
     drawerHtml += '</div>';
 
     var pupilPickerHtml = students.length ? '<div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:rgba(15, 23, 42, 0.86);border:1.5px solid #26324a;border-radius:16px;padding:10px 14px;">' +
@@ -820,11 +839,16 @@
         return '<button type="button" onclick="ClassroomStore.ui.pickStudent(\'' + esc(stu.id) + '\')" style="padding:6px 13px;border-radius:999px;font-weight:800;font-size:.82rem;cursor:pointer;border:1.5px solid ' + (on ? '#4C389E' : '#26324a') + ';border-bottom:3px solid ' + (on ? '#37267A' : '#334155') + ';background:' + (on ? '#6E56CF' : '#1e293b') + ';color:' + (on ? '#FFFFFF' : '#e5edff') + ';">' + esc(stu.firstName || stu.name) + ' (🪙 ' + balance(stu.id) + ')</button>';
       }).join('') + '</div>' : '';
 
+    var sections = {}; marks.forEach(function (m, k) { if (k < marks.length - 1) sections[m[0]] = drawerHtml.slice(m[1], marks[k + 1][1]); });
+    if (mode === 'parts') return { sections: sections, students: students, cls: cls, curStu: curStu, pending: pending, approved: approved };
     html += drawerHtml + pupilPickerHtml + (curStu ? shopBodyHtml(curStu) : '') + '</div>';
     container.innerHTML = html;
   }
 
   // ---------------------------------------------------------------- UI (student)
+  /* new 3D shop pictures from assets/store/items/ (listed in assets/store/items/manifest.json, ids as file names) */
+  var SHOP_ART = {};
+  try { fetch('assets/store/items/manifest.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : []; }).then(function (l) { (Array.isArray(l) ? l : []).forEach(function (id) { SHOP_ART[id] = 'assets/store/items/' + id + '.webp'; }); }).catch(function () {}); } catch (e) { /* offline */ }
   function itemPicHtml(item) {
     if (item && item.category === 'pet' && root.MonsterPets && root.MonsterPets.thumbnailHtml) {
       var petTh = root.MonsterPets.thumbnailHtml(item, 72);
@@ -835,6 +859,8 @@
     if (artOn && item.category === 'background') return '<img src="assets/monsters/bg-art/bg_' + name + '.webp" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:12px;">';
     if (artOn && item.category === 'aura') return '<div style="width:72px;height:72px;margin:0 auto;background:#0f172a;border-radius:12px;display:flex;align-items:center;justify-content:center;"><img src="assets/monsters/aura-art/aura_' + name + '.webp" alt="" style="width:68px;height:68px;object-fit:contain;"></div>';
     var D = root.MonsterDressUp, pic = D && D.itemPicture ? D.itemPicture(item.id) : '';
+    if (!pic && D && D.itemArt) pic = D.itemArt(item.id);
+    if (!pic && SHOP_ART[item.id]) pic = SHOP_ART[item.id];
     if (pic) return '<img src="' + pic + '" alt="" style="width:72px;height:72px;object-fit:contain;">';
     if (!artOn && root.MonsterRenderer && root.MonsterRenderer.renderMonsterItemThumbnail) {
       try { var th = root.MonsterRenderer.renderMonsterItemThumbnail(item, { size: 72, colorKey: 'blue' }); if (th) return '<div style="width:72px;height:72px;margin:0 auto;display:flex;align-items:center;justify-content:center;">' + th + '</div>'; } catch (e) { /* use the emoji */ }
@@ -893,10 +919,12 @@
       '.cs-try-mon{height:260px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--rc) 30%,transparent) 0%,transparent 65%);border-radius:16px}.cs-try-mon svg{width:240px;height:240px}';
     document.head.appendChild(st);
   }
+  var SHOP_TABS = [['items', '🎨 Monster items'], ['extras', '✨ Extras'], ['boxes', '🎁 Mystery boxes'], ['party', '🎉 Party fund'], ['rewards', '⭐ Class rewards'], ['orders', '🧾 My orders']];
   function shopBodyHtml(s) {
     shopStyle();
     var d = data(), cfg = d.config, bal = balance(s.id), w = wallet(s.id);
-    var tabs = [['items', '🎨 Monster items'], ['extras', '✨ Extras'], ['boxes', '🎁 Mystery boxes'], ['party', '🎉 Party fund'], ['rewards', '⭐ Class rewards'], ['orders', '🧾 My orders']];
+    var tabs = SHOP_TABS.filter(function (t) { return t[0] === 'orders' || !isOff('tabs', t[0]); });
+    if (!tabs.some(function (t) { return t[0] === studentTab; })) studentTab = tabs[0][0];
     var html = '<div style="background:linear-gradient(135deg,rgba(245,158,11,.22),rgba(15,23,42,.9));border:1.5px solid rgba(245,158,11,.55);border-radius:20px;padding:20px;box-shadow:0 4px 20px -2px rgba(0,0,0,.4);margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
       '<div style="font-size:3rem;">🪙</div><div style="flex:1;min-width:200px;"><div style="font-size:.9rem;font-weight:800;color:#fcd34d;">' + esc(s.firstName || s.name || 'Your') + '’s coins</div><div style="font-size:2.4rem;font-weight:900;color:#fbbf24;line-height:1;">' + bal + '</div>' +
       '<div style="font-size:.8rem;color:#fde68a;margin-top:4px;">You earn 1 coin for every ' + cfg.coinsPerXp + ' XP. Spending coins never lowers your XP or your monster level.</div></div></div>' +
@@ -947,9 +975,9 @@
       html += renderPartyTab(s, bal);
     } else if (studentTab === 'boxes') {
       var mine = store.getMysteryBoxes ? store.getMysteryBoxes(s.id, false) : [];
-      html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:18px;">' + TIERS.map(function (t) {
+      html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:18px;">' + TIERS.filter(function (t) { return !isOff('boxes', t); }).map(function (t) {
         var price = cfg.boxPrices[t], can = bal >= price;
-        return '<div style="background:var(--bg-surface,#fff);border:1px solid var(--border-light,#e2e8f0);border-radius:16px;padding:16px;text-align:center;"><div style="font-size:2.6rem;">' + BOX_INFO[t].icon + '</div><div style="font-weight:900;color:var(--text-main,#0f172a);">' + BOX_INFO[t].name + '</div><div style="font-size:.75rem;color:var(--text-muted,#64748b);margin:3px 0 8px;">' + BOX_INFO[t].blurb + '</div>' + coinPill(price) + '<div style="margin-top:10px;">' + btn(can ? 'Buy box' : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyBox('" + t + "')", 'ok', !can) + '</div></div>';
+        return '<div style="background:var(--bg-surface,#fff);border:1px solid var(--border-light,#e2e8f0);border-radius:16px;padding:16px;text-align:center;"><div style="font-size:2.6rem;">' + (root.MysteryBoxArt ? root.MysteryBoxArt(t) : BOX_INFO[t].icon) + '</div><div style="font-weight:900;color:var(--text-main,#0f172a);">' + BOX_INFO[t].name + '</div><div style="font-size:.75rem;color:var(--text-muted,#64748b);margin:3px 0 8px;">' + BOX_INFO[t].blurb + '</div>' + coinPill(price) + '<div style="margin-top:10px;">' + btn(can ? 'Buy box' : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyBox('" + t + "')", 'ok', !can) + '</div></div>';
       }).join('') + '</div>' +
         card(h2('What can be inside?', 'Every box is a surprise. You never get something you already have.') +
           '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;font-size:.82rem;color:var(--text-main,#0f172a);">' +
@@ -1184,14 +1212,147 @@
       var price = root.prompt ? root.prompt('How many coins?', '50') : null; if (price === null) return;
       data().config.privileges.push({ id: uid('p'), icon: '🎁', name: name.trim(), price: Math.max(1, Math.round(Number(price) || 50)), weeklyLimit: 1, active: true }); data().config.updatedAt = Date.now(); save(); rerender();
     },
+    setOff: function (kind, key, v) { var o = data().config.off; if (!o[kind]) o[kind] = {}; if (v) o[kind][key] = 1; else delete o[kind][key]; data().config.updatedAt = Date.now(); save(); notify(v ? 'Closed in the shop' : 'Open in the shop again'); rerender(); },
+    tTab: function (t) { teacherTab = t; rerender(); },
+    hist: function (k, v) { if (k === 'pupil') histPupil = v; else histKind = v; rerender(); },
+    giveTo: function (n) {
+      var P = renderTeacher(null, 'parts'), tEl = document.getElementById('cs-give-target'), rEl = document.getElementById('cs-give-reason');
+      var ids = giveTargets(tEl ? tEl.value : 'class', P.cls, P.students), why = rEl && rEl.value.trim() ? rEl.value.trim() : '';
+      if (!ids.length) { notify('Nobody to give coins to', 'error'); return; }
+      if (n === undefined) { var v = root.prompt ? root.prompt('How many coins for each pupil? Use a minus sign to take (for example -10).', '10') : null; if (v === null) return; n = Math.round(Number(v) || 0); }
+      if (!n) return;
+      function go() { var c = 0; ids.forEach(function (sid) { var r = grant(sid, n, why || null); if (r.success) c++; }); notify((n > 0 ? 'Gave ' + n : 'Took ' + (-n)) + ' coins · ' + c + (c === 1 ? ' pupil' : ' pupils')); rerender(); }
+      if (ids.length > 1 || n < 0) confirm((n > 0 ? 'Give ' + n : 'Take ' + (-n)) + ' coins?', ids.length + (ids.length === 1 ? ' pupil' : ' pupils') + (why ? ' · ' + why : ''), n > 0 ? 'Give' : 'Take', go); else go();
+    },
     undo: function (pid) {
       confirm('Undo this purchase?', 'The coins go back to the student and the item or unopened box is removed.', 'Undo purchase', function () { var r = undoPurchase(pid); notify(r.success ? 'Purchase undone, coins refunded' : r.error, r.success ? 'success' : 'error'); rerender(); });
     }
   };
 
+  // ---------------------------------------------------------------- two store pages (9 Nov 2026)
+  // Pupil shop: opened from the Class Board. Big pupil buttons, then the pupil's own shop. Nothing for the teacher to manage here.
+  // Teacher store: prices and what is on sale, give or take coins (pupil, team or class), who bought what, requests.
+  var teacherTab = 'prices', histPupil = 'all', histKind = 'buys';
+  function firstName(s) { return esc((s.firstName || s.name || 'Pupil').split(' ')[0]); }
+  function renderPupilShop(container) {
+    var P = renderTeacher(null, 'parts'), cls = P.cls, students = P.students, cur = P.curStu;
+    var html = '<div class="cs-pshop" style="max-width:1180px;margin:0 auto;padding:4px 8px 60px;color:#e5edff;">' +
+      '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;">' +
+        btn('← Class Board', "switchView('board')", 'ghost') +
+        '<h1 class="tines-h1" style="font-size:1.6rem;font-weight:800;color:#e5edff;margin:0;flex:1;">🛍️ Class Shop' + (cls ? ' · ' + esc(cls.name || cls.id) : '') + '</h1>' +
+        btn('🏆 Podium', "switchView('rewards')", 'ghost') +
+      '</div>' +
+      (students.length ? '<div style="font-weight:800;font-size:.9rem;color:#cbd5e1;margin:0 0 6px 2px;">Who is shopping? Tap your name.</div>' +
+        '<div class="cs-pgrid">' + students.map(function (s) {
+          var on = cur && s.id === cur.id;
+          return '<button type="button" class="cs-pbtn' + (on ? ' on' : '') + '" onclick="ClassroomStore.ui.pickStudent(\'' + esc(s.id) + '\')"><b>' + firstName(s) + '</b><span>🪙 ' + balance(s.id) + '</span></button>';
+        }).join('') + '</div>' : '<div style="padding:30px;text-align:center;">No pupils in this class yet.</div>') +
+      (cur ? '<div style="margin-top:14px;">' + shopBodyHtml(cur) + '</div>' : '') + '</div>';
+    container.innerHTML = pshopStyle() + html;
+  }
+  function pshopStyle() {
+    return '<style>.cs-pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}' +
+      '.cs-pbtn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:16px;cursor:pointer;background:#1e293b;color:#e5edff;border:2px solid #334155;border-bottom:5px solid #0f172a;font:700 1rem Fredoka,system-ui,sans-serif}' +
+      '.cs-pbtn span{font-size:.8rem;color:#fcd34d}.cs-pbtn.on{background:#6E56CF;border-color:#8D75E6;border-bottom-color:#37267A}.cs-pbtn:active{transform:translateY(3px);border-bottom-width:2px}' +
+      '.cs-tbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}.cs-tbar button{padding:9px 14px;border-radius:12px;font-weight:800;font-size:.88rem;cursor:pointer;background:#1e293b;color:#e5edff;border:1.5px solid #334155;border-bottom:3px solid #0f172a}' +
+      '.cs-tbar button.on{background:#6E56CF;border-color:#4C389E;border-bottom-color:#37267A}' +
+      '.cs-sw{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;border:1.5px solid #334155;background:#1e293b;color:#e5edff;font-weight:800;font-size:.85rem;cursor:pointer;margin:0 8px 8px 0}' +
+      '.cs-sw input{width:18px;height:18px}.cs-sw.off{opacity:.55;text-decoration:line-through}</style>';
+  }
+  function onOffCard() {
+    var cats = [['pet', '🐾 Pets'], ['creature', '🐉 Creatures'], ['hat', '🎩 Hats'], ['glasses', '👓 Glasses'], ['accessory', '💍 Accessories'], ['backpack', '🎒 Backpacks'], ['clothing', '👕 Outfits'], ['background', '🌄 Worlds'], ['aura', '✨ Auras'], ['trail', '💫 Trails'], ['body', '🎨 Colours']];
+    function sw(kind, key, label) {
+      var off = isOff(kind, key);
+      return '<label class="cs-sw' + (off ? ' off' : '') + '"><input type="checkbox" ' + (off ? '' : 'checked') + ' onchange="ClassroomStore.ui.setOff(\'' + kind + '\',\'' + key + '\',!this.checked)"> ' + label + '</label>';
+    }
+    return card(h2('🔛 What is on sale', 'Untick to close it. Pupils keep what they already have.') +
+      '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:4px 0 6px;">Shop parts</div>' +
+      SHOP_TABS.filter(function (t) { return t[0] !== 'orders'; }).map(function (t) { return sw('tabs', t[0], t[1]); }).join('') +
+      '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:8px 0 6px;">Monster item groups</div>' +
+      cats.map(function (c) { return sw('cats', c[0], c[1]); }).join('') +
+      '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:8px 0 6px;">Mystery boxes</div>' +
+      TIERS.map(function (t) { return sw('boxes', t, BOX_INFO[t].icon + ' ' + BOX_INFO[t].name); }).join(''));
+  }
+  function giveCard(cls, students) {
+    var groups = (cls && store.getGroups) ? (store.getGroups(cls.id) || []) : [];
+    var opts = '<option value="class">👥 The whole class (' + students.length + ')</option>' +
+      groups.map(function (g) { return '<option value="group:' + esc(g.id) + '">🏳️ Team ' + esc(g.name) + ' (' + (g.studentIds || []).length + ')</option>'; }).join('') +
+      students.map(function (s) { return '<option value="pupil:' + esc(s.id) + '">🧑‍🎓 ' + esc(studentName(s.id)) + ' (🪙 ' + balance(s.id) + ')</option>'; }).join('');
+    var inp = 'padding:8px;border-radius:10px;border:1.5px solid #cbd5e1;font-weight:700;';
+    return card(h2('🪙 Give or take coins', 'Pick who, then press a button. Taking never goes below zero.') +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">' +
+        '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Who<select id="cs-give-target" style="display:block;margin-top:3px;min-width:240px;' + inp + '">' + opts + '</select></label>' +
+        '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Why (pupils see it)<input id="cs-give-reason" type="text" maxlength="50" placeholder="Great teamwork" style="display:block;margin-top:3px;width:220px;' + inp + '"></label>' +
+      '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">' +
+        [1, 5, 10, 20].map(function (n) { return btn('+' + n, 'ClassroomStore.ui.giveTo(' + n + ')'); }).join('') +
+        [-5, -10].map(function (n) { return btn('−' + (-n), 'ClassroomStore.ui.giveTo(' + n + ')', 'danger'); }).join('') +
+        btn('Other amount…', 'ClassroomStore.ui.giveTo()', 'ghost') +
+      '</div>');
+  }
+  function historyCard(students) {
+    var d = data(), ids = {}; students.forEach(function (s) { ids[s.id] = 1; });
+    var sel = '<select onchange="ClassroomStore.ui.hist(\'pupil\',this.value)" style="padding:7px;border-radius:10px;border:1.5px solid #cbd5e1;font-weight:700;"><option value="all">Everyone</option>' +
+      students.map(function (s) { return '<option value="' + esc(s.id) + '"' + (histPupil === s.id ? ' selected' : '') + '>' + esc(studentName(s.id)) + '</option>'; }).join('') + '</select>';
+    var kinds = [['buys', '🛍️ Bought'], ['coins', '🪙 Coins given / taken'], ['all', '📜 Everything']];
+    var kb = kinds.map(function (k) { return btn(k[1], "ClassroomStore.ui.hist('kind','" + k[0] + "')", histKind === k[0] ? '' : 'ghost'); }).join(' ');
+    function who(id) { return histPupil !== 'all' ? (histPupil === id) : !!ids[id]; }
+    var rows = [];
+    if (histKind === 'buys') {
+      d.purchases.filter(function (p) { return who(p.studentId); }).forEach(function (p) { rows.push({ ts: new Date(p.ts).getTime(), sid: p.studentId, icon: p.icon, text: p.name, n: -p.price, undo: p.status === 'done' ? p.id : null, refunded: p.status !== 'done' }); });
+      d.requests.filter(function (r) { return who(r.studentId); }).forEach(function (r) { rows.push({ ts: new Date(r.createdAt).getTime(), sid: r.studentId, icon: r.icon, text: r.name + ' (reward · ' + r.status + ')', n: r.status === 'declined' ? 0 : -r.price }); });
+    } else {
+      students.forEach(function (s) {
+        if (!who(s.id)) return;
+        (wallet(s.id).ledger || []).forEach(function (l) {
+          if (histKind === 'coins' && ['grant', 'take'].indexOf(l.type) === -1 && !/^Worksheet/.test(l.reason || '')) return;
+          rows.push({ ts: l.ts, sid: s.id, icon: l.delta > 0 ? '➕' : '➖', text: l.reason || l.type, n: l.delta });
+        });
+      });
+    }
+    rows.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+    var total = rows.length; rows = rows.slice(0, 80);
+    return card(h2('🧾 Who bought what', 'Newest first. Undo gives the coins back and removes the item or unopened box.') +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">' + sel + ' ' + kb + '</div>' +
+      (rows.length ? rows.map(function (r) {
+        return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--border-light,#e2e8f0);color:var(--text-main,#0f172a);font-size:.86rem;">' +
+          '<span style="font-size:1.2rem;width:26px;text-align:center;">' + esc(r.icon || '•') + '</span>' +
+          '<b style="min-width:120px;">' + esc(studentName(r.sid)) + '</b><span style="flex:1;">' + esc(r.text) + '</span>' +
+          '<span style="font-weight:900;color:' + (r.n > 0 ? '#16a34a' : r.n < 0 ? '#b91c1c' : '#64748b') + ';">' + (r.n > 0 ? '+' : '') + r.n + '</span>' +
+          '<span style="font-size:.74rem;color:var(--text-muted,#64748b);width:110px;text-align:right;">' + when(r.ts) + '</span>' +
+          (r.undo ? btn('Undo', "ClassroomStore.ui.undo('" + r.undo + "')", 'ghost') : (r.refunded ? '<span style="font-size:.72rem;color:#64748b;">refunded</span>' : '')) + '</div>';
+      }).join('') + (total > rows.length ? '<div style="font-size:.78rem;color:#64748b;padding-top:6px;">Showing the newest 80 of ' + total + '. Pick one pupil to see more.</div>' : '')
+        : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">Nothing here yet.</div>'));
+  }
+  function renderTeacherStore(container) {
+    var P = renderTeacher(null, 'parts'), S = P.sections, cls = P.cls, students = P.students;
+    var tabs = [['prices', '🏷️ Prices & on sale'], ['coins', '🪙 Give or take coins'], ['history', '🧾 Who bought what'], ['requests', '📬 Requests' + (P.pending.length ? ' (' + P.pending.length + ')' : '')], ['worksheet', '📝 Worksheet coins'], ['party', '🎉 Party fund']];
+    var body = '';
+    if (teacherTab === 'prices') body = onOffCard() + (S.prices || '') + (S.odds || '');
+    else if (teacherTab === 'coins') body = giveCard(cls, students) + (S.coins || '');
+    else if (teacherTab === 'history') body = historyCard(students);
+    else if (teacherTab === 'requests') body = (S.requests || '') + (S.clean || '');
+    else if (teacherTab === 'worksheet') body = S.worksheet || '';
+    else if (teacherTab === 'party') body = S.party || card(h2('🎉 Class party fund', 'Pick a class at the top first.'));
+    container.innerHTML = pshopStyle() + '<div style="max-width:1180px;margin:0 auto;padding:6px 8px 60px;color:#e5edff;">' +
+      '<div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px;"><div style="flex:1;min-width:240px;">' +
+        '<h1 class="tines-h1" style="font-size:1.7rem;font-weight:800;color:#e5edff;margin:0;">🪙 Store settings' + (cls ? ' · ' + esc(cls.name || cls.id) : '') + '</h1>' +
+        '<div style="font-size:.88rem;color:#cbd5e1;margin-top:4px;">Pupils earn 1 coin for every ' + data().config.coinsPerXp + ' XP. They shop on the Class Board. Use the class menu at the top to switch class.</div>' +
+        '<div id="cs-cloud-status" style="margin-top:4px;font-size:.78rem;font-weight:800;color:#94a3b8;">' + cloudLabel() + '</div></div>' +
+        btn('🛍️ Open the pupil shop', "switchView('store-pupil')") + '</div>' +
+      '<div class="cs-tbar">' + tabs.map(function (t) { return '<button type="button" class="' + (teacherTab === t[0] ? 'on' : '') + '" onclick="ClassroomStore.ui.tTab(\'' + t[0] + '\')">' + t[1] + '</button>'; }).join('') + '</div>' +
+      body + '</div>';
+  }
+  function giveTargets(v, cls, students) {
+    if (v === 'class') return students.map(function (s) { return s.id; });
+    if (v.indexOf('group:') === 0) { var g = store.getGroup ? store.getGroup(v.slice(6)) : null; return g ? (g.studentIds || []) : []; }
+    if (v.indexOf('pupil:') === 0) return [v.slice(6)];
+    return [];
+  }
+
   root.ClassroomStore = {
     cosmetics: { equipped: equippedExtras, equip: equipExtra, buy: buyExtra, give: giveExtra, owned: extraOwned, entry: cosEntry, find: findExtra, setTitles: setTitleItems },
     fund: { get: fundFor, set: setFund, donate: donate, reset: resetFund },
+    itemPic: itemPicHtml,
     openBox: openBox2, BOX_ODDS: BOX_ODDS, TIERS: TIERS, BOX_INFO: BOX_INFO,
     ui: ui, findUnearned: findUnearned, getTimetable: ui.getTimetable, setTimetable: ui.setTimetable, getCalendar: ui.getCalendar, setCalendar: ui.setCalendar, getCalendarFlag: ui.getCalendarFlag, setCalendarFlag: ui.setCalendarFlag, getBoardGoal: ui.getBoardGoal, setBoardGoal: ui.setBoardGoal, data: data, wallet: wallet, balance: balance, grant: grant, buyItem: buyItem, buyBox: buyBox,
     requestPrivilege: requestPrivilege, decide: decide, cloud: { pull: cloudPull, push: cloudPush, bundleFor: bundleFor, adoptDoc: adoptDoc, stampOf: stampOf, id: CLOUD_ID, state: function () { return cloudState; } }, undoPurchase: undoPurchase, shopItems: shopItems, usedThisWeek: usedThisWeek, DEFAULTS: DEFAULTS
@@ -1200,6 +1361,10 @@
   root.renderClassroomStoreView = function (container) {
     var role = store.getRole ? store.getRole() : 'teacher';
     if (cloudClient() && Date.now() - lastPull > 30000) cloudPull().then(function (c) { if (c && root.renderCurrentView) root.renderCurrentView(); });
-    if (role === 'student') renderStudent(container); else renderTeacher(container);
+    if (role === 'student') renderStudent(container); else renderTeacherStore(container);
+  };
+  root.renderPupilShopView = function (container) {
+    if (cloudClient() && Date.now() - lastPull > 30000) cloudPull().then(function (c) { if (c && root.renderCurrentView) root.renderCurrentView(); });
+    if ((store.getRole ? store.getRole() : 'teacher') === 'student') renderStudent(container); else renderPupilShop(container);
   };
 })(typeof window !== 'undefined' ? window : this);

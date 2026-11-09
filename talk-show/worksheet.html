@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talk Show worksheet · English Adventure Academy</title>
+<style>
+  @page { size: A4; margin: 12mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 "Plus Jakarta Sans", Arial, sans-serif; color: #1e1b3a; background: #e5e7eb; }
+  .bar { position: sticky; top: 0; display: flex; gap: 8px; flex-wrap: wrap; padding: 10px; background: #0f172a; z-index: 2; }
+  .bar a, .bar button { font: 800 14px Arial, sans-serif; padding: 8px 12px; border-radius: 10px; border: 0; border-bottom: 4px solid #0b1020; background: #334155; color: #fff; cursor: pointer; text-decoration: none; }
+  .bar .on { background: #7c3aed; border-bottom-color: #4c1d95; } .bar .p { background: #10b981; border-bottom-color: #047857; margin-left: auto; }
+  .page { width: 210mm; min-height: 297mm; margin: 12px auto; background: #fff; padding: 12mm; box-shadow: 0 4px 20px rgba(0,0,0,.15); page-break-after: always; position: relative; }
+  h1 { font: 800 26px Georgia, serif; margin: 0; } h2 { font: 800 17px Georgia, serif; margin: 10px 0 4px; padding: 4px 10px; border-radius: 8px; background: #fef3c7; display: inline-block; }
+  .top { display: flex; align-items: center; gap: 14px; border-bottom: 3px solid #f59e0b; padding-bottom: 8px; }
+  .top .mic { font-size: 44px; } .top small { display: block; color: #6b7280; font-weight: 700; }
+  .name { display: flex; gap: 20px; margin-top: 8px; font-weight: 700; } .name span { flex: 1; border-bottom: 2px dotted #9ca3af; }
+  .inst { color: #374151; font-weight: 700; margin: 2px 0 6px; }
+  .q { margin: 6px 0 1px; font-weight: 800; } .q i { font-style: normal; color: #7c3aed; margin-right: 6px; }
+  .line { border-bottom: 2px solid #cbd5e1; height: 24px; margin-bottom: 4px; position: relative; }
+  .line em { position: absolute; left: 0; bottom: 3px; color: #94a3b8; font-style: normal; font-weight: 700; }
+  .bank { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 6px; } .bank b { border: 2px solid #f59e0b; border-radius: 999px; padding: 2px 10px; }
+  .pic { display: grid; grid-template-columns: 46mm 1fr; gap: 12px; align-items: center; }
+  .pic .im { height: 36mm; border: 2px solid #e5e7eb; border-radius: 14px; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 70px; }
+  .pic .im img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .stars { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin-top: 6px; } .stars div:nth-child(even) { font-size: 20px; letter-spacing: 4px; color: #f59e0b; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 2px dashed #9ca3af; }
+  .card { border: 1px dashed #9ca3af; padding: 8px 12px; min-height: 25mm; display: flex; flex-direction: column; justify-content: center; }
+  .card .t { font-size: 11px; font-weight: 800; color: #7c3aed; } .card .cq { font-size: 17px; font-weight: 800; margin: 2px 0; } .card .cf { color: #0369a1; font-weight: 700; }
+  .card.g .t { color: #b45309; }
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; } th, td { border: 1px solid #d1d5db; padding: 6px 8px; vertical-align: top; text-align: left; } th { background: #fef3c7; }
+  td.say { color: #92400e; font-style: italic; }
+  .foot { position: absolute; bottom: 8mm; left: 12mm; right: 12mm; font-size: 11px; color: #9ca3af; text-align: center; }
+  @media print { body { background: #fff; } .bar { display: none; } .page { margin: 0; box-shadow: none; width: auto; min-height: 0; padding: 0; } .foot { display: none; } }
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<div id="out"></div>
+<script src="js/data.js?v=1"></script>
+<script>
+(function () {
+  var D = window.TALK_SHOW, qs = new URLSearchParams(location.search);
+  var key = (qs.get('grade') || '3') + '-' + (qs.get('ep') || '1'); if (!D.shows[key]) key = '3-1';
+  var S = D.shows[key], part = qs.get('part') || 'all';
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function blank(f) { return esc(f).replace(/_{2,}/g, '<span style="display:inline-block;min-width:34mm;border-bottom:2px solid #1e1b3a">&nbsp;</span>'); }
+  function top(sub) { return '<div class="top"><span class="mic">🎤</span><div><h1>' + esc(S.name) + '</h1><small>Grade ' + S.grade + ' · ' + esc(S.sub) + ' · ' + esc(sub) + '</small></div></div>'; }
+  var bar = Object.keys(D.shows).map(function (k) { var s = D.shows[k]; return '<a class="' + (k === key ? 'on' : '') + '" href="?grade=' + k[0] + '&ep=' + k[2] + '&part=' + part + '">G' + k[0] + ' · ' + esc(s.name) + '</a>'; }).join('') +
+    ['all', 'worksheet', 'cards', 'teacher'].map(function (p) { return '<a class="' + (p === part ? 'on' : '') + '" href="?grade=' + key[0] + '&ep=' + key[2] + '&part=' + p + '">' + { all: 'Everything', worksheet: 'Worksheet', cards: 'Speaking cards', teacher: 'Teacher guide' }[p] + '</a>'; }).join('') +
+    '<button class="p" onclick="print()">🖨️ Print</button>';
+  document.getElementById('bar').innerHTML = bar;
+
+  /* page 1: worksheet (after speaking: write what you said) */
+  var p1 = top('Worksheet') + '<div class="name">Name: <span></span> Class: <span style="flex:.4"></span> Date: <span style="flex:.5"></span></div>' +
+    '<h2>A. Answer the questions</h2><div class="inst">Write a full sentence. Use the blue sentence to help you.</div>' +
+    S.quick.slice(0, 5).map(function (q, i) { return '<div class="q"><i>' + (i + 1) + '.</i>' + esc(q.q) + '</div><div class="line"><em>' + esc(q.f.split(' / ')[0].replace(/_{2,}/, '…')) + '</em></div>'; }).join('') +
+    '<h2>B. Look and write</h2><div class="inst">Write 3 sentences about the picture. Use the words in the box.</div>' +
+    (function () { var p = S.pics[0]; return '<div class="pic"><div class="im">' + (p.img ? '<img src="' + esc(p.img) + '" alt="">' : esc(p.e)) + '</div><div><div class="bank">' + p.words.map(function (w) { return '<b>' + esc(w) + '</b>'; }).join('') + '</div>' +
+      p.f.map(function (f) { return '<div class="line" style="height:28px"><em>' + esc(f.replace(/_{2,}/, '…')) + '</em></div>'; }).join('') + '</div></div>'; })() +
+    '<h2>C. Interview the guest: ' + esc(S.guest.who) + '</h2><div class="inst">' + esc(S.guest.intro) + ' Write 2 questions and the guest’s answers.</div>' +
+    [0, 1].map(function (i) { return '<div class="q"><i>Q' + (i + 1) + '</i>' + esc(S.guest.qs[i].q) + '</div><div class="line"><em>' + esc(S.guest.qs[i].a.split(' ').slice(0, 2).join(' ')) + ' …</em></div>'; }).join('') +
+    '<div class="q"><i>Q3</i>My own question:</div><div class="line"></div>' +
+    '<h2>D. How did I do?</h2><div class="stars"><div>I spoke in a full sentence.</div><div>☆ ☆ ☆</div><div>I helped my team.</div><div>☆ ☆ ☆</div><div>I asked a question.</div><div>☆ ☆ ☆</div></div>' +
+    '<div class="foot">English Adventure Academy · Talk Show Studio</div>';
+
+  /* page 2: speaking cards to cut out (pair practice before the show) */
+  var p2 = top('Speaking cards: cut out and practise in pairs') +
+    '<div class="inst" style="margin-top:8px">Pupil A reads the question. Pupil B answers with the blue sentence. Then swap.</div><div class="cards">' +
+    S.quick.map(function (q, i) { return '<div class="card"><span class="t">QUESTION ' + (i + 1) + '</span><span class="cq">' + esc(q.q) + '</span><span class="cf">' + blank(q.f) + '</span></div>'; }).join('') +
+    S.guest.qs.map(function (q, i) { return '<div class="card g"><span class="t">GUEST CHAIR · ' + esc(S.guest.who) + '</span><span class="cq">' + esc(q.q) + '</span><span class="cf">' + esc(q.a.split(' ').slice(0, 2).join(' ')) + ' …</span></div>'; }).join('') +
+    '</div><div class="foot">Cut along the dashed lines.</div>';
+
+  /* page 3: teacher guide (what to do and say in every round) */
+  var R = [
+    ['Studio opens', 3, 'Pupils sit in 4 teams. Press ▶ Start the show. Practise 👏 Applause (everyone claps) and 🤫 Quiet (finger on lips).', 'Welcome to ' + S.name + '! When you see APPLAUSE, clap. When you see QUIET, be quiet.'],
+    ['Quick Questions', 7, 'Read the How to play screen together, then ▶ Start the round. The team on turn chooses ONE speaker. Tap ✓ Good answer +1 or ⭐ Full sentence +2. 🔁 Try again never takes points. 💡 Help shows and says a model answer.', S.quick[0].q + ' … Answer with a full sentence: “' + S.quick[0].f + '”'],
+    ['Picture Talk', 7, 'One picture per team. The speaker says up to 3 sentences with the word chips and the blue sentences. Tap +1 sentence each time (max 3). Next picture → next team.', 'Look at the picture. Tell me 3 things. Use the words on the board.'],
+    ['Guest Chair', 8, 'Put a chair at the front. One pupil from the guest team sits there and is ' + S.guest.who + '. Another team taps a question card and ASKS it. The guest answers. Points: ❓ good question +1 (askers), ✓ +1 or ⭐ +2 (guest). Next guest → roles move on.', 'Our guest today is ' + S.guest.who + '! Ask a question from the cards.'],
+    ['Fast Talk 30', 6, 'Each team gets a topic. Press ▶ Start 30 seconds. Team members take turns saying words or sentences. Tap +1 for each correct one, no repeats.', 'You have 30 seconds. Take turns. Go!'],
+    ['That’s a wrap!', 4, 'Podium and applause. Everyone says the goodbye line. Optional: give XP on the Class Board. Exit question at the door.', S.bye + ' What did you say on the show today?']
+  ];
+  var p3 = top('Teacher guide') + '<div class="inst" style="margin-top:8px">35 minutes · 4 teams · one smartboard · no microphone. Before the lesson: put one chair at the front (the guest chair). Optional: pairs practise with the speaking cards for 3 minutes, and the worksheet is homework or the next lesson’s warm-up.</div>' +
+    '<table><tr><th style="width:22%">Round</th><th style="width:7%">Min</th><th>What to do</th><th style="width:28%">Teacher says</th></tr>' +
+    R.map(function (r) { return '<tr><td><b>' + esc(r[0]) + '</b></td><td>' + r[1] + '</td><td>' + esc(r[2]) + '</td><td class="say">“' + esc(r[3]) + '”</td></tr>'; }).join('') + '</table>' +
+    '<h2>Keyboard</h2><div class="inst">→ next round · ← back · A applause · Q quiet</div>' +
+    '<h2>Outcomes</h2><div class="inst">Students will be able to answer questions with a full sentence, describe a picture in 2–3 sentences, ask and answer interview questions in role, and recall Unit 5 words quickly.</div>' +
+    '<h2>Model answers</h2><table><tr><th>Question</th><th>Model answer</th></tr>' + S.quick.map(function (q) { return '<tr><td>' + esc(q.q) + '</td><td>' + esc(q.a) + '</td></tr>'; }).join('') + '</table>' +
+    '<div class="foot">English Adventure Academy · Talk Show Studio</div>';
+
+  var pages = { worksheet: [p1], cards: [p2], teacher: [p3], all: [p3, p2, p1] }[part] || [p3, p2, p1];
+  document.getElementById('out').innerHTML = pages.map(function (p) { return '<div class="page">' + p + '</div>'; }).join('');
+  document.title = S.name + ' · ' + { all: 'Teacher guide, cards and worksheet', worksheet: 'Worksheet', cards: 'Speaking cards', teacher: 'Teacher guide' }[part];
+})();
+</script>
+</body>
+</html>

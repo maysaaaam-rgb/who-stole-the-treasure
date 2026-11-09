@@ -10127,6 +10127,56 @@ const GAMES_REGISTRY = [
     "track": "English",
     "lessonOrder": 1,
     "sectionOrder": 1
+  },
+  {
+      "id": "talk-show",
+      "title": "🎤 Talk Show Studio: Speaking Battles (Grade 3 Time Show / Time Capsule TV · Grade 4 Make Some Noise / Concert Night)",
+      "description": "A 35-minute speaking lesson. The smartboard becomes a TV studio with an ON AIR light and Applause and Quiet signs. Four teams battle in Quick Questions, Picture Talk, the Guest Chair interview and Fast Talk 30. The teacher judges with one tap; no microphone. Two episodes per grade on Unit 5.",
+      "type": "game",
+      "category": "Speaking",
+      "categoryLabel": "🎤 Speaking",
+      "level": "A1–A1+",
+      "cefrLevel": "A1+",
+      "age": "Ages 8–10",
+      "ageGroup": "8-10",
+      "grade": "Grade 3–4",
+      "grades": [
+          3,
+          4
+      ],
+      "duration": 35,
+      "durationText": "35 min",
+      "estimatedMinutes": 35,
+      "xp": 150,
+      "skills": [
+          "Speaking",
+          "Listening",
+          "Vocabulary"
+      ],
+      "topic": "Unit 5 speaking: Let's Go Back (G3) & Make Some Noise (G4)",
+      "topics": [
+          "Speaking",
+          "Past simple",
+          "Sounds and music",
+          "Interviews"
+      ],
+      "languageFocus": "Full-sentence answers · Asking and answering questions · Describing pictures",
+      "route": "talk-show/index.html",
+      "url": "talk-show/index.html",
+      "worksheet": "talk-show/worksheet.html",
+      "worksheetRoute": "talk-show/worksheet.html",
+      "worksheetUrl": "talk-show/worksheet.html",
+      "teacherGuide": true,
+      "featured": true,
+      "status": "active",
+      "trackId": "track-4",
+      "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+      "thumbnailIcon": "🎤",
+      "gradient": "linear-gradient(135deg, #060911 0%, #b91c1c 50%, #f59e0b 100%)",
+      "unit": 5,
+      "track": "English",
+      "lessonOrder": 2,
+      "sectionOrder": 1
   }
 ];
 
