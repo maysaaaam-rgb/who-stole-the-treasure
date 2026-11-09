@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talk Show Studio · English Adventure Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body>
+  <header class="hud">
+    <div class="onair" id="onair" title="On air"><i></i>ON AIR</div>
+    <h1 id="h-title">Talk Show Studio<small id="h-sub">Speaking lesson</small></h1>
+    <div class="teams" id="teams"></div>
+    <div class="hud-btns">
+      <button type="button" class="btn small amber" id="clap" title="Applause sign: everyone claps">👏 Clap</button>
+      <button type="button" class="btn small ghost" id="hush" title="Quiet sign: finger on lips">🤫 Quiet</button>
+      <button type="button" class="btn small ghost" id="snd" title="Sound on or off">🔊</button>
+      <button type="button" class="btn small ghost" id="fs" title="Full screen">⛶</button>
+      <a class="btn small ghost" id="printbtn" href="worksheet.html" target="_blank" title="Teacher guide, speaking cards and worksheet to print">🖨️ Print</a>
+      <a class="btn small ghost" href="../index.html#today" title="Back to the platform">🏠</a>
+    </div>
+  </header>
+
+  <main><section id="stage"></section></main>
+
+  <footer class="foot" id="foot" hidden>
+    <button type="button" class="btn ghost" id="back">◀ Back</button>
+    <div class="steps" id="steps"></div>
+    <button type="button" class="btn amber small" id="tipbtn">💡 Teacher</button>
+    <button type="button" class="btn green big" id="next">Next ▶</button>
+  </footer>
+
+  <aside id="tip" hidden></aside>
+  <div id="sign" hidden></div>
+
+  <script src="js/data.js?v=1"></script>
+  <script src="js/audio.js?v=1"></script>
+  <script src="js/app.js?v=2"></script>
+</body>
+</html>

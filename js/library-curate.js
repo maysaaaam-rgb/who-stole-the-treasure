@@ -14,11 +14,42 @@
   function msg(t, type) { if (root.showNotification) root.showNotification(t, type || 'success'); }
   load();
 
+  /* Old lessons (Units 1–4, Halloween, Alice, Wonderland, Chuseok) live in the Archive from 9 Nov 2026: hidden from the Library
+     and the Game Shelf, still found by Search and listed under More → Old lessons. "Bring back" puts one back on this device. */
+  var AKEY = 'eaa_lib_archive';
+  var ar = { back: {} };
+  try { var a0 = JSON.parse(localStorage.getItem(AKEY) || 'null'); if (a0 && a0.back) ar.back = a0.back; } catch (e) { /* storage may be blocked */ }
+  function persistAr() { try { localStorage.setItem(AKEY, JSON.stringify(ar)); } catch (e) { /* storage may be blocked */ } }
+  var KEEP = /^(karaoke-stage|alley-fling.*|watch-answer.*|simon-says.*|school-subjects-challenge|classroom-instructions-challenge|dino-.*|biome-crafter|gamemaker-.*|smart-board|magic-book|practice-island.*)$/;
+  var OLD_IDS = /^(week4-.*|city-mouse|wind-and-sun|forest-rangers-g4|swallow-gift-g4|first-harvest-g3|good-ideas-lab|inventor-lab|clara-inventor|inventor-forge|brain-quit|brain-explorers|u[1-4]-.*|rev-.*|lingo-g3-u3-review|board-u3-.*|revision-quest-.*|bamboozle-.*-u[1-4]|arcade-.*-u[1-4]|race-.*-u[1-4]|shop-counter-.*|print-g[34]-u[1-4]|worksheet-store-.*-u12|quiz-g[34]-u14|speak-g4-u4|unit[1-4].*|money-l\d-.*|changing-l\d-.*|bear-l\d-.*|ice-l\d-.*|poem-l\d-.*|cars-l\d-.*)$/;
+  function isOld(g) {
+    if (!g || KEEP.test(g.id)) return false;
+    var t = (g.id + ' ' + (g.title || '')).toLowerCase(), u = Number(g.unit);
+    if (u >= 1 && u <= 4) return true;
+    if (OLD_IDS.test(g.id)) return true;
+    return /\bunits? ?[1-4]\b|halloween|alice|wonderland|chuseok/.test(t);
+  }
+
+  function byId(id) { return (root.GAMES_DATA || []).filter(function (g) { return g && g.id === id; })[0]; }
+  function archived(id) { var g = byId(id) || ((root.Timetable && root.Timetable.catalog) || []).filter(function (c) { return c && c.id === id; })[0]; return !!g && isOld(g) && !ar.back[id]; }
+
   var api = {
-    isHidden: function (id) { return !!st.hidden[id] || (DEFAULT_HIDDEN.indexOf(id) >= 0 && !st.restored[id]); },
+    isHidden: function (id) { return !!st.hidden[id] || (DEFAULT_HIDDEN.indexOf(id) >= 0 && !st.restored[id]) || archived(id); },
+    isArchived: archived,
+    isBack: function (id) { return !!ar.back[id]; },
+    isOld: isOld,
+    archivedList: function () {
+      var out = [], seen = {};
+      (root.GAMES_DATA || []).forEach(function (g) { if (g && isOld(g)) { seen[g.id] = 1; out.push(g); } });
+      var cat = (root.Timetable && root.Timetable.catalog) || [];
+      cat.forEach(function (c) { if (c && c.route && c.kind !== 'nav' && !seen[c.id] && isOld(c)) { seen[c.id] = 1; out.push({ id: c.id, title: (c.icon ? c.icon + ' ' : '') + c.title, url: c.route }); } });
+      return out;
+    },
+    bringBack: function (id) { ar.back[id] = 1; delete st.hidden[id]; if (DEFAULT_HIDDEN.indexOf(id) >= 0) st.restored[id] = 1; persist(); persistAr(); },
+    sendToArchive: function (id) { delete ar.back[id]; persistAr(); },
     isStar: function (id) { return !!st.star[id]; },
     hide: function (id) { st.hidden[id] = 1; delete st.restored[id]; delete st.star[id]; persist(); },
-    restore: function (id) { delete st.hidden[id]; if (DEFAULT_HIDDEN.indexOf(id) >= 0) st.restored[id] = 1; persist(); },
+    restore: function (id) { delete st.hidden[id]; if (DEFAULT_HIDDEN.indexOf(id) >= 0) st.restored[id] = 1; if (archived(id)) { ar.back[id] = 1; persistAr(); } persist(); },
     toggleStar: function (id) { if (st.star[id]) delete st.star[id]; else { st.star[id] = 1; delete st.hidden[id]; } persist(); },
     hiddenIds: function () { var o = {}; Object.keys(st.hidden).forEach(function (k) { o[k] = 1; }); DEFAULT_HIDDEN.forEach(function (k) { if (!st.restored[k]) o[k] = 1; }); return Object.keys(o); },
     starIds: function () { return Object.keys(st.star); },

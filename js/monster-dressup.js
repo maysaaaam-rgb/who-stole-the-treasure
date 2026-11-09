@@ -213,6 +213,8 @@
     },
     isHiddenByBaked: isHiddenByBaked,
     isArtOnly: function (id) { return ART_ONLY.indexOf(id) !== -1; },
+    /* the 3D picture of an item, also when the drawn monsters are on (used for shop and prize pictures) */
+    itemArt: function (id) { return FILE[id] ? ITEMS + 'item_' + FILE[id] + '.webp' : ''; },
     itemPicture: function (id) {
       if (root.MonsterPets && root.MonsterPets.byId(id)) return root.MonsterPets.getDataUri(id);
       return (root.EAA_ILLUSTRATED_MONSTERS === true && FILE[id]) ? ITEMS + 'item_' + FILE[id] + '.webp' : '';

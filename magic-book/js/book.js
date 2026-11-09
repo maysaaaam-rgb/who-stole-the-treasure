@@ -168,7 +168,11 @@
     $('book').style.setProperty('--cv', S.book.color);
     $('shelf-view').hidden = true; $('book-view').hidden = false;
     S.si = 0; layout();
-    var saved = store('mb-pos-' + key);
+    var saved = store('mb-pos-' + key), wantPage = Number(qs.get('page'));
+    if (wantPage && !S.pageJumped) {   /* ?page=74 opens the spread with that page (used by the platform's Today page) */
+      S.pageJumped = true;
+      for (var wi = 0; wi < S.spreads.length; wi++) if (S.spreads[wi].some(function (p) { return p && Number(p.page) === wantPage; })) { S.si = wi; render(); return; }
+    }
     if (instant || saved) { S.si = clamp(saved || 0, 0, S.spreads.length - 1); render(); return; }
     openCover();
   }
@@ -249,6 +253,7 @@
     store('mb-pos-' + S.g, S.si);
     drawAllInk(); drawMarks(); buildRibbon(); preload();
     if (window.MagicScene) MagicScene.onSpread();
+    if (window.MagicLive) MagicLive.onSpread();
   }
   function fillSlot(id, p) {
     var s = $(id); s.innerHTML = ''; s.classList.toggle('empty', !p);
@@ -338,6 +343,7 @@
   var drag = null;
   function bookDown(e) {
     if (S.scene) return;
+    if (!S.tool && e.target && e.target.closest && e.target.closest('.lv-hit,.lv-note')) return;   // a tap on a live picture, word or task
     if (e.pointerType === 'pen' && !S.tool) {
       $('tray').hidden = false; $('pencil').classList.add('open');
       setTool('pen');
@@ -763,7 +769,8 @@
   window.MagicBook = {
     state: S, turn: turn, open: openBook, visiblePages: visiblePages, exItems: exItems, say: say, chime: chime, toast: toast,
     swish: swish, drawMarks: drawMarks, updateExCount: updateExCount, store: store, composeBook: composeBook,
-    resetZoom: resetZoom, setTool: setTool, stopRead: stopRead, esc: esc
+    resetZoom: resetZoom, setTool: setTool, stopRead: stopRead, esc: esc, url: url
   };
   if (window.MagicScene) MagicScene.init();
+  if (window.MagicLive) MagicLive.init();
 })();

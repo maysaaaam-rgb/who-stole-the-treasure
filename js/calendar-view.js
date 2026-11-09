@@ -7,7 +7,7 @@
   var DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   var TYPES = {
     lesson: ['📖', 'Lesson', '#94a3b8'], unit4: ['📘', 'Unit 4', '#38bdf8'], alice: ['🫖', 'Alice', '#f472b6'], quiz: ['📝', 'Quiz', '#f59e0b'],
-    book: ['📗', 'Gov book', '#10b981'], unit5: ['📙', 'Unit 5', '#a855f7'], halloween: ['🎃', 'Halloween', '#f97316'], birthday: ['🎂', 'Birthday', '#34d399'], meeting: ['👥', 'Meeting', '#a78bfa'], task: ['✅', 'To do', '#fb923c'], chuseok: ['🌕', 'Chuseok', '#fbbf24'], other: ['📌', 'Other', '#cbd5e1']
+    book: ['📗', 'Gov book', '#10b981'], unit5: ['📙', 'Unit 5', '#a855f7'], speaking: ['🎤', 'Speaking', '#ef4444'], halloween: ['🎃', 'Halloween', '#f97316'], birthday: ['🎂', 'Birthday', '#34d399'], meeting: ['👥', 'Meeting', '#a78bfa'], task: ['✅', 'To do', '#fb923c'], chuseok: ['🌕', 'Chuseok', '#fbbf24'], other: ['📌', 'Other', '#cbd5e1']
   };
   // k12 timetable (19-23 Oct 2026; the same every week): classId -> weekday (1=Mon) -> start times
   var K12 = {
@@ -559,8 +559,25 @@
       store().setCalendarFlag('seed30');
     } catch (e) { /* the calendar still works */ }
   }
+  /* 9 Nov 2026: Tuesday 10 November is speaking day. Every lesson is the Talk Show (two episodes per grade). */
+  function talkShowOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed31')) return;
+      var SHOW = { 'class-4b|09:00': [4, 1, 'Make Some Noise!'], 'class-4b|09:45': [4, 2, 'Concert Night'], 'class-3a|10:30': [3, 1, 'The Time Show'], 'class-3a|11:15': [3, 2, 'Time Capsule TV'], 'class-4a|15:20': [4, 1, 'Make Some Noise!'] };
+      var list = customEvents().slice(), plan = ' Plan: lesson-plans/Grade3-Grade4-Talk-Show-Speaking-Lesson-Plan';
+      list.forEach(function (e) {
+        var k = SHOW[e.classId + '|' + e.time]; if (e.date !== '2026-11-10' || !k) return;
+        var was = e.title;
+        e.title = 'Talk Show: ' + k[2] + ' (speaking battles)';
+        e.note = 'Open talk-show/index.html?grade=' + k[0] + '&ep=' + k[1] + ' (Episode ' + k[1] + '). Four teams, the teacher judges.' + plan + '. Moved to a later lesson: ' + was.replace(/\(pp?\.[^)]*\)/g, '').trim() + '.';
+        e.type = 'speaking';
+      });
+      saveEvents(list);
+      store().setCalendarFlag('seed31');
+    } catch (e) { /* the calendar still works */ }
+  }
   function ensureSeeded() {
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce(); movieAndEzPetWeekOnce(); weekNov9Once();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce(); movieAndEzPetWeekOnce(); weekNov9Once(); talkShowOnce();
   }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
@@ -728,7 +745,8 @@
     mode: function (m) { st.mode = m; if (m === 'week' && st.sel) st.wk = ymd(monday(parse(st.sel))); draw(); },
     cls: function (c) { st.cls = c; draw(); },
     pick: function (k) { st.sel = k; draw(); },
-    edit: edit, del: del, saveTimetable: saveTimetable, ensureSeeded: ensureSeeded, linksOf: linksOf, K12: K12, WEEK_TT: WEEK_TT
+    edit: edit, del: del, saveTimetable: saveTimetable, ensureSeeded: ensureSeeded, linksOf: linksOf, K12: K12, WEEK_TT: WEEK_TT,
+    eventsFor: function (date) { var keep = st.cls; st.cls = 'all'; try { return eventsOn(date); } finally { st.cls = keep; } }
   };
   if (typeof setTimeout === 'function') setTimeout(ensureSeeded, 60);
 })(typeof window !== 'undefined' ? window : this);

@@ -5,7 +5,7 @@
   'use strict';
   var KEY = 'eaa_lib_shelf';
   var TABS = [
-    ['week', '📌 Current Unit (Unit 4)'],
+    ['week', '📌 Current Unit (Unit 5)'],
     ['games', '🎮 Smartboard Games'],
     ['plans', '📋 Lesson Plans (Word & PDF)'],
     ['g3', '🎒 Grade 3 Lessons'],
@@ -49,8 +49,9 @@
   }
 
   function items(ignoreKind) {
+    var LC = root.LibraryCurate;
     var list = catalog().filter(function (c) {
-      return c && c.route && c.kind !== 'game' && c.kind !== 'nav';
+      return c && c.route && c.kind !== 'game' && c.kind !== 'nav' && !(LC && LC.isOld && LC.isOld(c) && !(LC.isBack && LC.isBack(c.id)));
     });
     if (!ignoreKind && kindFilter !== 'all') {
       list = list.filter(function (c) { return matchKind(c, kindFilter); });
@@ -74,7 +75,7 @@
     var list = items(ignoreKind);
     if (t === 'week') {
       var weekAgo = new Date(Date.now() - 10 * 86400000).toISOString().slice(0, 10);
-      return list.filter(function (c) { return unitOf(c) === 4 || addedOf(c) >= weekAgo; });
+      return list.filter(function (c) { return unitOf(c) === 5 || addedOf(c) >= weekAgo; });
     }
     if (t === 'alice') return list.filter(isAlice);
     var g = t === 'g3' ? 3 : 4;
@@ -166,10 +167,10 @@
       var g4List = list.filter(function (c) { return c.g === 4; }).sort(teachingSequence);
       var allList = list.filter(function (c) { return !c.g; }).sort(teachingSequence);
       var out = '';
-      if (g3List.length) out += '<h3 class="ls-h">🎒 Grade 3 — Unit 4 Lessons & Reviews (In Teaching Order) <span>' + g3List.length + '</span></h3><div class="ls-grid">' + g3List.map(card).join('') + '</div>';
-      if (g4List.length) out += '<h3 class="ls-h">🎓 Grade 4 — Unit 4 Lessons, Reviews & Assessments (In Teaching Order) <span>' + g4List.length + '</span></h3><div class="ls-grid">' + g4List.map(card).join('') + '</div>';
+      if (g3List.length) out += '<h3 class="ls-h">🎒 Grade 3 — Unit 5: Let’s Go Back <span>' + g3List.length + '</span></h3><div class="ls-grid">' + g3List.map(card).join('') + '</div>';
+      if (g4List.length) out += '<h3 class="ls-h">🎓 Grade 4 — Unit 5: Make Some Noise <span>' + g4List.length + '</span></h3><div class="ls-grid">' + g4List.map(card).join('') + '</div>';
       if (allList.length) out += '<h3 class="ls-h">🌟 All Grades — Classroom Reset & Promises <span>' + allList.length + '</span></h3><div class="ls-grid">' + allList.map(card).join('') + '</div>';
-      return out;
+      return out + '<div style="margin-top:18px"><button type="button" class="tines-tab-btn" onclick="switchView(\'lesson-archive\')">📦 Old lessons: Units 1–4, Halloween, Alice</button></div>';
     }
     var groups = {};
     list.forEach(function (c) {
@@ -177,7 +178,8 @@
       (groups[u] = groups[u] || []).push(c);
     });
     var unitTitles = {
-      4: '📘 Unit 4 — Current Unit (Lessons 1 → Review)',
+      5: '📙 Unit 5 — Current Unit',
+      4: '📘 Unit 4',
       3: '📘 Unit 3 — Complete Unit (Lessons 1 → 5 → Review → Quiz)',
       2: '📘 Unit 2 — Complete Unit (Lessons 1 → 3 → Review & Song)',
       1: '📘 Unit 1 — Complete Unit (Lessons 1 → 4)',
