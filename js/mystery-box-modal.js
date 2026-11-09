@@ -228,6 +228,21 @@
   // =========================================================================
   function render3DChestSVG(tier = 'WOODEN', isOpened = false) {
     const t = String(tier).toUpperCase();
+    const CHEST_ART = {
+      BRONZE:    { closed: 'assets/monsters/store-art/box_bronze.webp',  open: 'assets/monsters/store-art/box_bronze_open.webp' },
+      WOODEN:    { closed: 'assets/monsters/store-art/box_silver.webp',  open: 'assets/monsters/store-art/box_silver_open.webp' },
+      SILVER:    { closed: 'assets/monsters/store-art/box_silver.webp',  open: 'assets/monsters/store-art/box_silver_open.webp' },
+      GILDED:    { closed: 'assets/monsters/store-art/box_gold.webp',    open: 'assets/monsters/store-art/box_gold_open.webp' },
+      GOLD:      { closed: 'assets/monsters/store-art/box_gold.webp',    open: 'assets/monsters/store-art/box_gold_open.webp' },
+      CELESTIAL: { closed: 'assets/monsters/store-art/box_diamond.webp', open: 'assets/monsters/store-art/box_diamond_open.webp' },
+      DIAMOND:   { closed: 'assets/monsters/store-art/box_diamond.webp', open: 'assets/monsters/store-art/box_diamond_open.webp' }
+    };
+    const art = CHEST_ART[t] || CHEST_ART.WOODEN;
+    if (art) {
+      return '<div class="chest-3d-img-wrap" style="width:220px;height:220px;margin:0 auto;display:flex;align-items:center;justify-content:center;position:relative;">' +
+        '<img id="chest-3d-raster-img" src="' + (isOpened ? art.open : art.closed) + '" data-open-src="' + art.open + '" alt="Treasure Chest" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 14px 22px rgba(0,0,0,0.65));transition:transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275);" />' +
+      '</div>';
+    }
 
     // Color definitions per tier: BRONZE (copper), WOODEN = Silver, GILDED = Gold, CELESTIAL = Diamond
     let bodyMain = '#64748b'; // Brushed silver
@@ -490,6 +505,11 @@
         if (lidGroup) {
           lidGroup.style.transform = 'perspective(600px) rotateX(-115deg) translateY(-14px)';
         }
+        const rasterChest = document.getElementById('chest-3d-raster-img');
+        if (rasterChest && rasterChest.getAttribute('data-open-src')) {
+          rasterChest.src = rasterChest.getAttribute('data-open-src');
+          rasterChest.style.transform = 'scale(1.08)';
+        }
         if (confettiCanvas) {
           launchConfettiBurst(confettiCanvas, rarity.color);
         }
@@ -505,7 +525,14 @@
                 ${rarity.tag}
               </div>
               <div class="reward-media-viewport">
-                <div class="reward-icon-display">${item.icon || '✨'}</div>
+                <div class="reward-icon-display">${(function() {
+                  if (item.id === 'coins') return '<img src="assets/monsters/store-art/coin_pile.webp" alt="" style="width:110px;height:110px;object-fit:contain;">';
+                  if (item.id === 'voucher') return '<img src="assets/monsters/store-art/reward_ticket.webp" alt="" style="width:110px;height:110px;object-fit:contain;">';
+                  if (window.MonsterDressUp && window.MonsterDressUp.storePicture && window.MonsterDressUp.storePicture(item.id)) {
+                    return '<img src="' + window.MonsterDressUp.storePicture(item.id) + '" alt="" style="width:110px;height:110px;object-fit:contain;">';
+                  }
+                  return item.icon || '✨';
+                })()}</div>
                 <div class="reward-pedestal-disc" style="background: radial-gradient(circle, ${rarity.glow} 0%, transparent 70%);"></div>
               </div>
               <div class="reward-caption-tray">

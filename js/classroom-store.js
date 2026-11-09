@@ -19,6 +19,10 @@
     itemPrices: { common: 15, rare: 40, epic: 90, legendary: 200, mythic: 500 },
     boxPrices: { BRONZE: 15, WOODEN: 30, GILDED: 80, CELESTIAL: 180 },
     privileges: [
+      { id: 'p-cat-sticker',    icon: '🐱', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · KEEP IT!',   name: '1× Funny Cat Meme Sticker (Pick Your Favourite!)', price: 120, weeklyLimit: 2, coinsOnly: true, active: true },
+      { id: 'p-cat-pack',       icon: '😻', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · 3 PACK!',    name: '3× Funny Cat Meme Sticker Pack',                  price: 280, weeklyLimit: 1, coinsOnly: true, active: true },
+      { id: 'p-topper-mystery', icon: '🎁', image: 'assets/store/prize_pencil_topper.webp', badge: 'REAL 3D TOY PRIZE!',      name: 'Mystery 3D Cute Pencil Topper (Blind Draw)',      price: 300, weeklyLimit: 1, coinsOnly: true, active: true },
+      { id: 'p-topper-vip',     icon: '👑', image: 'assets/store/prize_pencil_topper.webp', badge: 'VIP REAL 3D PRIZE!',      name: 'VIP Choice 3D Cute Pencil Topper (Pick Any One!)', price: 400, weeklyLimit: 1, coinsOnly: true, active: true },
       { id: 'p-song', icon: '🎵', name: 'Choose the warm-up song', price: 40, weeklyLimit: 2, active: true },
       { id: 'p-seat', icon: '🪑', name: 'Sit anywhere for one lesson', price: 30, weeklyLimit: 2, active: true },
       { id: 'p-helper', icon: '🧑‍🏫', name: "Be the teacher's helper", price: 50, weeklyLimit: 1, active: true },
@@ -64,6 +68,17 @@
     c.boxPrices = Object.assign({}, DEFAULTS.boxPrices, c.boxPrices || {});
     if (!hadBronze) c.boxPrices.BRONZE = Math.max(1, Math.round(c.boxPrices.WOODEN / 2));   // the cheapest box costs half a Silver Box
     if (!Array.isArray(c.privileges)) c.privileges = clone(DEFAULTS.privileges);
+    if (!c.physicalPrizesV1) {
+      var existingIds = c.privileges.map(function (p) { return p.id; });
+      DEFAULTS.privileges.filter(function (p) { return p.coinsOnly && existingIds.indexOf(p.id) === -1; }).reverse().forEach(function (p) {
+        c.privileges.unshift(clone(p));
+      });
+      c.privileges.forEach(function (p) {
+        var def = DEFAULTS.privileges.filter(function (dp) { return dp.id === p.id; })[0];
+        if (def && def.coinsOnly) { p.image = def.image; p.badge = def.badge; p.coinsOnly = true; }
+      });
+      c.physicalPrizesV1 = 1;
+    }
     if (!c.coinsPerXp) c.coinsPerXp = DEFAULTS.coinsPerXp;
     if (!c.balanceV1) {   // 30 Oct 2026: boxes were cheaper than the coins inside them; the cheapest class rewards cost less than a hat
       var BOX = { BRONZE: 8, WOODEN: 15, GILDED: 30, CELESTIAL: 60 }, PRIV = { 'p-song': 15, 'p-seat': 15, 'p-sticker': 15, 'p-helper': 20, 'p-game': 20, 'p-dj': 30, 'p-hwpass': 40 };
@@ -133,7 +148,7 @@
   function reqLevel(item) { return (item.unlockRequirement && item.unlockRequirement.level) || item.unlockLevel || 1; }
   var RARITY_LEVEL = { common: 1, rare: 3, epic: 4, legendary: 5, mythic: 6 };
   function isLevelReward(item) { return !item.unlockType || item.unlockType === 'level'; }   // free when the pupil reaches the level
-  function shopLevel(item) { return isLevelReward(item) ? reqLevel(item) : Math.max(reqLevel(item), RARITY_LEVEL[item.rarity] || 1); }
+  function shopLevel(item) { if (item && item.shopLevel) return item.shopLevel; return isLevelReward(item) ? reqLevel(item) : Math.max(reqLevel(item), RARITY_LEVEL[item.rarity] || 1); }
   function isOwned(studentId, item) {
     var inv = store.getStudentInventory ? store.getStudentInventory(studentId) : [];
     if (inv.some(function (e) { return e.itemId === item.id; })) return true;
@@ -159,7 +174,6 @@
   var RETIRED_ITEMS = ['cs-gat', 'cs-hanbok', 'cs-lantern'];   // the Chuseok set: no longer sold, pupils who own them keep them
   function canSell(item) {
     if (RETIRED_ITEMS.indexOf(item && item.id) !== -1) return false;
-    if (/^pet-crew-/.test(String(item && item.id))) return false;   // 9 Nov 2026: the crewmate pets look like a video-game character; not sold until the new original pets arrive (pupils keep theirs)
     if (!inSeason(item)) return false;
     if (SELL_CATEGORIES.indexOf(item.category) === -1) return false;
     var D = root.MonsterDressUp;
@@ -854,10 +868,9 @@
       var petTh = root.MonsterPets.thumbnailHtml(item, 72);
       if (petTh) return petTh;
     }
-    var name = String(item.id).replace(/^(bg|aura)-/, '');
-    var artOn = root.EAA_ILLUSTRATED_MONSTERS === true;
-    if (artOn && item.category === 'background') return '<img src="assets/monsters/bg-art/bg_' + name + '.webp" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:12px;">';
-    if (artOn && item.category === 'aura') return '<div style="width:72px;height:72px;margin:0 auto;background:#0f172a;border-radius:12px;display:flex;align-items:center;justify-content:center;"><img src="assets/monsters/aura-art/aura_' + name + '.webp" alt="" style="width:68px;height:68px;object-fit:contain;"></div>';
+    var name = String(item.id).replace(/^(bg|aura)-/, ''), artOn = root.EAA_ILLUSTRATED_MONSTERS === true, D0 = root.MonsterDressUp;
+    if (item.category === 'background' && (!D0 || !D0.lists || D0.lists.backgrounds.indexOf(name) !== -1)) return '<img src="assets/monsters/bg-art/bg_' + name + '.webp" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:12px;">';
+    if (item.category === 'aura' && (!D0 || !D0.lists || D0.lists.auras.indexOf(name) !== -1)) return '<div style="width:72px;height:72px;margin:0 auto;background:#0f172a;border-radius:12px;display:flex;align-items:center;justify-content:center;"><img src="assets/monsters/aura-art/aura_' + name + '.webp" alt="" style="width:68px;height:68px;object-fit:contain;"></div>';
     var D = root.MonsterDressUp, pic = D && D.itemPicture ? D.itemPicture(item.id) : '';
     if (!pic && D && D.itemArt) pic = D.itemArt(item.id);
     if (!pic && SHOP_ART[item.id]) pic = SHOP_ART[item.id];
@@ -925,8 +938,8 @@
     var d = data(), cfg = d.config, bal = balance(s.id), w = wallet(s.id);
     var tabs = SHOP_TABS.filter(function (t) { return t[0] === 'orders' || !isOff('tabs', t[0]); });
     if (!tabs.some(function (t) { return t[0] === studentTab; })) studentTab = tabs[0][0];
-    var html = '<div style="background:linear-gradient(135deg,rgba(245,158,11,.22),rgba(15,23,42,.9));border:1.5px solid rgba(245,158,11,.55);border-radius:20px;padding:20px;box-shadow:0 4px 20px -2px rgba(0,0,0,.4);margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
-      '<div style="font-size:3rem;">🪙</div><div style="flex:1;min-width:200px;"><div style="font-size:.9rem;font-weight:800;color:#fcd34d;">' + esc(s.firstName || s.name || 'Your') + '’s coins</div><div style="font-size:2.4rem;font-weight:900;color:#fbbf24;line-height:1;">' + bal + '</div>' +
+    var html = '<div style="background:linear-gradient(135deg,rgba(15,23,42,.78),rgba(15,23,42,.92)),url(assets/store/shop_counter.webp) center/cover no-repeat;border:1.5px solid rgba(245,158,11,.6);border-radius:20px;padding:20px;box-shadow:0 4px 20px -2px rgba(0,0,0,.4);margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
+      '<img src="assets/store/coin_pile.webp" alt="Coins" style="width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45));" onerror="this.outerHTML=\'<div style=&quot;font-size:3rem;&quot;>🪙</div>\'"><div style="flex:1;min-width:200px;"><div style="font-size:.9rem;font-weight:800;color:#fcd34d;">' + esc(s.firstName || s.name || 'Your') + '’s coins</div><div style="font-size:2.4rem;font-weight:900;color:#fbbf24;line-height:1;">' + bal + '</div>' +
       '<div style="font-size:.8rem;color:#fde68a;margin-top:4px;">You earn 1 coin for every ' + cfg.coinsPerXp + ' XP. Spending coins never lowers your XP or your monster level.</div></div></div>' +
       '<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;">' + tabs.map(function (t) {
         var on = studentTab === t[0];
@@ -984,11 +997,14 @@
           [['🎨', 'A monster item or costume piece'], ['🔊', 'A victory sound, title, animal or name plate'], ['🎟️', 'A FREE class reward from your teacher'], ['🪙', 'A pile of coins'], ['💎', 'A rare legendary jackpot']].map(function (r) { return '<div style="display:flex;gap:8px;align-items:center;"><span style="font-size:1.4rem;">' + r[0] + '</span><span>' + r[1] + '</span></div>'; }).join('') + '</div>') +
         card(h2('🎁 Your unopened boxes (' + mine.length + ')') + (mine.length ? mine.map(function (b) { return '<span style="display:inline-block;margin:0 8px 8px 0;">' + btn((BOX_INFO[b.boxTier] ? BOX_INFO[b.boxTier].icon : '🎁') + ' Open ' + (BOX_INFO[b.boxTier] ? BOX_INFO[b.boxTier].name : 'box'), "ClassroomStore.ui.openBox('" + b.id + "')") + '</span>'; }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">No unopened boxes.</div>'));
     } else if (studentTab === 'rewards') {
-      html += '<div style="font-size:.85rem;color:var(--text-muted,#64748b);margin-bottom:10px;">Ask for a reward. Your teacher says yes or no. If it is a no, your coins come back.</div>' +
-        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">' + cfg.privileges.filter(function (p) { return p.active; }).map(function (p) {
+      html += '<div style="font-size:.85rem;color:var(--text-muted,#64748b);margin-bottom:10px;">Ask for a reward or a real classroom prize! Your teacher says yes or no. If it is a no, your coins come back.</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:14px;">' + cfg.privileges.filter(function (p) { return p.active; }).map(function (p) {
           var used = usedThisWeek(s.id, p.id), left = p.weeklyLimit ? Math.max(0, p.weeklyLimit - used) : 99, can = bal >= p.price && left > 0;
-          return '<div style="background:var(--bg-surface,#fff);border:1px solid var(--border-light,#e2e8f0);border-radius:16px;padding:14px;text-align:center;"><div style="font-size:2.2rem;">' + esc(p.icon) + '</div><div style="font-weight:900;margin:4px 0;color:var(--text-main,#0f172a);">' + esc(p.name) + '</div>' + coinPill(p.price) +
-            '<div style="font-size:.72rem;color:var(--text-muted,#64748b);margin:6px 0;">' + (p.weeklyLimit ? left + ' left this week' : '') + '</div>' + btn(left <= 0 ? 'Used this week' : (bal < p.price ? 'Need ' + (p.price - bal) + ' more' : 'Ask for this'), "ClassroomStore.ui.request('" + p.id + "')", 'ok', !can) + '</div>';
+          var visual = p.image
+            ? '<div style="position:relative;height:132px;margin:-6px -6px 8px;border-radius:12px;overflow:hidden;background:#0f172a;"><img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" style="width:100%;height:100%;object-fit:cover;display:block;">' + (p.badge ? '<span style="position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:.64rem;font-weight:900;padding:2px 8px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.35);">' + esc(p.badge) + '</span>' : '') + '</div>'
+            : '<div style="font-size:2.4rem;margin:6px 0;">' + esc(p.icon) + '</div>';
+          return '<div style="background:var(--bg-surface,#fff);border:' + (p.image ? '2px solid #f59e0b' : '1px solid var(--border-light,#e2e8f0)') + ';border-radius:18px;padding:14px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;"><div>' + visual + '<div style="font-weight:900;margin:4px 0 6px;color:var(--text-main,#0f172a);font-size:.92rem;line-height:1.25;">' + esc(p.name) + '</div></div><div>' + coinPill(p.price) +
+            '<div style="font-size:.72rem;color:var(--text-muted,#64748b);margin:6px 0;">' + (p.weeklyLimit ? left + ' left this week' : '') + '</div>' + btn(left <= 0 ? 'Used this week' : (bal < p.price ? 'Need ' + (p.price - bal) + ' more' : 'Ask for this'), "ClassroomStore.ui.request('" + p.id + "')", 'ok', !can) + '</div></div>';
         }).join('') + '</div>';
     } else {
       var reqs = d.requests.filter(function (r) { return r.studentId === s.id; });
@@ -1126,9 +1142,15 @@
     tryOn: function (itemId) {
       var id = activeStudentId(), item = findItem(itemId); if (!id || !item) return;
       var price = itemPrice(item), bal = balance(id), lvl = levelOf(id), locked = lvl < shopLevel(item), mon = tryOnHtml(id, item);
+      var petObj = (item.category === 'pet' && root.MonsterPets && root.MonsterPets.byId) ? root.MonsterPets.byId(item.id) : null;
+      var poseBar = (petObj && petObj.poses) ? '<div style="display:flex;gap:6px;justify-content:center;margin:8px 0;">' +
+        [['idle', '🧍 Idle'], ['wave', '👋 Wave'], ['jump', '⚡ Action Jump']].map(function (p) {
+          return '<button type="button" onclick="if(window.MonsterPets)window.MonsterPets.setPose(\'' + esc(item.id) + '\',\'' + p[0] + '\')" style="padding:5px 11px;border-radius:999px;font-size:.76rem;font-weight:800;cursor:pointer;background:#1e293b;color:#e5edff;border:1.5px solid #475569;border-bottom:3px solid #334155;">' + p[1] + '</button>';
+        }).join('') + '</div>' : '';
       var o = document.createElement('div'); o.className = 'cs-try-ovl';
       o.innerHTML = '<div class="cs-try-card" style="--rc:' + (RARITY_COLOR[item.rarity] || '#64748b') + ';"><div style="font-weight:900;font-size:1.15rem;margin-bottom:6px;">' + esc(item.name) + '</div>' +
-        '<div class="cs-try-mon">' + (mon || itemPicHtml(item)) + '</div>' +
+        '<div class="cs-try-mon" style="background:radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--rc) 30%,transparent) 0%,transparent 65%),url(assets/store/shop_stage.webp) center/cover no-repeat;">' + (mon || itemPicHtml(item)) + '</div>' +
+        poseBar +
         '<div style="font-size:.85rem;color:#cbd5e1;margin:8px 0 12px;">' + (mon ? 'This is how ' + esc(studentName(id).split(' ')[0]) + '’s monster looks with it.' : '') + '</div>' +
         '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' + (locked ? '<span class="monster-item-lock-pill">' + (isLevelReward(item) ? '🎁 Free at level ' : '🔒 Level ') + shopLevel(item) + '</span>' : btn(bal >= price ? 'Buy for 🪙 ' + price : 'Need ' + (price - bal) + ' more', "this.closest('.cs-try-ovl').remove();ClassroomStore.ui.buyItem('" + item.id + "')", 'ok', bal < price)) +
         btn('Close', "this.closest('.cs-try-ovl').remove()", 'ghost') + '</div></div>';
