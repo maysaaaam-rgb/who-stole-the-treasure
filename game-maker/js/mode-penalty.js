@@ -143,12 +143,12 @@
       var ended = false;
       var asking = false;
 
-      /* Difficulty tuning — 100% physical reaction delay, patrol speed & dive speed (no random coin-flips!) */
+      /* Difficulty tuning — 100% physical reaction delay, patrol speed, feints & dive speed (no random coin-flips!) */
       var LV = {
-        easy:   { patrolSpd: 0.72, patrolRange: 0.42, reactDelay: 0.24, diveSpdX: 0.72, diveSpdY: 0.65, gloveReach: 0.13 },
-        normal: { patrolSpd: 0.96, patrolRange: 0.44, reactDelay: 0.18, diveSpdX: 0.92, diveSpdY: 0.82, gloveReach: 0.15 },
-        hard:   { patrolSpd: 1.25, patrolRange: 0.46, reactDelay: 0.12, diveSpdX: 1.18, diveSpdY: 1.05, gloveReach: 0.18 }
-      }[ctx.cfg.level] || { patrolSpd: 0.96, patrolRange: 0.44, reactDelay: 0.18, diveSpdX: 0.92, diveSpdY: 0.82, gloveReach: 0.15 };
+        easy:   { patrolSpd: 1.05, patrolRange: 0.46, reactDelay: 0.12, diveSpdX: 1.65, diveSpdY: 1.15, gloveReach: 0.22 },
+        normal: { patrolSpd: 1.35, patrolRange: 0.50, reactDelay: 0.08, diveSpdX: 2.15, diveSpdY: 1.40, gloveReach: 0.26 },
+        hard:   { patrolSpd: 1.70, patrolRange: 0.54, reactDelay: 0.04, diveSpdX: 2.65, diveSpdY: 1.65, gloveReach: 0.30 }
+      }[ctx.cfg.level] || { patrolSpd: 1.35, patrolRange: 0.50, reactDelay: 0.08, diveSpdX: 2.15, diveSpdY: 1.40, gloveReach: 0.26 };
 
       try { A().musicStart(hal ? 'halloween' : 'sports'); } catch (e) { /* ignore */ }
       if (document.body) document.body.classList.add('gm-small-pods', 'gm-real3-active');
@@ -158,7 +158,7 @@
 
       var wrap = U().h('div', {
         class: 'gm-real3-scene gm-penalty-real3',
-        title: 'Touch or drag on the goal to aim, or swipe the ball toward the goal to shoot!'
+        title: 'Drag the ball back or flick forward to aim, power & curve — release to shoot!'
       });
       var cv = U().h('canvas', { class: 'gm-real3-cv' });
       var g = cv.getContext('2d');
@@ -220,17 +220,23 @@
       var phaseT = 0;
       var hitStopT = 0;
 
-      /* Player-controlled Aim & Spin */
-      var aimX = 0.58;        /* Default aimed toward right side */
-      var aimY = 0.56;        /* Mid-high shot */
-      var shotSpin = -1;      /* -1 = Curve Left, 0 = Straight Power, +1 = Curve Right */
-      var shotPower = 0.84;   /* [0.45 .. 1.0] */
+      /* Player-controlled Aim, Power & Spin */
+      var aimX = 0.55;
+      var aimY = 0.58;
+      var shotSpin = 0;       /* Continuous [-1.0 .. +1.0] banana curve */
+      var shotPower = 0.72;   /* [0.20 .. 1.25], 0.50-0.88 is sweet spot, >0.88 is Overpower! */
       var userTouchedAim = false;
 
-      /* Pointer / Swipe interaction state */
-      var dragMode = null;    /* null | 'goal' | 'swipe' */
-      var swipeStart = null;
-      var swipePts = [];
+      /* Pointer drag & slingshot state */
+      var dragActive = false;
+      var dragMode = null;    /* null | 'slingshot' | 'flick' */
+      var dragStart = null;
+      var dragCurrent = null;
+      var dragPath = [];
+      var dragHoldT = 0;
+      var keeperReadAlert = false;
+      var stadiumWind = 0;
+      var windLabel = 'Calm';
 
       /* Camera & Stadium FX */
       var cam = { shakeT: 0, shakeMag: 0 };
@@ -369,10 +375,11 @@
          so the ball lands at (targetX, targetY) at Z = 1.0!
          ==================================================================== */
       function computeShotKinematics(tx, ty, spin, power) {
-        var T_flight = clamp(0.64 - power * 0.18, 0.44, 0.66);
+        var effPower = clamp(power, 0.25, 1.25);
+        var T_flight = clamp(0.70 - effPower * 0.20, 0.42, 0.68);
         var vz = 1.0 / T_flight;
         /* Magnus lateral curve acceleration: bends left (-1) or right (+1) */
-        var ax = spin * 1.45;
+        var ax = spin * 1.55;
         var vx = (tx - 0.5 * ax * T_flight * T_flight) / T_flight;
         var vy = (ty - 0.04 + 0.5 * GRAVITY * T_flight * T_flight) / T_flight;
         return {
@@ -387,67 +394,12 @@
       function renderActionDock() {
         dock.innerHTML = '';
         if (phase !== 'aim') return;
-
-        var spinRow = U().h('div', {
-          style: 'display: flex; gap: 8px; align-items: center; justify-content: flex-end; flex-wrap: wrap;'
+        var guide = U().h('div', {
+          class: 'gm-pen-guide-dock',
+          style: 'background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(14px); border: 2px solid rgba(56, 189, 248, 0.45); border-radius: 999px; padding: 10px 22px; color: #ffffff; font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.5); pointer-events: none;',
+          html: '<span>👟 <b>Drag the ball</b> back or swipe forward — <b>Release to shoot!</b></span>'
         });
-
-        var spinLeftBtn = U().h('button', {
-          type: 'button',
-          class: 'gm-real3-btn ' + (shotSpin === -1 ? 'amber' : 'cyan'),
-          style: 'padding: 8px 16px !important; min-height: 52px !important; font-size: 18px !important;',
-          text: '↩️ Curve Left'
-        });
-        spinLeftBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          A().play('tap');
-          shotSpin = -1;
-          renderActionDock();
-        });
-
-        var straightBtn = U().h('button', {
-          type: 'button',
-          class: 'gm-real3-btn ' + (shotSpin === 0 ? 'amber' : 'cyan'),
-          style: 'padding: 8px 16px !important; min-height: 52px !important; font-size: 18px !important;',
-          text: '⚡ Straight'
-        });
-        straightBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          A().play('tap');
-          shotSpin = 0;
-          renderActionDock();
-        });
-
-        var spinRightBtn = U().h('button', {
-          type: 'button',
-          class: 'gm-real3-btn ' + (shotSpin === 1 ? 'amber' : 'cyan'),
-          style: 'padding: 8px 16px !important; min-height: 52px !important; font-size: 18px !important;',
-          text: '↪️ Curve Right'
-        });
-        spinRightBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          A().play('tap');
-          shotSpin = 1;
-          renderActionDock();
-        });
-
-        spinRow.appendChild(spinLeftBtn);
-        spinRow.appendChild(straightBtn);
-        spinRow.appendChild(spinRightBtn);
-
-        var shootBtn = U().h('button', {
-          type: 'button',
-          class: 'gm-real3-btn green pulse',
-          style: 'width: 100%; justify-content: center;',
-          text: '👟 SHOOT BALL! (Space)'
-        });
-        shootBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          triggerRunupAndKick();
-        });
-
-        dock.appendChild(spinRow);
-        dock.appendChild(shootBtn);
+        dock.appendChild(guide);
       }
 
       function resetEntitiesForTurn() {
@@ -485,13 +437,24 @@
         keeper.rot = 0;
         keeper.saved = false;
 
-        /* Default aim swaps sides each turn and sets smart inward banana curve */
+        /* Stadium wind for this kick */
+        stadiumWind = (Math.random() * 2 - 1) * 0.22;
+        var kmh = Math.round(Math.abs(stadiumWind) * 85);
+        windLabel = kmh < 3 ? 'Calm' : (kmh + ' km/h ' + (stadiumWind > 0 ? '➡️' : '⬅️'));
+
         var side = (kickNo % 2 === 0) ? 1 : -1;
-        aimX = side * 0.62;
+        aimX = side * 0.55;
         aimY = 0.58;
-        shotSpin = -side;
-        shotPower = 0.86;
+        shotSpin = 0;
+        shotPower = 0.72;
         userTouchedAim = false;
+        dragActive = false;
+        dragMode = null;
+        dragStart = null;
+        dragCurrent = null;
+        dragPath = [];
+        dragHoldT = 0;
+        keeperReadAlert = false;
       }
 
       function showTurn() {
@@ -555,8 +518,8 @@
         phaseT = 0;
         A().play('whistle');
         updateBanner(
-          '🎯 Tap/Drag on the Goal to Aim — or Swipe the Ball to Shoot!',
-          'Watch the Goalkeeper move and aim for the OPEN corner!',
+          '🎯 Drag the Ball to Aim & Power — Release to Kick!',
+          'Green = Sweet Spot! Red = Overpower over the bar! 💨 Wind: ' + windLabel,
           true
         );
         renderActionDock();
@@ -600,15 +563,14 @@
         A().play('ball_kick');
 
         /* Goalkeeper Reaction Setup:
-           The keeper reads the initial flight direction after `LV.reactDelay`.
-           If the player used curve (`shotSpin != 0`), the initial velocity points
-           away from the final target, so the keeper's initial read is fooled by a
-           portion of the curve! */
-        keeper.reactTimer = LV.reactDelay + (shotSpin !== 0 ? 0.06 : 0);
+           The keeper reads the flight direction. If keeper had already read the shot
+           (drag held too long), reactDelay is 0! */
+        var delay = keeperReadAlert ? 0.0 : (LV.reactDelay + (Math.abs(shotSpin) > 0.25 ? 0.06 : 0));
+        keeper.reactTimer = delay;
         keeper.diving = false;
-        var perceivedX = aimX * (shotSpin !== 0 ? 0.72 : 0.92);
-        keeper.targetX = clamp(perceivedX, -0.88, 0.88);
-        keeper.targetY = clamp(aimY * 0.86, 0.12, 0.80);
+        var perceivedX = aimX * (Math.abs(shotSpin) > 0.25 ? 0.72 : 0.94);
+        keeper.targetX = clamp(perceivedX, -0.92, 0.92);
+        keeper.targetY = clamp(aimY * 0.88, 0.12, 0.84);
       }
 
       /* ====================================================================
@@ -823,15 +785,6 @@
       /* ====================================================================
          SMARTBOARD TOUCH, DRAG & SWIPE-TO-SHOOT INPUT HANDLERS
          ==================================================================== */
-      function updateAimFromGoalPt(wx, wy) {
-        var gPt = screenToGoal(wx, wy);
-        aimX = clamp(gPt.nx, -1.08, 1.08);
-        aimY = clamp(gPt.ny, 0.08, 1.06);
-        /* Automatically set natural shot power from height */
-        shotPower = clamp(0.68 + aimY * 0.28, 0.62, 0.96);
-        userTouchedAim = true;
-      }
-
       function onPointerDown(e) {
         if (!alive) return;
         if (e.target && e.target.closest && e.target.closest('.gm-real3-dock')) return;
@@ -839,70 +792,90 @@
         e.preventDefault();
 
         var wPt = clientToWorld(e.clientX, e.clientY);
-        var ballScreen = project3D(0, 0.04, 0);
-        var distToBall = Math.hypot(wPt.x - ballScreen.x, wPt.y - ballScreen.y);
+        dragActive = true;
+        dragStart = { x: wPt.x, y: wPt.y, t: performance.now() };
+        dragCurrent = { x: wPt.x, y: wPt.y };
+        dragPath = [{ x: wPt.x, y: wPt.y, t: performance.now() }];
+        dragHoldT = 0;
+        keeperReadAlert = false;
+        userTouchedAim = true;
+        A().play('tap');
 
-        /* Did the pupil touch near the ball to swipe-shoot, or touch the goal to aim? */
-        if (distToBall < 145 || wPt.y > 585) {
-          dragMode = 'swipe';
-          swipeStart = { x: wPt.x, y: wPt.y, t: performance.now() };
-          swipePts = [{ x: wPt.x, y: wPt.y }];
-        } else {
-          dragMode = 'goal';
-          updateAimFromGoalPt(wPt.x, wPt.y);
-          A().play('tap');
-        }
         if (wrap.setPointerCapture && e.pointerId != null) {
           try { wrap.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
         }
       }
 
       function onPointerMove(e) {
-        if (!alive || phase !== 'aim' || !dragMode) return;
+        if (!alive || phase !== 'aim' || !dragActive || !dragStart) return;
         var wPt = clientToWorld(e.clientX, e.clientY);
+        dragCurrent = { x: wPt.x, y: wPt.y };
+        dragPath.push({ x: wPt.x, y: wPt.y, t: performance.now() });
+        if (dragPath.length > 25) dragPath.shift();
 
-        if (dragMode === 'goal') {
-          updateAimFromGoalPt(wPt.x, wPt.y);
-        } else if (dragMode === 'swipe' && swipeStart) {
-          swipePts.push({ x: wPt.x, y: wPt.y });
-          if (swipePts.length > 24) swipePts.shift();
-          var dy = swipeStart.y - wPt.y;
-          if (dy > 25) {
-            /* Map upward swipe vector to goal target (aimX, aimY) */
-            var dx = wPt.x - swipeStart.x;
-            aimX = clamp(dx / 340, -1.05, 1.05);
-            aimY = clamp(dy / 420, 0.12, 1.04);
-            shotPower = clamp(0.60 + (dy / 460) * 0.38, 0.58, 0.98);
-            userTouchedAim = true;
+        var dx = wPt.x - dragStart.x;
+        var dy = wPt.y - dragStart.y;
+        var dist = Math.hypot(dx, dy);
 
-            /* Detect swipe curvature for natural Banana Spin! */
-            if (swipePts.length >= 5) {
-              var mid = swipePts[Math.floor(swipePts.length / 2)];
-              var lineX = (swipeStart.x + wPt.x) * 0.5;
-              var bend = mid.x - lineX;
-              if (Math.abs(bend) > 22) {
-                shotSpin = bend > 0 ? -1 : 1;
-                renderActionDock();
-              }
-            }
+        if (dist > 12) {
+          /* Slingshot pull (pulling downward) vs forward flick (dragging upward) */
+          var isSlingshot = dy > 10;
+          dragMode = isSlingshot ? 'slingshot' : 'flick';
+
+          var fwdX = isSlingshot ? -dx : dx;
+
+          /* Side aim */
+          aimX = clamp(fwdX / 165, -1.15, 1.15);
+
+          /* Power scaling [0.22 .. 1.25] */
+          var rawPower = clamp(dist / 170, 0.22, 1.25);
+          shotPower = rawPower;
+
+          /* Height & elevation dynamically mapped from power! */
+          if (shotPower < 0.45) {
+            aimY = clamp(0.08 + (shotPower / 0.45) * 0.20, 0.08, 0.28);
+          } else if (shotPower <= 0.88) {
+            aimY = clamp(0.28 + ((shotPower - 0.45) / 0.43) * 0.58, 0.28, 0.86);
+          } else {
+            /* OVERPOWER! Ball climbs right up to the woodwork and over! */
+            aimY = clamp(0.88 + ((shotPower - 0.88) / 0.37) * 0.36, 0.88, 1.24);
+          }
+
+          /* Lateral curve / spin calculation from curved drag path */
+          if (dragPath.length >= 6) {
+            var mid = dragPath[Math.floor(dragPath.length / 2)];
+            var chordX = (dragStart.x + wPt.x) * 0.5;
+            var bend = mid.x - chordX;
+            var curveVal = isSlingshot ? (-bend / 22) : (bend / 22);
+            shotSpin = clamp(curveVal, -1.0, 1.0);
+            if (Math.abs(shotSpin) < 0.12) shotSpin = 0;
           }
         }
       }
 
       function onPointerUp(e) {
-        if (!alive || phase !== 'aim' || !dragMode) return;
-        var mode = dragMode;
-        dragMode = null;
+        if (!alive || phase !== 'aim' || !dragActive) return;
+        dragActive = false;
+        var dist = 0;
+        if (dragStart && dragCurrent) {
+          dist = Math.hypot(dragCurrent.x - dragStart.x, dragCurrent.y - dragCurrent.y);
+        }
+        dragStart = null;
+        dragCurrent = null;
+        dragPath = [];
 
-        if (mode === 'swipe' && swipeStart) {
-          var wPt = clientToWorld(e.clientX, e.clientY);
-          var dy = swipeStart.y - wPt.y;
-          swipeStart = null;
-          swipePts = [];
-          /* If the pupil swiped upward toward the goal, kick immediately! */
-          if (dy > 55) {
-            triggerRunupAndKick();
+        /* If player dragged with sufficient power (>= 0.30), trigger runup and kick! */
+        if (shotPower >= 0.30) {
+          /* In Overpower zone, add realistic dispersion */
+          if (shotPower > 0.88) {
+            var overSpread = (shotPower - 0.88) * 0.45;
+            aimX = clamp(aimX + (Math.random() - 0.5) * overSpread, -1.25, 1.25);
           }
+          triggerRunupAndKick();
+        } else {
+          /* Drag too small: cancel and remain ready */
+          shotPower = 0.72;
+          aimY = 0.58;
         }
       }
 
@@ -917,28 +890,28 @@
         if (phase === 'aim') {
           if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
             e.preventDefault();
-            aimX = clamp(aimX - 0.08, -1.05, 1.05);
+            aimX = clamp(aimX - 0.08, -1.15, 1.15);
             userTouchedAim = true;
           } else if (e.code === 'ArrowRight' || e.code === 'KeyD') {
             e.preventDefault();
-            aimX = clamp(aimX + 0.08, -1.05, 1.05);
+            aimX = clamp(aimX + 0.08, -1.15, 1.15);
             userTouchedAim = true;
           } else if (e.code === 'ArrowUp' || e.code === 'KeyW') {
             e.preventDefault();
-            aimY = clamp(aimY + 0.07, 0.08, 1.05);
+            shotPower = clamp(shotPower + 0.06, 0.35, 1.15);
+            aimY = clamp(0.28 + ((shotPower - 0.45) / 0.43) * 0.58, 0.12, 1.18);
             userTouchedAim = true;
           } else if (e.code === 'ArrowDown' || e.code === 'KeyS') {
             e.preventDefault();
-            aimY = clamp(aimY - 0.07, 0.08, 1.05);
+            shotPower = clamp(shotPower - 0.06, 0.35, 1.15);
+            aimY = clamp(0.28 + ((shotPower - 0.45) / 0.43) * 0.58, 0.12, 1.18);
             userTouchedAim = true;
           } else if (e.code === 'KeyQ') {
             e.preventDefault();
-            shotSpin = -1;
-            renderActionDock();
+            shotSpin = clamp(shotSpin - 0.35, -1, 1);
           } else if (e.code === 'KeyE') {
             e.preventDefault();
-            shotSpin = 1;
-            renderActionDock();
+            shotSpin = clamp(shotSpin + 0.35, -1, 1);
           } else if (e.code === 'Space' || e.key === ' ' || e.code === 'Enter') {
             e.preventDefault();
             triggerRunupAndKick();
@@ -1378,89 +1351,130 @@
       }
 
       /* ====================================================================
-         DRAW 3D TRAJECTORY ARC, SPIN PREVIEW & AIM TARGET RETICLE
+         DRAW 3D TRAJECTORY ARC, DRAG SLINGSHOT & POWER / SPIN HUD
          ==================================================================== */
       function drawTrajectoryAndReticle(now) {
+        /* Stadium Wind Indicator in Top Right */
+        g.save();
+        var windX = VW - 190, windY = 46;
+        g.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        g.strokeStyle = 'rgba(56, 189, 248, 0.55)';
+        g.lineWidth = 2;
+        rr(g, windX, windY, 165, 42, 21);
+        g.fill();
+        g.stroke();
+        drawOutlinedText(g, '💨 ' + windLabel, windX + 82, windY + 21, 17, '#bae6fd', '#0f172a');
+        g.restore();
+
         if (phase !== 'aim') return;
 
         var kin = computeShotKinematics(aimX, aimY, shotSpin, shotPower);
         var inFrame = (Math.abs(aimX) < 0.96 && aimY < 0.95);
         var onWood  = (!inFrame && Math.abs(aimX) <= 1.07 && aimY <= 1.06);
-        var arcCol  = inFrame ? (shotSpin !== 0 ? '#fde047' : '#4ade80') : (onWood ? '#fb923c' : '#f43f5e');
+        var isOverpower = shotPower > 0.88;
+        var isSweetSpot = shotPower >= 0.45 && shotPower <= 0.88;
+        var arcCol  = isOverpower ? '#f43f5e' : (isSweetSpot ? '#4ade80' : '#38bdf8');
 
         g.save();
-        /* 1. Ground Shadow Path on the Turf */
-        g.strokeStyle = 'rgba(15, 23, 42, 0.32)';
-        g.lineWidth = 4;
-        g.setLineDash([8, 8]);
-        g.beginPath();
-        var steps = 20;
-        for (var i = 0; i <= steps; i++) {
-          var t = (i / steps) * kin.T;
-          var gx = kin.vx * t + 0.5 * kin.ax * t * t;
-          var gz = kin.vz * t;
-          var gp = project3D(gx, 0, gz);
-          if (i === 0) g.moveTo(gp.x, gp.y);
-          else g.lineTo(gp.x, gp.y);
-        }
-        g.stroke();
-        g.setLineDash([]);
-
-        /* 2. 3D Elevated Flight Arc with Animated Chevron Dots */
+        /* 1. Shortened 3D Launch Vector (First 42% of flight, fading into air) */
+        var steps = 11;
         for (var j = 1; j <= steps; j++) {
-          var tj = (j / steps) * kin.T;
+          var frac = (j / steps) * 0.42;
+          var tj = frac * kin.T;
           var Xj = kin.vx * tj + 0.5 * kin.ax * tj * tj;
           var Yj = Math.max(0, 0.04 + kin.vy * tj - 0.5 * GRAVITY * tj * tj);
           var Zj = kin.vz * tj;
           var pj = project3D(Xj, Yj, Zj);
-          var pulse = ((j - (now * 0.018)) % 4 + 4) % 4;
-          var rDot = (5.5 - (j / steps) * 2.2) * (pulse < 1.2 ? 1.28 : 1.0);
+          var fade = 1 - (j / steps) * 0.72;
 
+          g.save();
+          g.globalAlpha = fade;
           g.fillStyle = arcCol;
           g.strokeStyle = '#0f172a';
           g.lineWidth = 2.5;
           g.beginPath();
-          g.arc(pj.x, pj.y, rDot, 0, Math.PI * 2);
+          g.arc(pj.x, pj.y, Math.max(3, (6 - (j / steps) * 2.5)), 0, Math.PI * 2);
           g.fill();
-          g.stroke();
-        }
-
-        /* 3. Target Reticle on Goal Plane (Z = 1.0) */
-        var ap = project3D(aimX, aimY, 1.0);
-        var tPulse = 1 + Math.sin(now / 120) * 0.07;
-        g.translate(ap.x, ap.y);
-        g.scale(tPulse, tPulse);
-        if (imgReady(artTarget)) {
-          g.drawImage(artTarget, -40, -40, 80, 80);
-        } else {
-          g.strokeStyle = arcCol;
-          g.lineWidth = 6;
-          g.beginPath();
-          g.arc(0, 0, 32, 0, Math.PI * 2);
-          g.stroke();
-        }
-
-        var badgeTxt = !inFrame
-          ? (onWood ? '⚠️ POST / BAR!' : '⚠️ WIDE!')
-          : (Math.abs(aimX) >= 0.58 && aimY >= 0.58 ? '⭐ TOP BINS! +30' : (shotSpin !== 0 ? '🍌 CURVE SHOT' : '⚡ POWER SHOT'));
-        drawOutlinedText(g, badgeTxt, 0, -50, 21, arcCol, '#0f172a');
-        g.restore();
-
-        /* 4. Live Swipe Finger Trail when swiping from ball */
-        if (dragMode === 'swipe' && swipePts.length > 1) {
-          g.save();
-          g.strokeStyle = '#fde047';
-          g.lineWidth = 7;
-          g.lineCap = 'round';
-          g.lineJoin = 'round';
-          g.beginPath();
-          for (var k = 0; k < swipePts.length; k++) {
-            if (k === 0) g.moveTo(swipePts[k].x, swipePts[k].y);
-            else g.lineTo(swipePts[k].x, swipePts[k].y);
-          }
           g.stroke();
           g.restore();
         }
+
+        /* 2. Drag & Slingshot Bands connecting Ball to Pointer */
+        var ballPt = project3D(0, 0.04, 0);
+        if (dragActive && dragCurrent) {
+          g.save();
+          g.strokeStyle = isOverpower ? 'rgba(244, 63, 94, 0.85)' : 'rgba(250, 204, 21, 0.85)';
+          g.lineWidth = 5;
+          g.setLineDash([6, 6]);
+          g.beginPath();
+          g.moveTo(ballPt.x - 16, ballPt.y);
+          g.lineTo(dragCurrent.x, dragCurrent.y);
+          g.moveTo(ballPt.x + 16, ballPt.y);
+          g.lineTo(dragCurrent.x, dragCurrent.y);
+          g.stroke();
+          g.setLineDash([]);
+
+          /* Pointer Touch Disc */
+          g.fillStyle = arcCol;
+          g.strokeStyle = '#ffffff';
+          g.lineWidth = 3;
+          g.beginPath();
+          g.arc(dragCurrent.x, dragCurrent.y, 16, 0, Math.PI * 2);
+          g.fill();
+          g.stroke();
+          g.restore();
+        }
+
+        /* 3. Circular Power Ring around Ball */
+        g.save();
+        var powerPct = clamp((shotPower - 0.20) / (1.15 - 0.20), 0.05, 1.0);
+        var rGauge = 54;
+        g.beginPath();
+        g.arc(ballPt.x, ballPt.y, rGauge, 0, Math.PI * 2);
+        g.strokeStyle = 'rgba(15, 23, 42, 0.55)';
+        g.lineWidth = 10;
+        g.stroke();
+
+        /* Power Fill Arc */
+        g.beginPath();
+        g.arc(ballPt.x, ballPt.y, rGauge, -Math.PI / 2, -Math.PI / 2 + powerPct * Math.PI * 2, false);
+        g.strokeStyle = arcCol;
+        g.lineWidth = 8;
+        g.lineCap = 'round';
+        g.stroke();
+
+        /* Power Label Badge below the Ball */
+        var powerBadgeTxt = isOverpower
+          ? ('⚠️ OVERPOWER ' + Math.round(shotPower * 100) + '%')
+          : (isSweetSpot
+            ? ('⚡ SWEET SPOT ' + Math.round(shotPower * 100) + '%')
+            : ('🐢 WEAK ROLLER ' + Math.round(shotPower * 100) + '%'));
+        drawOutlinedText(g, powerBadgeTxt, ballPt.x, ballPt.y + 74, 20, arcCol, '#0f172a');
+
+        /* Banana Spin curved indicator */
+        if (Math.abs(shotSpin) > 0.15) {
+          var spinTxt = shotSpin > 0 ? '↪️ BANANA CURVE RIGHT' : '↩️ BANANA CURVE LEFT';
+          drawOutlinedText(g, spinTxt, ballPt.x, ballPt.y + 104, 18, '#fde047', '#0f172a');
+        }
+
+        /* If user hasn't dragged yet, show interactive prompt */
+        if (!dragActive && !userTouchedAim) {
+          var promptBob = Math.sin(now / 180) * 8;
+          var pulseAlpha = 0.75 + Math.sin(now / 150) * 0.25;
+          g.globalAlpha = pulseAlpha;
+          drawOutlinedText(g, '👇 PULL BACK TO SHOOT!', ballPt.x, ballPt.y - 68 + promptBob, 22, '#fde047', '#0f172a');
+        }
+        g.restore();
+
+        /* 4. Keeper Read Warning if held too long */
+        if (keeperReadAlert) {
+          g.save();
+          var kHead = project3D(keeper.X, keeper.Y + 0.48, 0.98);
+          drawOutlinedText(g, '👀 KEEPER READS IT!', kHead.x, kHead.y - 28, 20, '#f43f5e', '#0f172a');
+          g.restore();
+        }
+
+        g.restore();
       }
 
       /* ====================================================================
@@ -1661,8 +1675,8 @@
 
       function updateGoalkeeperPhysics(dt, now) {
         if (phase === 'wait' || phase === 'aim') {
-          /* Active Patrol along the goal line: pupil can time their shot when keeper steps away! */
-          keeper.X += keeper.patrolDir * LV.patrolSpd * dt * 0.65;
+          /* Active Patrol along the goal line */
+          keeper.X += keeper.patrolDir * LV.patrolSpd * dt * 0.70;
           if (keeper.X > LV.patrolRange) {
             keeper.X = LV.patrolRange;
             keeper.patrolDir = -1;
@@ -1670,10 +1684,19 @@
             keeper.X = -LV.patrolRange;
             keeper.patrolDir = 1;
           }
-          keeper.stepPhase += dt * 9.5 * LV.patrolSpd;
+
+          if (phase === 'aim' && dragActive) {
+            dragHoldT += dt;
+            /* If player holds drag for > 1.25s, keeper anticipates the shot angle! */
+            if (dragHoldT > 1.25) {
+              keeperReadAlert = true;
+              keeper.X = lerp(keeper.X, clamp(aimX * 0.72, -0.68, 0.68), clamp(dt * 2.8, 0, 1));
+            }
+          }
+
+          keeper.stepPhase += dt * 10.5 * LV.patrolSpd;
           keeper.Y = 0;
           keeper.rot = Math.sin(keeper.stepPhase) * 0.04;
-          /* Ready hands position */
           keeper.gloveLX = keeper.X - 0.16;
           keeper.gloveRX = keeper.X + 0.16;
           keeper.gloveLY = 0.28 + Math.sin(now / 160) * 0.03;
@@ -1818,7 +1841,7 @@
 
       function updateBallPhysics(dt) {
         if (phase === 'flight') {
-          ball.vx += ball.ax * dt;
+          ball.vx += (ball.ax + stadiumWind * 0.45) * dt;
           ball.vy -= GRAVITY * dt;
           ball.X += ball.vx * dt;
           ball.Y += ball.vy * dt;

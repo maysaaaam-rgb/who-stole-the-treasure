@@ -21,7 +21,7 @@
     legendary: { name: 'Legendary', c: '#f59e0b', glow: 'rgba(245,158,11,.8)' },
     mythic: { name: 'Mythic', c: '#f43f5e', glow: 'rgba(244,63,94,.85)' }
   };
-  var ART = { list: null };
+  var ART = { list: ["box_bronze", "box_bronze_open", "box_diamond", "box_diamond_open", "box_gold", "box_gold_open", "box_silver", "box_silver_open", "coin_one", "coin_pile", "jackpot_gem", "prize_cat_stickers", "prize_pencil_topper", "reward_ticket", "shop_counter", "shop_stage", "sounds/box_open_common", "sounds/box_open_epic", "sounds/box_open_legendary", "sounds/box_open_mythic", "sounds/box_open_rare", "sounds/box_tap", "sounds/coin_buy", "sounds/coin_give", "sounds/not_enough", "sounds/shop_music"] };
   try {
     fetch('assets/store/manifest.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : []; }).then(function (l) { ART.list = Array.isArray(l) ? l : []; }).catch(function () { ART.list = []; });
   } catch (e) { ART.list = []; }
