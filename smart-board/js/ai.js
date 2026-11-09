@@ -1516,7 +1516,7 @@
       // Tier 1B: Optional Supabase Edge Function (only if verified ready)
       if (this.mode === 'supabase' && pin && !isGeminiKey(pin) && endpoint() && root.navigator.onLine !== false) {
         const ctrl = new AbortController();
-        const timer = setTimeout(() => ctrl.abort(), Math.min(timeoutMs || 15000, 15000));
+        const timer = setTimeout(() => ctrl.abort(), Math.min(timeoutMs || 15000, task === 'neat' ? 13000 : 15000));
         try {
           const r = await fetch(endpoint(), {
             method: 'POST',
@@ -1532,6 +1532,9 @@
         } finally {
           clearTimeout(timer);
         }
+        // Handwriting: the built-in printed-text reader is slow (up to 14 s) and poor at finger writing,
+        // so when the board is connected to the server we say "try again" instead of waiting for it.
+        if (task === 'neat') return { kind: 'unclear', busy: true };
       }
 
       // Tier 2 & Tier 3: Zero-Setup Free Cloud + Built-In Curriculum Engine
