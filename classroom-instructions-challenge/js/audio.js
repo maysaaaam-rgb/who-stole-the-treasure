@@ -6,9 +6,13 @@
   var ctx = null;
   var muted = false;
   var clips = {};
+  var clipsReady = false;
   var clipEl = null;
 
-  fetch('audio/manifest.json?v=2').then(function (r) { return r.json(); }).then(function (m) { clips = m || {}; }).catch(function () {});
+  var manifestPromise = fetch('audio/manifest.json?v=3')
+    .then(function (r) { return r.json(); })
+    .then(function (m) { clips = m || {}; clipsReady = true; })
+    .catch(function () { clipsReady = true; });
 
   function clipKey(t) {
     return String(t || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -130,10 +134,22 @@
     var clean = String(text).replace(/[_*#]/g, ' ').trim();
     if (!clean) return;
     stopSpeech();
+    if (!clipsReady && manifestPromise) {
+      manifestPromise.then(function () {
+        speakNow(clean, clipId, rateOverride);
+      });
+      return;
+    }
+    speakNow(clean, clipId, rateOverride);
+  }
+
+  function speakNow(clean, clipId, rateOverride) {
+    if (muted || !clean) return;
     var file = (clipId && clips[clipId]) || clips[clipKey(clean)];
-    if (file && !rateOverride) {
+    if (file) {
       try {
         clipEl = new root.Audio('audio/' + file);
+        if (rateOverride) clipEl.playbackRate = rateOverride;
         clipEl.onerror = function () { clipEl = null; speakBrowser(clean, rateOverride); };
         var p = clipEl.play();
         if (p && p.catch) p.catch(function () { speakBrowser(clean, rateOverride); });
