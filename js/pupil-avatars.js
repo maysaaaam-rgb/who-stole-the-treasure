@@ -92,13 +92,15 @@
       .replace(/\b\w/g, function (c) { return c.toUpperCase(); });
   }
 
-  var data = { approved: {}, pending: {} };   // from avatars.json in the private bucket
-  var heads = {};          // studentId -> HTMLImageElement (object URL, memory only)
+  var data = { approved: {}, pending: {} };   // from class-pupil-avatars (teacher-locked) or private bucket
+  var headB64 = {};        // studentId -> data:image/webp;base64,... (teacher-locked cloud sync)
+  var heads = {};          // studentId -> HTMLImageElement (memory only)
   var composed = {};       // studentId -> data URL
   var imgCache = {};       // url -> Promise<Image>
   var wear = null;         // manifest of shop clothes made for avatars
   var state = 'idle';      // idle | loading | ready | nostore | error
   var lastError = '';
+  var SYNC_ROW_ID = 'class-pupil-avatars';
 
   function client() { return root.AdventureSupabase && root.AdventureSupabase.client ? root.AdventureSupabase.client : null; }
   function store() { return root.schoolStore || root.SchoolStore || null; }
@@ -122,24 +124,55 @@
     return imgCache[url];
   }
 
-  // ---------- private bucket ----------
+  // ---------- private teacher-locked cloud sync + private bucket ----------
+  function readSyncRow() {
+    var sb = client(); if (!sb) return Promise.resolve(null);
+    return sb.from('classes').select('description').eq('id', SYNC_ROW_ID).maybeSingle().then(function (r) {
+      if (r.error || !r.data || !r.data.description) return null;
+      try { return JSON.parse(r.data.description) || null; } catch (e) { return null; }
+    }).catch(function () { return null; });
+  }
+  function writeSyncRow() {
+    var sb = client(); if (!sb) return Promise.reject(new Error('no-supabase'));
+    var doc = JSON.stringify({ v: 1, at: new Date().toISOString(), approved: data.approved, pending: data.pending, heads: headB64 });
+    return sb.from('classes').upsert({
+      id: SYNC_ROW_ID,
+      name: 'Pupil Avatars (Teacher Private Sync)',
+      grade: 'Sync',
+      teacher: 'Teacher',
+      description: doc
+    }, { onConflict: 'id' }).then(function (r) {
+      if (r.error) throw new Error(r.error.message || 'sync save failed');
+    });
+  }
   function readJson() {
     var sb = client(); if (!sb) return Promise.reject(new Error('no-supabase'));
-    return sb.storage.from(BUCKET).download('avatars.json').then(function (r) {
-      if (r.error) {
-        var msg = String(r.error.message || r.error.error || r.error);
-        if (/not.?found|does not exist|404|Object not found/i.test(msg)) return { approved: {}, pending: {} };
-        throw new Error(msg);
+    return readSyncRow().then(function (syncDoc) {
+      if (syncDoc && (syncDoc.approved || syncDoc.heads)) {
+        if (syncDoc.heads) headB64 = Object.assign({}, headB64, syncDoc.heads);
+        return syncDoc;
       }
-      return r.data.text().then(function (t) { try { return JSON.parse(t) || {}; } catch (e) { return {}; } });
+      return sb.storage.from(BUCKET).download('avatars.json').then(function (r) {
+        if (r.error) {
+          var msg = String(r.error.message || r.error.error || r.error);
+          if (/not.?found|does not exist|404|Object not found/i.test(msg)) return { approved: {}, pending: {} };
+          throw new Error(msg);
+        }
+        return r.data.text().then(function (t) { try { return JSON.parse(t) || {}; } catch (e) { return {}; } });
+      });
     });
   }
   function writeJson() {
     var sb = client(); if (!sb) return Promise.reject(new Error('no-supabase'));
-    var blob = new Blob([JSON.stringify({ approved: data.approved, pending: data.pending, at: new Date().toISOString() })], { type: 'application/json' });
-    return sb.storage.from(BUCKET).upload('avatars.json', blob, { upsert: true, contentType: 'application/json', cacheControl: '0' }).then(function (r) { if (r.error) throw new Error(r.error.message || 'save failed'); });
+    return writeSyncRow().then(function () {
+      var blob = new Blob([JSON.stringify({ approved: data.approved, pending: data.pending, at: new Date().toISOString() })], { type: 'application/json' });
+      return sb.storage.from(BUCKET).upload('avatars.json', blob, { upsert: true, contentType: 'application/json', cacheControl: '0' }).catch(function () { /* sync row already saved */ });
+    });
   }
   function fetchHead(id) {
+    if (headB64[id]) {
+      return loadImg(headB64[id]).catch(function () { return null; });
+    }
     var sb = client(); if (!sb) return Promise.resolve(null);
     return sb.storage.from(BUCKET).download('heads/' + id + '.webp').then(function (r) {
       if (r.error || !r.data) return null;
@@ -581,20 +614,25 @@
       var f = input && input.files && input.files[0]; if (!f) return;
       var sb = client();
       cleanHead(f).then(function (blob) {
+        return new Promise(function (res) {
+          var fr = new FileReader();
+          fr.onload = function () { headB64[id] = fr.result; res(blob); };
+          fr.onerror = function () { res(blob); };
+          fr.readAsDataURL(blob);
+        });
+      }).then(function (blob) {
         if (sb) {
-          return sb.storage.from(BUCKET).upload('heads/' + id + '.webp', blob, { upsert: true, contentType: 'image/webp', cacheControl: '0' }).then(function (r) {
-            if (r.error) throw new Error(r.error.message);
-            return loadImg(URL.createObjectURL(blob));
-          });
+          sb.storage.from(BUCKET).upload('heads/' + id + '.webp', blob, { upsert: true, contentType: 'image/webp', cacheControl: '0' }).catch(function () {});
         }
-        return loadImg(URL.createObjectURL(blob));
+        return loadImg(headB64[id] || URL.createObjectURL(blob));
       }).then(function (im) {
         heads[id] = im;
         if (!data.approved[id] && !data.pending[id]) {
           data.approved[id] = { skin: 'medium', tee: TEES[6], at: new Date().toISOString() };
         }
         return recompose(id);
-      }).then(function () { toast('Face saved.'); draw(); if (on()) rerender(); })
+      }).then(function () { if (sb) return save().catch(function () {}); })
+        .then(function () { toast('Face saved.'); draw(); if (on()) rerender(); })
         .catch(function (e) { toast('Could not save the face: ' + (e && e.message || e)); });
     },
     _bulkHeads: function (input) {
@@ -609,22 +647,30 @@
         if (!m) return;
         var studentId = m[1].toLowerCase();
         var suffix = (m[2] || '').toLowerCase();
-        var storageName = 'heads/' + studentId + suffix + '.webp';
+        var stem = studentId + suffix;
+        var storageName = 'heads/' + stem + '.webp';
         chain = chain.then(function () {
           return cleanHead(f).then(function (blob) {
-            var p = sb ? sb.storage.from(BUCKET).upload(storageName, blob, { upsert: true, contentType: 'image/webp', cacheControl: '0' }) : Promise.resolve({});
-            return p.then(function () {
-              return loadImg(URL.createObjectURL(blob));
-            }).then(function (im) {
-              if (!suffix) {
-                heads[studentId] = im;
-                if (!data.approved[studentId]) {
-                  data.approved[studentId] = { skin: 'medium', tee: TEES[6], at: new Date().toISOString() };
-                }
-                count++;
-                return recompose(studentId);
-              }
+            return new Promise(function (res) {
+              var fr = new FileReader();
+              fr.onload = function () { headB64[stem] = fr.result; res(blob); };
+              fr.onerror = function () { res(blob); };
+              fr.readAsDataURL(blob);
             });
+          }).then(function (blob) {
+            if (sb) {
+              sb.storage.from(BUCKET).upload(storageName, blob, { upsert: true, contentType: 'image/webp', cacheControl: '0' }).catch(function () {});
+            }
+            return loadImg(headB64[stem]);
+          }).then(function (im) {
+            if (!suffix) {
+              heads[studentId] = im;
+              if (!data.approved[studentId]) {
+                data.approved[studentId] = { skin: 'medium', tee: TEES[6], at: new Date().toISOString() };
+              }
+              count++;
+              return recompose(studentId);
+            }
           });
         }).catch(function (err) { console.warn('Skipped head', f.name, err); });
       });
