@@ -72,12 +72,12 @@
         altClip: 's_sent_science',
         clueSummary: 'This group tested 6 objects in water to discover which ones float on top and which ones sink to the bottom!',
         items: [
-          { id: 'boat',  name: '⛵ Wooden Boat', floats: true,  clip: 's_float_boat' },
-          { id: 'key',   name: '🔑 Metal Key',   floats: false, clip: 's_sink_key' },
-          { id: 'duck',  name: '🦆 Rubber Duck', floats: true,  clip: 's_float_duck' },
-          { id: 'stone', name: '🪨 Heavy Stone', floats: false, clip: 's_sink_stone' },
-          { id: 'ball',  name: '🟠 Plastic Ball',floats: true,  clip: 's_float_ball' },
-          { id: 'coin',  name: '🪙 Gold Coin',   floats: false, clip: 's_sink_coin' }
+          { id: 'boat',  name: '⛵ Wooden Boat', img: '../island/art/flat/o_boat.webp',    floats: true,  clip: 's_float_boat' },
+          { id: 'key',   name: '🔑 Metal Key',   img: '../island/art/flat/o_compass.webp', floats: false, clip: 's_sink_key' },
+          { id: 'duck',  name: '🦆 Rubber Duck', img: '../island/art/flat/o_duck.webp',    floats: true,  clip: 's_float_duck' },
+          { id: 'stone', name: '🪨 Heavy Stone', img: '../island/art/flat/o_rock.webp',    floats: false, clip: 's_sink_stone' },
+          { id: 'ball',  name: '🟠 Plastic Ball',img: '../island/art/flat/o_ball.webp',    floats: true,  clip: 's_float_ball' },
+          { id: 'coin',  name: '🪙 Gold Coin',   img: '../island/art/flat/u_coin.webp',    floats: false, clip: 's_sink_coin' }
         ]
       },
       {
