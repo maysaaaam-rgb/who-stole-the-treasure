@@ -47,7 +47,10 @@
       try { av = (root.MilestoneCeremony && root.MilestoneCeremony.pictureOf) ? root.MilestoneCeremony.pictureOf(s) : (s.avatarUrl || s.av || s.avatar || ''); } catch (e) { av = s.avatarUrl || s.av || s.avatar || ''; }
       var x = {};
       try { x = (root.ClassroomStore && root.ClassroomStore.cosmetics) ? root.ClassroomStore.cosmetics.equipped(s.id) : {}; } catch (e) { x = {}; }
-      return { id: s.id, name: s.firstName || s.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : s.xp) || 0, img: img, av: av, x: x };
+      var pa = '';
+      try { pa = root.PupilAvatars ? root.PupilAvatars.imgFor(s.id) : ''; } catch (e) { pa = ''; }
+      if (pa) img = pa;
+      return { id: s.id, name: s.firstName || s.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : s.xp) || 0, img: img, av: av, x: x, pa: !!pa };
     }).sort(function (a, b) { return b.xp - a.xp; });
   }
   function goalProgress(cls, g) {
@@ -154,7 +157,7 @@
   function stages() { return (root.CommandCenter && root.CommandCenter.stages) || []; }
   function stageBadge(id) { var n = flagOf(id), x = stages()[n - 1]; if (!x) return ''; return '<span class="cb-fl" style="background:' + x.c + ';color:' + x.ink + '" title="Stage ' + n + ' of 6 today">' + n + '<small>' + esc(x.short) + '</small></span>'; }
   function stageStrip() { var L = stages(); if (!L.length) return ''; return '<div class="cb-stages"><b>Our stages</b>' + L.map(function (x) { return '<span style="background:' + x.c + ';color:' + x.ink + '"><i>' + x.s + '</i>' + x.icon + ' ' + esc(x.short) + '</span>'; }).join('<em>➜</em>') + '</div>'; }
-  var EXTRA_CSS = '.cb-dsc{font:inherit;font-weight:800;border:0;border-bottom:4px solid rgba(0,0,0,.3);border-radius:12px;padding:6px 12px;cursor:pointer;background:rgba(255,255,255,.7);color:#334155;margin-left:8px}.cb-dsc.on{background:#fecaca;color:#7f1d1d}' +
+  var EXTRA_CSS = '.cb-look{font:inherit;font-weight:800;border:0;border-bottom:4px solid rgba(0,0,0,.3);border-radius:12px;padding:6px 12px;cursor:pointer;background:rgba(255,255,255,.85);color:#3b0764;margin-left:8px}.cb-look:active{transform:translateY(3px);border-bottom-width:1px}.cb-st img.cb-mon.pa-av{aspect-ratio:3/4;object-position:center bottom}' + '.cb-dsc{font:inherit;font-weight:800;border:0;border-bottom:4px solid rgba(0,0,0,.3);border-radius:12px;padding:6px 12px;cursor:pointer;background:rgba(255,255,255,.7);color:#334155;margin-left:8px}.cb-dsc.on{background:#fecaca;color:#7f1d1d}' +
     '.cb-dis{display:flex;gap:4px;margin-top:4px}.cb-dis button{flex:1;font:inherit;font-weight:800;font-size:.85rem;border:0;border-bottom:3px solid rgba(0,0,0,.3);border-radius:9px;padding:3px 0;cursor:pointer;background:#fecaca;color:#7f1d1d}.cb-dis button.fl{background:#e2e8f0;color:#0f172a}' +
     '.cb-fl{position:absolute;left:6px;top:6px;display:flex;align-items:center;gap:5px;font-weight:900;font-size:1.25rem;line-height:1;padding:4px 9px 4px 7px;border-radius:999px;box-shadow:0 0 0 3px #fff,0 3px 8px rgba(0,0,0,.35);pointer-events:none;z-index:3}.cb-fl small{font-size:.72rem;font-weight:800}' +
     '.cb-stages{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 14px;padding:8px 12px;border-radius:16px;background:rgba(15,23,42,.82);color:#fff;font-weight:800}.cb-stages b{margin-right:6px}.cb-stages span{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 5px;border-radius:999px;font-size:.9rem}.cb-stages span i{font-style:normal;background:rgba(255,255,255,.9);color:#0f172a;border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center}.cb-stages em{font-style:normal;opacity:.6}' +
@@ -539,7 +542,7 @@ function ensureCss() {
               avBubble +
               '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString('en-US') + '</span>' +
               '<div class="cb-pw"><i class="cb-ped"></i>' +
-                '<img class="cb-mon" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Tap monster" onclick="ClassBoard.tapMonster(\'' + esc(s.id) + '\', this)">' +
+                '<img class="cb-mon' + (s.pa ? ' pa-av' : '') + '" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Tap monster" onclick="ClassBoard.tapMonster(\'' + esc(s.id) + '\', this)">' +
               '</div>' +
               '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
               (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
@@ -563,7 +566,7 @@ function render(container) {
     var switcher = BS ? '<span class="cb-sw"><button class="' + (sceneOn ? 'on' : '') + '" onclick="ClassBoard.setView(\'scene\')">🏝️ Scene</button><button class="' + (teamsOn ? 'on' : '') + '" onclick="ClassBoard.setView(\'teams\')">👥 Teams</button><button class="' + (gridOn ? 'on' : '') + '" onclick="ClassBoard.setView(\'grid\')">📋 Grid</button>' + (sceneOn ? '<select title="Scene" onchange="ClassBoard.setScene(this.value)"><option value="auto"' + (BS.getPref() === 'auto' ? ' selected' : '') + '>🔄 Auto: ' + esc(BS.THEMES[BS.auto(cls)].name) + '</option>' + Object.keys(BS.THEMES).map(function (k) { return '<option value="' + k + '"' + (BS.getPref() === k ? ' selected' : '') + '>' + BS.THEMES[k].e + ' ' + esc(BS.THEMES[k].name) + '</option>'; }).join('') + '</select>' : '') + '</span>' : '';
     container.innerHTML = '<div class="cb' + (sceneOn ? ' scene-on scene-' + theme : '') + '" id="cb-root">' +
       '<div class="cb-hd"><div><h1>🌟 ' + esc(cls.name) + '</h1><small>' + new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</small></div>' +
-        '' + switcher + '<button class="cb-dsc' + (discOn() ? ' on' : '') + '" onclick="ClassBoard.disc()" title="Minus points and flags. Flags are visible on the board while this is ON. Off at the start of every session.">🚩 Discipline: ' + (discOn() ? 'On' : 'Off') + '</button><div class="cb-tm"><div class="cb-clock" id="cb-clock"><b>' + fmt(timer.left) + '</b><small>Timer</small></div><div><b id="cb-here">' + present + '</b><small>Here today</small></div><div><b id="cb-total">' + total.toLocaleString('en-US') + '</b><small>Class XP</small></div></div></div>' +
+        '' + switcher + (root.PupilAvatars ? root.PupilAvatars.toggleButton() : '') + '<button class="cb-dsc' + (discOn() ? ' on' : '') + '" onclick="ClassBoard.disc()" title="Minus points and flags. Flags are visible on the board while this is ON. Off at the start of every session.">🚩 Discipline: ' + (discOn() ? 'On' : 'Off') + '</button><div class="cb-tm"><div class="cb-clock" id="cb-clock"><b>' + fmt(timer.left) + '</b><small>Timer</small></div><div><b id="cb-here">' + present + '</b><small>Here today</small></div><div><b id="cb-total">' + total.toLocaleString('en-US') + '</b><small>Class XP</small></div></div></div>' +
       '<div class="cb-tabs">' + (S().getClasses ? S().getClasses() : []).filter(function (c) { return !c.archived; }).map(function (c) { return '<button class="' + (c.id === cls.id ? 'on' : '') + '" onclick="ClassBoard.switchClass(\'' + esc(c.id) + '\')">' + esc(c.name) + '</button>'; }).join('') + '</div>' +
       '<div class="cb-today"><span class="lab">📅 Today:</span>' + todayChips(cls) + '</div>' +
       '<div class="cb-goal" id="cb-goal" onclick="ClassBoard.setGoal()" title="Click to change the class goal"><b class="l"></b><div class="bar"><i style="width:0"></i></div><b class="r"></b></div>' +
@@ -576,7 +579,7 @@ function render(container) {
           '<button type="button" class="cb-att" title="Tap to mark here or away" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' + (absent[s.id] ? 'Away' : '✓') + '</button>' +
           '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
           '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString('en-US') + '</span>' +
-          (sceneOn ? '<div class="cb-pw"><i class="cb-ped"></i>' : '') + '<img class="cb-mon" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Tap monster" onclick="ClassBoard.tapMonster(\'' + esc(s.id) + '\', this)">' + (sceneOn ? '</div>' : '') +
+          (sceneOn ? '<div class="cb-pw"><i class="cb-ped"></i>' : '') + '<img class="cb-mon' + (s.pa ? ' pa-av' : '') + '" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Tap monster" onclick="ClassBoard.tapMonster(\'' + esc(s.id) + '\', this)">' + (sceneOn ? '</div>' : '') +
           '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
           (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
           '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div>' +
