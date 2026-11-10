@@ -126,6 +126,7 @@
         '<div class="mb2-prize" id="mb2-prize"></div></div>' +
       '<div class="mb2-say" id="mb2-say"><h2 class="mb2-h">Tap the box 3 times!</h2><p class="mb2-p">Every box has a surprise inside.</p><div class="mb2-dots" id="mb2-dots"><i></i><i></i><i></i></div></div>' +
     '</div>';
+    if (has('shop_stage')) { var m2 = document.getElementById('mb2'); m2.style.backgroundImage = 'linear-gradient(rgba(6,9,17,.35),rgba(6,9,17,.82)),url(assets/store/shop_stage.webp)'; m2.style.backgroundSize = 'cover'; m2.style.backgroundPosition = '50% 60%'; }
     el.style.display = 'flex';
     setTimeout(function () { el.classList.add('is-active'); }, 10);
   };
@@ -168,7 +169,9 @@
     this.openedPayload = res; return res;
   };
   function prizePic(item, res) {
-    if (res.reward && res.reward.type === 'coins') return '<span class="em">🪙</span>';
+    function art(n, e) { return has(n) ? '<img src="assets/store/' + n + '.webp" alt="" draggable="false" style="width:86%;height:86%;object-fit:contain">' : '<span class="em">' + e + '</span>'; }
+    if (res.reward && res.reward.type === 'coins') return art(res.reward.rolled === 'jackpot' ? 'jackpot_gem' : (res.reward.amount > 5 ? 'coin_pile' : 'coin_one'), '🪙');
+    if (res.reward && res.reward.type === 'voucher') return art('reward_ticket', item.icon || '🎟️');
     var CS = root.ClassroomStore;
     if (item && item.id && item.id !== 'preview' && item.id !== 'voucher' && CS && CS.itemPic) { try { var h = CS.itemPic(item); if (h) return '<span class="sc">' + h + '</span>'; } catch (e) { /* fall back */ } }
     return '<span class="em">' + esc(item.icon || '🎁') + '</span>';

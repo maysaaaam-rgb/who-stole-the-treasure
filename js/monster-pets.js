@@ -903,7 +903,7 @@
     var w = isHero ? 52 : 44;
     var h = isHero ? 60 : 52;
     return (
-      '<g class="monster-pet-companion" data-pet-id="' + pet.id + '" onclick="if(window.MonsterPets&&window.MonsterPets.cyclePose)window.MonsterPets.cyclePose(\'' + pet.id + '\')" style="cursor:pointer;">' +
+      '<g class="monster-pet-companion" data-pet-id="' + pet.id + '" onclick="if(window.MonsterPets&amp;&amp;window.MonsterPets.cyclePose)window.MonsterPets.cyclePose(\'' + pet.id + '\')" style="cursor:pointer;">' +
         '<ellipse cx="158" cy="169" rx="15" ry="4.5" fill="rgba(6, 9, 17, 0.42)" />' +
         '<ellipse cx="158" cy="169" rx="11" ry="2.6" fill="rgba(56, 189, 248, 0.22)" />' +
         '<g class="monster-pet-bob" style="animation: monsterFloat 2.6s ease-in-out infinite;">' +

@@ -302,6 +302,9 @@ button{font-family:inherit;cursor:pointer}
 .an-sway{animation-name:lvSway;animation-duration:3.4s}@keyframes lvSway{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
 .an-nod{animation-name:lvNod;animation-duration:2.6s}@keyframes lvNod{0%,100%{transform:rotate(0)}50%{transform:rotate(-3deg)}}
 .an-walk{animation-name:lvWalk;animation-duration:1.4s}@keyframes lvWalk{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-2%) rotate(1deg)}}
+.an-still{animation:none}
+.an-pulse{animation-name:lvPulse;animation-duration:2.8s}@keyframes lvPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+.an-float{animation-name:lvFloat;animation-duration:4.4s}@keyframes lvFloat{0%,100%{transform:translateY(0) rotate(-.6deg)}50%{transform:translateY(-3%) rotate(.6deg)}}
 .an-flap{animation-name:lvFlap;animation-duration:2.2s}@keyframes lvFlap{0%,100%{transform:skewX(0) scaleY(1)}50%{transform:skewX(-3deg) scaleY(.96)}}
 .lv-piece.lv-tap{animation:lvTap .7s cubic-bezier(.3,1.6,.5,1)!important}
 @keyframes lvTap{30%{transform:scale(1.14) rotate(-3deg)}60%{transform:scale(.97) rotate(2deg)}}

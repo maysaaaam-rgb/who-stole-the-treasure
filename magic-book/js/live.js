@@ -70,10 +70,14 @@
   }
 
   /* ---------- tapping a picture ---------- */
+  var playing = null;
   function tapPiece(w, pc) {
     if (finding) { MB.chime(false); return; }
     w.classList.remove('lv-tap'); void w.offsetWidth; w.classList.add('lv-tap');
     if (SOUNDS[pc.sound]) SOUNDS[pc.sound]();
+    else if (/\.mp3$/.test(pc.sound || '')) {   /* a real recorded sound from magic-book/extras/sounds/ */
+      try { if (playing) playing.pause(); playing = new Audio(MB.url ? MB.url(pc.sound) : pc.sound); playing.volume = .7; playing.play().catch(function () {}); var a = playing; setTimeout(function () { try { a.pause(); } catch (e) {} }, 4000); } catch (e) { /* no sound */ }
+    }
     bubble(w, (pc.word ? '<b class="lv-bw">' + MB.esc(pc.word) + '</b><br>' : '') + MB.esc(pc.say || ''));
     MB.say(pc.word || '', { rate: .75, end: function () { if (pc.say) setTimeout(function () { MB.say(pc.say, { rate: .88 }); }, 200); } });
   }
@@ -146,7 +150,9 @@
       [].forEach.call(L.querySelectorAll('.lv-word'), function (h) {
         if (h.dataset.w !== w || h.dataset.chip) return;
         // the chip is the copy of the word inside the Words in Context box (lowest on the page)
-        var top = parseFloat(h.style.top); if (top < 80) return;
+        var top = parseFloat(h.style.top), left = parseFloat(h.style.left);
+        if (t.box) { if (top < t.box.y - 1 || top > t.box.y + t.box.h + 1 || left < t.box.x - 1 || left > t.box.x + t.box.w + 1) return; }
+        else if (top < 80) return;
         h.dataset.chip = '1'; h.classList.add('lv-chip');
         h.addEventListener('click', function (e) { e.stopImmediatePropagation(); startFind(w, h); }, true);
       });
