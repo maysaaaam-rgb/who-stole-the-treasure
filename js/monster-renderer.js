@@ -2172,7 +2172,7 @@
       back: crest.back,
       feet: renderGroundedFeet(palette, colorKey, cX, g),
       torso: renderChibiTorso(stage, palette, colorKey, cX, g, equipped),
-      arms: renderChibiArms(stage, palette, colorKey, cX, g),
+      arms: renderChibiArms(stage, palette, colorKey, cX, g, equipped),
       front: crest.front
     };
   }
@@ -2424,7 +2424,10 @@
   }
 
   // --- FRONT ARMS / PAWS (rendered over clothing so outfits never swallow the monster's hands) ---
-  function renderChibiArms(stage, palette, colorKey, cX, g) {
+  function renderChibiArms(stage, palette, colorKey, cX, g, equipped) {
+    /* 10 Nov 2026: an outfit with sleeves colours the arm, keeps a furry paw and adds a cuff, so the monster really wears it */
+    let sl = null;
+    try { sl = (equipped && equipped.clothing && typeof window !== 'undefined' && window.MonsterOutfits && window.MonsterOutfits.sleeve) ? window.MonsterOutfits.sleeve(equipped.clothing) : null; } catch (e) { sl = null; }
     const cW = g.cW;
     const baby = stage === 'baby';
     const k = baby ? 0.85 : 1;            // baby arms are shorter and stubbier
@@ -2436,7 +2439,10 @@
         <path d="M ${sx} ${g.pawY - 13 * k} C ${sx + sg * 11 * k} ${g.pawY - 9 * k} ${hx + sg * 7 * k} ${hy - 4 * k} ${hx + sg * 5 * k} ${hy + 3 * k}
                  C ${hx + sg * 2 * k} ${hy + 8 * k} ${hx - sg * 5 * k} ${hy + 7 * k} ${hx - sg * 5 * k} ${hy + 2 * k}
                  C ${hx - sg * 5 * k} ${hy - 6 * k} ${sx + sg * 1 * k} ${g.pawY - 3 * k} ${sx} ${g.pawY - 13 * k} Z"
-              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.5" stroke-linejoin="round" />
+              fill="${sl ? sl.fill : `url(#plush-fur-${colorKey})`}" stroke="${sl ? sl.line : palette.primaryDark}" stroke-width="2.5" stroke-linejoin="round" />
+        ${sl ? `<ellipse cx="${hx - sg * 0.4}" cy="${hy + 2.2 * k}" rx="${5.6 * k}" ry="${5.2 * k}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="1.6" />
+        <path d="M ${hx - sg * 6.2 * k} ${hy - 1.6 * k} Q ${hx} ${hy - 4.6 * k} ${hx + sg * 6.4 * k} ${hy - 0.4 * k}" stroke="${sl.cuff}" stroke-width="${3.2 * k}" fill="none" stroke-linecap="round" />
+        ${sl.cuffLine ? `<path d="M ${hx - sg * 6.2 * k} ${hy - 1.6 * k} Q ${hx} ${hy - 4.6 * k} ${hx + sg * 6.4 * k} ${hy - 0.4 * k}" stroke="${sl.cuffLine}" stroke-width="1" fill="none" stroke-linecap="round" />` : ''}` : ''}
         ${toes}
         <ellipse cx="${hx - sg * 1.5}" cy="${hy - 1.5 * k}" rx="${2.4 * k}" ry="${3.4 * k}" fill="#ffffff" opacity="0.28" /></g>`;
     };
