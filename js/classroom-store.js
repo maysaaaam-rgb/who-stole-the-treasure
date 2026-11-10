@@ -19,10 +19,10 @@
     itemPrices: { common: 15, rare: 40, epic: 90, legendary: 200, mythic: 500 },
     boxPrices: { BRONZE: 15, WOODEN: 30, GILDED: 80, CELESTIAL: 180 },
     privileges: [
-      { id: 'p-cat-sticker',    icon: '🐱', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · KEEP IT!',   name: '1× Funny Cat Meme Sticker (Pick Your Favourite!)', price: 120, weeklyLimit: 2, coinsOnly: true, active: true },
-      { id: 'p-cat-pack',       icon: '😻', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · 3 PACK!',    name: '3× Funny Cat Meme Sticker Pack',                  price: 280, weeklyLimit: 1, coinsOnly: true, active: true },
-      { id: 'p-topper-mystery', icon: '🎁', image: 'assets/store/prize_pencil_topper.webp', badge: 'REAL 3D TOY PRIZE!',      name: 'Mystery 3D Cute Pencil Topper (Blind Draw)',      price: 300, weeklyLimit: 1, coinsOnly: true, active: true },
-      { id: 'p-topper-vip',     icon: '👑', image: 'assets/store/prize_pencil_topper.webp', badge: 'VIP REAL 3D PRIZE!',      name: 'VIP Choice 3D Cute Pencil Topper (Pick Any One!)', price: 400, weeklyLimit: 1, coinsOnly: true, active: true },
+      { id: 'p-cat-sticker',    icon: '🐱', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · KEEP IT!',   name: '1× Funny Cat Meme Sticker (Pick Your Favourite!)', price: 40, weeklyLimit: 2, coinsOnly: true, active: true },
+      { id: 'p-cat-pack',       icon: '😻', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · 3 PACK!',    name: '3× Funny Cat Meme Sticker Pack',                  price: 100, weeklyLimit: 1, coinsOnly: true, active: true },
+      { id: 'p-topper-mystery', icon: '🎁', image: 'assets/store/prize_pencil_topper.webp', badge: 'REAL 3D TOY PRIZE!',      name: 'Mystery 3D Cute Pencil Topper (Blind Draw)',      price: 120, weeklyLimit: 1, coinsOnly: true, active: true },
+      { id: 'p-topper-vip',     icon: '👑', image: 'assets/store/prize_pencil_topper.webp', badge: 'VIP REAL 3D PRIZE!',      name: 'VIP Choice 3D Cute Pencil Topper (Pick Any One!)', price: 160, weeklyLimit: 1, coinsOnly: true, active: true },
       { id: 'p-song', icon: '🎵', name: 'Choose the warm-up song', price: 40, weeklyLimit: 2, active: true },
       { id: 'p-seat', icon: '🪑', name: 'Sit anywhere for one lesson', price: 30, weeklyLimit: 2, active: true },
       { id: 'p-helper', icon: '🧑‍🏫', name: "Be the teacher's helper", price: 50, weeklyLimit: 1, active: true },
@@ -78,6 +78,11 @@
         if (def && def.coinsOnly) { p.image = def.image; p.badge = def.badge; p.coinsOnly = true; }
       });
       c.physicalPrizesV1 = 1;
+    }
+    if (!c.physicalPrizesV2) {   // 10 Nov 2026: real prizes cheaper (a pupil earns about 6 coins a week); only prices still at the first defaults change
+      var P2 = { 'p-cat-sticker': [120, 40], 'p-cat-pack': [280, 100], 'p-topper-mystery': [300, 120], 'p-topper-vip': [400, 160] };
+      c.privileges.forEach(function (p) { var x = P2[p.id]; if (x && Number(p.price) === x[0]) p.price = x[1]; });
+      c.physicalPrizesV2 = 1;
     }
     if (!c.coinsPerXp) c.coinsPerXp = DEFAULTS.coinsPerXp;
     if (!c.balanceV1) {   // 30 Oct 2026: boxes were cheaper than the coins inside them; the cheapest class rewards cost less than a hat
