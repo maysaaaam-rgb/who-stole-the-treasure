@@ -104,7 +104,7 @@
 
   function speakCurrentSentence(slow) {
     var g = D.groups[state.speakIdx];
-    if (slow) A.speak(g.sentence, null, 0.72);
+    if (slow) A.speak(g.sentence, g.sentenceClip, 0.76);
     else A.speak(g.sentence, g.sentenceClip);
   }
 
@@ -214,6 +214,7 @@
     var groupTabs = D.groups.map(function (grp, i) {
       var done = !!state.completedGroups[grp.id];
       return '<button type="button" class="btn-3d ' + (i === state.activeGroupIdx ? grp.color : '') + '" onclick="SubjectsApp.selectGroup(' + i + ')">' +
+        '<img src="' + grp.art + '" alt="" style="width:32px;height:32px;object-fit:contain">' +
         '<span>👥 Group ' + grp.groupNum + '</span>' +
         '<span>' + (done ? '✅ Done' : '🔒 Mystery Task') + '</span>' +
       '</button>';
@@ -289,6 +290,7 @@
               g.items.map(function (it) {
                 var res = state.scienceTested[it.id];
                 return '<button type="button" class="btn-3d ' + (res === 'float' ? 'cyan' : (res === 'sink' ? 'violet' : '')) + '" data-item="' + it.id + '" onclick="SubjectsApp.testScienceItem(this.getAttribute(\'data-item\'))">' +
+                  (it.img ? '<img src="' + it.img + '" alt="" style="width:42px;height:42px;object-fit:contain;flex-shrink:0">' : '') +
                   '<span>' + it.name + '</span>' +
                   (res ? '<span style="font-size:0.85rem;color:#fde047">(' + res.toUpperCase() + 'S)</span>' : '') +
                 '</button>';
@@ -301,13 +303,13 @@
               '<div>' +
                 '<div style="font-size:0.88rem;font-weight:800;color:#fde047;margin-bottom:6px">🌊 FLOATS ON TOP:</div>' +
                 '<div class="tank-zone-row">' +
-                  (floatItems.length ? floatItems.map(function (it) { return '<span class="btn-3d cyan" style="padding:6px 12px;font-size:0.95rem">' + it.name + '</span>'; }).join('') : '<span style="color:#94a3b8">Drop objects to see what floats...</span>') +
+                  (floatItems.length ? floatItems.map(function (it) { return '<span class="btn-3d cyan" style="padding:6px 12px;font-size:0.95rem">' + (it.img ? '<img src="' + it.img + '" alt="" style="width:26px;height:26px;object-fit:contain"> ' : '') + it.name + '</span>'; }).join('') : '<span style="color:#94a3b8">Drop objects to see what floats...</span>') +
                 '</div>' +
               '</div>' +
               '<div>' +
                 '<div style="font-size:0.88rem;font-weight:800;color:#fda4af;margin-bottom:6px">⚓ SINKS TO THE BOTTOM:</div>' +
                 '<div class="tank-zone-row">' +
-                  (sinkItems.length ? sinkItems.map(function (it) { return '<span class="btn-3d violet" style="padding:6px 12px;font-size:0.95rem">' + it.name + '</span>'; }).join('') : '<span style="color:#cbd5e1">Drop objects to see what sinks...</span>') +
+                  (sinkItems.length ? sinkItems.map(function (it) { return '<span class="btn-3d violet" style="padding:6px 12px;font-size:0.95rem">' + (it.img ? '<img src="' + it.img + '" alt="" style="width:26px;height:26px;object-fit:contain"> ' : '') + it.name + '</span>'; }).join('') : '<span style="color:#cbd5e1">Drop objects to see what sinks...</span>') +
                 '</div>' +
               '</div>' +
             '</div>' +
@@ -340,9 +342,12 @@
     }
 
     return '<div class="sb-banner">' +
-        '<div class="sb-banner-text">' +
-          '<h2>' + g.groupTitle + ' · ' + g.taskTitle + ' (Subject: ' + (state.revealedSubjects[g.id] ? g.subject : '❓ Mystery Subject') + ')</h2>' +
-          '<p>' + g.taskPrompt + '</p>' +
+        '<div style="display:flex;align-items:center;gap:16px">' +
+          '<img src="' + g.art + '" alt="' + g.subject + '" style="width:76px;height:76px;object-fit:contain;border-radius:16px;background:rgba(6,9,17,0.55);padding:6px;border:2px solid rgba(56,189,248,0.45)">' +
+          '<div class="sb-banner-text">' +
+            '<h2>' + g.groupTitle + ' · ' + g.taskTitle + ' (Subject: ' + (state.revealedSubjects[g.id] ? g.subject : '❓ Mystery Subject') + ')</h2>' +
+            '<p>' + g.taskPrompt + '</p>' +
+          '</div>' +
         '</div>' +
         '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
           '<button type="button" class="btn-3d amber" onclick="SubjectsApp.speakGroupTask()">🔊 Hear Task</button>' +
