@@ -47,10 +47,10 @@
       try { av = (root.MilestoneCeremony && root.MilestoneCeremony.pictureOf) ? root.MilestoneCeremony.pictureOf(s) : (s.avatarUrl || s.av || s.avatar || ''); } catch (e) { av = s.avatarUrl || s.av || s.avatar || ''; }
       var x = {};
       try { x = (root.ClassroomStore && root.ClassroomStore.cosmetics) ? root.ClassroomStore.cosmetics.equipped(s.id) : {}; } catch (e) { x = {}; }
-      var pa = '';
+      var pa = '', monsterImg = img;
       try { pa = root.PupilAvatars ? root.PupilAvatars.imgFor(s.id) : ''; } catch (e) { pa = ''; }
       if (pa) img = pa;
-      return { id: s.id, name: s.firstName || s.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : s.xp) || 0, img: img, av: av, x: x, pa: !!pa };
+      return { id: s.id, name: s.firstName || s.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : s.xp) || 0, img: img, monsterImg: monsterImg, av: av, x: x, pa: !!pa };
     }).sort(function (a, b) { return b.xp - a.xp; });
   }
   function goalProgress(cls, g) {
@@ -114,7 +114,8 @@
     '.cb-win button.bnext{background:#38bdf8;color:#06101f;border-bottom-color:#0369a1}' +
     '.cb-win .cb-vs{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:12px}' +
     '.cb-win .cb-fighter{display:flex;flex-direction:column;align-items:center;min-width:180px}' +
-    '.cb-win .cb-fighter.f1 img.cb-fmon{transform:scaleX(-1)}' +
+    '.cb-win .cb-fighter.f1 img.cb-fmon:not(.pa-av){transform:scaleX(-1)}' +
+    '.cb-st img.cb-pet-badge{background:radial-gradient(circle at 35% 30%,rgba(56,189,248,.32),rgba(15,23,42,.9));border:2px solid #fbbf24;width:40px;height:40px;top:34px;right:6px;padding:2px}' +
     '.cb-win .cb-vs-tag{font-size:2.2rem;font-weight:800;color:#fbbf24;text-shadow:0 4px 12px rgba(0,0,0,.5)}' +
     '.cb-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0;position:relative}.cb-tabs button{border:0;border-bottom:4px solid rgba(0,0,0,.28);background:rgba(255,255,255,.14);color:#fff;font:500 1rem Fredoka,sans-serif;padding:8px 18px;border-radius:14px;cursor:pointer}.cb-tabs button.on{background:#fbbf24;color:#4a2300;border-bottom-color:#b45309}.cb-tabs button:active{transform:translateY(3px);border-bottom-width:1px}' +
     '.cb-today{margin:12px 0 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:relative}.cb-today .lab{font-weight:600;opacity:.8;margin-right:4px}.cb-today a,.cb-today button{text-decoration:none;color:#fff;background:rgba(34,197,94,.3);border:1px solid #4ade80;border-bottom:4px solid #15803d;border-radius:14px;padding:7px 14px;font:500 .95rem Fredoka,sans-serif;cursor:pointer}.cb-today a em{font-style:normal;color:#fde68a;margin-right:4px}.cb-today button{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);border-bottom-color:rgba(0,0,0,.28)}' +
@@ -493,7 +494,10 @@ function ensureCss() {
         try { av = (root.MilestoneCeremony && root.MilestoneCeremony.pictureOf) ? root.MilestoneCeremony.pictureOf(raw) : (raw.avatarUrl || raw.av || raw.avatar || ''); } catch (e) { av = raw.avatarUrl || raw.av || raw.avatar || ''; }
         var x = {};
         try { x = (root.ClassroomStore && root.ClassroomStore.cosmetics) ? root.ClassroomStore.cosmetics.equipped(raw.id) : {}; } catch (e) { x = {}; }
-        return { id: raw.id, name: raw.firstName || raw.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : raw.xp) || 0, img: img, av: av, x: x };
+        var pa = '', monsterImg = img;
+        try { pa = root.PupilAvatars ? root.PupilAvatars.imgFor(raw.id) : ''; } catch (e) { pa = ''; }
+        if (pa) img = pa;
+        return { id: raw.id, name: raw.firstName || raw.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : raw.xp) || 0, img: img, monsterImg: monsterImg, av: av, x: x, pa: !!pa };
       }).filter(Boolean);
       var groupTotalXP = members.reduce(function (acc, m) { return acc + (m.xp || 0); }, 0);
       var groupMonthlyXP = S().getGroupMonthlyXP ? S().getGroupMonthlyXP(grp.id) : 0;
@@ -535,7 +539,7 @@ function ensureCss() {
         '</div>' +
         '<div class="cb-team-monsters-row">' +
           members.map(function (s, idx) {
-            var avBubble = s.av ? '<img class="cb-st-av-bubble" src="' + esc(s.av) + '" alt="" title="' + esc(s.name) + '">' : '';
+            var avBubble = (s.pa && s.monsterImg) ? '<img class="cb-st-av-bubble cb-pet-badge" src="' + esc(s.monsterImg) + '" alt="" title="Pet monster · tap to customize" onclick="event.stopPropagation();ClassBoard.act(\'monster\',\'' + esc(s.id) + '\')">' : (s.av ? '<img class="cb-st-av-bubble" src="' + esc(s.av) + '" alt="" title="' + esc(s.name) + '">' : '');
             return '<div class="cb-st cb-team-st ' + (absent[s.id] ? 'off' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '" style="--i:' + idx + '">' +
               '<button type="button" class="cb-att" title="Tap to mark here or away" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' + (absent[s.id] ? 'Away' : '✓') + '</button>' +
               '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
@@ -574,7 +578,7 @@ function render(container) {
         var plateCss = !sceneOn && s.x && s.x.plate && s.x.plate.css ? s.x.plate.css : '';
         var stStyle = ' style="--i:' + Math.min(idx, 12) + (plateCss ? ';' + esc(plateCss) : '') + '"';
         var animal = !sceneOn && s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
-        var avBadge = false && s.av ? '<img class="cb-av" src="' + esc(s.av) + '" alt="" title="Click to switch pose" onclick="event.stopPropagation();if(window.MilestoneCeremony){MilestoneCeremony.setAvatar(\'' + esc(s.id) + '\',event);if(window.renderCurrentView)renderCurrentView();}">' : '';
+        var avBadge = (s.pa && s.monsterImg) ? '<img class="cb-av cb-pet-badge" src="' + esc(s.monsterImg) + '" alt="" title="Pet monster · tap to customize" onclick="event.stopPropagation();ClassBoard.act(\'monster\',\'' + esc(s.id) + '\')">' : '';
         return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plateCss ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + stStyle + '>' + animal + avBadge + (discOn() ? stageBadge(s.id) : '') +
           '<button type="button" class="cb-att" title="Tap to mark here or away" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' + (absent[s.id] ? 'Away' : '✓') + '</button>' +
           '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
@@ -660,7 +664,7 @@ function render(container) {
       if (ev) ev.stopPropagation();
       var old = document.getElementById('cb-pop'), same = old && old.dataset.id === id; closeMenus(); if (same) return;
       var st = S().getStudent ? S().getStudent(id) : null, name = st ? (st.firstName || st.name || '') : '';
-      var items = [['profile', '👤 Profile'], ['history', '📜 XP history'], ['fix', '✏️ Correct XP'], ['skills', '🎯 Give XP for a skill'], ['monster', '🐾 Customize monster'], ['edit', '⚙️ Edit student'], ['birthday', '🎂 Birthday today']];
+      var items = [['profile', '👤 Profile'], ['history', '📜 XP history'], ['fix', '✏️ Correct XP'], ['skills', '🎯 Give XP for a skill'], ['avatar', '👗 Dress avatar'], ['monster', '🐾 Customize monster'], ['edit', '⚙️ Edit student'], ['birthday', '🎂 Birthday today']];
       var p = document.createElement('div'); p.id = 'cb-pop'; p.dataset.id = id;
       p.innerHTML = '<b>' + esc(name) + '</b>' + items.map(function (it) { return '<button data-a="' + it[0] + '">' + it[1] + '</button>'; }).join('');
       p.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) api.act(b.dataset.a, id); });
@@ -677,6 +681,7 @@ function render(container) {
         else if (what === 'history' && root.openStudentXPHistoryModal) root.openStudentXPHistoryModal(id);
         else if (what === 'fix' && root.openDirectXPEdit) root.openDirectXPEdit(id);
         else if (what === 'skills' && root.openGiveXPSkillsModal) root.openGiveXPSkillsModal('student', id);
+        else if (what === 'avatar' && root.PupilAvatars) root.PupilAvatars.open({ tab: 'wardrobe', pick: id });
         else if (what === 'monster' && root.openMonsterCreator) root.openMonsterCreator(id);
         else if (what === 'edit' && root.openStudentModal) root.openStudentModal(id);
         else if (what === 'birthday' && root.Birthday) { root.Birthday.setToday(id); root.Birthday.celebrate(id); }
@@ -774,6 +779,7 @@ function render(container) {
           if (ptEl && me) ptEl.textContent = (Number(me.xp) || 0).toLocaleString('en-US');
           var b = document.createElement('div'); b.className = 'cb-burst'; b.textContent = '+' + n + ' ⭐'; card.appendChild(b); setTimeout(function () { b.remove(); }, 1000);
           var img = card.querySelector('.cb-mon'); if (img) { img.classList.remove('cb-bounce'); void img.offsetWidth; img.classList.add('cb-bounce'); }
+          if (root.PupilAvatars && root.PupilAvatars.on && root.PupilAvatars.on()) { try { root.PupilAvatars.triggerEmotion(id, 'laugh', 2400); } catch (e) {} }
         }
       });
       try {
@@ -799,7 +805,11 @@ function render(container) {
         document.getElementById('cb-pt-' + id).textContent = me.xp.toLocaleString('en-US');
         var b = document.createElement('div'); b.className = 'cb-burst'; b.textContent = '+' + n + ' ⭐'; card.appendChild(b); setTimeout(function () { b.remove(); }, 1000);
         var img = card.querySelector('img.cb-mon') || card.querySelector('img'); if (img && me.img && img.getAttribute('src') !== me.img) img.src = me.img;   // monster may have evolved
-        monMove(img, 'cheer');   // the drawn monster cheers for the award
+        if (root.PupilAvatars && root.PupilAvatars.on && root.PupilAvatars.on() && me.pa) {
+          try { root.PupilAvatars.triggerEmotion(id, 'laugh', 2400); } catch (e) {}
+        } else {
+          monMove(img, 'cheer');   // the drawn monster cheers for the award
+        }
       }
       paintGoal();
     },
@@ -837,12 +847,17 @@ function render(container) {
     },
     tapMonster: function (id, imgEl) {
       if (imgEl) {
-        // a drawn monster answers the tap with its own move (wave, hop, wiggle, nod); other pictures still bounce
-        var moved = monMove(imgEl, TAP_MOVES[tapCount++ % TAP_MOVES.length]);
-        if (!moved) {
-          imgEl.classList.remove('cb-bounce');
-          void imgEl.offsetWidth;
-          imgEl.classList.add('cb-bounce');
+        if (root.PupilAvatars && root.PupilAvatars.on && root.PupilAvatars.on() && imgEl.classList.contains('pa-av')) {
+          var kind = (tapCount++ % 2 === 0) ? 'wink' : 'laugh';
+          try { root.PupilAvatars.triggerEmotion(id, kind, 2100); } catch (e) {}
+        } else {
+          // a drawn monster answers the tap with its own move (wave, hop, wiggle, nod); other pictures still bounce
+          var moved = monMove(imgEl, TAP_MOVES[tapCount++ % TAP_MOVES.length]);
+          if (!moved) {
+            imgEl.classList.remove('cb-bounce');
+            void imgEl.offsetWidth;
+            imgEl.classList.add('cb-bounce');
+          }
         }
       }
       if (!pupilSound(id)) {
@@ -907,7 +922,7 @@ function render(container) {
           var winId = winner.dataset.id;
           w.innerHTML = '<div' + (pl ? ' style="' + esc(pl) + '"' : '') + '>' +
             (avEl ? '<img class="cb-win-av" src="' + esc(avEl.getAttribute('src')) + '" alt="">' : '') +
-            '<img src="' + esc(monEl.getAttribute('src')) + '" alt="">' +
+            '<img id="cb-win-main" src="' + esc(monEl.getAttribute('src')) + '" alt="">' +
             '<h2>' + esc(winner.querySelector('b.n').textContent.replace(' · away', '')) + '!</h2>' +
             (ti ? '<div class="cb-ti" style="font-size:1.2rem;margin:-4px auto 14px;display:inline-block;padding:3px 16px">' + esc(ti.textContent) + '</div><br>' : '') +
             '<div class="cb-wbtns">' +
@@ -916,6 +931,14 @@ function render(container) {
               '<button type="button" class="bnext" id="cb-w-next">🔄 Pick another</button>' +
             '</div></div>';
           document.body.appendChild(w);
+          if (root.PupilAvatars && root.PupilAvatars.on && root.PupilAvatars.on()) {
+            try {
+              root.PupilAvatars.triggerEmotion(winId, 'laugh', 3200).then(function (u) {
+                var wm = document.getElementById('cb-win-main');
+                if (u && wm) wm.src = u;
+              });
+            } catch (e) {}
+          }
           if (!pupilSound(winId)) { try { root.classSoundboard && root.classSoundboard.playFanfare && root.classSoundboard.playFanfare(); } catch (e) { /* optional */ } }
           w.querySelector('#cb-w-5').onclick = function () { api.award(winId, 5); w.remove(); };
           w.querySelector('#cb-w-10').onclick = function () { api.award(winId, 10); w.remove(); };
@@ -960,16 +983,19 @@ function render(container) {
         setTimeout(function () {
           first.classList.remove('pick'); second.classList.remove('pick'); pickBusy = false;
           var w = document.createElement('div'); w.className = 'cb-win';
-          var m1 = (first.querySelector('img.cb-mon') || first.querySelector('img')).getAttribute('src');
-          var m2 = (second.querySelector('img.cb-mon') || second.querySelector('img')).getAttribute('src');
+          var m1El = first.querySelector('img.cb-mon') || first.querySelector('img');
+          var m2El = second.querySelector('img.cb-mon') || second.querySelector('img');
+          var m1 = m1El.getAttribute('src');
+          var m2 = m2El.getAttribute('src');
+          var p1Av = m1El.classList.contains('pa-av'), p2Av = m2El.classList.contains('pa-av');
           var n1 = first.querySelector('b.n').textContent.replace(' · away', '');
           var n2 = second.querySelector('b.n').textContent.replace(' · away', '');
           var id1 = first.dataset.id, id2 = second.dataset.id;
           w.innerHTML = '<div>' +
             '<div class="cb-vs">' +
-              '<div class="cb-fighter f1"><img class="cb-fmon" src="' + esc(m1) + '" alt=""><h2>' + esc(n1) + '</h2></div>' +
+              '<div class="cb-fighter f1"><img id="cb-fmon-1" class="cb-fmon' + (p1Av ? ' pa-av' : '') + '" src="' + esc(m1) + '" alt=""><h2>' + esc(n1) + '</h2></div>' +
               '<div class="cb-vs-tag">⚔️ VS ⚔️</div>' +
-              '<div class="cb-fighter f2"><img class="cb-fmon" src="' + esc(m2) + '" alt=""><h2>' + esc(n2) + '</h2></div>' +
+              '<div class="cb-fighter f2"><img id="cb-fmon-2" class="cb-fmon' + (p2Av ? ' pa-av' : '') + '" src="' + esc(m2) + '" alt=""><h2>' + esc(n2) + '</h2></div>' +
             '</div>' +
             '<div class="cb-wbtns">' +
               '<button type="button" id="cb-w2-5">⭐ Award both +5</button>' +
@@ -977,6 +1003,12 @@ function render(container) {
               '<button type="button" class="bnext" id="cb-w2-next">🔄 Pick 2 more</button>' +
             '</div></div>';
           document.body.appendChild(w);
+          if (root.PupilAvatars && root.PupilAvatars.on && root.PupilAvatars.on()) {
+            try {
+              if (p1Av) root.PupilAvatars.triggerEmotion(id1, 'laugh', 3200).then(function (u) { var e1 = document.getElementById('cb-fmon-1'); if (u && e1) e1.src = u; });
+              if (p2Av) root.PupilAvatars.triggerEmotion(id2, 'wink', 3200).then(function (u) { var e2 = document.getElementById('cb-fmon-2'); if (u && e2) e2.src = u; });
+            } catch (e) {}
+          }
           try { root.classSoundboard && root.classSoundboard.playFanfare && root.classSoundboard.playFanfare(); } catch (e) { /* optional */ }
           w.querySelector('#cb-w2-5').onclick = function () { api.award(id1, 5); api.award(id2, 5); w.remove(); };
           w.querySelector('#cb-w2-10').onclick = function () { api.award(id1, 10); api.award(id2, 10); w.remove(); };
