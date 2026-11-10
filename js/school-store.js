@@ -16909,6 +16909,30 @@
           }
         });
 
+        // 10 Nov 2026: a pupil copy that exists only on this device (same full name, same class as a cloud pupil, different id)
+        // is a duplicate, e.g. two "Ada" cards on one board. Fold it into the cloud pupil: higher XP wins, items are kept.
+        try {
+          const nm = x => String(((x.firstName || '') + ' ' + (x.lastName || '')).trim() || x.name || '').toLocaleLowerCase('tr').replace(/\s+/g, ' ');
+          const byKey = new Map();
+          this.state.students.forEach(x => { if (remoteMap.has(x.id) && !x.archived) byKey.set((x.classId || '') + '|' + nm(x), x); });
+          const copies = this.state.students.filter(x => !remoteMap.has(x.id) && !x.archived && nm(x) && byKey.has((x.classId || '') + '|' + nm(x)));
+          copies.forEach(copy => {
+            const real = byKey.get((copy.classId || '') + '|' + nm(copy));
+            const cx = Math.max(0, Number(copy.xp) || 0);
+            if (cx > (Number(real.xp) || 0)) { real.xp = cx; real.totalXP = cx; real.xpUpdatedAt = new Date().toISOString(); evaluateMonsterStage(real); }
+            const invs = this.state.studentInventories;
+            if (invs && Array.isArray(invs[copy.id])) {
+              const mine = invs[real.id] = Array.isArray(invs[real.id]) ? invs[real.id] : [];
+              invs[copy.id].forEach(e => { if (e && !mine.some(m => m.itemId === e.itemId)) mine.push(e); });
+              delete invs[copy.id];
+            }
+            if (this.state.monsterProfiles && this.state.monsterProfiles[copy.id] && !this.state.monsterProfiles[real.id]) this.state.monsterProfiles[real.id] = this.state.monsterProfiles[copy.id];
+            if (Array.isArray(this.state.xpTransactions)) this.state.xpTransactions.forEach(t => { if (t && t.studentId === copy.id) t.studentId = real.id; });
+            console.info('[SchoolStore] Merged a local copy of', nm(copy), 'into the cloud pupil', real.id);
+          });
+          if (copies.length) { const ids = new Set(copies.map(c => c.id)); this.state.students = this.state.students.filter(x => !ids.has(x.id)); modified = true; }
+        } catch (e) { /* never block the sync */ }
+
         // If authoritative cloud list, prune students that were deleted on another device
         if (cloudData.isAuthoritativeList && remoteMap.size > 0) {
           const beforeCount = this.state.students.length;
