@@ -92,7 +92,12 @@
       .replace(/\b\w/g, function (c) { return c.toUpperCase(); });
   }
 
-  var data = { approved: {}, pending: {} };   // from class-pupil-avatars (teacher-locked) or private bucket
+  var BUILTIN_HEADS = [
+    'student-3a-206', 'student-3a-209', 'student-3a-211', 'student-3a-219', 'student-3a-224', 'student-3a-229', 'student-3a-354',
+    'student-3b-220', 'student-3b-352', 'student-3b-353',
+    'student-4b-208', 'student-4b-306', 'student-4b-322', 'student-4b-338'
+  ];
+  var data = { approved: {}, pending: {} };   // from class-pupil-avatars (teacher-locked) or built-in heads
   var headB64 = {};        // studentId -> data:image/webp;base64,... (teacher-locked cloud sync)
   var heads = {};          // studentId -> HTMLImageElement (memory only)
   var composed = {};       // studentId -> data URL
@@ -101,6 +106,7 @@
   var state = 'idle';      // idle | loading | ready | nostore | error
   var lastError = '';
   var SYNC_ROW_ID = 'class-pupil-avatars';
+  var LOCAL_KEY = 'eaa_pupil_avatars_v1';
 
   function client() { return root.AdventureSupabase && root.AdventureSupabase.client ? root.AdventureSupabase.client : null; }
   function store() { return root.schoolStore || root.SchoolStore || null; }
@@ -124,7 +130,33 @@
     return imgCache[url];
   }
 
-  // ---------- private teacher-locked cloud sync + private bucket ----------
+  // ---------- built-in heads + localStorage + teacher-locked cloud sync ----------
+  function seedBuiltinDefaults() {
+    var localDoc = null;
+    try { localDoc = JSON.parse(localStorage.getItem(LOCAL_KEY) || 'null'); } catch (e) {}
+    if (localDoc && localDoc.approved) {
+      data.approved = Object.assign({}, localDoc.approved, data.approved);
+    }
+    if (localDoc && localDoc.pending) {
+      data.pending = Object.assign({}, localDoc.pending, data.pending);
+    }
+    BUILTIN_HEADS.forEach(function (sid, i) {
+      if (!data.approved[sid]) {
+        data.approved[sid] = {
+          skin: 'medium',
+          tee: TEES[i % TEES.length],
+          wear: {},
+          head: true,
+          at: '2026-11-10T19:00:00.000Z'
+        };
+      }
+    });
+  }
+  function saveLocal() {
+    try {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify({ approved: data.approved, pending: data.pending, at: new Date().toISOString() }));
+    } catch (e) {}
+  }
   function readSyncRow() {
     var sb = client(); if (!sb) return Promise.resolve(null);
     return sb.from('classes').select('description').eq('id', SYNC_ROW_ID).maybeSingle().then(function (r) {
@@ -133,7 +165,8 @@
     }).catch(function () { return null; });
   }
   function writeSyncRow() {
-    var sb = client(); if (!sb) return Promise.reject(new Error('no-supabase'));
+    saveLocal();
+    var sb = client(); if (!sb) return Promise.resolve();
     var doc = JSON.stringify({ v: 1, at: new Date().toISOString(), approved: data.approved, pending: data.pending, heads: headB64 });
     return sb.from('classes').upsert({
       id: SYNC_ROW_ID,
@@ -143,27 +176,24 @@
       description: doc
     }, { onConflict: 'id' }).then(function (r) {
       if (r.error) throw new Error(r.error.message || 'sync save failed');
-    });
+    }).catch(function () { /* saved in localStorage */ });
   }
   function readJson() {
-    var sb = client(); if (!sb) return Promise.reject(new Error('no-supabase'));
+    var sb = client(); if (!sb) return Promise.resolve({ approved: {}, pending: {} });
     return readSyncRow().then(function (syncDoc) {
       if (syncDoc && (syncDoc.approved || syncDoc.heads)) {
         if (syncDoc.heads) headB64 = Object.assign({}, headB64, syncDoc.heads);
         return syncDoc;
       }
       return sb.storage.from(BUCKET).download('avatars.json').then(function (r) {
-        if (r.error) {
-          var msg = String(r.error.message || r.error.error || r.error);
-          if (/not.?found|does not exist|404|Object not found/i.test(msg)) return { approved: {}, pending: {} };
-          throw new Error(msg);
-        }
+        if (r.error) return { approved: {}, pending: {} };
         return r.data.text().then(function (t) { try { return JSON.parse(t) || {}; } catch (e) { return {}; } });
-      });
+      }).catch(function () { return { approved: {}, pending: {} }; });
     });
   }
   function writeJson() {
-    var sb = client(); if (!sb) return Promise.reject(new Error('no-supabase'));
+    saveLocal();
+    var sb = client(); if (!sb) return Promise.resolve();
     return writeSyncRow().then(function () {
       var blob = new Blob([JSON.stringify({ approved: data.approved, pending: data.pending, at: new Date().toISOString() })], { type: 'application/json' });
       return sb.storage.from(BUCKET).upload('avatars.json', blob, { upsert: true, contentType: 'application/json', cacheControl: '0' }).catch(function () { /* sync row already saved */ });
@@ -173,11 +203,13 @@
     if (headB64[id]) {
       return loadImg(headB64[id]).catch(function () { return null; });
     }
-    var sb = client(); if (!sb) return Promise.resolve(null);
-    return sb.storage.from(BUCKET).download('heads/' + id + '.webp').then(function (r) {
-      if (r.error || !r.data) return null;
-      return loadImg(URL.createObjectURL(r.data)).catch(function () { return null; });
-    }).catch(function () { return null; });
+    return loadImg(BASE + 'heads/' + id + '.webp').catch(function () {
+      var sb = client(); if (!sb) return null;
+      return sb.storage.from(BUCKET).download('heads/' + id + '.webp').then(function (r) {
+        if (r.error || !r.data) return null;
+        return loadImg(URL.createObjectURL(r.data)).catch(function () { return null; });
+      }).catch(function () { return null; });
+    });
   }
   function fetchWear() {
     if (wear) return Promise.resolve(wear);
@@ -186,12 +218,13 @@
 
   function load() {
     if (state === 'loading') return Promise.resolve();
-    if (!client()) { state = 'nostore'; lastError = 'Not signed in to the cloud.'; return fetchWear(); }
     state = 'loading';
-    return Promise.all([readJson(), fetchWear()]).then(function (res) {
+    return Promise.all([readJson().catch(function () { return {}; }), fetchWear()]).then(function (res) {
       var d = res[0] || {};
       data = { approved: d.approved || {}, pending: d.pending || {} };
+      seedBuiltinDefaults();
       var ids = Object.keys(data.approved).concat(Object.keys(data.pending));
+      BUILTIN_HEADS.forEach(function (sid) { if (ids.indexOf(sid) < 0) ids.push(sid); });
       return Promise.all(ids.map(function (id) {
         return heads[id] ? null : fetchHead(id).then(function (im) { if (im) heads[id] = im; });
       }));
@@ -202,7 +235,8 @@
     }).then(function () { state = 'ready'; if (on()) rerender(); })
       .catch(function (e) {
         lastError = String(e && e.message || e);
-        state = /bucket|not.?found|policy|row-level|unauthori|403|400/i.test(lastError) ? 'nostore' : 'error';
+        state = 'ready';
+        if (on()) rerender();
       });
   }
 
@@ -462,7 +496,7 @@
     var el = document.getElementById('pa-prev'); if (!el) return;
     var id = ui.pick;
     var c = ui.choice || { skin: 'medium', tee: TEES[6], wear: {} };
-    var headP = id ? Promise.resolve(heads[id] || null) : (ui.tab === 'wardrobe' ? loadImg(BASE + 'head_demo.webp').catch(function () { return null; }) : Promise.resolve(null));
+    var headP = id ? (heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { if (im) heads[id] = im; return im; })) : (ui.tab === 'wardrobe' ? loadImg(BASE + 'head_demo.webp').catch(function () { return null; }) : Promise.resolve(null));
     headP.then(function (hIm) {
       return compose(c, hIm, id ? equippedOf(id) : {});
     }).then(function (u) {
