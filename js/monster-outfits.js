@@ -7,8 +7,10 @@
 
   /* shared pieces ------------------------------------------------------- */
   function base(id, k, top, bot, c, w, light, dark, line) {
-    var neck = 'M ' + r(c - w) + ' ' + r(top + 3) + ' Q ' + r(c - 26) + ' ' + r(top - 2) + ' ' + r(c - 13) + ' ' + r(top) +
-      ' Q ' + c + ' ' + r(top + 6) + ' ' + r(c + 13) + ' ' + r(top) + ' Q ' + r(c + 26) + ' ' + r(top - 2) + ' ' + r(c + w) + ' ' + r(top + 3);
+    /* the outfit wraps up the sides of the body to the shoulders (clear of the eyes and cheeks), like a real jacket */
+    var sh = top - 13;
+    var neck = 'M ' + r(c - w) + ' ' + r(sh) + ' L ' + r(c - 35) + ' ' + r(sh) + ' Q ' + r(c - 31) + ' ' + r(top - 1) + ' ' + r(c - 15) + ' ' + r(top) +
+      ' Q ' + c + ' ' + r(top + 6) + ' ' + r(c + 15) + ' ' + r(top) + ' Q ' + r(c + 31) + ' ' + r(top - 1) + ' ' + r(c + 35) + ' ' + r(sh) + ' L ' + r(c + w) + ' ' + r(sh);
     var body = neck + ' L ' + r(c + w) + ' ' + r(bot + 4) + ' L ' + r(c - w) + ' ' + r(bot + 4) + ' Z';
     return {
       defs: '<linearGradient id="mo-' + id + '-v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + light + '"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>' +
@@ -74,8 +76,8 @@
         sc += '<path d="M ' + r(x - 3) + ' ' + r(y) + ' Q ' + r(x) + ' ' + r(y + 4) + ' ' + r(x + 3) + ' ' + r(y) + '" fill="none" stroke="#14532d" stroke-opacity=".7" stroke-width=".9"/>';
       return wrap(b, sc +
         '<path d="' + b.neck + '" fill="none" stroke="#facc15" stroke-width="2.4" transform="translate(0 1)"/>' +
-        '<path d="M ' + r(c - 30) + ' ' + r(top + 2) + ' q -8 -6 -12 2 q 6 0 12 5 Z" fill="#facc15" stroke="#a16207" stroke-width=".8"/>' +
-        '<path d="M ' + r(c + 30) + ' ' + r(top + 2) + ' q 8 -6 12 2 q -6 0 -12 5 Z" fill="#facc15" stroke="#a16207" stroke-width=".8"/>' +
+        '<path d="M ' + r(c - 34) + ' ' + r(top - 11) + ' q -8 -6 -12 2 q 6 0 12 5 Z" fill="#facc15" stroke="#a16207" stroke-width=".8"/>' +
+        '<path d="M ' + r(c + 34) + ' ' + r(top - 11) + ' q 8 -6 12 2 q -6 0 -12 5 Z" fill="#facc15" stroke="#a16207" stroke-width=".8"/>' +
         band(c, w, bot - 1, 2.4, '#facc15'));
     },
     'clothing-knight-armor': function (c, top, bot, w, H) {
@@ -83,8 +85,8 @@
       return wrap(b,
         '<path d="M ' + r(c - 18) + ' ' + r(top + H * .4) + ' Q ' + c + ' ' + r(top + H * .55) + ' ' + r(c + 18) + ' ' + r(top + H * .4) + '" fill="none" stroke="#64748b" stroke-width="1.2"/>' +
         '<path d="M ' + r(c - 18) + ' ' + r(top + H * .75) + ' Q ' + c + ' ' + r(top + H * .9) + ' ' + r(c + 18) + ' ' + r(top + H * .75) + '" fill="none" stroke="#64748b" stroke-width="1.2"/>' +
-        '<ellipse cx="' + r(c - w + 8) + '" cy="' + r(top + 4) + '" rx="10" ry="6" fill="#2563eb" stroke="#1e3a8a" stroke-width="1.2"/>' +
-        '<ellipse cx="' + r(c + w - 8) + '" cy="' + r(top + 4) + '" rx="10" ry="6" fill="#2563eb" stroke="#1e3a8a" stroke-width="1.2"/>' +
+        '<ellipse cx="' + r(c - w + 8) + '" cy="' + r(top - 8) + '" rx="9" ry="6" fill="#2563eb" stroke="#1e3a8a" stroke-width="1.2"/>' +
+        '<ellipse cx="' + r(c + w - 8) + '" cy="' + r(top - 8) + '" rx="9" ry="6" fill="#2563eb" stroke="#1e3a8a" stroke-width="1.2"/>' +
         '<polygon points="' + c + ',' + r(top + H * .3) + ' ' + r(c + 5) + ',' + r(top + H * .55) + ' ' + c + ',' + r(top + H * .8) + ' ' + r(c - 5) + ',' + r(top + H * .55) + '" fill="#3b82f6" stroke="#facc15" stroke-width="1.4"/>' +
         dot(c - 1.5, top + H * .45, 1, '#e0f2fe'));
     },
@@ -110,8 +112,8 @@
       return wrap(b,
         '<path d="M ' + r(c - 30) + ' ' + r(top) + ' L ' + r(c + 30) + ' ' + r(bot + 2) + '" stroke="#facc15" stroke-width="8"/><path d="M ' + r(c - 30) + ' ' + r(top) + ' L ' + r(c + 30) + ' ' + r(bot + 2) + '" stroke="#dc2626" stroke-width="5.6"/>' +
         dot(c, top + H * .35, 1.6, '#facc15') + dot(c, top + H * .6, 1.6, '#facc15') + dot(c, top + H * .85, 1.6, '#facc15') +
-        '<ellipse cx="' + r(c - w + 9) + '" cy="' + r(top + 3) + '" rx="10" ry="4.6" fill="#facc15" stroke="#a16207" stroke-width="1"/>' +
-        '<ellipse cx="' + r(c + w - 9) + '" cy="' + r(top + 3) + '" rx="10" ry="4.6" fill="#facc15" stroke="#a16207" stroke-width="1"/>' +
+        '<ellipse cx="' + r(c - w + 9) + '" cy="' + r(top - 10) + '" rx="9" ry="4.4" fill="#facc15" stroke="#a16207" stroke-width="1"/>' +
+        '<ellipse cx="' + r(c + w - 9) + '" cy="' + r(top - 10) + '" rx="9" ry="4.4" fill="#facc15" stroke="#a16207" stroke-width="1"/>' +
         '<path d="' + b.neck + '" fill="none" stroke="#facc15" stroke-width="1.6" transform="translate(0 1)"/>');
     },
     'clothing-royal-robe': function (c, top, bot, w, H) {
@@ -151,8 +153,8 @@
     'clothing-vest': function (c, top, bot, w, H) {
       var b = base('vest', 0, top, bot, c, w, '#b45309', '#78350f', '#451a03');
       return '<defs>' + b.defs + '</defs><g filter="url(#mf-shadow)">' +
-        '<path d="M ' + r(c - w) + ' ' + r(top + 3) + ' Q ' + r(c - 26) + ' ' + r(top - 2) + ' ' + r(c - 12) + ' ' + r(top) + ' L ' + r(c - 6) + ' ' + r(bot + 4) + ' L ' + r(c - w) + ' ' + r(bot + 4) + ' Z" fill="url(#mo-vest-v)" stroke="#451a03" stroke-width="1.4"/>' +
-        '<path d="M ' + r(c + w) + ' ' + r(top + 3) + ' Q ' + r(c + 26) + ' ' + r(top - 2) + ' ' + r(c + 12) + ' ' + r(top) + ' L ' + r(c + 6) + ' ' + r(bot + 4) + ' L ' + r(c + w) + ' ' + r(bot + 4) + ' Z" fill="url(#mo-vest-v)" stroke="#451a03" stroke-width="1.4"/>' +
+        '<path d="M ' + r(c - w) + ' ' + r(top - 13) + ' L ' + r(c - 35) + ' ' + r(top - 13) + ' Q ' + r(c - 31) + ' ' + r(top - 1) + ' ' + r(c - 12) + ' ' + r(top) + ' L ' + r(c - 6) + ' ' + r(bot + 4) + ' L ' + r(c - w) + ' ' + r(bot + 4) + ' Z" fill="url(#mo-vest-v)" stroke="#451a03" stroke-width="1.4"/>' +
+        '<path d="M ' + r(c + w) + ' ' + r(top - 13) + ' L ' + r(c + 35) + ' ' + r(top - 13) + ' Q ' + r(c + 31) + ' ' + r(top - 1) + ' ' + r(c + 12) + ' ' + r(top) + ' L ' + r(c + 6) + ' ' + r(bot + 4) + ' L ' + r(c + w) + ' ' + r(bot + 4) + ' Z" fill="url(#mo-vest-v)" stroke="#451a03" stroke-width="1.4"/>' +
         '<rect x="' + r(c - 22) + '" y="' + r(top + H * .55) + '" width="11" height="' + r(H * .32) + '" rx="1.4" fill="#92400e" stroke="#451a03" stroke-width="1"/>' +
         '<rect x="' + r(c + 11) + '" y="' + r(top + H * .55) + '" width="11" height="' + r(H * .32) + '" rx="1.4" fill="#92400e" stroke="#451a03" stroke-width="1"/>' +
         dot(c - 8, top + H * .4, 1.4, '#fbbf24') + dot(c - 7.6, top + H * .75, 1.4, '#fbbf24') + '</g>';
@@ -177,15 +179,27 @@
       var b = base('csknight', 0, top, bot, c, w, '#f8fafc', '#a8b3c4', '#475569');
       return wrap(b,
         '<path d="M ' + r(c - 18) + ' ' + r(top + H * .82) + ' Q ' + c + ' ' + r(top + H * .98) + ' ' + r(c + 18) + ' ' + r(top + H * .82) + '" fill="none" stroke="#64748b" stroke-width="1.2"/>' +
-        '<ellipse cx="' + r(c - w + 8) + '" cy="' + r(top + 4) + '" rx="10" ry="6" fill="#cbd5e1" stroke="#475569" stroke-width="1.2"/>' +
-        '<ellipse cx="' + r(c + w - 8) + '" cy="' + r(top + 4) + '" rx="10" ry="6" fill="#cbd5e1" stroke="#475569" stroke-width="1.2"/>' +
+        '<ellipse cx="' + r(c - w + 8) + '" cy="' + r(top - 8) + '" rx="9" ry="6" fill="#cbd5e1" stroke="#475569" stroke-width="1.2"/>' +
+        '<ellipse cx="' + r(c + w - 8) + '" cy="' + r(top - 8) + '" rx="9" ry="6" fill="#cbd5e1" stroke="#475569" stroke-width="1.2"/>' +
         '<rect x="' + r(c - 1.8) + '" y="' + r(top + H * .22) + '" width="3.6" height="' + r(H * .62) + '" rx="1" fill="#facc15" stroke="#a16207" stroke-width=".7"/>' +
         '<rect x="' + r(c - 7) + '" y="' + r(top + H * .38) + '" width="14" height="3.4" rx="1" fill="#facc15" stroke="#a16207" stroke-width=".7"/>');
     }
   };
 
+  /* sleeve colours: [arm, outline, cuff, thin line on the cuff]. Vests, robes without sleeves and armour plates keep the bare arm. */
+  var SLEEVES = {
+    'clothing-hoodie': ['#60a5fa', '#1e40af', '#93c5fd'], 'clothing-winter': ['#bae6fd', '#0284c7', '#ffffff'],
+    'clothing-travel-coat': ['#4d7c0f', '#1a2e05', '#365314'], 'clothing-school-jacket': ['#f8fafc', '#475569', '#1e3a8a', '#f8fafc'],
+    'clothing-dragon-armor': ['#22c55e', '#14532d', '#facc15'], 'clothing-knight-armor': ['#cbd5e1', '#475569', '#2563eb'],
+    'clothing-magic-robe': ['#a78bfa', '#6d28d9', '#facc15'], 'clothing-scholar': ['#1e3a8a', '#0b1437', '#f8fafc'],
+    'clothing-royal': ['#2563eb', '#172554', '#facc15'], 'clothing-royal-robe': ['#b91c1c', '#450a0a', '#f8fafc'],
+    'clothing-robe': ['#1e293b', '#020617', '#475569'], 'clothing-hero': ['#dc2626', '#7f1d1d', '#facc15'],
+    'clothing-space': ['#f1f5f9', '#64748b', '#22d3ee'], 'clothing-adv-jacket': ['#9a3412', '#431407', '#fef3c7'],
+    'cs-trench': ['#c8963f', '#713f12', '#a16207'], 'cs-knight-armor': ['#cbd5e1', '#475569', '#facc15']
+  };
   root.MonsterOutfits = {
     ids: Object.keys(O),
+    sleeve: function (id) { var v = SLEEVES[String(id || '').toLowerCase()]; return v ? { fill: v[0], line: v[1], cuff: v[2], cuffLine: v[3] || '' } : null; },
     has: function (id) { return !!O[String(id || '').toLowerCase()]; },
     draw: function (id, g) {
       var f = O[String(id || '').toLowerCase()]; if (!f) return '';
