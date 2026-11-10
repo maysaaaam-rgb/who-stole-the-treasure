@@ -1,0 +1,20 @@
+{
+  "body": [
+    "clothing-hoodie",
+    "clothing-school-jacket",
+    "clothing-winter",
+    "clothing-robe",
+    "clothing-space",
+    "clothing-hero",
+    "clothing-knight-armor",
+    "cs-sport-shirt"
+  ],
+  "head": [
+    "hat-crown",
+    "hat-wizard",
+    "cs-chef-hat",
+    "cs-pirate-hat",
+    "cs-beanie",
+    "glasses-round"
+  ]
+}

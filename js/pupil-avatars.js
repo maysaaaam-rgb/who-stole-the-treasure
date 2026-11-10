@@ -133,6 +133,7 @@
   }
 
   function compose(choice, headImg, eq) {
+    return fetchWear().then(function () {
     choice = choice || {};
     var tone = TONES.some(function (t) { return t.id === choice.skin; }) ? choice.skin : 'medium';
     var L = wearLayers(eq || {});
@@ -153,6 +154,7 @@
       else drawBlankHead(ctx, hx, hy);
       L.head.forEach(function () { var im = ims[k++]; if (im) ctx.drawImage(im, hx, hy, HEAD, HEAD); });
       return c.toDataURL('image/webp', 0.9);
+    });
     });
   }
   function drawBlankHead(ctx, hx, hy) {   // waiting for the cartoon head: a friendly grey head shape
