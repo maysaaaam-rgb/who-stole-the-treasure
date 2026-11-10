@@ -518,7 +518,7 @@
         const rx = g.bW;
         const ry = (g.botY - g.topY) / 2;
         const parts = renderCreatureParts(stage, palette, colorKey, cX, g, equipped);
-        const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
+        const clothingMarkup = (renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage) + strapsFor(stage, equipped));
         baseBodyMarkup = `${parts.back}${parts.feet}${parts.torso}${parts.front}${clothingMarkup}${parts.arms || ''}`.trim();
       }
     } catch (e) {
@@ -852,7 +852,7 @@
     let stageArmsMarkup = '';
     let clothingMarkupForStage = '';
     if (stage !== 'egg' && stage !== 'cracking_egg') {
-      try { clothingMarkupForStage = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage) || ''; } catch (e) { clothingMarkupForStage = ''; }
+      try { clothingMarkupForStage = (renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage) + strapsFor(stage, equipped)) || ''; } catch (e) { clothingMarkupForStage = ''; }
     }
     if (stage === 'egg') {
       bodySvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggWhole(palette, colorKey)}</svg>`;
@@ -1646,14 +1646,25 @@
     const dx = Math.round((edge + 7 - 68) * 10) / 10, dy = Math.round((g.cheekY - 2 - 106) * 10) / 10;
     return `<g transform="translate(${dx} ${dy})">${inner}</g>`;
   }
+  /* 10 Nov 2026: straps over the shoulders, so pupils can see the pack they bought (it sits behind the body). Colours follow the shop pictures. */
+  const STRAP_COLORS = {
+    'bp-explorer': ['#5c2606', '#92400e', '#facc15'], 'backpack-explorer': ['#5c2606', '#92400e', '#facc15'],
+    'bp-book': ['#1e3a8a', '#2563eb', '#facc15'], 'backpack-book': ['#1e3a8a', '#2563eb', '#facc15'],
+    'bp-mini-wings': ['#a16207', '#facc15', '#ffffff'], 'cs-robot-pack': ['#78350f', '#b45309', '#94a3b8'],
+    'cs-scuba-tank': ['#111827', '#374151', '#facc15'], 'cs-jetpack': ['#7f1d1d', '#dc2626', '#cbd5e1']
+  };
+  function strapsFor(stage, equipped) { try { return renderBackpackFrontStraps(stage, equipped && equipped.backpack) || ''; } catch (e) { return ''; } }
   function renderBackpackFrontStraps(stage, backpackId) {
-    if (stage === 'egg' || stage === 'cracking_egg' || !backpackId || backpackId === 'none' || isSatchelId(backpackId) || String(backpackId).indexOf('cs-') === 0 || backpackId === 'bp-mini-wings') return '';
-    if (['bp-explorer', 'backpack-explorer', 'bp-book', 'backpack-book'].indexOf(backpackId) === -1) return '';
-    const g = getStageGeometry(stage), col = backpackId.indexOf('book') !== -1 ? '#1d4ed8' : '#78350f', y0 = g.cheekY + 4, y1 = g.pawY - 8;
-    return `<g class="monster-backpack-straps" opacity="0.95">
-      <path d="M ${100 - g.cW * 0.86} ${y0} Q ${100 - g.cW * 0.72} ${(y0 + y1) / 2} ${100 - g.cW * 0.66} ${y1}" stroke="${col}" stroke-width="4" fill="none" stroke-linecap="round" />
-      <path d="M ${100 + g.cW * 0.86} ${y0} Q ${100 + g.cW * 0.72} ${(y0 + y1) / 2} ${100 + g.cW * 0.66} ${y1}" stroke="${col}" stroke-width="4" fill="none" stroke-linecap="round" />
-    </g>`;
+    if (stage === 'egg' || stage === 'cracking_egg' || !backpackId || backpackId === 'none' || isSatchelId(backpackId)) return '';
+    const col = STRAP_COLORS[backpackId]; if (!col) return '';
+    const g = getStageGeometry(stage), y0 = (g.clothTop != null ? g.clothTop : g.eyeY + 17) - 1, y1 = g.botY + 1;
+    const one = (sgn) => {
+      const x0 = 100 + sgn * g.bW * 0.62, xm = 100 + sgn * g.bW * 0.6, x1 = 100 + sgn * g.bW * 0.54;
+      const d = `M ${x0} ${y0} Q ${xm} ${(y0 + y1) / 2} ${x1} ${y1}`, by = y0 + (y1 - y0) * 0.5, bx = 100 + sgn * g.bW * 0.6;
+      return `<path d="${d}" stroke="${col[0]}" stroke-width="5.4" fill="none" stroke-linecap="round" /><path d="${d}" stroke="${col[1]}" stroke-width="3.2" fill="none" stroke-linecap="round" />` +
+        `<rect x="${bx - 3.2}" y="${by - 2.4}" width="6.4" height="4.8" rx="1.2" fill="none" stroke="${col[2]}" stroke-width="1.5" />`;
+    };
+    return `<g class="monster-backpack-straps" filter="url(#mf-shadow)">${one(-1)}${one(1)}</g>`;
   }
   function renderSatchelFront(stage, backpackId) {
     if (stage === 'egg' || stage === 'cracking_egg' || !isSatchelId(backpackId)) return '';
@@ -2161,7 +2172,7 @@
       back: crest.back,
       feet: renderGroundedFeet(palette, colorKey, cX, g),
       torso: renderChibiTorso(stage, palette, colorKey, cX, g, equipped),
-      arms: renderChibiArms(stage, palette, colorKey, cX, g),
+      arms: renderChibiArms(stage, palette, colorKey, cX, g, equipped),
       front: crest.front
     };
   }
@@ -2413,7 +2424,10 @@
   }
 
   // --- FRONT ARMS / PAWS (rendered over clothing so outfits never swallow the monster's hands) ---
-  function renderChibiArms(stage, palette, colorKey, cX, g) {
+  function renderChibiArms(stage, palette, colorKey, cX, g, equipped) {
+    /* 10 Nov 2026: an outfit with sleeves colours the arm, keeps a furry paw and adds a cuff, so the monster really wears it */
+    let sl = null;
+    try { sl = (equipped && equipped.clothing && typeof window !== 'undefined' && window.MonsterOutfits && window.MonsterOutfits.sleeve) ? window.MonsterOutfits.sleeve(equipped.clothing) : null; } catch (e) { sl = null; }
     const cW = g.cW;
     const baby = stage === 'baby';
     const k = baby ? 0.85 : 1;            // baby arms are shorter and stubbier
@@ -2425,7 +2439,10 @@
         <path d="M ${sx} ${g.pawY - 13 * k} C ${sx + sg * 11 * k} ${g.pawY - 9 * k} ${hx + sg * 7 * k} ${hy - 4 * k} ${hx + sg * 5 * k} ${hy + 3 * k}
                  C ${hx + sg * 2 * k} ${hy + 8 * k} ${hx - sg * 5 * k} ${hy + 7 * k} ${hx - sg * 5 * k} ${hy + 2 * k}
                  C ${hx - sg * 5 * k} ${hy - 6 * k} ${sx + sg * 1 * k} ${g.pawY - 3 * k} ${sx} ${g.pawY - 13 * k} Z"
-              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.5" stroke-linejoin="round" />
+              fill="${sl ? sl.fill : `url(#plush-fur-${colorKey})`}" stroke="${sl ? sl.line : palette.primaryDark}" stroke-width="2.5" stroke-linejoin="round" />
+        ${sl ? `<ellipse cx="${hx - sg * 0.4}" cy="${hy + 2.2 * k}" rx="${5.6 * k}" ry="${5.2 * k}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="1.6" />
+        <path d="M ${hx - sg * 6.2 * k} ${hy - 1.6 * k} Q ${hx} ${hy - 4.6 * k} ${hx + sg * 6.4 * k} ${hy - 0.4 * k}" stroke="${sl.cuff}" stroke-width="${3.2 * k}" fill="none" stroke-linecap="round" />
+        ${sl.cuffLine ? `<path d="M ${hx - sg * 6.2 * k} ${hy - 1.6 * k} Q ${hx} ${hy - 4.6 * k} ${hx + sg * 6.4 * k} ${hy - 0.4 * k}" stroke="${sl.cuffLine}" stroke-width="1" fill="none" stroke-linecap="round" />` : ''}` : ''}
         ${toes}
         <ellipse cx="${hx - sg * 1.5}" cy="${hy - 1.5 * k}" rx="${2.4 * k}" ry="${3.4 * k}" fill="#ffffff" opacity="0.28" /></g>`;
     };
@@ -2528,7 +2545,7 @@
     const parts = renderCreatureParts(stage, palette, colorKey, cX, g, equipped);
     const feetMarkup = parts.feet, torsoMarkup = parts.torso, armsMarkup = parts.arms || '', crest = { back: parts.back, front: parts.front };
     const overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g);
-    const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
+    const clothingMarkup = (renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage) + strapsFor(stage, equipped));
     const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
 
     return `
@@ -2575,6 +2592,12 @@
       const clipId = 'eaa-torso-clip-' + String(stage).replace(/[^a-z0-9]/gi, '');
       const chin = g.creature === 'dragon' ? `<clipPath id="${clipId}-chin"><rect x="0" y="${g.headCY + g.headRY - 1}" width="200" height="200" /></clipPath>` : '';
       const clip = (inner) => `<clipPath id="${clipId}"><path d="${bodyOutlinePath(g, cX)}" /></clipPath>${chin ? `${chin}<g clip-path="url(#${clipId}-chin)">` : ''}<g clip-path="url(#${clipId})">${inner}</g>${chin ? '</g>' : ''}`;
+      /* 10 Nov 2026: outfits redrawn to match their shop pictures (js/monster-outfits.js) */
+      if (typeof window !== 'undefined' && window.MonsterOutfits && window.MonsterOutfits.has(id0)) {
+        const topO = g.clothTop != null ? g.clothTop : (g.eyeY + 17);
+        const drawn = window.MonsterOutfits.draw(id0, { c: cX, top: topO, bot: g.botY + 2, w: (g.bW || 44) + 6 });
+        if (drawn) return clip(drawn);
+      }
       if (id0 === 'clothing-scarf') {
         const topClothY = g.clothTop != null ? g.clothTop : (g.eyeY + 16);
         return `<g transform="translate(0 ${Math.round(topClothY - 108)})">${raw}</g>`;
