@@ -16,7 +16,7 @@
   var BUCKET = 'pupil-avatars';
   var LOOK_KEY = 'eaa_board_look';
   var BASE = 'assets/avatars/';
-  var ASSET_V = '?v=18';
+  var ASSET_V = '?v=20';
   var TONES = [
     { id: 'auto', label: 'Match Face ✨' },
     { id: 'light', label: 'Light' }, { id: 'medium', label: 'Medium' },
@@ -86,6 +86,11 @@
     ]},
     { key: 'neck', label: '🏅 Necklaces & Medals', items: [
       'neck-star', 'neck-badge', 'neck-medal', 'neck-pendant', 'cs-medal'
+    ]},
+    { key: 'aura', label: '✨ Auras', items: [
+      'aura-sparkle', 'aura-star', 'aura-blossom', 'aura-flame', 'aura-ice', 'cs-aura-hearts', 'cs-bubbles', 'cs-snowflakes',
+      'cs-pumpkin-aura', 'cs-ghost-aura', 'aura-rainbow', 'aura-lightning', 'cs-aura-fire', 'cs-lantern',
+      'aura-cosmic', 'aura-dragon', 'aura-royal', 'cs-my-aurora'
     ]},
     { key: 'accessory', label: '🪄 Held & Buddies', items: [
       'cs-teddy', 'acc-compass', 'acc-wand', 'acc-book', 'cs-magnifier',
@@ -179,8 +184,19 @@
     'cs-my-phoenix-wings': ['wings-dragon', 'wings-celestial']
   };
 
+  // Aura pictures (some monster auras had no clean picture: they use the closest glow)
+  var AURA_ART = {
+    'cs-snowflakes': 'aura-ice', 'cs-aura-fire': 'aura-flame', 'cs-my-aurora': 'aura-cosmic', 'cs-lantern': 'aura-star',
+    'cs-pumpkin-aura': 'aura-flame', 'cs-ghost-aura': 'aura-sparkle'
+  };
+  function auraUrl(id) { return id ? (BASE + 'aura/' + (AURA_ART[id] || id) + '.webp' + ASSET_V) : ''; }
+  // Buddies that are not in the pet list: the Sky Dragon creature that 16 pupils bought walks next to their avatar
+  var EXTRA_PETS = {
+    'creature-dragon': { id: 'creature-dragon', name: 'Sky Dragon', imageSrc: BASE + 'buddies/sky-dragon.webp', rarity: 'legendary', category: 'pet' }
+  };
   function petById(id) {
     if (!id || id === 'none') return null;
+    if (EXTRA_PETS[id]) return EXTRA_PETS[id];
     try { return (root.MonsterPets && root.MonsterPets.byId) ? root.MonsterPets.byId(id) : null; } catch (e) { return null; }
   }
   function petImageUrl(id, pose) {
@@ -198,8 +214,8 @@
   }
   function pickerCategories(studentId) {
     var pets = (root.MonsterPets && Array.isArray(root.MonsterPets.items)) ? root.MonsterPets.items : [];
-    var visiblePets = pets.filter(function (p) {
-      return !p.notForSale || (studentId && studentOwnsItem(studentId, p.id));
+    var visiblePets = pets.concat(Object.keys(EXTRA_PETS).map(function (k) { return EXTRA_PETS[k]; })).filter(function (p) {
+      return !p.notForSale || (studentId && studentOwnsItem(studentId, p.id));   // pets no longer sold still show for pupils who have them
     });
     if (!visiblePets.length) return CATALOG;
     return CATALOG.concat([{
@@ -554,6 +570,7 @@
       if (SLOT_BY_ITEM[wId] === 'backpack') out.backpack = wId;
     }
     if (rawEq.pet && rawEq.pet !== 'none') out.pet = rawEq.pet;
+    if (!out.pet && rawEq.creature && EXTRA_PETS[rawEq.creature]) out.pet = rawEq.creature;
     if (rawEq.aura && rawEq.aura !== 'none') out.aura = rawEq.aura;
     return out;
   }
@@ -609,6 +626,17 @@
   }
 
   // ---------- Teacher Earned-Mode vs Free Dress-Up lock helper ----------
+  var LEVEL_BY_RARITY = { common: 2, rare: 3, epic: 5, legendary: 6 };
+  function pupilLevel(studentId) {
+    var st = store(), lvl = 1;
+    if (st && studentId && st.calculateMonsterState) {
+      try {
+        var ms = st.calculateMonsterState(studentId), sRec = studentRecord(studentId);
+        lvl = Number((ms && (ms.currentLevel || ms.level || ms.highestUnlockedLevel)) || (sRec && sRec.level)) || 1;
+      } catch (e) { lvl = 1; }
+    }
+    return lvl;
+  }
   function itemLockInfo(studentId, itemId) {
     if (ui.tab === 'wardrobe' || lockMode() !== 'earned') return { locked: false, label: '' };
     if (!itemId || itemId === 'none' || FREE_STARTER_ITEMS[itemId]) return { locked: false, label: '' };
@@ -621,38 +649,13 @@
     if (pObj) {
       return { locked: true, label: '🪙 Shop' };
     }
-    var st = store();
-    var pupilLvl = 1;
-    var checkIds = [itemId].concat(AVATAR_TO_MONSTER_EQUIV[itemId] || []);
-    if (st && studentId && st.calculateMonsterState) {
-      try {
-        var ms = st.calculateMonsterState(studentId);
-        var sRec = studentRecord(studentId);
-        pupilLvl = Number((ms && (ms.currentLevel || ms.level || ms.highestUnlockedLevel)) || (sRec && sRec.level)) || 1;
-        if (ms && ms.unlockedItemIds && typeof ms.unlockedItemIds.has === 'function') {
-          if (checkIds.some(function (cid) { return ms.unlockedItemIds.has(cid); })) {
-            return { locked: false, label: '' };
-          }
-        }
-      } catch (e) { pupilLvl = 1; }
-    }
-    // Check Monster Studio level items (unlockRequirement.level or unlockLevel)
-    if (st && st.getMonsterItems) {
-      try {
-        var mItems = st.getMonsterItems() || [];
-        for (var i = 0; i < mItems.length; i++) {
-          if (checkIds.indexOf(mItems[i].id) >= 0) {
-            if (mItems[i].unlockType === 'store') return { locked: true, label: '🪙 Shop' };
-            var req = Number((mItems[i].unlockRequirement && mItems[i].unlockRequirement.level) || mItems[i].unlockLevel) || 1;
-            if (pupilLvl >= req) return { locked: false, label: '' };
-            return { locked: true, label: '🔒 Lv ' + req };
-          }
-        }
-      } catch (e3) {}
-    }
-    var fallbackReq = itemId.indexOf('cs-my-') === 0 ? 6 : (itemId.indexOf('cs-') === 0 ? 4 : 3);
-    if (pupilLvl >= fallbackReq) return { locked: false, label: '' };
-    return { locked: true, label: itemId.indexOf('cs-') === 0 ? ('🪙 Shop · Lv ' + fallbackReq) : ('🔒 Lv ' + fallbackReq) };
+    // Levels (12 Nov 2026): Everyday items open at level 2, Cool at 3, Epic at 5, Legendary at 6.
+    // Mythic items are shop / box only. Anything locked can also be bought early in the Shop.
+    var req = LEVEL_BY_RARITY[rarityOf(itemId)];
+    if (!req) return { locked: true, label: '🪙 Shop' };
+    var lvl = pupilLevel(studentId);
+    if (lvl >= req) return { locked: false, label: '' };
+    return { locked: true, label: '🔒 Lv ' + req };
   }
 
   // ---------- seamless skin-tone matching & 3D neck integration ----------
@@ -840,6 +843,51 @@
     g.putImageData(idat, 0, 495);
     gradedLegCache[key] = c;
     return c;
+  }
+
+  // Hands for Wave / Cheer: most drawn outfits stop at the wrist, so the pupil's own hands are drawn back on top.
+  // Boxes are in body-picture pixels (512 x 768); the bottom (raised hands) or top (hanging hand) fades over 12 px.
+  var HAND_BOXES = {
+    wave:  [{ x0: 355, x1: 505, y0: 36, y1: 150, fade: 'bottom' }, { x0: 76, x1: 172, y0: 345, y1: 472, fade: 'top' }],
+    cheer: [{ x0: 8, x1: 158, y0: 36, y1: 150, fade: 'bottom' }, { x0: 354, x1: 504, y0: 36, y1: 150, fade: 'bottom' }]
+  };
+  var topHandsCache = {}, handLayerCache = {};
+  /** true when a drawn Wave/Cheer outfit picture already has hands or gloves in it */
+  function topHasHands(img, pose) {
+    if (!img || !HAND_BOXES[pose]) return true;
+    var key = (img.src || '') + '|' + pose;
+    if (key in topHandsCache) return topHandsCache[key];
+    var c = document.createElement('canvas'); c.width = BODY_W; c.height = BODY_H;
+    var g = c.getContext('2d'); g.drawImage(img, 0, 0, BODY_W, BODY_H);
+    var b = HAND_BOXES[pose][0], d = g.getImageData(b.x0, b.y0, b.x1 - b.x0, 60).data, n = 0;
+    for (var i = 3; i < d.length; i += 4) if (d[i] > 120) n++;
+    return (topHandsCache[key] = n > 100);   // fingertip area: gloves or hands drawn in the outfit
+  }
+  /** the pupil's hands only (skin-toned body cut by the skin mask inside the hand boxes) */
+  function handLayer(gradedBody, skinMask, pose, toneKey) {
+    var key = pose + ':' + toneKey;
+    if (handLayerCache[key]) return handLayerCache[key];
+    var c = document.createElement('canvas'); c.width = BODY_W; c.height = BODY_H;
+    var g = c.getContext('2d');
+    g.drawImage(gradedBody, 0, 0, BODY_W, BODY_H);
+    var m = document.createElement('canvas'); m.width = BODY_W; m.height = BODY_H;
+    var mg = m.getContext('2d');
+    if (skinMask) mg.drawImage(skinMask, 0, 0, BODY_W, BODY_H);
+    var md = mg.getImageData(0, 0, BODY_W, BODY_H).data, out = g.getImageData(0, 0, BODY_W, BODY_H), od = out.data;
+    var boxes = HAND_BOXES[pose] || [];
+    for (var y = 0; y < BODY_H; y++) for (var x = 0; x < BODY_W; x++) {
+      var o = (y * BODY_W + x) * 4, keep = 0;
+      for (var k = 0; k < boxes.length; k++) {
+        var bx = boxes[k];
+        if (x >= bx.x0 && x < bx.x1 && y >= bx.y0 && y < bx.y1) {
+          var f = bx.fade === 'bottom' ? Math.min(1, (bx.y1 - y) / 12) : Math.min(1, (y - bx.y0) / 12);
+          keep = Math.max(keep, f);
+        }
+      }
+      od[o + 3] = Math.round(od[o + 3] * keep * (skinMask ? md[o + 3] / 255 : 1));
+    }
+    g.putImageData(out, 0, 0);
+    return (handLayerCache[key] = c);
   }
 
   // Match any exposed V-neck collar, forearm, or hand skin on outfits to the pupil's exact skin tone
@@ -1199,7 +1247,8 @@
           return loadImg(BASE + 'wear/' + id + '.webp' + ASSET_V);
         }))
         .concat(L.head.map(function (id) { return loadImg(BASE + 'wear/' + id + '.webp' + ASSET_V); }))
-        .concat(petUrl ? [loadImg(petUrl + ASSET_V)] : []);
+        .concat(petUrl ? [loadImg(petUrl + ASSET_V)] : [])
+        .concat(mergedEq.aura ? [loadImg(auraUrl(mergedEq.aura))] : []);
 
       return Promise.all(need.map(function (p) { return p.catch(function () { return null; }); })).then(function (ims) {
         var bodyLight = ims[0], skinMask = ims[1], teeMask = ims[2];
@@ -1220,6 +1269,7 @@
         var topsIms = L.tops.map(function () { return ims[k++]; });
         var headIms = L.head.map(function () { return ims[k++]; });
         var petIm = petUrl ? ims[k++] : null;
+        var auraIm = mergedEq.aura ? ims[k++] : null;
 
         var hx = (BODY_W - HEAD) / 2, hy = PAD + NECK_Y - HEAD * CHIN;
         var prep = prepareHead(headImg, L.head);
@@ -1296,8 +1346,8 @@
             return !!topsIms[idx] && !!POSED_TOPS[tid] && !TORSO_ONLY_TOPS[tid];
           });
           if (hasPosedSleeveTop) {
-            bg.clearRect(0, 44, 172, 348);
-            bg.clearRect(BODY_W - 172, 44, 172, 348);
+            bg.clearRect(0, 0, 172, 392);            // from the very top, so no fingertip outline is left floating
+            bg.clearRect(BODY_W - 172, 0, 172, 392);
             bg.clearRect(0, 392, 144, 98);
             bg.clearRect(BODY_W - 144, 392, 144, 98);
           }
@@ -1391,7 +1441,15 @@
           bc.restore();
         });
 
-        cc.drawImage(bodyComp, 0, PAD, BODY_W, BODY_H);
+        // Wave / Cheer outfits drawn without hands: put the pupil's own hands back on top
+        if (pose === 'wave' || pose === 'cheer') {
+          var needHands = L.tops.some(function (tid, idx) {
+            return !!topsIms[idx] && !!POSED_TOPS[tid] && !TORSO_ONLY_TOPS[tid] && !topHasHands(topsIms[idx], pose);
+          });
+          if (needHands) bc.drawImage(handLayer(gradedBody, skinMask, pose, targetRgb.join(',')), 0, 0, BODY_W, BODY_H);
+        }
+        var slim = (genderOf(studentId, choice, headImg) === 'girl') ? 0.93 : 1;
+        cc.drawImage(bodyComp, Math.round(BODY_W * (1 - slim) / 2), PAD, Math.round(BODY_W * slim), BODY_H);
 
         // 4. Draw prepared expressive head + head wearables (with subtle lively tilt anchored at the neck)
         var headTiltRad = 0;
@@ -1420,6 +1478,13 @@
         });
         cc.restore();
 
+        // 4b. Aura: a glow ring behind the head and chest
+        if (auraIm && auraIm.width) {
+          var aS = 500;
+          ctx.save(); ctx.globalAlpha = 0.95;
+          ctx.drawImage(auraIm, Math.round(BODY_W / 2 - aS / 2), Math.round(PAD + 120 - aS / 2), aS, aS);
+          ctx.restore();
+        }
         // 5. Draw glowing 3D cyber-glass arcade pedestal disc underneath the character
         drawArcadePedestal(ctx, BODY_W / 2, PAD + 744, pedestalAccent(choice, studentId, mergedEq));
 
@@ -1539,7 +1604,7 @@
     if (state === 'idle') load();
     if (state === 'ready' && !data.approved[id] && !pendingDefault[id]) {
       pendingDefault[id] = 1;
-      var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || loadImg(DEFAULT_PIC).catch(function () { return null; }); });
+      var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || defaultHeadFor(id); });
       headP.then(function (h) { return compose(defaultChoice(id), h, {}, 'smile', id); })
         .then(function (u) { composedDefault[id] = u; scheduleRerender(); })
         .catch(function () { /* keep the placeholder */ });
@@ -1547,9 +1612,9 @@
     return DEFAULT_PIC;
   }
   /* ---------- for the shop: item facts, try-on and wearing ---------- */
-  function allStoreItemIds() {
+  function allStoreItemIds(studentId) {
     var ids = [];
-    pickerCategories(null).forEach(function (c) { (c.items || []).forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); }); });
+    pickerCategories(studentId || null).forEach(function (c) { (c.items || []).forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); }); });
     return ids;
   }
   function slotOf(id) { return petById(id) ? 'pet' : (SLOT_BY_ITEM[id] || ''); }
@@ -1568,8 +1633,10 @@
   }
   function itemInfo(id) {
     var sl = slotOf(id); if (!sl) return null;
-    var pic = sl === 'pet' ? (petImageUrl(id, 'stand') + ASSET_V) : (BASE + 'wear/' + id + '.webp' + ASSET_V);
-    return { id: id, name: prettyName(id), slot: sl, rarity: rarityOf(id), pic: pic, free: !!FREE_STARTER_ITEMS[id] };
+    var pic = sl === 'pet' ? (petImageUrl(id, 'stand') + ASSET_V) : sl === 'aura' ? auraUrl(id) : (BASE + 'wear/' + id + '.webp' + ASSET_V);
+    var nm = '';
+    if (sl === 'aura') { try { var mi = (store() && store().getMonsterItems ? store().getMonsterItems() : []).filter(function (x) { return x.id === id; })[0]; nm = mi && mi.name; } catch (e) { nm = ''; } }
+    return { id: id, name: nm || prettyName(id), slot: sl, rarity: rarityOf(id), pic: pic, free: !!FREE_STARTER_ITEMS[id] };
   }
   function lookOf(id) {
     var base = data.approved[id] || data.pending[id] || defaultChoice(id);
@@ -1580,7 +1647,7 @@
   function previewWith(id, itemId) {
     var c = lookOf(id), sl = itemId ? slotOf(itemId) : '';
     if (sl) c.wear[sl] = itemId;
-    var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || loadImg(DEFAULT_PIC).catch(function () { return null; }); });
+    var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || defaultHeadFor(id); });
     return fetchWear().then(function () { return headP; }).then(function (h) { return compose(c, h, equippedOf(id), 'smile', id); });
   }
   /** Put an owned item on (or take a slot off) and save it to the board. */
@@ -1662,6 +1729,34 @@
     }[id] || '#d08e66';
   }
 
+  // Girl or boy look: 1) the teacher's choice in Dress up, 2) the first name, 3) for names used by both, long hair
+  // in the pupil's face picture. Common Turkish first names only; real pupil names are never stored in this file.
+  var GIRL_NAMES = ('ada alya aslihan ayca ayse ayla aylin azra bahar bahriye begum belis beren beste betul bugce buglem buse cansu ceren cemre damla defne derya dilara dila duru ebru ece ecem eda ela elif elisa ella elvan esila esma esra eylul feyza gizem gokce gulce gulsen hande hazal hira ilay iclal ilayda ilgin ipek irem irmak kumsal lal lara lina masal melda melek melis melisa melodi meryem mila mina mira miray nehir nil nilda nilsu nisa naz ozge oyku pelin pinar rabia rana sare seda selin sena serra sila simal sude suhan su tuana tugce yagmur yaren yasemin zehra zeynep zumra')
+    .split(' ').reduce(function (o, n) { o[n] = 1; return o; }, {});
+  var BOY_NAMES = ('ahmet ali alp alparslan aras arda ates ayaz baran baris berat berk burak can cinar demir doruk efe egehan emir emre enes eren ertugrul eymen fatih furkan goktug gurur hasan huseyin ibrahim ilker kaan kemal kerem kuzey mehmet melik mert metehan miran mustafa omer onur ozan poyraz salih selim taha tuna ugur umut uras utku yigit yunus yusuf')
+    .split(' ').reduce(function (o, n) { o[n] = 1; return o; }, {});
+  function foldName(s) {
+    return String(s || '').trim().split(/\s+/)[0].toLocaleLowerCase('tr')
+      .replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/i̇/g, 'i').replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u').replace(/[^a-z]/g, '');
+  }
+  function longHair(headImg) {
+    if (!headImg) return false;
+    try { var bh = analyzeHead(headImg).backHair; return !!(bh && (bh.y2Norm - bh.y1Norm) > 0.12); } catch (e) { return false; }
+  }
+  function genderOf(id, choice, headImg) {
+    var c = choice || data.approved[id] || data.pending[id];
+    if (c && (c.gender === 'girl' || c.gender === 'boy')) return c.gender;
+    var st = studentRecord(id), fn = foldName(st && (st.firstName || st.name));
+    if (GIRL_NAMES[fn]) return 'girl';
+    if (BOY_NAMES[fn]) return 'boy';
+    return longHair(headImg || heads[id]) ? 'girl' : 'boy';
+  }
+  var DEFAULT_GIRL_PIC = BASE + 'head_demo_girl.webp' + ASSET_V;
+  function defaultHeadFor(id) {
+    var url = genderOf(id) === 'girl' ? DEFAULT_GIRL_PIC : (BASE + 'head_demo.webp' + ASSET_V);
+    return loadImg(url).catch(function () { return loadImg(BASE + 'head_demo.webp' + ASSET_V).catch(function () { return null; }); });
+  }
+
   function choiceForStudent(id) {
     var base = data.pending[id] || data.approved[id] || {};
     return {
@@ -1669,6 +1764,7 @@
       manualSkin: !!base.manualSkin,
       tee: base.tee || TEES[6],
       stance: base.stance || '',
+      gender: (base.gender === 'girl' || base.gender === 'boy') ? base.gender : '',
       wear: Object.assign({}, base.wear || {})
     };
   }
@@ -1704,9 +1800,13 @@
     var raw = (c && c.stance) || '';
     var eff = effectiveWear(c, ui.pick ? equippedOf(ui.pick) : {});
     var cur = (raw === 'wave' || raw === 'cheer') ? raw : ((raw === 'stand' || raw === 'natural' || raw === 'hip') ? 'stand' : (ui.pick ? resolveDrawnPose(c, ui.pick, 'smile', wearLayers(eff)) : 'stand'));
+    var g = ui.pick ? genderOf(ui.pick, c, heads[ui.pick]) : ((c && c.gender) || 'boy');
     return '<div class="pa-poses" style="margin-top:6px">' + STANCES.map(function (st) {
       return '<button type="button" class="' + (cur === st.id ? 'on' : '') + '" onclick="PupilAvatars._stance(\'' + st.id + '\')">' + st.label + '</button>';
-    }).join('') + '</div>';
+    }).join('') + '</div>' +
+      '<div class="pa-poses" style="margin-top:6px">' + [['girl', '👧 Girl'], ['boy', '👦 Boy']].map(function (x) {
+        return '<button type="button" class="' + (g === x[0] ? 'on' : '') + '" onclick="PupilAvatars._gender(\'' + x[0] + '\')">' + x[1] + '</button>';
+      }).join('') + '</div>';
   }
   function draw() {
     ensureCss();
@@ -1740,8 +1840,8 @@
     var monEq = ui.pick ? avatarEquipFromMonster(equippedOf(ui.pick)) : {};
     var effWear = effectiveWear(c, ui.pick ? equippedOf(ui.pick) : {});
     var curVal = effWear[activeCat.key] || '';
-    var earnedNote = (ui.tab === 'make' && lockMode() === 'earned') ? ' · <small style="color:#fde047">🪙 Earned Mode: level up your monster to unlock more!</small>' : '';
-    var syncNote = ui.pick ? ' · <small style="color:#7dd3fc">👾 Synced with Monster belongings</small>' : '';
+    var earnedNote = (ui.tab === 'make' && lockMode() === 'earned') ? ' · <small style="color:#fde047">🪙 Earned Mode: earn XP or buy items in the Shop to unlock more!</small>' : '';
+    var syncNote = ui.pick ? (monstersHidden() ? '' : ' · <small style="color:#7dd3fc">👾 Synced with Monster belongings</small>') : '';
     return '<div class="pa-step"><b>3. Dress Up (' + cats.reduce(function (n, x) { return n + x.items.length; }, 0) + ' items)' + syncNote + earnedNote + '</b>' +
       '<div class="pa-cats">' + cats.map(function (cat) {
         var hasEq = effWear[cat.key] && effWear[cat.key] !== 'none';
@@ -1756,11 +1856,11 @@
         var lk = itemLockInfo(ui.pick, itemId);
         var isOwned = !lk.locked && ui.pick && studentOwnsItem(ui.pick, itemId);
         var isOnMonster = ui.pick && monEq[activeCat.key] === itemId;
-        var thumbSrc = activeCat.isPet ? (petImageUrl(itemId, 'stand') + ASSET_V) : (BASE + 'wear/' + itemId + '.webp' + ASSET_V);
+        var thumbSrc = activeCat.isPet ? (petImageUrl(itemId, 'stand') + ASSET_V) : activeCat.key === 'aura' ? auraUrl(itemId) : (BASE + 'wear/' + itemId + '.webp' + ASSET_V);
         return '<button class="pa-item ' + (isOn ? 'on ' : '') + (lk.locked ? 'locked' : '') + '" ' +
           (lk.locked ? 'disabled aria-disabled="true"' : 'onclick="PupilAvatars._wear(\'' + activeCat.key + '\',\'' + itemId + '\')"') + '>' +
           (lk.locked ? '<small class="pa-lock">' + esc(lk.label) + '</small>' : (isOwned ? '<small class="pa-own">🎒 Owned</small>' : '')) +
-          (isOnMonster ? '<small class="pa-mon-tag" title="Equipped on Monster">👾</small>' : '') +
+          (isOnMonster && !monstersHidden() ? '<small class="pa-mon-tag" title="Equipped on Monster">👾</small>' : '') +
           '<img src="' + thumbSrc + '" loading="lazy" alt="' + esc(prettyName(itemId)) + '">' +
           '<span>' + esc(prettyName(itemId)) + '</span></button>';
       }).join('') +
@@ -1769,7 +1869,7 @@
   function makeHtml() {
     var s = pupils().filter(function (x) { return x.id === ui.pick; })[0] || studentRecord(ui.pick);
     var c = ui.choice || { skin: 'auto', tee: TEES[6], stance: '', wear: {} };
-    return '<h2>Hello, ' + esc(firstName(s)) + '!</h2><p class="s">Your Monster items and Pet Buddy are already synced! Change anything you like, then tap “Send to my teacher”.</p>' +
+    return '<h2>Hello, ' + esc(firstName(s)) + '!</h2><p class="s">Your items from the Shop and boxes are ready. Change anything you like, then tap “Send to my teacher”.</p>' +
       '<div class="pa-make"><div class="pa-prev"><img id="pa-prev" alt="Your avatar">' + poseBarHtml() + stanceBarHtml(c) + '</div><div>' +
       '<div class="pa-step"><b>1. Skin</b><div class="pa-tones">' + TONES.map(function (t) {
         return '<button class="' + ((c.skin || 'auto') === t.id ? 'on' : '') + '" style="background:' + toneBg(t.id) + ';color:#fff;font:700 1.25rem Fredoka,sans-serif" title="' + t.label + '" aria-label="' + t.label + '" onclick="PupilAvatars._set(\'skin\',\'' + t.id + '\')">' + (t.id === 'auto' ? '✨' : '') + '</button>';
@@ -1814,7 +1914,7 @@
     var el = document.getElementById('pa-prev'); if (!el) return;
     var id = ui.pick;
     var c = ui.choice || { skin: 'auto', tee: TEES[6], wear: {} };
-    var headP = id ? (heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { if (im) heads[id] = im; return im; })) : (ui.tab === 'wardrobe' ? loadImg(BASE + 'head_demo.webp' + ASSET_V).catch(function () { return null; }) : Promise.resolve(null));
+    var headP = id ? (heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { if (im) heads[id] = im; return im || defaultHeadFor(id); })) : (ui.tab === 'wardrobe' ? loadImg(BASE + 'head_demo.webp' + ASSET_V).catch(function () { return null; }) : Promise.resolve(null));
     headP.then(function (hIm) {
       return composeForPose(id, c, hIm, id ? equippedOf(id) : {}, ui.pose || 'smile');
     }).then(function (u) {
@@ -2004,14 +2104,17 @@
   var api = {
     mode: mode, on: on, setMode: setMode, load: load, imgFor: imgFor, has: has, open: open, close: close,
     lockMode: lockMode,
+    genderOf: function (id) { return genderOf(id); },
     pictureFor: pictureFor, itemInfo: itemInfo, storeItemIds: allStoreItemIds, previewWith: previewWith,
     wearItem: wearItem, wearingOf: wearingOf, monstersHidden: monstersHidden,
     // lock check for the shop (ignores which tab the dress-up window was last on)
+    levelFor: function (id) { return LEVEL_BY_RARITY[rarityOf(id)] || 0; },
     lockFor: function (sid, id) { var t = ui.tab; ui.tab = 'make'; try { return itemLockInfo(sid, id); } finally { ui.tab = t; } },
     // test helper: draw one pupil in a chosen stance without saving anything
-    _debugCompose: function (id, stance) {
+    _debugCompose: function (id, stance, itemId) {
       var ch = Object.assign({}, data.approved[id] || {}, { stance: stance || '' });
-      return (heads[id] ? Promise.resolve(heads[id]) : fetchHead(id)).then(function (h) { return compose(ch, h, equippedOf(id), 'smile', id); });
+      if (itemId) { ch.wear = Object.assign({}, ch.wear || {}); ch.wear[slotOf(itemId)] = itemId; }
+      return (heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || defaultHeadFor(id); })).then(function (h) { return compose(ch, h, equippedOf(id), 'smile', id); });
     },
     triggerEmotion: triggerEmotion,
     syncStudent: syncStudent,
@@ -2032,6 +2135,11 @@
     },
     _pose: function (p) {
       ui.pose = p || 'smile';
+      draw();
+    },
+    _gender: function (g) {
+      if (!ui.choice) ui.choice = { skin: 'auto', tee: TEES[6], stance: '', wear: {} };
+      ui.choice.gender = (g === 'girl') ? 'girl' : 'boy';
       draw();
     },
     _stance: function (st) {
@@ -2114,13 +2222,13 @@
     },
     _send: function () {
       var id = ui.pick; if (!id) return;
-      data.pending[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', wear: Object.assign({}, ui.choice.wear || {}), at: new Date().toISOString() };
+      data.pending[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', gender: ui.choice.gender || '', wear: Object.assign({}, ui.choice.wear || {}), at: new Date().toISOString() };
       save().then(function () { try { root.classSoundboard && root.classSoundboard.playTaDa && root.classSoundboard.playTaDa(); } catch (e) { /* ignore */ } toast('Sent! Your teacher will check it.'); }).catch(function () { /* toast shown */ });
       ui.pick = null; draw();
     },
     _saveDirect: function () {
       var id = ui.pick; if (!id || !ui.choice) return;
-      data.approved[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', wear: Object.assign({}, ui.choice.wear || {}), at: new Date().toISOString() };
+      data.approved[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', gender: ui.choice.gender || '', wear: Object.assign({}, ui.choice.wear || {}), at: new Date().toISOString() };
       if (data.pending[id]) { delete data.pending[id]; markRemoved('pending', id); }
       recompose(id).then(function () {
         if (client()) return save();

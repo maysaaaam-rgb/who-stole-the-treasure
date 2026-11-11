@@ -16,7 +16,7 @@
 
   var DEFAULTS = {
     coinsPerXp: 10,
-    itemPrices: { common: 15, rare: 40, epic: 90, legendary: 200, mythic: 500 },
+    itemPrices: { common: 20, rare: 40, epic: 80, legendary: 150, mythic: 250 },
     boxPrices: { BRONZE: 15, WOODEN: 30, GILDED: 80, CELESTIAL: 180 },
     privileges: [
       { id: 'p-cat-sticker',    icon: '🐱', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · KEEP IT!',   name: '1× Funny Cat Meme Sticker (Pick Your Favourite!)', price: 40, weeklyLimit: 2, coinsOnly: true, active: true },
@@ -95,6 +95,10 @@
       c.itemPrices = Object.assign({}, DEFAULTS.itemPrices); c.balanceV2 = 1; c.updatedAt = Date.now();
     }
     if (!c.itemPrices.mythic) c.itemPrices.mythic = DEFAULTS.itemPrices.mythic;
+    if (!c.priceV3) {   // 12 Nov 2026: pupils get about 20 coins a week (8 from the teacher, 12 from XP). Everyday = 1 week, Cool = 2, Epic = 4, Legendary = 7, Mythic = 12.
+      c.itemPrices = { common: 20, rare: 40, epic: 80, legendary: 150, mythic: 250 };
+      c.priceV3 = 1; c.updatedAt = Date.now();
+    }
     if (!c.boardGoals || typeof c.boardGoals !== 'object') c.boardGoals = {};
     if (!c.partyFunds || typeof c.partyFunds !== 'object') c.partyFunds = {};
     if (!c.off || typeof c.off !== 'object') c.off = {};
@@ -386,9 +390,9 @@
   function monstersHidden() { return root.EAA_HIDE_MONSTERS !== false; }
   function avOwnedList(studentId) { var e = cosEntry(studentId); if (!Array.isArray(e.avatar)) e.avatar = []; return e.avatar; }
   function avOwns(studentId, id) { var e = data().cosmetics[studentId]; return !!(e && Array.isArray(e.avatar) && e.avatar.indexOf(id) !== -1); }
-  function avItems() {
+  function avItems(studentId) {
     var P = PA(); if (!P || !P.storeItemIds) return [];
-    return P.storeItemIds().map(function (id) { return P.itemInfo(id); }).filter(function (x) { return x && !x.free && !isOff('cats', 'av-' + x.slot); });
+    return P.storeItemIds(studentId).map(function (id) { return P.itemInfo(id); }).filter(function (x) { return x && !x.free && !isOff('cats', 'av-' + x.slot); });
   }
   /* 'have' = the pupil can wear it already (bought, won, free starter or already on their avatar); 'level' = free at their level */
   function avState(studentId, id) {
@@ -1079,12 +1083,12 @@
     return html;
   }
   var AV_SLOTS = [['all', 'All'], ['clothing', '👕 Tops'], ['legs', '👖 Trousers'], ['shoes', '👟 Shoes'], ['hat', '🎩 Hats'], ['wig', '💇 Wigs'],
-    ['glasses', '🕶️ Glasses'], ['backpack', '🎒 Bags & wings'], ['neck', '🏅 Necklaces'], ['accessory', '🪄 Held'], ['pet', '🐾 Pet buddies']];
+    ['glasses', '🕶️ Glasses'], ['backpack', '🎒 Bags & wings'], ['neck', '🏅 Necklaces'], ['accessory', '🪄 Held'], ['aura', '✨ Auras'], ['pet', '🐾 Pet buddies']];
   var AV_STATE_ORDER = { shop: 0, level: 1, have: 2 };
   function avatarTabHtml(s, bal) {
     var P = PA();
     if (!P || !P.storeItemIds) return '<div style="padding:30px;text-align:center;">The avatar shop is loading…</div>';
-    var items = avItems(), wearing = P.wearingOf ? P.wearingOf(s.id) : {};
+    var items = avItems(s.id), wearing = P.wearingOf ? P.wearingOf(s.id) : {};
     if (avTryId && !items.some(function (x) { return x.id === avTryId; })) avTryId = '';
     var tryX = avTryId ? P.itemInfo(avTryId) : null, tryState = tryX ? avState(s.id, tryX.id) : '';
     var chips = AV_SLOTS.filter(function (c) { return c[0] === 'all' || items.some(function (x) { return x.slot === c[0]; }); }).map(function (c) {
@@ -1098,7 +1102,8 @@
     var grid = shown.map(function (x) {
       var st = avState(s.id, x.id), price = avPrice(x), on = wearing[x.slot] === x.id;
       var tag = st === 'have' ? (on ? '<span class="cs-avtag on">✓ Wearing</span>' : '<span class="cs-avtag">🎒 Yours</span>')
-        : st === 'level' ? '<span class="cs-avtag">🎁 Free for you</span>' : coinPill(price);
+        : st === 'level' ? '<span class="cs-avtag">🎁 Free for you</span>'
+        : coinPill(price) + (P.levelFor && P.levelFor(x.id) && x.slot !== 'pet' ? '<span class="cs-avtag">or free at Lv ' + P.levelFor(x.id) + '</span>' : '');
       return '<button type="button" class="cs-avcard' + (avTryId === x.id ? ' sel' : '') + '" style="--rc:' + (RARITY_COLOR[x.rarity] || '#64748b') + ';" onclick="ClassroomStore.ui.avTry(\'' + esc(x.id) + '\')" title="Try it on">' +
         '<span class="cs-rar">' + esc(RARITY_NAME[x.rarity] || 'Everyday') + '</span>' +
         '<img src="' + esc(avTrimmed[x.pic] || x.pic) + '" alt="" loading="lazy" onload="ClassroomStore.ui.avTrim(this)" onerror="this.style.visibility=\'hidden\'">' +
