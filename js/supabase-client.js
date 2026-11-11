@@ -647,7 +647,7 @@
 
     async getClasses() {
       const client = this._ensureClient();
-      const { data, error } = await client.from('classes').select('*').order('name', { ascending: true });
+      const { data, error } = await client.from('classes').select('*').not('grade', 'in', '(System,Sync)').order('name', { ascending: true });   // hidden sync rows (avatars, faces, stores) are not classes and can be large
       if (error) throw new Error('Supabase getClasses error: ' + error.message);
       return (data || []).map(row => ({
         id: row.id,
