@@ -178,7 +178,7 @@
   }
   var RETIRED_ITEMS = ['cs-gat', 'cs-hanbok', 'cs-lantern'];   // the Chuseok set: no longer sold, pupils who own them keep them
   function canSell(item) {
-    if (RETIRED_ITEMS.indexOf(item && item.id) !== -1) return false;
+    if (RETIRED_ITEMS.indexOf(item && item.id) !== -1 || (item && item.notForSale)) return false;
     if (!inSeason(item)) return false;
     if (SELL_CATEGORIES.indexOf(item.category) === -1) return false;
     var D = root.MonsterDressUp;

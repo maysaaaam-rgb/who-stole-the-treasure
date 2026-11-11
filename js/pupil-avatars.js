@@ -16,7 +16,7 @@
   var BUCKET = 'pupil-avatars';
   var LOOK_KEY = 'eaa_board_look';
   var BASE = 'assets/avatars/';
-  var ASSET_V = '?v=12';
+  var ASSET_V = '?v=14';
   var TONES = [
     { id: 'auto', label: 'Match Face ✨' },
     { id: 'light', label: 'Light' }, { id: 'medium', label: 'Medium' },
@@ -1192,6 +1192,17 @@
     ctx.putImageData(id, 0, 0);
   }
 
+  // lowest row where an outfit still covers both legs (in body-frame pixels), cached per item
+  var LEG_COVER = {};
+  function legCover(id, im) {
+    if (LEG_COVER[id]) return LEG_COVER[id];
+    var c = document.createElement('canvas'); c.width = BODY_W; c.height = BODY_H;
+    var g = c.getContext('2d'); g.drawImage(im, 0, 0, BODY_W, BODY_H);
+    var d = g.getImageData(0, 0, BODY_W, BODY_H).data, y = 700;
+    function row(yy) { var n = 0; for (var x = 180; x < 332; x += 2) if (d[(yy * BODY_W + x) * 4 + 3] > 128) n++; return n; }
+    while (y > 380 && row(y) < 40) y -= 2;
+    LEG_COVER[id] = y; return y;
+  }
   function compose(choice, headImg, eq, poseKind, studentId) {
     return fetchWear().then(function () {
       choice = choice || {};
@@ -1225,6 +1236,10 @@
         var headIms = L.head.map(function () { return ims[k++]; });
 
         var poseSpec = resolvePoseSpec(choice, studentId, poseKind, L);
+        // Clean pose: the body and every item are drawn exactly as the artist drew them (no bending of arms or legs).
+        // The bending engine cut arms at the elbow and doubled hands, so it is off unless RIG_ON is set for testing.
+        var straight = !root.__PA_RIG_ON;
+        if (straight) poseSpec = { torso_tilt: 0, hasDrapedRobe: true, straight: true };
         var neckShift = rotVec(0, NECK_Y - 415.0, poseSpec.torso_tilt || 0.0);
         var neckDx = neckShift[0], neckDy = neckShift[1] - (NECK_Y - 415.0);
 
@@ -1265,10 +1280,16 @@
           bg.save();
           bg.globalCompositeOperation = 'destination-out';
           bg.beginPath();
+          // erase the jeans only as far down as the outfit really covers the legs (a knee-length robe keeps the legs below its hem)
+          var cutTo = 670;
+          if (hasFullSuit && !legsIms.some(Boolean)) {
+            cutTo = 378;
+            L.tops.forEach(function (tid, ix) { if (FULL_BODY_SUITS[tid] && topsIms[ix]) cutTo = Math.max(cutTo, Math.min(670, legCover(tid, topsIms[ix]) - 10)); });
+          }
           bg.moveTo(136, 378);
           bg.quadraticCurveTo(256, 391, 376, 378);
-          bg.lineTo(376, 670);
-          bg.lineTo(136, 670);
+          bg.lineTo(376, cutTo);
+          bg.lineTo(136, cutTo);
           bg.closePath();
           bg.fill();
           bg.restore();
@@ -1358,7 +1379,9 @@
           }
         });
 
-        var posedBodyCanvas = poseCharacterCanvas(torsoSrc, armSrc, rightHandProps, poseSpec);
+        var posedBodyCanvas;
+        if (straight) { rightHandProps.forEach(function (im) { tc.drawImage(im, 0, 0, BODY_W, BODY_H); }); posedBodyCanvas = torsoSrc; }
+        else posedBodyCanvas = poseCharacterCanvas(torsoSrc, armSrc, rightHandProps, poseSpec);
         cc.drawImage(posedBodyCanvas, 0, PAD, BODY_W, BODY_H);
 
         // 5. Draw prepared head + head wearables (following subtle torso posture & playful emotion tilt)
@@ -1587,6 +1610,7 @@
   }
   function stanceBarHtml(c) {
     var cur = (c && c.stance) || 'natural';
+    if (!root.__PA_RIG_ON) return '';   // stance buttons hidden while the clean pose is used
     return '<div class="pa-poses" style="margin-top:6px">' + STANCES.map(function (st) {
       return '<button type="button" class="' + (cur === st.id ? 'on' : '') + '" onclick="PupilAvatars._stance(\'' + st.id + '\')">' + st.label + '</button>';
     }).join('') + '</div>';
