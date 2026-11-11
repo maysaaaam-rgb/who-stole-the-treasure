@@ -605,6 +605,27 @@
   }
   function parseRow(row) { try { return row && row.description ? JSON.parse(row.description) : null; } catch (e) { return null; } }
 
+  // 12 Nov 2026: monsters are hidden. Shop items that have no avatar version (the Sky Dragon creature) are refunded once.
+  // Runs on the teacher's signed-in device right after the cloud copy is read, so it works on the newest data;
+  // the flag in the shared settings stops it from running twice. Coins go back with "Refund: <item>" in the pupil's history.
+  function retiredItem(refId) {
+    var P = PA();
+    if (!P || !P.itemInfo) return false;
+    if (String(refId).indexOf('set-') === 0) return false;
+    return !P.itemInfo(refId);
+  }
+  function refundRetired() {
+    var d = data();
+    if (d.config.refundRetiredV1 || !monstersHidden() || !PA() || !PA().itemInfo) return 0;
+    var n = 0;
+    d.purchases.slice().forEach(function (p) {
+      if (p.kind !== 'item' || p.status !== 'done' || !retiredItem(p.refId)) return;
+      var r = undoPurchase(p.id); if (r && r.success) n++;
+    });
+    d.config.refundRetiredV1 = 1; d.config.refundRetiredCount = n; d.config.updatedAt = Date.now();
+    save();
+    return n;
+  }
   async function cloudPull() {
     var client = cloudClient();
     if (!client || pulling) return false;
@@ -615,6 +636,7 @@
       if (res && res.error) throw res.error;
       var changed = adoptDoc(parseRow(res && res.data));
       if (changed) { store.saveState(); store.notify(); }
+      try { if (refundRetired()) changed = true; } catch (eR) { /* try again next time */ }
       return changed;
     } catch (e) { cloudState = 'error'; return false; }
     finally { pulling = false; }
@@ -1591,7 +1613,7 @@
   root.ClassroomStore = {
     cosmetics: { equipped: equippedExtras, equip: equipExtra, buy: buyExtra, give: giveExtra, owned: extraOwned, entry: cosEntry, find: findExtra, setTitles: setTitleItems },
     fund: { get: fundFor, set: setFund, donate: donate, reset: resetFund },
-    itemPic: itemPicHtml,
+    itemPic: itemPicHtml, refundRetired: refundRetired,
     avatar: { owns: avOwns, state: avState, buy: buyAvatar, items: avItems, price: avPrice, gift: giftBoxes,
       wear: function (sid, id) { var P = PA(); return P ? P.wearItem(sid, id) : Promise.resolve(false); } },
     openBox: openBox2, BOX_ODDS: BOX_ODDS, TIERS: TIERS, BOX_INFO: BOX_INFO,
