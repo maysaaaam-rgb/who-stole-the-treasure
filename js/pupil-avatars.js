@@ -1213,6 +1213,37 @@
     LEG_COVER[id] = y; return y;
   }
 
+  // Tight opaque bounding box of each Pet Buddy image so square padding never shrinks the buddy
+  var PET_BBOX = {};
+  function getPetTightBox(petIm, key) {
+    if (!petIm || !petIm.width || !petIm.height) return null;
+    if (key && PET_BBOX[key]) return PET_BBOX[key];
+    var w = petIm.width, h = petIm.height;
+    try {
+      var tc = document.createElement('canvas'); tc.width = w; tc.height = h;
+      var tg = tc.getContext('2d');
+      tg.drawImage(petIm, 0, 0);
+      var d = tg.getImageData(0, 0, w, h).data;
+      var x0 = w, y0 = h, x1 = -1, y1 = -1;
+      for (var y = 0; y < h; y++) {
+        for (var x = 0; x < w; x++) {
+          if (d[(y * w + x) * 4 + 3] > 24) {
+            if (x < x0) x0 = x;
+            if (x > x1) x1 = x;
+            if (y < y0) y0 = y;
+            if (y > y1) y1 = y;
+          }
+        }
+      }
+      if (x1 >= x0 && y1 >= y0) {
+        var box = { sx: x0, sy: y0, sw: x1 - x0 + 1, sh: y1 - y0 + 1 };
+        if (key) PET_BBOX[key] = box;
+        return box;
+      }
+    } catch (e) {}
+    return { sx: 0, sy: 0, sw: w, sh: h };
+  }
+
   function compose(choice, headImg, eq, poseKind, studentId) {
     return fetchWear().then(function () {
       choice = choice || {};
@@ -1252,10 +1283,6 @@
         var targetRgb = TONE_PRESET_RGB[tone] || info.skinRgb;
         var gradedBody = getGradedBody(bodyLight, skinMask, targetRgb, pose);
 
-        var W = BODY_W, H = BODY_H + PAD + PAD_BOTTOM;
-        var c = document.createElement('canvas'); c.width = Math.round(W * OUT_SCALE); c.height = Math.round(H * OUT_SCALE);
-        var ctx = c.getContext('2d'); ctx.scale(OUT_SCALE, OUT_SCALE);
-
         var k = 3;
         var backIms = L.back.map(function () { return ims[k++]; });
         var legsIms = L.legs.map(function () { return ims[k++]; });
@@ -1264,6 +1291,11 @@
         var headIms = L.head.map(function () { return ims[k++]; });
         var petIm = petUrl ? ims[k++] : null;
         var auraIm = mergedEq.aura ? ims[k++] : null;
+        var hasPet = !!(petIm && petIm.width > 0 && petIm.height > 0);
+
+        var W = hasPet ? 730 : BODY_W, H = BODY_H + PAD + PAD_BOTTOM;
+        var c = document.createElement('canvas'); c.width = Math.round(W * OUT_SCALE); c.height = Math.round(H * OUT_SCALE);
+        var ctx = c.getContext('2d'); ctx.scale(OUT_SCALE, OUT_SCALE);
 
         var hx = (BODY_W - HEAD) / 2, hy = PAD + NECK_Y - HEAD * CHIN;
         var prep = prepareHead(headImg, L.head);
@@ -1504,24 +1536,44 @@
         }
         ctx.drawImage(sil, 0, 0);
 
-        // 7. Stamp composed character + equipped 3D Pet Buddy + floating confetti
+        // 7. Stamp composed character + large 3D Pet Buddy companion + floating confetti
         ctx.drawImage(charCanvas, 0, 0);
-        if (petIm && petIm.width > 0 && petIm.height > 0) {
-          var maxPW = 148, maxPH = 152;
-          var pSc = Math.min(maxPW / petIm.width, maxPH / petIm.height);
-          var pW = Math.round(petIm.width * pSc), pH = Math.round(petIm.height * pSc);
-          var pCx = 394, pBottom = PAD + 750;
-          var pX = Math.max(296, Math.min(W - pW - 6, Math.round(pCx - pW / 2)));
+        if (hasPet) {
+          var pBox = getPetTightBox(petIm, petUrl) || { sx: 0, sy: 0, sw: petIm.width, sh: petIm.height };
+          var aspect = pBox.sw / Math.max(1, pBox.sh);
+          var maxPW = aspect > 1.15 ? 430 : (aspect >= 0.75 ? 396 : 380);
+          var maxPH = aspect < 0.62 ? 600 : (aspect < 0.82 ? 510 : 460);
+          var pSc = Math.min(maxPW / pBox.sw, maxPH / pBox.sh);
+          var pW = Math.round(pBox.sw * pSc), pH = Math.round(pBox.sh * pSc);
+          var pCx = aspect < 0.62 ? 530 : 516, pBottom = PAD + 756;
+          var pX = Math.max(304, Math.min(W - pW - 10, Math.round(pCx - pW / 2)));
           var pY = Math.round(pBottom - pH);
+
+          var pPad = 8;
+          var pSil = document.createElement('canvas'); pSil.width = pW + pPad * 2; pSil.height = pH + pPad * 2;
+          var psg = pSil.getContext('2d');
+          psg.drawImage(petIm, pBox.sx, pBox.sy, pBox.sw, pBox.sh, pPad, pPad, pW, pH);
+          var pSilData = psg.getImageData(0, 0, pSil.width, pSil.height), ppx = pSilData.data;
+          for (var pi = 0, pn = pSil.width * pSil.height; pi < pn; pi++) {
+            var pa = ppx[pi * 4 + 3];
+            ppx[pi * 4] = 255; ppx[pi * 4 + 1] = 255; ppx[pi * 4 + 2] = 255;
+            ppx[pi * 4 + 3] = pa > 42 ? 255 : 0;
+          }
+          psg.putImageData(pSilData, 0, 0);
+
           ctx.save();
-          ctx.fillStyle = 'rgba(3, 6, 15, 0.42)';
+          ctx.fillStyle = 'rgba(3, 6, 15, 0.48)';
           ctx.beginPath();
-          ctx.ellipse(pX + pW / 2, pBottom - 4, Math.round(pW * 0.34), 7, 0, 0, Math.PI * 2);
+          ctx.ellipse(pX + pW / 2, pBottom - 4, Math.round(pW * 0.40), 10, 0, 0, Math.PI * 2);
           ctx.fill();
-          ctx.shadowColor = 'rgba(6, 9, 17, 0.45)';
-          ctx.shadowBlur = 9;
-          ctx.shadowOffsetY = 3;
-          ctx.drawImage(petIm, pX, pY, pW, pH);
+          for (var paIdx = 0; paIdx < 16; paIdx++) {
+            var pang = (paIdx / 16) * Math.PI * 2;
+            ctx.drawImage(pSil, pX - pPad + Math.cos(pang) * 4.4, pY - pPad + Math.sin(pang) * 4.4);
+          }
+          ctx.shadowColor = 'rgba(6, 9, 17, 0.48)';
+          ctx.shadowBlur = 11;
+          ctx.shadowOffsetY = 4;
+          ctx.drawImage(petIm, pBox.sx, pBox.sy, pBox.sw, pBox.sh, pX, pY, pW, pH);
           ctx.restore();
         }
         if (confettiIm) ctx.drawImage(confettiIm, 0, PAD, BODY_W, BODY_H);
