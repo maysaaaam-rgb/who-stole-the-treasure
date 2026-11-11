@@ -120,7 +120,7 @@
         { id: 'demo-star', name: 'Test Pupil Star', className: '3B' }
       ],
       '4A': [
-        { id: 'demo-4a-1', name: 'Defne Yilmaz', className: '4A' },
+        { id: 'demo-4a-1', name: 'Demo Pupil', className: '4A' },
         { id: 'demo-g4',   name: 'Test Pupil 4', className: '4A' }
       ],
       '4B': [

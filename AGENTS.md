@@ -212,3 +212,16 @@ c:\Users\maysa\Desktop\DV\
 - [ ] Does `#avatar-preview-box` adhere to the 8-layer `.monster-composite-stage` z-index hierarchy?
 - [ ] Are locked cosmetics completely unclickable with `🔒 Level X` badges?
 - [ ] Have both `origin main` and `origin gh-pages` been updated and pushed?
+- [ ] Is every changed file free of real pupil names, photos, survey answers and birthdays (section 8)?
+
+---
+
+## 8. Pupil Privacy Rules (added 11 Nov 2026)
+
+This repository is PUBLIC. Anyone on the internet can read every file in it and every old version of it.
+
+- **Never put real pupil data in any file here:** no real names, surnames, photos or faces made from photos, survey answers, teacher comments about a child, birthdays, parent details or test marks that can be tied to a named child. Use pupil ids (`student-3a-224`) and the placeholder `Pupil 224` in demos and seed data.
+- **Real names live only in Supabase** (table `students`, teacher-only). After teacher sign-in the cloud sync replaces the placeholders on screen.
+- **Other private pupil data** (survey answers, parent-report comments, birthdays) is kept as ciphertext in `js/private-data.js` and opened with `EAAPrivate.get('survey' | 'parentNotes' | 'birthdays')` after teacher sign-in. Never paste that data back into a readable file. The decryption key is the row in table `private_bundle_key`; never write the key into the repository.
+- **Filenames count:** do not name files after a pupil (`ates-1-smiling.webp`); use the pupil id.
+- Before every push, search the changed files for pupil names. If any slipped in, remove them in a new commit AND tell the teacher, because the old version stays readable in git history.

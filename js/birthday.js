@@ -1,13 +1,12 @@
 /* Birthday Star: press a birthday pupil's monster or name (roster card or Class Board) and a full-screen birthday
    celebration opens (confetti, cheerful chord, spoken wish, class sentence chips, optional bonus XP the teacher presses).
    Birthdays are kept on this device only (localStorage "eaa_birthdays_v1": pupil id -> "MM-DD"); nothing is written to the cloud.
-   A birthday is celebrated on the day and for the next two days. Uras (4B) is built in for 8 October 2026. */
+   A birthday is celebrated on the day and for the next two days. A few dates are built in, encrypted (js/private-data.js, teacher sign-in only). */
 (function (root) {
   'use strict';
   var KEY = 'eaa_birthdays_v1', DAYS_AFTER = 2;
   // Dates taken from k12's "Birthday Students" messages (teacher said to sync them into the platform, 18 Oct 2026). More can be added with "Load k12 file" or by hand.
-  var BUILT_IN = [{ first: 'buglem', last: 'arioz', md: '09-05' }, { first: 'ali', last: 'bicakci', md: '09-08' }, { first: 'ece', last: 'aras', md: '09-15' },
-    { first: 'uras', last: 'tekay', md: '10-09' }, { first: 'ege', last: 'tas', md: '10-18' }];
+  function builtIn() { return (root.EAAPrivate && root.EAAPrivate.get('birthdays')) || []; }   // [{ id, md }]: kept encrypted, teacher sign-in only
   function S() { return root.schoolStore || root.store; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function norm(s) { return String(s || '').toLocaleLowerCase('tr').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ı/g, 'i').trim(); }
@@ -25,8 +24,7 @@
   function isBirthday(id) {
     var map = load(); if (map[id] && isOn(map[id])) return true;
     var st = student(id); if (!st) return false;
-    var f = norm(st.firstName || st.name), l = norm(st.lastName);
-    return BUILT_IN.some(function (b) { return f.indexOf(b.first) === 0 && (!b.last || l.indexOf(b.last) === 0) && isOn(b.md); });
+    return builtIn().some(function (b) { return b.id === id && isOn(b.md); });
   }
   function avatar(id) {
     try { var st = student(id), s = S(), prof = s.getMonsterProfile ? s.getMonsterProfile(id) : null, m = s.calculateMonsterState ? s.calculateMonsterState(id) : {}; return root.getStudentMonsterAvatarUrl ? root.getStudentMonsterAvatarUrl(st, prof, m) : ''; } catch (e) { return ''; }
@@ -136,8 +134,8 @@
   function known() {
     var map = load(), out = [];
     (S().getStudents ? S().getStudents() : []).forEach(function (s) {
-      var f = norm(s.firstName || s.name), l = norm(s.lastName), v = map[s.id];
-      if (!v) BUILT_IN.forEach(function (b) { if (f.indexOf(b.first) === 0 && (!b.last || l.indexOf(b.last) === 0)) v = b.md; });
+      var v = map[s.id];
+      if (!v) builtIn().forEach(function (b) { if (b.id === s.id) v = b.md; });
       if (v) out.push({ s: s, md: v });
     });
     return out.sort(function (a, b) { return daysUntil(a.md) - daysUntil(b.md); });

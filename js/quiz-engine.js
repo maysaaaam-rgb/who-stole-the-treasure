@@ -303,23 +303,23 @@
     classRoster = (root.AdventureAcademy && root.AdventureAcademy.getActiveStudents) 
       ? root.AdventureAcademy.getActiveStudents() 
       : [
-          { id: "student-4a-343", name: "İpek İlhan", xp: 170 },
-          { id: "student-4a-305", name: "Bahriye Ada Güler", xp: 160 },
-          { id: "student-4a-310", name: "Ahmet Mete İnal", xp: 150 },
-          { id: "student-4a-319", name: "Şimal Koyun", xp: 120 },
-          { id: "student-4a-341", name: "Kemal Tahsin Demirtaş", xp: 110 },
-          { id: "student-4a-342", name: "Melik Emir Başara", xp: 105 },
-          { id: "student-4a-300", name: "Rüzgar Dener", xp: 100 },
-          { id: "student-4a-320", name: "Sühan Bilbey", xp: 95 },
-          { id: "student-4b-208", name: "Ozan Topçu", xp: 90 },
-          { id: "student-4a-109", name: "Zeynep Derin Kılıç", xp: 85 },
-          { id: "student-4b-346", name: "Ali İhsan Bıçakçı", xp: 80 },
-          { id: "student-4b-338", name: "Derin Küçük", xp: 75 },
-          { id: "student-4b-316", name: "Egehan Tekin", xp: 100 },
-          { id: "student-4b-307", name: "Elif Asya Durmaz", xp: 70 },
-          { id: "student-4a-315", name: "Emir Ali Gökalp", xp: 65 },
-          { id: "student-4a-302", name: "Emir Ertem", xp: 60 },
-          { id: "student-4a-314", name: "İclal Gökalp", xp: 70 }
+          { id: "student-4a-343", name: "Pupil 343", xp: 170 },
+          { id: "student-4a-305", name: "Pupil 305", xp: 160 },
+          { id: "student-4a-310", name: "Pupil 310", xp: 150 },
+          { id: "student-4a-319", name: "Pupil 319", xp: 120 },
+          { id: "student-4a-341", name: "Pupil 341", xp: 110 },
+          { id: "student-4a-342", name: "Pupil 342", xp: 105 },
+          { id: "student-4a-300", name: "Pupil 300", xp: 100 },
+          { id: "student-4a-320", name: "Pupil 320", xp: 95 },
+          { id: "student-4b-208", name: "Pupil 208", xp: 90 },
+          { id: "student-4a-109", name: "Pupil 109", xp: 85 },
+          { id: "student-4b-346", name: "Pupil 346", xp: 80 },
+          { id: "student-4b-338", name: "Pupil 338", xp: 75 },
+          { id: "student-4b-316", name: "Pupil 316", xp: 100 },
+          { id: "student-4b-307", name: "Pupil 307", xp: 70 },
+          { id: "student-4a-315", name: "Pupil 315", xp: 65 },
+          { id: "student-4a-302", name: "Pupil 302", xp: 60 },
+          { id: "student-4a-314", name: "Pupil 314", xp: 70 }
         ];
 
     const dropdown = document.getElementById("grader-student-dropdown");
