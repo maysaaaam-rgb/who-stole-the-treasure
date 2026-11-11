@@ -16,7 +16,7 @@
   var BUCKET = 'pupil-avatars';
   var LOOK_KEY = 'eaa_board_look';
   var BASE = 'assets/avatars/';
-  var ASSET_V = '?v=20';
+  var ASSET_V = '?v=21';
   var TONES = [
     { id: 'auto', label: 'Match Face ✨' },
     { id: 'light', label: 'Light' }, { id: 'medium', label: 'Medium' },
@@ -191,9 +191,7 @@
   };
   function auraUrl(id) { return id ? (BASE + 'aura/' + (AURA_ART[id] || id) + '.webp' + ASSET_V) : ''; }
   // Buddies that are not in the pet list: the Sky Dragon creature that 16 pupils bought walks next to their avatar
-  var EXTRA_PETS = {
-    'creature-dragon': { id: 'creature-dragon', name: 'Sky Dragon', imageSrc: BASE + 'buddies/sky-dragon.webp', rarity: 'legendary', category: 'pet' }
-  };
+  var EXTRA_PETS = {};   // the Sky Dragon creature was refunded to the pupils who bought it (12 Nov 2026)
   function petById(id) {
     if (!id || id === 'none') return null;
     if (EXTRA_PETS[id]) return EXTRA_PETS[id];
@@ -511,7 +509,7 @@
       return Promise.all(Object.keys(data.approved).map(function (id) {
         var eq = equippedOf(id);
         lastEquipSig[id] = JSON.stringify(avatarEquipFromMonster(eq));
-        return compose(data.approved[id], heads[id], eq, 'smile', id).then(function (u) { composed[id] = u; }).catch(function () { /* keep monster */ });
+        return compose(ownedLook(id, data.approved[id]), heads[id], eq, 'smile', id).then(function (u) { composed[id] = u; }).catch(function () { /* keep monster */ });
       }));
     }).then(function () {
       state = 'ready';
@@ -638,12 +636,8 @@
     return lvl;
   }
   function itemLockInfo(studentId, itemId) {
-    if (ui.tab === 'wardrobe' || lockMode() !== 'earned') return { locked: false, label: '' };
+    if ((ui.tab === 'wardrobe' && !studentId) || lockMode() !== 'earned') return { locked: false, label: '' };
     if (!itemId || itemId === 'none' || FREE_STARTER_ITEMS[itemId]) return { locked: false, label: '' };
-    if (studentId && data.approved[studentId] && data.approved[studentId].wear) {
-      var aw = data.approved[studentId].wear;
-      for (var k in aw) { if (aw[k] === itemId) return { locked: false, label: '' }; }
-    }
     if (studentOwnsItem(studentId, itemId)) return { locked: false, label: '' };
     var pObj = petById(itemId);
     if (pObj) {
@@ -1552,7 +1546,7 @@
     var key = id + ':' + kind;
     var p = composedEmotion[key]
       ? Promise.resolve(composedEmotion[key])
-      : composeForPose(id, data.approved[id], heads[id], equippedOf(id), kind).then(function (u) {
+      : composeForPose(id, ownedLook(id, data.approved[id]), heads[id], equippedOf(id), kind).then(function (u) {
           if (u) composedEmotion[key] = u;
           return u;
         }).catch(function () { return ''; });
@@ -1731,7 +1725,7 @@
 
   // Girl or boy look: 1) the teacher's choice in Dress up, 2) the first name, 3) for names used by both, long hair
   // in the pupil's face picture. Common Turkish first names only; real pupil names are never stored in this file.
-  var GIRL_NAMES = ('ada alya aslihan ayca ayse ayla aylin azra bahar bahriye begum belis beren beste betul bugce buglem buse cansu ceren cemre damla defne derya dilara dila duru ebru ece ecem eda ela elif elisa ella elvan esila esma esra eylul feyza gizem gokce gulce gulsen hande hazal hira ilay iclal ilayda ilgin ipek irem irmak kumsal lal lara lina masal melda melek melis melisa melodi meryem mila mina mira miray nehir nil nilda nilsu nisa naz ozge oyku pelin pinar rabia rana sare seda selin sena serra sila simal sude suhan su tuana tugce yagmur yaren yasemin zehra zeynep zumra')
+  var GIRL_NAMES = ('ada alya aslihan ayca ayse ayla aylin azra bahar bahriye begum belis beren beste betul bugce buglem buse cansu ceren cemre damla defne derya dilara dila duru ebru ece ecem eda ela elif elisa ella elvan esila esma esra eylul feyza gizem gokce gulce gulsen gunes hande hazal hira ilay iclal ilayda ilgin ipek irem irmak kumsal lal lara lina masal melda melek melis melisa melodi meryem mila mina mira miray nehir nil nilda nilsu nisa naz ozge oyku pelin pinar rabia rana sare seda selin sena serra sila simal sude suhan su tuana tugce yagmur yaren yasemin zehra zeynep zumra')
     .split(' ').reduce(function (o, n) { o[n] = 1; return o; }, {});
   var BOY_NAMES = ('ahmet ali alp alparslan aras arda ates ayaz baran baris berat berk burak can cinar demir doruk efe egehan emir emre enes eren ertugrul eymen fatih furkan goktug gurur hasan huseyin ibrahim ilker kaan kemal kerem kuzey mehmet melik mert metehan miran mustafa omer onur ozan poyraz salih selim taha tuna ugur umut uras utku yigit yunus yusuf')
     .split(' ').reduce(function (o, n) { o[n] = 1; return o; }, {});
@@ -1757,6 +1751,22 @@
     return loadImg(url).catch(function () { return loadImg(BASE + 'head_demo.webp' + ASSET_V).catch(function () { return null; }); });
   }
 
+  function ownedWear(id, wear) {
+    var out = {}, t = ui.tab; ui.tab = 'make';
+    try {
+      Object.keys(wear || {}).forEach(function (sl) {
+        var it = wear[sl];
+        if (!it || it === 'none' || !itemLockInfo(id, it).locked) out[sl] = it;
+      });
+    } finally { ui.tab = t; }
+    return out;
+  }
+  /** the saved look with only the items the pupil really has (used when the board draws the avatar) */
+  function ownedLook(id, choice) {
+    if (!choice || lockMode() !== 'earned') return choice;
+    var c = Object.assign({}, choice); c.wear = ownedWear(id, choice.wear);
+    return c;
+  }
   function choiceForStudent(id) {
     var base = data.pending[id] || data.approved[id] || {};
     return {
@@ -2048,7 +2058,7 @@
     if (!data.approved[id]) return Promise.resolve();
     var eq = equippedOf(id);
     lastEquipSig[id] = JSON.stringify(avatarEquipFromMonster(eq));
-    return compose(data.approved[id], heads[id], eq, 'smile', id).then(function (u) { composed[id] = u; return u; });
+    return compose(ownedLook(id, data.approved[id]), heads[id], eq, 'smile', id).then(function (u) { composed[id] = u; return u; });
   }
   function updateBoardAvatarDom(id) {
     if (!on() || !id || !composed[id] || typeof document === 'undefined') return;
@@ -2222,13 +2232,13 @@
     },
     _send: function () {
       var id = ui.pick; if (!id) return;
-      data.pending[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', gender: ui.choice.gender || '', wear: Object.assign({}, ui.choice.wear || {}), at: new Date().toISOString() };
+      data.pending[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', gender: ui.choice.gender || '', wear: ownedWear(id, ui.choice.wear), at: new Date().toISOString() };
       save().then(function () { try { root.classSoundboard && root.classSoundboard.playTaDa && root.classSoundboard.playTaDa(); } catch (e) { /* ignore */ } toast('Sent! Your teacher will check it.'); }).catch(function () { /* toast shown */ });
       ui.pick = null; draw();
     },
     _saveDirect: function () {
       var id = ui.pick; if (!id || !ui.choice) return;
-      data.approved[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', gender: ui.choice.gender || '', wear: Object.assign({}, ui.choice.wear || {}), at: new Date().toISOString() };
+      data.approved[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', gender: ui.choice.gender || '', wear: ownedWear(id, ui.choice.wear), at: new Date().toISOString() };
       if (data.pending[id]) { delete data.pending[id]; markRemoved('pending', id); }
       recompose(id).then(function () {
         if (client()) return save();
