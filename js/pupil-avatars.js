@@ -241,7 +241,7 @@
     'student-4b-338-laugh': 1, 'student-4b-338-wink': 1
   };
 
-  var data = { approved: {}, pending: {}, settings: { lockMode: 'free' } };
+  var data = { approved: {}, pending: {}, settings: { lockMode: 'earned', earnedMigratedV1: true } };
   var headB64 = {};        // stem -> data:image/webp;base64,... (teacher-locked cloud sync)
   var heads = {};          // studentId -> HTMLImageElement (memory only)
   var emotionHeads = {};   // stem (studentId-laugh / -wink) -> HTMLImageElement
@@ -273,7 +273,7 @@
     rerender();
   }
   function lockMode() {
-    return (data.settings && data.settings.lockMode === 'earned') ? 'earned' : 'free';
+    return (data.settings && data.settings.lockMode === 'free') ? 'free' : 'earned';
   }
   function rerender() { try { if (root.renderCurrentView) root.renderCurrentView(); } catch (e) { /* ignore */ } }
 
@@ -296,9 +296,16 @@
       data.pending = Object.assign({}, data.pending, localDoc.pending);
     }
     if (localDoc && localDoc.settings) {
-      data.settings = Object.assign({ lockMode: 'free' }, data.settings || {}, localDoc.settings);
+      data.settings = Object.assign({ lockMode: 'earned' }, data.settings || {}, localDoc.settings);
     }
-    if (!data.settings) data.settings = { lockMode: 'free' };
+    if (!data.settings) data.settings = { lockMode: 'earned', earnedMigratedV1: true };
+    if (!data.settings.earnedMigratedV1) {
+      data.settings.lockMode = 'earned';
+      data.settings.earnedMigratedV1 = true;
+    }
+    delete data.approved['student-1789469351603'];
+    delete data.pending['student-1789469351603'];
+    delete headB64['student-1789469351603'];
     BUILTIN_HEADS.forEach(function (sid, i) {
       if (!data.approved[sid]) {
         data.approved[sid] = {
@@ -425,8 +432,17 @@
     state = 'loading';
     loadPromise = Promise.all([readJson().catch(function () { return {}; }), fetchWear()]).then(function (res) {
       var d = res[0] || {};
-      data = { approved: d.approved || {}, pending: d.pending || {}, settings: d.settings || { lockMode: 'free' } };
+      var syncedSettings = Object.assign({ lockMode: 'earned' }, d.settings || {});
+      var needCloudEarnedSave = !syncedSettings.earnedMigratedV1;
+      if (needCloudEarnedSave) {
+        syncedSettings.lockMode = 'earned';
+        syncedSettings.earnedMigratedV1 = true;
+      }
+      data = { approved: d.approved || {}, pending: d.pending || {}, settings: syncedSettings };
       seedBuiltinDefaults();
+      if (needCloudEarnedSave) {
+        save().catch(function () {});
+      }
       var ids = Object.keys(data.approved).concat(Object.keys(data.pending));
       BUILTIN_HEADS.forEach(function (sid) { if (ids.indexOf(sid) < 0) ids.push(sid); });
       return Promise.all(ids.map(function (id) {
@@ -563,17 +579,23 @@
     }
     var st = store();
     var pupilLvl = 1;
+    var checkIds = [itemId].concat(AVATAR_TO_MONSTER_EQUIV[itemId] || []);
     if (st && studentId && st.calculateMonsterState) {
       try {
         var ms = st.calculateMonsterState(studentId);
-        pupilLvl = Number(ms && ms.level) || 1;
+        var sRec = studentRecord(studentId);
+        pupilLvl = Number((ms && (ms.currentLevel || ms.level || ms.highestUnlockedLevel)) || (sRec && sRec.level)) || 1;
+        if (ms && ms.unlockedItemIds && typeof ms.unlockedItemIds.has === 'function') {
+          if (checkIds.some(function (cid) { return ms.unlockedItemIds.has(cid); })) {
+            return { locked: false, label: '' };
+          }
+        }
       } catch (e) { pupilLvl = 1; }
     }
     // Check Monster Studio level items (unlockRequirement.level or unlockLevel)
     if (st && st.getMonsterItems) {
       try {
         var mItems = st.getMonsterItems() || [];
-        var checkIds = [itemId].concat(AVATAR_TO_MONSTER_EQUIV[itemId] || []);
         for (var i = 0; i < mItems.length; i++) {
           if (checkIds.indexOf(mItems[i].id) >= 0) {
             if (mItems[i].unlockType === 'store') return { locked: true, label: '🪙 Shop' };
@@ -1630,7 +1652,7 @@
       '</div></div>';
   }
   function makeHtml() {
-    var s = pupils().filter(function (x) { return x.id === ui.pick; })[0];
+    var s = pupils().filter(function (x) { return x.id === ui.pick; })[0] || studentRecord(ui.pick);
     var c = ui.choice || { skin: 'auto', tee: TEES[6], stance: '', wear: {} };
     return '<h2>Hello, ' + esc(firstName(s)) + '!</h2><p class="s">Your Monster items and Pet Buddy are already synced! Change anything you like, then tap “Send to my teacher”.</p>' +
       '<div class="pa-make"><div class="pa-prev"><img id="pa-prev" alt="Your avatar">' + poseBarHtml() + stanceBarHtml(c) + '</div><div>' +
