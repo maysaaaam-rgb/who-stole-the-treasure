@@ -1156,6 +1156,9 @@
         this.lastSyncTime = new Date().toISOString();
         this.notify();
 
+        // Pupils' private data (survey answers, parent comments, birthdays) is encrypted in the public site; the key only reaches a signed-in teacher.
+        try { if (root.EAAPrivate && root.EAAPrivate.load) root.EAAPrivate.load(); } catch (e) { /* optional */ }
+
         return {
           success: true,
           classCount: classes.length,

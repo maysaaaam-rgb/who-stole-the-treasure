@@ -343,7 +343,9 @@
 
       var data = root.AllAboutMeData ? root.AllAboutMeData.get(studentId) : null;
       if (!data) {
-        return '<div class="aam-wrap"><p style="padding:20px; color:#94a3b8;">All About Me survey data not found for student ' + esc(studentId) + '.</p></div>';
+        var A = root.AllAboutMeData;
+        if (A && A.load && !A.isLoaded()) A.load();   // try again now; the answers are only available to a signed-in teacher
+        return '<div class="aam-wrap"><p style="padding:20px; color:#94a3b8;">The All About Me answers are private. Sign in as the teacher, wait a moment for the cloud sync, then open this page again.</p></div>';
       }
 
       var hero = renderHero(stObj, data, store);
