@@ -292,10 +292,10 @@
       }
     }
     return [
-      { id: "student-4a-343", name: "İpek İlhan", xp: 170 },
-      { id: "student-4a-305", name: "Bahriye Ada Güler", xp: 160 },
-      { id: "student-4a-310", name: "Ahmet Mete İnal", xp: 150 },
-      { id: "student-4a-318", name: "Şimal Koyun", xp: 120 }
+      { id: "student-4a-343", name: "Pupil 343", xp: 170 },
+      { id: "student-4a-305", name: "Pupil 305", xp: 160 },
+      { id: "student-4a-310", name: "Pupil 310", xp: 150 },
+      { id: "student-4a-318", name: "Pupil 318", xp: 120 }
     ];
   };
 
