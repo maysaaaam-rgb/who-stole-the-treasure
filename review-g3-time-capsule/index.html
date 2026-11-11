@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Time Capsule Mission — Grade 3 Unit 5 Lesson 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="tc-app">
+    <header class="tc-header">
+      <div class="tc-brand">
+        <span class="tc-badge-unit">GRADE 3 • UNIT 5</span>
+        <span class="tc-title">🚀 Time Capsule Mission</span>
+      </div>
+
+      <div class="tc-team-strip" id="tc-team-strip" aria-label="Classroom Teams"></div>
+
+      <div class="tc-top-actions">
+        <button type="button" class="tc-timer-pill" id="tc-timer-pill" style="display:none;" title="Tap to Pause / Resume Timer">⏱ 8:00 ⏸</button>
+        <div class="tc-star-counter" id="tc-total-stars">⭐ 0 / 15</div>
+        <button type="button" class="tc-btn tc-btn-cyan" id="tc-btn-home" style="display:none;">🚀 Capsule Map</button>
+        <button type="button" class="tc-btn tc-btn-amber" id="tc-btn-listen" title="Read aloud again">🔊 Listen</button>
+        <a href="worksheet.html" target="_blank" class="tc-btn tc-btn-emerald" title="Open A4 Printable Worksheet &amp; Answer Key">🖨️ Print Worksheet</a>
+        <button type="button" class="tc-btn tc-btn-violet" id="tc-btn-teacher" title="Teacher Answer Key &amp; Reset">🎓 Teacher</button>
+      </div>
+    </header>
+
+    <section class="tc-mascot-bar" aria-live="polite">
+      <div class="tc-mascot-avatar">
+        <img src="img/capsule.webp" alt="Time Capsule" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <span style="display:none;font-size:2.2rem;">🚀</span>
+      </div>
+      <div>
+        <div class="tc-mascot-name">🛸 Voyager &amp; Time Capsule Control (Global Readings 2, pp. 81–87)</div>
+        <div class="tc-mascot-speech" id="tc-mascot-speech">
+          Welcome to the Time Capsule Mission! Open the shiny Time Capsule and complete all 5 missions to send your message to the future!
+        </div>
+      </div>
+    </section>
+
+    <main class="tc-stage" id="tc-stage"></main>
+  </div>
+
+  <div class="tc-confetti-layer" id="tc-confetti"></div>
+
+  <div class="tc-modal-overlay" id="tc-modal-overlay" role="dialog" aria-modal="true">
+    <div class="tc-modal-card" id="tc-modal-card"></div>
+  </div>
+
+  <script src="js/audio.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
