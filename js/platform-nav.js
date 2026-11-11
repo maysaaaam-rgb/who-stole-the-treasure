@@ -10,7 +10,8 @@
 
   var PLACES = [
     { id: 'today', icon: '▶️', label: 'Today', tip: 'Your lessons today with one-tap buttons', views: ['today', 'dashboard'] },
-    { id: 'board', icon: '📺', label: 'Class Board', tip: 'Points, timer, picker and the pupil shop', views: ['board', 'classview', 'store-pupil', 'rewards', 'closet', 'monster'] },
+    { id: 'board', icon: '📺', label: 'Class Board', tip: 'Points, timer and picker', views: ['board', 'classview', 'rewards'] },
+    { id: 'shop', icon: '🛍️', label: 'Shop', tip: 'Avatar items with try-on, mystery boxes and real prizes', views: ['store-pupil', 'closet', 'monster'] },
     { id: 'library', icon: '📖', label: 'Library', tip: 'Lessons, games, Game Maker and lesson plans', views: ['library', 'curriculum', 'shelf'] },
     { id: 'tools', icon: '🪄', label: 'Board & Book', tip: 'Smart Board, Magic Book and classroom tools', views: ['tools'] },
     { id: 'calendar', icon: '📅', label: 'Plan', tip: 'Timetable and school calendar', views: ['calendar'] },
@@ -38,6 +39,7 @@
   function go(act, arg) {
     if (root.closeMobileSidebar) root.closeMobileSidebar();
     switch (act) {
+      case 'shop': sw('store-pupil'); return;
       case 'island': openUrl('island/index.html?demo=1'); return;
       case 'gm': if (root.openGameMaker) root.openGameMaker(arg ? { setId: arg } : {}); else openUrl('game-maker/index.html'); return;
       case 'plans': sw('library'); setTimeout(function () { if (root.LibraryShelf && root.LibraryShelf.openTab) root.LibraryShelf.openTab('plans'); }, 60); return;

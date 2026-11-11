@@ -36,7 +36,7 @@
 
   // ---- monsters
   function monsterSvg(stage, color, equipped, size) {
-    try { if (root.MonsterRenderer && root.MonsterRenderer.renderMonsterSVG) return root.MonsterRenderer.renderMonsterSVG({ stage: stage, color: color, equipped: equipped || {}, size: size, animated: false }); } catch (e) { /* fall through */ }
+    try { if (root.MonsterRenderer && root.MonsterRenderer.renderMonsterSVG) return root.MonsterRenderer.renderMonsterSVG({ stage: stage, color: color, equipped: equipped || {}, size: size, animated: false, mascot: true }); } catch (e) { /* fall through */ }
     return '<div style="font-size:' + Math.round(size * 0.7) + 'px">👾</div>';
   }
   function pupilMonster(p, size) {

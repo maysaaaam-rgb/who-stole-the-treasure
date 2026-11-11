@@ -272,7 +272,9 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function firstName(st) { return st ? (st.firstName || String(st.name || '').split(' ')[0] || 'Pupil') : 'Pupil'; }
 
-  function mode() { try { return localStorage.getItem(LOOK_KEY) === 'avatars' ? 'avatars' : 'monsters'; } catch (e) { return 'monsters'; } }
+  // Monsters are hidden on the platform (11 Nov 2026). Monster levels still run quietly for unlocks.
+  function monstersHidden() { return root.EAA_HIDE_MONSTERS !== false; }
+  function mode() { if (monstersHidden()) return 'avatars'; try { return localStorage.getItem(LOOK_KEY) === 'avatars' ? 'avatars' : 'monsters'; } catch (e) { return 'monsters'; } }
   function on() { return mode() === 'avatars'; }
   function setMode(m) {
     try { localStorage.setItem(LOOK_KEY, m === 'avatars' ? 'avatars' : 'monsters'); } catch (e) { /* private mode */ }
@@ -572,6 +574,7 @@
 
   function studentOwnsItem(studentId, itemId) {
     if (!studentId || !itemId || itemId === 'none') return false;
+    try { if (root.ClassroomStore && root.ClassroomStore.avatar && root.ClassroomStore.avatar.owns(studentId, itemId)) return true; } catch (eS) { /* shop not loaded */ }
     var st = store();
     var checkIds = [itemId].concat(AVATAR_TO_MONSTER_EQUIV[itemId] || []);
     try {
@@ -1520,7 +1523,77 @@
     ctx.restore();
   }
 
-  function imgFor(id) { return on() ? (composed[id] || '') : ''; }
+  function imgFor(id) { return on() ? (composed[id] || (monstersHidden() ? pictureFor(id) : '')) : ''; }
+  var DEFAULT_PIC = BASE + 'head_demo.webp' + ASSET_V;
+  var composedDefault = {}, pendingDefault = {}, defaultTimer = 0;
+  function defaultChoice(id) { return { skin: 'auto', tee: TEES[hashId(String(id || '')) % TEES.length], stance: 'stand', wear: {} }; }
+  function scheduleRerender() {
+    if (defaultTimer) return;
+    defaultTimer = setTimeout(function () { defaultTimer = 0; rerender(); }, 400);
+  }
+  /** The picture to show for a pupil anywhere on the platform (never a monster). */
+  function pictureFor(id) {
+    if (!id) return DEFAULT_PIC;
+    if (composed[id]) return composed[id];
+    if (composedDefault[id]) return composedDefault[id];
+    if (state === 'idle') load();
+    if (state === 'ready' && !data.approved[id] && !pendingDefault[id]) {
+      pendingDefault[id] = 1;
+      var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || loadImg(DEFAULT_PIC).catch(function () { return null; }); });
+      headP.then(function (h) { return compose(defaultChoice(id), h, {}, 'smile', id); })
+        .then(function (u) { composedDefault[id] = u; scheduleRerender(); })
+        .catch(function () { /* keep the placeholder */ });
+    }
+    return DEFAULT_PIC;
+  }
+  /* ---------- for the shop: item facts, try-on and wearing ---------- */
+  function allStoreItemIds() {
+    var ids = [];
+    pickerCategories(null).forEach(function (c) { (c.items || []).forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); }); });
+    return ids;
+  }
+  function slotOf(id) { return petById(id) ? 'pet' : (SLOT_BY_ITEM[id] || ''); }
+  function rarityOf(id) {
+    var st = store(), ids = [id].concat(AVATAR_TO_MONSTER_EQUIV[id] || []);
+    var p = petById(id); if (p && p.rarity) return p.rarity;
+    try {
+      var items = st && st.getMonsterItems ? (st.getMonsterItems() || []) : [];
+      for (var i = 0; i < items.length; i++) if (ids.indexOf(items[i].id) >= 0 && items[i].rarity) return items[i].rarity;
+    } catch (e) { /* use the rule below */ }
+    if (String(id).indexOf('cs-my-') === 0) return 'legendary';
+    if (String(id).indexOf('cs-') === 0) return 'epic';
+    var sl = slotOf(id);
+    if (sl === 'legs' || sl === 'shoes' || sl === 'glasses' || sl === 'wig') return 'common';
+    return 'rare';
+  }
+  function itemInfo(id) {
+    var sl = slotOf(id); if (!sl) return null;
+    var pic = sl === 'pet' ? (petImageUrl(id, 'stand') + ASSET_V) : (BASE + 'wear/' + id + '.webp' + ASSET_V);
+    return { id: id, name: prettyName(id), slot: sl, rarity: rarityOf(id), pic: pic, free: !!FREE_STARTER_ITEMS[id] };
+  }
+  function lookOf(id) {
+    var base = data.approved[id] || data.pending[id] || defaultChoice(id);
+    var c = JSON.parse(JSON.stringify(base)); if (!c.wear) c.wear = {};
+    return c;
+  }
+  /** The pupil wearing one more item (nothing saved). Resolves to a picture address. */
+  function previewWith(id, itemId) {
+    var c = lookOf(id), sl = itemId ? slotOf(itemId) : '';
+    if (sl) c.wear[sl] = itemId;
+    var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || loadImg(DEFAULT_PIC).catch(function () { return null; }); });
+    return fetchWear().then(function () { return headP; }).then(function (h) { return compose(c, h, equippedOf(id), 'smile', id); });
+  }
+  /** Put an owned item on (or take a slot off) and save it to the board. */
+  function wearItem(id, itemId, slot) {
+    var c = lookOf(id), sl = slot || slotOf(itemId); if (!sl) return Promise.resolve(false);
+    if (itemId) c.wear[sl] = itemId; else delete c.wear[sl];
+    c.at = nowIso();
+    data.approved[id] = c;
+    if (data.pending[id]) { delete data.pending[id]; markRemoved('pending', id); }
+    delete composedDefault[id];
+    return recompose(id).then(function () { rerender(); return save().catch(function () { return null; }); }).then(function () { return true; });
+  }
+  function wearingOf(id) { var c = data.approved[id]; return (c && c.wear) ? JSON.parse(JSON.stringify(c.wear)) : {}; }
   function has(id) { return !!composed[id]; }
 
   // ---------- builder (pupils in class) + wardrobe (all 124 items) + teacher review ----------
@@ -1931,6 +2004,10 @@
   var api = {
     mode: mode, on: on, setMode: setMode, load: load, imgFor: imgFor, has: has, open: open, close: close,
     lockMode: lockMode,
+    pictureFor: pictureFor, itemInfo: itemInfo, storeItemIds: allStoreItemIds, previewWith: previewWith,
+    wearItem: wearItem, wearingOf: wearingOf, monstersHidden: monstersHidden,
+    // lock check for the shop (ignores which tab the dress-up window was last on)
+    lockFor: function (sid, id) { var t = ui.tab; ui.tab = 'make'; try { return itemLockInfo(sid, id); } finally { ui.tab = t; } },
     // test helper: draw one pupil in a chosen stance without saving anything
     _debugCompose: function (id, stance) {
       var ch = Object.assign({}, data.approved[id] || {}, { stance: stance || '' });
@@ -1943,7 +2020,7 @@
     catalog: CATALOG,
     status: function () { return { state: state, error: lastError, approved: Object.keys(data.approved).length, pending: Object.keys(data.pending).length, lockMode: lockMode() }; },
     toggleButton: function () {
-      return '<button class="cb-look" onclick="PupilAvatars.setMode(PupilAvatars.on()?\'monsters\':\'avatars\')" title="Show monsters or the pupils\' avatars">' + (on() ? '🧒 Avatars' : '👾 Monsters') + '</button>' +
+      return (monstersHidden() ? '' : '<button class="cb-look" onclick="PupilAvatars.setMode(PupilAvatars.on()?\'monsters\':\'avatars\')" title="Show monsters or the pupils\' avatars">' + (on() ? '🧒 Avatars' : '👾 Monsters') + '</button>') +
         (on() ? '<button class="cb-look" onclick="PupilAvatars.open()" title="Make an avatar, try on the wardrobe' + (inClassMode() ? '' : ', check pupils\' avatars') + '">🎨 Dress up</button>' : '');
     },
     _tab: function (t) {

@@ -173,9 +173,16 @@
     if (res.reward && res.reward.type === 'coins') return art(res.reward.rolled === 'jackpot' ? 'jackpot_gem' : (res.reward.amount > 5 ? 'coin_pile' : 'coin_one'), '🪙');
     if (res.reward && res.reward.type === 'voucher') return art('reward_ticket', item.icon || '🎟️');
     var CS = root.ClassroomStore;
+    if (item && item.avatar && item.image) return '<span class="sc"><img src="' + esc(item.image) + '" alt="" draggable="false" style="width:86%;height:86%;object-fit:contain"></span>';
     if (item && item.id && item.id !== 'preview' && item.id !== 'voucher' && CS && CS.itemPic) { try { var h = CS.itemPic(item); if (h) return '<span class="sc">' + h + '</span>'; } catch (e) { /* fall back */ } }
     return '<span class="em">' + esc(item.icon || '🎁') + '</span>';
   }
+  /* a won avatar item goes straight onto the pupil's avatar */
+  Ctrl.wearAvatar = function (id) {
+    var sid = this.activeStudent && this.activeStudent.id, CS = root.ClassroomStore, self = this;
+    if (sid && CS && CS.avatar && CS.avatar.wear) CS.avatar.wear(sid, id).then(function () { if (root.renderCurrentView) root.renderCurrentView(); });
+    self.close();
+  };
   Ctrl._open = function () {
     var res = this.openedPayload, item = res.item || {}, r = RAR[item.rarity] || RAR.rare, root2 = document.getElementById('mb2');
     if (!root2) return;
@@ -193,6 +200,7 @@
     var name = (this.activeStudent && (this.activeStudent.firstName || '').split(' ')[0]) || 'You';
     var kind = res.reward && res.reward.type, acts;
     if (kind === 'extra') acts = '<button type="button" class="mb2-b" onclick="window.MysteryBoxModal.equipExtra(\'' + esc(res.reward.kind) + '\',\'' + esc(item.id) + '\')">✨ Wear it now</button><button type="button" class="mb2-b g" onclick="window.MysteryBoxModal.close()">Keep it for later</button>';
+    else if (kind === 'item' && item.avatar) acts = '<button type="button" class="mb2-b" onclick="window.MysteryBoxModal.wearAvatar(\'' + esc(item.id) + '\')">👕 Wear it now</button><button type="button" class="mb2-b g" onclick="window.MysteryBoxModal.close()">Keep it for later</button>';
     else if (kind === 'item' || (!kind && item.id)) acts = '<button type="button" class="mb2-b" onclick="window.MysteryBoxModal.equipDrop(\'' + esc(item.id) + '\')">⚡ Put it on my monster</button><button type="button" class="mb2-b g" onclick="window.MysteryBoxModal.close()">Keep it for later</button>';
     else acts = '<button type="button" class="mb2-b" onclick="window.MysteryBoxModal.close()">🎉 Great!</button>';
     var head = res.preview ? 'Preview only' : kind === 'coins' ? name + ' found ' + (res.reward.amount || '') + ' coins!' : name + ' got ' + item.name + '!';

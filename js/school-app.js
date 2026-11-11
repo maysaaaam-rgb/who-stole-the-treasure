@@ -1309,6 +1309,8 @@
 
   const MONSTER_URL_CACHE = new Map();
   function getStudentMonsterAvatarUrl(student, profile, mState) {
+    // Monsters are hidden (11 Nov 2026): every pupil picture is the pupil's avatar (or a default one until they make it).
+    if (window.EAA_HIDE_MONSTERS !== false && window.PupilAvatars && window.PupilAvatars.pictureFor && student && student.id) return window.PupilAvatars.pictureFor(student.id);
     const base = getStudentMonsterAvatarUrlCore(student, profile, mState);
     return window.AliceWeek && window.AliceWeek.wrapUrl ? window.AliceWeek.wrapUrl(student, base) : base;   // Tea Party week: character picture / both
   }
