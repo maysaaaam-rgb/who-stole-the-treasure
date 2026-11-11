@@ -16,14 +16,17 @@
     // =========================================================================
     { id: 'magic-book-g3', icon: '📖', title: "Unit 5 Magic Book · Let's Go Back (pp. 72–87): 3D Pop-Out Scenes, Words, Read-Aloud, Exercises & Answers", route: 'magic-book/index.html?grade=3', g: 3, unit: 5, kind: 'lesson', order: 1, added: '2026-11-08' },
     { id: 'talk-show-g3', icon: '🎤', title: 'Talk Show Studio · Speaking Battles (Episode 1: The Time Show · Episode 2: Time Capsule TV)', route: 'talk-show/index.html?grade=3&ep=1', g: 3, unit: 5, kind: 'lesson', order: 2, added: '2026-11-09' },
-    { id: 'gm-u5-g3', icon: '🎮', title: "Unit 5 Game Maker · Let's Go Back (40 Questions: Words, Time Book, Time Capsules & Mega Mix)", route: 'game-maker/index.html?set=g3-u5-mega&game=cannon', g: 3, unit: 5, kind: 'game', order: 2, added: '2026-11-08' },
+    { id: 'rev-g3-time-book', icon: '🏺', title: 'Unit 5 Lesson 1 · The Time Book – Help Jannah! (pp. 72–81): Escape Maze, Unscramble, Story Order, Main Idea & Riddles + Worksheet', route: 'review-g3-time-book/index.html', g: 3, unit: 5, kind: 'review', order: 3, added: '2026-11-11' },
+    { id: 'rev-g3-time-capsule', icon: '🚀', title: 'Unit 5 Lesson 2 · Time Capsule Mission (pp. 81–87): Capsule Message, 10×10 Word Search, Sentence Scramble, 3 Baskets & Opposites + Worksheet', route: 'review-g3-time-capsule/index.html', g: 3, unit: 5, kind: 'review', order: 4, added: '2026-11-11' },
+    { id: 'gm-u5-g3', icon: '🎮', title: "Unit 5 Game Maker · Let's Go Back (40 Questions: Words, Time Book, Time Capsules & Mega Mix)", route: 'game-maker/index.html?set=g3-u5-mega&game=cannon', g: 3, unit: 5, kind: 'game', order: 5, added: '2026-11-08' },
 
     // =========================================================================
     // UNIT 5 — GRADE 4 (Make Some Noise: Foley Sound Studio & Beethoven, pp. 72–87)
     // =========================================================================
     { id: 'magic-book-g4', icon: '📖', title: 'Unit 5 Magic Book · Make Some Noise (pp. 72–87): 3D Pop-Out Scenes, Words, Read-Aloud, Exercises & Answers', route: 'magic-book/index.html?grade=4', g: 4, unit: 5, kind: 'lesson', order: 1, added: '2026-11-08' },
     { id: 'talk-show-g4', icon: '🎤', title: 'Talk Show Studio · Speaking Battles (Episode 1: Make Some Noise · Episode 2: Concert Night)', route: 'talk-show/index.html?grade=4&ep=1', g: 4, unit: 5, kind: 'lesson', order: 2, added: '2026-11-09' },
-    { id: 'gm-u5-g4', icon: '🎮', title: 'Unit 5 Game Maker · Make Some Noise (40 Questions: Words, Foley Studio, Beethoven & Mega Mix)', route: 'game-maker/index.html?set=g4-u5-mega&game=cannon', g: 4, unit: 5, kind: 'game', order: 2, added: '2026-11-08' },
+    { id: 'rev-g4-sound-detectives', icon: '🦊', title: 'Unit 5 Revision · Sound Detectives (7 Missions: Foley Clues, Studio SFX, Loud/Quiet, Concert Hall, Two Doors, Beethoven Order & Feelings)', route: 'review-g4-sound-detectives/index.html', g: 4, unit: 5, kind: 'review', order: 3, added: '2026-11-11' },
+    { id: 'gm-u5-g4', icon: '🎮', title: 'Unit 5 Game Maker · Make Some Noise (40 Questions: Words, Foley Studio, Beethoven & Mega Mix)', route: 'game-maker/index.html?set=g4-u5-mega&game=cannon', g: 4, unit: 5, kind: 'game', order: 4, added: '2026-11-08' },
 
     // =========================================================================
     // UNIT 4 — GRADE 3 (What Happened? / The Mona Lisa & The Angry Mountain)

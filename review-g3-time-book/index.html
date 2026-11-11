@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Time Book – Help Jannah! (Grade 3 Unit 5 Lesson 1)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="tb-app">
+    <header class="tb-header">
+      <div class="tb-brand">
+        <span class="tb-badge-unit">GRADE 3 • UNIT 5</span>
+        <span class="tb-title">📖 The Time Book – Help Jannah!</span>
+      </div>
+
+      <div class="tb-team-strip" id="tb-team-strip" aria-label="Classroom Teams"></div>
+
+      <div class="tb-top-actions">
+        <button type="button" class="tb-timer-pill" id="tb-timer-pill" style="display:none;" title="Tap to Pause / Resume Timer">⏱ 8:00 ⏸</button>
+        <div class="tb-star-counter" id="tb-total-stars">⭐ 0 / 15</div>
+        <button type="button" class="tb-btn tb-btn-cyan" id="tb-btn-home" style="display:none;">📖 Book Map</button>
+        <button type="button" class="tb-btn tb-btn-amber" id="tb-btn-listen" title="Read aloud again">🔊 Listen</button>
+        <a href="worksheet.html" target="_blank" class="tb-btn tb-btn-emerald" title="Open A4 Printable Worksheet &amp; Answer Key">🖨️ Print Worksheet</a>
+        <button type="button" class="tb-btn tb-btn-violet" id="tb-btn-teacher" title="Teacher Answer Key &amp; Reset">🎓 Teacher</button>
+      </div>
+    </header>
+
+    <section class="tb-mascot-bar" aria-live="polite">
+      <div class="tb-mascot-avatar">
+        <img src="img/jannah.webp" alt="Jannah" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <span style="display:none;font-size:2.2rem;">👧</span>
+      </div>
+      <div>
+        <div class="tb-mascot-name">🏺 Jannah — Time Book Explorer (Cairo &amp; Ancient Egypt)</div>
+        <div class="tb-mascot-speech" id="tb-mascot-speech">
+          Welcome to The Time Book! Open the magic book and complete all 5 activities to help Jannah return home!
+        </div>
+      </div>
+    </section>
+
+    <main class="tb-stage" id="tb-stage"></main>
+  </div>
+
+  <div class="tb-confetti-layer" id="tb-confetti"></div>
+
+  <div class="tb-modal-overlay" id="tb-modal-overlay" role="dialog" aria-modal="true">
+    <div class="tb-modal-card" id="tb-modal-card"></div>
+  </div>
+
+  <script src="js/audio.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

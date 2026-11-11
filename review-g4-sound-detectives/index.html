@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sound Detectives — Grade 4 Unit 5: Make Some Noise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="sd-app">
+    <!-- Top HUD Bar -->
+    <header class="sd-header">
+      <div class="sd-brand">
+        <span class="sd-badge-unit">GRADE 4 • UNIT 5</span>
+        <span class="sd-title">🦊 Sound Detectives: Make Some Noise</span>
+      </div>
+
+      <!-- 4-Team Classroom Competition Strip -->
+      <div class="sd-team-strip" id="sd-team-strip" aria-label="Classroom Teams"></div>
+
+      <!-- Right Controls -->
+      <div class="sd-top-actions">
+        <div class="sd-star-counter" id="sd-total-stars">⭐ 0 / 21</div>
+        <button type="button" class="sd-btn sd-btn-cyan" id="sd-btn-home" style="display:none;">🗺️ Mission Map</button>
+        <button type="button" class="sd-btn sd-btn-amber" id="sd-btn-listen" title="Read aloud again">🔊 Listen Again</button>
+        <button type="button" class="sd-btn sd-btn-violet" id="sd-btn-teacher" title="Teacher Answer Key &amp; Reset">🎓 Teacher</button>
+      </div>
+    </header>
+
+    <!-- Inspector Foxy Mascot Banner -->
+    <section class="sd-mascot-bar" aria-live="polite">
+      <div class="sd-mascot-avatar">
+        <img src="img/fox-detective.webp" alt="Inspector Foxy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <span style="display:none;font-size:2.4rem;">🦊</span>
+      </div>
+      <div>
+        <div class="sd-mascot-name">🔎 Inspector Foxy — Chief Sound Detective</div>
+        <div class="sd-mascot-speech" id="sd-mascot-speech">
+          Welcome, Sound Detectives! Choose any mission on the map to begin investigating Foley sounds and Beethoven!
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Interactive Stage -->
+    <main class="sd-stage" id="sd-stage"></main>
+  </div>
+
+  <!-- Confetti Layer -->
+  <div class="sd-confetti-layer" id="sd-confetti"></div>
+
+  <!-- Celebration / Certificate / Teacher Modal -->
+  <div class="sd-modal-overlay" id="sd-modal-overlay" role="dialog" aria-modal="true">
+    <div class="sd-modal-card" id="sd-modal-card"></div>
+  </div>
+
+  <script src="js/audio.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
