@@ -16,7 +16,7 @@
   var BUCKET = 'pupil-avatars';
   var LOOK_KEY = 'eaa_board_look';
   var BASE = 'assets/avatars/';
-  var ASSET_V = '?v=14';
+  var ASSET_V = '?v=17';
   var TONES = [
     { id: 'auto', label: 'Match Face ✨' },
     { id: 'light', label: 'Light' }, { id: 'medium', label: 'Medium' },
@@ -532,9 +532,9 @@
     return out;
   }
 
-  function getGradedBody(bodyLightImg, skinMaskImg, targetRgb) {
+  function getGradedBody(bodyLightImg, skinMaskImg, targetRgb, tag) {
     if (!skinMaskImg) return bodyLightImg;
-    var key = targetRgb.join(',');
+    var key = (tag || '') + ':' + targetRgb.join(',');
     if (gradedBodyCache[key]) return gradedBodyCache[key];
 
     var c = document.createElement('canvas'); c.width = BODY_W; c.height = BODY_H;
@@ -623,7 +623,7 @@
 
   // Match any exposed V-neck / collar chest skin on open-collar outfits to pupil's exact skin tone
   function getGradedTop(topImg, topId, targetRgb) {
-    if (!topImg || !VNECK_TOPS[topId]) return topImg;
+    if (!topImg || !VNECK_TOPS[String(topId).split('__')[0]]) return topImg;
     var key = topId + ':' + targetRgb.join(',');
     if (gradedTopCache[key]) return gradedTopCache[key];
 
@@ -1209,12 +1209,17 @@
       var mergedEq = Object.assign({}, eq || {}, choice.wear || {});
       var tone = TONES.some(function (t) { return t.id === choice.skin; }) ? choice.skin : 'auto';
       var L = wearLayers(mergedEq);
+      // Drawn poses (arms only): laugh -> cheer, wink -> wave. Used when every top the pupil wears was drawn in that pose.
+      var pose = /laugh/.test(poseKind || '') ? 'cheer' : (/wink/.test(poseKind || '') ? 'wave' : '');
+      var poseIds = (wear && wear.poses && wear.poses[pose]) || null;
+      if (pose && (!poseIds || L.tops.some(function (tid) { return SLOT_BY_ITEM[tid] === 'clothing' && poseIds.indexOf(tid) < 0; }))) pose = '';
+      function wearUrl(id) { return BASE + 'wear/' + id + ((pose && poseIds.indexOf(id) >= 0) ? '__' + pose : '') + '.webp' + ASSET_V; }
       var need = [
-        loadImg(BASE + 'body_light.webp' + ASSET_V),
-        loadImg(BASE + 'skin_mask.webp' + ASSET_V),
-        loadImg(BASE + 'tee_light.webp' + ASSET_V)
+        loadImg(BASE + (pose ? 'body_' + pose : 'body_light') + '.webp' + ASSET_V),
+        loadImg(BASE + (pose ? 'skin_' + pose : 'skin_mask') + '.webp' + ASSET_V),
+        loadImg(BASE + (pose ? 'tee_' + pose : 'tee_light') + '.webp' + ASSET_V)
       ]
-        .concat(L.body.map(function (id) { return loadImg(BASE + 'wear/' + id + '.webp' + ASSET_V); }))
+        .concat(L.body.map(function (id) { return loadImg(wearUrl(id)); }))
         .concat(L.head.map(function (id) { return loadImg(BASE + 'wear/' + id + '.webp' + ASSET_V); }));
       return Promise.all(need.map(function (p) { return p.catch(function () { return null; }); })).then(function (ims) {
         var bodyLight = ims[0], skinMask = ims[1], teeMask = ims[2];
@@ -1222,7 +1227,7 @@
 
         var info = analyzeHead(headImg);
         var targetRgb = TONE_PRESET_RGB[tone] || info.skinRgb;
-        var gradedBody = getGradedBody(bodyLight, skinMask, targetRgb);
+        var gradedBody = getGradedBody(bodyLight, skinMask, targetRgb, pose);
 
         var W = BODY_W, H = BODY_H + PAD;
         var c = document.createElement('canvas'); c.width = Math.round(W * OUT_SCALE); c.height = Math.round(H * OUT_SCALE);
@@ -1306,7 +1311,13 @@
           else if (THREE_QUARTER_SLEEVES[tid]) armEraseMaxY = Math.max(armEraseMaxY, 304);
           else armEraseMaxY = Math.max(armEraseMaxY, 346);
         });
-        if (armEraseMaxY > 0) {
+        if (armEraseMaxY > 0 && pose && teeMask) {
+          // drawn pose: hide the T-shirt sleeves under a long-sleeved outfit
+          var sl = document.createElement('canvas'); sl.width = BODY_W; sl.height = BODY_H;
+          var slg = sl.getContext('2d'); slg.drawImage(teeMask, 0, 0, BODY_W, BODY_H); slg.clearRect(170, 0, 172, BODY_H);
+          bg.save(); bg.globalCompositeOperation = 'destination-out'; bg.drawImage(sl, 0, 0); bg.restore();
+        }
+        if (armEraseMaxY > 0 && !pose) {
           bg.clearRect(0, 148, 171, armEraseMaxY - 148);
           bg.clearRect(BODY_W - 171, 148, 171, armEraseMaxY - 148);
         }
@@ -1353,7 +1364,8 @@
           if (!im) return;
           var tid = L.tops[idx];
           if (tid === 'acc-confetti') { confettiIm = im; return; }
-          var graded = getGradedTop(im, tid, targetRgb);
+          if (pose && RIGHT_HAND_PROPS[tid]) return;   // held things wait for their own pose drawings
+          var graded = getGradedTop(im, tid + (pose ? '__' + pose : ''), targetRgb);
           if (RIGHT_HAND_PROPS[tid]) {
             rightHandProps.push(graded);
             return;
