@@ -29,19 +29,20 @@
     dark: [132, 80, 54]
   };
   var STANCES = [
-    { id: 'natural', label: '🧍 Natural' },
-    { id: 'hip',     label: '😎 Hip' },
-    { id: 'wave',    label: '👋 Wave' },
-    { id: 'cheer',   label: '🎉 Cheer' }
+    { id: 'stand', label: '🧍 Stand' },
+    { id: 'wave',  label: '👋 Wave' },
+    { id: 'cheer', label: '🎉 Cheer' }
   ];
   var TEES = ['#ffffff', '#ef4444', '#f59e0b', '#facc15', '#22c55e', '#14b8a6', '#3b82f6', '#8b5cf6', '#ec4899', '#1f2937'];
 
   // Frame: body art is 512x768 (from Gemini's 1024x1536). Seamless neck integration at y 86.
+  // Option A "Subway Arcade Toy 3D": +12% expressive head ratio + glowing 3D cyber-glass arcade pedestal.
   var BODY_W = 512, BODY_H = 768;
-  var HEAD = 300;          // head picture (square) drawn this size
+  var HEAD = 336;          // head picture (square) drawn at Subway Arcade Toy 3D scale
   var CHIN = 0.78;         // chin sits at 78% of the head picture
   var NECK_Y = 86;         // where the chin lands smoothly on the neck
-  var PAD = Math.ceil(HEAD * CHIN - NECK_Y) + 12; // room above the body for the head + sticker outline
+  var PAD = Math.ceil(HEAD * CHIN - NECK_Y) + 14; // room above the body for the head + sticker outline
+  var PAD_BOTTOM = 32;     // room below sneakers for the 3D cyber-glass arcade pedestal disc
   var OUT_SCALE = 0.75;    // final picture is 384 wide
 
   // Complete catalog of all 124 cutout wearable layers grouped by slot
@@ -144,13 +145,76 @@
   };
 
   var SLOT_BY_ITEM = {};
+  var POSED_TOPS = {};
   CATALOG.forEach(function (cat) {
-    cat.items.forEach(function (id) { SLOT_BY_ITEM[id] = cat.key; });
+    cat.items.forEach(function (id) {
+      SLOT_BY_ITEM[id] = cat.key;
+      if (cat.key === 'clothing') POSED_TOPS[id] = 1;
+    });
   });
+  var HAND_HELD_PROPS = {
+    'cs-teddy': 1, 'acc-compass': 1, 'acc-wand': 1, 'acc-book': 1, 'cs-magnifier': 1,
+    'acc-trophy': 1, 'acc-microphone': 1, 'cs-ladle': 1, 'cs-wiz-staff': 1, 'cs-knight-shield': 1,
+    'cs-witch-broom': 1, 'cs-guitar': 1, 'cs-parrot': 1, 'cs-vamp-bat': 1, 'cs-spider-friend': 1, 'cs-my-comet': 1
+  };
+  var CAPE_CLASP_ITEMS = {
+    'clothing-cape': 1, 'cs-vamp-cape': 1, 'cs-hero-cape': 1, 'cs-witch-cape': 1, 'cs-leaf-cape': 1, 'cs-my-galaxy-cape': 1
+  };
+  var STAND_CUTOUT_BACK_ITEMS = {
+    'cs-fairy-wings': 1, 'cs-my-phoenix-wings': 1, 'clothing-cape': 1,
+    'cs-vamp-cape': 1, 'cs-hero-cape': 1, 'cs-witch-cape': 1, 'cs-leaf-cape': 1, 'cs-my-galaxy-cape': 1
+  };
+  // Monster Studio -> Avatar Wear 1:1 equivalents so pupils' monster wings show up on their avatars
+  var MONSTER_TO_AVATAR_EQUIV = {
+    'wings-starter':   'bp-mini-wings',
+    'wings-fairy':     'cs-fairy-wings',
+    'wings-bat':       'cs-vamp-cape',
+    'wings-dragon':    'cs-my-phoenix-wings',
+    'wings-celestial': 'cs-my-phoenix-wings'
+  };
+  var AVATAR_TO_MONSTER_EQUIV = {
+    'bp-mini-wings':       ['wings-starter'],
+    'cs-fairy-wings':      ['wings-fairy'],
+    'cs-vamp-cape':        ['wings-bat'],
+    'cs-my-phoenix-wings': ['wings-dragon', 'wings-celestial']
+  };
+
+  function petById(id) {
+    if (!id || id === 'none') return null;
+    try { return (root.MonsterPets && root.MonsterPets.byId) ? root.MonsterPets.byId(id) : null; } catch (e) { return null; }
+  }
+  function petImageUrl(id, pose) {
+    var p = petById(id);
+    if (p) {
+      if (p.poses) {
+        if (pose === 'wave' && p.poses.wave) return p.poses.wave;
+        if (pose === 'cheer' && p.poses.cheer) return p.poses.cheer;
+        if (p.poses.idle) return p.poses.idle;
+      }
+      if (p.imageSrc) return p.imageSrc;
+    }
+    if (String(id || '').indexOf('pet-') === 0) return 'assets/monsters/pets/' + id + '.png';
+    return '';
+  }
+  function pickerCategories(studentId) {
+    var pets = (root.MonsterPets && Array.isArray(root.MonsterPets.items)) ? root.MonsterPets.items : [];
+    var visiblePets = pets.filter(function (p) {
+      return !p.notForSale || (studentId && studentOwnsItem(studentId, p.id));
+    });
+    if (!visiblePets.length) return CATALOG;
+    return CATALOG.concat([{
+      key: 'pet',
+      label: '🐾 Pet Buddies',
+      isPet: true,
+      items: visiblePets.map(function (p) { return p.id; })
+    }]);
+  }
 
   function prettyName(id) {
+    var p = petById(id);
+    if (p && p.name) return p.name;
     return String(id || '')
-      .replace(/^(clothing-|av-legs-|av-shoes-|av-wig-|hat-|glasses-|bp-|neck-|acc-|accessory-|cs-my-|cs-)/, '')
+      .replace(/^(clothing-|av-legs-|av-shoes-|av-wig-|hat-|glasses-|bp-|neck-|acc-|accessory-|cs-my-|cs-|pet-crew-|pet-hal-|pet-hero-|pet-)/, '')
       .replace(/-/g, ' ')
       .replace(/\b\w/g, function (c) { return c.toUpperCase(); });
   }
@@ -350,8 +414,13 @@
   }
 
   var loadPromise = null;
+  var lastEquipSig = {};
+  function equipSignature(id) {
+    try { return JSON.stringify(avatarEquipFromMonster(equippedOf(id))); } catch (e) { return ''; }
+  }
   function load() {
     ensureCss();
+    installStoreSyncHook();
     if (state === 'loading' && loadPromise) return loadPromise;
     state = 'loading';
     loadPromise = Promise.all([readJson().catch(function () { return {}; }), fetchWear()]).then(function (res) {
@@ -365,20 +434,118 @@
       }));
     }).then(function () {
       return Promise.all(Object.keys(data.approved).map(function (id) {
-        return compose(data.approved[id], heads[id], equippedOf(id), 'smile', id).then(function (u) { composed[id] = u; }).catch(function () { /* keep monster */ });
+        var eq = equippedOf(id);
+        lastEquipSig[id] = JSON.stringify(avatarEquipFromMonster(eq));
+        return compose(data.approved[id], heads[id], eq, 'smile', id).then(function (u) { composed[id] = u; }).catch(function () { /* keep monster */ });
       }));
-    }).then(function () { state = 'ready'; loadPromise = null; if (on()) rerender(); })
-      .catch(function (e) {
-        lastError = String(e && e.message || e);
-        state = 'ready';
-        loadPromise = null;
-        if (on()) rerender();
-      });
+    }).then(function () {
+      state = 'ready';
+      loadPromise = null;
+      if (on()) rerender();
+      setTimeout(syncAllChanged, 2500);
+      setTimeout(syncAllChanged, 6500);
+    }).catch(function (e) {
+      lastError = String(e && e.message || e);
+      state = 'ready';
+      loadPromise = null;
+      if (on()) rerender();
+    });
     return loadPromise;
   }
 
+  function studentRecord(id) {
+    var st = store();
+    if (!st || !id) return null;
+    try {
+      if (st.getStudentById) return st.getStudentById(id);
+      if (st.getStudents) {
+        var all = st.getStudents() || [];
+        for (var i = 0; i < all.length; i++) { if (all[i] && all[i].id === id) return all[i]; }
+      }
+    } catch (e) {}
+    return null;
+  }
+
   function equippedOf(id) {
-    try { var p = store() && store().getMonsterProfile ? store().getMonsterProfile(id) : null; return (p && p.equipped) || {}; } catch (e) { return {}; }
+    try {
+      var st = store();
+      var sRec = studentRecord(id);
+      var mcEq = (sRec && sRec.monster_customization && sRec.monster_customization.equipped) || {};
+      var p = st && st.getMonsterProfile ? st.getMonsterProfile(id) : null;
+      var pEq = (p && p.equipped) || {};
+      return Object.assign({}, mcEq, pEq);
+    } catch (e) { return {}; }
+  }
+
+  // Normalize Monster Studio / Closet equipped slots into Avatar slots so hats, wings, medals, held props & pets all sync cleanly
+  function avatarEquipFromMonster(rawEq) {
+    var out = {};
+    if (!rawEq || typeof rawEq !== 'object') return out;
+    var checkSlots = ['backpack', 'cape', 'legs', 'shoes', 'clothing', 'outfit', 'neck', 'accessory', 'wig', 'glasses', 'headwear', 'hats', 'hat'];
+    for (var i = 0; i < checkSlots.length; i++) {
+      var slot = checkSlots[i];
+      var val = rawEq[slot];
+      if (!val || val === 'none') continue;
+      var mapped = MONSTER_TO_AVATAR_EQUIV[val] || val;
+      var targetSlot = SLOT_BY_ITEM[mapped];
+      if (targetSlot) out[targetSlot] = mapped;
+    }
+    if (rawEq.wings && rawEq.wings !== 'none' && !out.backpack) {
+      var wId = MONSTER_TO_AVATAR_EQUIV[rawEq.wings] || rawEq.wings;
+      if (SLOT_BY_ITEM[wId] === 'backpack') out.backpack = wId;
+    }
+    if (rawEq.pet && rawEq.pet !== 'none') out.pet = rawEq.pet;
+    if (rawEq.aura && rawEq.aura !== 'none') out.aura = rawEq.aura;
+    return out;
+  }
+
+  function effectiveWear(choice, eq) {
+    var merged = avatarEquipFromMonster(eq);
+    var cw = (choice && choice.wear) || {};
+    Object.keys(cw).forEach(function (slot) {
+      var v = cw[slot];
+      if (v === 'none') {
+        delete merged[slot];
+      } else if (v) {
+        merged[slot] = MONSTER_TO_AVATAR_EQUIV[v] || v;
+      }
+    });
+    return merged;
+  }
+
+  function studentOwnsItem(studentId, itemId) {
+    if (!studentId || !itemId || itemId === 'none') return false;
+    var st = store();
+    var checkIds = [itemId].concat(AVATAR_TO_MONSTER_EQUIV[itemId] || []);
+    try {
+      var monEq = avatarEquipFromMonster(equippedOf(studentId));
+      for (var mk in monEq) { if (monEq[mk] === itemId) return true; }
+      if (st) {
+        var prof = st.getMonsterProfile ? st.getMonsterProfile(studentId) : null;
+        if (prof && Array.isArray(prof.unlockedItems)) {
+          if (checkIds.some(function (cid) { return prof.unlockedItems.indexOf(cid) >= 0; })) return true;
+        }
+        var sRec = studentRecord(studentId);
+        var mcUnl = sRec && sRec.monster_customization && sRec.monster_customization.unlockedItems;
+        if (Array.isArray(mcUnl) && checkIds.some(function (cid) { return mcUnl.indexOf(cid) >= 0; })) return true;
+        if (st.getStudentInventory) {
+          var inv = st.getStudentInventory(studentId) || [];
+          if (inv.some(function (e) {
+            if (!e) return false;
+            var eid = typeof e === 'string' ? e : (e.itemId || e.id || e.refId);
+            return checkIds.indexOf(eid) >= 0;
+          })) return true;
+        }
+      }
+      if (root.ClassroomStore) {
+        for (var ci = 0; ci < checkIds.length; ci++) {
+          var cid2 = checkIds[ci];
+          if (root.ClassroomStore.cosmetics && root.ClassroomStore.cosmetics.owns && root.ClassroomStore.cosmetics.owns(studentId, cid2)) return true;
+          if (root.ClassroomStore.owns && root.ClassroomStore.owns(studentId, cid2)) return true;
+        }
+      }
+    } catch (e2) {}
+    return false;
   }
 
   // ---------- Teacher Earned-Mode vs Free Dress-Up lock helper ----------
@@ -389,6 +556,11 @@
       var aw = data.approved[studentId].wear;
       for (var k in aw) { if (aw[k] === itemId) return { locked: false, label: '' }; }
     }
+    if (studentOwnsItem(studentId, itemId)) return { locked: false, label: '' };
+    var pObj = petById(itemId);
+    if (pObj) {
+      return { locked: true, label: '🪙 Shop' };
+    }
     var st = store();
     var pupilLvl = 1;
     if (st && studentId && st.calculateMonsterState) {
@@ -397,31 +569,14 @@
         pupilLvl = Number(ms && ms.level) || 1;
       } catch (e) { pupilLvl = 1; }
     }
-    // Check schoolStore inventory & unlockedItems
-    try {
-      if (st && studentId) {
-        var prof = st.getMonsterProfile ? st.getMonsterProfile(studentId) : null;
-        if (prof && Array.isArray(prof.unlockedItems) && prof.unlockedItems.indexOf(itemId) >= 0) {
-          return { locked: false, label: '' };
-        }
-        if (st.getStudentInventory) {
-          var inv = st.getStudentInventory(studentId) || [];
-          if (inv.some(function (e) { return e && (e.itemId === itemId || e.id === itemId || e.refId === itemId); })) {
-            return { locked: false, label: '' };
-          }
-        }
-      }
-      if (root.ClassroomStore && studentId) {
-        if (root.ClassroomStore.cosmetics && root.ClassroomStore.cosmetics.owns && root.ClassroomStore.cosmetics.owns(studentId, itemId)) return { locked: false, label: '' };
-        if (root.ClassroomStore.owns && root.ClassroomStore.owns(studentId, itemId)) return { locked: false, label: '' };
-      }
-    } catch (e2) {}
     // Check Monster Studio level items (unlockRequirement.level or unlockLevel)
     if (st && st.getMonsterItems) {
       try {
         var mItems = st.getMonsterItems() || [];
+        var checkIds = [itemId].concat(AVATAR_TO_MONSTER_EQUIV[itemId] || []);
         for (var i = 0; i < mItems.length; i++) {
-          if (mItems[i].id === itemId) {
+          if (checkIds.indexOf(mItems[i].id) >= 0) {
+            if (mItems[i].unlockType === 'store') return { locked: true, label: '🪙 Shop' };
             var req = Number((mItems[i].unlockRequirement && mItems[i].unlockRequirement.level) || mItems[i].unlockLevel) || 1;
             if (pupilLvl >= req) return { locked: false, label: '' };
             return { locked: true, label: '🔒 Lv ' + req };
@@ -532,9 +687,9 @@
     return out;
   }
 
-  function getGradedBody(bodyLightImg, skinMaskImg, targetRgb, tag) {
+  function getGradedBody(bodyLightImg, skinMaskImg, targetRgb, pose) {
     if (!skinMaskImg) return bodyLightImg;
-    var key = (tag || '') + ':' + targetRgb.join(',');
+    var key = (pose || 'stand') + ':' + targetRgb.join(',');
     if (gradedBodyCache[key]) return gradedBodyCache[key];
 
     var c = document.createElement('canvas'); c.width = BODY_W; c.height = BODY_H;
@@ -621,29 +776,67 @@
     return c;
   }
 
-  // Match any exposed V-neck / collar chest skin on open-collar outfits to pupil's exact skin tone
-  function getGradedTop(topImg, topId, targetRgb) {
-    if (!topImg || !VNECK_TOPS[String(topId).split('__')[0]]) return topImg;
-    var key = topId + ':' + targetRgb.join(',');
+  // Match any exposed V-neck collar, forearm, or hand skin on outfits to the pupil's exact skin tone
+  function getGradedTop(topImg, topId, targetRgb, pose) {
+    if (!topImg) return topImg;
+    var pName = pose || 'stand';
+    var isPosedOutfit = (pName === 'wave' || pName === 'cheer') && !!POSED_TOPS[topId] && !TORSO_ONLY_TOPS[topId];
+    if (!VNECK_TOPS[topId] && !isPosedOutfit) return topImg;
+
+    var key = topId + ':' + pName + ':' + targetRgb.join(',');
     if (gradedTopCache[key]) return gradedTopCache[key];
 
     var c = document.createElement('canvas'); c.width = BODY_W; c.height = BODY_H;
     var g = c.getContext('2d');
     g.drawImage(topImg, 0, 0, BODY_W, BODY_H);
-    var idat = g.getImageData(180, 0, 152, 240), p = idat.data;
-    var kR = targetRgb[0] / 166.0, kG = targetRgb[1] / 122.0, kB = targetRgb[2] / 91.0;
-    var changed = false;
-    for (var i = 0; i < p.length; i += 4) {
-      if (p[i + 3] < 80) continue;
-      var r = p[i], gr = p[i + 1], b = p[i + 2];
-      if (Math.abs(r - 166) < 42 && Math.abs(gr - 122) < 38 && Math.abs(b - 91) < 36 && (r - gr) > 20 && (gr - b) > 12) {
-        p[i] = Math.min(255, Math.round(r * kR));
-        p[i + 1] = Math.min(255, Math.round(gr * kG));
-        p[i + 2] = Math.min(255, Math.round(b * kB));
-        changed = true;
+
+    if (!isPosedOutfit) {
+      var idat = g.getImageData(180, 0, 152, 240), p = idat.data;
+      var kR = targetRgb[0] / 166.0, kG = targetRgb[1] / 122.0, kB = targetRgb[2] / 91.0;
+      var changed = false;
+      for (var i = 0; i < p.length; i += 4) {
+        if (p[i + 3] < 80) continue;
+        var r = p[i], gr = p[i + 1], b = p[i + 2];
+        if (Math.abs(r - 166) < 42 && Math.abs(gr - 122) < 38 && Math.abs(b - 91) < 36 && (r - gr) > 20 && (gr - b) > 12) {
+          p[i] = Math.min(255, Math.round(r * kR));
+          p[i + 1] = Math.min(255, Math.round(gr * kG));
+          p[i + 2] = Math.min(255, Math.round(b * kB));
+          changed = true;
+        }
+      }
+      if (changed) g.putImageData(idat, 180, 0);
+      gradedTopCache[key] = c;
+      return c;
+    }
+
+    // Posed Wave / Cheer outfit: grade exposed 5-finger hands, short-sleeve forearms, and V-neck collars
+    var full = g.getImageData(0, 36, BODY_W, 450), fp = full.data;
+    var pkR = targetRgb[0] / 200.0, pkG = targetRgb[1] / 160.0, pkB = targetRgb[2] / 133.0;
+    var hasVneck = !!VNECK_TOPS[topId];
+    var hasBareHands = (topId !== 'cs-mummy-wrap' && topId !== 'cs-knight-armor');
+    var anyChanged = false;
+
+    for (var py = 0; py < 450; py++) {
+      var absY = py + 36;
+      var rowOff = py * BODY_W;
+      for (var px = 0; px < BODY_W; px++) {
+        var inVneck = hasVneck && px >= 184 && px <= 328 && absY >= 45 && absY <= 205;
+        var inArmZone = hasBareHands && (px < 172 || px > 340);
+        if (!inVneck && !inArmZone) continue;
+
+        var idx = (rowOff + px) * 4;
+        if (fp[idx + 3] < 75) continue;
+        var pr = fp[idx], pgr = fp[idx + 1], pb = fp[idx + 2];
+        var rgDiff = pr - pgr, gbDiff = pgr - pb;
+        if (pr >= 130 && pr <= 242 && pb >= 80 && rgDiff >= 21 && rgDiff <= 58 && gbDiff >= 13 && gbDiff <= 42 && rgDiff >= gbDiff - 1) {
+          fp[idx] = Math.min(255, Math.round(pr * pkR));
+          fp[idx + 1] = Math.min(255, Math.round(pgr * pkG));
+          fp[idx + 2] = Math.min(255, Math.round(pb * pkB));
+          anyChanged = true;
+        }
       }
     }
-    if (changed) g.putImageData(idat, 180, 0);
+    if (anyChanged) g.putImageData(full, 0, 36);
     gradedTopCache[key] = c;
     return c;
   }
@@ -707,17 +900,17 @@
   function wearLayers(eq) {
     var w = wear || {}, bSet = w.body || [], hSet = w.head || [];
     var back = [], legs = [], shoes = [], tops = [], head = [];
-    ['backpack'].forEach(function (slot) {
+    ['backpack', 'cape'].forEach(function (slot) {
       var id = eq[slot];
-      if (id && id !== 'none' && bSet.indexOf(id) >= 0) back.push(id);
+      if (id && id !== 'none' && bSet.indexOf(id) >= 0 && back.indexOf(id) < 0) back.push(id);
     });
     ['legs'].forEach(function (slot) {
       var id = eq[slot];
-      if (id && id !== 'none' && bSet.indexOf(id) >= 0) legs.push(id);
+      if (id && id !== 'none' && bSet.indexOf(id) >= 0 && legs.indexOf(id) < 0) legs.push(id);
     });
     ['shoes'].forEach(function (slot) {
       var id = eq[slot];
-      if (id && id !== 'none' && bSet.indexOf(id) >= 0) shoes.push(id);
+      if (id && id !== 'none' && bSet.indexOf(id) >= 0 && shoes.indexOf(id) < 0) shoes.push(id);
     });
     ['clothing', 'outfit', 'neck', 'accessory'].forEach(function (slot) {
       var id = eq[slot];
@@ -727,7 +920,7 @@
       else if (SLOT_BY_ITEM[id] === 'backpack' && bSet.indexOf(id) >= 0) { if (back.indexOf(id) < 0) back.push(id); }
       else if (bSet.indexOf(id) >= 0 && tops.indexOf(id) < 0) tops.push(id);
     });
-    ['wig', 'glasses', 'hat'].forEach(function (slot) {
+    ['wig', 'glasses', 'hat', 'hats', 'headwear'].forEach(function (slot) {
       var id = eq[slot];
       if (id && id !== 'none' && hSet.indexOf(id) >= 0 && head.indexOf(id) < 0) head.push(id);
     });
@@ -741,67 +934,7 @@
     };
   }
 
-  // ---------- 2.5D Adaptive Pixar Skeletal Pose Engine ----------
-  var rigMasksCache = null;
-  function seamCurveL(y) {
-    if (y < 170) return 146.0;
-    if (y < 230) {
-      var t = (y - 170.0) / 60.0;
-      return 146.0 + (169.5 - 146.0) * (t * t * (3.0 - 2.0 * t));
-    }
-    if (y <= 265) return 169.5;
-    return Math.max(146.0, 169.5 - (y - 265.0) * 0.175);
-  }
-  function getRigMasks() {
-    if (rigMasksCache) return rigMasksCache;
-    var W = BODY_W, H = BODY_H;
-    var torsoKeep = new Float32Array(W * H);
-    var armBaseL = new Float32Array(W * H);
-    var Sx = 156.0, Sy = 180.0;
-    for (var y = 0; y < H; y++) {
-      var seamL = seamCurveL(y);
-      for (var x = 0; x < W; x++) {
-        var idx = y * W + x;
-        var dxL = x - Sx, dyL = y - Sy;
-        var distSL = Math.sqrt(dxL * dxL + dyL * dyL);
-        var inArmL = ((y >= 172 && y <= 475 && x < seamL) ||
-                      (distSL <= 40.0 && x < 176.0) ||
-                      (y >= 144 && y < 185 && x < 154.0));
-        armBaseL[idx] = inArmL ? 1.0 : 0.0;
-
-        var xr = (W - 1) - x;
-        // Keep inner collarbone shoulder cap (x >= 153 && y < 196) on torso, while releasing outer deltoid & full sleeve cleanly!
-        var erL = (y >= 166 && y <= 475 && x < seamL && !(x >= 153.0 && y < 196.0)) ? 1.0 : 0.0;
-        var erR = (y >= 166 && y <= 475 && xr < seamL && !(xr >= 153.0 && y < 196.0)) ? 1.0 : 0.0;
-        torsoKeep[idx] = Math.max(0.0, 1.0 - erL - erR);
-      }
-    }
-    // 1px box-feather on torsoKeep & armBaseL for silky anti-aliased transitions
-    function feather3x3(src) {
-      var dst = new Float32Array(W * H);
-      dst.set(src);
-      for (var fy = 1; fy < H - 1; fy++) {
-        var row = fy * W;
-        for (var fx = 1; fx < W - 1; fx++) {
-          var k = row + fx;
-          dst[k] = (src[k] * 4.0 + src[k - 1] + src[k + 1] + src[k - W] + src[k + W]) * 0.125;
-        }
-      }
-      return dst;
-    }
-    rigMasksCache = {
-      torsoKeep: feather3x3(torsoKeep),
-      armBaseL: feather3x3(armBaseL)
-    };
-    return rigMasksCache;
-  }
-
-  function rotVec(dx, dy, deg) {
-    var r = deg * Math.PI / 180.0;
-    var c = Math.cos(r), s = Math.sin(r);
-    return [dx * c - dy * s, dx * s + dy * c];
-  }
-
+  // ---------- Option A: Drawn Pose Layering (Stand / Wave / Cheer) + 3D Arcade Pedestal ----------
   function hashId(str) {
     var h = 2166136261;
     var s = String(str || '');
@@ -812,384 +945,152 @@
     return Math.abs(h | 0);
   }
 
-  function resolvePoseSpec(choice, studentId, poseKind, L) {
-    var stId = (choice && choice.stance) || 'natural';
+  function resolveDrawnPose(choice, studentId, poseKind, L) {
+    var raw = (choice && choice.stance) || '';
+    var pose = 'stand';
+    if (raw === 'wave' || raw === 'cheer') {
+      pose = raw;
+    } else if (raw === 'stand' || raw === 'natural' || raw === 'hip') {
+      pose = 'stand';
+    } else if (studentId) {
+      var tops = (L && L.tops) || [];
+      var back = (L && L.back) || [];
+      var hasHeld = tops.some(function (id) { return !!HAND_HELD_PROPS[id]; });
+      var hasStandBack = back.some(function (id) { return !!STAND_CUTOUT_BACK_ITEMS[id]; });
+      if (!hasHeld && !hasStandBack) {
+        var bucket = hashId(studentId) % 20;
+        pose = bucket < 9 ? 'stand' : (bucket < 15 ? 'wave' : 'cheer');
+      }
+    }
     if (poseKind === 'laugh' || poseKind === 'dedicated-laugh') {
-      stId = 'cheer';
-    } else if ((poseKind === 'wink' || poseKind === 'dedicated-wink') && stId === 'natural') {
-      stId = 'wave';
+      pose = 'cheer';
+    } else if (poseKind === 'wink' || poseKind === 'dedicated-wink') {
+      pose = 'wave';
     }
-
-    var sp;
-    if (stId === 'hip') {
-      sp = {
-        armL_sh: -9.0, armL_el: -52.0, armR_sh: 17.0, armR_el: 15.0,
-        legL_hip: 3.6, legL_knee: -2.5, legL_ankle: 2.5,
-        legR_hip: -5.2, legR_knee: 8.2, legR_ankle: -5.0,
-        torso_tilt: -1.4
-      };
-    } else if (stId === 'wave') {
-      sp = {
-        armL_sh: -16.5, armL_el: -15.5, armR_sh: 4.0, armR_el: -138.0,
-        legL_hip: 2.2, legL_knee: -2.0, legL_ankle: 2.5,
-        legR_hip: -3.8, legR_knee: 5.8, legR_ankle: -4.0,
-        torso_tilt: -1.2
-      };
-    } else if (stId === 'cheer') {
-      sp = {
-        armL_sh: -4.0, armL_el: 138.0, armR_sh: 4.0, armR_el: -138.0,
-        legL_hip: 3.8, legL_knee: -3.0, legL_ankle: 2.5,
-        legR_hip: -3.8, legR_knee: 3.0, legR_ankle: -2.5,
-        torso_tilt: 0.0
-      };
-    } else {
-      sp = {
-        armL_sh: -16.5, armL_el: -15.5, armR_sh: 16.5, armR_el: 15.5,
-        legL_hip: 1.8, legL_knee: -1.8, legL_ankle: 2.5,
-        legR_hip: -4.2, legR_knee: 6.8, legR_ankle: -4.5,
-        torso_tilt: 0.8
-      };
-      // Subtle organic classroom personality so 17 pupils never look like identical clones
-      if (studentId && !(choice && choice.stance)) {
-        var h = hashId(studentId);
-        var mirror = (h % 2) === 1;
-        var micro = ((h % 7) - 3) * 0.45;
-        if (mirror) {
-          sp = {
-            armL_sh: -16.5 + micro, armL_el: -15.5, armR_sh: 16.5 + micro, armR_el: 15.5,
-            legL_hip: 4.2, legL_knee: -6.8, legL_ankle: 4.5,
-            legR_hip: -1.8, legR_knee: 1.8, legR_ankle: -2.5,
-            torso_tilt: -0.8
-          };
-        } else {
-          sp.armL_sh += micro;
-          sp.armR_sh += micro;
-        }
-        if ((h % 5) === 2) {
-          sp.armL_sh = -12.5; sp.armL_el = -28.0;
-        } else if ((h % 5) === 4) {
-          sp.armR_sh = 12.5; sp.armR_el = 28.0;
-        }
-      }
-    }
-
-    // Smart wearable & prop adaptations
-    var tops = (L && L.tops) || [];
-    var legs = (L && L.legs) || [];
-    sp.isSkirt = legs.some(function (id) { return id === 'av-legs-skirt' || id === 'av-legs-tutu'; });
-    sp.hasDrapedRobe = tops.some(function (id) { return !!DRAPED_ROBES[id]; });
-
-    if (tops.indexOf('cs-guitar') >= 0) {
-      sp.armL_sh = -13.0; sp.armL_el = -28.0;
-      sp.armR_sh = 12.0;  sp.armR_el = 24.0;
-    }
-    if (tops.some(function (id) { return !!STAFF_PROPS[id]; })) {
-      sp.armR_sh = 11.0; sp.armR_el = 8.0;
-    } else if (tops.some(function (id) { return !!UPRIGHT_PROPS[id]; }) && Math.abs(sp.armR_el) > 60.0) {
-      sp.armR_sh = 10.0; sp.armR_el = -24.0;
-    }
-    if (sp.hasDrapedRobe) {
-      // Gentle relaxed drape so velvet/wizard capes stay seamlessly attached
-      sp.armL_sh = Math.max(-13.0, Math.min(8.0, sp.armL_sh * 0.72));
-      sp.armL_el = Math.max(-22.0, Math.min(22.0, sp.armL_el * 0.55));
-      sp.armR_sh = Math.max(-8.0, Math.min(13.0, sp.armR_sh * 0.72));
-      sp.armR_el = Math.max(-22.0, Math.min(22.0, sp.armR_el * 0.55));
-    }
-    return sp;
+    return pose;
   }
 
-  function evalChainPoint(px, py, sx, sy, ex, ey, wx, wy, deg1, deg2, deg3) {
-    var v1 = rotVec(ex - sx, ey - sy, deg1);
-    var epX = sx + v1[0], epY = sy + v1[1];
-    var tot2 = deg1 + deg2;
-    var v2 = rotVec(wx - ex, wy - ey, tot2);
-    var wpX = epX + v2[0], wpY = epY + v2[1];
-    var tot3 = tot2 + (deg3 || 0);
+  var PEDESTAL_ACCENTS = [
+    { hex: '#38bdf8', glow: 'rgba(56, 189, 248, 0.42)', soft: 'rgba(56, 189, 248, 0.14)' },
+    { hex: '#a855f7', glow: 'rgba(168, 85, 247, 0.42)', soft: 'rgba(168, 85, 247, 0.14)' },
+    { hex: '#f59e0b', glow: 'rgba(245, 158, 11, 0.42)', soft: 'rgba(245, 158, 11, 0.14)' },
+    { hex: '#10b981', glow: 'rgba(16, 185, 129, 0.42)', soft: 'rgba(16, 185, 129, 0.14)' },
+    { hex: '#f43f5e', glow: 'rgba(244, 63, 94, 0.42)',  soft: 'rgba(244, 63, 94, 0.14)' }
+  ];
 
-    var l1 = Math.hypot(v1[0], v1[1]) || 1, l2 = Math.hypot(v2[0], v2[1]) || 1;
-    var u1x = v1[0] / l1, u1y = v1[1] / l1;
-    var u2x = v2[0] / l2, u2y = v2[1] / l2;
-    var bx = u1x + u2x, by = u1y + u2y;
-    var bl = Math.hypot(bx, by);
-    if (bl < 0.2) { bx = -u1y; by = u1x; } else { bx /= bl; by /= bl; }
-
-    var sEl = (px - epX) * bx + (py - epY) * by;
-    var tEl = Math.max(0.0, Math.min(1.0, (sEl + 24.0) / 48.0));
-    var wFore = tEl * tEl * (3.0 - 2.0 * tEl);
-
-    var sWr = (px - wpX) * u2x + (py - wpY) * u2y;
-    var tWr = Math.max(0.0, Math.min(1.0, (sWr + 16.0) / 32.0));
-    var wHand = tWr * tWr * (3.0 - 2.0 * tWr);
-
-    var b1 = rotVec(px - sx, py - sy, -deg1);
-    var x1 = sx + b1[0], y1 = sy + b1[1];
-    var b2 = rotVec(px - epX, py - epY, -tot2);
-    var x2 = ex + b2[0], y2 = ey + b2[1];
-    var b3 = rotVec(px - wpX, py - wpY, -tot3);
-    var x3 = wx + b3[0], y3 = wy + b3[1];
-
-    var fx = x2 * (1.0 - wHand) + x3 * wHand;
-    var fy = y2 * (1.0 - wHand) + y3 * wHand;
-    return [x1 * (1.0 - wFore) + fx * wFore, y1 * (1.0 - wFore) + fy * wFore];
+  function pedestalAccent(choice, studentId, eff) {
+    var aura = String((eff && eff.aura) || '').toLowerCase();
+    if (aura === 'aura-ice' || aura === 'cs-bubbles' || aura === 'cs-snowflakes') return PEDESTAL_ACCENTS[0];
+    if (aura === 'aura-sparkle' || aura === 'aura-rainbow') return PEDESTAL_ACCENTS[1];
+    if (aura === 'aura-lightning' || aura === 'aura-star' || aura === 'aura-flame' || aura === 'cs-pumpkin-aura') return PEDESTAL_ACCENTS[2];
+    if (aura === 'aura-blossom' || aura === 'cs-aura-hearts') return PEDESTAL_ACCENTS[4];
+    var tee = String((choice && choice.tee) || '').toLowerCase();
+    if (tee === '#3b82f6' || tee === '#14b8a6') return PEDESTAL_ACCENTS[0];
+    if (tee === '#8b5cf6') return PEDESTAL_ACCENTS[1];
+    if (tee === '#f59e0b' || tee === '#facc15') return PEDESTAL_ACCENTS[2];
+    if (tee === '#22c55e') return PEDESTAL_ACCENTS[3];
+    if (tee === '#ef4444' || tee === '#ec4899') return PEDESTAL_ACCENTS[4];
+    var idx = studentId ? (hashId(studentId) % PEDESTAL_ACCENTS.length) : 0;
+    return PEDESTAL_ACCENTS[idx];
   }
 
-  function resampleFromCoarseGrid(srcCanvas, gxArr, gyArr, GW, GH) {
-    var W = BODY_W, H = BODY_H;
-    var sCtx = srcCanvas.getContext('2d');
-    var sData = sCtx.getImageData(0, 0, W, H).data;
-    var outCanvas = document.createElement('canvas'); outCanvas.width = W; outCanvas.height = H;
-    var oCtx = outCanvas.getContext('2d');
-    var oImg = oCtx.createImageData(W, H);
-    var oData = oImg.data;
-
-    var scaleX = (GW - 1.0) / (W - 1.0);
-    var scaleY = (GH - 1.0) / (H - 1.0);
-
-    for (var y = 0; y < H; y++) {
-      var gy = y * scaleY;
-      var iy = gy | 0; if (iy >= GH - 1) iy = GH - 2;
-      var fy = gy - iy;
-      var r0 = iy * GW, r1 = (iy + 1) * GW;
-      for (var x = 0; x < W; x++) {
-        var gx = x * scaleX;
-        var ix = gx | 0; if (ix >= GW - 1) ix = GW - 2;
-        var fx = gx - ix;
-
-        var w00 = (1 - fx) * (1 - fy), w10 = fx * (1 - fy), w01 = (1 - fx) * fy, w11 = fx * fy;
-        var i00 = r0 + ix, i10 = i00 + 1, i01 = r1 + ix, i11 = i01 + 1;
-        var sx = gxArr[i00] * w00 + gxArr[i10] * w10 + gxArr[i01] * w01 + gxArr[i11] * w11;
-        var sy = gyArr[i00] * w00 + gyArr[i10] * w10 + gyArr[i01] * w01 + gyArr[i11] * w11;
-
-        if (sx < 0 || sx >= W - 1 || sy < 0 || sy >= H - 1) continue;
-        var six = sx | 0, siy = sy | 0;
-        var sfx = sx - six, sfy = sy - siy;
-        var p00 = (siy * W + six) * 4;
-        var p10 = p00 + 4;
-        var p01 = p00 + W * 4;
-        var p11 = p01 + 4;
-
-        var a00 = sData[p00 + 3], a10 = sData[p10 + 3], a01 = sData[p01 + 3], a11 = sData[p11 + 3];
-        if ((a00 | a10 | a01 | a11) === 0) continue;
-
-        var sw00 = (1 - sfx) * (1 - sfy), sw10 = sfx * (1 - sfy), sw01 = (1 - sfx) * sfy, sw11 = sfx * sfy;
-        var outA = a00 * sw00 + a10 * sw10 + a01 * sw01 + a11 * sw11;
-        if (outA < 1.0) continue;
-
-        var pm00 = sw00 * a00, pm10 = sw10 * a10, pm01 = sw01 * a01, pm11 = sw11 * a11;
-        var invA = 1.0 / outA;
-        var di = (y * W + x) * 4;
-        oData[di]     = (sData[p00] * pm00 + sData[p10] * pm10 + sData[p01] * pm01 + sData[p11] * pm11) * invA;
-        oData[di + 1] = (sData[p00 + 1] * pm00 + sData[p10 + 1] * pm10 + sData[p01 + 1] * pm01 + sData[p11 + 1] * pm11) * invA;
-        oData[di + 2] = (sData[p00 + 2] * pm00 + sData[p10 + 2] * pm10 + sData[p01 + 2] * pm01 + sData[p11 + 2] * pm11) * invA;
-        oData[di + 3] = outA;
-      }
-    }
-    oCtx.putImageData(oImg, 0, 0);
-    return outCanvas;
-  }
-
-  function extractAdaptiveArmPieces(armSrcCanvas, side) {
-    var W = BODY_W, H = BODY_H;
-    var sData = armSrcCanvas.getContext('2d').getImageData(0, 0, W, H).data;
-    var masks = getRigMasks();
-    var armBaseL = masks.armBaseL;
-
-    // Measure actual opaque elbow half-width perpendicular to bind arm axis at (104, 286)
-    var Ex0 = side === 'R' ? (W - 1.0 - 104.0) : 104.0, Ey0 = 286.0;
-    var nx = side === 'R' ? -0.900 : 0.900, ny = 0.436;
-    var firstT = null, lastT = null;
-    for (var t = -44; t <= 44; t++) {
-      var qx = Math.round(Ex0 + t * nx), qy = Math.round(Ey0 + t * ny);
-      if (qx >= 0 && qx < W && qy >= 0 && qy < H) {
-        if (sData[(qy * W + qx) * 4 + 3] > 80) {
-          if (firstT === null) firstT = t;
-          lastT = t;
-        }
-      }
-    }
-    var Ex = Ex0, Ey = Ey0, Rel = 22.0;
-    if (firstT !== null && (lastT - firstT) >= 6) {
-      var midT = 0.5 * (firstT + lastT);
-      Ex = Ex0 + midT * nx;
-      Ey = Ey0 + midT * ny;
-      Rel = Math.max(14.0, 0.5 * (lastT - firstT) - 1.0);
-    }
-
-    var Sx = side === 'R' ? (W - 1.0 - 156.0) : 156.0, Sy = 180.0;
-    var dxSE = Ex - Sx, dySE = Ey - Sy;
-    var lSE = Math.hypot(dxSE, dySE) || 1.0;
-    var ux = dxSE / lSE, uy = dySE / lSE;
-    var pnx = -uy, pny = ux;
-
-    var upCanvas = document.createElement('canvas'); upCanvas.width = W; upCanvas.height = H;
-    var foCanvas = document.createElement('canvas'); foCanvas.width = W; foCanvas.height = H;
-    var upCtx = upCanvas.getContext('2d'), foCtx = foCanvas.getContext('2d');
-    var upImg = upCtx.createImageData(W, H), foImg = foCtx.createImageData(W, H);
-    var upD = upImg.data, foD = foImg.data;
-
-    for (var y = 135; y < 485; y++) {
-      var row = y * W;
-      for (var x = 0; x < W; x++) {
-        if (side === 'L' && x > 188) continue;
-        if (side === 'R' && x < W - 189) continue;
-        var si = (row + x) * 4;
-        var sa = sData[si + 3];
-        if (sa === 0) continue;
-        var mIdx = side === 'R' ? (row + (W - 1 - x)) : (row + x);
-        var baseW = armBaseL[mIdx];
-        if (baseW <= 0.004) continue;
-
-        var rx = x - Ex, ry = y - Ey;
-        var proj = rx * ux + ry * uy;
-        var perp = Math.abs(rx * pnx + ry * pny);
-        var dist = Math.sqrt(proj * proj + perp * perp);
-
-        // Concentric rounded elbow cap with 1.5px soft edge
-        var inUp = ((proj <= 0.0 && (proj <= -5.0 || perp <= Rel + 1.5)) || dist <= Rel + 0.6);
-        var inFo = ((proj >= 0.0 && (proj >= 5.0 || perp <= Rel + 1.5)) || dist <= Rel - 0.4);
-
-        if (inUp) {
-          var uw = baseW;
-          if (proj > 0.0 && dist > Rel - 1.0) uw *= Math.max(0.0, (Rel + 0.6 - dist) / 1.6);
-          upD[si] = sData[si]; upD[si + 1] = sData[si + 1]; upD[si + 2] = sData[si + 2];
-          upD[si + 3] = sa * uw;
-        }
-        if (inFo) {
-          var fw = baseW;
-          if (proj < 0.0 && dist > Rel - 2.0) fw *= Math.max(0.0, (Rel - 0.4 - dist) / 1.6);
-          foD[si] = sData[si]; foD[si + 1] = sData[si + 1]; foD[si + 2] = sData[si + 2];
-          foD[si + 3] = sa * fw;
-        }
-      }
-    }
-    upCtx.putImageData(upImg, 0, 0);
-    foCtx.putImageData(foImg, 0, 0);
-    return { up: upCanvas, fo: foCanvas, S: [Sx, Sy], E: [Ex, Ey] };
-  }
-
-  function drawPivotedCanvas(ctx, piece, srcPiv, dstPiv, deg) {
+  function drawArcadePedestal(ctx, cx, cy, acc) {
     ctx.save();
-    ctx.translate(dstPiv[0], dstPiv[1]);
-    ctx.rotate(deg * Math.PI / 180.0);
-    ctx.translate(-srcPiv[0], -srcPiv[1]);
-    ctx.drawImage(piece, 0, 0);
+    // 1. Ambient neon floor bloom
+    ctx.save();
+    ctx.translate(cx, cy + 7);
+    ctx.scale(1, 0.19);
+    var bloom = ctx.createRadialGradient(0, 0, 35, 0, 0, 158);
+    bloom.addColorStop(0, acc.glow);
+    bloom.addColorStop(0.58, acc.soft);
+    bloom.addColorStop(1, 'rgba(6, 9, 17, 0)');
+    ctx.fillStyle = bloom;
+    ctx.beginPath();
+    ctx.arc(0, 0, 158, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // 2. Extruded 3D obsidian base cylinder lip (sized to match monster pedestals on Class Board)
+    var rx = 148, ry = 25, lipH = 13;
+    var sideGrad = ctx.createLinearGradient(cx - rx, cy, cx + rx, cy + lipH);
+    sideGrad.addColorStop(0, '#070b16');
+    sideGrad.addColorStop(0.5, '#17223b');
+    sideGrad.addColorStop(1, '#060912');
+    ctx.fillStyle = sideGrad;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + lipH, rx, ry, 0, 0, Math.PI, false);
+    ctx.lineTo(cx - rx, cy);
+    ctx.ellipse(cx, cy, rx, ry, 0, Math.PI, 0, true);
+    ctx.closePath();
+    ctx.fill();
+
+    // Subtle dark base rim border
+    ctx.strokeStyle = 'rgba(2, 6, 23, 0.85)';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + lipH, rx, ry, 0, 0, Math.PI, false);
+    ctx.stroke();
+
+    // 3. Top cyber-glass platform surface
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(1, ry / rx);
+    var topGrad = ctx.createRadialGradient(0, -18, 12, 0, 0, rx);
+    topGrad.addColorStop(0, '#243454');
+    topGrad.addColorStop(0.62, '#111a2e');
+    topGrad.addColorStop(0.92, '#0a1020');
+    topGrad.addColorStop(1, '#1e293b');
+    ctx.fillStyle = topGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, rx, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // 4. Inner neon energy ring + outer glowing neon bezel
+    ctx.save();
+    ctx.strokeStyle = acc.soft;
+    ctx.lineWidth = 2.0;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx * 0.72, ry * 0.70, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.shadowColor = acc.hex;
+    ctx.shadowBlur = 10;
+    ctx.strokeStyle = acc.hex;
+    ctx.lineWidth = 3.0;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx - 1.5, ry - 0.8, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    // 5. Crisp front glass specular highlight arc
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx - 2.5, ry - 1.4, 0, Math.PI * 0.16, Math.PI * 0.84, false);
+    ctx.stroke();
+
+    // 6. Grounded sneaker cast shadow on top of the disc
+    ctx.save();
+    ctx.translate(cx, cy - 1);
+    ctx.scale(1, 0.14);
+    var shGrad = ctx.createRadialGradient(0, 0, 14, 0, 0, 106);
+    shGrad.addColorStop(0, 'rgba(3, 6, 15, 0.55)');
+    shGrad.addColorStop(0.68, 'rgba(3, 6, 15, 0.24)');
+    shGrad.addColorStop(1, 'rgba(3, 6, 15, 0)');
+    ctx.fillStyle = shGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, 106, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
     ctx.restore();
   }
 
-  function poseCharacterCanvas(torsoSrcCanvas, armSrcCanvas, rightHandPropCanvases, spec) {
-    var W = BODY_W, H = BODY_H;
-    var GH = 65, GW = 45;
-    var gxArr = new Float32Array(GW * GH);
-    var gyArr = new Float32Array(GW * GH);
-    var tilt = spec.torso_tilt || 0.0;
-
-    for (var iy = 0; iy < GH; iy++) {
-      var py = iy * (H - 1.0) / (GH - 1.0);
-      var ty = Math.max(0.0, Math.min(1.0, (py - 406.0) / 38.0));
-      var wy = ty * ty * (3.0 - 2.0 * ty);
-
-      // For wide draped robes, gently relax upper sleeves continuously on the same grid
-      var tArmY = Math.max(0.0, Math.min(1.0, (py - 190.0) / 50.0)) * Math.max(0.0, Math.min(1.0, (475.0 - py) / 40.0));
-
-      for (var ix = 0; ix < GW; ix++) {
-        var px = ix * (W - 1.0) / (GW - 1.0);
-        var dT = rotVec(px - 256.0, py - 415.0, -tilt);
-        var torX = 256.0 + dT[0], torY = 415.0 + dT[1];
-
-        if (spec.hasDrapedRobe && tArmY > 0.01) {
-          if (px < 185.0) {
-            var wAL = Math.max(0.0, Math.min(1.0, (180.0 - px) / 40.0)) * tArmY;
-            var pAL = evalChainPoint(px, py, 156, 180, 105, 286, 62, 374, spec.armL_sh, spec.armL_el, 0);
-            torX = torX * (1 - wAL) + pAL[0] * wAL;
-            torY = torY * (1 - wAL) + pAL[1] * wAL;
-          } else if (px > 327.0) {
-            var wAR = Math.max(0.0, Math.min(1.0, (px - 332.0) / 40.0)) * tArmY;
-            var pAR = evalChainPoint(px, py, 356, 180, 407, 286, 450, 374, spec.armR_sh, spec.armR_el, 0);
-            torX = torX * (1 - wAR) + pAR[0] * wAR;
-            torY = torY * (1 - wAR) + pAR[1] * wAR;
-          }
-        }
-
-        var sx, sy;
-        if (spec.isSkirt) {
-          var pSk = evalChainPoint(px, py, 256, 420, 256, 555, 256, 680, spec.legL_hip * 0.55, spec.legL_knee * 0.55, 0);
-          sx = torX * (1.0 - wy) + pSk[0] * wy;
-          sy = torY * (1.0 - wy) + pSk[1] * wy;
-        } else {
-          var pLL = evalChainPoint(px, py, 210, 426, 205, 552, 200, 680, spec.legL_hip, spec.legL_knee, spec.legL_ankle);
-          var pLR = evalChainPoint(px, py, 302, 426, 307, 552, 312, 680, spec.legR_hip, spec.legR_knee, spec.legR_ankle);
-          var tx = Math.max(0.0, Math.min(1.0, (px - 244.0) / 24.0));
-          var wx = tx * tx * (3.0 - 2.0 * tx);
-          var wLL = wy * (1.0 - wx), wLR = wy * wx, wTor = 1.0 - wy;
-          sx = torX * wTor + pLL[0] * wLL + pLR[0] * wLR;
-          sy = torY * wTor + pLL[1] * wLL + pLR[1] * wLR;
-        }
-        var gi = iy * GW + ix;
-        gxArr[gi] = sx;
-        gyArr[gi] = sy;
-      }
-    }
-
-    var outCanvas = resampleFromCoarseGrid(torsoSrcCanvas, gxArr, gyArr, GW, GH);
-    var outCtx = outCanvas.getContext('2d');
-
-    if (!spec.hasDrapedRobe && armSrcCanvas) {
-      ['L', 'R'].forEach(function (side) {
-        var shDeg = side === 'L' ? spec.armL_sh : spec.armR_sh;
-        var elDeg = side === 'L' ? spec.armL_el : spec.armR_el;
-        var pcs = extractAdaptiveArmPieces(armSrcCanvas, side);
-        var dS = rotVec(pcs.S[0] - 256.0, pcs.S[1] - 415.0, tilt);
-        var sDst = [256.0 + dS[0], 415.0 + dS[1]];
-        var vE = rotVec(pcs.E[0] - pcs.S[0], pcs.E[1] - pcs.S[1], shDeg + tilt);
-        var eDst = [sDst[0] + vE[0], sDst[1] + vE[1]];
-
-        var armComb = document.createElement('canvas'); armComb.width = W; armComb.height = H;
-        var ac = armComb.getContext('2d');
-        drawPivotedCanvas(ac, pcs.up, pcs.S, sDst, shDeg + tilt);
-        drawPivotedCanvas(ac, pcs.fo, pcs.E, eDst, shDeg + elDeg + tilt);
-
-        if (side === 'R' && rightHandPropCanvases && rightHandPropCanvases.length) {
-          rightHandPropCanvases.forEach(function (propIm) {
-            drawPivotedCanvas(ac, propIm, pcs.E, eDst, shDeg + elDeg + tilt);
-          });
-        }
-
-        // Subtle 3D contact shadow onto lower torso/hips (clipped to torso alpha so zero shadow floats outside)
-        var shLayer = document.createElement('canvas'); shLayer.width = W; shLayer.height = H;
-        var shc = shLayer.getContext('2d');
-        shc.save();
-        try { shc.filter = 'blur(3.5px)'; } catch (e) {}
-        shc.drawImage(armComb, 0, 3);
-        shc.restore();
-        shc.globalCompositeOperation = 'source-in';
-        var grad = shc.createLinearGradient(0, 232, 0, 268);
-        grad.addColorStop(0, 'rgba(8, 12, 28, 0)');
-        grad.addColorStop(1, 'rgba(8, 12, 28, 0.20)');
-        shc.fillStyle = grad;
-        shc.fillRect(0, 0, W, H);
-        shc.globalCompositeOperation = 'destination-in';
-        shc.drawImage(outCanvas, 0, 0);
-
-        outCtx.drawImage(shLayer, 0, 0);
-        outCtx.drawImage(armComb, 0, 0);
-      });
-    } else if (rightHandPropCanvases && rightHandPropCanvases.length) {
-      rightHandPropCanvases.forEach(function (propIm) {
-        outCtx.drawImage(propIm, 0, 0, W, H);
-      });
-    }
-
-    return outCanvas;
-  }
-
-  function applyMaskAlpha(canvas, maskFloatArr) {
-    var ctx = canvas.getContext('2d');
-    var id = ctx.getImageData(0, 0, BODY_W, BODY_H);
-    var p = id.data;
-    for (var i = 0, n = BODY_W * BODY_H; i < n; i++) {
-      p[i * 4 + 3] = (p[i * 4 + 3] * maskFloatArr[i]) | 0;
-    }
-    ctx.putImageData(id, 0, 0);
+  function loadWithFallback(primaryUrl, fallbackUrl) {
+    return loadImg(primaryUrl).catch(function () {
+      return fallbackUrl ? loadImg(fallbackUrl) : null;
+    });
   }
 
   // lowest row where an outfit still covers both legs (in body-frame pixels), cached per item
@@ -1203,24 +1104,37 @@
     while (y > 380 && row(y) < 40) y -= 2;
     LEG_COVER[id] = y; return y;
   }
+
   function compose(choice, headImg, eq, poseKind, studentId) {
     return fetchWear().then(function () {
       choice = choice || {};
-      var mergedEq = Object.assign({}, eq || {}, choice.wear || {});
+      var mergedEq = effectiveWear(choice, eq || {});
       var tone = TONES.some(function (t) { return t.id === choice.skin; }) ? choice.skin : 'auto';
       var L = wearLayers(mergedEq);
-      // Drawn poses (arms only): laugh -> cheer, wink -> wave. Used when every top the pupil wears was drawn in that pose.
-      var pose = /laugh/.test(poseKind || '') ? 'cheer' : (/wink/.test(poseKind || '') ? 'wave' : '');
-      var poseIds = (wear && wear.poses && wear.poses[pose]) || null;
-      if (pose && (!poseIds || L.tops.some(function (tid) { return SLOT_BY_ITEM[tid] === 'clothing' && poseIds.indexOf(tid) < 0; }))) pose = '';
-      function wearUrl(id) { return BASE + 'wear/' + id + ((pose && poseIds.indexOf(id) >= 0) ? '__' + pose : '') + '.webp' + ASSET_V; }
+      var pose = resolveDrawnPose(choice, studentId, poseKind, L);
+      var poseSuf = (pose === 'wave' || pose === 'cheer') ? ('__' + pose) : '';
+      var petUrl = mergedEq.pet ? petImageUrl(mergedEq.pet, pose) : '';
+
       var need = [
-        loadImg(BASE + (pose ? 'body_' + pose : 'body_light') + '.webp' + ASSET_V),
-        loadImg(BASE + (pose ? 'skin_' + pose : 'skin_mask') + '.webp' + ASSET_V),
-        loadImg(BASE + (pose ? 'tee_' + pose : 'tee_light') + '.webp' + ASSET_V)
+        poseSuf
+          ? loadWithFallback(BASE + 'body_' + pose + '.webp' + ASSET_V, BASE + 'body_light.webp' + ASSET_V)
+          : loadImg(BASE + 'body_light.webp' + ASSET_V),
+        poseSuf
+          ? loadWithFallback(BASE + 'skin_' + pose + '.webp' + ASSET_V, BASE + 'skin_mask.webp' + ASSET_V)
+          : loadImg(BASE + 'skin_mask.webp' + ASSET_V),
+        poseSuf
+          ? loadWithFallback(BASE + 'tee_' + pose + '.webp' + ASSET_V, BASE + 'tee_light.webp' + ASSET_V)
+          : loadImg(BASE + 'tee_light.webp' + ASSET_V)
       ]
-        .concat(L.body.map(function (id) { return loadImg(wearUrl(id)); }))
-        .concat(L.head.map(function (id) { return loadImg(BASE + 'wear/' + id + '.webp' + ASSET_V); }));
+        .concat(L.body.map(function (id) {
+          if (poseSuf && POSED_TOPS[id]) {
+            return loadWithFallback(BASE + 'wear/' + id + poseSuf + '.webp' + ASSET_V, BASE + 'wear/' + id + '.webp' + ASSET_V);
+          }
+          return loadImg(BASE + 'wear/' + id + '.webp' + ASSET_V);
+        }))
+        .concat(L.head.map(function (id) { return loadImg(BASE + 'wear/' + id + '.webp' + ASSET_V); }))
+        .concat(petUrl ? [loadImg(petUrl + ASSET_V)] : []);
+
       return Promise.all(need.map(function (p) { return p.catch(function () { return null; }); })).then(function (ims) {
         var bodyLight = ims[0], skinMask = ims[1], teeMask = ims[2];
         if (!bodyLight) throw new Error('body');
@@ -1229,7 +1143,7 @@
         var targetRgb = TONE_PRESET_RGB[tone] || info.skinRgb;
         var gradedBody = getGradedBody(bodyLight, skinMask, targetRgb, pose);
 
-        var W = BODY_W, H = BODY_H + PAD;
+        var W = BODY_W, H = BODY_H + PAD + PAD_BOTTOM;
         var c = document.createElement('canvas'); c.width = Math.round(W * OUT_SCALE); c.height = Math.round(H * OUT_SCALE);
         var ctx = c.getContext('2d'); ctx.scale(OUT_SCALE, OUT_SCALE);
 
@@ -1239,16 +1153,9 @@
         var shoesIms = L.shoes.map(function () { return ims[k++]; });
         var topsIms = L.tops.map(function () { return ims[k++]; });
         var headIms = L.head.map(function () { return ims[k++]; });
+        var petIm = petUrl ? ims[k++] : null;
 
-        var poseSpec = resolvePoseSpec(choice, studentId, poseKind, L);
-        // Clean pose: the body and every item are drawn exactly as the artist drew them (no bending of arms or legs).
-        // The bending engine cut arms at the elbow and doubled hands, so it is off unless RIG_ON is set for testing.
-        var straight = !root.__PA_RIG_ON;
-        if (straight) poseSpec = { torso_tilt: 0, hasDrapedRobe: true, straight: true };
-        var neckShift = rotVec(0, NECK_Y - 415.0, poseSpec.torso_tilt || 0.0);
-        var neckDx = neckShift[0], neckDy = neckShift[1] - (NECK_Y - 415.0);
-
-        var hx = (BODY_W - HEAD) / 2 + neckDx, hy = PAD + NECK_Y - HEAD * CHIN + neckDy;
+        var hx = (BODY_W - HEAD) / 2, hy = PAD + NECK_Y - HEAD * CHIN;
         var prep = prepareHead(headImg, L.head);
         var bh = (!prep.suppressBackHair) ? info.backHair : null;
         var bx1 = 0, bx2 = 0, by1 = 0, by2 = 0;
@@ -1256,7 +1163,7 @@
           bx1 = Math.round(hx + bh.x1Norm * HEAD);
           bx2 = Math.round(hx + bh.x2Norm * HEAD);
           by1 = Math.round(hy + bh.y1Norm * HEAD);
-          by2 = Math.min(Math.round(hy + bh.y2Norm * HEAD), PAD + 104);
+          by2 = Math.min(Math.round(hy + bh.y2Norm * HEAD), PAD + 108);
         }
 
         // Compose character onto offscreen charCanvas so one unified outer sticker border wraps everything seamlessly
@@ -1285,7 +1192,6 @@
           bg.save();
           bg.globalCompositeOperation = 'destination-out';
           bg.beginPath();
-          // erase the jeans only as far down as the outfit really covers the legs (a knee-length robe keeps the legs below its hem)
           var cutTo = 670;
           if (hasFullSuit && !legsIms.some(Boolean)) {
             cutTo = 378;
@@ -1302,108 +1208,135 @@
         if (shoesIms.some(Boolean)) {
           bg.clearRect(115, 672, 282, 96);
         }
-        // Punch out hidden upper arms / T-shirt sleeves beneath long-sleeved or gloved outfits so zero inner arm sliver peeks out
-        var armEraseMaxY = 0;
-        L.tops.forEach(function (tid, idx) {
-          if (!topsIms[idx]) return;
-          if (SLOT_BY_ITEM[tid] === 'accessory' || CHEST_SHADOW_ITEMS[tid] || TORSO_ONLY_TOPS[tid] || tid === 'cs-sport-shirt') return;
-          if (GLOVED_SUITS[tid]) armEraseMaxY = Math.max(armEraseMaxY, 470);
-          else if (THREE_QUARTER_SLEEVES[tid]) armEraseMaxY = Math.max(armEraseMaxY, 304);
-          else armEraseMaxY = Math.max(armEraseMaxY, 346);
-        });
-        if (armEraseMaxY > 0 && pose && teeMask) {
-          // drawn pose: hide the T-shirt sleeves under a long-sleeved outfit
-          var sl = document.createElement('canvas'); sl.width = BODY_W; sl.height = BODY_H;
-          var slg = sl.getContext('2d'); slg.drawImage(teeMask, 0, 0, BODY_W, BODY_H); slg.clearRect(170, 0, 172, BODY_H);
-          bg.save(); bg.globalCompositeOperation = 'destination-out'; bg.drawImage(sl, 0, 0); bg.restore();
-        }
-        if (armEraseMaxY > 0 && !pose) {
-          bg.clearRect(0, 148, 171, armEraseMaxY - 148);
-          bg.clearRect(BODY_W - 171, 148, 171, armEraseMaxY - 148);
+
+        // Punch out hidden base arms beneath outfits so zero inner T-shirt sleeve or doubled bare arm peeks out
+        if (pose === 'stand') {
+          var armEraseMaxY = 0;
+          L.tops.forEach(function (tid, idx) {
+            if (!topsIms[idx]) return;
+            if (SLOT_BY_ITEM[tid] === 'accessory' || CHEST_SHADOW_ITEMS[tid] || TORSO_ONLY_TOPS[tid] || tid === 'cs-sport-shirt') return;
+            if (GLOVED_SUITS[tid]) armEraseMaxY = Math.max(armEraseMaxY, 470);
+            else if (THREE_QUARTER_SLEEVES[tid]) armEraseMaxY = Math.max(armEraseMaxY, 304);
+            else armEraseMaxY = Math.max(armEraseMaxY, 346);
+          });
+          if (armEraseMaxY > 0) {
+            bg.clearRect(0, 148, 171, armEraseMaxY - 148);
+            bg.clearRect(BODY_W - 171, 148, 171, armEraseMaxY - 148);
+          }
+        } else {
+          // Drawn Wave / Cheer outfits include their own complete drawn sleeves & 5-finger hands:
+          // erase base arms outside chest [172..340] above waist and outside jeans hips [138..374] below waist
+          var hasPosedSleeveTop = L.tops.some(function (tid, idx) {
+            return !!topsIms[idx] && !!POSED_TOPS[tid] && !TORSO_ONLY_TOPS[tid];
+          });
+          if (hasPosedSleeveTop) {
+            bg.clearRect(0, 44, 172, 348);
+            bg.clearRect(BODY_W - 172, 44, 172, 348);
+            bg.clearRect(0, 392, 144, 98);
+            bg.clearRect(BODY_W - 144, 392, 144, 98);
+          }
         }
 
-        // 3. Assemble bind-pose Torso+Legs canvas AND Arm+Sleeves canvas for 2.5D skeletal articulation
-        var torsoSrc = document.createElement('canvas'); torsoSrc.width = BODY_W; torsoSrc.height = BODY_H;
-        var tc = torsoSrc.getContext('2d');
-        var armSrc = document.createElement('canvas'); armSrc.width = BODY_W; armSrc.height = BODY_H;
-        var ac = armSrc.getContext('2d');
+        // 3. Layer drawn body + wearables cleanly in anatomical z-order
+        var bodyComp = document.createElement('canvas'); bodyComp.width = BODY_W; bodyComp.height = BODY_H;
+        var bc = bodyComp.getContext('2d');
+
+        backIms.forEach(function (im, idx) {
+          if (!im) return;
+          if (L.back[idx] === 'cs-fairy-wings') {
+            bc.save();
+            bc.beginPath();
+            bc.rect(0, 0, BODY_W, 395);
+            bc.clip();
+            bc.drawImage(im, 0, 0, BODY_W, BODY_H);
+            bc.restore();
+          } else {
+            bc.drawImage(im, 0, 0, BODY_W, BODY_H);
+          }
+        });
 
         if (!hasFullSuit) {
           legsIms.forEach(function (im, idx) {
             if (im && L.legs[idx] !== 'av-legs-tutu') {
-              tc.drawImage(getGradedLeg(im, L.legs[idx], targetRgb), 0, 0, BODY_W, BODY_H);
+              bc.drawImage(getGradedLeg(im, L.legs[idx], targetRgb), 0, 0, BODY_W, BODY_H);
             }
           });
         }
 
-        // Base body goes to both armSrc (for sleeves/hands) and torsoSrc (masked by torsoKeep if articulated arms)
-        ac.drawImage(bodyLayer, 0, 0);
-        if (!poseSpec.hasDrapedRobe) {
-          var bodyTorsoOnly = document.createElement('canvas'); bodyTorsoOnly.width = BODY_W; bodyTorsoOnly.height = BODY_H;
-          bodyTorsoOnly.getContext('2d').drawImage(bodyLayer, 0, 0);
-          applyMaskAlpha(bodyTorsoOnly, getRigMasks().torsoKeep);
-          tc.drawImage(bodyTorsoOnly, 0, 0);
-        } else {
-          tc.drawImage(bodyLayer, 0, 0);
-        }
+        bc.drawImage(bodyLayer, 0, 0);
 
         if (!hasFullSuit) {
           legsIms.forEach(function (im, idx) {
             if (im && L.legs[idx] === 'av-legs-tutu') {
-              tc.drawImage(im, 0, 0, BODY_W, BODY_H);
+              bc.drawImage(im, 0, 0, BODY_W, BODY_H);
             }
           });
         }
 
-        backIms.forEach(function (im) { if (im) tc.drawImage(im, 0, 0, BODY_W, BODY_H); });
-        shoesIms.forEach(function (im) { if (im) tc.drawImage(im, 0, 0, BODY_W, BODY_H); });
+        shoesIms.forEach(function (im) { if (im) bc.drawImage(im, 0, 0, BODY_W, BODY_H); });
 
         var confettiIm = null;
-        var rightHandProps = [];
         topsIms.forEach(function (im, idx) {
           if (!im) return;
           var tid = L.tops[idx];
           if (tid === 'acc-confetti') { confettiIm = im; return; }
-          if (pose && RIGHT_HAND_PROPS[tid]) return;   // held things wait for their own pose drawings
-          var graded = getGradedTop(im, tid + (pose ? '__' + pose : ''), targetRgb);
-          if (RIGHT_HAND_PROPS[tid]) {
-            rightHandProps.push(graded);
-            return;
-          }
+          var graded = getGradedTop(im, tid, targetRgb, pose);
           if (CHEST_SHADOW_ITEMS[tid]) {
-            tc.save();
-            tc.shadowColor = 'rgba(10, 8, 30, 0.24)';
-            tc.shadowBlur = 4;
-            tc.shadowOffsetY = 2;
-            tc.drawImage(graded, 0, 0, BODY_W, BODY_H);
-            tc.restore();
+            bc.save();
+            bc.shadowColor = 'rgba(10, 8, 30, 0.24)';
+            bc.shadowBlur = 4;
+            bc.shadowOffsetY = 2;
+            bc.drawImage(graded, 0, 0, BODY_W, BODY_H);
+            bc.restore();
             return;
           }
-          if (SLOT_BY_ITEM[tid] === 'accessory' || TORSO_ONLY_TOPS[tid] || poseSpec.hasDrapedRobe) {
-            tc.drawImage(graded, 0, 0, BODY_W, BODY_H);
-          } else {
-            // Sleeved / fitted outfit: sleeves bend with armSrc, torso stays on torsoSrc!
-            ac.drawImage(graded, 0, 0, BODY_W, BODY_H);
-            var topTorsoOnly = document.createElement('canvas'); topTorsoOnly.width = BODY_W; topTorsoOnly.height = BODY_H;
-            topTorsoOnly.getContext('2d').drawImage(graded, 0, 0, BODY_W, BODY_H);
-            applyMaskAlpha(topTorsoOnly, getRigMasks().torsoKeep);
-            tc.drawImage(topTorsoOnly, 0, 0);
+          if (RIGHT_HAND_PROPS[tid] && pose === 'wave') {
+            // Hold handheld prop naturally in the relaxed left hand while waving with the right hand!
+            bc.save();
+            bc.translate(BODY_W, 0);
+            bc.scale(-1, 1);
+            bc.drawImage(graded, 0, 0, BODY_W, BODY_H);
+            bc.restore();
+            return;
           }
+          if (RIGHT_HAND_PROPS[tid] && pose === 'cheer') {
+            bc.save();
+            if (!STAFF_PROPS[tid]) {
+              bc.translate(10, -258);
+              bc.drawImage(graded, 0, 0, BODY_W, BODY_H);
+            } else {
+              bc.drawImage(graded, 0, 0, BODY_W, BODY_H);
+            }
+            bc.restore();
+            return;
+          }
+          bc.drawImage(graded, 0, 0, BODY_W, BODY_H);
         });
 
-        var posedBodyCanvas;
-        if (straight) { rightHandProps.forEach(function (im) { tc.drawImage(im, 0, 0, BODY_W, BODY_H); }); posedBodyCanvas = torsoSrc; }
-        else posedBodyCanvas = poseCharacterCanvas(torsoSrc, armSrc, rightHandProps, poseSpec);
-        cc.drawImage(posedBodyCanvas, 0, PAD, BODY_W, BODY_H);
+        // Stamp cape front collar clasps over the T-shirt/chest neckline so gold clasps sit in front
+        backIms.forEach(function (im, idx) {
+          var bid = L.back[idx];
+          if (!im || !CAPE_CLASP_ITEMS[bid]) return;
+          bc.save();
+          bc.beginPath();
+          bc.rect(152, 0, 208, 168);
+          bc.clip();
+          bc.drawImage(im, 0, 0, BODY_W, BODY_H);
+          bc.restore();
+        });
 
-        // 5. Draw prepared head + head wearables (following subtle torso posture & playful emotion tilt)
-        var headTiltRad = ((poseSpec.torso_tilt || 0) * 0.65) * Math.PI / 180.0;
-        if (poseKind === 'laugh') headTiltRad += -0.055;
-        else if (poseKind === 'wink') headTiltRad += 0.065;
+        cc.drawImage(bodyComp, 0, PAD, BODY_W, BODY_H);
+
+        // 4. Draw prepared expressive head + head wearables (with subtle lively tilt anchored at the neck)
+        var headTiltRad = 0;
+        if (pose === 'wave') headTiltRad = 0.032;
+        else if (pose === 'cheer') headTiltRad = -0.022;
+        if (poseKind === 'laugh' || poseKind === 'dedicated-laugh') headTiltRad = -0.052;
+        else if (poseKind === 'wink' || poseKind === 'dedicated-wink') headTiltRad = 0.062;
 
         cc.save();
         if (Math.abs(headTiltRad) > 0.001) {
-          var pivX = BODY_W / 2 + neckDx, pivY = PAD + NECK_Y + neckDy;
+          var pivX = BODY_W / 2, pivY = PAD + NECK_Y;
           cc.translate(pivX, pivY);
           cc.rotate(headTiltRad);
           cc.translate(-pivX, -pivY);
@@ -1421,21 +1354,10 @@
         });
         cc.restore();
 
-        // 6. Grounded elliptical contact shadow beneath the shoes
-        var shGrad = ctx.createRadialGradient(BODY_W / 2, PAD + 754, 12, BODY_W / 2, PAD + 754, 122);
-        shGrad.addColorStop(0, 'rgba(6, 9, 20, 0.36)');
-        shGrad.addColorStop(0.65, 'rgba(6, 9, 20, 0.16)');
-        shGrad.addColorStop(1, 'rgba(6, 9, 20, 0)');
-        ctx.save();
-        ctx.translate(BODY_W / 2, PAD + 754);
-        ctx.scale(1, 0.14);
-        ctx.fillStyle = shGrad;
-        ctx.beginPath();
-        ctx.arc(0, 0, 122, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
+        // 5. Draw glowing 3D cyber-glass arcade pedestal disc underneath the character
+        drawArcadePedestal(ctx, BODY_W / 2, PAD + 744, pedestalAccent(choice, studentId, mergedEq));
 
-        // 7. Stamp one unified 5.0px pure-white outer sticker border around the entire composed character (thresholded so faint edges stay razor-clean)
+        // 6. Stamp one unified 5.2px pure-white outer sticker border around the character
         var sil = document.createElement('canvas'); sil.width = W; sil.height = H;
         var sg = sil.getContext('2d');
         sg.drawImage(charCanvas, 0, 0);
@@ -1449,16 +1371,34 @@
 
         for (var aIdx = 0; aIdx < 20; aIdx++) {
           var ang = (aIdx / 20) * Math.PI * 2;
-          ctx.drawImage(sil, Math.cos(ang) * 5.0, Math.sin(ang) * 5.0);
+          ctx.drawImage(sil, Math.cos(ang) * 5.2, Math.sin(ang) * 5.2);
         }
         for (var aIdx2 = 0; aIdx2 < 12; aIdx2++) {
           var ang2 = (aIdx2 / 12) * Math.PI * 2;
-          ctx.drawImage(sil, Math.cos(ang2) * 2.5, Math.sin(ang2) * 2.5);
+          ctx.drawImage(sil, Math.cos(ang2) * 2.6, Math.sin(ang2) * 2.6);
         }
         ctx.drawImage(sil, 0, 0);
 
-        // 8. Draw composed character + floating confetti (if equipped)
+        // 7. Stamp composed character + equipped 3D Pet Buddy + floating confetti
         ctx.drawImage(charCanvas, 0, 0);
+        if (petIm && petIm.width > 0 && petIm.height > 0) {
+          var maxPW = 148, maxPH = 152;
+          var pSc = Math.min(maxPW / petIm.width, maxPH / petIm.height);
+          var pW = Math.round(petIm.width * pSc), pH = Math.round(petIm.height * pSc);
+          var pCx = 394, pBottom = PAD + 750;
+          var pX = Math.max(296, Math.min(W - pW - 6, Math.round(pCx - pW / 2)));
+          var pY = Math.round(pBottom - pH);
+          ctx.save();
+          ctx.fillStyle = 'rgba(3, 6, 15, 0.42)';
+          ctx.beginPath();
+          ctx.ellipse(pX + pW / 2, pBottom - 4, Math.round(pW * 0.34), 7, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowColor = 'rgba(6, 9, 17, 0.45)';
+          ctx.shadowBlur = 9;
+          ctx.shadowOffsetY = 3;
+          ctx.drawImage(petIm, pX, pY, pW, pH);
+          ctx.restore();
+        }
         if (confettiIm) ctx.drawImage(confettiIm, 0, PAD, BODY_W, BODY_H);
 
         return c.toDataURL('image/webp', 0.9);
@@ -1548,6 +1488,8 @@
     '.pa-item:hover{transform:translateY(-2px)}.pa-item:active{transform:translateY(4px);border-bottom-width:2px}.pa-item.on{border-color:#fde047;background:rgba(250,204,21,.22)}' +
     '.pa-item.locked{pointer-events:none!important;opacity:.45!important;filter:grayscale(.7)!important;cursor:not-allowed!important}' +
     '.pa-lock{position:absolute;top:5px;right:5px;background:rgba(15,23,42,.9);border:1px solid rgba(251,191,36,.6);color:#fde68a;border-radius:99px;padding:1px 6px;font-size:.66rem;font-weight:700}' +
+    '.pa-own{position:absolute;top:5px;right:5px;background:rgba(6,78,59,.92);border:1px solid rgba(52,211,153,.75);color:#a7f3d0;border-radius:99px;padding:1px 6px;font-size:.64rem;font-weight:700}' +
+    '.pa-mon-tag{position:absolute;top:5px;left:5px;background:rgba(30,27,75,.9);border:1px solid rgba(56,189,248,.7);color:#bae6fd;border-radius:99px;padding:1px 5px;font-size:.62rem;font-weight:700}' +
     '.pa-item img{width:76px;height:76px;object-fit:contain;filter:drop-shadow(0 3px 6px rgba(0,0,0,.4))}' +
     '.pa-item span{font-size:.78rem;line-height:1.15;font-weight:600}' +
     '.pa-rev{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}.pa-card{background:rgba(255,255,255,.1);border-radius:20px;padding:10px;text-align:center}.pa-card img{width:100%;height:220px;object-fit:contain}' +
@@ -1557,6 +1499,7 @@
     '.pa-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}.pa-tabs button{border:0;border-bottom:5px solid rgba(0,0,0,.28);border-radius:99px;padding:10px 18px;font:600 1rem Fredoka,system-ui,sans-serif;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}.pa-tabs button.on{background:#fde047;color:#1e1b4b;border-bottom-color:#ca8a04}' +
     '@keyframes paIdleBreath{0%,100%{transform:translateY(0) scale(1.12)}50%{transform:translateY(-4px) scale(1.135)}}' +
     '.cb-st img.cb-mon.pa-av{aspect-ratio:3/4;object-position:center bottom}' +
+    '.cb-pw:has(img.pa-av)>i.cb-ped{display:none}' +
     '.cb-mg.scene .cb-pw img.cb-mon.pa-av{transform:scale(1.12);transform-origin:50% 94%;animation:paIdleBreath 3.6s ease-in-out infinite;animation-delay:calc(var(--i,0) * -0.37s)}' +
     '.cb-mg.scene .cb-pw img.cb-mon.pa-av.cb-bounce{animation:cbMonBounce .45s cubic-bezier(.175,.885,.32,1.275)!important}';
   function ensureCss() {
@@ -1621,8 +1564,9 @@
     }).join('') + '</div>';
   }
   function stanceBarHtml(c) {
-    var cur = (c && c.stance) || 'natural';
-    if (!root.__PA_RIG_ON) return '';   // stance buttons hidden while the clean pose is used
+    var raw = (c && c.stance) || '';
+    var eff = effectiveWear(c, ui.pick ? equippedOf(ui.pick) : {});
+    var cur = (raw === 'wave' || raw === 'cheer') ? raw : ((raw === 'stand' || raw === 'natural' || raw === 'hip') ? 'stand' : (ui.pick ? resolveDrawnPose(c, ui.pick, 'smile', wearLayers(eff)) : 'stand'));
     return '<div class="pa-poses" style="margin-top:6px">' + STANCES.map(function (st) {
       return '<button type="button" class="' + (cur === st.id ? 'on' : '') + '" onclick="PupilAvatars._stance(\'' + st.id + '\')">' + st.label + '</button>';
     }).join('') + '</div>';
@@ -1636,7 +1580,7 @@
     var html = '<div class="pa-box" role="dialog" aria-label="Avatars"><button class="pa-x" onclick="PupilAvatars.close()" aria-label="Close">✕</button>' +
       '<div class="pa-tabs">' +
       '<button class="' + (ui.tab === 'make' ? 'on' : '') + '" onclick="PupilAvatars._tab(\'make\')">🎨 Make my avatar</button>' +
-      '<button class="' + (ui.tab === 'wardrobe' ? 'on' : '') + '" onclick="PupilAvatars._tab(\'wardrobe\')">👗 Wardrobe (124 items)</button>' +
+      '<button class="' + (ui.tab === 'wardrobe' ? 'on' : '') + '" onclick="PupilAvatars._tab(\'wardrobe\')">👗 Wardrobe (124+ items)</button>' +
       '<button class="' + (ui.tab === 'review' ? 'on' : '') + '" onclick="PupilAvatars._tab(\'review\')">✅ Teacher check' + (waiting ? ' (' + waiting + ')' : '') + '</button>' +
       '</div>';
     if (state === 'loading') html += '<p class="s">Loading avatars…</p>';
@@ -1647,20 +1591,23 @@
     if ((ui.tab === 'make' && ui.pick) || ui.tab === 'wardrobe') refreshPreview();
   }
   function namesHtml() {
-    return '<h2>Who are you?</h2><p class="s">Tap your name, or open <b>👗 Wardrobe (124 items)</b> above to try on every outfit, hat, wig, and pair of shoes!</p><div class="pa-names">' +
+    return '<h2>Who are you?</h2><p class="s">Tap your name, or open <b>👗 Wardrobe</b> above to try on every outfit, hat, wig, pet buddy, and pair of shoes!</p><div class="pa-names">' +
       pupils().map(function (s) {
         var stt = statusOf(s.id);
         return '<button class="' + stt + '" onclick="PupilAvatars._pick(\'' + esc(s.id) + '\')">' + esc(firstName(s)) + (stt === 'done' ? '<small>✓ ready</small>' : stt === 'wait' ? '<small>waiting for teacher</small>' : '') + '</button>';
       }).join('') + '</div>';
   }
   function wardrobePickerHtml(c) {
-    var activeCat = CATALOG.filter(function (x) { return x.key === ui.cat; })[0] || CATALOG[0];
-    var curWear = (c && c.wear) || {};
-    var curVal = curWear[activeCat.key] || '';
+    var cats = pickerCategories(ui.pick);
+    var activeCat = cats.filter(function (x) { return x.key === ui.cat; })[0] || cats[0];
+    var monEq = ui.pick ? avatarEquipFromMonster(equippedOf(ui.pick)) : {};
+    var effWear = effectiveWear(c, ui.pick ? equippedOf(ui.pick) : {});
+    var curVal = effWear[activeCat.key] || '';
     var earnedNote = (ui.tab === 'make' && lockMode() === 'earned') ? ' · <small style="color:#fde047">🪙 Earned Mode: level up your monster to unlock more!</small>' : '';
-    return '<div class="pa-step"><b>3. Dress Up (' + CATALOG.reduce(function (n, x) { return n + x.items.length; }, 0) + ' items)' + earnedNote + '</b>' +
-      '<div class="pa-cats">' + CATALOG.map(function (cat) {
-        var hasEq = curWear[cat.key] && curWear[cat.key] !== 'none';
+    var syncNote = ui.pick ? ' · <small style="color:#7dd3fc">👾 Synced with Monster belongings</small>' : '';
+    return '<div class="pa-step"><b>3. Dress Up (' + cats.reduce(function (n, x) { return n + x.items.length; }, 0) + ' items)' + syncNote + earnedNote + '</b>' +
+      '<div class="pa-cats">' + cats.map(function (cat) {
+        var hasEq = effWear[cat.key] && effWear[cat.key] !== 'none';
         return '<button class="' + (activeCat.key === cat.key ? 'on' : '') + '" onclick="PupilAvatars._cat(\'' + cat.key + '\')">' +
           esc(cat.label) + ' (' + cat.items.length + ')' + (hasEq ? ' ✓' : '') + '</button>';
       }).join('') + '</div>' +
@@ -1670,10 +1617,14 @@
       activeCat.items.map(function (itemId) {
         var isOn = curVal === itemId;
         var lk = itemLockInfo(ui.pick, itemId);
+        var isOwned = !lk.locked && ui.pick && studentOwnsItem(ui.pick, itemId);
+        var isOnMonster = ui.pick && monEq[activeCat.key] === itemId;
+        var thumbSrc = activeCat.isPet ? (petImageUrl(itemId, 'stand') + ASSET_V) : (BASE + 'wear/' + itemId + '.webp' + ASSET_V);
         return '<button class="pa-item ' + (isOn ? 'on ' : '') + (lk.locked ? 'locked' : '') + '" ' +
           (lk.locked ? 'disabled aria-disabled="true"' : 'onclick="PupilAvatars._wear(\'' + activeCat.key + '\',\'' + itemId + '\')"') + '>' +
-          (lk.locked ? '<small class="pa-lock">' + esc(lk.label) + '</small>' : '') +
-          '<img src="' + BASE + 'wear/' + itemId + '.webp' + ASSET_V + '" loading="lazy" alt="' + esc(prettyName(itemId)) + '">' +
+          (lk.locked ? '<small class="pa-lock">' + esc(lk.label) + '</small>' : (isOwned ? '<small class="pa-own">🎒 Owned</small>' : '')) +
+          (isOnMonster ? '<small class="pa-mon-tag" title="Equipped on Monster">👾</small>' : '') +
+          '<img src="' + thumbSrc + '" loading="lazy" alt="' + esc(prettyName(itemId)) + '">' +
           '<span>' + esc(prettyName(itemId)) + '</span></button>';
       }).join('') +
       '</div></div>';
@@ -1681,7 +1632,7 @@
   function makeHtml() {
     var s = pupils().filter(function (x) { return x.id === ui.pick; })[0];
     var c = ui.choice || { skin: 'auto', tee: TEES[6], stance: '', wear: {} };
-    return '<h2>Hello, ' + esc(firstName(s)) + '!</h2><p class="s">Choose your skin tone, T-shirt, pose, and outfit, then tap “Send to my teacher”.</p>' +
+    return '<h2>Hello, ' + esc(firstName(s)) + '!</h2><p class="s">Your Monster items and Pet Buddy are already synced! Change anything you like, then tap “Send to my teacher”.</p>' +
       '<div class="pa-make"><div class="pa-prev"><img id="pa-prev" alt="Your avatar">' + poseBarHtml() + stanceBarHtml(c) + '</div><div>' +
       '<div class="pa-step"><b>1. Skin</b><div class="pa-tones">' + TONES.map(function (t) {
         return '<button class="' + ((c.skin || 'auto') === t.id ? 'on' : '') + '" style="background:' + toneBg(t.id) + ';color:#fff;font:700 1.25rem Fredoka,sans-serif" title="' + t.label + '" aria-label="' + t.label + '" onclick="PupilAvatars._set(\'skin\',\'' + t.id + '\')">' + (t.id === 'auto' ? '✨' : '') + '</button>';
@@ -1692,6 +1643,7 @@
       wardrobePickerHtml(c) +
       (heads[ui.pick] ? '' : '<p class="s">Your face picture is coming soon. Your teacher adds it.</p>') +
       '<div><button class="pa-go" onclick="PupilAvatars._send()">✓ Send to my teacher</button>' +
+      '<button class="pa-go b" onclick="PupilAvatars._syncMonster()" title="Wear everything your Monster wears">👾 Match Monster</button>' +
       '<button class="pa-go b" onclick="PupilAvatars._random()">🎲 Surprise me</button>' +
       '<button class="pa-go b" onclick="PupilAvatars._clearWear()">🧹 Plain outfit</button>' +
       '<button class="pa-go b" onclick="PupilAvatars._pick(null)">← Back</button></div>' +
@@ -1700,11 +1652,13 @@
   function wardrobeHtml() {
     var c = ui.choice || (ui.choice = { skin: 'auto', tee: TEES[6], stance: '', wear: {} });
     var list = pupils();
-    return '<h2>👗 Avatar Wardrobe — All 124 Cut-Out Items</h2>' +
-      '<p class="s">Try on every outfit, trousers/skirt, pair of shoes, wig, hat, glasses, backpack, held accessory, and body pose!</p>' +
+    return '<h2>👗 Avatar Wardrobe — Belongings &amp; Full Dress-Up</h2>' +
+      '<p class="s">Select a pupil to see their synced Monster gear &amp; 🎒 Owned belongings, or try on any outfit, pet buddy, hat, and pose!</p>' +
       '<div class="pa-make"><div class="pa-prev"><img id="pa-prev" alt="Wardrobe preview">' + poseBarHtml() + stanceBarHtml(c) +
-      '<div style="margin-top:8px"><button class="pa-go b" style="padding:8px 14px;font-size:.95rem" onclick="PupilAvatars._random()">🎲 Random Outfit</button>' +
-      '<button class="pa-go b" style="padding:8px 14px;font-size:.95rem" onclick="PupilAvatars._clearWear()">🧹 Clear</button></div></div><div>' +
+      '<div style="margin-top:8px">' +
+      (ui.pick ? '<button class="pa-go b" style="padding:8px 12px;font-size:.9rem" onclick="PupilAvatars._syncMonster()">👾 Match Monster</button>' : '') +
+      '<button class="pa-go b" style="padding:8px 12px;font-size:.9rem" onclick="PupilAvatars._random()">🎲 Random</button>' +
+      '<button class="pa-go b" style="padding:8px 12px;font-size:.9rem" onclick="PupilAvatars._clearWear()">🧹 Plain</button></div></div><div>' +
       (list.length ? '<div class="pa-step"><b>Pupil model (optional)</b><div style="display:flex;gap:6px;flex-wrap:wrap">' +
         '<button class="pa-go b" style="padding:6px 12px;font-size:.9rem;' + (!ui.pick ? 'outline:3px solid #fde047' : '') + '" onclick="PupilAvatars._wardrobePick(null)">🙂 Demo Head</button>' +
         list.map(function (s) {
@@ -1855,19 +1809,74 @@
     delete composed[id];
     clearEmotionCache(id);
     if (!data.approved[id]) return Promise.resolve();
-    return compose(data.approved[id], heads[id], equippedOf(id), 'smile', id).then(function (u) { composed[id] = u; });
+    var eq = equippedOf(id);
+    lastEquipSig[id] = JSON.stringify(avatarEquipFromMonster(eq));
+    return compose(data.approved[id], heads[id], eq, 'smile', id).then(function (u) { composed[id] = u; return u; });
+  }
+  function updateBoardAvatarDom(id) {
+    if (!on() || !id || !composed[id] || typeof document === 'undefined') return;
+    var card = document.getElementById('cb-' + id);
+    var img = card ? card.querySelector('img.cb-mon.pa-av') : null;
+    if (img) img.src = composed[id];
+  }
+  function syncStudent(id) {
+    if (!id || state !== 'ready' || !data.approved[id]) return Promise.resolve();
+    return recompose(id).then(function () {
+      updateBoardAvatarDom(id);
+      if (ui.isOpen && ui.pick === id) draw();
+    }).catch(function () {});
+  }
+  function syncAllChanged() {
+    installStoreSyncHook();
+    if (state !== 'ready') return Promise.resolve(0);
+    var changed = Object.keys(data.approved).filter(function (id) {
+      return equipSignature(id) !== (lastEquipSig[id] || '');
+    });
+    if (!changed.length) return Promise.resolve(0);
+    return Promise.all(changed.map(function (id) {
+      return recompose(id).then(function () { updateBoardAvatarDom(id); }).catch(function () {});
+    })).then(function () {
+      if (ui.isOpen && ui.pick && changed.indexOf(ui.pick) >= 0) draw();
+      return changed.length;
+    });
+  }
+  function installStoreSyncHook() {
+    var st = store();
+    if (!st || st._paProfileHooked) return;
+    st._paProfileHooked = true;
+    if (typeof st.updateMonsterProfile === 'function') {
+      var origUpdate = st.updateMonsterProfile;
+      st.updateMonsterProfile = function (studentId) {
+        var res = origUpdate.apply(this, arguments);
+        if (studentId) setTimeout(function () { syncStudent(studentId); }, 40);
+        return res;
+      };
+    }
+    if (typeof st.subscribe === 'function') {
+      var syncTimer = null;
+      try {
+        st.subscribe(function () {
+          if (state !== 'ready') return;
+          if (syncTimer) clearTimeout(syncTimer);
+          syncTimer = setTimeout(syncAllChanged, 350);
+        });
+      } catch (e) {}
+    }
   }
 
   var api = {
     mode: mode, on: on, setMode: setMode, load: load, imgFor: imgFor, has: has, open: open, close: close,
     lockMode: lockMode,
     triggerEmotion: triggerEmotion,
+    syncStudent: syncStudent,
+    syncAll: syncAllChanged,
+    owns: studentOwnsItem,
     catalog: CATALOG,
     status: function () { return { state: state, error: lastError, approved: Object.keys(data.approved).length, pending: Object.keys(data.pending).length, lockMode: lockMode() }; },
     toggleButton: function () {
       return '<button class="cb-look" onclick="PupilAvatars.setMode(PupilAvatars.on()?\'monsters\':\'avatars\')" title="Show monsters or the pupils\' avatars">' + (on() ? '🧒 Avatars' : '👾 Monsters') + '</button>' +
         (on() ? '<button class="cb-look" onclick="PupilAvatars.open()" title="Pupils make their avatar; the teacher checks it">🎨 Make avatars</button>' +
-          '<button class="cb-look" onclick="PupilAvatars.open({tab:\'wardrobe\'})" title="Try on all 124 avatar clothes, shoes, wigs and hats">👗 Wardrobe</button>' : '');
+          '<button class="cb-look" onclick="PupilAvatars.open({tab:\'wardrobe\'})" title="Try on all 124+ avatar clothes, pets, shoes, wigs and hats">👗 Wardrobe</button>' : '');
     },
     _tab: function (t) {
       ui.tab = t;
@@ -1881,7 +1890,7 @@
     },
     _stance: function (st) {
       if (!ui.choice) ui.choice = { skin: 'auto', tee: TEES[6], stance: '', wear: {} };
-      ui.choice.stance = (!st || st === 'natural') ? '' : st;
+      ui.choice.stance = st || 'stand';
       ui.pose = 'smile';
       draw();
     },
@@ -1889,7 +1898,7 @@
       if (!data.settings) data.settings = { lockMode: 'free' };
       data.settings.lockMode = (lockMode() === 'earned') ? 'free' : 'earned';
       save().catch(function () {});
-      toast(data.settings.lockMode === 'earned' ? '🪙 Earned Mode ON: special items unlock by Monster Level & Shop.' : '🔓 Free Dress-Up ON: all 124 items are open to everyone.');
+      toast(data.settings.lockMode === 'earned' ? '🪙 Earned Mode ON: special items unlock by Monster Level & Shop.' : '🔓 Free Dress-Up ON: all items are open to everyone.');
       draw();
     },
     _cat: function (c) { ui.cat = c; draw(); },
@@ -1897,8 +1906,21 @@
       if (itemId && itemId !== 'none' && itemLockInfo(ui.pick, itemId).locked) return;
       if (!ui.choice) ui.choice = { skin: 'auto', tee: TEES[6], wear: {} };
       if (!ui.choice.wear) ui.choice.wear = {};
-      if (!itemId || itemId === 'none' || ui.choice.wear[slot] === itemId) delete ui.choice.wear[slot];
-      else ui.choice.wear[slot] = itemId;
+      var monEq = ui.pick ? avatarEquipFromMonster(equippedOf(ui.pick)) : {};
+      var eff = effectiveWear(ui.choice, ui.pick ? equippedOf(ui.pick) : {});
+      if (!itemId || itemId === 'none' || eff[slot] === itemId) {
+        if (monEq[slot]) ui.choice.wear[slot] = 'none';
+        else delete ui.choice.wear[slot];
+      } else if (monEq[slot] === itemId) {
+        delete ui.choice.wear[slot];
+      } else {
+        ui.choice.wear[slot] = itemId;
+      }
+      draw();
+    },
+    _syncMonster: function () {
+      if (ui.choice) { ui.choice.wear = {}; }
+      toast('👾 Synced with Monster outfit & Pet Buddy!');
       draw();
     },
     _random: function () {
@@ -1916,7 +1938,13 @@
       draw();
     },
     _clearWear: function () {
-      if (ui.choice) { ui.choice.wear = {}; ui.choice.stance = ''; }
+      if (ui.choice) {
+        var monEq = ui.pick ? avatarEquipFromMonster(equippedOf(ui.pick)) : {};
+        var noneMap = {};
+        Object.keys(monEq).forEach(function (k) { if (k !== 'aura') noneMap[k] = 'none'; });
+        ui.choice.wear = noneMap;
+        ui.choice.stance = '';
+      }
       draw();
     },
     _wardrobePick: function (id) {
