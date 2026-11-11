@@ -4646,6 +4646,9 @@
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
+    { title: 'Unit 5 Revision Lessons 1 and 2: Sound Detectives + Beethoven’s World (7 activities)', grade: 'Grade 4', date: '2026-11-11', file: 'Grade4-Unit5-Revision-Lessons-1-2-Lesson-Plan', word: true, launch: 'magic-book/index.html?grade=4' },
+    { title: 'Unit 5 Lesson 1 (revision): The Time Book · Help Jannah! (maze, unscramble, order, main idea, riddles)', grade: 'Grade 3', date: '2026-11-11', file: 'Grade3-Unit5-Lesson1-The-Time-Book-Revision-Plan', word: true, launch: 'magic-book/index.html?grade=3' },
+    { title: 'Unit 5 Lesson 2 (revision): Time Capsule Mission (message, word search, scramble, sorting, opposites)', grade: 'Grade 3', date: '2026-11-11', file: 'Grade3-Unit5-Lesson2-Time-Capsule-Revision-Plan', word: true, launch: 'magic-book/index.html?grade=3' },
     { title: 'Talk Show printables: teacher guide, speaking cards and worksheet (Grade 3 · The Time Show)', grade: 'Grade 3', date: '2026-11-09', kind: 'Print', file: '../talk-show/print/Talk-Show-G3-Ep1-The-Time-Show', word: false, launch: 'talk-show/worksheet.html?grade=3&ep=1' },
     { title: 'Talk Show printables: teacher guide, speaking cards and worksheet (Grade 3 · Time Capsule TV)', grade: 'Grade 3', date: '2026-11-09', kind: 'Print', file: '../talk-show/print/Talk-Show-G3-Ep2-Time-Capsule-TV', word: false, launch: 'talk-show/worksheet.html?grade=3&ep=2' },
     { title: 'Talk Show printables: teacher guide, speaking cards and worksheet (Grade 4 · Make Some Noise!)', grade: 'Grade 4', date: '2026-11-09', kind: 'Print', file: '../talk-show/print/Talk-Show-G4-Ep1-Make-Some-Noise', word: false, launch: 'talk-show/worksheet.html?grade=4&ep=1' },
