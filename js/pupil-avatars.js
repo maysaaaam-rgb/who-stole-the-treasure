@@ -16,7 +16,7 @@
   var BUCKET = 'pupil-avatars';
   var LOOK_KEY = 'eaa_board_look';
   var BASE = 'assets/avatars/';
-  var ASSET_V = '?v=18';
+  var ASSET_V = '?v=19';
   var TONES = [
     { id: 'auto', label: 'Match Face ✨' },
     { id: 'light', label: 'Light' }, { id: 'medium', label: 'Medium' },
@@ -1391,7 +1391,8 @@
           bc.restore();
         });
 
-        cc.drawImage(bodyComp, 0, PAD, BODY_W, BODY_H);
+        var slim = (genderOf(studentId, choice, headImg) === 'girl') ? 0.93 : 1;
+        cc.drawImage(bodyComp, Math.round(BODY_W * (1 - slim) / 2), PAD, Math.round(BODY_W * slim), BODY_H);
 
         // 4. Draw prepared expressive head + head wearables (with subtle lively tilt anchored at the neck)
         var headTiltRad = 0;
@@ -1539,7 +1540,7 @@
     if (state === 'idle') load();
     if (state === 'ready' && !data.approved[id] && !pendingDefault[id]) {
       pendingDefault[id] = 1;
-      var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || loadImg(DEFAULT_PIC).catch(function () { return null; }); });
+      var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || defaultHeadFor(id); });
       headP.then(function (h) { return compose(defaultChoice(id), h, {}, 'smile', id); })
         .then(function (u) { composedDefault[id] = u; scheduleRerender(); })
         .catch(function () { /* keep the placeholder */ });
@@ -1580,7 +1581,7 @@
   function previewWith(id, itemId) {
     var c = lookOf(id), sl = itemId ? slotOf(itemId) : '';
     if (sl) c.wear[sl] = itemId;
-    var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || loadImg(DEFAULT_PIC).catch(function () { return null; }); });
+    var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || defaultHeadFor(id); });
     return fetchWear().then(function () { return headP; }).then(function (h) { return compose(c, h, equippedOf(id), 'smile', id); });
   }
   /** Put an owned item on (or take a slot off) and save it to the board. */
@@ -1662,6 +1663,34 @@
     }[id] || '#d08e66';
   }
 
+  // Girl or boy look: 1) the teacher's choice in Dress up, 2) the first name, 3) for names used by both, long hair
+  // in the pupil's face picture. Common Turkish first names only; real pupil names are never stored in this file.
+  var GIRL_NAMES = ('ada alya aslihan ayca ayse ayla aylin azra bahar bahriye begum belis beren beste betul bugce buglem buse cansu ceren cemre damla defne derya dilara dila duru ebru ece ecem eda ela elif elisa ella elvan esila esma esra eylul feyza gizem gokce gulce gulsen hande hazal hira ilay iclal ilayda ilgin ipek irem irmak kumsal lal lara lina masal melda melek melis melisa melodi meryem mila mina mira miray nehir nil nilda nilsu nisa naz ozge oyku pelin pinar rabia rana sare seda selin sena serra sila simal sude suhan su tuana tugce yagmur yaren yasemin zehra zeynep zumra')
+    .split(' ').reduce(function (o, n) { o[n] = 1; return o; }, {});
+  var BOY_NAMES = ('ahmet ali alp alparslan aras arda ates ayaz baran baris berat berk burak can cinar demir doruk efe egehan emir emre enes eren ertugrul eymen fatih furkan goktug gurur hasan huseyin ibrahim ilker kaan kemal kerem kuzey mehmet melik mert metehan miran mustafa omer onur ozan poyraz salih selim taha tuna ugur umut uras utku yigit yunus yusuf')
+    .split(' ').reduce(function (o, n) { o[n] = 1; return o; }, {});
+  function foldName(s) {
+    return String(s || '').trim().split(/\s+/)[0].toLocaleLowerCase('tr')
+      .replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/i̇/g, 'i').replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u').replace(/[^a-z]/g, '');
+  }
+  function longHair(headImg) {
+    if (!headImg) return false;
+    try { var bh = analyzeHead(headImg).backHair; return !!(bh && (bh.y2Norm - bh.y1Norm) > 0.12); } catch (e) { return false; }
+  }
+  function genderOf(id, choice, headImg) {
+    var c = choice || data.approved[id] || data.pending[id];
+    if (c && (c.gender === 'girl' || c.gender === 'boy')) return c.gender;
+    var st = studentRecord(id), fn = foldName(st && (st.firstName || st.name));
+    if (GIRL_NAMES[fn]) return 'girl';
+    if (BOY_NAMES[fn]) return 'boy';
+    return longHair(headImg || heads[id]) ? 'girl' : 'boy';
+  }
+  var DEFAULT_GIRL_PIC = BASE + 'head_demo_girl.webp' + ASSET_V;
+  function defaultHeadFor(id) {
+    var url = genderOf(id) === 'girl' ? DEFAULT_GIRL_PIC : (BASE + 'head_demo.webp' + ASSET_V);
+    return loadImg(url).catch(function () { return loadImg(BASE + 'head_demo.webp' + ASSET_V).catch(function () { return null; }); });
+  }
+
   function choiceForStudent(id) {
     var base = data.pending[id] || data.approved[id] || {};
     return {
@@ -1669,6 +1698,7 @@
       manualSkin: !!base.manualSkin,
       tee: base.tee || TEES[6],
       stance: base.stance || '',
+      gender: (base.gender === 'girl' || base.gender === 'boy') ? base.gender : '',
       wear: Object.assign({}, base.wear || {})
     };
   }
@@ -1704,9 +1734,13 @@
     var raw = (c && c.stance) || '';
     var eff = effectiveWear(c, ui.pick ? equippedOf(ui.pick) : {});
     var cur = (raw === 'wave' || raw === 'cheer') ? raw : ((raw === 'stand' || raw === 'natural' || raw === 'hip') ? 'stand' : (ui.pick ? resolveDrawnPose(c, ui.pick, 'smile', wearLayers(eff)) : 'stand'));
+    var g = ui.pick ? genderOf(ui.pick, c, heads[ui.pick]) : ((c && c.gender) || 'boy');
     return '<div class="pa-poses" style="margin-top:6px">' + STANCES.map(function (st) {
       return '<button type="button" class="' + (cur === st.id ? 'on' : '') + '" onclick="PupilAvatars._stance(\'' + st.id + '\')">' + st.label + '</button>';
-    }).join('') + '</div>';
+    }).join('') + '</div>' +
+      '<div class="pa-poses" style="margin-top:6px">' + [['girl', '👧 Girl'], ['boy', '👦 Boy']].map(function (x) {
+        return '<button type="button" class="' + (g === x[0] ? 'on' : '') + '" onclick="PupilAvatars._gender(\'' + x[0] + '\')">' + x[1] + '</button>';
+      }).join('') + '</div>';
   }
   function draw() {
     ensureCss();
@@ -1740,8 +1774,8 @@
     var monEq = ui.pick ? avatarEquipFromMonster(equippedOf(ui.pick)) : {};
     var effWear = effectiveWear(c, ui.pick ? equippedOf(ui.pick) : {});
     var curVal = effWear[activeCat.key] || '';
-    var earnedNote = (ui.tab === 'make' && lockMode() === 'earned') ? ' · <small style="color:#fde047">🪙 Earned Mode: level up your monster to unlock more!</small>' : '';
-    var syncNote = ui.pick ? ' · <small style="color:#7dd3fc">👾 Synced with Monster belongings</small>' : '';
+    var earnedNote = (ui.tab === 'make' && lockMode() === 'earned') ? ' · <small style="color:#fde047">🪙 Earned Mode: earn XP or buy items in the Shop to unlock more!</small>' : '';
+    var syncNote = ui.pick ? (monstersHidden() ? '' : ' · <small style="color:#7dd3fc">👾 Synced with Monster belongings</small>') : '';
     return '<div class="pa-step"><b>3. Dress Up (' + cats.reduce(function (n, x) { return n + x.items.length; }, 0) + ' items)' + syncNote + earnedNote + '</b>' +
       '<div class="pa-cats">' + cats.map(function (cat) {
         var hasEq = effWear[cat.key] && effWear[cat.key] !== 'none';
@@ -1760,7 +1794,7 @@
         return '<button class="pa-item ' + (isOn ? 'on ' : '') + (lk.locked ? 'locked' : '') + '" ' +
           (lk.locked ? 'disabled aria-disabled="true"' : 'onclick="PupilAvatars._wear(\'' + activeCat.key + '\',\'' + itemId + '\')"') + '>' +
           (lk.locked ? '<small class="pa-lock">' + esc(lk.label) + '</small>' : (isOwned ? '<small class="pa-own">🎒 Owned</small>' : '')) +
-          (isOnMonster ? '<small class="pa-mon-tag" title="Equipped on Monster">👾</small>' : '') +
+          (isOnMonster && !monstersHidden() ? '<small class="pa-mon-tag" title="Equipped on Monster">👾</small>' : '') +
           '<img src="' + thumbSrc + '" loading="lazy" alt="' + esc(prettyName(itemId)) + '">' +
           '<span>' + esc(prettyName(itemId)) + '</span></button>';
       }).join('') +
@@ -1769,7 +1803,7 @@
   function makeHtml() {
     var s = pupils().filter(function (x) { return x.id === ui.pick; })[0] || studentRecord(ui.pick);
     var c = ui.choice || { skin: 'auto', tee: TEES[6], stance: '', wear: {} };
-    return '<h2>Hello, ' + esc(firstName(s)) + '!</h2><p class="s">Your Monster items and Pet Buddy are already synced! Change anything you like, then tap “Send to my teacher”.</p>' +
+    return '<h2>Hello, ' + esc(firstName(s)) + '!</h2><p class="s">Your items from the Shop and boxes are ready. Change anything you like, then tap “Send to my teacher”.</p>' +
       '<div class="pa-make"><div class="pa-prev"><img id="pa-prev" alt="Your avatar">' + poseBarHtml() + stanceBarHtml(c) + '</div><div>' +
       '<div class="pa-step"><b>1. Skin</b><div class="pa-tones">' + TONES.map(function (t) {
         return '<button class="' + ((c.skin || 'auto') === t.id ? 'on' : '') + '" style="background:' + toneBg(t.id) + ';color:#fff;font:700 1.25rem Fredoka,sans-serif" title="' + t.label + '" aria-label="' + t.label + '" onclick="PupilAvatars._set(\'skin\',\'' + t.id + '\')">' + (t.id === 'auto' ? '✨' : '') + '</button>';
@@ -1814,7 +1848,7 @@
     var el = document.getElementById('pa-prev'); if (!el) return;
     var id = ui.pick;
     var c = ui.choice || { skin: 'auto', tee: TEES[6], wear: {} };
-    var headP = id ? (heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { if (im) heads[id] = im; return im; })) : (ui.tab === 'wardrobe' ? loadImg(BASE + 'head_demo.webp' + ASSET_V).catch(function () { return null; }) : Promise.resolve(null));
+    var headP = id ? (heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { if (im) heads[id] = im; return im || defaultHeadFor(id); })) : (ui.tab === 'wardrobe' ? loadImg(BASE + 'head_demo.webp' + ASSET_V).catch(function () { return null; }) : Promise.resolve(null));
     headP.then(function (hIm) {
       return composeForPose(id, c, hIm, id ? equippedOf(id) : {}, ui.pose || 'smile');
     }).then(function (u) {
@@ -2004,6 +2038,7 @@
   var api = {
     mode: mode, on: on, setMode: setMode, load: load, imgFor: imgFor, has: has, open: open, close: close,
     lockMode: lockMode,
+    genderOf: function (id) { return genderOf(id); },
     pictureFor: pictureFor, itemInfo: itemInfo, storeItemIds: allStoreItemIds, previewWith: previewWith,
     wearItem: wearItem, wearingOf: wearingOf, monstersHidden: monstersHidden,
     // lock check for the shop (ignores which tab the dress-up window was last on)
@@ -2011,7 +2046,7 @@
     // test helper: draw one pupil in a chosen stance without saving anything
     _debugCompose: function (id, stance) {
       var ch = Object.assign({}, data.approved[id] || {}, { stance: stance || '' });
-      return (heads[id] ? Promise.resolve(heads[id]) : fetchHead(id)).then(function (h) { return compose(ch, h, equippedOf(id), 'smile', id); });
+      return (heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || defaultHeadFor(id); })).then(function (h) { return compose(ch, h, equippedOf(id), 'smile', id); });
     },
     triggerEmotion: triggerEmotion,
     syncStudent: syncStudent,
@@ -2032,6 +2067,11 @@
     },
     _pose: function (p) {
       ui.pose = p || 'smile';
+      draw();
+    },
+    _gender: function (g) {
+      if (!ui.choice) ui.choice = { skin: 'auto', tee: TEES[6], stance: '', wear: {} };
+      ui.choice.gender = (g === 'girl') ? 'girl' : 'boy';
       draw();
     },
     _stance: function (st) {
@@ -2114,13 +2154,13 @@
     },
     _send: function () {
       var id = ui.pick; if (!id) return;
-      data.pending[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', wear: Object.assign({}, ui.choice.wear || {}), at: new Date().toISOString() };
+      data.pending[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', gender: ui.choice.gender || '', wear: Object.assign({}, ui.choice.wear || {}), at: new Date().toISOString() };
       save().then(function () { try { root.classSoundboard && root.classSoundboard.playTaDa && root.classSoundboard.playTaDa(); } catch (e) { /* ignore */ } toast('Sent! Your teacher will check it.'); }).catch(function () { /* toast shown */ });
       ui.pick = null; draw();
     },
     _saveDirect: function () {
       var id = ui.pick; if (!id || !ui.choice) return;
-      data.approved[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', wear: Object.assign({}, ui.choice.wear || {}), at: new Date().toISOString() };
+      data.approved[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', gender: ui.choice.gender || '', wear: Object.assign({}, ui.choice.wear || {}), at: new Date().toISOString() };
       if (data.pending[id]) { delete data.pending[id]; markRemoved('pending', id); }
       recompose(id).then(function () {
         if (client()) return save();
