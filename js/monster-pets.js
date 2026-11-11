@@ -1118,14 +1118,14 @@
     var src = getDataUri(pet.id, pose);
     if (!src) return '';
     var isHero = !!pet.poses;
-    var x = isHero ? 131 : 136;
-    var y = isHero ? 110 : 118;
-    var w = isHero ? 52 : 44;
-    var h = isHero ? 60 : 52;
+    var x = isHero ? 116 : 122;
+    var y = isHero ? 92 : 102;
+    var w = isHero ? 74 : 66;
+    var h = isHero ? 84 : 74;
     return (
       '<g class="monster-pet-companion" data-pet-id="' + pet.id + '" onclick="if(window.MonsterPets&amp;&amp;window.MonsterPets.cyclePose)window.MonsterPets.cyclePose(\'' + pet.id + '\')" style="cursor:pointer;">' +
-        '<ellipse cx="158" cy="169" rx="15" ry="4.5" fill="rgba(6, 9, 17, 0.42)" />' +
-        '<ellipse cx="158" cy="169" rx="11" ry="2.6" fill="rgba(56, 189, 248, 0.22)" />' +
+        '<ellipse cx="154" cy="171" rx="20" ry="5.5" fill="rgba(6, 9, 17, 0.46)" />' +
+        '<ellipse cx="154" cy="171" rx="14" ry="3.2" fill="rgba(56, 189, 248, 0.25)" />' +
         '<g class="monster-pet-bob" style="animation: monsterFloat 2.6s ease-in-out infinite;">' +
           '<image data-pet-img="' + pet.id + '" href="' + src + '" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" preserveAspectRatio="xMidYMax meet" />' +
         '</g>' +
@@ -1141,7 +1141,7 @@
     if (!pet) return '';
     var src = getDataUri(pet.id, pose) || pet.imageSrc;
     return (
-      '<div class="mdu-pet-companion" data-pet-id="' + pet.id + '" onclick="if(window.MonsterPets&&window.MonsterPets.cyclePose)window.MonsterPets.cyclePose(\'' + pet.id + '\')" title="Tap to change pose!" style="position:absolute; right:4%; bottom:7%; width:29%; height:33%; pointer-events:auto; cursor:pointer; z-index:25; display:flex; align-items:flex-end; justify-content:center; filter:drop-shadow(0 5px 8px rgba(0,0,0,0.45)); animation:monsterFloat 2.6s ease-in-out infinite;">' +
+      '<div class="mdu-pet-companion" data-pet-id="' + pet.id + '" onclick="if(window.MonsterPets&&window.MonsterPets.cyclePose)window.MonsterPets.cyclePose(\'' + pet.id + '\')" title="Tap to change pose!" style="position:absolute; right:2%; bottom:6%; width:42%; height:48%; pointer-events:auto; cursor:pointer; z-index:25; display:flex; align-items:flex-end; justify-content:center; filter:drop-shadow(0 5px 8px rgba(0,0,0,0.45)); animation:monsterFloat 2.6s ease-in-out infinite;">' +
         '<img data-pet-img="' + pet.id + '" src="' + src + '" alt="' + pet.name.replace(/"/g, '&quot;') + '" style="max-width:100%; max-height:100%; object-fit:contain; display:block;" />' +
       '</div>'
     );
