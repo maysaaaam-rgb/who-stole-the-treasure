@@ -10505,6 +10505,10 @@
             }
             if (Array.isArray(merged.students)) {
               merged.students.forEach(function(st) {
+                if (st.id === 'student-1789469351603') {
+                  st.id = 'student-4a-313';
+                  st.classId = 'class-4a';
+                }
                 if (st.id === 'student-4b-208') {
                   st.classId = 'class-4b';
                 } else if (st.id === 'student-4a-319') {
@@ -10515,6 +10519,23 @@
                   st.classId = 'class-4a';
                 }
               });
+              // Deduplicate same-ID entries in merged.students (higher XP wins)
+              const dedupById = new Map();
+              merged.students.forEach(function(st) {
+                if (!st || !st.id) return;
+                const prev = dedupById.get(st.id);
+                if (!prev) {
+                  dedupById.set(st.id, st);
+                } else {
+                  const stXp = Math.max(0, Number(st.xp) || 0);
+                  const prevXp = Math.max(0, Number(prev.xp) || 0);
+                  if (stXp > prevXp) {
+                    prev.xp = stXp;
+                    prev.totalXP = stXp;
+                  }
+                }
+              });
+              merged.students = Array.from(dedupById.values());
             }
             if (!merged.progressChecks || !Array.isArray(merged.progressChecks) || merged.progressChecks.length === 0) {
               merged.progressChecks = JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECKS));
@@ -11369,6 +11390,12 @@
       let list = this.state.students || [];
       if (!includeArchived) list = list.filter(s => !s.archived);
       if (classId) list = list.filter(s => s.classId === classId);
+      const seenIds = new Set();
+      list = list.filter(s => {
+        if (!s || !s.id || seenIds.has(s.id)) return false;
+        seenIds.add(s.id);
+        return true;
+      });
       list.forEach(s => {
         if (!s.name) s.name = ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
         evaluateMonsterStage(s);
@@ -16930,10 +16957,21 @@
           if (copies.length) { const ids = new Set(copies.map(c => c.id)); this.state.students = this.state.students.filter(x => !ids.has(x.id)); modified = true; }
         } catch (e) { /* never block the sync */ }
 
-        // If authoritative cloud list, prune students that were deleted on another device
+        // If authoritative cloud list, prune students that were deleted on another device and deduplicate same-id entries
         if (cloudData.isAuthoritativeList && remoteMap.size > 0) {
           const beforeCount = this.state.students.length;
-          this.state.students = this.state.students.filter(s => remoteMap.has(s.id));
+          const seenRemoteIds = new Map();
+          this.state.students.forEach(s => {
+            if (!s || !remoteMap.has(s.id)) return;
+            const prev = seenRemoteIds.get(s.id);
+            if (!prev) {
+              seenRemoteIds.set(s.id, s);
+            } else {
+              const sXp = Math.max(0, Number(s.xp) || 0);
+              if (sXp > (Number(prev.xp) || 0)) { prev.xp = sXp; prev.totalXP = sXp; evaluateMonsterStage(prev); }
+            }
+          });
+          this.state.students = Array.from(seenRemoteIds.values());
           if (this.state.students.length !== beforeCount) {
             modified = true;
           }
