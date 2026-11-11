@@ -270,6 +270,14 @@
       var bi = boxes.findIndex ? boxes.findIndex(function (b) { return b.id === p.refId; }) : -1;
       if (bi === -1 || boxes[bi].isOpened) return { success: false, error: 'This box was already opened, so it cannot be refunded' };
       boxes.splice(bi, 1);
+    } else if (p.kind === 'avatar') {
+      var al = avOwnedList(p.studentId), ai = al.indexOf(p.refId);
+      if (ai !== -1) al.splice(ai, 1);
+      touchCos(p.studentId);
+      try {
+        var PAu = PA(), wearing = PAu && PAu.wearingOf ? PAu.wearingOf(p.studentId) : {}, inf = PAu && PAu.itemInfo ? PAu.itemInfo(p.refId) : null;
+        if (inf && wearing[inf.slot] === p.refId) PAu.wearItem(p.studentId, null, inf.slot);
+      } catch (eU) { /* the avatar can be changed by hand */ }
     } else if (p.kind === 'extra') {
       var ce = cosEntry(p.studentId), xi = ce.owned.indexOf(p.refId);
       if (xi !== -1) ce.owned.splice(xi, 1);
@@ -372,6 +380,50 @@
     return out;
   }
 
+  // ---------------------------------------------------------------- avatar items (11 Nov 2026: the shop sells avatar clothes, not monster items)
+  // Bought and won avatar items are kept in the pupil's cosmetics entry (cosmetics[id].avatar), which the cloud bundle already saves.
+  function PA() { return root.PupilAvatars || null; }
+  function monstersHidden() { return root.EAA_HIDE_MONSTERS !== false; }
+  function avOwnedList(studentId) { var e = cosEntry(studentId); if (!Array.isArray(e.avatar)) e.avatar = []; return e.avatar; }
+  function avOwns(studentId, id) { var e = data().cosmetics[studentId]; return !!(e && Array.isArray(e.avatar) && e.avatar.indexOf(id) !== -1); }
+  function avItems() {
+    var P = PA(); if (!P || !P.storeItemIds) return [];
+    return P.storeItemIds().map(function (id) { return P.itemInfo(id); }).filter(function (x) { return x && !x.free && !isOff('cats', 'av-' + x.slot); });
+  }
+  /* 'have' = the pupil can wear it already (bought, won, free starter or already on their avatar); 'level' = free at their level */
+  function avState(studentId, id) {
+    var P = PA(), x = P && P.itemInfo ? P.itemInfo(id) : null;
+    if (!x) return 'none';
+    if (x.free || avOwns(studentId, id)) return 'have';
+    try { if (P.owns && P.owns(studentId, id)) return 'have'; } catch (e) { /* ignore */ }
+    try { var lk = P.lockFor ? P.lockFor(studentId, id) : null; if (lk && !lk.locked) return 'level'; } catch (e2) { /* ignore */ }
+    return 'shop';
+  }
+  function avPrice(x) { return data().config.itemPrices[x.rarity] || data().config.itemPrices.common; }
+  function buyAvatar(studentId, id) {
+    var P = PA(), x = P && P.itemInfo ? P.itemInfo(id) : null;
+    if (!x) return { success: false, error: 'Item not found' };
+    if (avState(studentId, id) !== 'shop') return { success: false, error: 'You can already wear this' };
+    if (isOff('tabs', 'avatar') || isOff('cats', 'av-' + x.slot)) return { success: false, error: 'Your teacher has closed this part of the shop for now' };
+    var price = avPrice(x);
+    if (balance(studentId) < price) return { success: false, error: 'Not enough coins (need ' + price + ')' };
+    var pid = uid('buy');
+    avOwnedList(studentId).push(id); touchCos(studentId);
+    spend(studentId, price, 'buy-avatar', 'Bought ' + x.name, pid);
+    data().purchases.unshift({ id: pid, studentId: studentId, kind: 'avatar', refId: id, name: x.name, icon: '👕', price: price, ts: new Date().toISOString(), status: 'done' });
+    save();
+    return { success: true, item: x, price: price, balance: balance(studentId) };
+  }
+  function rewardAvatar(studentId, rarity) {
+    var all = avItems().filter(function (x) { return avState(studentId, x.id) === 'shop' && x.rarity !== 'mythic'; });
+    var pool = all.filter(function (x) { return x.rarity === rarity; });
+    if (!pool.length) pool = all;
+    if (!pool.length) return null;
+    var x = pickOne(pool);
+    avOwnedList(studentId).push(x.id); touchCos(studentId);
+    return { type: 'item', item: { id: x.id, name: x.name, category: 'avatar ' + x.slot, rarity: x.rarity, icon: '👕', image: x.pic, avatar: true, description: 'A new avatar item! It is yours to wear.' } };
+  }
+
   // ---------------------------------------------------------------- class party fund
   function classOfStudent(studentId) { var st = store.getStudent ? store.getStudent(studentId) : null; return st ? (st.classId || null) : null; }
   function fundFor(classId) { return classId ? (data().config.partyFunds[classId] || null) : null; }
@@ -428,6 +480,7 @@
     }
   }
   function rewardItem(studentId, rarity) {
+    if (monstersHidden() && PA()) return rewardAvatar(studentId, rarity);
     var all = allItems().filter(function (i) { return canSell(i) && !isAvailable(studentId, i) && i.category !== 'creature' && i.rarity !== 'mythic'; });   // creatures and Mythic items are bought with coins, never found in a box
     var pool = all.filter(function (i) { return i.rarity === rarity; });
     if (!pool.length) pool = all;
@@ -613,7 +666,9 @@
   }
 
   // ---------------------------------------------------------------- UI (shared)
-  var studentTab = 'items', itemFilter = 'all';
+  var studentTab = (root.EAA_HIDE_MONSTERS !== false) ? 'avatar' : 'items', itemFilter = 'all';
+  var avSlot = 'all', avTryId = '', avPrevSid = '', avPrevTimer = 0;
+  var avTrimmed = {};   // wear pictures sit on a full body-sized canvas: crop them to the item for the shop cards
   // ---- worksheet coins: one score (0 to 10) per pupil, given as coins once; pressing again only fixes the difference
   var wsDraft = {}, wsName = 'Revision worksheet';
   function wsId() { return String(wsName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'worksheet'; }
@@ -744,7 +799,7 @@
     var html = '<div style="max-width:1180px;margin:0 auto;padding:6px 8px 60px;color:#e5edff;">' +
       '<div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">' +
         '<div><h1 class="tines-h1" style="font-size:1.75rem;font-weight:700;color:#e5edff;margin:0;">🛍️ Store &amp; Class Podium</h1>' +
-        '<div style="font-size:.9rem;color:#cbd5e1;margin-top:4px;">Students earn <b>1 coin for every ' + cfg.coinsPerXp + ' XP</b> automatically. Coins never reduce XP or monster level.</div>' +
+        '<div style="font-size:.9rem;color:#cbd5e1;margin-top:4px;">Students earn <b>1 coin for every ' + cfg.coinsPerXp + ' XP</b> automatically. Coins never reduce XP or level.</div>' +
         '<div id="cs-cloud-status" style="margin-top:4px;font-size:.78rem;font-weight:800;color:#94a3b8;">' + cloudLabel() + '</div></div>' +
       '</div>' +
       '<div class="tines-hub-bar">' +
@@ -937,15 +992,15 @@
       '.cs-try-mon{height:260px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--rc) 30%,transparent) 0%,transparent 65%);border-radius:16px}.cs-try-mon svg{width:240px;height:240px}';
     document.head.appendChild(st);
   }
-  var SHOP_TABS = [['items', '🎨 Monster items'], ['extras', '✨ Extras'], ['boxes', '🎁 Mystery boxes'], ['party', '🎉 Party fund'], ['rewards', '⭐ Class rewards'], ['orders', '🧾 My orders']];
+  var SHOP_TABS = (root.EAA_HIDE_MONSTERS !== false ? [['avatar', '👕 Avatar shop']] : [['items', '🎨 Monster items']]).concat([['extras', '✨ Extras'], ['boxes', '🎁 Mystery boxes'], ['party', '🎉 Party fund'], ['rewards', '⭐ Real prizes & rewards'], ['orders', '🧾 My orders']]);
   function shopBodyHtml(s) {
     shopStyle();
     var d = data(), cfg = d.config, bal = balance(s.id), w = wallet(s.id);
     var tabs = SHOP_TABS.filter(function (t) { return t[0] === 'orders' || !isOff('tabs', t[0]); });
     if (!tabs.some(function (t) { return t[0] === studentTab; })) studentTab = tabs[0][0];
-    var html = '<div style="background:linear-gradient(135deg,rgba(15,23,42,.78),rgba(15,23,42,.92)),url(assets/store/shop_counter.webp) center/cover no-repeat;border:1.5px solid rgba(245,158,11,.6);border-radius:20px;padding:20px;box-shadow:0 4px 20px -2px rgba(0,0,0,.4);margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
+    var html = '<div class="cs-coinbar" style="background:linear-gradient(135deg,rgba(15,23,42,.78),rgba(15,23,42,.92)),url(assets/store/shop_counter.webp) center/cover no-repeat;border:1.5px solid rgba(245,158,11,.6);border-radius:20px;padding:20px;box-shadow:0 4px 20px -2px rgba(0,0,0,.4);margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
       '<img src="assets/store/coin_pile.webp" alt="Coins" style="width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45));" onerror="this.outerHTML=\'<div style=&quot;font-size:3rem;&quot;>🪙</div>\'"><div style="flex:1;min-width:200px;"><div style="font-size:.9rem;font-weight:800;color:#fcd34d;">' + esc(s.firstName || s.name || 'Your') + '’s coins</div><div style="font-size:2.4rem;font-weight:900;color:#fbbf24;line-height:1;">' + bal + '</div>' +
-      '<div style="font-size:.8rem;color:#fde68a;margin-top:4px;">You earn 1 coin for every ' + cfg.coinsPerXp + ' XP. Spending coins never lowers your XP or your monster level.</div></div></div>' +
+      '<div style="font-size:.8rem;color:#fde68a;margin-top:4px;">You earn 1 coin for every ' + cfg.coinsPerXp + ' XP. Spending coins never lowers your XP or your level.</div></div></div>' +
       '<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;">' + tabs.map(function (t) {
         var on = studentTab === t[0];
         return '<button type="button" onclick="ClassroomStore.ui.tab(\'' + t[0] + '\')" style="padding:9px 14px;border-radius:12px;font-weight:800;font-size:.86rem;white-space:nowrap;cursor:pointer;border:1.5px solid ' + (on ? '#4C389E' : '#26324a') + ';border-bottom:4px solid ' + (on ? '#37267A' : '#334155') + ';background:' + (on ? '#6E56CF' : '#1e293b') + ';color:' + (on ? '#FFFFFF' : '#e5edff') + ';">' + t[1] + '</button>';
@@ -987,6 +1042,8 @@
       var nCan = shown.filter(function (x) { return lvl >= x.level && bal >= x.price; }).length, nLock = shown.filter(function (x) { return lvl < x.level; }).length;
       html += itemFilter === 'sets' ? '' : shown.length ? '<div class="cs-shop-note">' + (nCan ? '✨ <b>' + nCan + '</b> you can buy now' : 'Keep earning XP for more coins') + (nLock ? ' · 🔒 ' + nLock + ' open at a higher level (🎁 = free when you get there)' : '') + ' · Tap a picture to try it on</div>' +
         shelvesHtml(shown, bal, lvl) : '<div style="padding:30px;text-align:center;color:var(--text-muted,#64748b);">You already have everything in this group. 🎉</div>';
+    } else if (studentTab === 'avatar') {
+      html += avatarTabHtml(s, bal);
     } else if (studentTab === 'extras') {
       html += renderExtrasTab(s, bal);
     } else if (studentTab === 'party') {
@@ -999,7 +1056,7 @@
       }).join('') + '</div>' +
         card(h2('What can be inside?', 'Every box is a surprise. You never get something you already have.') +
           '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;font-size:.82rem;color:var(--text-main,#0f172a);">' +
-          [['🎨', 'A monster item or costume piece'], ['🔊', 'A victory sound, title, animal or name plate'], ['🎟️', 'A FREE class reward from your teacher'], ['🪙', 'A pile of coins'], ['💎', 'A rare legendary jackpot']].map(function (r) { return '<div style="display:flex;gap:8px;align-items:center;"><span style="font-size:1.4rem;">' + r[0] + '</span><span>' + r[1] + '</span></div>'; }).join('') + '</div>') +
+          [['👕', 'An avatar item you do not have yet'], ['🔊', 'A victory sound, title, animal or name plate'], ['🎟️', 'A FREE class reward from your teacher'], ['🪙', 'A pile of coins'], ['💎', 'A rare legendary jackpot']].map(function (r) { return '<div style="display:flex;gap:8px;align-items:center;"><span style="font-size:1.4rem;">' + r[0] + '</span><span>' + r[1] + '</span></div>'; }).join('') + '</div>') +
         card(h2('🎁 Your unopened boxes (' + mine.length + ')') + (mine.length ? mine.map(function (b) { return '<span style="display:inline-block;margin:0 8px 8px 0;">' + btn((BOX_INFO[b.boxTier] ? BOX_INFO[b.boxTier].icon : '🎁') + ' Open ' + (BOX_INFO[b.boxTier] ? BOX_INFO[b.boxTier].name : 'box'), "ClassroomStore.ui.openBox('" + b.id + "')") + '</span>'; }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">No unopened boxes.</div>'));
     } else if (studentTab === 'rewards') {
       html += '<div style="font-size:.85rem;color:var(--text-muted,#64748b);margin-bottom:10px;">Ask for a reward or a real classroom prize! Your teacher says yes or no. If it is a no, your coins come back.</div>' +
@@ -1021,6 +1078,80 @@
     }
     return html;
   }
+  var AV_SLOTS = [['all', 'All'], ['clothing', '👕 Tops'], ['legs', '👖 Trousers'], ['shoes', '👟 Shoes'], ['hat', '🎩 Hats'], ['wig', '💇 Wigs'],
+    ['glasses', '🕶️ Glasses'], ['backpack', '🎒 Bags & wings'], ['neck', '🏅 Necklaces'], ['accessory', '🪄 Held'], ['pet', '🐾 Pet buddies']];
+  var AV_STATE_ORDER = { shop: 0, level: 1, have: 2 };
+  function avatarTabHtml(s, bal) {
+    var P = PA();
+    if (!P || !P.storeItemIds) return '<div style="padding:30px;text-align:center;">The avatar shop is loading…</div>';
+    var items = avItems(), wearing = P.wearingOf ? P.wearingOf(s.id) : {};
+    if (avTryId && !items.some(function (x) { return x.id === avTryId; })) avTryId = '';
+    var tryX = avTryId ? P.itemInfo(avTryId) : null, tryState = tryX ? avState(s.id, tryX.id) : '';
+    var chips = AV_SLOTS.filter(function (c) { return c[0] === 'all' || items.some(function (x) { return x.slot === c[0]; }); }).map(function (c) {
+      return '<button type="button" class="cs-avchip' + (avSlot === c[0] ? ' on' : '') + '" onclick="ClassroomStore.ui.avSlot(\'' + c[0] + '\')">' + c[1] + '</button>';
+    }).join('');
+    var shown = items.filter(function (x) { return avSlot === 'all' || x.slot === avSlot; });
+    shown.sort(function (a, b) {
+      var sa = avState(s.id, a.id), sb = avState(s.id, b.id);
+      return (AV_STATE_ORDER[sa] - AV_STATE_ORDER[sb]) || (avPrice(a) - avPrice(b)) || a.name.localeCompare(b.name);
+    });
+    var grid = shown.map(function (x) {
+      var st = avState(s.id, x.id), price = avPrice(x), on = wearing[x.slot] === x.id;
+      var tag = st === 'have' ? (on ? '<span class="cs-avtag on">✓ Wearing</span>' : '<span class="cs-avtag">🎒 Yours</span>')
+        : st === 'level' ? '<span class="cs-avtag">🎁 Free for you</span>' : coinPill(price);
+      return '<button type="button" class="cs-avcard' + (avTryId === x.id ? ' sel' : '') + '" style="--rc:' + (RARITY_COLOR[x.rarity] || '#64748b') + ';" onclick="ClassroomStore.ui.avTry(\'' + esc(x.id) + '\')" title="Try it on">' +
+        '<span class="cs-rar">' + esc(RARITY_NAME[x.rarity] || 'Everyday') + '</span>' +
+        '<img src="' + esc(avTrimmed[x.pic] || x.pic) + '" alt="" loading="lazy" onload="ClassroomStore.ui.avTrim(this)" onerror="this.style.visibility=\'hidden\'">' +
+        '<b>' + esc(x.name) + '</b>' + tag + '</button>';
+    }).join('');
+    var bar;
+    if (!tryX) bar = '<div class="cs-avbar-hint">👆 Tap any item to see it on ' + firstName(s) + '.</div>';
+    else {
+      var price2 = avPrice(tryX), on2 = wearing[tryX.slot] === tryX.id, act = '';
+      if (tryState === 'shop') act = btn(bal >= price2 ? '🪙 Buy for ' + price2 : 'Need ' + (price2 - bal) + ' more coins', "ClassroomStore.ui.avBuy('" + tryX.id + "')", 'ok', bal < price2);
+      else act = on2 ? btn('Take it off', "ClassroomStore.ui.avWear('" + tryX.id + "',false)", 'ghost') : btn('👕 Wear it', "ClassroomStore.ui.avWear('" + tryX.id + "',true)", 'ok');
+      bar = '<div class="cs-avbar-name">' + esc(tryX.name) + '</div><div style="font-size:.8rem;color:' + (RARITY_COLOR[tryX.rarity] || '#94a3b8') + ';font-weight:900;margin-bottom:8px;">' + esc(RARITY_NAME[tryX.rarity] || '') +
+        (tryState === 'level' ? ' · free at your level' : tryState === 'have' ? ' · you have it' : '') + '</div>' + act + ' ' + btn('Clear', "ClassroomStore.ui.avTry('')", 'ghost');
+    }
+    // the preview picture is drawn after the page is on screen
+    clearTimeout(avPrevTimer);
+    avPrevTimer = setTimeout(function () { avRefreshPreview(s.id); }, 0);
+    return avStyle() + '<div class="cs-avwrap">' +
+      '<div class="cs-avstage"><div class="cs-avstage-in"><img id="cs-av-preview" src="' + esc(P.pictureFor(s.id)) + '" alt="' + firstName(s) + '"><i></i></div>' +
+        '<div class="cs-avbar">' + bar + '</div></div>' +
+      '<div class="cs-avlist"><div class="cs-avchips">' + chips + '</div>' +
+        (shown.length ? '<div class="cs-avgrid">' + grid + '</div>' : '<div style="padding:30px;text-align:center;color:#cbd5e1;">Nothing here.</div>') +
+      '</div></div>';
+  }
+  function avRefreshPreview(sid) {
+    var P = PA(), el = root.document && document.getElementById('cs-av-preview'); if (!P || !el) return;
+    var want = sid + '|' + avTryId; avPrevSid = want;
+    if (!avTryId) { el.src = P.pictureFor(sid); return; }
+    el.style.opacity = '.55';
+    P.previewWith(sid, avTryId).then(function (u) {
+      var el2 = document.getElementById('cs-av-preview');
+      if (el2 && avPrevSid === want && u) { el2.src = u; el2.style.opacity = '1'; }
+    }).catch(function () { var el3 = document.getElementById('cs-av-preview'); if (el3) el3.style.opacity = '1'; });
+  }
+  function avStyle() {
+    return '<style>.cs-avwrap{display:grid;grid-template-columns:minmax(240px,320px) 1fr;gap:16px;align-items:start}' +
+      '@media (max-width:820px){.cs-avwrap{grid-template-columns:1fr}.cs-avstage{position:static!important}}' +
+      '.cs-avstage{position:sticky;top:10px;background:rgba(15,23,42,.86);backdrop-filter:blur(14px);border:1.5px solid #26324a;border-bottom:5px solid #1e293b;border-radius:22px;padding:14px;text-align:center}' +
+      '.cs-avstage-in{position:relative;height:340px;display:flex;align-items:flex-end;justify-content:center;border-radius:16px;background:radial-gradient(circle at 50% 40%,rgba(56,189,248,.25) 0%,transparent 65%),linear-gradient(180deg,#111a2e,#0b1222)}' +
+      '.cs-avstage-in img{position:relative;z-index:1;max-height:330px;max-width:100%;object-fit:contain;transition:opacity .2s}' +
+      '.cs-avstage-in i{position:absolute;bottom:10px;left:50%;width:160px;height:24px;margin-left:-80px;border-radius:50%;background:radial-gradient(ellipse,rgba(56,189,248,.45) 0%,transparent 70%)}' +
+      '.cs-avbar{margin-top:12px;color:#e5edff}.cs-avbar-name{font-weight:900;font-size:1.1rem}.cs-avbar-hint{font-size:.9rem;color:#cbd5e1;font-weight:700}' +
+      '.cs-avchips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}' +
+      '.cs-avchip{padding:7px 12px;border-radius:999px;font-size:.82rem;font-weight:800;cursor:pointer;background:#1e293b;color:#e5edff;border:1.5px solid #334155;border-bottom:4px solid #0f172a}' +
+      '.cs-avchip.on{background:#6E56CF;border-color:#8D75E6;border-bottom-color:#37267A}.cs-avchip:active{transform:translateY(3px);border-bottom-width:1px}' +
+      '.cs-avgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}' +
+      '.cs-avcard{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:26px 8px 10px;border-radius:16px;cursor:pointer;color:#e5edff;' +
+        'background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--rc) 30%,transparent) 0%,transparent 70%),rgba(15,23,42,.86);border:1.5px solid #26324a;border-bottom:5px solid #1e293b;transition:transform .18s cubic-bezier(.175,.885,.32,1.275)}' +
+      '.cs-avcard:hover{transform:translateY(-3px);border-color:var(--rc)}.cs-avcard:active{transform:translateY(4px);border-bottom-width:1px}.cs-avcard.sel{border-color:#fde047;box-shadow:0 0 0 2px #fde047}' +
+      '.cs-avcard img{width:84px;height:84px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45))}.cs-avcard b{font-size:.84rem;line-height:1.15}' +
+      '.cs-avtag{font-size:.74rem;font-weight:900;color:#cbd5e1}.cs-avtag.on{color:#4ade80}</style>';
+  }
+
   function renderStudent(container) {
     var s = store.getActiveStudent ? store.getActiveStudent() : (store.getStudents() || [])[0];
     if (!s) { container.innerHTML = '<div style="padding:40px;text-align:center;">No active student profile found.</div>'; return; }
@@ -1038,7 +1169,7 @@
         '<div style="font-weight:900; font-size:1rem; color:' + i.text + '; margin-bottom:4px;">' + i.title + '</div>' +
         '<p style="font-size:0.78rem; color:#cbd5e1; margin:0 0 10px 0; line-height:1.35;">' + i.blurb + '</p>' +
         '<div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px; font-size:0.74rem; margin-bottom:10px; color:#e2e8f0; line-height:1.55;">' +
-        '🎨 Monster item <b>' + pct(t, 'item') + '%</b> (' + rar + ')<br>✨ Sound / title / animal / plate <b>' + pct(t, 'extra') + '%</b><br>🎟️ Free class reward <b>' + pct(t, 'voucher') + '%</b><br>🪙 Coins <b>' + pct(t, 'coins') + '%</b> (' + boxCoins(t)[0] + ' to ' + boxCoins(t)[1] + ')<br>💎 Jackpot <b>' + pct(t, 'jackpot') + '%</b><br>Price in the shop: <b>' + cfg.boxPrices[t] + ' coins</b></div></div>' +
+        '👕 Avatar item <b>' + pct(t, 'item') + '%</b> (' + rar + ')<br>✨ Sound / title / animal / plate <b>' + pct(t, 'extra') + '%</b><br>🎟️ Free class reward <b>' + pct(t, 'voucher') + '%</b><br>🪙 Coins <b>' + pct(t, 'coins') + '%</b> (' + boxCoins(t)[0] + ' to ' + boxCoins(t)[1] + ')<br>💎 Jackpot <b>' + pct(t, 'jackpot') + '%</b><br>Price in the shop: <b>' + cfg.boxPrices[t] + ' coins</b></div></div>' +
         '<div style="display:flex; gap:6px;"><button type="button" class="btn-3d btn-3d-secondary" onclick="window.handleGrantClassMysteryBox(\'' + t + '\')" style="flex:1; font-size:0.74rem; padding:6px 8px;">+ Class Grant</button>' +
         '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestTierUnboxing(\'' + t + '\')" style="font-size:0.74rem; padding:6px 10px;">🎁 Demo Open</button></div></div>';
     }).join('') + '</div>';
@@ -1116,8 +1247,55 @@
   var ui = {
     toggleDrawer: function () { teacherDrawerOpen = !teacherDrawerOpen; rerender(); },
     openDrawer: function () { teacherDrawerOpen = true; rerender(); },
-    pickStudent: function (sid) { shopStudentId = sid; if (store.setActiveStudent) store.setActiveStudent(sid); rerender(); },
+    pickStudent: function (sid) {
+      shopStudentId = sid; avTryId = ''; if (store.setActiveStudent) store.setActiveStudent(sid); rerender();
+      // jump to the pupil's shop so the try-on picture is on screen
+      setTimeout(function () { var el = root.document && (document.querySelector('.cs-pshop .cs-coinbar') || document.querySelector('.cs-avwrap')); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 60);
+    },
     tab: function (t) { studentTab = t; rerender(); },
+    avSlot: function (k) { avSlot = k; rerender(); },
+    avTrim: function (im) {
+      try {
+        if (!im || im.__trim || /^data:/.test(im.src)) return;
+        im.__trim = 1;
+        var key = im.getAttribute('src'), W = im.naturalWidth, H = im.naturalHeight; if (!W || !H) return;
+        if (avTrimmed[key]) { im.src = avTrimmed[key]; return; }
+        var c = document.createElement('canvas'); c.width = W; c.height = H;
+        var g = c.getContext('2d'); g.drawImage(im, 0, 0);
+        var d = g.getImageData(0, 0, W, H).data, x0 = W, y0 = H, x1 = -1, y1 = -1;
+        for (var y = 0; y < H; y += 2) for (var x = 0; x < W; x += 2) if (d[(y * W + x) * 4 + 3] > 20) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+        if (x1 < 0) return;
+        var bw = x1 - x0 + 1, bh = y1 - y0 + 1;
+        if (bw * bh > W * H * 0.45) { avTrimmed[key] = key; return; }      // already fills the picture
+        var pad = Math.round(Math.max(bw, bh) * 0.08), side = Math.max(bw, bh) + pad * 2;
+        var o = document.createElement('canvas'); o.width = side; o.height = side;
+        o.getContext('2d').drawImage(c, x0, y0, bw, bh, Math.round((side - bw) / 2), Math.round((side - bh) / 2), bw, bh);
+        avTrimmed[key] = o.toDataURL('image/png'); im.src = avTrimmed[key];
+      } catch (e) { /* keep the full picture */ }
+    },
+    giftBox: function (tier) {
+      var P = renderTeacher(null, 'parts'), sel = root.document && document.getElementById('cs-gift-target');
+      var ids = giveTargets(sel ? sel.value : 'class', P.cls, P.students);
+      if (!ids.length) { notify('Pick who gets the box', 'error'); return; }
+      confirm('Gift a ' + BOX_INFO[tier].name + '?', ids.length + (ids.length === 1 ? ' pupil gets' : ' pupils get') + ' a free box to open in the shop.', 'Gift it', function () {
+        var n = giftBoxes(ids, tier); notify('🎁 Gifted ' + n + ' ' + BOX_INFO[tier].name + (n === 1 ? '' : 'es') + '!'); rerender();
+      });
+    },
+    avTry: function (id) { avTryId = id || ''; rerender(); },
+    avBuy: function (id) {
+      var sid = activeStudentId(), P = PA(), x = P && P.itemInfo ? P.itemInfo(id) : null; if (!sid || !x) return;
+      confirm('Buy ' + x.name + '?', 'It costs ' + avPrice(x) + ' coins. You have ' + balance(sid) + '.', 'Buy', function () {
+        var r = buyAvatar(sid, id);
+        notify(r.success ? 'You bought ' + r.item.name + '! It is on your avatar now.' : r.error, r.success ? 'success' : 'error');
+        if (r.success) { try { if (root.classSoundboard && root.classSoundboard.playCoinReward) root.classSoundboard.playCoinReward(); } catch (e) { /* optional */ } P.wearItem(sid, id).then(rerender); }
+        rerender();
+      });
+    },
+    avWear: function (id, on) {
+      var sid = activeStudentId(), P = PA(), x = P && P.itemInfo ? P.itemInfo(id) : null; if (!sid || !x) return;
+      if (on && avState(sid, id) === 'shop') { notify('Buy it first!', 'error'); return; }
+      P.wearItem(sid, on ? id : null, x.slot).then(function () { notify(on ? 'Now wearing ' + x.name + '!' : 'Taken off.'); avTryId = on ? id : ''; rerender(); });
+    },
     extraKind: function (k) { extraKind = k; rerender(); },
     previewSound: function (id) { if (root.ClassroomCosmetics) root.ClassroomCosmetics.playSound(id); },
     buyExtra: function (id) {
@@ -1260,7 +1438,7 @@
   // Pupil shop: opened from the Class Board. Big pupil buttons, then the pupil's own shop. Nothing for the teacher to manage here.
   // Teacher store: prices and what is on sale, give or take coins (pupil, team or class), who bought what, requests.
   var teacherTab = 'prices', histPupil = 'all', histKind = 'buys';
-  function firstName(s) { return esc((s.firstName || s.name || 'Pupil').split(' ')[0]); }
+  function firstName(s) { var n = String(s.firstName || s.name || 'Pupil'); return esc(/^Pupil \d+$/.test(n) ? n : n.split(' ')[0]); }
   function renderPupilShop(container) {
     var P = renderTeacher(null, 'parts'), cls = P.cls, students = P.students, cur = P.curStu;
     var html = '<div class="cs-pshop" style="max-width:1180px;margin:0 auto;padding:4px 8px 60px;color:#e5edff;">' +
@@ -1295,8 +1473,10 @@
     return card(h2('🔛 What is on sale', 'Untick to close it. Pupils keep what they already have.') +
       '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:4px 0 6px;">Shop parts</div>' +
       SHOP_TABS.filter(function (t) { return t[0] !== 'orders'; }).map(function (t) { return sw('tabs', t[0], t[1]); }).join('') +
-      '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:8px 0 6px;">Monster item groups</div>' +
-      cats.map(function (c) { return sw('cats', c[0], c[1]); }).join('') +
+      (monstersHidden() ? '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:8px 0 6px;">Avatar item groups</div>' +
+        AV_SLOTS.filter(function (c) { return c[0] !== 'all'; }).map(function (c) { return sw('cats', 'av-' + c[0], c[1]); }).join('')
+      : '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:8px 0 6px;">Monster item groups</div>' +
+        cats.map(function (c) { return sw('cats', c[0], c[1]); }).join('')) +
       '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:8px 0 6px;">Mystery boxes</div>' +
       TIERS.map(function (t) { return sw('boxes', t, BOX_INFO[t].icon + ' ' + BOX_INFO[t].name); }).join(''));
   }
@@ -1315,6 +1495,32 @@
         [-5, -10].map(function (n) { return btn('−' + (-n), 'ClassroomStore.ui.giveTo(' + n + ')', 'danger'); }).join('') +
         btn('Other amount…', 'ClassroomStore.ui.giveTo()', 'ghost') +
       '</div>');
+  }
+  function giftCard(cls, students) {
+    var groups = (cls && store.getGroups) ? (store.getGroups(cls.id) || []) : [];
+    var opts = '<option value="class">👥 The whole class (' + students.length + ')</option>' +
+      groups.map(function (g) { return '<option value="group:' + esc(g.id) + '">🏳️ Team ' + esc(g.name) + ' (' + (g.studentIds || []).length + ')</option>'; }).join('') +
+      students.map(function (s) { return '<option value="pupil:' + esc(s.id) + '">🧑‍🎓 ' + esc(studentName(s.id)) + '</option>'; }).join('');
+    var inp = 'padding:8px;border-radius:10px;border:1.5px solid #cbd5e1;font-weight:700;';
+    var waiting = {};
+    (store.state.mysteryBoxes || []).forEach(function (b) { if (!b.isOpened) waiting[b.studentId] = (waiting[b.studentId] || 0) + 1; });
+    var list = students.filter(function (s) { return waiting[s.id]; }).map(function (s) { return esc(studentName(s.id)) + ' (' + waiting[s.id] + ')'; });
+    return card(h2('🎁 Gift a mystery box', 'Free for the pupil. Inside: a surprise avatar item they do not have yet (or a sound, title, free reward or coins). Pupils open it in the shop: Mystery boxes tab.') +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">' +
+        '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Who<select id="cs-gift-target" style="display:block;margin-top:3px;min-width:240px;' + inp + '">' + opts + '</select></label>' +
+      '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">' +
+        TIERS.map(function (t) { return btn(BOX_INFO[t].icon + ' Gift a ' + BOX_INFO[t].name, "ClassroomStore.ui.giftBox('" + t + "')"); }).join('') +
+      '</div>' +
+      '<div style="margin-top:12px;font-size:.82rem;color:var(--text-muted,#64748b);">' + (list.length ? '📦 Boxes waiting to be opened: ' + list.join(', ') : 'No unopened boxes in this class.') + '</div>');
+  }
+  function giftBoxes(ids, tier) {
+    var n = 0;
+    ids.forEach(function (id) {
+      var b = store.grantMysteryBox ? store.grantMysteryBox(id, tier) : null;
+      if (b) { b.gift = true; n++; var w = wallet(id); log(w, 0, 'gift', 'Gift from your teacher: ' + BOX_INFO[tier].name); }
+    });
+    save();
+    return n;
   }
   function historyCard(students) {
     var d = data(), ids = {}; students.forEach(function (s) { ids[s.id] = 1; });
@@ -1352,10 +1558,11 @@
   }
   function renderTeacherStore(container) {
     var P = renderTeacher(null, 'parts'), S = P.sections, cls = P.cls, students = P.students;
-    var tabs = [['prices', '🏷️ Prices & on sale'], ['coins', '🪙 Give or take coins'], ['history', '🧾 Who bought what'], ['requests', '📬 Requests' + (P.pending.length ? ' (' + P.pending.length + ')' : '')], ['worksheet', '📝 Worksheet coins'], ['party', '🎉 Party fund']];
+    var tabs = [['prices', '🏷️ Prices & on sale'], ['coins', '🪙 Give or take coins'], ['gift', '🎁 Gift mystery boxes'], ['history', '🧾 Who bought what'], ['requests', '📬 Requests' + (P.pending.length ? ' (' + P.pending.length + ')' : '')], ['worksheet', '📝 Worksheet coins'], ['party', '🎉 Party fund']];
     var body = '';
     if (teacherTab === 'prices') body = onOffCard() + (S.prices || '') + (S.odds || '');
     else if (teacherTab === 'coins') body = giveCard(cls, students) + (S.coins || '');
+    else if (teacherTab === 'gift') body = giftCard(cls, students);
     else if (teacherTab === 'history') body = historyCard(students);
     else if (teacherTab === 'requests') body = (S.requests || '') + (S.clean || '');
     else if (teacherTab === 'worksheet') body = S.worksheet || '';
@@ -1380,6 +1587,8 @@
     cosmetics: { equipped: equippedExtras, equip: equipExtra, buy: buyExtra, give: giveExtra, owned: extraOwned, entry: cosEntry, find: findExtra, setTitles: setTitleItems },
     fund: { get: fundFor, set: setFund, donate: donate, reset: resetFund },
     itemPic: itemPicHtml,
+    avatar: { owns: avOwns, state: avState, buy: buyAvatar, items: avItems, price: avPrice, gift: giftBoxes,
+      wear: function (sid, id) { var P = PA(); return P ? P.wearItem(sid, id) : Promise.resolve(false); } },
     openBox: openBox2, BOX_ODDS: BOX_ODDS, TIERS: TIERS, BOX_INFO: BOX_INFO,
     ui: ui, findUnearned: findUnearned, getTimetable: ui.getTimetable, setTimetable: ui.setTimetable, getCalendar: ui.getCalendar, setCalendar: ui.setCalendar, getCalendarFlag: ui.getCalendarFlag, setCalendarFlag: ui.setCalendarFlag, getBoardGoal: ui.getBoardGoal, setBoardGoal: ui.setBoardGoal, data: data, wallet: wallet, balance: balance, grant: grant, buyItem: buyItem, buyBox: buyBox,
     requestPrivilege: requestPrivilege, decide: decide, cloud: { pull: cloudPull, push: cloudPush, bundleFor: bundleFor, adoptDoc: adoptDoc, stampOf: stampOf, id: CLOUD_ID, state: function () { return cloudState; } }, undoPurchase: undoPurchase, shopItems: shopItems, usedThisWeek: usedThisWeek, DEFAULTS: DEFAULTS

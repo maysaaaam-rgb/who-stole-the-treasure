@@ -16,7 +16,7 @@
   var BUCKET = 'pupil-avatars';
   var LOOK_KEY = 'eaa_board_look';
   var BASE = 'assets/avatars/';
-  var ASSET_V = '?v=17';
+  var ASSET_V = '?v=18';
   var TONES = [
     { id: 'auto', label: 'Match Face ✨' },
     { id: 'light', label: 'Light' }, { id: 'medium', label: 'Medium' },
@@ -210,6 +210,13 @@
     }]);
   }
 
+  function allItemCount() {
+    return pickerCategories(null).reduce(function (n, c) { return n + (c.items ? c.items.length : 0); }, 0);
+  }
+  // Class Mode = the smartboard in front of the pupils: the teacher's approval tab is hidden there.
+  function inClassMode() {
+    try { return !!(root.ClassMode && root.ClassMode.on && root.ClassMode.on()); } catch (e) { return false; }
+  }
   function prettyName(id) {
     var p = petById(id);
     if (p && p.name) return p.name;
@@ -241,7 +248,7 @@
     'student-4b-338-laugh': 1, 'student-4b-338-wink': 1
   };
 
-  var data = { approved: {}, pending: {}, settings: { lockMode: 'earned', earnedMigratedV1: true } };
+  var data = { approved: {}, pending: {}, removed: {}, settings: { lockMode: 'earned' } };
   var headB64 = {};        // stem -> data:image/webp;base64,... (teacher-locked cloud sync)
   var heads = {};          // studentId -> HTMLImageElement (memory only)
   var emotionHeads = {};   // stem (studentId-laugh / -wink) -> HTMLImageElement
@@ -265,7 +272,9 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function firstName(st) { return st ? (st.firstName || String(st.name || '').split(' ')[0] || 'Pupil') : 'Pupil'; }
 
-  function mode() { try { return localStorage.getItem(LOOK_KEY) === 'avatars' ? 'avatars' : 'monsters'; } catch (e) { return 'monsters'; } }
+  // Monsters are hidden on the platform (11 Nov 2026). Monster levels still run quietly for unlocks.
+  function monstersHidden() { return root.EAA_HIDE_MONSTERS !== false; }
+  function mode() { if (monstersHidden()) return 'avatars'; try { return localStorage.getItem(LOOK_KEY) === 'avatars' ? 'avatars' : 'monsters'; } catch (e) { return 'monsters'; } }
   function on() { return mode() === 'avatars'; }
   function setMode(m) {
     try { localStorage.setItem(LOOK_KEY, m === 'avatars' ? 'avatars' : 'monsters'); } catch (e) { /* private mode */ }
@@ -289,23 +298,9 @@
   function seedBuiltinDefaults() {
     var localDoc = null;
     try { localDoc = JSON.parse(localStorage.getItem(LOCAL_KEY) || 'null'); } catch (e) {}
-    if (localDoc && localDoc.approved) {
-      data.approved = Object.assign({}, data.approved, localDoc.approved);
-    }
-    if (localDoc && localDoc.pending) {
-      data.pending = Object.assign({}, data.pending, localDoc.pending);
-    }
-    if (localDoc && localDoc.settings) {
-      data.settings = Object.assign({ lockMode: 'earned' }, data.settings || {}, localDoc.settings);
-    }
-    if (!data.settings) data.settings = { lockMode: 'earned', earnedMigratedV1: true };
-    if (!data.settings.earnedMigratedV1) {
-      data.settings.lockMode = 'earned';
-      data.settings.earnedMigratedV1 = true;
-    }
-    delete data.approved['student-1789469351603'];
-    delete data.pending['student-1789469351603'];
-    delete headB64['student-1789469351603'];
+    // the newest change for each pupil wins (cloud or this device), so an old tablet cannot undo newer work
+    if (localDoc) data = mergeDocs(data, localDoc);
+    if (!data.settings) data.settings = { lockMode: 'earned' };
     BUILTIN_HEADS.forEach(function (sid, i) {
       if (!data.approved[sid]) {
         data.approved[sid] = {
@@ -330,11 +325,48 @@
       localStorage.setItem(LOCAL_KEY, JSON.stringify({
         approved: data.approved,
         pending: data.pending,
-        settings: data.settings || { lockMode: 'free' },
+        removed: data.removed || {},
+        settings: data.settings || { lockMode: 'earned' },
         at: new Date().toISOString()
       }));
     } catch (e) {}
   }
+  function nowIso() { return new Date().toISOString(); }
+  // Merge two avatar documents pupil by pupil: the newer entry wins; a newer "removed" mark deletes.
+  function mergeDocs(a, b) {
+    a = a || {}; b = b || {};
+    var out = { approved: {}, pending: {}, removed: {}, settings: null };
+    [a.removed || {}, b.removed || {}].forEach(function (r) {
+      Object.keys(r).forEach(function (k) { if (!out.removed[k] || r[k] > out.removed[k]) out.removed[k] = r[k]; });
+    });
+    ['approved', 'pending'].forEach(function (kind) {
+      var A = a[kind] || {}, B = b[kind] || {}, pre = kind === 'approved' ? 'a:' : 'p:';
+      Object.keys(A).concat(Object.keys(B)).forEach(function (id) {
+        if (out[kind][id]) return;
+        var x = A[id], y = B[id];
+        var win = !x ? y : (!y ? x : (String(y.at || '') > String(x.at || '') ? y : x));
+        if (!win) return;
+        var rm = out.removed[pre + id];
+        if (rm && rm >= String(win.at || '')) return;
+        out[kind][id] = win;
+      });
+    });
+    var sa = a.settings, sb = b.settings;
+    out.settings = !sa ? sb : (!sb ? sa : (String(sb.at || '') > String(sa.at || '') ? sb : sa));
+    if (!out.settings) out.settings = { lockMode: 'earned' };
+    return out;
+  }
+  function markRemoved(kind, id) {
+    if (!data.removed) data.removed = {};
+    data.removed[(kind === 'approved' ? 'a:' : 'p:') + id] = nowIso();
+  }
+  // Cloud layout (teacher-only table "classes", hidden rows with grade 'System'):
+  //   class-pupil-avatars             -> small document: choices, pending, settings, removed marks (no pictures)
+  //   class-pupil-avatar-head-<stem>  -> one face picture each (data URL)
+  // Older versions kept every face inside the first row (1.4 MB rewritten on every save); that row is
+  // split the first time the teacher saves.
+  var HEAD_ROW_PREFIX = 'class-pupil-avatar-head-';
+  var legacyHeadsInRow = false;
   function readSyncRow() {
     var sb = client(); if (!sb) return Promise.resolve(null);
     return sb.from('classes').select('description').eq('id', SYNC_ROW_ID).maybeSingle().then(function (r) {
@@ -342,64 +374,80 @@
       try { return JSON.parse(r.data.description) || null; } catch (e) { return null; }
     }).catch(function () { return null; });
   }
+  function hiddenRow(id, name, description) {
+    return { id: id, name: name, grade: 'System', teacher: 'System', archived: true, description: description };
+  }
+  function writeHeadRows(stems) {
+    var sb = client(); if (!sb) return Promise.resolve();
+    var rows = stems.filter(function (st) { return headB64[st]; }).map(function (st) {
+      return hiddenRow(HEAD_ROW_PREFIX + st, 'Pupil Avatar Face', headB64[st]);
+    });
+    var chain = Promise.resolve();
+    for (var i = 0; i < rows.length; i += 8) {
+      (function (part) {
+        chain = chain.then(function () {
+          return sb.from('classes').upsert(part, { onConflict: 'id' }).then(function (r) {
+            if (r.error) throw new Error(r.error.message || 'face save failed');
+          });
+        });
+      })(rows.slice(i, i + 8));
+    }
+    return chain;
+  }
+  function readHeadRows(stems) {
+    var sb = client(); if (!sb || !stems.length) return Promise.resolve();
+    var parts = [];
+    for (var i = 0; i < stems.length; i += 30) parts.push(stems.slice(i, i + 30));
+    return Promise.all(parts.map(function (part) {
+      return sb.from('classes').select('id,description').in('id', part.map(function (st) { return HEAD_ROW_PREFIX + st; })).then(function (r) {
+        (r.data || []).forEach(function (row) {
+          if (row && row.description && String(row.description).indexOf('data:image') === 0) headB64[row.id.slice(HEAD_ROW_PREFIX.length)] = row.description;
+        });
+      }).catch(function () { /* faces fall back to the built-in pictures */ });
+    }));
+  }
   function writeSyncRow() {
     saveLocal();
     var sb = client(); if (!sb) return Promise.resolve();
-    var doc = JSON.stringify({
-      v: 2,
-      at: new Date().toISOString(),
-      approved: data.approved,
-      pending: data.pending,
-      settings: data.settings || { lockMode: 'free' },
-      heads: headB64
+    // 1. a one-time move of the faces out of the old big row (only after this succeeds is the big row shrunk)
+    var move = legacyHeadsInRow ? writeHeadRows(Object.keys(headB64)).then(function () { legacyHeadsInRow = false; }) : Promise.resolve();
+    return move.then(function () {
+      // 2. read the newest cloud copy and merge, so two devices saving at the same time keep both changes
+      return readSyncRow();
+    }).then(function (remote) {
+      if (remote && remote.heads && legacyHeadsInRow) throw new Error('faces not moved yet');
+      var merged = mergeDocs(remote || {}, data);
+      data.approved = merged.approved; data.pending = merged.pending; data.removed = merged.removed; data.settings = merged.settings;
+      saveLocal();
+      return sb.from('classes').upsert(hiddenRow(SYNC_ROW_ID, 'Pupil Avatars (Teacher Private Sync)', JSON.stringify({
+        v: 3, at: nowIso(), approved: data.approved, pending: data.pending, removed: data.removed, settings: data.settings
+      })), { onConflict: 'id' }).then(function (r) {
+        if (r.error) throw new Error(r.error.message || 'sync save failed');
+      });
     });
-    return sb.from('classes').upsert({
-      id: SYNC_ROW_ID,
-      name: 'Pupil Avatars (Teacher Private Sync)',
-      grade: 'Sync',
-      teacher: 'Teacher',
-      description: doc
-    }, { onConflict: 'id' }).then(function (r) {
-      if (r.error) throw new Error(r.error.message || 'sync save failed');
-    }).catch(function () { /* saved in localStorage */ });
   }
   function readJson() {
-    var sb = client(); if (!sb) return Promise.resolve({ approved: {}, pending: {}, settings: { lockMode: 'free' } });
-    return readSyncRow().then(function (syncDoc) {
-      if (syncDoc && (syncDoc.approved || syncDoc.heads)) {
-        if (syncDoc.v >= 2 && syncDoc.heads) headB64 = Object.assign({}, headB64, syncDoc.heads);
-        return syncDoc;
+    var sb = client(); if (!sb) return Promise.resolve({});
+    return readSyncRow().then(function (doc) {
+      doc = doc || {};
+      if (doc.heads) {                         // old layout: faces inside the row
+        headB64 = Object.assign({}, doc.heads, headB64);
+        legacyHeadsInRow = Object.keys(doc.heads).length > 0;
       }
-      return sb.storage.from(BUCKET).download('avatars.json').then(function (r) {
-        if (r.error) return { approved: {}, pending: {}, settings: { lockMode: 'free' } };
-        return r.data.text().then(function (t) { try { return JSON.parse(t) || {}; } catch (e) { return {}; } });
-      }).catch(function () { return { approved: {}, pending: {}, settings: { lockMode: 'free' } }; });
+      return doc;
     });
   }
   function writeJson() {
-    saveLocal();
-    var sb = client(); if (!sb) return Promise.resolve();
-    return writeSyncRow().then(function () {
-      var blob = new Blob([JSON.stringify({
-        v: 2,
-        approved: data.approved,
-        pending: data.pending,
-        settings: data.settings || { lockMode: 'free' },
-        at: new Date().toISOString()
-      })], { type: 'application/json' });
-      return sb.storage.from(BUCKET).upload('avatars.json', blob, { upsert: true, contentType: 'application/json', cacheControl: '0' }).catch(function () { /* sync row already saved */ });
-    });
+    return writeSyncRow().catch(function (e) { saveLocal(); throw e; });
   }
   function fetchHead(id) {
     if (headB64[id]) {
       return loadImg(headB64[id]).catch(function () { return null; });
     }
     return loadImg(BASE + 'heads/' + id + '.webp' + ASSET_V).catch(function () {
-      var sb = client(); if (!sb) return null;
-      return sb.storage.from(BUCKET).download('heads/' + id + '.webp').then(function (r) {
-        if (r.error || !r.data) return null;
-        return loadImg(URL.createObjectURL(r.data)).catch(function () { return null; });
-      }).catch(function () { return null; });
+      return readHeadRows([id]).then(function () {
+        return headB64[id] ? loadImg(headB64[id]).catch(function () { return null; }) : null;
+      });
     });
   }
   function fetchEmotionHead(id, kind) {
@@ -432,19 +480,14 @@
     state = 'loading';
     loadPromise = Promise.all([readJson().catch(function () { return {}; }), fetchWear()]).then(function (res) {
       var d = res[0] || {};
-      var syncedSettings = Object.assign({ lockMode: 'earned' }, d.settings || {});
-      var needCloudEarnedSave = !syncedSettings.earnedMigratedV1;
-      if (needCloudEarnedSave) {
-        syncedSettings.lockMode = 'earned';
-        syncedSettings.earnedMigratedV1 = true;
-      }
-      data = { approved: d.approved || {}, pending: d.pending || {}, settings: syncedSettings };
+      // Earned Mode is the default when nothing was chosen; a saved choice (Free or Earned) is respected.
+      data = { approved: d.approved || {}, pending: d.pending || {}, removed: d.removed || {}, settings: Object.assign({ lockMode: 'earned' }, d.settings || {}) };
       seedBuiltinDefaults();
-      if (needCloudEarnedSave) {
-        save().catch(function () {});
-      }
       var ids = Object.keys(data.approved).concat(Object.keys(data.pending));
       BUILTIN_HEADS.forEach(function (sid) { if (ids.indexOf(sid) < 0) ids.push(sid); });
+      var missing = ids.filter(function (id) { return !headB64[id] && BUILTIN_HEADS.indexOf(id) < 0; });
+      return readHeadRows(missing).then(function () { return ids; });
+    }).then(function (ids) {
       return Promise.all(ids.map(function (id) {
         return heads[id] ? null : fetchHead(id).then(function (im) { if (im) heads[id] = im; });
       }));
@@ -531,6 +574,7 @@
 
   function studentOwnsItem(studentId, itemId) {
     if (!studentId || !itemId || itemId === 'none') return false;
+    try { if (root.ClassroomStore && root.ClassroomStore.avatar && root.ClassroomStore.avatar.owns(studentId, itemId)) return true; } catch (eS) { /* shop not loaded */ }
     var st = store();
     var checkIds = [itemId].concat(AVATAR_TO_MONSTER_EQUIV[itemId] || []);
     try {
@@ -1479,7 +1523,77 @@
     ctx.restore();
   }
 
-  function imgFor(id) { return on() ? (composed[id] || '') : ''; }
+  function imgFor(id) { return on() ? (composed[id] || (monstersHidden() ? pictureFor(id) : '')) : ''; }
+  var DEFAULT_PIC = BASE + 'head_demo.webp' + ASSET_V;
+  var composedDefault = {}, pendingDefault = {}, defaultTimer = 0;
+  function defaultChoice(id) { return { skin: 'auto', tee: TEES[hashId(String(id || '')) % TEES.length], stance: 'stand', wear: {} }; }
+  function scheduleRerender() {
+    if (defaultTimer) return;
+    defaultTimer = setTimeout(function () { defaultTimer = 0; rerender(); }, 400);
+  }
+  /** The picture to show for a pupil anywhere on the platform (never a monster). */
+  function pictureFor(id) {
+    if (!id) return DEFAULT_PIC;
+    if (composed[id]) return composed[id];
+    if (composedDefault[id]) return composedDefault[id];
+    if (state === 'idle') load();
+    if (state === 'ready' && !data.approved[id] && !pendingDefault[id]) {
+      pendingDefault[id] = 1;
+      var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || loadImg(DEFAULT_PIC).catch(function () { return null; }); });
+      headP.then(function (h) { return compose(defaultChoice(id), h, {}, 'smile', id); })
+        .then(function (u) { composedDefault[id] = u; scheduleRerender(); })
+        .catch(function () { /* keep the placeholder */ });
+    }
+    return DEFAULT_PIC;
+  }
+  /* ---------- for the shop: item facts, try-on and wearing ---------- */
+  function allStoreItemIds() {
+    var ids = [];
+    pickerCategories(null).forEach(function (c) { (c.items || []).forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); }); });
+    return ids;
+  }
+  function slotOf(id) { return petById(id) ? 'pet' : (SLOT_BY_ITEM[id] || ''); }
+  function rarityOf(id) {
+    var st = store(), ids = [id].concat(AVATAR_TO_MONSTER_EQUIV[id] || []);
+    var p = petById(id); if (p && p.rarity) return p.rarity;
+    try {
+      var items = st && st.getMonsterItems ? (st.getMonsterItems() || []) : [];
+      for (var i = 0; i < items.length; i++) if (ids.indexOf(items[i].id) >= 0 && items[i].rarity) return items[i].rarity;
+    } catch (e) { /* use the rule below */ }
+    if (String(id).indexOf('cs-my-') === 0) return 'legendary';
+    if (String(id).indexOf('cs-') === 0) return 'epic';
+    var sl = slotOf(id);
+    if (sl === 'legs' || sl === 'shoes' || sl === 'glasses' || sl === 'wig') return 'common';
+    return 'rare';
+  }
+  function itemInfo(id) {
+    var sl = slotOf(id); if (!sl) return null;
+    var pic = sl === 'pet' ? (petImageUrl(id, 'stand') + ASSET_V) : (BASE + 'wear/' + id + '.webp' + ASSET_V);
+    return { id: id, name: prettyName(id), slot: sl, rarity: rarityOf(id), pic: pic, free: !!FREE_STARTER_ITEMS[id] };
+  }
+  function lookOf(id) {
+    var base = data.approved[id] || data.pending[id] || defaultChoice(id);
+    var c = JSON.parse(JSON.stringify(base)); if (!c.wear) c.wear = {};
+    return c;
+  }
+  /** The pupil wearing one more item (nothing saved). Resolves to a picture address. */
+  function previewWith(id, itemId) {
+    var c = lookOf(id), sl = itemId ? slotOf(itemId) : '';
+    if (sl) c.wear[sl] = itemId;
+    var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || loadImg(DEFAULT_PIC).catch(function () { return null; }); });
+    return fetchWear().then(function () { return headP; }).then(function (h) { return compose(c, h, equippedOf(id), 'smile', id); });
+  }
+  /** Put an owned item on (or take a slot off) and save it to the board. */
+  function wearItem(id, itemId, slot) {
+    var c = lookOf(id), sl = slot || slotOf(itemId); if (!sl) return Promise.resolve(false);
+    if (itemId) c.wear[sl] = itemId; else delete c.wear[sl];
+    c.at = nowIso();
+    data.approved[id] = c;
+    if (data.pending[id]) { delete data.pending[id]; markRemoved('pending', id); }
+    delete composedDefault[id];
+    return recompose(id).then(function () { rerender(); return save().catch(function () { return null; }); }).then(function () { return true; });
+  }
+  function wearingOf(id) { var c = data.approved[id]; return (c && c.wear) ? JSON.parse(JSON.stringify(c.wear)) : {}; }
   function has(id) { return !!composed[id]; }
 
   // ---------- builder (pupils in class) + wardrobe (all 124 items) + teacher review ----------
@@ -1563,6 +1677,7 @@
     ensureCss();
     ui.isOpen = true;
     ui.tab = (opts && opts.tab) || 'make';
+    if (ui.tab === 'review' && inClassMode()) ui.tab = 'make';
     ui.pose = 'smile';
     ui.pick = (opts && opts.pick) || null;
     ui.choice = ui.pick ? choiceForStudent(ui.pick) : { skin: 'auto', tee: TEES[6], stance: '', wear: {} };
@@ -1602,8 +1717,8 @@
     var html = '<div class="pa-box" role="dialog" aria-label="Avatars"><button class="pa-x" onclick="PupilAvatars.close()" aria-label="Close">✕</button>' +
       '<div class="pa-tabs">' +
       '<button class="' + (ui.tab === 'make' ? 'on' : '') + '" onclick="PupilAvatars._tab(\'make\')">🎨 Make my avatar</button>' +
-      '<button class="' + (ui.tab === 'wardrobe' ? 'on' : '') + '" onclick="PupilAvatars._tab(\'wardrobe\')">👗 Wardrobe (124+ items)</button>' +
-      '<button class="' + (ui.tab === 'review' ? 'on' : '') + '" onclick="PupilAvatars._tab(\'review\')">✅ Teacher check' + (waiting ? ' (' + waiting + ')' : '') + '</button>' +
+      '<button class="' + (ui.tab === 'wardrobe' ? 'on' : '') + '" onclick="PupilAvatars._tab(\'wardrobe\')">👗 Wardrobe (' + allItemCount() + ' items)</button>' +
+      (inClassMode() ? '' : '<button class="' + (ui.tab === 'review' ? 'on' : '') + '" onclick="PupilAvatars._tab(\'review\')">✅ Teacher check' + (waiting ? ' (' + waiting + ')' : '') + '</button>') +
       '</div>';
     if (state === 'loading') html += '<p class="s">Loading avatars…</p>';
     if (state === 'nostore' && ui.tab !== 'wardrobe') html += '<div class="pa-note">Avatars are saved in a private cloud folder that is not ready yet. Ask your teacher to run <b>pupil_avatars_storage.sql</b> in Supabase, then sign in again.' + (lastError ? '<br><small>' + esc(lastError) + '</small>' : '') + '</div>';
@@ -1889,6 +2004,15 @@
   var api = {
     mode: mode, on: on, setMode: setMode, load: load, imgFor: imgFor, has: has, open: open, close: close,
     lockMode: lockMode,
+    pictureFor: pictureFor, itemInfo: itemInfo, storeItemIds: allStoreItemIds, previewWith: previewWith,
+    wearItem: wearItem, wearingOf: wearingOf, monstersHidden: monstersHidden,
+    // lock check for the shop (ignores which tab the dress-up window was last on)
+    lockFor: function (sid, id) { var t = ui.tab; ui.tab = 'make'; try { return itemLockInfo(sid, id); } finally { ui.tab = t; } },
+    // test helper: draw one pupil in a chosen stance without saving anything
+    _debugCompose: function (id, stance) {
+      var ch = Object.assign({}, data.approved[id] || {}, { stance: stance || '' });
+      return (heads[id] ? Promise.resolve(heads[id]) : fetchHead(id)).then(function (h) { return compose(ch, h, equippedOf(id), 'smile', id); });
+    },
     triggerEmotion: triggerEmotion,
     syncStudent: syncStudent,
     syncAll: syncAllChanged,
@@ -1896,11 +2020,11 @@
     catalog: CATALOG,
     status: function () { return { state: state, error: lastError, approved: Object.keys(data.approved).length, pending: Object.keys(data.pending).length, lockMode: lockMode() }; },
     toggleButton: function () {
-      return '<button class="cb-look" onclick="PupilAvatars.setMode(PupilAvatars.on()?\'monsters\':\'avatars\')" title="Show monsters or the pupils\' avatars">' + (on() ? '🧒 Avatars' : '👾 Monsters') + '</button>' +
-        (on() ? '<button class="cb-look" onclick="PupilAvatars.open()" title="Pupils make their avatar; the teacher checks it">🎨 Make avatars</button>' +
-          '<button class="cb-look" onclick="PupilAvatars.open({tab:\'wardrobe\'})" title="Try on all 124+ avatar clothes, pets, shoes, wigs and hats">👗 Wardrobe</button>' : '');
+      return (monstersHidden() ? '' : '<button class="cb-look" onclick="PupilAvatars.setMode(PupilAvatars.on()?\'monsters\':\'avatars\')" title="Show monsters or the pupils\' avatars">' + (on() ? '🧒 Avatars' : '👾 Monsters') + '</button>') +
+        (on() ? '<button class="cb-look" onclick="PupilAvatars.open()" title="Make an avatar, try on the wardrobe' + (inClassMode() ? '' : ', check pupils\' avatars') + '">🎨 Dress up</button>' : '');
     },
     _tab: function (t) {
+      if (t === 'review' && inClassMode()) t = 'make';   // pupils at the board cannot approve avatars
       ui.tab = t;
       ui.pose = 'smile';
       if (t === 'wardrobe' && !ui.choice) ui.choice = { skin: 'auto', tee: TEES[6], wear: {} };
@@ -1917,8 +2041,9 @@
       draw();
     },
     _toggleLockMode: function () {
-      if (!data.settings) data.settings = { lockMode: 'free' };
+      if (!data.settings) data.settings = { lockMode: 'earned' };
       data.settings.lockMode = (lockMode() === 'earned') ? 'free' : 'earned';
+      data.settings.at = nowIso();
       save().catch(function () {});
       toast(data.settings.lockMode === 'earned' ? '🪙 Earned Mode ON: special items unlock by Monster Level & Shop.' : '🔓 Free Dress-Up ON: all items are open to everyone.');
       draw();
@@ -1996,17 +2121,17 @@
     _saveDirect: function () {
       var id = ui.pick; if (!id || !ui.choice) return;
       data.approved[id] = { skin: ui.choice.skin || 'auto', manualSkin: !!ui.choice.manualSkin, tee: ui.choice.tee, stance: ui.choice.stance || '', wear: Object.assign({}, ui.choice.wear || {}), at: new Date().toISOString() };
-      delete data.pending[id];
+      if (data.pending[id]) { delete data.pending[id]; markRemoved('pending', id); }
       recompose(id).then(function () {
         if (client()) return save();
       }).then(function () { toast('Saved onto the Class Board!'); draw(); if (on()) rerender(); }).catch(function () { draw(); if (on()) rerender(); });
     },
     _approve: function (id) {
-      data.approved[id] = data.pending[id]; delete data.pending[id];
+      data.approved[id] = Object.assign({}, data.pending[id], { at: nowIso() }); delete data.pending[id]; markRemoved('pending', id);
       save().then(function () { return recompose(id); }).then(function () { draw(); if (on()) rerender(); }).catch(function () { draw(); });
     },
-    _reject: function (id) { delete data.pending[id]; save().then(draw).catch(draw); },
-    _remove: function (id) { delete data.approved[id]; delete composed[id]; clearEmotionCache(id); save().then(function () { draw(); rerender(); }).catch(draw); },
+    _reject: function (id) { delete data.pending[id]; markRemoved('pending', id); save().then(draw).catch(draw); },
+    _remove: function (id) { delete data.approved[id]; markRemoved('approved', id); delete composed[id]; clearEmotionCache(id); save().then(function () { draw(); rerender(); }).catch(draw); },
     _head: function (id, input) {
       var f = input && input.files && input.files[0]; if (!f) return;
       var sb = client();
@@ -2018,9 +2143,7 @@
           fr.readAsDataURL(blob);
         });
       }).then(function (blob) {
-        if (sb) {
-          sb.storage.from(BUCKET).upload('heads/' + id + '.webp', blob, { upsert: true, contentType: 'image/webp', cacheControl: '0' }).catch(function () {});
-        }
+        if (sb) writeHeadRows([id]).catch(function () { toast('The face is on this device only: sign in and try again.'); });
         return loadImg(headB64[id] || URL.createObjectURL(blob));
       }).then(function (im) {
         heads[id] = im;
@@ -2055,9 +2178,7 @@
               fr.readAsDataURL(blob);
             });
           }).then(function (blob) {
-            if (sb) {
-              sb.storage.from(BUCKET).upload(storageName, blob, { upsert: true, contentType: 'image/webp', cacheControl: '0' }).catch(function () {});
-            }
+            if (sb) writeHeadRows([stem]).catch(function () {});
             return loadImg(headB64[stem]);
           }).then(function (im) {
             if (!suffix) {

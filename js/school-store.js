@@ -2331,6 +2331,22 @@
     return 'participation';
   }
 
+// Two copies of the same pupil: keep the copy with more XP as the main record, but never drop
+// anything the other copy has (coins, items, notes...). Lists are joined without repeats.
+function mergeDuplicateStudents(a, b) {
+  const ax = Math.max(0, Number(a && a.xp) || 0), bx = Math.max(0, Number(b && b.xp) || 0);
+  const win = bx > ax ? b : a, lose = win === a ? b : a;
+  const out = Object.assign({}, lose, win);
+  Object.keys(lose || {}).forEach(function (k) {
+    if (Array.isArray(lose[k]) && Array.isArray(win[k])) {
+      const seen = new Set(win[k].map(function (v) { return JSON.stringify(v); }));
+      out[k] = win[k].concat(lose[k].filter(function (v) { return !seen.has(JSON.stringify(v)); }));
+    } else if (typeof lose[k] === 'number' && typeof win[k] === 'number' && /xp|coins|points|stars/i.test(k)) {
+      out[k] = Math.max(lose[k], win[k]);
+    }
+  });
+  return out;
+}
   function evaluateMonsterStage(student) {
     if (!student) return student;
     const stage = getStudentStage(student);
@@ -7409,7 +7425,7 @@
           grade: 'Grade 3',
           overallCefr: 'A1',
           avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
-          avatarUrl: 'assets/avatars/ates-1-smiling.webp',
+          avatarUrl: 'assets/avatars/ceremony/student-3a-229-1-smiling.webp',
           parentName: 'Parent',
           parentContact: '+90 (555) 229-0001',
           parentEmail: 'parent229@example.com',
@@ -7570,7 +7586,7 @@
           grade: 'Grade 3',
           overallCefr: 'A1',
           avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
-          avatarUrl: 'assets/avatars/fatih-1-smiling.webp',
+          avatarUrl: 'assets/avatars/ceremony/student-3a-209-1-smiling.webp',
           parentName: 'Parent',
           parentContact: '+90 (555) 209-0001',
           parentEmail: 'parent209@example.com',
@@ -8454,7 +8470,7 @@
           grade: 'Grade 4',
           overallCefr: 'A2',
           avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
-          avatarUrl: 'assets/avatars/derin-1-smiling.webp',
+          avatarUrl: 'assets/avatars/ceremony/student-4b-338-1-smiling.webp',
           parentName: 'Parent',
           parentContact: '+90 (555) 338-0001',
           parentEmail: 'parent338@example.com',
@@ -8517,7 +8533,7 @@
           grade: 'Grade 4',
           overallCefr: 'A2',
           avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
-          avatarUrl: 'assets/avatars/elif-beren-1-smiling.webp',
+          avatarUrl: 'assets/avatars/ceremony/student-4b-306-1-smiling.webp',
           parentName: 'Parent',
           parentContact: '+90 (555) 306-0001',
           parentEmail: 'parent306@example.com',
@@ -8742,7 +8758,7 @@
           grade: 'Grade 4',
           overallCefr: 'A2',
           avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
-          avatarUrl: 'assets/avatars/oyku-1-smiling.webp',
+          avatarUrl: 'assets/avatars/ceremony/student-4b-322-1-smiling.webp',
           parentName: 'Parent',
           parentContact: '+90 (555) 322-0001',
           parentEmail: 'parent322@example.com',
@@ -10509,11 +10525,7 @@
                   st.id = 'student-4a-313';
                   st.classId = 'class-4a';
                 }
-                if (st.id === 'student-4b-208') {
-                  st.classId = 'class-4b';
-                } else if (st.id === 'student-4a-319') {
-                  st.classId = 'class-4a';
-                } else if (st.id && st.id.indexOf('student-4b-') === 0) {
+                if (st.id && st.id.indexOf('student-4b-') === 0) {
                   st.classId = 'class-4b';
                 } else if (st.id && st.id.indexOf('student-4a-') === 0) {
                   st.classId = 'class-4a';
@@ -10524,16 +10536,7 @@
               merged.students.forEach(function(st) {
                 if (!st || !st.id) return;
                 const prev = dedupById.get(st.id);
-                if (!prev) {
-                  dedupById.set(st.id, st);
-                } else {
-                  const stXp = Math.max(0, Number(st.xp) || 0);
-                  const prevXp = Math.max(0, Number(prev.xp) || 0);
-                  if (stXp > prevXp) {
-                    prev.xp = stXp;
-                    prev.totalXP = stXp;
-                  }
-                }
+                dedupById.set(st.id, prev ? mergeDuplicateStudents(prev, st) : st);
               });
               merged.students = Array.from(dedupById.values());
             }
@@ -16832,9 +16835,11 @@
       // -1. Merge Classes Roster
       if (Array.isArray(cloudData.classes) && cloudData.classes.length > 0) {
         if (!this.state.classes) this.state.classes = [];
+        // hidden sync rows are not real classes (an older avatar row came in as a class with a 1.4 MB description)
+        this.state.classes = this.state.classes.filter(c => c && c.grade !== 'System' && c.grade !== 'Sync');
         cloudData.classes.forEach(remoteClass => {
           if (!remoteClass || !remoteClass.id) return;
-          if (remoteClass.grade === 'System') return;   // hidden sync rows are not real classes
+          if (remoteClass.grade === 'System' || remoteClass.grade === 'Sync') return;
           const localIdx = this.state.classes.findIndex(c => c.id === remoteClass.id);
           if (localIdx !== -1) {
             this.state.classes[localIdx] = Object.assign({}, this.state.classes[localIdx], remoteClass);
@@ -16967,8 +16972,9 @@
             if (!prev) {
               seenRemoteIds.set(s.id, s);
             } else {
-              const sXp = Math.max(0, Number(s.xp) || 0);
-              if (sXp > (Number(prev.xp) || 0)) { prev.xp = sXp; prev.totalXP = sXp; evaluateMonsterStage(prev); }
+              const both = mergeDuplicateStudents(prev, s);
+              evaluateMonsterStage(both);
+              seenRemoteIds.set(s.id, both);
             }
           });
           this.state.students = Array.from(seenRemoteIds.values());
