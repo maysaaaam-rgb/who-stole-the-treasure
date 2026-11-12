@@ -715,7 +715,7 @@
       if (/^lesson-plans\//.test(u) && !/\.(pdf|docx)$/.test(u)) u += '.pdf';
       if (!/\.(html|pdf)/.test(u) && !/\/$/.test(u)) u += '/';
       if (!/\//.test(u) || seen[u]) continue; seen[u] = 1;
-      var lab = /^lesson-plans\//.test(u) ? '📋 Plan' : /\.pdf$/.test(u) ? '🖨️ Print' : /^game-maker\//.test(u) ? '🎮 Game' : /print|poster|paper|note|cards|sheet/.test(u) ? '🖨️ Open' : '▶ Open lesson';
+      var lab = /^lesson-plans\//.test(u) ? '📋 Plan' : /\.pdf$/.test(u) ? '🖨️ Print' : /^game-maker\//.test(u) ? '🎮 Game' : /worksheet/i.test(u) ? '🖨️ Worksheet' : /print|poster|paper|note|cards|sheet/.test(u) ? '🖨️ Open' : '▶ Open lesson';
       out.push([lab, u]);
     }
     /* lessons named in words, not paths */
@@ -726,7 +726,7 @@
     if (g && /Remember first|Smart mix/i.test(txt)) add('🎮 Game', 'game-maker/index.html?set=smart-g' + g[1] + '&game=cannon');
     if (ck && /Alice rehearsal/i.test(txt)) add('▶ Open lesson', 'alice-party-rehearsal/index.html?class=' + ck + '&lesson=3');
     if (/Tea Party/i.test(e.title || '')) add('▶ Open lesson', 'alice-party/index.html');
-    out.sort(function (a, b) { return (a[0] === '▶ Open lesson' ? 0 : a[0] === '🎮 Game' ? 1 : a[0] === '🖨️ Print' || a[0] === '🖨️ Open' ? 2 : 3) - (b[0] === '▶ Open lesson' ? 0 : b[0] === '🎮 Game' ? 1 : b[0] === '🖨️ Print' || b[0] === '🖨️ Open' ? 2 : 3); });
+    out.sort(function (a, b) { var rank = function (x) { return x === '▶ Open lesson' ? 0 : x === '🎮 Game' ? 1 : x === '🖨️ Worksheet' ? 2 : x === '🖨️ Print' || x === '🖨️ Open' ? 3 : 4; }; return rank(a[0]) - rank(b[0]); });
     return out;
   }
   function k12TextOf(e) {
@@ -769,11 +769,15 @@
       '<div style="grid-column:1/3"><label>Note (optional)</label><textarea id="cal-f-note" rows="3">' + esc(e.note) + '</textarea></div></div>' +
       '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px"><button class="cal-b g" id="cal-f-no">Cancel</button><button class="cal-b ok" id="cal-f-ok">Save</button></div></div>';
     document.body.appendChild(m);
-    m.querySelector('#cal-f-no').onclick = function () { m.remove(); };
+    function closeCalModal() { document.removeEventListener('keydown', onCalEsc); m.remove(); }
+    function onCalEsc(ev) { if (ev.key === 'Escape') closeCalModal(); }
+    document.addEventListener('keydown', onCalEsc);
+    m.addEventListener('mousedown', function (ev) { if (ev.target === m) closeCalModal(); });
+    m.querySelector('#cal-f-no').onclick = closeCalModal;
     m.querySelector('#cal-f-ok').onclick = function () {
       var t = m.querySelector('#cal-f-title').value.trim(), dt = m.querySelector('#cal-f-date').value; if (!t || !dt) { m.querySelector('#cal-f-title').style.borderColor = '#f87171'; return; }
       var rec = { id: e.id || ('ev-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6)), date: dt, time: m.querySelector('#cal-f-time').value, classId: m.querySelector('#cal-f-cls').value, type: m.querySelector('#cal-f-type').value, title: t, note: m.querySelector('#cal-f-note').value.trim() };
-      var all = customEvents().filter(function (x) { return x.id !== rec.id; }); all.push(rec); saveEvents(all); st.sel = dt; m.remove(); draw();
+      var all = customEvents().filter(function (x) { return x.id !== rec.id; }); all.push(rec); saveEvents(all); st.sel = dt; closeCalModal(); draw();
     };
   }
   function del(id) { if (!confirm('Delete this event?')) return; saveEvents(customEvents().filter(function (x) { return x.id !== id; })); draw(); }

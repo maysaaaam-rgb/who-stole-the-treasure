@@ -1,7 +1,7 @@
 /* 1,000 XP Grand Ceremony: a big full-screen celebration for a pupil who reaches Level 5 (Adventurer),
-   with her photo (kept only in this browser), fireworks, sound, a "Golden Adventurer" title and a printable certificate.
+   with their avatar (kept only in this browser / private cloud), fireworks, sound, a "Golden Adventurer" title and a printable certificate.
    Vanilla JS, no libraries, works offline. Use it from milestone-1000/index.html, or it starts by itself in the platform
-   when a pupil called Öykü Çiğdem evolves to Level 5 (change who gets it with MilestoneCeremony.enableFor). */
+   when a pupil evolves to Level 5 (change who gets it with MilestoneCeremony.enableFor). */
 (function (root) {
   'use strict';
   var PHOTO_KEY = 'eaa_photo_', CFG_KEY = 'eaa_milestone_cfg', VIP_KEY = 'eaa_grand_ceremony_names', TITLE_KEY = 'eaa_golden_titles';
@@ -14,27 +14,9 @@
   function slug(name) { return String(name || '').toLowerCase().replace(/[^a-z0-9À-ɏ]+/g, '-'); }
   function sleep(ms, st) { return new Promise(function (res) { var t = setTimeout(res, st && st.fast ? 20 : ms); if (st) st.timers.push(t); }); }
 
-  /* ---------- built-in 3D cartoon sticker avatars (3 poses each: smiling, laughing, thumbs-up) ---------- */
+  /* ---------- built-in 3D pupil avatars resolved via PupilAvatars (no static ceremony paths) ---------- */
   var POSE_KEY = 'eaa_avatar_pose_';
-  // pictures are named by pupil id only (no names in public files)
-  var BUILTIN_SETS = {
-    'student-3a-229': ['assets/avatars/ceremony/student-3a-229-1-smiling.webp', 'assets/avatars/ceremony/student-3a-229-2-laughing.webp', 'assets/avatars/ceremony/student-3a-229-3-thumbs-up.webp'],
-    'student-4b-338': ['assets/avatars/ceremony/student-4b-338-1-smiling.webp', 'assets/avatars/ceremony/student-4b-338-2-laughing.webp', 'assets/avatars/ceremony/student-4b-338-3-thumbs-up.webp'],
-    'student-4b-306': ['assets/avatars/ceremony/student-4b-306-1-smiling.webp', 'assets/avatars/ceremony/student-4b-306-2-laughing.webp', 'assets/avatars/ceremony/student-4b-306-3-thumbs-up.webp'],
-    'student-3a-209': ['assets/avatars/ceremony/student-3a-209-1-smiling.webp', 'assets/avatars/ceremony/student-3a-209-2-laughing.webp', 'assets/avatars/ceremony/student-3a-209-3-thumbs-up.webp'],
-    'student-4b-322': ['assets/avatars/ceremony/student-4b-322-1-smiling.webp', 'assets/avatars/ceremony/student-4b-322-2-laughing.webp', 'assets/avatars/ceremony/student-4b-322-3-thumbs-up.webp'],
-    'student-3b-220': ['assets/avatars/ceremony/student-3b-220-1-smiling.webp', 'assets/avatars/ceremony/student-3b-220-2-laughing.webp', 'assets/avatars/ceremony/student-3b-220-3-thumbs-up.webp'],
-    'student-3b-353': ['assets/avatars/ceremony/student-3b-353-1-smiling.webp', 'assets/avatars/ceremony/student-3b-353-2-laughing.webp', 'assets/avatars/ceremony/student-3b-353-3-thumbs-up.webp'],
-    'student-3b-352': ['assets/avatars/ceremony/student-3b-352-1-smiling.webp', 'assets/avatars/ceremony/student-3b-352-2-laughing.webp', 'assets/avatars/ceremony/student-3b-352-3-thumbs-up.webp'],
-    'student-3a-219': ['assets/avatars/ceremony/student-3a-219-1-smiling.webp', 'assets/avatars/ceremony/student-3a-219-2-laughing.webp', 'assets/avatars/ceremony/student-3a-219-3-thumbs-up.webp'],
-    'student-3a-354': ['assets/avatars/ceremony/student-3a-354-1-smiling.webp', 'assets/avatars/ceremony/student-3a-354-2-laughing.webp', 'assets/avatars/ceremony/student-3a-354-3-thumbs-up.webp'],
-    'student-3a-211': ['assets/avatars/ceremony/student-3a-211-1-smiling.webp', 'assets/avatars/ceremony/student-3a-211-2-laughing.webp', 'assets/avatars/ceremony/student-3a-211-3-thumbs-up.webp'],
-    'student-3a-206': ['assets/avatars/ceremony/student-3a-206-1-smiling.webp', 'assets/avatars/ceremony/student-3a-206-2-laughing.webp', 'assets/avatars/ceremony/student-3a-206-3-thumbs-up.webp'],
-    'student-3a-224': ['assets/avatars/ceremony/student-3a-224-1-smiling.webp', 'assets/avatars/ceremony/student-3a-224-2-laughing.webp', 'assets/avatars/ceremony/student-3a-224-3-thumbs-up.webp'],
-    'student-4b-208': ['assets/avatars/ceremony/student-4b-208-1-smiling.webp', 'assets/avatars/ceremony/student-4b-208-2-laughing.webp', 'assets/avatars/ceremony/student-4b-208-3-thumbs-up.webp']
-  };
-  var BUILTIN_ALIASES = {};
-  Object.keys(BUILTIN_SETS).forEach(function (id) { BUILTIN_ALIASES[id] = id; });
+  var BUILTIN_SETS = {};
   function asciiSlug(s) {
     return String(s || '').toLowerCase()
       .replace(/i̇/g, 'i').replace(/[ç]/g, 'c').replace(/[ğ]/g, 'g')
@@ -43,16 +25,12 @@
   }
   function builtinKeyOf(key) {
     var a = asciiSlug(key);
-    return BUILTIN_ALIASES[a] || '';
+    return /^student-/.test(a) && root.PupilAvatars && root.PupilAvatars.has && root.PupilAvatars.has(a) ? a : '';
   }
-  function builtinUrlFor(key, forcePose) {
+  function builtinUrlFor(key) {
     var bk = builtinKeyOf(key);
-    if (!bk || !BUILTIN_SETS[bk]) return '';
-    var list = BUILTIN_SETS[bk];
-    var idx = forcePose != null ? Number(forcePose) : (parseInt(get(POSE_KEY + bk) || '0', 10) || 0);
-    var rel = list[((idx % list.length) + list.length) % list.length];
-    var prefix = (root.location && String(root.location.pathname || '').indexOf('/milestone-1000/') >= 0) ? '../' : '';
-    return prefix + rel;
+    if (!bk || !root.PupilAvatars || !root.PupilAvatars.imgFor) return '';
+    return root.PupilAvatars.imgFor(bk) || '';
   }
 
   /* ---------- photo: stored in this browser or resolved from built-in cartoon avatars ---------- */
@@ -191,14 +169,16 @@
   /* ---------- the ceremony ---------- */
   function play(o) {
     css(); o = o || {};
-    var name = o.name || 'Öykü Çiğdem', key = o.id || name, color = o.color || 'blue', xp = o.xp || 1000, teacher = o.teacher || 'Mr. Maysam';
+    var name = o.name || 'Adventurer', key = o.id || name, color = o.color || 'blue', xp = o.xp || 1000, teacher = o.teacher || 'Mr. Maysam';
     var old = document.getElementById('mc-overlay'); if (old) old.remove();
     var st = { timers: [], fast: false, done: false };
     var ov = document.createElement('div'); ov.id = 'mc-overlay';
     ov.innerHTML = '<canvas id="mc-fx"></canvas><div id="mc-flash"></div><div class="mc-wrap" id="mc-wrap"></div><button type="button" class="mc-btn plain mc-skip" id="mc-skip">Skip &raquo;</button>';
     document.body.appendChild(ov);
     var wrap = ov.querySelector('#mc-wrap'), fx = fireworks(ov.querySelector('#mc-fx'), st);
-    function close() { st.done = true; st.timers.forEach(clearTimeout); if (st.stopFx) st.stopFx(); try { root.speechSynthesis && root.speechSynthesis.cancel(); } catch (e) { /* ignore */ } ov.remove(); }
+    function onKey(ev) { if (ev.key === 'Escape') close(); }
+    document.addEventListener('keydown', onKey);
+    function close() { st.done = true; document.removeEventListener('keydown', onKey); st.timers.forEach(clearTimeout); if (st.stopFx) st.stopFx(); try { root.speechSynthesis && root.speechSynthesis.cancel(); } catch (e) { /* ignore */ } ov.remove(); }
     ov.querySelector('#mc-skip').onclick = function () { st.fast = true; };
 
     (async function () {

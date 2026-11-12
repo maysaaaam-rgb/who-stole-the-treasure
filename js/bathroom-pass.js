@@ -19,7 +19,11 @@
 
   function signOut(id) {
     var d = load(), st = S().getStudent ? S().getStudent(id) : null; if (!st || d.out[id]) return;
-    if (Object.keys(d.out).length >= maxOut()) { alert('One pupil is already out. Wait until they are back (or allow 2 in the bathroom settings).'); return; }
+    if (Object.keys(d.out).length >= maxOut()) {
+      var msg = 'One pupil is already out. Wait until they return (or allow 2 below).';
+      if (root.showNotification) root.showNotification(msg, 'warning'); else alert(msg);
+      return;
+    }
     d.out[id] = { t: Date.now(), name: nameOf(st), classId: st.classId, warned: 0 }; save(d); chime(); paint();
   }
   function signIn(id) {
@@ -34,15 +38,15 @@
   function css() {
     if (document.getElementById('bp-css')) return;
     var st = document.createElement('style'); st.id = 'bp-css';
-    st.textContent = '.bp-pill{position:fixed;top:76px;right:16px;z-index:9400;display:flex;flex-direction:column;gap:6px}.bp-p{display:flex;align-items:center;gap:10px;background:#ecfeff;color:#164e63;border:2px solid #67e8f9;border-radius:999px;padding:6px 8px 6px 14px;font:700 1rem Fredoka,system-ui,sans-serif;box-shadow:0 8px 20px -8px rgba(0,0,0,.35)}' +
-      '.bp-p.late{background:#fffbeb;border-color:#fbbf24;color:#78350f}.bp-p b{font-variant-numeric:tabular-nums}.bp-p button{font:inherit;border:0;border-bottom:3px solid #047857;border-radius:999px;background:#10b981;color:#fff;padding:4px 12px;cursor:pointer}' +
-      '.bp-ovl{position:fixed;inset:0;z-index:9500;background:rgba(10,5,40,.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px}' +
-      '.bp-box{width:min(920px,100%);max-height:92vh;overflow:auto;background:#fff;color:#1e1b4b;border-radius:24px;padding:18px 20px;font-family:Fredoka,system-ui,sans-serif;box-shadow:0 20px 50px rgba(0,0,0,.4)}' +
-      '.bp-box h2{margin:0 0 4px}.bp-dim{color:#64748b;font-size:.9rem}.bp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0}' +
-      '.bp-n{font:700 1.05rem Fredoka,system-ui,sans-serif;border:2px solid #e2e8f0;border-bottom:5px solid #cbd5e1;border-radius:16px;background:#f8fafc;color:#1e1b4b;padding:12px 6px;cursor:pointer}.bp-n:active{transform:translateY(3px);border-bottom-width:2px}' +
-      '.bp-n.out{background:#ecfeff;border-color:#67e8f9;color:#155e75}.bp-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}' +
-      '.bp-b{font:700 .95rem Fredoka,system-ui,sans-serif;border:0;border-bottom:4px solid rgba(0,0,0,.25);border-radius:12px;padding:8px 14px;cursor:pointer;background:#e0e7ff;color:#312e81}.bp-b.go{background:#10b981;color:#fff}' +
-      '.bp-box table{width:100%;border-collapse:collapse;font-size:.92rem;margin-top:8px}.bp-box td,.bp-box th{padding:6px 8px;border-bottom:1px solid #e2e8f0;text-align:left}.bp-box th{background:#f1f5f9}';
+    st.textContent = '.bp-pill{position:fixed;top:68px;right:16px;z-index:9400;display:flex;flex-direction:column;gap:6px}.bp-p{display:flex;align-items:center;gap:10px;background:rgba(15,23,42,.92);color:#e0f2fe;border:1.5px solid #38bdf8;border-bottom:4px solid #0369a1;border-radius:999px;padding:6px 8px 6px 14px;font:700 1rem "Plus Jakarta Sans",Fredoka,system-ui,sans-serif;box-shadow:0 8px 20px -6px rgba(0,0,0,.55)}' +
+      '.bp-p.late{background:rgba(69,26,3,.94);border-color:#fbbf24;border-bottom-color:#b45309;color:#fef3c7}.bp-p b{font-variant-numeric:tabular-nums;color:#7dd3fc}.bp-p.late b{color:#fde68a}.bp-p button{font:inherit;border:0;border-bottom:3px solid #047857;border-radius:999px;background:#10b981;color:#fff;padding:4px 12px;cursor:pointer;transition:transform .12s cubic-bezier(.175,.885,.32,1.275)}.bp-p button:active{transform:translateY(2px);border-bottom-width:1px}' +
+      '.bp-ovl{position:fixed;inset:0;z-index:9500;background:rgba(6,9,17,.78);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:16px}' +
+      '.bp-box{width:min(920px,100%);max-height:92vh;overflow:auto;background:#0f172a;color:#e5edff;border:1.5px solid #334155;border-bottom:5px solid #020617;border-radius:24px;padding:20px 22px;font-family:"Plus Jakarta Sans",Fredoka,system-ui,sans-serif;box-shadow:0 24px 60px rgba(0,0,0,.6)}' +
+      '.bp-box h2{margin:0 0 4px;color:#f8fafc}.bp-dim{color:#94a3b8;font-size:.9rem}.bp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:9px;margin:14px 0}' +
+      '.bp-n{font:700 1.02rem "Plus Jakarta Sans",Fredoka,system-ui,sans-serif;border:1.5px solid #334155;border-bottom:5px solid #020617;border-radius:16px;background:#1e293b;color:#f1f5f9;padding:12px 8px;cursor:pointer;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-color .14s}.bp-n:hover{border-color:#6E56CF}.bp-n:active{transform:translateY(4px);border-bottom-width:1px}' +
+      '.bp-n.out{background:rgba(14,165,233,.22);border-color:#38bdf8;border-bottom-color:#0369a1;color:#7dd3fc}.bp-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}' +
+      '.bp-b{font:700 .92rem "Plus Jakarta Sans",Fredoka,system-ui,sans-serif;border:1.5px solid #334155;border-bottom:5px solid #020617;border-radius:12px;padding:9px 15px;cursor:pointer;background:#1e293b;color:#e5edff;transition:transform .12s cubic-bezier(.175,.885,.32,1.275)}.bp-b:active{transform:translateY(4px);border-bottom-width:1px}.bp-b.go{background:#10b981;border-color:#34d399;border-bottom-color:#047857;color:#fff}' +
+      '.bp-box table{width:100%;border-collapse:collapse;font-size:.92rem;margin-top:10px}.bp-box td,.bp-box th{padding:8px 10px;border-bottom:1px solid #1e293b;text-align:left;color:#e5edff}.bp-box th{background:rgba(148,163,184,.1);color:#cbd5e1;font-weight:800}';
     document.head.appendChild(st);
   }
   function paint() {
@@ -79,11 +83,14 @@
         (list.length ? '<table><tr><th>Pupil</th><th>This week</th><th>All</th><th>Minutes (all)</th><th>Average</th><th>Last time</th></tr>' + list.map(function (x) { return '<tr><td><b>' + esc(x.name) + '</b></td><td>' + x.week + '</td><td>' + x.all + '</td><td>' + Math.round(x.min) + '</td><td>' + (x.all ? (Math.round(x.min / x.all * 10) / 10) + ' min' : '–') + '</td><td>' + new Date(x.last).toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + '</td></tr>'; }).join('') + '</table>' : '<p class="bp-dim" style="margin-top:12px">Nothing yet for this class.</p>') +
         '<div class="bp-row"><button class="bp-b go" data-csv="1">⬇ Download the log (CSV)</button><button class="bp-b" data-back2="1">◀ Back</button></div></div>';
     }
+    function closeOvl() { document.removeEventListener('keydown', onEsc); ovl.remove(); }
+    function onEsc(ev) { if (ev.key === 'Escape') closeOvl(); }
+    document.addEventListener('keydown', onEsc);
     if (showLog) logView(); else draw(); document.body.appendChild(ovl);
-    ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) ovl.remove(); });
+    ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) closeOvl(); });
     ovl.addEventListener('click', function (e) {
       var b = e.target.closest('button'); if (!b) return;
-      if (b.dataset.x) { ovl.remove(); return; }
+      if (b.dataset.x) { closeOvl(); return; }
       if (b.dataset.id) { var d = load(); if (d.out[b.dataset.id]) signIn(b.dataset.id); else signOut(b.dataset.id); draw(); return; }
       if (b.dataset.max) { try { localStorage.setItem(MAX_KEY, maxOut() > 1 ? '1' : '2'); } catch (x) { /* ignore */ } draw(); return; }
       if (b.dataset.log) { logView(); return; }

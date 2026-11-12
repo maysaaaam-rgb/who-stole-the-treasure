@@ -243,6 +243,7 @@
 
   // ------------------------------------------------------------------ editor
   var ed = null;
+  function onTtEsc(ev) { if (ev.key === 'Escape' && ed) api.close(); }
   function classes() { return (S().getClasses ? S().getClasses() : []).filter(function (c) { return !c.archived; }); }
   function modal() {
     var m = document.getElementById('tt-modal');
@@ -309,10 +310,12 @@
       injectCss();
       var cl = classes(), act = S().getActiveClass ? S().getActiveClass() : cl[0];
       ed = { classId: (act && act.id) || (cl[0] && cl[0].id), tt: JSON.parse(JSON.stringify(all())) };
+      document.removeEventListener('keydown', onTtEsc);
+      document.addEventListener('keydown', onTtEsc);
       paint();
     },
     repaint: function () { if (ed) paint(); },
-    close: function () { var m = document.getElementById('tt-modal'); if (m) m.innerHTML = ''; ed = null; },
+    close: function () { document.removeEventListener('keydown', onTtEsc); var m = document.getElementById('tt-modal'); if (m) m.remove(); ed = null; },
     tab: function (id) { ed.classId = id; paint(); },
     add: function (d) { var t = ed.tt[ed.classId] || (ed.tt[ed.classId] = {}); (t[d] = t[d] || []).push({ t: '', l: '' }); paint(); },
     del: function (d, i) { ed.tt[ed.classId][d].splice(i, 1); paint(); },
@@ -320,10 +323,11 @@
     copyTo: function () {
       var cl = classes(), src = cl.filter(function (c) { return c.id === ed.classId; })[0], g = gradeOf(src), n = 0;
       cl.forEach(function (c) { if (c.id !== ed.classId && g && gradeOf(c) === g) { ed.tt[c.id] = JSON.parse(JSON.stringify(ed.tt[ed.classId] || {})); n++; } });
-      root.alert ? root.alert(n ? 'Copied to ' + n + ' other class(es) of the same grade. Press Save.' : 'No other class of the same grade found.') : 0;
+      var msg = n ? 'Copied to ' + n + ' other class(es) of the same grade. Press Save.' : 'No other class of the same grade found.';
+      if (root.showNotification) root.showNotification(msg, n ? 'success' : 'info'); else if (root.alert) root.alert(msg);
     },
     save: function () {
-      try { root.ClassroomStore.setTimetable(ed.tt); } catch (e) { root.alert && root.alert('Could not save the timetable.'); return; }
+      try { root.ClassroomStore.setTimetable(ed.tt); } catch (e) { if (root.showNotification) root.showNotification('Could not save the timetable.', 'error'); else if (root.alert) root.alert('Could not save the timetable.'); return; }
       api.close(); if (root.showNotification) root.showNotification('Timetable saved.', 'success');
       if (root.renderCurrentView) root.renderCurrentView();
     }
