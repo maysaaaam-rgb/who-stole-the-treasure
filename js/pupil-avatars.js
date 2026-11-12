@@ -16,7 +16,7 @@
   var BUCKET = 'pupil-avatars';
   var LOOK_KEY = 'eaa_board_look';
   var BASE = 'assets/avatars/';
-  var ASSET_V = '?v=22';
+  var ASSET_V = '?v=25';
   var TONES = [
     { id: 'auto', label: 'Match Face ✨' },
     { id: 'light', label: 'Light' }, { id: 'medium', label: 'Medium' },
@@ -35,17 +35,18 @@
   ];
   var TEES = ['#ffffff', '#ef4444', '#f59e0b', '#facc15', '#22c55e', '#14b8a6', '#3b82f6', '#8b5cf6', '#ec4899', '#1f2937'];
 
-  // Frame: body art is 512x768 (from Gemini's 1024x1536). Seamless neck integration at y 86.
-  // Option A "Subway Arcade Toy 3D": +12% expressive head ratio + glowing 3D cyber-glass arcade pedestal.
-  var BODY_W = 512, BODY_H = 768;
-  var HEAD = 336;          // head picture (square) drawn at Subway Arcade Toy 3D scale
-  var CHIN = 0.78;         // chin sits at 78% of the head picture
-  var NECK_Y = 86;         // where the chin lands smoothly on the neck
-  var PAD = Math.ceil(HEAD * CHIN - NECK_Y) + 14; // room above the body for the head + sticker outline
+  // Frame: body art is 512x768, rendered at 8–10yo kid proportions (compact vertical stature + balanced head-to-body ratio).
+  var BODY_W = 512, BODY_H = 768, BODY_DRAW_H = 716;
+  var BODY_VSCALE = BODY_DRAW_H / BODY_H;
+  var HEAD = 354;          // base head square before per-face cranium/cheek normalization
+  var CHIN = 0.78;         // nominal chin anchor (refined per head in analyzeHead)
+  var NECK_Y = 93;         // chin landing point in 512x768 body space (short, natural kid neck)
+  var NECK_DRAW_Y = Math.round(NECK_Y * BODY_VSCALE);
+  var PAD = Math.ceil(HEAD * 1.12 * 0.83 - NECK_DRAW_Y) + 16; // headroom for normalized heads + tall hats + outline
   var PAD_BOTTOM = 32;     // room below sneakers for the 3D cyber-glass arcade pedestal disc
   var OUT_SCALE = 0.75;    // final picture is 384 wide
 
-  // Complete catalog of all 124 cutout wearable layers grouped by slot
+  // Complete catalog of all cutout wearable layers grouped by slot
   var CATALOG = [
     { key: 'clothing', label: '👕 Tops & Outfits', items: [
       'clothing-hoodie', 'clothing-school-jacket', 'clothing-winter', 'clothing-robe',
@@ -56,8 +57,8 @@
       'cs-space-suit', 'cs-trench', 'cs-apron', 'cs-hero-suit',
       'cs-wiz-robe', 'cs-knight-armor', 'cs-scarf', 'cs-mummy-wrap', 'cs-skeleton-hoodie'
     ]},
-    { key: 'legs', label: '👖 Trousers & Skirts', items: [
-      'av-legs-shorts', 'av-legs-denim-shorts', 'av-legs-skirt', 'av-legs-tutu',
+    { key: 'legs', label: '👖 Bottoms & Skirts', items: [
+      'av-legs-skirt', 'av-legs-jeans', 'av-legs-shorts', 'av-legs-denim-shorts', 'av-legs-tutu',
       'av-legs-joggers', 'av-legs-cargo', 'av-legs-black', 'av-legs-rainbow'
     ]},
     { key: 'shoes', label: '👟 Shoes & Boots', items: [
@@ -144,7 +145,7 @@
   var UPRIGHT_PROPS = { 'acc-trophy': 1, 'acc-book': 1, 'cs-teddy': 1, 'cs-knight-shield': 1 };
   var FREE_STARTER_ITEMS = {
     'clothing-hoodie': 1, 'clothing-school-jacket': 1, 'cs-sport-shirt': 1, 'clothing-scarf': 1,
-    'av-legs-shorts': 1, 'av-legs-denim-shorts': 1, 'av-legs-skirt': 1, 'av-legs-joggers': 1,
+    'av-legs-jeans': 1, 'av-legs-shorts': 1, 'av-legs-denim-shorts': 1, 'av-legs-skirt': 1, 'av-legs-joggers': 1,
     'av-shoes-red': 1, 'av-shoes-boots': 1, 'hat-star-clip': 1, 'hat-bow': 1, 'hat-headband': 1,
     'glasses-round': 1, 'bp-adv-bag': 1
   };
@@ -231,7 +232,50 @@
   function inClassMode() {
     try { return !!(root.ClassMode && root.ClassMode.on && root.ClassMode.on()); } catch (e) { return false; }
   }
+  var ITEM_NAMES = {
+    'clothing-hoodie': 'Zip Hoodie', 'clothing-school-jacket': 'School Jacket', 'clothing-winter': 'Winter Puffer',
+    'clothing-robe': 'Star Robe', 'clothing-space': 'Astronaut Suit', 'clothing-hero': 'Superhero Suit',
+    'clothing-knight-armor': 'Knight Armor', 'cs-sport-shirt': 'Sport Jersey', 'clothing-scarf': 'Cozy Scarf',
+    'clothing-vest': 'Explorer Vest', 'clothing-travel-coat': 'Travel Coat', 'cs-pyjamas': 'Star Pyjamas',
+    'cs-ninja-gi': 'Ninja Suit', 'clothing-adv-jacket': 'Safari Jacket', 'clothing-scholar': 'Scholar Jacket',
+    'clothing-royal-robe': 'Royal Mantle', 'clothing-royal': 'Royal Tunic', 'clothing-magic-robe': 'Mystic Robe',
+    'clothing-dragon-armor': 'Dragon Armor', 'cs-hanbok': 'Royal Hanbok', 'cs-space-suit': 'Galaxy Suit',
+    'cs-trench': 'Detective Trench', 'cs-apron': 'Chef Apron', 'cs-hero-suit': 'Mega Hero Suit',
+    'cs-wiz-robe': 'Wizard Robe', 'cs-knight-armor': 'Silver Armor', 'cs-scarf': 'Striped Scarf',
+    'cs-mummy-wrap': 'Mummy Wrap', 'cs-skeleton-hoodie': 'Skeleton Hoodie',
+    'av-legs-skirt': 'Pleated Skirt', 'av-legs-jeans': 'Classic Jeans', 'av-legs-shorts': 'Sport Shorts',
+    'av-legs-denim-shorts': 'Denim Shorts', 'av-legs-tutu': 'Ballet Tutu', 'av-legs-joggers': 'Cozy Joggers',
+    'av-legs-cargo': 'Cargo Trousers', 'av-legs-black': 'Black Jeans', 'av-legs-rainbow': 'Rainbow Leggings',
+    'av-shoes-red': 'Red Sneakers', 'av-shoes-boots': 'Adventure Boots', 'av-shoes-wellies': 'Rain Wellies',
+    'av-shoes-football': 'Football Boots', 'av-shoes-sparkle': 'Sparkle Shoes', 'av-shoes-gold': 'Golden Sneakers',
+    'av-shoes-light': 'Light-Up Sneakers', 'av-shoes-slippers': 'Bunny Slippers',
+    'hat-crown': 'Gold Crown', 'hat-wizard': 'Star Wizard Hat', 'hat-flower': 'Flower Crown',
+    'hat-star-clip': 'Star Hair Clip', 'hat-bow': 'Ribbon Bow', 'hat-scholar': 'Graduation Cap',
+    'cs-gat': 'Korean Hat', 'hat-explorer': 'Safari Hat', 'hat-headband': 'Sport Headband',
+    'cs-wiz-hat': 'Wizard Hat', 'cs-knight-helm': 'Knight Helmet', 'cs-vamp-hair': 'Vampire Hair',
+    'cs-big-crown': 'Grand Crown', 'cs-my-rainbow-crown': 'Rainbow Crown',
+    'av-wig-rainbow': 'Rainbow Wig', 'av-wig-blue-spikes': 'Blue Spikes Wig', 'av-wig-pink-bob': 'Pink Bob Wig',
+    'glasses-round': 'Round Glasses', 'glasses-goggles': 'Inventor Goggles',
+    'bp-adv-bag': 'Adventure Bag', 'bp-explorer': 'Explorer Pack', 'bp-mini-wings': 'Mini Wings',
+    'bp-book': 'Book Pack', 'clothing-cape': 'Royal Cape', 'cs-vamp-cape': 'Vampire Cape',
+    'cs-my-phoenix-wings': 'Phoenix Wings', 'cs-my-galaxy-cape': 'Galaxy Cape',
+    'neck-star': 'Star Necklace', 'neck-badge': 'Hero Badge', 'neck-medal': 'Gold Medal',
+    'neck-pendant': 'Gem Pendant', 'cs-medal': 'Champion Medal',
+    'cs-teddy': 'Teddy Bear', 'acc-compass': 'Golden Compass', 'acc-wand': 'Star Wand',
+    'acc-book': 'Spell Book', 'cs-magnifier': 'Magnifying Glass', 'acc-confetti': 'Party Confetti',
+    'acc-companion': 'Star Sprite', 'accessory-crown': 'Floating Crown', 'acc-trophy': 'Gold Trophy',
+    'acc-microphone': 'Pop Microphone', 'acc-floating-stars': 'Floating Stars', 'cs-ladle': 'Chef Ladle',
+    'cs-parrot': 'Pirate Parrot', 'cs-wiz-staff': 'Wizard Staff', 'cs-knight-shield': 'Knight Shield',
+    'cs-vamp-bat': 'Bat Buddy', 'cs-my-comet': 'Comet Orb',
+    'aura-sparkle': 'Sparkle Aura', 'aura-star': 'Starlight Aura', 'aura-blossom': 'Blossom Aura',
+    'aura-flame': 'Flame Aura', 'aura-ice': 'Frost Aura', 'cs-aura-hearts': 'Heart Aura',
+    'cs-bubbles': 'Bubble Aura', 'cs-snowflakes': 'Snowflake Aura', 'cs-pumpkin-aura': 'Pumpkin Glow',
+    'cs-ghost-aura': 'Friendly Ghost Glow', 'aura-rainbow': 'Rainbow Aura', 'aura-lightning': 'Lightning Aura',
+    'cs-aura-fire': 'Blaze Aura', 'cs-lantern': 'Lantern Glow', 'aura-cosmic': 'Cosmic Aura',
+    'aura-dragon': 'Dragon Aura', 'aura-royal': 'Royal Aura', 'cs-my-aurora': 'Aurora Borealis'
+  };
   function prettyName(id) {
+    if (ITEM_NAMES[id]) return ITEM_NAMES[id];
     var p = petById(id);
     if (p && p.name) return p.name;
     return String(id || '')
@@ -471,11 +515,16 @@
     if (headB64[stem]) {
       return loadImg(headB64[stem]).then(function (im) { emotionHeads[stem] = im; return im; }).catch(function () { return null; });
     }
-    if (!BUILTIN_EMOTIONS[stem]) return Promise.resolve(null);
-    return loadImg(BASE + 'heads/' + stem + '.webp' + ASSET_V).then(function (im) {
-      emotionHeads[stem] = im;
-      return im;
-    }).catch(function () { return null; });
+    return readHeadRows([stem]).then(function () {
+      if (headB64[stem]) {
+        return loadImg(headB64[stem]).then(function (im) { emotionHeads[stem] = im; return im; }).catch(function () { return null; });
+      }
+      if (!BUILTIN_EMOTIONS[stem]) return null;
+      return loadImg(BASE + 'heads/' + stem + '.webp' + ASSET_V).then(function (im) {
+        emotionHeads[stem] = im;
+        return im;
+      }).catch(function () { return null; });
+    });
   }
   function fetchWear() {
     if (wear) return Promise.resolve(wear);
@@ -499,7 +548,7 @@
       seedBuiltinDefaults();
       var ids = Object.keys(data.approved).concat(Object.keys(data.pending));
       BUILTIN_HEADS.forEach(function (sid) { if (ids.indexOf(sid) < 0) ids.push(sid); });
-      var missing = ids.filter(function (id) { return !headB64[id] && BUILTIN_HEADS.indexOf(id) < 0; });
+      var missing = ids.filter(function (id) { return !headB64[id]; });
       return readHeadRows(missing).then(function () { return ids; });
     }).then(function (ids) {
       return Promise.all(ids.map(function (id) {
@@ -573,7 +622,7 @@
     return out;
   }
 
-  function effectiveWear(choice, eq) {
+  function effectiveWear(choice, eq, studentId, headImg) {
     var merged = avatarEquipFromMonster(eq);
     var cw = (choice && choice.wear) || {};
     Object.keys(cw).forEach(function (slot) {
@@ -584,6 +633,11 @@
         merged[slot] = MONSTER_TO_AVATAR_EQUIV[v] || v;
       }
     });
+    if (!cw.legs && !merged.legs && (studentId || (choice && choice.gender))) {
+      var isGirl = genderOf(studentId, choice, headImg) === 'girl';
+      var hasSuit = !!(merged.clothing && FULL_BODY_SUITS[merged.clothing]);
+      if (isGirl && !hasSuit) merged.legs = 'av-legs-skirt';
+    }
     return merged;
   }
 
@@ -660,7 +714,7 @@
   }
 
   function analyzeHead(headImg) {
-    if (!headImg) return { skinRgb: TONE_PRESET_RGB.light, backHair: null };
+    if (!headImg) return { skinRgb: TONE_PRESET_RGB.light, backHair: null, chinNorm: CHIN, headScale: 1 };
     if (headInfoCache && headInfoCache.has(headImg)) return headInfoCache.get(headImg);
     var S = 128, c = document.createElement('canvas'); c.width = S; c.height = S;
     var g = c.getContext('2d');
@@ -745,7 +799,38 @@
       }
     }
 
-    var out = { skinRgb: skinRgb, backHair: backHair };
+    var chinY = Math.round(CHIN * S);
+    for (var cy2 = 115; cy2 >= 82; cy2--) {
+      var cHits = 0;
+      for (var cx3 = 56; cx3 <= 72; cx3++) {
+        if (px[(cy2 * S + cx3) * 4 + 3] > 180) cHits++;
+      }
+      if (cHits >= 4) { chinY = cy2; break; }
+    }
+    var chinNorm = Math.max(0.73, Math.min(0.83, (chinY + 0.5) / S));
+
+    var cheekSpans = [];
+    for (var fy = 64; fy <= 84; fy++) {
+      var lx2 = -1, rx2 = -1;
+      for (var fx = 24; fx <= 104; fx++) {
+        var fo = (fy * S + fx) * 4;
+        var fr = px[fo], fg2 = px[fo + 1], fb = px[fo + 2], fa = px[fo + 3];
+        if (fa > 200 && fr > fg2 && (fr - fb) > 15 && fr < 248) {
+          if (lx2 < 0) lx2 = fx;
+          rx2 = fx;
+        }
+      }
+      if (lx2 >= 0 && (rx2 - lx2) >= 20 && (rx2 - lx2) <= 68) {
+        cheekSpans.push((rx2 - lx2 + 1) / S);
+      }
+    }
+    var headScale = 1;
+    if (cheekSpans.length >= 5) {
+      var medSpan = medianOf(cheekSpans);
+      headScale = Math.max(0.90, Math.min(1.10, Math.pow(0.312 / Math.max(0.20, medSpan), 0.58)));
+    }
+
+    var out = { skinRgb: skinRgb, backHair: backHair, chinNorm: chinNorm, headScale: headScale };
     if (headInfoCache) headInfoCache.set(headImg, out);
     return out;
   }
@@ -1014,7 +1099,7 @@
     });
     ['legs'].forEach(function (slot) {
       var id = eq[slot];
-      if (id && id !== 'none' && bSet.indexOf(id) >= 0 && legs.indexOf(id) < 0) legs.push(id);
+      if (id && id !== 'none' && id !== 'av-legs-jeans' && bSet.indexOf(id) >= 0 && legs.indexOf(id) < 0) legs.push(id);
     });
     ['shoes'].forEach(function (slot) {
       var id = eq[slot];
@@ -1023,7 +1108,7 @@
     ['clothing', 'outfit', 'neck', 'accessory'].forEach(function (slot) {
       var id = eq[slot];
       if (!id || id === 'none') return;
-      if (SLOT_BY_ITEM[id] === 'legs' && bSet.indexOf(id) >= 0) { if (legs.indexOf(id) < 0) legs.push(id); }
+      if (SLOT_BY_ITEM[id] === 'legs' && bSet.indexOf(id) >= 0) { if (id !== 'av-legs-jeans' && legs.indexOf(id) < 0) legs.push(id); }
       else if (SLOT_BY_ITEM[id] === 'shoes' && bSet.indexOf(id) >= 0) { if (shoes.indexOf(id) < 0) shoes.push(id); }
       else if (SLOT_BY_ITEM[id] === 'backpack' && bSet.indexOf(id) >= 0) { if (back.indexOf(id) < 0) back.push(id); }
       else if (bSet.indexOf(id) >= 0 && tops.indexOf(id) < 0) tops.push(id);
@@ -1244,10 +1329,95 @@
     return { sx: 0, sy: 0, sw: w, sh: h };
   }
 
+  function profileScaleX(sy, isGirl, pose) {
+    var knots = isGirl
+      ? [
+          [0, pose === 'stand' ? 0.89 : 0.93],
+          [95, pose === 'stand' ? 0.875 : 0.91],
+          [165, 0.895],
+          [285, 0.865],
+          [378, 0.95],
+          [515, 0.945],
+          [650, 0.91],
+          [768, 0.92]
+        ]
+      : [
+          [0, 0.95],
+          [95, 0.92],
+          [168, 0.97],
+          [300, 0.935],
+          [410, 0.935],
+          [650, 0.94],
+          [768, 0.95]
+        ];
+    if (sy <= knots[0][0]) return knots[0][1];
+    for (var i = 0; i < knots.length - 1; i++) {
+      var y0 = knots[i][0], y1 = knots[i + 1][0];
+      if (sy <= y1) {
+        var t = (sy - y0) / Math.max(1, y1 - y0);
+        var mu = (1 - Math.cos(t * Math.PI)) * 0.5;
+        return knots[i][1] * (1 - mu) + knots[i + 1][1] * mu;
+      }
+    }
+    return knots[knots.length - 1][1];
+  }
+
+  function drawShapedBody(cc, bodyComp, padTop, isGirl, pose) {
+    var step = 2;
+    for (var sy = 0; sy < BODY_H; sy += step) {
+      var sh = Math.min(step, BODY_H - sy);
+      var dy0 = Math.round(padTop + sy * BODY_VSCALE);
+      var dy1 = Math.round(padTop + (sy + sh) * BODY_VSCALE);
+      var dh = dy1 - dy0;
+      if (dh <= 0) continue;
+      var sx = profileScaleX(sy + sh * 0.5, isGirl, pose);
+      var dw = BODY_W * sx;
+      var dx = (BODY_W - dw) * 0.5;
+      cc.drawImage(bodyComp, 0, sy, BODY_W, sh, dx, dy0, dw, dh);
+    }
+  }
+
+  function drawHeldProp(cc, graded, tid, pose, padTop, isGirl) {
+    var pCan = document.createElement('canvas'); pCan.width = BODY_W; pCan.height = BODY_H;
+    var pg = pCan.getContext('2d');
+    var gripX = 256, gripY = 260;
+    if (RIGHT_HAND_PROPS[tid]) {
+      if (pose === 'wave') {
+        pg.save();
+        pg.translate(BODY_W, 0);
+        pg.scale(-1, 1);
+        pg.drawImage(graded, 0, 0, BODY_W, BODY_H);
+        pg.restore();
+        gripX = 128; gripY = 355;
+      } else if (pose === 'cheer' && !STAFF_PROPS[tid]) {
+        pg.save();
+        pg.translate(10, -258);
+        pg.drawImage(graded, 0, 0, BODY_W, BODY_H);
+        pg.restore();
+        gripX = 394; gripY = 98;
+      } else {
+        pg.drawImage(graded, 0, 0, BODY_W, BODY_H);
+        gripX = 384; gripY = 355;
+      }
+    } else {
+      pg.drawImage(graded, 0, 0, BODY_W, BODY_H);
+    }
+    var sxAtGrip = profileScaleX(gripY, isGirl, pose);
+    var dstGripX = BODY_W * 0.5 + (gripX - BODY_W * 0.5) * sxAtGrip;
+    var dstGripY = padTop + gripY * BODY_VSCALE;
+    cc.drawImage(
+      pCan,
+      Math.round(dstGripX - gripX * BODY_VSCALE),
+      Math.round(dstGripY - gripY * BODY_VSCALE),
+      Math.round(BODY_W * BODY_VSCALE),
+      BODY_DRAW_H
+    );
+  }
+
   function compose(choice, headImg, eq, poseKind, studentId) {
     return fetchWear().then(function () {
       choice = choice || {};
-      var mergedEq = effectiveWear(choice, eq || {});
+      var mergedEq = effectiveWear(choice, eq || {}, studentId, headImg);
       var tone = TONES.some(function (t) { return t.id === choice.skin; }) ? choice.skin : 'auto';
       var L = wearLayers(mergedEq);
       var pose = resolveDrawnPose(choice, studentId, poseKind, L);
@@ -1280,8 +1450,10 @@
         if (!bodyLight) throw new Error('body');
 
         var info = analyzeHead(headImg);
-        var targetRgb = TONE_PRESET_RGB[tone] || info.skinRgb;
+        var baseHeadInfo = (studentId && heads[studentId] && heads[studentId] !== headImg) ? analyzeHead(heads[studentId]) : info;
+        var targetRgb = TONE_PRESET_RGB[tone] || baseHeadInfo.skinRgb || info.skinRgb;
         var gradedBody = getGradedBody(bodyLight, skinMask, targetRgb, pose);
+        var isGirl = (genderOf(studentId, choice, headImg) === 'girl');
 
         var k = 3;
         var backIms = L.back.map(function () { return ims[k++]; });
@@ -1293,19 +1465,23 @@
         var auraIm = mergedEq.aura ? ims[k++] : null;
         var hasPet = !!(petIm && petIm.width > 0 && petIm.height > 0);
 
-        var W = hasPet ? 690 : BODY_W, H = BODY_H + PAD + PAD_BOTTOM;
+        var W = hasPet ? 690 : BODY_W, H = BODY_DRAW_H + PAD + PAD_BOTTOM;
         var c = document.createElement('canvas'); c.width = Math.round(W * OUT_SCALE); c.height = Math.round(H * OUT_SCALE);
         var ctx = c.getContext('2d'); ctx.scale(OUT_SCALE, OUT_SCALE);
 
-        var hx = (BODY_W - HEAD) / 2, hy = PAD + NECK_Y - HEAD * CHIN;
+        var hScale = baseHeadInfo.headScale || 1;
+        var chinNorm = info.chinNorm || CHIN;
+        var hSize = Math.round(HEAD * hScale);
+        var hx = Math.round((BODY_W - hSize) / 2);
+        var hy = Math.round(PAD + NECK_DRAW_Y - hSize * chinNorm);
         var prep = prepareHead(headImg, L.head);
         var bh = (!prep.suppressBackHair) ? info.backHair : null;
         var bx1 = 0, bx2 = 0, by1 = 0, by2 = 0;
         if (bh && headImg) {
-          bx1 = Math.round(hx + bh.x1Norm * HEAD);
-          bx2 = Math.round(hx + bh.x2Norm * HEAD);
-          by1 = Math.round(hy + bh.y1Norm * HEAD);
-          by2 = Math.min(Math.round(hy + bh.y2Norm * HEAD), PAD + 108);
+          bx1 = Math.round(hx + bh.x1Norm * hSize);
+          bx2 = Math.round(hx + bh.x2Norm * hSize);
+          by1 = Math.round(hy + bh.y1Norm * hSize);
+          by2 = Math.min(Math.round(hy + bh.y2Norm * hSize), PAD + Math.round(108 * BODY_VSCALE));
         }
 
         // Compose character onto offscreen charCanvas so one unified outer sticker border wraps everything seamlessly
@@ -1372,7 +1548,7 @@
             return !!topsIms[idx] && !!POSED_TOPS[tid] && !TORSO_ONLY_TOPS[tid];
           });
           if (hasPosedSleeveTop) {
-            bg.clearRect(0, 0, 172, 392);            // from the very top, so no fingertip outline is left floating
+            bg.clearRect(0, 0, 172, 392);
             bg.clearRect(BODY_W - 172, 0, 172, 392);
             bg.clearRect(0, 392, 144, 98);
             bg.clearRect(BODY_W - 144, 392, 144, 98);
@@ -1418,37 +1594,22 @@
         shoesIms.forEach(function (im) { if (im) bc.drawImage(im, 0, 0, BODY_W, BODY_H); });
 
         var confettiIm = null;
+        var heldProps = [];
         topsIms.forEach(function (im, idx) {
           if (!im) return;
           var tid = L.tops[idx];
           if (tid === 'acc-confetti') { confettiIm = im; return; }
           var graded = getGradedTop(im, tid, targetRgb, pose);
+          if (HAND_HELD_PROPS[tid]) {
+            heldProps.push({ im: graded, tid: tid });
+            return;
+          }
           if (CHEST_SHADOW_ITEMS[tid]) {
             bc.save();
             bc.shadowColor = 'rgba(10, 8, 30, 0.24)';
             bc.shadowBlur = 4;
             bc.shadowOffsetY = 2;
             bc.drawImage(graded, 0, 0, BODY_W, BODY_H);
-            bc.restore();
-            return;
-          }
-          if (RIGHT_HAND_PROPS[tid] && pose === 'wave') {
-            // Hold handheld prop naturally in the relaxed left hand while waving with the right hand!
-            bc.save();
-            bc.translate(BODY_W, 0);
-            bc.scale(-1, 1);
-            bc.drawImage(graded, 0, 0, BODY_W, BODY_H);
-            bc.restore();
-            return;
-          }
-          if (RIGHT_HAND_PROPS[tid] && pose === 'cheer') {
-            bc.save();
-            if (!STAFF_PROPS[tid]) {
-              bc.translate(10, -258);
-              bc.drawImage(graded, 0, 0, BODY_W, BODY_H);
-            } else {
-              bc.drawImage(graded, 0, 0, BODY_W, BODY_H);
-            }
             bc.restore();
             return;
           }
@@ -1474,8 +1635,11 @@
           });
           if (needHands) bc.drawImage(handLayer(gradedBody, skinMask, pose, targetRgb.join(',')), 0, 0, BODY_W, BODY_H);
         }
-        var slim = (genderOf(studentId, choice, headImg) === 'girl') ? 0.93 : 1;
-        cc.drawImage(bodyComp, Math.round(BODY_W * (1 - slim) / 2), PAD, Math.round(BODY_W * slim), BODY_H);
+
+        drawShapedBody(cc, bodyComp, PAD, isGirl, pose);
+        heldProps.forEach(function (hp) {
+          drawHeldProp(cc, hp.im, hp.tid, pose, PAD, isGirl);
+        });
 
         // 4. Draw prepared expressive head + head wearables (with subtle lively tilt anchored at the neck)
         var headTiltRad = 0;
@@ -1486,33 +1650,33 @@
 
         cc.save();
         if (Math.abs(headTiltRad) > 0.001) {
-          var pivX = BODY_W / 2, pivY = PAD + NECK_Y;
+          var pivX = BODY_W / 2, pivY = PAD + NECK_DRAW_Y;
           cc.translate(pivX, pivY);
           cc.rotate(headTiltRad);
           cc.translate(-pivX, -pivY);
         }
-        if (prep.img) cc.drawImage(prep.img, hx, hy, HEAD, HEAD);
-        else drawBlankHead(cc, hx, hy);
+        if (prep.img) cc.drawImage(prep.img, hx, hy, hSize, hSize);
+        else drawBlankHead(cc, hx, hy, hSize);
         headIms.forEach(function (im) {
           if (!im) return;
           cc.save();
           cc.shadowColor = 'rgba(10, 8, 30, 0.22)';
           cc.shadowBlur = 4;
           cc.shadowOffsetY = 2;
-          cc.drawImage(im, hx, hy, HEAD, HEAD);
+          cc.drawImage(im, hx, hy, hSize, hSize);
           cc.restore();
         });
         cc.restore();
 
         // 4b. Aura: a glow ring behind the head and chest
         if (auraIm && auraIm.width) {
-          var aS = 500;
+          var aS = 480;
           ctx.save(); ctx.globalAlpha = 0.95;
-          ctx.drawImage(auraIm, Math.round(BODY_W / 2 - aS / 2), Math.round(PAD + 120 - aS / 2), aS, aS);
+          ctx.drawImage(auraIm, Math.round(BODY_W / 2 - aS / 2), Math.round(PAD + 120 * BODY_VSCALE - aS / 2), aS, aS);
           ctx.restore();
         }
         // 5. Draw glowing 3D cyber-glass arcade pedestal disc underneath the character
-        drawArcadePedestal(ctx, BODY_W / 2, PAD + 744, pedestalAccent(choice, studentId, mergedEq));
+        drawArcadePedestal(ctx, BODY_W / 2, PAD + Math.round(744 * BODY_VSCALE), pedestalAccent(choice, studentId, mergedEq));
 
         // 6. Stamp one unified 5.2px pure-white outer sticker border around the character
         var sil = document.createElement('canvas'); sil.width = W; sil.height = H;
@@ -1542,10 +1706,10 @@
           var pBox = getPetTightBox(petIm, petUrl) || { sx: 0, sy: 0, sw: petIm.width, sh: petIm.height };
           var aspect = pBox.sw / Math.max(1, pBox.sh);
           var maxPW = aspect > 1.15 ? 323 : (aspect >= 0.75 ? 297 : 285); // 25% smaller (teacher asked)
-          var maxPH = aspect < 0.62 ? 450 : (aspect < 0.82 ? 383 : 345);
+          var maxPH = aspect < 0.62 ? 432 : (aspect < 0.82 ? 368 : 334);
           var pSc = Math.min(maxPW / pBox.sw, maxPH / pBox.sh);
           var pW = Math.round(pBox.sw * pSc), pH = Math.round(pBox.sh * pSc);
-          var pCx = aspect < 0.62 ? 530 : 516, pBottom = PAD + 756;
+          var pCx = aspect < 0.62 ? 530 : 516, pBottom = PAD + Math.round(756 * BODY_VSCALE);
           var pX = Math.max(304, Math.min(W - pW - 10, Math.round(pCx - pW / 2)));
           var pY = Math.round(pBottom - pH);
 
@@ -1576,7 +1740,7 @@
           ctx.drawImage(petIm, pBox.sx, pBox.sy, pBox.sw, pBox.sh, pX, pY, pW, pH);
           ctx.restore();
         }
-        if (confettiIm) ctx.drawImage(confettiIm, 0, PAD, BODY_W, BODY_H);
+        if (confettiIm) ctx.drawImage(confettiIm, 0, PAD, BODY_W, BODY_DRAW_H);
 
         return c.toDataURL('image/webp', 0.9);
       });
@@ -1624,12 +1788,13 @@
     });
   }
 
-  function drawBlankHead(ctx, hx, hy) {
-    var cx = hx + HEAD / 2, cy = hy + HEAD * 0.5;
+  function drawBlankHead(ctx, hx, hy, sz) {
+    var S = sz || HEAD;
+    var cx = hx + S / 2, cy = hy + S * 0.5;
     ctx.save();
-    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(cx, cy, HEAD * 0.34, HEAD * 0.31, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#cbd5e1'; ctx.beginPath(); ctx.ellipse(cx, cy, HEAD * 0.31, HEAD * 0.28, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#64748b'; ctx.font = '700 ' + Math.round(HEAD * 0.28) + 'px Fredoka, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(cx, cy, S * 0.34, S * 0.31, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#cbd5e1'; ctx.beginPath(); ctx.ellipse(cx, cy, S * 0.31, S * 0.28, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#64748b'; ctx.font = '700 ' + Math.round(S * 0.28) + 'px Fredoka, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText('?', cx, cy + 4);
     ctx.restore();
   }
@@ -1650,14 +1815,14 @@
     if (state === 'idle') load();
     if (state === 'ready' && !data.approved[id] && !pendingDefault[id]) {
       pendingDefault[id] = 1;
-      var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || defaultHeadFor(id); });
-      headP.then(function (h) { return compose(defaultChoice(id), h, {}, 'smile', id); })
+      var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { if (im) heads[id] = im; return im || defaultHeadFor(id); });
+      headP.then(function (h) { return compose(defaultChoice(id), h, equippedOf(id), 'smile', id); })
         .then(function (u) { composedDefault[id] = u; scheduleRerender(); })
         .catch(function () { /* keep the placeholder */ });
     }
     return DEFAULT_PIC;
   }
-  /* ---------- for the shop: item facts, try-on and wearing ---------- */
+  /* ---------- for the shop & unified studio: item facts, try-on, style and wearing ---------- */
   function allStoreItemIds(studentId) {
     var ids = [];
     pickerCategories(studentId || null).forEach(function (c) { (c.items || []).forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); }); });
@@ -1681,7 +1846,7 @@
     var sl = slotOf(id); if (!sl) return null;
     var pic = sl === 'pet' ? (petImageUrl(id, 'stand') + ASSET_V) : sl === 'aura' ? auraUrl(id) : (BASE + 'wear/' + id + '.webp' + ASSET_V);
     var nm = '';
-    if (sl === 'aura') { try { var mi = (store() && store().getMonsterItems ? store().getMonsterItems() : []).filter(function (x) { return x.id === id; })[0]; nm = mi && mi.name; } catch (e) { nm = ''; } }
+    if (sl === 'aura' && !ITEM_NAMES[id]) { try { var mi = (store() && store().getMonsterItems ? store().getMonsterItems() : []).filter(function (x) { return x.id === id; })[0]; nm = mi && mi.name; } catch (e) { nm = ''; } }
     return { id: id, name: nm || prettyName(id), slot: sl, rarity: rarityOf(id), pic: pic, free: !!FREE_STARTER_ITEMS[id] };
   }
   function lookOf(id) {
@@ -1689,24 +1854,114 @@
     var c = JSON.parse(JSON.stringify(base)); if (!c.wear) c.wear = {};
     return c;
   }
-  /** The pupil wearing one more item (nothing saved). Resolves to a picture address. */
-  function previewWith(id, itemId) {
-    var c = lookOf(id), sl = itemId ? slotOf(itemId) : '';
-    if (sl) c.wear[sl] = itemId;
-    var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { return im || defaultHeadFor(id); });
-    return fetchWear().then(function () { return headP; }).then(function (h) { return compose(c, h, equippedOf(id), 'smile', id); });
+  function styleOf(id) {
+    var c = lookOf(id);
+    var eff = effectiveWear(c, id ? equippedOf(id) : {}, id, heads[id]);
+    var rawSt = c.stance || '';
+    var curSt = (rawSt === 'wave' || rawSt === 'cheer') ? rawSt : ((rawSt === 'stand' || rawSt === 'natural' || rawSt === 'hip') ? 'stand' : (id ? resolveDrawnPose(c, id, 'smile', wearLayers(eff)) : 'stand'));
+    return {
+      skin: c.manualSkin ? (c.skin || 'auto') : 'auto',
+      manualSkin: !!c.manualSkin,
+      tee: c.tee || TEES[6],
+      stance: curSt,
+      rawStance: rawSt,
+      gender: genderOf(id, c, heads[id]),
+      rawGender: c.gender || ''
+    };
   }
-  /** Put an owned item on (or take a slot off) and save it to the board. */
-  function wearItem(id, itemId, slot) {
-    var c = lookOf(id), sl = slot || slotOf(itemId); if (!sl) return Promise.resolve(false);
-    if (itemId) c.wear[sl] = itemId; else delete c.wear[sl];
+  function commitLook(id, c) {
+    if (!id) return Promise.resolve(false);
     c.at = nowIso();
     data.approved[id] = c;
     if (data.pending[id]) { delete data.pending[id]; markRemoved('pending', id); }
     delete composedDefault[id];
-    return recompose(id).then(function () { rerender(); return save().catch(function () { return null; }); }).then(function () { return true; });
+    var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { if (im) heads[id] = im; return im; });
+    return headP.then(function () { return recompose(id); }).then(function () {
+      updateBoardAvatarDom(id);
+      rerender();
+      return save().catch(function () { return null; });
+    }).then(function () { return true; });
   }
-  function wearingOf(id) { var c = data.approved[id]; return (c && c.wear) ? JSON.parse(JSON.stringify(c.wear)) : {}; }
+  function setStyle(id, patch) {
+    if (!id || !patch) return Promise.resolve(false);
+    var c = lookOf(id);
+    if (patch.skin !== undefined) {
+      c.skin = patch.skin || 'auto';
+      c.manualSkin = (c.skin !== 'auto');
+    }
+    if (patch.tee !== undefined) c.tee = patch.tee;
+    if (patch.stance !== undefined) c.stance = patch.stance || 'stand';
+    if (patch.gender !== undefined) c.gender = (patch.gender === 'girl' || patch.gender === 'boy') ? patch.gender : '';
+    return commitLook(id, c);
+  }
+  function previewLook(id, opts) {
+    opts = opts || {};
+    var c = lookOf(id);
+    if (opts.itemId) {
+      var sl = slotOf(opts.itemId);
+      if (sl) c.wear[sl] = opts.itemId;
+    }
+    if (opts.clearSlot) {
+      c.wear[opts.clearSlot] = 'none';
+    }
+    var headP = heads[id] ? Promise.resolve(heads[id]) : fetchHead(id).then(function (im) { if (im) heads[id] = im; return im || defaultHeadFor(id); });
+    return fetchWear().then(function () { return headP; }).then(function (h) {
+      return composeForPose(id, c, h, equippedOf(id), opts.emotion || 'smile');
+    });
+  }
+  /** The pupil wearing one more item (nothing saved). Resolves to a picture address. */
+  function previewWith(id, itemId) {
+    return previewLook(id, { itemId: itemId, emotion: 'smile' });
+  }
+  /** Put an owned item on (or take a slot off) and save it to the board. */
+  function wearItem(id, itemId, slot) {
+    var c = lookOf(id), sl = slot || slotOf(itemId); if (!sl) return Promise.resolve(false);
+    var monEq = avatarEquipFromMonster(equippedOf(id));
+    var isGirl = genderOf(id, c, heads[id]) === 'girl';
+    if (itemId && itemId !== 'none') {
+      c.wear[sl] = itemId;
+    } else {
+      if (monEq[sl] || (sl === 'legs' && isGirl)) c.wear[sl] = 'none';
+      else delete c.wear[sl];
+    }
+    return commitLook(id, c);
+  }
+  function surpriseMe(id) {
+    if (!id) return Promise.resolve(false);
+    var c = lookOf(id);
+    var monEq = avatarEquipFromMonster(equippedOf(id));
+    var w = {};
+    Object.keys(monEq).forEach(function (k) { if (k !== 'pet') w[k] = 'none'; });
+    var savedTab = ui.tab; ui.tab = 'make';
+    try {
+      ['clothing', 'legs', 'shoes', 'hat', 'glasses', 'backpack', 'accessory'].forEach(function (k) {
+        var cat = CATALOG.filter(function (x) { return x.key === k; })[0];
+        if (!cat || !cat.items.length) return;
+        var allowed = cat.items.filter(function (itId) { return !itemLockInfo(id, itId).locked; });
+        if (allowed.length && (k === 'clothing' || k === 'legs' || k === 'shoes' || Math.random() < 0.65)) {
+          w[k] = allowed[Math.floor(Math.random() * allowed.length)];
+        }
+      });
+    } finally { ui.tab = savedTab; }
+    c.wear = w;
+    c.tee = TEES[Math.floor(Math.random() * TEES.length)];
+    return commitLook(id, c);
+  }
+  function resetLook(id) {
+    if (!id) return Promise.resolve(false);
+    var c = lookOf(id);
+    var monEq = avatarEquipFromMonster(equippedOf(id));
+    var noneMap = {};
+    Object.keys(monEq).forEach(function (k) { noneMap[k] = 'none'; });
+    c.wear = noneMap;
+    c.stance = 'stand';
+    return commitLook(id, c);
+  }
+  function wearingOf(id) {
+    if (!id) return {};
+    var c = ownedLook(id, lookOf(id));
+    return effectiveWear(c, equippedOf(id), id, heads[id]);
+  }
   function has(id) { return !!composed[id]; }
 
   // ---------- builder (pupils in class) + wardrobe (all 124 items) + teacher review ----------
@@ -1777,25 +2032,33 @@
 
   // Girl or boy look: 1) the teacher's choice in Dress up, 2) the first name, 3) for names used by both, long hair
   // in the pupil's face picture. Common Turkish first names only; real pupil names are never stored in this file.
-  var GIRL_NAMES = ('ada alya aslihan ayca ayse ayla aylin azra bahar bahriye begum belis beren beste betul bugce buglem buse cansu ceren cemre damla defne derya dilara dila duru ebru ece ecem eda ela elif elisa ella elvan esila esma esra eylul feyza gizem gokce gulce gulsen gunes hande hazal hira ilay iclal ilayda ilgin ipek irem irmak kumsal lal lara lina masal melda melek melis melisa melodi meryem mila mina mira miray nehir nil nilda nilsu nisa naz ozge oyku pelin pinar rabia rana sare seda selin sena serra sila simal sude suhan su tuana tugce yagmur yaren yasemin zehra zeynep zumra')
+  var GIRL_NAMES = ('ada alya aslihan ayca ayse ayla aylin azra bahar bahriye begum belis beren beste betul bugce buglem buse cansu ceren cemre damla defne derya dilara dila duru ebru ece ecem eda ela elif elisa ella elvan esila esma esra eylul feyza gizem gokce gulce gulsen gunes hande hazal hira ilay iclal ilayda ilgin ipek irem irmak kumsal lal lara lina masal melda melek melis melisa melodi meryem mila mina mira miray nehir nil nilda nilsu nisa naz ozge oyku pelin pinar rabia rana sare seda selin sena serra sila simal sude suhan su tuana tugce ulku yagmur yaren yasemin zehra zeynep zumra')
     .split(' ').reduce(function (o, n) { o[n] = 1; return o; }, {});
-  var BOY_NAMES = ('ahmet ali alp alparslan aras arda ates ayaz baran baris berat berk burak can cinar demir doruk efe egehan emir emre enes eren ertugrul eymen fatih furkan goktug gurur hasan huseyin ibrahim ilker kaan kemal kerem kuzey mehmet melik mert metehan miran mustafa omer onur ozan poyraz salih selim taha tuna ugur umut uras utku yigit yunus yusuf')
+  var BOY_NAMES = ('ahmet ali alp alparslan aras arda ates ayaz baran baris bati berat berk burak can cinar demir doruk efe ege egehan emir emre enes eren ertugrul eymen fatih furkan goktug gurur hasan huseyin ibrahim ilker kaan kemal kerem kuzey mehmet melik mert metehan miran mustafa omer onur ozan poyraz ruzgar salih selim taha tuna ugur umut uras utku yigit yunus yusuf')
     .split(' ').reduce(function (o, n) { o[n] = 1; return o; }, {});
-  function foldName(s) {
-    return String(s || '').trim().split(/\s+/)[0].toLocaleLowerCase('tr')
+  function foldToken(s) {
+    return String(s || '').trim().toLocaleLowerCase('tr')
       .replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/i̇/g, 'i').replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u').replace(/[^a-z]/g, '');
+  }
+  function foldName(s) {
+    return foldToken(String(s || '').trim().split(/\s+/)[0]);
   }
   function longHair(headImg) {
     if (!headImg) return false;
     try { var bh = analyzeHead(headImg).backHair; return !!(bh && (bh.y2Norm - bh.y1Norm) > 0.12); } catch (e) { return false; }
   }
   function genderOf(id, choice, headImg) {
-    var c = choice || data.approved[id] || data.pending[id];
+    var c = choice || (id ? (data.approved[id] || data.pending[id]) : null);
     if (c && (c.gender === 'girl' || c.gender === 'boy')) return c.gender;
-    var st = studentRecord(id), fn = foldName(st && (st.firstName || st.name));
-    if (GIRL_NAMES[fn]) return 'girl';
-    if (BOY_NAMES[fn]) return 'boy';
-    return longHair(headImg || heads[id]) ? 'girl' : 'boy';
+    var st = id ? studentRecord(id) : null;
+    var rawGiven = st ? String(st.firstName || String(st.name || '').split(/\s+/)[0] || '').trim() : '';
+    var parts = rawGiven ? rawGiven.split(/\s+/) : [];
+    for (var i = 0; i < parts.length; i++) {
+      var fn = foldToken(parts[i]);
+      if (GIRL_NAMES[fn]) return 'girl';
+      if (BOY_NAMES[fn]) return 'boy';
+    }
+    return longHair(headImg || (id && heads[id])) ? 'girl' : 'boy';
   }
   var DEFAULT_GIRL_PIC = BASE + 'head_demo_girl.webp' + ASSET_V;
   function defaultHeadFor(id) {
@@ -1832,6 +2095,17 @@
   }
 
   function open(opts) {
+    if (!(opts && opts.legacyModal) && root.ClassroomStore && root.ClassroomStore.ui && typeof root.ClassroomStore.ui.openStudio === 'function') {
+      close();
+      var wantTeacher = (opts && opts.tab === 'review' && !inClassMode());
+      root.ClassroomStore.ui.openStudio({
+        pick: (opts && opts.pick) || null,
+        mode: wantTeacher ? 'teacher' : 'avatar',
+        teacherTab: wantTeacher ? 'approvals' : undefined,
+        slot: (opts && opts.slot) || undefined
+      });
+      return;
+    }
     ensureCss();
     ui.isOpen = true;
     ui.tab = (opts && opts.tab) || 'make';
@@ -1860,7 +2134,7 @@
   }
   function stanceBarHtml(c) {
     var raw = (c && c.stance) || '';
-    var eff = effectiveWear(c, ui.pick ? equippedOf(ui.pick) : {});
+    var eff = effectiveWear(c, ui.pick ? equippedOf(ui.pick) : {}, ui.pick, ui.pick ? heads[ui.pick] : null);
     var cur = (raw === 'wave' || raw === 'cheer') ? raw : ((raw === 'stand' || raw === 'natural' || raw === 'hip') ? 'stand' : (ui.pick ? resolveDrawnPose(c, ui.pick, 'smile', wearLayers(eff)) : 'stand'));
     var g = ui.pick ? genderOf(ui.pick, c, heads[ui.pick]) : ((c && c.gender) || 'boy');
     return '<div class="pa-poses" style="margin-top:6px">' + STANCES.map(function (st) {
@@ -1900,7 +2174,7 @@
     var cats = pickerCategories(ui.pick);
     var activeCat = cats.filter(function (x) { return x.key === ui.cat; })[0] || cats[0];
     var monEq = ui.pick ? avatarEquipFromMonster(equippedOf(ui.pick)) : {};
-    var effWear = effectiveWear(c, ui.pick ? equippedOf(ui.pick) : {});
+    var effWear = effectiveWear(c, ui.pick ? equippedOf(ui.pick) : {}, ui.pick, ui.pick ? heads[ui.pick] : null);
     var curVal = effWear[activeCat.key] || '';
     var earnedNote = (ui.tab === 'make' && lockMode() === 'earned') ? ' · <small style="color:#fde047">🪙 Earned Mode: earn XP or buy items in the Shop to unlock more!</small>' : '';
     var syncNote = ui.pick ? (monstersHidden() ? '' : ' · <small style="color:#7dd3fc">👾 Synced with Monster belongings</small>') : '';
@@ -2167,6 +2441,13 @@
     mode: mode, on: on, setMode: setMode, load: load, imgFor: imgFor, has: has, open: open, close: close,
     lockMode: lockMode,
     genderOf: function (id) { return genderOf(id); },
+    pupilLevel: pupilLevel,
+    tones: TONES, tees: TEES, stances: STANCES, toneBg: toneBg,
+    lookOf: lookOf, styleOf: styleOf, setStyle: setStyle, previewLook: previewLook,
+    surpriseMe: surpriseMe, resetLook: resetLook,
+    hasHead: function (id) { return !!(id && (heads[id] || headB64[id] || BUILTIN_HEADS.indexOf(id) >= 0)); },
+    pendingIds: function () { return Object.keys(data.pending || {}); },
+    pendingChoice: function (id) { return id && data.pending[id] ? JSON.parse(JSON.stringify(data.pending[id])) : null; },
     pictureFor: pictureFor, itemInfo: itemInfo, storeItemIds: allStoreItemIds, previewWith: previewWith,
     wearItem: wearItem, wearingOf: wearingOf, monstersHidden: monstersHidden,
     // lock check for the shop (ignores which tab the dress-up window was last on)
@@ -2185,6 +2466,7 @@
     catalog: CATALOG,
     status: function () { return { state: state, error: lastError, approved: Object.keys(data.approved).length, pending: Object.keys(data.pending).length, lockMode: lockMode() }; },
     toggleButton: function () {
+      if (monstersHidden() && root.ClassroomStore) return '';
       return (monstersHidden() ? '' : '<button class="cb-look" onclick="PupilAvatars.setMode(PupilAvatars.on()?\'monsters\':\'avatars\')" title="Show monsters or the pupils\' avatars">' + (on() ? '🧒 Avatars' : '👾 Monsters') + '</button>') +
         (on() ? '<button class="cb-look" onclick="PupilAvatars.open()" title="Make an avatar, try on the wardrobe' + (inClassMode() ? '' : ', check pupils\' avatars') + '">🎨 Dress up</button>' : '');
     },
@@ -2215,8 +2497,9 @@
       data.settings.lockMode = (lockMode() === 'earned') ? 'free' : 'earned';
       data.settings.at = nowIso();
       save().catch(function () {});
-      toast(data.settings.lockMode === 'earned' ? '🪙 Earned Mode ON: special items unlock by Monster Level & Shop.' : '🔓 Free Dress-Up ON: all items are open to everyone.');
+      toast(data.settings.lockMode === 'earned' ? '🪙 Earned Mode ON: special items unlock by Avatar Level & Shop.' : '🔓 Free Dress-Up ON: all items are open to everyone.');
       draw();
+      if (on()) rerender();
     },
     _cat: function (c) { ui.cat = c; draw(); },
     _wear: function (slot, itemId) {
@@ -2224,9 +2507,10 @@
       if (!ui.choice) ui.choice = { skin: 'auto', tee: TEES[6], wear: {} };
       if (!ui.choice.wear) ui.choice.wear = {};
       var monEq = ui.pick ? avatarEquipFromMonster(equippedOf(ui.pick)) : {};
-      var eff = effectiveWear(ui.choice, ui.pick ? equippedOf(ui.pick) : {});
+      var eff = effectiveWear(ui.choice, ui.pick ? equippedOf(ui.pick) : {}, ui.pick, ui.pick ? heads[ui.pick] : null);
+      var isGirl = genderOf(ui.pick, ui.choice, ui.pick ? heads[ui.pick] : null) === 'girl';
       if (!itemId || itemId === 'none' || eff[slot] === itemId) {
-        if (monEq[slot]) ui.choice.wear[slot] = 'none';
+        if (monEq[slot] || (slot === 'legs' && isGirl)) ui.choice.wear[slot] = 'none';
         else delete ui.choice.wear[slot];
       } else if (monEq[slot] === itemId) {
         delete ui.choice.wear[slot];

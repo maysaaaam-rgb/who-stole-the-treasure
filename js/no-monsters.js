@@ -96,11 +96,17 @@
       root.switchView.__eaaNm = true;
     } else if (!root.switchView) done = false;
     if (root.MonsterCloset && root.MonsterCloset.open && !root.MonsterCloset.open.__eaaNm) {
-      root.MonsterCloset.open = function () { if (root.switchView) root.switchView('store-pupil'); };
+      root.MonsterCloset.open = function (sid) {
+        if (root.ClassroomStore && root.ClassroomStore.ui && root.ClassroomStore.ui.openStudio) root.ClassroomStore.ui.openStudio({ pick: sid || null, mode: 'avatar' });
+        else if (root.switchView) root.switchView('store-pupil');
+      };
       root.MonsterCloset.open.__eaaNm = true;
     }
     if (root.openMonsterCreator && !root.openMonsterCreator.__eaaNm) {
-      root.openMonsterCreator = function (sid) { if (root.PupilAvatars && root.PupilAvatars.open) root.PupilAvatars.open({ pick: sid }); };
+      root.openMonsterCreator = function (sid) {
+        if (root.ClassroomStore && root.ClassroomStore.ui && root.ClassroomStore.ui.openStudio) root.ClassroomStore.ui.openStudio({ pick: sid || null, mode: 'avatar' });
+        else if (root.PupilAvatars && root.PupilAvatars.open) root.PupilAvatars.open({ pick: sid });
+      };
       root.openMonsterCreator.__eaaNm = true;
     }
     return done;

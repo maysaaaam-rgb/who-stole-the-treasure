@@ -310,31 +310,31 @@
       if (n) saveEvents(list); store().setCalendarFlag('seed21');
     } catch (e) { /* ignore */ }
   }
-  /* Default weekly program mapping K12 times to current Units 1-4 Speaking & Acting / Review lessons */
+  /* Default weekly program mapping K12 times to current Unit 5 lessons & revision games */
   var WEEK_TT = {
     'class-3a': {
-      1: [{ t: '13:30', l: 'rev-g3-2' }, { t: '14:15', l: 'gm-speak-g3' }],
-      2: [{ t: '10:30', l: 'gm-speak-g3' }, { t: '11:15', l: 'rev-u4-g3' }],
-      4: [{ t: '09:45', l: 'rev-u14-g3' }],
-      5: [{ t: '10:30', l: 'gm-speak-g3' }, { t: '11:15', l: 'karaoke-g3' }]
+      1: [{ t: '13:30', l: 'magic-book-g3' }, { t: '14:15', l: 'magic-book-g3' }],
+      2: [{ t: '10:30', l: 'talk-show-g3' }, { t: '11:15', l: 'talk-show-g3' }],
+      4: [{ t: '09:45', l: 'rev-g3-time-book' }],
+      5: [{ t: '10:30', l: 'gm-u5-g3' }, { t: '11:15', l: 'rev-g3-time-capsule' }]
     },
     'class-3b': {
-      1: [{ t: '16:05', l: 'gm-speak-g3' }],
-      3: [{ t: '10:30', l: 'rev-g3-2' }, { t: '11:15', l: 'gm-speak-g3' }],
-      4: [{ t: '10:30', l: 'rev-u4-g3' }, { t: '11:15', l: 'rev-u14-g3' }],
-      5: [{ t: '09:00', l: 'gm-speak-g3' }, { t: '09:45', l: 'karaoke-g3' }]
+      1: [{ t: '16:05', l: 'magic-book-g3' }],
+      3: [{ t: '10:30', l: 'magic-book-g3' }, { t: '11:15', l: 'talk-show-g3' }],
+      4: [{ t: '10:30', l: 'rev-g3-time-book' }, { t: '11:15', l: 'magic-book-g3' }],
+      5: [{ t: '09:00', l: 'gm-u5-g3' }, { t: '09:45', l: 'rev-g3-time-capsule' }]
     },
     'class-4a': {
-      1: [{ t: '10:30', l: 'gm-speak-g4' }, { t: '11:15', l: 'gm-speak-g4' }],
-      2: [{ t: '15:20', l: 'speak-g4-u4' }],
-      3: [{ t: '14:15', l: 'rev-u4-g4' }, { t: '15:20', l: 'rev-u14-g4' }],
-      4: [{ t: '16:05', l: 'gm-speak-g4' }, { t: '16:55', l: 'karaoke-g4' }]
+      1: [{ t: '10:30', l: 'magic-book-g4' }, { t: '11:15', l: 'magic-book-g4' }],
+      2: [{ t: '15:20', l: 'talk-show-g4' }],
+      3: [{ t: '14:15', l: 'gm-u5-g4' }, { t: '15:20', l: 'magic-book-g4' }],
+      4: [{ t: '16:05', l: 'gm-u5-g4' }, { t: '16:55', l: 'rev-g4-sound-detectives' }]
     },
     'class-4b': {
-      1: [{ t: '09:45', l: 'gm-speak-g4' }],
-      2: [{ t: '09:00', l: 'gm-speak-g4' }, { t: '09:45', l: 'speak-g4-u4' }],
-      3: [{ t: '12:45', l: 'rev-u4-g4' }, { t: '13:30', l: 'rev-u14-g4' }],
-      5: [{ t: '14:15', l: 'gm-speak-g4' }, { t: '15:20', l: 'karaoke-g4' }]
+      1: [{ t: '09:45', l: 'magic-book-g4' }],
+      2: [{ t: '09:00', l: 'talk-show-g4' }, { t: '09:45', l: 'talk-show-g4' }],
+      3: [{ t: '12:45', l: 'gm-u5-g4' }, { t: '13:30', l: 'magic-book-g4' }],
+      5: [{ t: '14:15', l: 'gm-u5-g4' }, { t: '15:20', l: 'rev-g4-sound-detectives' }]
     }
   };
   /* Retired themes: the Alice and Chuseok events of October leave the calendar (once per device). */
@@ -576,8 +576,62 @@
       store().setCalendarFlag('seed31');
     } catch (e) { /* the calendar still works */ }
   }
+  /* 12 Nov 2026: Update all 28 Week 9 (9–13 Nov) K12 lesson entries with the complete English descriptions, wire the three Unit 5 smartboard revision games & printable worksheets (The Time Book, Time Capsule Mission, Sound Detectives), and sync WEEK_TT. */
+  function unit5RevisionGamesOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed32')) return;
+      var list = customEvents().slice(), changed = 0;
+      var PLAN = {
+        '2026-11-09|09:45|class-4b': ['unit5', 'Unit 5 Lesson 1 — Opener: Make Some Noise (pp. 72–73)', 'Introduced Unit 5 theme with the 3D Magic Book (magic-book/index.html?grade=4), loud vs. quiet sounds, and key vocabulary (Foley artist, studio, record, realistic, composer, orchestra). Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 1).'],
+        '2026-11-09|10:30|class-4a': ['unit5', 'Unit 5 Lesson 1 — Opener: Make Some Noise (pp. 72–73)', 'Introduced Unit 5 theme with the 3D Magic Book (magic-book/index.html?grade=4), loud vs. quiet sounds, and key vocabulary (Foley artist, studio, record, realistic, composer, orchestra). Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 1).'],
+        '2026-11-09|11:15|class-4a': ['unit5', 'Unit 5 Lesson 2 — Reading 1: The Art of Sound (pp. 74–77)', 'Read and discussed how Foley artists create movie sound effects in a studio (coconuts for horse hooves, metal sheet for thunder, lettuce for birds). Open magic-book/index.html?grade=4. Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 2).'],
+        '2026-11-09|13:30|class-3a': ['unit5', "Unit 5 Lesson 1 — Opener: Let's Go Back (pp. 72–73)", 'Introduced Unit 5 theme with the 3D Magic Book (magic-book/index.html?grade=3), comparing past and present, and key vocabulary (ancient, strange, pharaoh, chariot, surprised, scared, coins, objects). Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 1).'],
+        '2026-11-09|14:15|class-3a': ['unit5', 'Unit 5 Lesson 2 — Reading 1: The Time Book Part 1 (pp. 74–77)', 'Read the story of Jannah finding the strange magic book in Cairo, travelling back to Ancient Egypt, and meeting the old woman. Open magic-book/index.html?grade=3. Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 2).'],
+        '2026-11-09|16:05|class-3b': ['unit5', "Unit 5 Lesson 1 — Opener: Let's Go Back (pp. 72–73)", 'Introduced Unit 5 theme with the 3D Magic Book (magic-book/index.html?grade=3), comparing past and present, and key vocabulary (ancient, strange, pharaoh, chariot, surprised, scared, coins, objects). Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 1).'],
+        '2026-11-10|09:00|class-4b': ['speaking', 'Unit 5 Lesson 2 — Reading 1: The Art of Sound (pp. 74–77) & Talk Show Ep. 1', 'Read about Foley studio sound effects (magic-book/index.html?grade=4) and practised live speaking battles in Make Some Noise! Talk Show (talk-show/index.html?grade=4&ep=1). Plan: lesson-plans/Grade3-Grade4-Talk-Show-Speaking-Lesson-Plan.'],
+        '2026-11-10|09:45|class-4b': ['speaking', 'MEB Government Book (Lesson 1) & Talk Show Ep. 2: Concert Night', 'Completed Week 9 MEB book vocabulary and listening exercises, followed by Concert Night Talk Show speaking practice (talk-show/index.html?grade=4&ep=2). Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan.'],
+        '2026-11-10|10:30|class-3a': ['speaking', 'MEB Government Book (Lesson 1) & Talk Show Ep. 1: The Time Show', 'Completed Week 9 MEB book vocabulary and listening activities, followed by The Time Show live speaking battles (talk-show/index.html?grade=3&ep=1). Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan.'],
+        '2026-11-10|11:15|class-3a': ['speaking', 'Unit 5 Lesson 3 — The Time Book Part 2 & Explore (pp. 78–80) + Talk Show Ep. 2', "Finished Jannah's escape from the Pharaoh's guards (magic-book/index.html?grade=3), answered comprehension questions, and practised speaking in Time Capsule TV (talk-show/index.html?grade=3&ep=2). Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 3)."],
+        '2026-11-10|15:20|class-4a': ['speaking', 'MEB Government Book (Lesson 1) & Talk Show Ep. 1–2: Make Some Noise!', 'Completed Week 9 MEB book activities and practised full-sentence speaking in Make Some Noise! & Concert Night Talk Show (talk-show/index.html?grade=4&ep=1). Plan: lesson-plans/Grade3-Grade4-Talk-Show-Speaking-Lesson-Plan.'],
+        '2026-11-11|10:30|class-3b': ['unit5', 'Unit 5 Lesson 2 — Reading 1: The Time Book Part 1 (pp. 74–77) & Talk Show Ep. 1', "Read Jannah's journey to Ancient Egypt (magic-book/index.html?grade=3) and practised story Q&A in The Time Show (talk-show/index.html?grade=3&ep=1). Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 2)."],
+        '2026-11-11|11:15|class-3b': ['book', 'MEB Government Book (Lesson 1) & Talk Show Ep. 2: Time Capsule TV', 'Completed Week 9 MEB book vocabulary and listening activities, followed by Time Capsule TV speaking practice (talk-show/index.html?grade=3&ep=2). Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan.'],
+        '2026-11-11|12:45|class-4b': ['unit5', 'Unit 5 Lesson 3 — Explore Reading 1, Spelling "ou" & Cause/Effect (pp. 78–79)', 'Practised "ou" phonics words (sound, loud, cloud, count), cause-and-effect sentences (magic-book/index.html?grade=4), and the interactive Foley Sound Studio activity (game-maker/index.html?set=g4-u5-foley&game=cannon). Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 3).'],
+        '2026-11-11|13:30|class-4b': ['unit5', "Unit 5 Lesson 4 — Reading 2: Beethoven's 9th (pp. 80–85)", 'Read the biography of Ludwig van Beethoven composing and conducting his 9th Symphony while deaf; learned concert hall vocabulary (magic-book/index.html?grade=4). Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 4).'],
+        '2026-11-11|14:15|class-4a': ['unit5', 'Unit 5 Lesson 3 — Explore Reading 1, Spelling "ou" & Cause/Effect (pp. 78–79)', 'Practised "ou" phonics words (sound, loud, cloud, count), cause-and-effect sentences (magic-book/index.html?grade=4), and the interactive Foley Sound Studio activity (game-maker/index.html?set=g4-u5-foley&game=cannon). Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 3).'],
+        '2026-11-11|15:20|class-4a': ['unit5', "Unit 5 Lesson 4 — Reading 2: Beethoven's 9th (pp. 80–85)", 'Read the biography of Ludwig van Beethoven composing and conducting his 9th Symphony while deaf; sequenced life events and concert hall labels (magic-book/index.html?grade=4). Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 4).'],
+        '2026-11-12|09:45|class-3a': ['unit5', 'Unit 5 Lesson 4 — Reading 2: Time Capsules (pp. 81–85) & "The Time Book – Help Jannah!" Game/Worksheet', 'Identified Main Idea vs. Details, read about time capsules & Voyager 1–2 (magic-book/index.html?grade=3), and completed The Time Book smartboard revision (review-g3-time-book/index.html: escape maze, unscramble, story order, riddles) and worksheet (review-g3-time-book/worksheet.html). Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 4).'],
+        '2026-11-12|10:30|class-3b': ['unit5', 'Unit 5 Lesson 3 — The Time Book Part 2 (pp. 78–80) & "The Time Book – Help Jannah!" Game/Worksheet', "Finished Jannah's story (magic-book/index.html?grade=3) and completed the 5-activity smartboard revision (review-g3-time-book/index.html: Help Jannah Escape maze, letter unscramble, event order, main idea vs. detail, riddles) and worksheet (review-g3-time-book/worksheet.html). Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 3)."],
+        '2026-11-12|11:15|class-3b': ['unit5', 'Unit 5 Lesson 4 — Main Idea vs. Details & Reading 2: Time Capsules (pp. 81–85)', 'Practised finding the main idea and supporting details; read about time capsules and the Voyager 1 & 2 space missions (magic-book/index.html?grade=3). Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 4).'],
+        '2026-11-12|16:05|class-4a': ['book', 'MEB Government Book (Lesson 2)', 'Completed Week 9 MEB student book and workbook reading, listening, and pair speaking exercises. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan.'],
+        '2026-11-12|16:55|class-4a': ['unit5', 'Unit 5 Lesson 5 — Explore Reading 2, Think Together & "Sound Detectives" Revision/Worksheet (pp. 86–87)', 'Completed the 7-mission Sound Detectives smartboard revision (review-g4-sound-detectives/index.html: Foley clues, sound effects, loud/quiet, concert hall labels, Two Doors sorting, Beethoven timeline, feelings) and worksheet (review-g4-sound-detectives/worksheet.html). Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 5).'],
+        '2026-11-13|09:00|class-3b': ['book', 'MEB Government Book (Lesson 2)', 'Completed Week 9 MEB student book and workbook reading, listening, and pair speaking exercises. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan.'],
+        '2026-11-13|09:45|class-3b': ['unit5', 'Unit 5 Lesson 5 — Explore Reading 2, Phonics "-nt" & "Time Capsule Mission" Revision/Worksheet (pp. 86–87)', 'Completed the Time Capsule Mission smartboard revision (review-g3-time-capsule/index.html: capsule objects, 10x10 word search, sentence builder, 3 baskets sorting, opposites) and worksheet (review-g3-time-capsule/worksheet.html). Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 5).'],
+        '2026-11-13|10:30|class-3a': ['book', 'MEB Government Book (Lesson 2)', 'Completed Week 9 MEB student book and workbook reading, listening, and pair speaking exercises. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan.'],
+        '2026-11-13|11:15|class-3a': ['unit5', 'Unit 5 Lesson 5 — Explore Reading 2, Phonics "-nt" & "Time Capsule Mission" Revision/Worksheet (pp. 86–87)', 'Completed the Time Capsule Mission smartboard revision (review-g3-time-capsule/index.html: capsule objects, 10x10 word search, sentence builder, 3 baskets sorting, opposites) and worksheet (review-g3-time-capsule/worksheet.html). Plan: lesson-plans/Grade3-Unit5-Lets-Go-Back-Lesson-Plans (Lesson 5).'],
+        '2026-11-13|14:15|class-4b': ['book', 'MEB Government Book (Lesson 2)', 'Completed Week 9 MEB student book and workbook reading, listening, and pair speaking exercises. Plan: lesson-plans/Grade3-Grade4-Book-Lesson-Routine-Plan.'],
+        '2026-11-13|15:20|class-4b': ['unit5', 'Unit 5 Lesson 5 — Explore Reading 2, Think Together & "Sound Detectives" Revision/Worksheet (pp. 86–87)', 'Completed the 7-mission Sound Detectives smartboard revision (review-g4-sound-detectives/index.html: Foley clues, sound effects, loud/quiet, concert hall labels, Two Doors sorting, Beethoven timeline, feelings) and worksheet (review-g4-sound-detectives/worksheet.html). Plan: lesson-plans/Grade4-Unit5-Make-Some-Noise-Lesson-Plans (Lesson 5).']
+      };
+      list.forEach(function (e) {
+        if (!e) return;
+        var k = e.date + '|' + e.time + '|' + e.classId;
+        if (PLAN[k]) {
+          e.type = PLAN[k][0];
+          e.title = PLAN[k][1];
+          e.note = PLAN[k][2];
+          changed++;
+        }
+      });
+      if (changed) saveEvents(list);
+      if (store().getTimetable && store().setTimetable) {
+        var nextTT = {};
+        Object.keys(WEEK_TT).forEach(function (cid) { nextTT[cid] = JSON.parse(JSON.stringify(WEEK_TT[cid])); });
+        store().setTimetable(nextTT);
+      }
+      store().setCalendarFlag('seed32');
+    } catch (e) { /* the calendar still works */ }
+  }
   function ensureSeeded() {
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce(); movieAndEzPetWeekOnce(); weekNov9Once(); talkShowOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce(); movieAndEzPetWeekOnce(); weekNov9Once(); talkShowOnce(); unit5RevisionGamesOnce();
   }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
@@ -628,7 +682,7 @@
       '<div class="cal-top"><button class="cal-b g" onclick="CalendarView.step(-1)">◀</button><b style="font-size:1.15rem;min-width:170px;text-align:center;color:#e5edff;font-family:\'Fraunces\',Georgia,serif">' + label + '</b><button class="cal-b g" onclick="CalendarView.step(1)">▶</button>' +
       '<button class="cal-b g" onclick="CalendarView.today()">Today</button>' +
       '<button class="cal-b ' + (st.mode === 'month' ? 'on' : 'g') + '" onclick="CalendarView.mode(\'month\')">Month</button><button class="cal-b ' + (st.mode === 'week' ? 'on' : 'g') + '" onclick="CalendarView.mode(\'week\')">Week</button>' +
-      '<span style="flex:1"></span><button class="cal-b ok" onclick="CalendarView.edit(\'\')">+ Add event</button></div>' +
+      '<span style="flex:1"></span><a class="cal-b g" style="text-decoration:none" href="lesson-plans/Week-9-13-November-Order.html" target="_blank" rel="noopener">📋 Week 9 K12 Sheet</a><button class="cal-b ok" onclick="CalendarView.edit(\'\')">+ Add event</button></div>' +
       '<div class="cal-top" style="margin-top:0"><button class="cal-b ' + (st.cls === 'all' ? 'on' : 'g') + '" onclick="CalendarView.cls(\'all\')">All classes</button>' +
       cl.map(function (c) { return '<button class="cal-b ' + (st.cls === c.id ? 'on' : 'g') + '" onclick="CalendarView.cls(\'' + esc(c.id) + '\')">' + esc(shortName(c.id)) + '</button>'; }).join('') + '</div>' +
       '<div class="cal-legend">' + Object.keys(TYPES).filter(function (k) { return k !== 'alice' && k !== 'chuseok'; }).map(function (k) { return '<span><i style="background:' + TYPES[k][2] + '"></i>' + TYPES[k][1] + '</span>'; }).join('') + '</div>';
@@ -675,9 +729,15 @@
     out.sort(function (a, b) { return (a[0] === '▶ Open lesson' ? 0 : a[0] === '🎮 Game' ? 1 : a[0] === '🖨️ Print' || a[0] === '🖨️ Open' ? 2 : 3) - (b[0] === '▶ Open lesson' ? 0 : b[0] === '🎮 Game' ? 1 : b[0] === '🖨️ Print' || b[0] === '🖨️ Open' ? 2 : 3); });
     return out;
   }
+  function k12TextOf(e) {
+    var t = String(e.title || '').trim();
+    var n = String(e.note || '').replace(/\s*Open\b[^.]*\./gi, '').replace(/\s*Plan:\s*[^\s.]+\.?/gi, '').replace(/\s*Game:\s*[^\s.]+\.?/gi, '').trim();
+    return n ? (t + ': ' + n) : t;
+  }
   function linkBtns(e) {
-    var L = linksOf(e); if (!L.length) return '';
-    return '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">' + L.map(function (l, i) { return '<a class="cal-b' + (i === 0 ? ' ok' : '') + '" style="text-decoration:none;padding:5px 10px;font-size:.85rem" href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + esc(l[0]) + '</a>'; }).join('') + '</div>';
+    var L = linksOf(e);
+    var copyBtn = '<button type="button" class="cal-b g" style="padding:5px 10px;font-size:.82rem" data-k12="' + esc(k12TextOf(e)) + '" onclick="CalendarView.copyK12(this)">📋 Copy K12</button>';
+    return '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">' + L.map(function (l, i) { return '<a class="cal-b' + (i === 0 ? ' ok' : '') + '" style="text-decoration:none;padding:5px 10px;font-size:.85rem" href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + esc(l[0]) + '</a>'; }).join('') + copyBtn + '</div>';
   }
   function sideHtml() {
     if (!st.sel) return '<div class="cal-side" style="color:#cbd5e1">Tap a day to see everything on it, add an event, or open a lesson.</div>';
@@ -746,6 +806,15 @@
     cls: function (c) { st.cls = c; draw(); },
     pick: function (k) { st.sel = k; draw(); },
     edit: edit, del: del, saveTimetable: saveTimetable, ensureSeeded: ensureSeeded, linksOf: linksOf, K12: K12, WEEK_TT: WEEK_TT,
+    copyK12: function (btn) {
+      var txt = (btn && btn.getAttribute('data-k12')) || '';
+      if (!txt || !navigator.clipboard) return;
+      navigator.clipboard.writeText(txt).then(function () {
+        var old = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        setTimeout(function () { btn.textContent = old; }, 1400);
+      });
+    },
     eventsFor: function (date) { var keep = st.cls; st.cls = 'all'; try { return eventsOn(date); } finally { st.cls = keep; } }
   };
   if (typeof setTimeout === 'function') setTimeout(ensureSeeded, 60);

@@ -57,9 +57,10 @@
     var eq = (prof && prof.equipped) || {};
     var best = bestOf(id), nw = d && d.nw ? d.nw.n : 0;
     var aura = String(eq.aura || '').replace(/^aura-/, ''), bg = String(eq.background || '').replace(/^bg-/, '');
-    return {
-      id: id, first: s.firstName || s.name || 'Pupil', level: level, stage: (ms.stageName || '').replace(/^Level \d+ [•·-] /, '') || 'Monster',
-      atk: Math.min(9950, r50(400 + xp * 2.5)), def: Math.max(100, Math.min(9950, r50(300 + hwDone * 350 + team * 25 + streak * 100 + qpct * 8 - nw * 100))),
+      var hideM = root.EAA_HIDE_MONSTERS !== false;
+      return {
+        id: id, first: s.firstName || s.name || 'Pupil', level: level, stage: hideM ? ('Level ' + level + ' Explorer') : ((ms.stageName || '').replace(/^Level \d+ [•·-] /, '') || 'Monster'),
+        atk: Math.min(9950, r50(400 + xp * 2.5)), def: Math.max(100, Math.min(9950, r50(300 + hwDone * 350 + team * 25 + streak * 100 + qpct * 8 - nw * 100))),
       best: best, move: MOVES[best] || 'Power Up', rarity: rarityOf(level), num: s.studentIdNumber || '',
       cls: (st.getClass && st.getClass(s.classId) ? st.getClass(s.classId).name : '') || s.grade || '',
       flavor: FLAVOR[(parseInt(String(s.studentIdNumber || id).replace(/\D/g, ''), 10) || 0) % FLAVOR.length],
@@ -107,7 +108,7 @@
       '<div class="pc-art">' + bgd + aur + '<div class="pc-mon">' + (avatar || '') + '</div></div>' +
       '<div class="pc-set"><span>EAA-' + esc(m.num) + '</span><span>' + esc(m.cls) + ' · ' + esc(r.name).toUpperCase() + '</span></div>' +
       '<div class="pc-txt"><div class="pc-ty">[' + esc(m.stage) + ' / Effect]</div><div class="pc-ef">' +
-        (m.best ? '<b>' + esc(m.move) + ':</b> this monster is at its best in ' + esc(m.best) + '. ' : 'A rising hero of the Academy. ') + '<i>' + esc(m.flavor) + '</i></div>' +
+        (m.best ? '<b>' + esc(m.move) + ':</b> ' + (root.EAA_HIDE_MONSTERS !== false ? 'at their best in ' : 'this monster is at its best in ') + esc(m.best) + '. ' : 'A rising hero of the Academy. ') + '<i>' + esc(m.flavor) + '</i></div>' +
         '<div class="pc-stat"><span>ATK/ ' + m.atk + '</span><span>DEF/ ' + m.def + '</span></div></div>' +
       (r.key === 'epic' || r.key === 'legendary' ? '<div class="pc-shine"></div>' : '') + '</div></div>';
   }
@@ -124,12 +125,13 @@
     },
     panelInner: function (id) {
       var m = model(id); if (!m) return '';
+      var hideM = root.EAA_HIDE_MONSTERS !== false;
       var nxt = RARITY.filter(function (x) { return x.min > m.level; })[0];
       return '<div class="pc-wrap">' + cardHtml(m, avatarFor(id, 150)) +
-        '<div class="pc-side"><h3 style="margin:0 0 6px;font-size:1.25rem">🃏 My Monster Card</h3>' +
-        '<p style="margin:0;opacity:.85">Your card grows with your monster. It is <b>' + esc(m.rarity.name) + '</b> now' + (nxt ? ', and becomes <b>' + esc(nxt.name) + '</b> at monster level ' + nxt.min + '.' : ': the highest card there is!') + '</p>' +
-        '<ul style="margin:10px 0 0 18px;opacity:.9;line-height:1.7"><li>⚔️ <b>ATK</b> goes up with your XP.</li><li>🛡️ <b>DEF</b> goes up with homework, teamwork, your streak and your quiz work.</li><li>🌄 Your card shows your own monster, background and aura. Change them in the Monster Studio!</li></ul>' +
-        '<div class="pc-btns"><button class="pc-btn" onclick="PupilCard.open(\'' + esc(id) + '\')">🔍 Big card</button><button class="pc-btn o" onclick="PupilCard.print(\'' + esc(id) + '\')">🖨️ Print my card</button></div></div></div>';
+        '<div class="pc-side"><h3 style="margin:0 0 6px;font-size:1.25rem">' + (hideM ? '🃏 My Hero Card' : '🃏 My Monster Card') + '</h3>' +
+        '<p style="margin:0;opacity:.85">Your card grows with your ' + (hideM ? 'level' : 'monster') + '. It is <b>' + esc(m.rarity.name) + '</b> now' + (nxt ? ', and becomes <b>' + esc(nxt.name) + '</b> at level ' + nxt.min + '.' : ': the highest card there is!') + '</p>' +
+        '<ul style="margin:10px 0 0 18px;opacity:.9;line-height:1.7"><li>⚔️ <b>ATK</b> goes up with your XP.</li><li>🛡️ <b>DEF</b> goes up with homework, teamwork, your streak and your quiz work.</li><li>🌄 Your card shows your own ' + (hideM ? 'avatar, outfit and aura. Customize them in the Avatar Studio &amp; Shop!' : 'monster, background and aura. Change them in the Monster Studio!') + '</li></ul>' +
+        '<div class="pc-btns"><button class="pc-btn" onclick="PupilCard.open(\'' + esc(id) + '\')">🔍 Big card</button><button class="pc-btn o" onclick="PupilCard.print(\'' + esc(id) + '\')">🖨️ Print my card</button>' + (hideM ? '<button class="pc-btn o" onclick="openMonsterCreator(\'' + esc(id) + '\')">👕 Avatar &amp; Shop</button>' : '') + '</div></div></div>';
     },
     open: function (id) {
       css(); var m = model(id, function () { var b = document.getElementById('pc-modal'); if (b && b.style.display === 'block' && !b.querySelector('.pc-sheet')) PC.open(id); }); if (!m) return;

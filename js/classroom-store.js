@@ -392,7 +392,7 @@
   function avOwns(studentId, id) { var e = data().cosmetics[studentId]; return !!(e && Array.isArray(e.avatar) && e.avatar.indexOf(id) !== -1); }
   function avItems(studentId) {
     var P = PA(); if (!P || !P.storeItemIds) return [];
-    return P.storeItemIds(studentId).map(function (id) { return P.itemInfo(id); }).filter(function (x) { return x && !x.free && !isOff('cats', 'av-' + x.slot); });
+    return P.storeItemIds(studentId).map(function (id) { return P.itemInfo(id); }).filter(function (x) { return x && !isOff('cats', 'av-' + x.slot); });
   }
   /* 'have' = the pupil can wear it already (bought, won, free starter or already on their avatar); 'level' = free at their level */
   function avState(studentId, id) {
@@ -419,7 +419,7 @@
     return { success: true, item: x, price: price, balance: balance(studentId) };
   }
   function rewardAvatar(studentId, rarity) {
-    var all = avItems().filter(function (x) { return avState(studentId, x.id) === 'shop' && x.rarity !== 'mythic'; });
+    var all = avItems().filter(function (x) { return !x.free && avState(studentId, x.id) === 'shop' && x.rarity !== 'mythic'; });
     var pool = all.filter(function (x) { return x.rarity === rarity; });
     if (!pool.length) pool = all;
     if (!pool.length) return null;
@@ -693,8 +693,13 @@
 
   // ---------------------------------------------------------------- UI (shared)
   var studentTab = (root.EAA_HIDE_MONSTERS !== false) ? 'avatar' : 'items', itemFilter = 'all';
-  var avSlot = 'all', avTryId = '', avPrevSid = '', avPrevTimer = 0;
+  var studioMode = 'avatar'; // 'avatar' | 'prizes' | 'teacher'
+  var avSlot = 'all', avOwnFilter = 'all', avEmotion = 'smile', avTryId = '', avPrevSid = '', avPrevTimer = 0;
+  var avColorsOpen = false;
   var avTrimmed = {};   // wear pictures sit on a full body-sized canvas: crop them to the item for the shop cards
+  function inClassMode() {
+    try { return !!(root.ClassMode && root.ClassMode.on && root.ClassMode.on()); } catch (e) { return false; }
+  }
   // ---- worksheet coins: one score (0 to 10) per pupil, given as coins once; pressing again only fixes the difference
   var wsDraft = {}, wsName = 'Revision worksheet';
   function wsId() { return String(wsName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'worksheet'; }
@@ -703,9 +708,9 @@
     var cur = wsDraft[sid] != null ? wsDraft[sid] : null, given = wsGiven(sid), out = '', n;
     for (n = 0; n <= 10; n++) {
       var on = cur === n;
-      out += '<button type="button" onclick="ClassroomStore.ui.wsPick(\'' + sid + '\',' + n + ')" style="min-width:34px;padding:7px 0;margin:0 2px 2px 0;border-radius:9px;font-weight:900;font-size:.85rem;cursor:pointer;border:' + (on ? '2px solid #16a34a' : '1px solid var(--border-light,#cbd5e1)') + ';background:' + (on ? '#16a34a' : 'transparent') + ';color:' + (on ? '#fff' : 'var(--text-main,#0f172a)') + ';">' + n + '</button>';
+      out += '<button type="button" class="cs-3d-mini' + (on ? ' on' : '') + '" onclick="ClassroomStore.ui.wsPick(\'' + sid + '\',' + n + ')">' + n + '</button>';
     }
-    return out + (given != null ? ' <span style="font-size:.74rem;font-weight:800;color:#92400e;white-space:nowrap;">✓ ' + given + ' given</span>' : '');
+    return out + (given != null ? ' <span style="font-size:.76rem;font-weight:800;color:#fde047;white-space:nowrap;">✓ ' + given + ' given</span>' : '');
   }
   // ---- clean-up of items nobody earned: the old automatic starter boxes, what came out of test openings, and test titles
   var TEST_TITLES = { 'student-3a-224': ['ttl-legend'] };     // added by a platform test on 5 Oct 2026
@@ -794,22 +799,20 @@
     save(); return true;
   }
 
-  function card(inner, extra) { return '<div style="background:rgba(15, 23, 42, 0.86);border:1.5px solid #26324a;border-bottom:4px solid #26324a;border-radius:16px;padding:18px;margin-bottom:16px;color:#e5edff;' + (extra || '') + '">' + inner + '</div>'; }
-  function h2(t, sub) { return '<div style="margin-bottom:12px;"><div style="font-size:1.05rem;font-weight:900;color:#e5edff;font-family:\'Fraunces\',Georgia,serif;">' + t + '</div>' + (sub ? '<div style="font-size:.82rem;color:#cbd5e1;margin-top:2px;">' + sub + '</div>' : '') + '</div>'; }
+  function card(inner, extra) { return '<div class="cs-glass-card" style="' + (extra || '') + '">' + inner + '</div>'; }
+  function h2(t, sub) { return '<div style="margin-bottom:12px;"><div style="font-size:1.05rem;font-weight:900;color:#f8fafc;font-family:\'Fraunces\',Georgia,serif;">' + t + '</div>' + (sub ? '<div style="font-size:.82rem;color:#94a3b8;margin-top:3px;">' + sub + '</div>' : '') + '</div>'; }
   function btn(label, onclick, kind, disabled) {
-    var bg = kind === 'danger' ? '#dc2626' : kind === 'ghost' ? '#1e293b' : '#6E56CF';
-    var color = kind === 'ghost' ? '#e5edff' : '#fff';
-    var border = kind === 'ghost' ? '1.5px solid #26324a;border-bottom:3px solid #334155' : kind === 'danger' ? '1.5px solid #b91c1c;border-bottom:3px solid #7f1d1d' : '1.5px solid #4C389E;border-bottom:3px solid #37267A';
-    return '<button type="button" ' + (disabled ? 'disabled ' : 'onclick="' + onclick + '" ') + 'style="padding:7px 13px;border-radius:10px;font-weight:800;font-size:.8rem;cursor:' + (disabled ? 'not-allowed' : 'pointer') + ';background:' + bg + ';color:' + color + ';border:' + border + ';opacity:' + (disabled ? .45 : 1) + ';">' + label + '</button>';
+    var cls = 'cs-3d-btn' + (kind === 'danger' ? ' danger' : kind === 'ghost' ? ' ghost' : kind === 'ok' ? ' ok' : kind === 'gold' ? ' gold' : '');
+    return '<button type="button" class="' + cls + '" ' + (disabled ? 'disabled ' : 'onclick="' + onclick + '"') + '>' + label + '</button>';
   }
-  function coinPill(n) { return '<span style="display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:999px;padding:2px 10px;font-weight:900;font-size:.82rem;">🪙 ' + n + '</span>'; }
+  function coinPill(n) { return '<span class="cs-coin-pill">🪙 ' + n + '</span>'; }
   function when(ts) { try { return new Date(ts).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
   function studentName(id) { var s = store.getStudent ? store.getStudent(id) : null; return s ? ((s.firstName || '') + ' ' + (s.lastName || '')).trim() : 'Student'; }
 
   var teacherDrawerOpen = false;
   var shopStudentId = null;
 
-  // ---------------------------------------------------------------- UI (teacher)
+  // ---------------------------------------------------------------- Teacher data & sections (Cyber-Glass)
   function renderTeacher(container, mode) {
     var d = data(), cfg = d.config;
     var cls = store.getActiveClass ? store.getActiveClass() : null;
@@ -822,62 +825,43 @@
       students[0] || (store.getActiveStudent ? store.getActiveStudent() : null);
     if (curStu) shopStudentId = curStu.id;
 
-    var html = '<div style="max-width:1180px;margin:0 auto;padding:6px 8px 60px;color:#e5edff;">' +
-      '<div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">' +
-        '<div><h1 class="tines-h1" style="font-size:1.75rem;font-weight:700;color:#e5edff;margin:0;">🛍️ Store &amp; Class Podium</h1>' +
-        '<div style="font-size:.9rem;color:#cbd5e1;margin-top:4px;">Students earn <b>1 coin for every ' + cfg.coinsPerXp + ' XP</b> automatically. Coins never reduce XP or level.</div>' +
-        '<div id="cs-cloud-status" style="margin-top:4px;font-size:.78rem;font-weight:800;color:#94a3b8;">' + cloudLabel() + '</div></div>' +
-      '</div>' +
-      '<div class="tines-hub-bar">' +
-        '<div class="tines-hub-tabs">' +
-          '<button type="button" class="tines-tab-btn ' + (!teacherDrawerOpen ? 'is-active' : '') + '" onclick="if(window.ClassroomStore&&ClassroomStore.ui){if(' + (teacherDrawerOpen ? 'true' : 'false') + ')ClassroomStore.ui.toggleDrawer();}">🛍️ Shop</button>' +
-          '<button type="button" class="tines-tab-btn" onclick="switchView(\'rewards\')">🏆 Class Podium &amp; Badges</button>' +
-          '<button type="button" id="cs-teacher-drawer-btn" class="tines-tab-btn ' + (teacherDrawerOpen ? 'is-active' : '') + '" onclick="ClassroomStore.ui.toggleDrawer()">📄 Worksheet Coins &amp; Requests' + (pending.length ? ' <span class="tines-badge">' + pending.length + '</span>' : '') + (teacherDrawerOpen ? ' ▲' : ' ▼') + '</button>' +
-          (root.EAA_ILLUSTRATED_MONSTERS === true ? '<button type="button" class="tines-tab-btn" onclick="MonsterCloset.open()">👗 Monster Closet</button>' : '') +
-        '</div>' +
-      '</div>';
-
-    var drawerHtml = '<div id="cs-teacher-drawer" style="display:' + (teacherDrawerOpen ? 'block' : 'none') + ';margin-bottom:24px;padding:18px;border-radius:20px;background:rgba(232, 166, 48, 0.18);border:2px solid #26324a;">';
+    var drawerHtml = '<div>';
     var marks = []; function mark(n) { marks.push([n, drawerHtml.length]); }
 
     mark('requests');
-    // pending requests
-    drawerHtml += card(h2('📬 Reward requests waiting for you (' + pending.length + ')', 'Approve to keep the coins, decline to give them back.') +
+    drawerHtml += card(h2('📬 Reward requests waiting for you (' + pending.length + ')', 'Approve to keep the coins, decline to refund them immediately.') +
       (pending.length ? pending.map(function (r) {
-        return '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--border-light,#e2e8f0);">' +
-          '<span style="font-size:1.5rem;">' + esc(r.icon) + '</span><div style="flex:1;min-width:200px;"><div style="font-weight:800;color:var(--text-main,#0f172a);">' + esc(r.name) + '</div>' +
-          '<div style="font-size:.78rem;color:var(--text-muted,#64748b);">' + esc(studentName(r.studentId)) + ' · ' + when(r.createdAt) + ' · ' + coinPill(r.price) + '</div></div>' +
-          btn('✓ Approve', "ClassroomStore.ui.decide('" + r.id + "','approved')") + btn('✕ Decline', "ClassroomStore.ui.decline('" + r.id + "')", 'danger') + '</div>';
-      }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">No requests right now.</div>') +
-      (approved.length ? '<div style="margin-top:10px;font-weight:800;font-size:.82rem;color:var(--text-main,#0f172a);">Approved, not used yet</div>' + approved.map(function (r) {
-        return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);"><span>' + esc(r.icon) + '</span><div style="flex:1;font-size:.85rem;color:var(--text-main,#0f172a);">' + esc(r.name) + ' <span style="color:var(--text-muted,#64748b);">· ' + esc(studentName(r.studentId)) + '</span></div>' + btn('Mark as used', "ClassroomStore.ui.decide('" + r.id + "','used')", 'ghost') + '</div>';
+        return '<div class="cs-row-line">' +
+          '<span style="font-size:1.5rem;">' + esc(r.icon) + '</span><div style="flex:1;min-width:200px;"><div style="font-weight:800;color:#f8fafc;">' + esc(r.name) + '</div>' +
+          '<div style="font-size:.78rem;color:#94a3b8;">' + esc(studentName(r.studentId)) + ' · ' + when(r.createdAt) + ' · ' + coinPill(r.price) + '</div></div>' +
+          btn('✓ Approve', "ClassroomStore.ui.decide('" + r.id + "','approved')", 'ok') + ' ' + btn('✕ Decline', "ClassroomStore.ui.decline('" + r.id + "')", 'danger') + '</div>';
+      }).join('') : '<div style="font-size:.85rem;color:#94a3b8;">No reward requests waiting right now.</div>') +
+      (approved.length ? '<div style="margin-top:12px;font-weight:800;font-size:.82rem;color:#38bdf8;">Approved, not used yet (' + approved.length + ')</div>' + approved.map(function (r) {
+        return '<div class="cs-row-line"><span>' + esc(r.icon) + '</span><div style="flex:1;font-size:.85rem;color:#e5edff;">' + esc(r.name) + ' <span style="color:#94a3b8;">· ' + esc(studentName(r.studentId)) + '</span></div>' + btn('✓ Mark used', "ClassroomStore.ui.decide('" + r.id + "','used')", 'ghost') + '</div>';
       }).join('') : ''));
 
     mark('clean');
-    // items nobody earned (old automatic boxes, test leftovers): the teacher removes them with one press
     var unearned = findUnearned(), hasBackup = false; try { hasBackup = !!localStorage.getItem(CLEAN_KEY); } catch (e) { hasBackup = false; }
-    if (unearned.total) drawerHtml += card(h2('🧹 Items nobody earned (' + unearned.total + ')', 'The platform used to give every pupil free mystery boxes on a new device, and the old "test unboxing" buttons opened real boxes for the selected pupil (Aslıhan on 5 October, Demir on 7 October). Pupils did not earn these.') +
-      '<div style="font-size:.88rem;color:var(--text-main,#0f172a);margin-bottom:10px;">' + unearned.boxes.length + ' mystery boxes · ' + (unearned.items.length + unearned.extras.length + unearned.titles.length) + ' prizes (items, titles, name plates) · ' + unearned.orphans.length + ' shop items on monsters without a purchase · ' + unearned.coins.length + ' coin prizes · ' + unearned.requests.length + ' free reward · for: ' + esc(Object.keys(unearned.pupils).map(studentName).join(', ')) + '. XP is not touched; only coins that came out of test boxes are taken back.</div>' +
-      btn('🧹 Remove them', 'ClassroomStore.ui.cleanUnearned()', 'danger'), 'border:2px solid #f59e0b;');
-    else if (hasBackup) drawerHtml += card(h2('🧹 Clean-up done', 'Unearned boxes, prizes and the test title were removed. A copy is kept on this device in case you need it back.') + btn('Undo the clean-up', 'ClassroomStore.ui.undoClean()', 'ghost'));
+    if (unearned.total) drawerHtml += card(h2('🧹 Items nobody earned (' + unearned.total + ')', 'Leftover automatic starter boxes or old test openings.') +
+      '<div style="font-size:.86rem;color:#cbd5e1;margin-bottom:10px;">' + unearned.boxes.length + ' mystery boxes · ' + (unearned.items.length + unearned.extras.length + unearned.titles.length) + ' prizes · ' + unearned.orphans.length + ' orphan items · ' + unearned.coins.length + ' coin prizes · ' + unearned.requests.length + ' free rewards · for: ' + esc(Object.keys(unearned.pupils).map(studentName).join(', ')) + '. XP is untouched.</div>' +
+      btn('🧹 Remove them', 'ClassroomStore.ui.cleanUnearned()', 'danger'), 'border-color:#f59e0b;');
+    else if (hasBackup) drawerHtml += card(h2('🧹 Clean-up done', 'A backup copy is stored on this device.') + btn('Undo clean-up', 'ClassroomStore.ui.undoClean()', 'ghost'));
 
     mark('worksheet');
-    // worksheet coins (quick entry)
-    drawerHtml += card(h2('📝 Worksheet coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), '1 coin for each correct answer, 0 to 10. Tap a score for every pupil who did the sheet, then press Give coins. Pupils you skip get nothing. Pressing it again only fixes the difference, so nobody is paid twice.') +
-      '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;"><label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Worksheet name<input id="cs-ws-name" type="text" maxlength="40" value="' + esc(wsName) + '" onchange="ClassroomStore.ui.wsName(this.value)" style="display:block;margin-top:3px;padding:7px;border-radius:9px;border:1px solid var(--border-light,#cbd5e1);width:240px;"></label>' +
-      '<span id="cs-ws-count" style="font-size:.85rem;font-weight:800;color:var(--text-main,#0f172a);">0 scores picked</span>' + btn('🪙 Give coins', 'ClassroomStore.ui.wsGive()') + btn('Clear', 'ClassroomStore.ui.wsClear()', 'ghost') + '</div>' +
+    drawerHtml += card(h2('📝 Worksheet coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), '1 coin per correct answer (0–10). Tap a score for each pupil who completed the sheet, then press Give coins.') +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px;"><label class="cs-field-lbl">Worksheet name<input id="cs-ws-name" class="cs-dark-inp" type="text" maxlength="40" value="' + esc(wsName) + '" onchange="ClassroomStore.ui.wsName(this.value)" style="width:240px;"></label>' +
+      '<span id="cs-ws-count" style="font-size:.85rem;font-weight:800;color:#38bdf8;">0 scores picked</span>' + btn('🪙 Give coins', 'ClassroomStore.ui.wsGive()', 'ok') + btn('Clear', 'ClassroomStore.ui.wsClear()', 'ghost') + '</div>' +
       '<div style="overflow-x:auto;">' + students.map(function (s) {
-        return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px solid var(--border-light,#e2e8f0);flex-wrap:wrap;"><div style="width:130px;font-weight:800;font-size:.85rem;color:var(--text-main,#0f172a);">' + esc(studentName(s.id)) + '</div><div id="cs-ws-' + esc(s.id) + '" style="flex:1;min-width:340px;">' + wsRowHtml(s.id) + '</div></div>';
+        return '<div class="cs-row-line"><div style="width:140px;font-weight:800;font-size:.86rem;color:#f8fafc;">' + esc(studentName(s.id)) + '</div><div id="cs-ws-' + esc(s.id) + '" style="flex:1;min-width:340px;">' + wsRowHtml(s.id) + '</div></div>';
       }).join('') + '</div>');
 
     mark('coins');
-    // students & coins
-    drawerHtml += card(h2('🪙 Students and coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), 'Use the class menu at the top to switch class.') +
-      '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.85rem;">' +
-      '<thead><tr style="text-align:left;color:var(--text-muted,#64748b);"><th style="padding:6px 8px;">Student</th><th style="padding:6px 8px;">XP</th><th style="padding:6px 8px;">Coins</th><th style="padding:6px 8px;">Wearing</th><th style="padding:6px 8px;">Give or take</th></tr></thead><tbody>' +
+    drawerHtml += card(h2('🪙 Students & coin balances' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), 'Quick +5 / +10 / −5 adjustments per student.') +
+      '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.85rem;color:#e5edff;">' +
+      '<thead><tr style="text-align:left;color:#94a3b8;"><th style="padding:6px 8px;">Student</th><th style="padding:6px 8px;">XP</th><th style="padding:6px 8px;">Coins</th><th style="padding:6px 8px;">Titles &amp; Sound</th><th style="padding:6px 8px;">Quick adjust</th></tr></thead><tbody>' +
       students.map(function (s) {
         var xp = store.getStudentTotalXP ? store.getStudentTotalXP(s.id) : 0;
-        return '<tr style="border-top:1px solid var(--border-light,#e2e8f0);color:var(--text-main,#0f172a);"><td style="padding:8px;font-weight:800;">' + esc(studentName(s.id)) + '</td><td style="padding:8px;">' + xp + '</td><td style="padding:8px;">' + coinPill(balance(s.id)) + '</td><td style="padding:8px;font-size:.74rem;color:var(--text-muted,#64748b);">' + (function () {
+        return '<tr style="border-top:1px solid rgba(51,65,85,.65);"><td style="padding:8px;font-weight:800;color:#f8fafc;">' + esc(studentName(s.id)) + '</td><td style="padding:8px;color:#cbd5e1;">' + xp + '</td><td style="padding:8px;">' + coinPill(balance(s.id)) + '</td><td style="padding:8px;font-size:.76rem;color:#94a3b8;">' + (function () {
             var e = equippedExtras(s.id), bits = [];
             if (e.title) bits.push('🏷️ ' + esc(e.title.name)); if (e.pack) bits.push(esc(e.pack.icon) + ' ' + esc(e.pack.name)); if (e.plate) bits.push('🖼️ ' + esc(e.plate.name)); if (e.sound) bits.push('🔊 ' + esc(e.sound.name));
             return bits.length ? bits.join(' · ') : '—';
@@ -886,67 +870,55 @@
       }).join('') + '</tbody></table></div>');
 
     mark('prices');
-    // settings
-    drawerHtml += card(h2('⚙️ Prices and rewards', 'Change a price and it applies right away.') +
-      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px;">' +
-      ['common', 'rare', 'epic', 'legendary', 'mythic'].map(function (k) { return '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">' + RARITY_NAME[k] + ' item<input type="number" min="1" value="' + cfg.itemPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'item\',\'' + k + '\',this.value)" style="display:block;width:100%;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>'; }).join('') +
-      TIERS.map(function (k) { return '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">' + BOX_INFO[k].name + '<input type="number" min="1" value="' + cfg.boxPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'box\',\'' + k + '\',this.value)" style="display:block;width:100%;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>'; }).join('') + '</div>' +
+    drawerHtml += card(h2('⚙️ Prices & classroom rewards', 'Any price edit takes effect immediately.') +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:14px;">' +
+      ['common', 'rare', 'epic', 'legendary', 'mythic'].map(function (k) { return '<label class="cs-field-lbl">' + RARITY_NAME[k] + ' item<input class="cs-dark-inp" type="number" min="1" value="' + cfg.itemPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'item\',\'' + k + '\',this.value)"></label>'; }).join('') +
+      TIERS.map(function (k) { return '<label class="cs-field-lbl">' + BOX_INFO[k].name + '<input class="cs-dark-inp" type="number" min="1" value="' + cfg.boxPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'box\',\'' + k + '\',this.value)"></label>'; }).join('') + '</div>' +
       cfg.privileges.map(function (p) {
-        return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);color:var(--text-main,#0f172a);">' +
-          '<span style="font-size:1.3rem;">' + esc(p.icon) + '</span><div style="flex:1;min-width:180px;font-weight:800;">' + esc(p.name) + '</div>' +
-          '<label style="font-size:.72rem;color:var(--text-muted,#64748b);">coins <input type="number" min="1" value="' + p.price + '" onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'price\',this.value)" style="width:70px;padding:5px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>' +
-          '<label style="font-size:.72rem;color:var(--text-muted,#64748b);">per week <input type="number" min="0" value="' + (p.weeklyLimit || 0) + '" onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'weeklyLimit\',this.value)" style="width:60px;padding:5px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>' +
-          '<label style="font-size:.78rem;font-weight:700;"><input type="checkbox" ' + (p.active ? 'checked' : '') + ' onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'active\',this.checked)"> on sale</label>' +
+        return '<div class="cs-row-line">' +
+          '<span style="font-size:1.3rem;">' + esc(p.icon) + '</span><div style="flex:1;min-width:180px;font-weight:800;color:#f8fafc;">' + esc(p.name) + '</div>' +
+          '<label style="font-size:.74rem;color:#94a3b8;">coins <input class="cs-dark-inp" type="number" min="1" value="' + p.price + '" onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'price\',this.value)" style="width:74px;display:inline-block;margin-left:4px;"></label>' +
+          '<label style="font-size:.74rem;color:#94a3b8;">/week <input class="cs-dark-inp" type="number" min="0" value="' + (p.weeklyLimit || 0) + '" onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'weeklyLimit\',this.value)" style="width:62px;display:inline-block;margin-left:4px;"></label>' +
+          '<label style="font-size:.78rem;font-weight:700;color:#e5edff;cursor:pointer;"><input type="checkbox" ' + (p.active ? 'checked' : '') + ' onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'active\',this.checked)"> active</label>' +
           btn('Remove', "ClassroomStore.ui.removePriv('" + p.id + "')", 'ghost') + '</div>';
-      }).join('') + '<div style="margin-top:10px;">' + btn('+ Add a reward', 'ClassroomStore.ui.addPriv()', 'ghost') + '</div>');
+      }).join('') + '<div style="margin-top:12px;">' + btn('+ Add classroom reward', 'ClassroomStore.ui.addPriv()', 'ghost') + '</div>');
 
     mark('party');
-    // class party fund
     if (cls) {
       var fund = fundFor(cls.id);
-      drawerHtml += card(h2('🎉 Class party fund' + ' · ' + esc(cls.name || cls.id), 'Pupils give coins together toward a class goal, like a game day or a movie. The goal bar shows on their Party fund tab.') +
-        '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;"><label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">What is it for?<input id="cs-fund-name" type="text" maxlength="40" value="' + esc(fund ? fund.name : 'Class game day') + '" style="display:block;width:220px;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>' +
-        '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Goal (coins)<input id="cs-fund-goal" type="number" min="1" value="' + (fund && fund.goal ? fund.goal : 200) + '" style="display:block;width:100px;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>' +
-        btn(fund && fund.goal ? 'Save changes' : 'Start the fund', "ClassroomStore.ui.setFund('" + cls.id + "')") + (fund && fund.goal ? ' ' + btn('Start again', "ClassroomStore.ui.resetFund('" + cls.id + "')", 'ghost') : '') + '</div>' +
-        (fund && fund.goal ? '<div style="margin-top:12px;font-weight:800;color:var(--text-main,#0f172a);">' + fund.raised + ' / ' + fund.goal + ' coins' + (fund.raised >= fund.goal ? ' · 🎊 GOAL REACHED, time to plan the party!' : '') + '</div><div style="margin-top:6px;background:#e2e8f0;border-radius:999px;height:16px;overflow:hidden;"><div style="width:' + Math.min(100, Math.round(fund.raised / fund.goal * 100)) + '%;height:100%;background:linear-gradient(90deg,#22c55e,#facc15,#f97316);"></div></div>' : ''));
+      drawerHtml += card(h2('🎉 Class party fund · ' + esc(cls.name || cls.id), 'Pupils pool coins together toward a shared class celebration.') +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;"><label class="cs-field-lbl">Goal title<input id="cs-fund-name" class="cs-dark-inp" type="text" maxlength="40" value="' + esc(fund ? fund.name : 'Class game day') + '" style="width:220px;"></label>' +
+        '<label class="cs-field-lbl">Goal (coins)<input id="cs-fund-goal" class="cs-dark-inp" type="number" min="1" value="' + (fund && fund.goal ? fund.goal : 200) + '" style="width:110px;"></label>' +
+        btn(fund && fund.goal ? 'Save goal' : 'Start fund', "ClassroomStore.ui.setFund('" + cls.id + "')", 'ok') + (fund && fund.goal ? ' ' + btn('Reset bar', "ClassroomStore.ui.resetFund('" + cls.id + "')", 'ghost') : '') + '</div>' +
+        (fund && fund.goal ? '<div style="margin-top:12px;font-weight:800;color:#fde047;">' + fund.raised + ' / ' + fund.goal + ' coins' + (fund.raised >= fund.goal ? ' · 🎊 GOAL REACHED!' : '') + '</div><div style="margin-top:6px;background:#0b1222;border:1.5px solid #334155;border-radius:999px;height:16px;overflow:hidden;"><div style="width:' + Math.min(100, Math.round(fund.raised / fund.goal * 100)) + '%;height:100%;background:linear-gradient(90deg,#10b981,#f59e0b,#f43f5e);"></div></div>' : ''));
     }
 
     mark('odds');
-    // mystery box odds (information for the teacher)
-    drawerHtml += card(h2('🎁 What a mystery box can hold', 'Never something the pupil already has. Free rewards show up in “Approved, not used yet” above for you to honour.') +
-      '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;color:var(--text-main,#0f172a);"><thead><tr style="text-align:left;color:var(--text-muted,#64748b);"><th style="padding:5px 8px;">Box</th><th style="padding:5px 8px;">Monster item</th><th style="padding:5px 8px;">Sound / title / animal / plate</th><th style="padding:5px 8px;">Free reward</th><th style="padding:5px 8px;">Coins</th><th style="padding:5px 8px;">Jackpot</th></tr></thead><tbody>' +
+    drawerHtml += card(h2('🎁 Mystery box prize odds', 'Boxes never duplicate an item the pupil already owns.') +
+      '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;color:#e5edff;"><thead><tr style="text-align:left;color:#94a3b8;"><th style="padding:5px 8px;">Box</th><th style="padding:5px 8px;">Avatar item</th><th style="padding:5px 8px;">Sound / Title / Plate</th><th style="padding:5px 8px;">Free reward</th><th style="padding:5px 8px;">Coins</th><th style="padding:5px 8px;">Jackpot</th></tr></thead><tbody>' +
       TIERS.map(function (t) {
         var o = {}; BOX_ODDS[t].forEach(function (r) { o[r[0]] = r[1]; });
-        return '<tr style="border-top:1px solid var(--border-light,#e2e8f0);"><td style="padding:6px 8px;font-weight:800;">' + BOX_INFO[t].icon + ' ' + BOX_INFO[t].name + '</td><td style="padding:6px 8px;">' + o.item + '%</td><td style="padding:6px 8px;">' + o.extra + '%</td><td style="padding:6px 8px;">' + o.voucher + '% (up to ' + Math.min(BOX_VOUCHER_CAP[t], (Number(data().config.boxPrices[t]) || 10) * 3) + ' coins)</td><td style="padding:6px 8px;">' + o.coins + '% (' + boxCoins(t)[0] + ' to ' + boxCoins(t)[1] + ')</td><td style="padding:6px 8px;">' + o.jackpot + '% (legendary or ' + jackpotCoins(t) + ' coins)</td></tr>';
+        return '<tr style="border-top:1px solid rgba(51,65,85,.65);"><td style="padding:6px 8px;font-weight:800;color:#f8fafc;">' + BOX_INFO[t].icon + ' ' + BOX_INFO[t].name + '</td><td style="padding:6px 8px;">' + o.item + '%</td><td style="padding:6px 8px;">' + o.extra + '%</td><td style="padding:6px 8px;">' + o.voucher + '% (up to ' + Math.min(BOX_VOUCHER_CAP[t], (Number(data().config.boxPrices[t]) || 10) * 3) + ' coins)</td><td style="padding:6px 8px;">' + o.coins + '% (' + boxCoins(t)[0] + '–' + boxCoins(t)[1] + ')</td><td style="padding:6px 8px;">' + o.jackpot + '% (' + jackpotCoins(t) + ' 🪙)</td></tr>';
       }).join('') + '</tbody></table></div>');
 
     mark('history');
-    // history
     var recent = d.purchases.slice(0, 15);
-    drawerHtml += card(h2('🧾 Recent purchases', 'Undo gives the coins back and removes the item or unopened box.') +
+    drawerHtml += card(h2('🧾 Recent purchases', 'Undo refunds the coins and removes the item or unopened box.') +
       (recent.length ? recent.map(function (p) {
-        return '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);color:var(--text-main,#0f172a);font-size:.85rem;"><span style="font-size:1.2rem;">' + esc(p.icon) + '</span><div style="flex:1;min-width:180px;"><b>' + esc(p.name) + '</b> <span style="color:var(--text-muted,#64748b);">· ' + esc(studentName(p.studentId)) + ' · ' + when(p.ts) + '</span></div>' + coinPill(p.price) +
-          (p.status === 'done' ? btn('Undo', "ClassroomStore.ui.undo('" + p.id + "')", 'ghost') : '<span style="font-size:.75rem;color:var(--text-muted,#64748b);">refunded</span>') + '</div>';
-      }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">Nothing bought yet.</div>'));
+        return '<div class="cs-row-line"><span style="font-size:1.2rem;">' + esc(p.icon) + '</span><div style="flex:1;min-width:180px;"><b>' + esc(p.name) + '</b> <span style="color:#94a3b8;">· ' + esc(studentName(p.studentId)) + ' · ' + when(p.ts) + '</span></div>' + coinPill(p.price) +
+          (p.status === 'done' ? btn('Undo', "ClassroomStore.ui.undo('" + p.id + "')", 'ghost') : '<span style="font-size:.75rem;color:#94a3b8;">refunded</span>') + '</div>';
+      }).join('') : '<div style="font-size:.85rem;color:#94a3b8;">Nothing bought yet.</div>'));
 
     mark('end');
     drawerHtml += '</div>';
 
-    var pupilPickerHtml = students.length ? '<div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:rgba(15, 23, 42, 0.86);border:1.5px solid #26324a;border-radius:16px;padding:10px 14px;">' +
-      '<span style="font-weight:800;font-size:.88rem;color:#e5edff;">🧑‍🎓 Shopping as:</span>' +
-      students.map(function (stu) {
-        var on = curStu && stu.id === curStu.id;
-        return '<button type="button" onclick="ClassroomStore.ui.pickStudent(\'' + esc(stu.id) + '\')" style="padding:6px 13px;border-radius:999px;font-weight:800;font-size:.82rem;cursor:pointer;border:1.5px solid ' + (on ? '#4C389E' : '#26324a') + ';border-bottom:3px solid ' + (on ? '#37267A' : '#334155') + ';background:' + (on ? '#6E56CF' : '#1e293b') + ';color:' + (on ? '#FFFFFF' : '#e5edff') + ';">' + esc(stu.firstName || stu.name) + ' (🪙 ' + balance(stu.id) + ')</button>';
-      }).join('') + '</div>' : '';
-
     var sections = {}; marks.forEach(function (m, k) { if (k < marks.length - 1) sections[m[0]] = drawerHtml.slice(m[1], marks[k + 1][1]); });
     if (mode === 'parts') return { sections: sections, students: students, cls: cls, curStu: curStu, pending: pending, approved: approved };
-    html += drawerHtml + pupilPickerHtml + (curStu ? shopBodyHtml(curStu) : '') + '</div>';
-    container.innerHTML = html;
+    if (container) renderUnifiedStudio(container, 'teacher');
+    return null;
   }
 
-  // ---------------------------------------------------------------- UI (student)
-  /* new 3D shop pictures from assets/store/items/ (listed in assets/store/items/manifest.json, ids as file names) */
+  // ---------------------------------------------------------------- UI: Unified 60-30-10 Cyber-Glass Avatar Studio & Shop
   var SHOP_ART = {};
   try { fetch('assets/store/items/manifest.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : []; }).then(function (l) { (Array.isArray(l) ? l : []).forEach(function (id) { SHOP_ART[id] = 'assets/store/items/' + id + '.webp'; }); }).catch(function () {}); } catch (e) { /* offline */ }
   function itemPicHtml(item) {
@@ -967,7 +939,7 @@
     return '<div style="font-size:2.4rem;line-height:72px;height:72px;">' + esc(item.icon || '🎁') + '</div>';
   }
   var RARITY_NAME = { common: 'Everyday', rare: 'Cool', epic: 'Epic', legendary: 'Legendary', mythic: 'Mythic' };
-  var SHELVES = [['mythic', '🔴', 'The far dreams. Only the greatest explorers get here.'], ['legendary', '🟡', 'Very few monsters have these.'], ['epic', '🟣', 'Worth saving for.'], ['rare', '🟢', 'Cool things, not far away.'], ['common', '⚪', 'Small wins, soon.']];
+  var SHELVES = [['mythic', '🔴', 'The far dreams. Only the greatest explorers get here.'], ['legendary', '🟡', 'Very few explorers have these.'], ['epic', '🟣', 'Worth saving for.'], ['rare', '🟢', 'Cool things, not far away.'], ['common', '⚪', 'Small wins, soon.']];
   function shelvesHtml(shown, bal, lvl) {
     return SHELVES.map(function (sh) {
       var row = shown.filter(function (x) { return (x.item.rarity || 'common') === sh[0]; });
@@ -987,7 +959,6 @@
           : coinPill(x.price) + '<div style="margin-top:8px;">' + btn(can ? 'Buy' : 'Need ' + (x.price - bal) + ' more', "ClassroomStore.ui.buyItem('" + it.id + "')", 'ok', !can) + '</div>') +
       '</div></div>';
   }
-  /* the pupil's own monster wearing the item, before buying */
   function tryOnHtml(sid, item) {
     var R = root.MonsterRenderer, prof = store.getMonsterProfile ? store.getMonsterProfile(sid) : null, m = store.calculateMonsterState ? store.calculateMonsterState(sid) : null;
     if (!R || !R.renderMonsterSVG || !prof) return '';
@@ -996,196 +967,454 @@
     if (item.category === 'body') color = String(item.id).replace(/^body-/, '') || color; else eq[item.category] = item.id;
     try { return R.renderMonsterSVG({ stage: stage, color: color, equipped: eq, size: 260, animated: true, isAvatar: true }); } catch (e) { return ''; }
   }
-  function shopStyle() {
-    if (!root.document || document.getElementById('cs-shop-style')) return;
-    var st = document.createElement('style'); st.id = 'cs-shop-style';
-    st.textContent = '.cs-shop-note{font-size:.85rem;color:#cbd5e1;margin:0 0 12px}.cs-shop-note b{color:#fbbf24}' +
-      '.cs-shelf{margin-bottom:20px;padding:12px;border:1.5px solid color-mix(in srgb,var(--rc) 55%,transparent);border-radius:20px;background:color-mix(in srgb,var(--rc) 9%,rgba(15,23,42,.5))}.cs-shelf-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;color:#e5edff}.cs-shelf-top b{font-size:1.05rem;font-weight:900}.cs-shelf-top span{font-size:.8rem;color:#cbd5e1}' +
-      '.cs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:14px}' +
-      '.cs-item{display:flex;flex-direction:column;background:rgba(15,23,42,.86);border:1.5px solid #26324a;border-bottom:4px solid #26324a;border-radius:18px;overflow:hidden;color:#e5edff;transition:transform .18s cubic-bezier(.175,.885,.32,1.275),border-color .18s}' +
-      '.cs-item:hover{transform:translateY(-3px);border-color:var(--rc)}' +
-      '.cs-art{position:relative;height:150px;border:0;padding:0;cursor:pointer;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--rc) 38%,transparent) 0%,transparent 68%),linear-gradient(180deg,#111a2e,#0b1222);display:flex;align-items:center;justify-content:center}' +
-      '.cs-pic{position:relative;z-index:1;transform:scale(1.45)}' +
-      '@media (prefers-reduced-motion:no-preference){.cs-pic{animation:csBob 3s ease-in-out infinite}}@keyframes csBob{0%,100%{transform:scale(1.45) translateY(0)}50%{transform:scale(1.45) translateY(-5px)}}' +
-      '.cs-ped{position:absolute;bottom:16px;left:50%;width:92px;height:16px;margin-left:-46px;border-radius:50%;background:radial-gradient(ellipse,color-mix(in srgb,var(--rc) 55%,#000) 0%,transparent 70%);opacity:.8}' +
-      '.cs-rar{position:absolute;top:8px;left:8px;z-index:2;font-size:.68rem;font-weight:900;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,var(--rc) 30%,#0b1222);color:#fff;border:1px solid var(--rc)}' +
-      '.cs-try{position:absolute;bottom:6px;right:8px;z-index:2;font-size:.68rem;font-weight:800;color:#cbd5e1;opacity:0;transition:opacity .15s}.cs-item:hover .cs-try{opacity:1}' +
-      '.cs-info{padding:10px 12px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;justify-content:flex-end}' +
-      '.cs-nm{font-weight:900;font-size:.92rem;line-height:1.15}' +
-      '.cs-item.is-locked{pointer-events:none;opacity:.45;filter:grayscale(.7);cursor:not-allowed}' +
-      '.cs-try-ovl{position:fixed;inset:0;z-index:9999;background:rgba(6,9,17,.78);display:flex;align-items:center;justify-content:center;padding:16px}' +
+
+  function ensureStudioStyle() {
+    if (!root.document || document.getElementById('cs-studio-style')) return;
+    var st = document.createElement('style'); st.id = 'cs-studio-style';
+    st.textContent =
+      '.cs-studio{--spring:cubic-bezier(.175,.885,.32,1.275);max-width:1260px;margin:0 auto;padding:8px 12px 70px;color:#e5edff;font-family:"Plus Jakarta Sans",system-ui,sans-serif}' +
+      '.cs-glass-card{background:rgba(15,23,42,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1.5px solid #26324a;border-radius:20px;padding:16px 18px;margin-bottom:14px;box-shadow:0 4px 20px -2px rgba(0,0,0,.45),0 2px 6px -1px rgba(0,0,0,.22);color:#e5edff}' +
+      '.cs-row-line{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid rgba(51,65,85,.65);flex-wrap:wrap}' +
+      '.cs-field-lbl{display:flex;flex-direction:column;gap:4px;font-size:.76rem;font-weight:800;color:#94a3b8}' +
+      '.cs-dark-inp{padding:8px 10px;border-radius:11px;border:1.5px solid #334155;background:#0b1222;color:#f8fafc;font-weight:800;font-family:inherit;font-size:.86rem}' +
+      '.cs-dark-inp:focus{outline:2px solid #38bdf8;border-color:#38bdf8}' +
+      '.cs-coin-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(245,158,11,.18);border:1.5px solid rgba(245,158,11,.6);color:#fde047;border-radius:999px;padding:2px 10px;font-weight:900;font-size:.8rem;white-space:nowrap}' +
+      '.cs-lvl-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(56,189,248,.16);border:1.5px solid rgba(56,189,248,.55);color:#7dd3fc;border-radius:999px;padding:2px 10px;font-weight:900;font-size:.8rem;white-space:nowrap}' +
+      '.cs-3d-btn{border:1.5px solid #38bdf8;border-bottom:5px solid #0284c7;background:#0ea5e9;color:#fff;font-weight:800;font-size:.84rem;border-radius:12px;padding:8px 14px;cursor:pointer;font-family:inherit;transition:transform .14s var(--spring),filter .14s;display:inline-flex;align-items:center;justify-content:center;gap:5px;line-height:1.15}' +
+      '.cs-3d-btn:hover:not([disabled]){filter:brightness(1.07)}' +
+      '.cs-3d-btn:active:not([disabled]){transform:translateY(4px);border-bottom-width:1px}' +
+      '.cs-3d-btn.ok{background:#10b981;border-color:#34d399;border-bottom-color:#047857;color:#fff}' +
+      '.cs-3d-btn.gold{background:#f59e0b;border-color:#fbbf24;border-bottom-color:#b45309;color:#111827}' +
+      '.cs-3d-btn.danger{background:#f43f5e;border-color:#fb7185;border-bottom-color:#be123c;color:#fff}' +
+      '.cs-3d-btn.ghost{background:#1e293b;border-color:#334155;border-bottom-color:#0f172a;color:#e5edff}' +
+      '.cs-3d-btn[disabled]{opacity:.45;cursor:not-allowed;filter:grayscale(.45)}' +
+      '.cs-3d-mini{width:34px;height:34px;margin:2px;border-radius:9px;border:1.5px solid #334155;border-bottom:5px solid #0f172a;background:#1e293b;color:#e5edff;font-weight:900;font-size:.82rem;cursor:pointer;transition:transform .14s var(--spring)}' +
+      '.cs-3d-mini.on{background:#10b981;border-color:#34d399;border-bottom-color:#047857;color:#fff}' +
+      '.cs-3d-mini:active{transform:translateY(4px);border-bottom-width:1px}' +
+      /* Studio Header + Mode Bar */
+      '.cs-studio-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;background:rgba(15,23,42,.82);backdrop-filter:blur(14px);border:1.5px solid #26324a;border-radius:20px;padding:12px 16px;box-shadow:0 4px 20px -2px rgba(0,0,0,.4)}' +
+      '.cs-studio-title{font:800 clamp(1.25rem,2vw,1.6rem)/1.15 Fraunces,Georgia,serif;color:#f8fafc;margin:0;flex:1;min-width:200px}' +
+      '.cs-mode-pills{display:flex;gap:8px;flex-wrap:wrap}' +
+      '.cs-mode-btn{padding:9px 16px;border-radius:14px;font-weight:900;font-size:.88rem;cursor:pointer;background:#1e293b;color:#cbd5e1;border:1.5px solid #334155;border-bottom:5px solid #0f172a;transition:transform .14s var(--spring)}' +
+      '.cs-mode-btn.on{background:#a855f7;border-color:#c084fc;border-bottom-color:#6b21a8;color:#fff}' +
+      '.cs-mode-btn:active{transform:translateY(4px);border-bottom-width:1px}' +
+      /* Pupil Roster Strip */
+      '.cs-pstrip{display:flex;gap:7px;overflow-x:auto;padding:4px 2px 10px;margin-bottom:12px;scrollbar-width:thin}' +
+      '.cs-pbtn{flex:0 0 auto;min-width:104px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 10px;border-radius:14px;cursor:pointer;background:rgba(15,23,42,.85);color:#e5edff;border:1.5px solid #334155;border-bottom:5px solid #0f172a;font-weight:800;font-size:.86rem;transition:transform .14s var(--spring)}' +
+      '.cs-pbtn span{font-size:.74rem;color:#fde047;font-weight:900}' +
+      '.cs-pbtn.on{background:linear-gradient(180deg,#7c3aed,#6d28d9);border-color:#c084fc;border-bottom-color:#4c1d95;color:#fff}' +
+      '.cs-pbtn:active{transform:translateY(4px);border-bottom-width:1px}' +
+      /* Avatar Studio Two-Column Split */
+      '.cs-avwrap{display:grid;grid-template-columns:minmax(290px,355px) 1fr;gap:16px;align-items:start}' +
+      '@media (max-width:860px){.cs-avwrap{grid-template-columns:1fr}.cs-avstage{position:static!important}}' +
+      '.cs-avstage{position:sticky;top:10px;background:rgba(15,23,42,.85);backdrop-filter:blur(14px);border:1.5px solid #26324a;border-bottom:5px solid #0f172a;border-radius:22px;padding:14px;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.45)}' +
+      '.cs-avstage-hd{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px;flex-wrap:wrap}' +
+      '.cs-avstage-nm{font:800 1.15rem/1.1 Fraunces,Georgia,serif;color:#f8fafc}' +
+      '.cs-avstage-in{position:relative;height:336px;display:flex;align-items:flex-end;justify-content:center;border-radius:18px;background:radial-gradient(circle at 50% 38%,rgba(56,189,248,.26) 0%,rgba(168,85,247,.12) 45%,transparent 72%),linear-gradient(180deg,#111a2e,#060911);border:1px solid rgba(56,189,248,.22);overflow:hidden}' +
+      '.cs-avstage-in img{position:relative;z-index:1;max-height:326px;max-width:100%;object-fit:contain;transition:opacity .18s}' +
+      '.cs-avstage-in i{position:absolute;bottom:8px;left:50%;width:168px;height:24px;margin-left:-84px;border-radius:50%;background:radial-gradient(ellipse,rgba(56,189,248,.48) 0%,transparent 72%)}' +
+      '.cs-ctrl-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:9px}' +
+      '.cs-pose-btn{padding:6px 10px;border-radius:11px;font-size:.77rem;font-weight:800;cursor:pointer;background:#1e293b;color:#cbd5e1;border:1.5px solid #334155;border-bottom:5px solid #0f172a;transition:transform .14s var(--spring)}' +
+      '.cs-pose-btn.on{background:#38bdf8;border-color:#7dd3fc;border-bottom-color:#0284c7;color:#06101f}' +
+      '.cs-pose-btn.id-girl.on{background:#ec4899;border-color:#f9a8d4;border-bottom-color:#9d174d;color:#fff}' +
+      '.cs-pose-btn.id-boy.on{background:#38bdf8;border-color:#7dd3fc;border-bottom-color:#0284c7;color:#06101f}' +
+      '.cs-pose-btn:active{transform:translateY(4px);border-bottom-width:1px}' +
+      '.cs-swtray{margin-top:10px;padding:10px;border-radius:14px;background:rgba(6,9,17,.65);border:1px solid #26324a;text-align:left}' +
+      '.cs-swtray-lbl{font-size:.72rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}' +
+      '.cs-swrow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px}' +
+      '.cs-swatch{width:34px;height:34px;border-radius:10px;border:2px solid rgba(255,255,255,.28);border-bottom:5px solid rgba(0,0,0,.45);cursor:pointer;transition:transform .14s var(--spring)}' +
+      '.cs-swatch.round{border-radius:50%}' +
+      '.cs-swatch.on{border-color:#fde047;box-shadow:0 0 0 2px #fde047}' +
+      '.cs-swatch:active{transform:translateY(4px);border-bottom-width:1px}' +
+      '.cs-wearing-box{margin-top:10px;padding-top:9px;border-top:1px solid rgba(51,65,85,.65);text-align:left}' +
+      '.cs-wchips{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}' +
+      '.cs-wchip{display:inline-flex;align-items:center;gap:4px;background:#1e293b;border:1px solid #334155;border-radius:999px;padding:3px 4px 3px 9px;font-size:.73rem;font-weight:800;color:#e5edff}' +
+      '.cs-wchip-x{border:0;border-bottom:3px solid #0f172a;background:#334155;color:#fca5a5;border-radius:999px;width:20px;height:20px;font-size:.7rem;font-weight:900;cursor:pointer;line-height:1;padding:0}' +
+      '.cs-avbar{margin-top:10px;padding:10px;border-radius:14px;background:rgba(16,185,129,.12);border:1.5px solid rgba(52,211,153,.45);color:#e5edff}' +
+      '.cs-avbar-name{font-weight:900;font-size:.98rem;color:#f8fafc}' +
+      /* Right Closet & Shop Grid */
+      '.cs-avFilterRow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}' +
+      '.cs-avchips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}' +
+      '.cs-avchip{padding:7px 12px;border-radius:12px;font-size:.8rem;font-weight:800;cursor:pointer;background:#1e293b;color:#cbd5e1;border:1.5px solid #334155;border-bottom:5px solid #0f172a;transition:transform .14s var(--spring)}' +
+      '.cs-avchip.on{background:#a855f7;border-color:#c084fc;border-bottom-color:#6b21a8;color:#fff}' +
+      '.cs-avchip:active{transform:translateY(4px);border-bottom-width:1px}' +
+      '.cs-avgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(144px,1fr));gap:11px}' +
+      '.cs-avcard{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:5px;padding:26px 8px 10px;border-radius:18px;color:#e5edff;text-align:center;' +
+        'background:radial-gradient(circle at 50% 34%,color-mix(in srgb,var(--rc) 32%,transparent) 0%,transparent 70%),rgba(15,23,42,.86);border:1.5px solid #26324a;border-bottom:5px solid #0f172a;transition:transform .16s var(--spring),border-color .16s}' +
+      '.cs-avcard:hover{transform:translateY(-2px);border-color:var(--rc)}' +
+      '.cs-avcard.sel{border-color:#fde047;box-shadow:0 0 0 2px #fde047}' +
+      '.cs-avcard.is-locked{pointer-events:none!important;opacity:.45!important;filter:grayscale(.7)!important;cursor:not-allowed!important}' +
+      '.cs-avcard-pic{border:0;background:none;padding:0;cursor:pointer;width:100%;display:flex;flex-direction:column;align-items:center;gap:4px;color:inherit;font:inherit}' +
+      '.cs-avcard-pic img{width:84px;height:84px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}' +
+      '.cs-avcard-pic b{font-size:.82rem;line-height:1.18;font-weight:800;color:#f8fafc}' +
+      '.cs-avcard-act{width:100%;padding:6px 8px;border-radius:10px;font-size:.76rem;font-weight:900;cursor:pointer;border:1.5px solid #334155;border-bottom:5px solid #0f172a;background:#1e293b;color:#e5edff;transition:transform .14s var(--spring)}' +
+      '.cs-avcard-act.wear{background:#0ea5e9;border-color:#7dd3fc;border-bottom-color:#0369a1;color:#fff}' +
+      '.cs-avcard-act.on{background:#10b981;border-color:#34d399;border-bottom-color:#047857;color:#fff}' +
+      '.cs-avcard-act.buy{background:#f59e0b;border-color:#fbbf24;border-bottom-color:#b45309;color:#111827}' +
+      '.cs-avcard-act.short{background:#1e293b;border-color:#334155;border-bottom-color:#0f172a;color:#94a3b8}' +
+      '.cs-avcard-act:active:not([disabled]){transform:translateY(4px);border-bottom-width:1px}' +
+      '.cs-rar{position:absolute;top:7px;left:7px;z-index:2;font-size:.64rem;font-weight:900;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--rc) 32%,#0b1222);color:#fff;border:1px solid var(--rc)}' +
+      '.cs-free-tag{position:absolute;top:7px;right:7px;z-index:2;font-size:.62rem;font-weight:900;padding:2px 7px;border-radius:999px;background:rgba(16,185,129,.22);color:#6ee7b7;border:1px solid rgba(52,211,153,.55)}' +
+      /* Boxes, Prizes & Folded History */
+      '.cs-prize-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px}' +
+      '.cs-prize-card{background:rgba(15,23,42,.85);backdrop-filter:blur(14px);border:1.5px solid #26324a;border-bottom:5px solid #0f172a;border-radius:18px;padding:14px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;color:#e5edff;box-shadow:0 4px 18px rgba(0,0,0,.35)}' +
+      '.cs-prize-card.real{border-color:rgba(245,158,11,.75)}' +
+      '.cs-fold{background:rgba(15,23,42,.82);border:1.5px solid #26324a;border-radius:18px;margin-top:16px;overflow:hidden;color:#e5edff}' +
+      '.cs-fold summary{cursor:pointer;padding:13px 18px;font-weight:900;font-size:.92rem;list-style:none;display:flex;justify-content:space-between;align-items:center}' +
+      '.cs-fold summary::-webkit-details-marker{display:none}' +
+      '.cs-fold summary:after{content:"▾";color:#38bdf8;font-size:1rem}' +
+      '.cs-fold[open] summary:after{content:"▴"}' +
+      '.cs-sw{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;border:1.5px solid #334155;border-bottom:4px solid #0f172a;background:#1e293b;color:#e5edff;font-weight:800;font-size:.83rem;cursor:pointer;margin:0 8px 8px 0}' +
+      '.cs-sw input{width:17px;height:17px}.cs-sw.off{opacity:.5;text-decoration:line-through}' +
+      '.cs-shelf{margin-bottom:20px;padding:12px;border:1.5px solid color-mix(in srgb,var(--rc) 55%,transparent);border-radius:20px;background:color-mix(in srgb,var(--rc) 9%,rgba(15,23,42,.5))}' +
+      '.cs-shelf-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;color:#e5edff}.cs-shelf-top b{font-size:1.02rem;font-weight:900}.cs-shelf-top span{font-size:.8rem;color:#cbd5e1}' +
+      '.cs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(174px,1fr));gap:14px}' +
+      '.cs-item{display:flex;flex-direction:column;background:rgba(15,23,42,.86);border:1.5px solid #26324a;border-bottom:5px solid #0f172a;border-radius:18px;overflow:hidden;color:#e5edff}' +
+      '.cs-item.is-locked{pointer-events:none!important;opacity:.45!important;filter:grayscale(.7)!important;cursor:not-allowed!important}' +
+      '.cs-art{position:relative;height:146px;border:0;padding:0;cursor:pointer;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--rc) 38%,transparent) 0%,transparent 68%),linear-gradient(180deg,#111a2e,#0b1222);display:flex;align-items:center;justify-content:center}' +
+      '.cs-pic{position:relative;z-index:1;transform:scale(1.4)}.cs-ped{position:absolute;bottom:14px;left:50%;width:92px;height:16px;margin-left:-46px;border-radius:50%;background:radial-gradient(ellipse,color-mix(in srgb,var(--rc) 55%,#000) 0%,transparent 70%);opacity:.8}' +
+      '.cs-info{padding:10px 12px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;justify-content:flex-end}.cs-nm{font-weight:900;font-size:.9rem;line-height:1.15}' +
+      '.cs-try-ovl{position:fixed;inset:0;z-index:9999;background:rgba(6,9,17,.82);display:flex;align-items:center;justify-content:center;padding:16px}' +
       '.cs-try-card{width:min(380px,100%);background:rgba(15,23,42,.96);border:2px solid var(--rc);border-radius:22px;padding:18px;text-align:center;color:#e5edff;box-shadow:0 20px 60px rgba(0,0,0,.5)}' +
-      '.cs-try-mon{height:260px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--rc) 30%,transparent) 0%,transparent 65%);border-radius:16px}.cs-try-mon svg{width:240px;height:240px}';
+      '.cs-try-mon{height:260px;display:flex;align-items:center;justify-content:center;border-radius:16px}.cs-try-mon svg{width:240px;height:240px}';
     document.head.appendChild(st);
   }
-  var SHOP_TABS = (root.EAA_HIDE_MONSTERS !== false ? [['avatar', '👕 Avatar shop']] : [['items', '🎨 Monster items']]).concat([['extras', '✨ Extras'], ['boxes', '🎁 Mystery boxes'], ['party', '🎉 Party fund'], ['rewards', '⭐ Real prizes & rewards'], ['orders', '🧾 My orders']]);
-  function shopBodyHtml(s) {
-    shopStyle();
-    var d = data(), cfg = d.config, bal = balance(s.id), w = wallet(s.id);
-    var tabs = SHOP_TABS.filter(function (t) { return t[0] === 'orders' || !isOff('tabs', t[0]); });
-    if (!tabs.some(function (t) { return t[0] === studentTab; })) studentTab = tabs[0][0];
-    var html = '<div class="cs-coinbar" style="background:linear-gradient(135deg,rgba(15,23,42,.78),rgba(15,23,42,.92)),url(assets/store/shop_counter.webp) center/cover no-repeat;border:1.5px solid rgba(245,158,11,.6);border-radius:20px;padding:20px;box-shadow:0 4px 20px -2px rgba(0,0,0,.4);margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
-      '<img src="assets/store/coin_pile.webp" alt="Coins" style="width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45));" onerror="this.outerHTML=\'<div style=&quot;font-size:3rem;&quot;>🪙</div>\'"><div style="flex:1;min-width:200px;"><div style="font-size:.9rem;font-weight:800;color:#fcd34d;">' + esc(s.firstName || s.name || 'Your') + '’s coins</div><div style="font-size:2.4rem;font-weight:900;color:#fbbf24;line-height:1;">' + bal + '</div>' +
-      '<div style="font-size:.8rem;color:#fde68a;margin-top:4px;">You earn 1 coin for every ' + cfg.coinsPerXp + ' XP. Spending coins never lowers your XP or your level.</div></div></div>' +
-      '<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;">' + tabs.map(function (t) {
-        var on = studentTab === t[0];
-        return '<button type="button" onclick="ClassroomStore.ui.tab(\'' + t[0] + '\')" style="padding:9px 14px;border-radius:12px;font-weight:800;font-size:.86rem;white-space:nowrap;cursor:pointer;border:1.5px solid ' + (on ? '#4C389E' : '#26324a') + ';border-bottom:4px solid ' + (on ? '#37267A' : '#334155') + ';background:' + (on ? '#6E56CF' : '#1e293b') + ';color:' + (on ? '#FFFFFF' : '#e5edff') + ';">' + t[1] + '</button>';
-      }).join('') + '</div>';
 
-    if (studentTab === 'items') {
-      var list = shopItems(s.id);
-      var cats = ['all', 'sets', 'pet', 'creature', 'hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'trail', 'body'];
-      var catLabel = { all: 'All', sets: '🎭 Costume sets', pet: '🐾 Pets', creature: '🐉 Creatures', hat: 'Hats', glasses: 'Glasses', accessory: 'Accessories', backpack: 'Backpacks', clothing: 'Outfits', background: 'Worlds', aura: 'Auras', trail: '✨ Trails (Island)', body: 'Colours' };
-      var present = cats.filter(function (c) { return c === 'all' || (c === 'sets' && root.MonsterCostumes) || list.some(function (x) { return x.item.category === c; }); });
-      html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">' + present.map(function (c) {
-        return '<button type="button" onclick="ClassroomStore.ui.filter(\'' + c + '\')" style="padding:6px 12px;border-radius:999px;font-size:.8rem;font-weight:800;cursor:pointer;border:1.5px solid ' + (itemFilter === c ? '#6E56CF' : '#26324a') + ';border-bottom:3px solid ' + (itemFilter === c ? '#4C389E' : '#334155') + ';background:' + (itemFilter === c ? 'rgba(168,85,247,.28)' : '#1e293b') + ';color:' + (itemFilter === c ? '#e9d5ff' : '#cbd5e1') + ';">' + catLabel[c] + '</button>';
-      }).join('') + '</div>';
-      var shown = list.filter(function (x) { return itemFilter === 'all' || x.item.category === itemFilter; });
-      if (itemFilter === 'sets' && root.MonsterCostumes) {
-        var M = root.MonsterCostumes, mine = ownedMonsterIds(s.id);
-        html += Object.keys(M.sets).filter(function (k) { return M.sets[k].pieces.every(function (pid) { return inSeason({ id: pid }); }); }).map(function (k) {
-          var st = M.sets[k], have = st.pieces.filter(function (pid) { return mine.indexOf(pid) !== -1; }).length, done = have === st.pieces.length;
-          return '<div style="background:var(--bg-surface,#fff);border:2px solid ' + (done ? '#16a34a' : 'var(--border-light,#e2e8f0)') + ';border-radius:18px;padding:12px 14px;margin-bottom:12px;">' +
-            '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;"><span style="font-size:1.6rem;">' + st.icon + '</span><div style="flex:1;min-width:160px;"><div style="font-weight:900;color:var(--text-main,#0f172a);">' + esc(st.name) + '</div>' +
-            '<div style="font-size:.74rem;color:var(--text-muted,#64748b);">' + (done ? '✅ Set complete! You earned the title “' + esc(st.title) + '”' : 'Collect all 3 to earn the title “' + esc(st.title) + '”') + '</div></div>' +
-            '<span style="font-weight:900;font-size:.85rem;color:' + (done ? '#16a34a' : '#64748b') + ';">' + have + ' / ' + st.pieces.length + '</span></div>' +
-            '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">' + st.pieces.map(function (pid) {
-              var it = findItem(pid) || (M.byId(pid)), owned = mine.indexOf(pid) !== -1, price = it ? itemPrice(it) : 0, locked = it ? levelOf(s.id) < shopLevel(it) : false, can = bal >= price && !locked;
-              if (!it) return '';
-              return '<div style="text-align:center;border:1px solid var(--border-light,#e2e8f0);border-radius:14px;padding:8px;opacity:' + (owned ? .75 : 1) + ';">' + itemPicHtml(it) +
-                '<div style="font-weight:800;font-size:.8rem;margin-top:2px;color:var(--text-main,#0f172a);">' + esc(it.name) + '</div>' +
-                '<div style="font-size:.66rem;font-weight:800;color:' + (RARITY_COLOR[it.rarity] || '#64748b') + ';text-transform:uppercase;">' + esc(it.rarity) + '</div>' +
-                '<div style="margin-top:6px;">' + (owned ? '<span style="font-weight:900;color:#16a34a;">✓ You have it</span>' : (locked ? '<span class="monster-item-lock-pill">🔒 Level ' + shopLevel(it) + '</span>' : coinPill(price) + '<div style="margin-top:6px;">' + btn(can ? 'Buy' : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyItem('" + pid + "')", 'ok', !can) + '</div>')) + '</div></div>';
-            }).join('') + '</div></div>';
-        }).join('');
-        shown = [];
-      }
-      var lvl = levelOf(s.id);
-      shown.sort(function (a, b) {
-        function rank(x) { return lvl < x.level ? 2 : bal >= x.price ? 0 : 1; }
-        return rank(a) - rank(b) || a.price - b.price || (rank(a) === 2 ? a.level - b.level : 0) || a.item.name.localeCompare(b.item.name);
-      });
-      var nCan = shown.filter(function (x) { return lvl >= x.level && bal >= x.price; }).length, nLock = shown.filter(function (x) { return lvl < x.level; }).length;
-      html += itemFilter === 'sets' ? '' : shown.length ? '<div class="cs-shop-note">' + (nCan ? '✨ <b>' + nCan + '</b> you can buy now' : 'Keep earning XP for more coins') + (nLock ? ' · 🔒 ' + nLock + ' open at a higher level (🎁 = free when you get there)' : '') + ' · Tap a picture to try it on</div>' +
-        shelvesHtml(shown, bal, lvl) : '<div style="padding:30px;text-align:center;color:var(--text-muted,#64748b);">You already have everything in this group. 🎉</div>';
-    } else if (studentTab === 'avatar') {
-      html += avatarTabHtml(s, bal);
-    } else if (studentTab === 'extras') {
-      html += renderExtrasTab(s, bal);
-    } else if (studentTab === 'party') {
-      html += renderPartyTab(s, bal);
-    } else if (studentTab === 'boxes') {
-      var mine = store.getMysteryBoxes ? store.getMysteryBoxes(s.id, false) : [];
-      html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:18px;">' + TIERS.filter(function (t) { return !isOff('boxes', t); }).map(function (t) {
-        var price = cfg.boxPrices[t], can = bal >= price;
-        return '<div style="background:var(--bg-surface,#fff);border:1px solid var(--border-light,#e2e8f0);border-radius:16px;padding:16px;text-align:center;"><div style="font-size:2.6rem;">' + (root.MysteryBoxArt ? root.MysteryBoxArt(t) : BOX_INFO[t].icon) + '</div><div style="font-weight:900;color:var(--text-main,#0f172a);">' + BOX_INFO[t].name + '</div><div style="font-size:.75rem;color:var(--text-muted,#64748b);margin:3px 0 8px;">' + BOX_INFO[t].blurb + '</div>' + coinPill(price) + '<div style="margin-top:10px;">' + btn(can ? 'Buy box' : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyBox('" + t + "')", 'ok', !can) + '</div></div>';
-      }).join('') + '</div>' +
-        card(h2('What can be inside?', 'Every box is a surprise. You never get something you already have.') +
-          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;font-size:.82rem;color:var(--text-main,#0f172a);">' +
-          [['👕', 'An avatar item you do not have yet'], ['🔊', 'A victory sound, title, animal or name plate'], ['🎟️', 'A FREE class reward from your teacher'], ['🪙', 'A pile of coins'], ['💎', 'A rare legendary jackpot']].map(function (r) { return '<div style="display:flex;gap:8px;align-items:center;"><span style="font-size:1.4rem;">' + r[0] + '</span><span>' + r[1] + '</span></div>'; }).join('') + '</div>') +
-        card(h2('🎁 Your unopened boxes (' + mine.length + ')') + (mine.length ? mine.map(function (b) { return '<span style="display:inline-block;margin:0 8px 8px 0;">' + btn((BOX_INFO[b.boxTier] ? BOX_INFO[b.boxTier].icon : '🎁') + ' Open ' + (BOX_INFO[b.boxTier] ? BOX_INFO[b.boxTier].name : 'box'), "ClassroomStore.ui.openBox('" + b.id + "')") + '</span>'; }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">No unopened boxes.</div>'));
-    } else if (studentTab === 'rewards') {
-      html += '<div style="font-size:.85rem;color:var(--text-muted,#64748b);margin-bottom:10px;">Ask for a reward or a real classroom prize! Your teacher says yes or no. If it is a no, your coins come back.</div>' +
-        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:14px;">' + cfg.privileges.filter(function (p) { return p.active; }).map(function (p) {
-          var used = usedThisWeek(s.id, p.id), left = p.weeklyLimit ? Math.max(0, p.weeklyLimit - used) : 99, can = bal >= p.price && left > 0;
-          var visual = p.image
-            ? '<div style="position:relative;height:132px;margin:-6px -6px 8px;border-radius:12px;overflow:hidden;background:#0f172a;"><img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" style="width:100%;height:100%;object-fit:cover;display:block;">' + (p.badge ? '<span style="position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:.64rem;font-weight:900;padding:2px 8px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.35);">' + esc(p.badge) + '</span>' : '') + '</div>'
-            : '<div style="font-size:2.4rem;margin:6px 0;">' + esc(p.icon) + '</div>';
-          return '<div style="background:var(--bg-surface,#fff);border:' + (p.image ? '2px solid #f59e0b' : '1px solid var(--border-light,#e2e8f0)') + ';border-radius:18px;padding:14px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;"><div>' + visual + '<div style="font-weight:900;margin:4px 0 6px;color:var(--text-main,#0f172a);font-size:.92rem;line-height:1.25;">' + esc(p.name) + '</div></div><div>' + coinPill(p.price) +
-            '<div style="font-size:.72rem;color:var(--text-muted,#64748b);margin:6px 0;">' + (p.weeklyLimit ? left + ' left this week' : '') + '</div>' + btn(left <= 0 ? 'Used this week' : (bal < p.price ? 'Need ' + (p.price - bal) + ' more' : 'Ask for this'), "ClassroomStore.ui.request('" + p.id + "')", 'ok', !can) + '</div></div>';
-        }).join('') + '</div>';
-    } else {
-      var reqs = d.requests.filter(function (r) { return r.studentId === s.id; });
-      var buys = d.purchases.filter(function (p) { return p.studentId === s.id; });
-      var STAT = { pending: '⏳ Waiting', approved: '✅ Approved', declined: '↩️ Declined (coins back)', used: '✔️ Done' };
-      html += card(h2('Reward requests') + (reqs.length ? reqs.map(function (r) { return '<div style="display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);font-size:.88rem;color:var(--text-main,#0f172a);"><span>' + esc(r.icon) + '</span><div style="flex:1;">' + esc(r.name) + '</div><b>' + (STAT[r.status] || r.status) + '</b></div>'; }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">No requests yet.</div>')) +
-        card(h2('What you bought') + (buys.length ? buys.map(function (p) { return '<div style="display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);font-size:.88rem;color:var(--text-main,#0f172a);"><span>' + esc(p.icon) + '</span><div style="flex:1;">' + esc(p.name) + '</div>' + coinPill(p.price) + (p.status === 'refunded' ? '<i>refunded</i>' : '') + '</div>'; }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">Nothing yet.</div>')) +
-        card(h2('Coin history') + (w.ledger.length ? w.ledger.slice(0, 12).map(function (l) { return '<div style="display:flex;gap:10px;padding:6px 0;border-top:1px solid var(--border-light,#e2e8f0);font-size:.82rem;color:var(--text-main,#0f172a);"><div style="flex:1;">' + esc(l.reason) + '</div><b style="color:' + (l.delta >= 0 ? '#16a34a' : '#dc2626') + ';">' + (l.delta >= 0 ? '+' : '') + l.delta + '</b></div>'; }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">Your coins come from XP, and from your teacher.</div>'));
-    }
-    return html;
-  }
-  var AV_SLOTS = [['all', 'All'], ['clothing', '👕 Tops'], ['legs', '👖 Trousers'], ['shoes', '👟 Shoes'], ['hat', '🎩 Hats'], ['wig', '💇 Wigs'],
-    ['glasses', '🕶️ Glasses'], ['backpack', '🎒 Bags & wings'], ['neck', '🏅 Necklaces'], ['accessory', '🪄 Held'], ['aura', '✨ Auras'], ['pet', '🐾 Pet buddies']];
-  var AV_STATE_ORDER = { shop: 0, level: 1, have: 2 };
-  function avatarTabHtml(s, bal) {
-    var P = PA();
-    if (!P || !P.storeItemIds) return '<div style="padding:30px;text-align:center;">The avatar shop is loading…</div>';
-    var items = avItems(s.id), wearing = P.wearingOf ? P.wearingOf(s.id) : {};
-    if (avTryId && !items.some(function (x) { return x.id === avTryId; })) avTryId = '';
-    var tryX = avTryId ? P.itemInfo(avTryId) : null, tryState = tryX ? avState(s.id, tryX.id) : '';
-    var chips = AV_SLOTS.filter(function (c) { return c[0] === 'all' || items.some(function (x) { return x.slot === c[0]; }); }).map(function (c) {
-      return '<button type="button" class="cs-avchip' + (avSlot === c[0] ? ' on' : '') + '" onclick="ClassroomStore.ui.avSlot(\'' + c[0] + '\')">' + c[1] + '</button>';
-    }).join('');
-    var shown = items.filter(function (x) { return avSlot === 'all' || x.slot === avSlot; });
-    shown.sort(function (a, b) {
-      var sa = avState(s.id, a.id), sb = avState(s.id, b.id);
-      return (AV_STATE_ORDER[sa] - AV_STATE_ORDER[sb]) || (avPrice(a) - avPrice(b)) || a.name.localeCompare(b.name);
-    });
-    var grid = shown.map(function (x) {
-      var st = avState(s.id, x.id), price = avPrice(x), on = wearing[x.slot] === x.id;
-      var tag = st === 'have' ? (on ? '<span class="cs-avtag on">✓ Wearing</span>' : '<span class="cs-avtag">🎒 Yours</span>')
-        : st === 'level' ? '<span class="cs-avtag">🎁 Free for you</span>'
-        : coinPill(price) + (P.levelFor && P.levelFor(x.id) && x.slot !== 'pet' ? '<span class="cs-avtag">or free at Lv ' + P.levelFor(x.id) + '</span>' : '');
-      return '<button type="button" class="cs-avcard' + (avTryId === x.id ? ' sel' : '') + '" style="--rc:' + (RARITY_COLOR[x.rarity] || '#64748b') + ';" onclick="ClassroomStore.ui.avTry(\'' + esc(x.id) + '\')" title="Try it on">' +
-        '<span class="cs-rar">' + esc(RARITY_NAME[x.rarity] || 'Everyday') + '</span>' +
-        '<img src="' + esc(avTrimmed[x.pic] || x.pic) + '" alt="" loading="lazy" onload="ClassroomStore.ui.avTrim(this)" onerror="this.style.visibility=\'hidden\'">' +
-        '<b>' + esc(x.name) + '</b>' + tag + '</button>';
-    }).join('');
-    var bar;
-    if (!tryX) bar = '<div class="cs-avbar-hint">👆 Tap any item to see it on ' + firstName(s) + '.</div>';
-    else {
-      var price2 = avPrice(tryX), on2 = wearing[tryX.slot] === tryX.id, act = '';
-      if (tryState === 'shop') act = btn(bal >= price2 ? '🪙 Buy for ' + price2 : 'Need ' + (price2 - bal) + ' more coins', "ClassroomStore.ui.avBuy('" + tryX.id + "')", 'ok', bal < price2);
-      else act = on2 ? btn('Take it off', "ClassroomStore.ui.avWear('" + tryX.id + "',false)", 'ghost') : btn('👕 Wear it', "ClassroomStore.ui.avWear('" + tryX.id + "',true)", 'ok');
-      bar = '<div class="cs-avbar-name">' + esc(tryX.name) + '</div><div style="font-size:.8rem;color:' + (RARITY_COLOR[tryX.rarity] || '#94a3b8') + ';font-weight:900;margin-bottom:8px;">' + esc(RARITY_NAME[tryX.rarity] || '') +
-        (tryState === 'level' ? ' · free at your level' : tryState === 'have' ? ' · you have it' : '') + '</div>' + act + ' ' + btn('Clear', "ClassroomStore.ui.avTry('')", 'ghost');
-    }
-    // the preview picture is drawn after the page is on screen
-    clearTimeout(avPrevTimer);
-    avPrevTimer = setTimeout(function () { avRefreshPreview(s.id); }, 0);
-    return avStyle() + '<div class="cs-avwrap">' +
-      '<div class="cs-avstage"><div class="cs-avstage-in"><img id="cs-av-preview" src="' + esc(P.pictureFor(s.id)) + '" alt="' + firstName(s) + '"><i></i></div>' +
-        '<div class="cs-avbar">' + bar + '</div></div>' +
-      '<div class="cs-avlist"><div class="cs-avchips">' + chips + '</div>' +
-        (shown.length ? '<div class="cs-avgrid">' + grid + '</div>' : '<div style="padding:30px;text-align:center;color:#cbd5e1;">Nothing here.</div>') +
-      '</div></div>';
-  }
+  var SHOP_TABS = (root.EAA_HIDE_MONSTERS !== false ? [['avatar', '👕 Avatar & Closet']] : [['items', '🎨 Items']]).concat([['extras', '🔊 Titles & Sounds'], ['boxes', '🎁 Mystery Boxes'], ['party', '🎉 Party Fund'], ['rewards', '⭐ Real Prizes']]);
+  var AV_SLOTS = [
+    ['all', 'All'],
+    ['clothing', '👕 Tops & Outfits'],
+    ['legs', '👖 Bottoms'],
+    ['shoes', '👟 Shoes'],
+    ['hat', '🎩 Hats'],
+    ['wig', '💇 Wigs'],
+    ['glasses', '🕶️ Glasses'],
+    ['backpack', '🎒 Bags & Wings'],
+    ['neck', '🏅 Necklaces'],
+    ['accessory', '🪄 Held Props'],
+    ['aura', '✨ Auras'],
+    ['pet', '🐾 Pet Buddies'],
+    ['extras', '🔊 Titles & Sounds']
+  ];
+  var AV_STATE_ORDER = { have: 0, level: 1, shop: 2 };
+
   function avRefreshPreview(sid) {
-    var P = PA(), el = root.document && document.getElementById('cs-av-preview'); if (!P || !el) return;
-    var want = sid + '|' + avTryId; avPrevSid = want;
-    if (!avTryId) { el.src = P.pictureFor(sid); return; }
-    el.style.opacity = '.55';
-    P.previewWith(sid, avTryId).then(function (u) {
+    var P = PA(), el = root.document && document.getElementById('cs-av-preview');
+    if (!P || !el || !sid) return;
+    var want = sid + '|' + avTryId + '|' + avEmotion;
+    avPrevSid = want;
+    if (!avTryId && avEmotion === 'smile' && P.has && P.has(sid)) {
+      el.src = P.pictureFor(sid);
+      el.style.opacity = '1';
+      return;
+    }
+    if (!P.previewLook) {
+      if (!avTryId) { el.src = P.pictureFor(sid); return; }
+      P.previewWith(sid, avTryId).then(function (u) {
+        var el2 = document.getElementById('cs-av-preview');
+        if (el2 && avPrevSid === want && u) { el2.src = u; el2.style.opacity = '1'; }
+      });
+      return;
+    }
+    el.style.opacity = '.72';
+    P.previewLook(sid, { itemId: avTryId || '', emotion: avEmotion || 'smile' }).then(function (u) {
       var el2 = document.getElementById('cs-av-preview');
       if (el2 && avPrevSid === want && u) { el2.src = u; el2.style.opacity = '1'; }
-    }).catch(function () { var el3 = document.getElementById('cs-av-preview'); if (el3) el3.style.opacity = '1'; });
-  }
-  function avStyle() {
-    return '<style>.cs-avwrap{display:grid;grid-template-columns:minmax(240px,320px) 1fr;gap:16px;align-items:start}' +
-      '@media (max-width:820px){.cs-avwrap{grid-template-columns:1fr}.cs-avstage{position:static!important}}' +
-      '.cs-avstage{position:sticky;top:10px;background:rgba(15,23,42,.86);backdrop-filter:blur(14px);border:1.5px solid #26324a;border-bottom:5px solid #1e293b;border-radius:22px;padding:14px;text-align:center}' +
-      '.cs-avstage-in{position:relative;height:340px;display:flex;align-items:flex-end;justify-content:center;border-radius:16px;background:radial-gradient(circle at 50% 40%,rgba(56,189,248,.25) 0%,transparent 65%),linear-gradient(180deg,#111a2e,#0b1222)}' +
-      '.cs-avstage-in img{position:relative;z-index:1;max-height:330px;max-width:100%;object-fit:contain;transition:opacity .2s}' +
-      '.cs-avstage-in i{position:absolute;bottom:10px;left:50%;width:160px;height:24px;margin-left:-80px;border-radius:50%;background:radial-gradient(ellipse,rgba(56,189,248,.45) 0%,transparent 70%)}' +
-      '.cs-avbar{margin-top:12px;color:#e5edff}.cs-avbar-name{font-weight:900;font-size:1.1rem}.cs-avbar-hint{font-size:.9rem;color:#cbd5e1;font-weight:700}' +
-      '.cs-avchips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}' +
-      '.cs-avchip{padding:7px 12px;border-radius:999px;font-size:.82rem;font-weight:800;cursor:pointer;background:#1e293b;color:#e5edff;border:1.5px solid #334155;border-bottom:4px solid #0f172a}' +
-      '.cs-avchip.on{background:#6E56CF;border-color:#8D75E6;border-bottom-color:#37267A}.cs-avchip:active{transform:translateY(3px);border-bottom-width:1px}' +
-      '.cs-avgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}' +
-      '.cs-avcard{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:26px 8px 10px;border-radius:16px;cursor:pointer;color:#e5edff;' +
-        'background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--rc) 30%,transparent) 0%,transparent 70%),rgba(15,23,42,.86);border:1.5px solid #26324a;border-bottom:5px solid #1e293b;transition:transform .18s cubic-bezier(.175,.885,.32,1.275)}' +
-      '.cs-avcard:hover{transform:translateY(-3px);border-color:var(--rc)}.cs-avcard:active{transform:translateY(4px);border-bottom-width:1px}.cs-avcard.sel{border-color:#fde047;box-shadow:0 0 0 2px #fde047}' +
-      '.cs-avcard img{width:84px;height:84px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45))}.cs-avcard b{font-size:.84rem;line-height:1.15}' +
-      '.cs-avtag{font-size:.74rem;font-weight:900;color:#cbd5e1}.cs-avtag.on{color:#4ade80}</style>';
+    }).catch(function () {
+      var el3 = document.getElementById('cs-av-preview');
+      if (el3) el3.style.opacity = '1';
+    });
   }
 
-  function renderStudent(container) {
-    var s = store.getActiveStudent ? store.getActiveStudent() : (store.getStudents() || [])[0];
-    if (!s) { container.innerHTML = '<div style="padding:40px;text-align:center;">No active student profile found.</div>'; return; }
-    container.innerHTML = '<div style="max-width:980px;margin:0 auto;padding:6px 4px 40px;">' + shopBodyHtml(s) + '</div>';
+  var extraKind = 'sound';
+  function plateStyle(x) { return (x && x.css) || ''; }
+  function extraCard(s, x, bal) {
+    var owned = extraOwned(s.id, x.id), eq = equippedExtras(s.id)[x.kind], wearing = eq && eq.id === x.id, price = extraPrice(x), can = bal >= price;
+    var pic = x.kind === 'plate' ? '<div style="height:54px;border-radius:12px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.9rem;' + plateStyle(x) + '">' + esc(s.firstName || 'Name') + '</div>'
+      : x.kind === 'title' ? '<div style="font-size:1.9rem;">' + x.icon + '</div><div style="display:inline-block;background:rgba(245,158,11,.2);border:1.5px solid #f59e0b;color:#fde68a;border-radius:999px;padding:2px 10px;font-weight:900;font-size:.74rem;margin:2px 0;">' + esc(x.name) + '</div>'
+      : x.kind === 'pack' ? '<img src="bamboozle/memes/' + x.animal + '_celebrate.webp" alt="" style="width:64px;height:64px;object-fit:contain;" onerror="this.outerHTML=\'<div style=&quot;font-size:2.3rem;&quot;>' + x.icon + '</div>\'">'
+      : '<div style="font-size:2.2rem;">' + x.icon + '</div>';
+    var actions = '';
+    if (x.kind === 'sound') actions += btn('▶ Play', "ClassroomStore.ui.previewSound('" + x.id + "')", 'ghost') + ' ';
+    if (owned) actions += wearing ? btn('✓ On (Remove)', "ClassroomStore.ui.equip('" + x.kind + "','')", 'ok') : btn('Equip', "ClassroomStore.ui.equip('" + x.kind + "','" + x.id + "')");
+    else if (String(x.id).indexOf('set-') === 0) actions += '<span style="font-size:.72rem;color:#94a3b8;">Complete costume set</span>';
+    else actions += btn(can ? '🪙 Buy ' + price : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyExtra('" + x.id + "')", 'gold', !can);
+    return '<div class="cs-avcard" style="padding:14px 10px;--rc:' + (RARITY_COLOR[x.rarity] || '#64748b') + ';">' +
+      '<div>' + pic + '<div style="font-weight:900;font-size:.84rem;margin-top:4px;color:#f8fafc;">' + esc(x.name) + '</div>' +
+      '<div style="font-size:.66rem;font-weight:800;color:' + (RARITY_COLOR[x.rarity] || '#94a3b8') + ';text-transform:uppercase;">' + esc(RARITY_NAME[x.rarity] || x.rarity) + '</div>' +
+      '<div style="font-size:.72rem;color:#94a3b8;margin:4px 0 8px;min-height:2em;">' + esc(x.desc || '') + '</div></div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">' + actions + '</div></div>';
   }
 
-  /** The four kind cards shown on the teacher's Mystery Boxes screen. */
+  function renderExtrasPane(s, bal) {
+    var C = CCo();
+    if (!C) return '<div class="cs-glass-card" style="text-align:center;">Titles &amp; Sounds are loading…</div>';
+    var eq = equippedExtras(s.id), K = C.KINDS;
+    var chips = Object.keys(K).map(function (k) {
+      var on = extraKind === k;
+      return '<button type="button" class="cs-avchip' + (on ? ' on' : '') + '" onclick="ClassroomStore.ui.extraKind(\'' + k + '\')">' + K[k].icon + ' ' + K[k].label + '</button>';
+    }).join('');
+    var list = C.ofKind(extraKind).slice();
+    if (extraKind === 'title') list = setTitleItems(s.id).concat(list);
+    list.sort(function (a, b) { var o = { common: 0, rare: 1, epic: 2, legendary: 3, mythic: 4 }; return (o[a.rarity] - o[b.rarity]) || a.name.localeCompare(b.name); });
+    var note = extraKind === 'sound' ? '🔊 Victory sounds play on the Class Board when your name is picked or awarded XP.'
+      : extraKind === 'title' ? '🏷️ Titles appear under your name on the Class Board.'
+      : extraKind === 'pack' ? '🦊 Animal stickers react on your Class Board card.'
+      : '🖼️ Name plates style your Class Board card.';
+    var summary = '<div class="cs-glass-card" style="padding:11px 14px;margin-bottom:10px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-size:.82rem;">' +
+      '<b style="color:#38bdf8;">Active Board Flair:</b>' +
+      '<span>🏷️ ' + (eq.title ? '<b style="color:#fde047;">' + esc(eq.title.name) + '</b>' : '<i style="color:#94a3b8;">None</i>') + '</span>' +
+      '<span>🔊 ' + (eq.sound ? '<b style="color:#34d399;">' + esc(eq.sound.name) + '</b>' : '<i style="color:#94a3b8;">None</i>') + '</span>' +
+      '<span>🦊 ' + (eq.pack ? '<b>' + esc(eq.pack.name) + '</b>' : '<i style="color:#94a3b8;">None</i>') + '</span>' +
+      '<span>🖼️ ' + (eq.plate ? '<b>' + esc(eq.plate.name) + '</b>' : '<i style="color:#94a3b8;">Plain</i>') + '</span></div>';
+    return summary + '<div class="cs-avchips">' + chips + '</div><div style="font-size:.8rem;color:#94a3b8;margin-bottom:10px;">' + note + '</div>' +
+      '<div class="cs-avgrid" style="grid-template-columns:repeat(auto-fill,minmax(168px,1fr));">' + list.map(function (x) { return extraCard(s, x, bal); }).join('') + '</div>';
+  }
+
+  function avatarStudioHtml(s, bal) {
+    if (!monstersHidden()) {
+      var listM = shopItems(s.id), lvlM = levelOf(s.id);
+      return shelvesHtml(listM, bal, lvlM);
+    }
+    var P = PA();
+    if (!P || !P.storeItemIds) return '<div class="cs-glass-card" style="text-align:center;padding:30px;">Loading Avatar Studio…</div>';
+    if (P.on && !P.on() && P.load) P.load();
+    var items = avItems(s.id);
+    var wearing = P.wearingOf ? P.wearingOf(s.id) : {};
+    var st = P.styleOf ? P.styleOf(s.id) : { skin: 'auto', tee: '#22c55e', stance: 'stand', gender: 'boy' };
+    var pLvl = P.pupilLevel ? P.pupilLevel(s.id) : levelOf(s.id);
+    if (avTryId && !items.some(function (x) { return x.id === avTryId; })) avTryId = '';
+    var tryX = avTryId ? P.itemInfo(avTryId) : null;
+    var tryState = tryX ? avState(s.id, tryX.id) : '';
+
+    // Left Stage: Emotions, Stance, Girl/Boy Identity, Skin & Tee Swatches, Active Wearing Chips, Try-On Action
+    var emoRow = '<div class="cs-ctrl-row">' +
+      [['smile', '🙂 Smile'], ['laugh', '😄 Laugh'], ['wink', '😉 Wink']].map(function (e) {
+        return '<button type="button" class="cs-pose-btn' + (avEmotion === e[0] ? ' on' : '') + '" onclick="ClassroomStore.ui.avEmotion(\'' + e[0] + '\')">' + e[1] + '</button>';
+      }).join('') + '</div>';
+
+    var stanceList = (P.stances && P.stances.length) ? P.stances : [{ id: 'stand', label: '🧍 Stand' }, { id: 'wave', label: '👋 Wave' }, { id: 'cheer', label: '🎉 Cheer' }];
+    var stanceRow = '<div class="cs-ctrl-row">' + stanceList.map(function (sp) {
+      return '<button type="button" class="cs-pose-btn' + (st.stance === sp.id ? ' on' : '') + '" onclick="ClassroomStore.ui.avSetStyle(\'stance\',\'' + sp.id + '\')">' + sp.label + '</button>';
+    }).join('') + '</div>';
+
+    var idRow = '<div class="cs-ctrl-row">' +
+      '<button type="button" class="cs-pose-btn id-girl' + (st.gender === 'girl' ? ' on' : '') + '" onclick="ClassroomStore.ui.avSetStyle(\'gender\',\'girl\')" title="Girl body shape &amp; fit">👧 Girl</button>' +
+      '<button type="button" class="cs-pose-btn id-boy' + (st.gender === 'boy' ? ' on' : '') + '" onclick="ClassroomStore.ui.avSetStyle(\'gender\',\'boy\')" title="Boy body shape &amp; fit">👦 Boy</button>' +
+      '<button type="button" class="cs-pose-btn' + (avColorsOpen ? ' on' : '') + '" onclick="ClassroomStore.ui.avToggleColors()">🎨 Skin &amp; Tee</button>' +
+      '<button type="button" class="cs-pose-btn" onclick="ClassroomStore.ui.avSurprise()" title="Random outfit from unlocked closet">🎲 Surprise</button>' +
+      '<button type="button" class="cs-pose-btn" onclick="ClassroomStore.ui.avReset()" title="Plain tee &amp; starter bottoms">🧹 Plain</button>' +
+      '</div>';
+
+    var colorTray = '';
+    if (avColorsOpen) {
+      var tones = P.tones || [{ id: 'auto', label: 'Match Face' }, { id: 'light', label: 'Light' }, { id: 'medium', label: 'Medium' }, { id: 'tan', label: 'Tan' }, { id: 'dark', label: 'Deep' }];
+      var tees = P.tees || ['#ef4444', '#f97316', '#facc15', '#22c55e', '#14b8a6', '#3b82f6', '#8b5cf6', '#ec4899'];
+      colorTray = '<div class="cs-swtray">' +
+        '<div class="cs-swtray-lbl">Skin Tone</div><div class="cs-swrow">' +
+        tones.map(function (t) {
+          var bg = P.toneBg ? P.toneBg(t.id) : '#d08e66';
+          var on = (st.skin || 'auto') === t.id;
+          return '<button type="button" class="cs-swatch round' + (on ? ' on' : '') + '" style="background:' + bg + ';" title="' + esc(t.label) + '" onclick="ClassroomStore.ui.avSetStyle(\'skin\',\'' + t.id + '\')"></button>';
+        }).join('') + '</div>' +
+        '<div class="cs-swtray-lbl">Shirt Colour (shown when no jacket/costume is worn)</div><div class="cs-swrow" style="margin-bottom:0;">' +
+        tees.map(function (hex) {
+          var on = String(st.tee || '').toLowerCase() === String(hex).toLowerCase();
+          return '<button type="button" class="cs-swatch' + (on ? ' on' : '') + '" style="background:' + hex + ';" title="' + esc(hex) + '" onclick="ClassroomStore.ui.avSetStyle(\'tee\',\'' + hex + '\')"></button>';
+        }).join('') + '</div></div>';
+    }
+
+    var wearSlots = ['clothing', 'legs', 'shoes', 'hat', 'wig', 'glasses', 'backpack', 'neck', 'accessory', 'aura', 'pet'];
+    var wearChips = [];
+    wearSlots.forEach(function (sl) {
+      var iid = wearing[sl];
+      if (!iid || iid === 'none') return;
+      var inf = P.itemInfo(iid);
+      wearChips.push('<span class="cs-wchip">' + esc(inf ? inf.name : iid) + '<button type="button" class="cs-wchip-x" title="Take off" onclick="ClassroomStore.ui.avWear(\'' + esc(iid) + '\',false,\'' + sl + '\')">✕</button></span>');
+    });
+    var wearingHtml = '<div class="cs-wearing-box"><div class="cs-swtray-lbl" style="margin-bottom:2px;">Wearing Now (' + wearChips.length + ')</div>' +
+      (wearChips.length ? '<div class="cs-wchips">' + wearChips.join('') + '</div>' : '<div style="font-size:.76rem;color:#94a3b8;">Plain shirt &amp; jeans — tap any item on the right!</div>') + '</div>';
+
+    var tryBar = '';
+    if (tryX) {
+      var p2 = avPrice(tryX), isWorn = wearing[tryX.slot] === tryX.id, actBtn = '';
+      if (tryState === 'shop') {
+        actBtn = btn(bal >= p2 ? '🪙 Buy & Wear (' + p2 + ')' : 'Need ' + (p2 - bal) + ' more coins', "ClassroomStore.ui.avBuy('" + tryX.id + "')", 'gold', bal < p2);
+      } else {
+        actBtn = isWorn ? btn('✕ Take Off', "ClassroomStore.ui.avWear('" + tryX.id + "',false,'" + tryX.slot + "')", 'ghost') : btn('👕 Wear Now', "ClassroomStore.ui.avWear('" + tryX.id + "',true,'" + tryX.slot + "')", 'ok');
+      }
+      tryBar = '<div class="cs-avbar"><div class="cs-avbar-name">👀 Trying on: ' + esc(tryX.name) + '</div>' +
+        '<div style="font-size:.76rem;color:#cbd5e1;margin:3px 0 8px;">' + esc(RARITY_NAME[tryX.rarity] || 'Everyday') +
+        (tryX.free ? ' · Free Starter' : tryState === 'level' ? ' · Unlocked by your Level!' : tryState === 'have' ? ' · In your Closet' : ' · ' + p2 + ' coins') + '</div>' +
+        '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">' + actBtn + btn('Done', "ClassroomStore.ui.avTry('')", 'ghost') + '</div></div>';
+    }
+
+    // Right Pane: Ownership filter + Slot chips + Item Grid (or Extras Pane)
+    var slotChips = AV_SLOTS.filter(function (c) {
+      if (c[0] === 'all') return true;
+      if (c[0] === 'extras') return !isOff('tabs', 'extras');
+      return items.some(function (x) { return x.slot === c[0]; });
+    }).map(function (c) {
+      return '<button type="button" class="cs-avchip' + (avSlot === c[0] ? ' on' : '') + '" onclick="ClassroomStore.ui.avSlot(\'' + c[0] + '\')">' + c[1] + '</button>';
+    }).join('');
+
+    var rightBody = '';
+    if (avSlot === 'extras') {
+      rightBody = renderExtrasPane(s, bal);
+    } else {
+      var readyCount = items.filter(function (x) { return avState(s.id, x.id) !== 'shop'; }).length;
+      var shopCount = items.length - readyCount;
+      var ownPills = '<div class="cs-avFilterRow">' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+          [['all', '✨ All (' + items.length + ')'], ['mine', '🎒 Ready to Wear (' + readyCount + ')'], ['shop', '🛒 Buy with Coins (' + shopCount + ')']].map(function (f) {
+            return '<button type="button" class="cs-pose-btn' + (avOwnFilter === f[0] ? ' on' : '') + '" onclick="ClassroomStore.ui.avOwnFilter(\'' + f[0] + '\')">' + f[1] + '</button>';
+          }).join('') +
+        '</div>' +
+        '<div style="font-size:.78rem;color:#94a3b8;font-weight:700;">Tap picture to preview · tap button to wear or buy</div></div>';
+
+      var shown = items.filter(function (x) {
+        if (avSlot !== 'all' && x.slot !== avSlot) return false;
+        var stX = avState(s.id, x.id);
+        if (avOwnFilter === 'mine') return stX !== 'shop';
+        if (avOwnFilter === 'shop') return stX === 'shop';
+        return true;
+      });
+      shown.sort(function (a, b) {
+        var wa = wearing[a.slot] === a.id ? -1 : 0, wb = wearing[b.slot] === b.id ? -1 : 0;
+        if (wa !== wb) return wa - wb;
+        var sa = AV_STATE_ORDER[avState(s.id, a.id)] || 0, sb = AV_STATE_ORDER[avState(s.id, b.id)] || 0;
+        return (sa - sb) || (avPrice(a) - avPrice(b)) || a.name.localeCompare(b.name);
+      });
+
+      var grid = shown.map(function (x) {
+        var stX = avState(s.id, x.id), price = avPrice(x), isOn = wearing[x.slot] === x.id;
+        var badgeRight = x.free ? '<span class="cs-free-tag">Starter</span>'
+          : stX === 'level' ? '<span class="cs-free-tag">Lv Unlock</span>'
+          : (stX === 'shop' && P.levelFor && P.levelFor(x.id) && x.slot !== 'pet' ? '<span class="cs-free-tag" style="background:rgba(56,189,248,.16);color:#bae6fd;border-color:rgba(56,189,248,.4);">Free Lv ' + P.levelFor(x.id) + '</span>' : '');
+        var actHtml = '';
+        if (stX !== 'shop') {
+          actHtml = isOn
+            ? '<button type="button" class="cs-avcard-act on" onclick="ClassroomStore.ui.avWear(\'' + esc(x.id) + '\',false,\'' + x.slot + '\')">✓ Wearing</button>'
+            : '<button type="button" class="cs-avcard-act wear" onclick="ClassroomStore.ui.avWear(\'' + esc(x.id) + '\',true,\'' + x.slot + '\')">👕 Wear</button>';
+        } else {
+          var canAfford = bal >= price;
+          actHtml = '<button type="button" class="cs-avcard-act ' + (canAfford ? 'buy' : 'short') + '" onclick="ClassroomStore.ui.avBuy(\'' + esc(x.id) + '\')">' +
+            (canAfford ? '🪙 Buy ' + price : '🪙 ' + price + ' (need ' + (price - bal) + ')') + '</button>';
+        }
+        return '<div class="cs-avcard' + (avTryId === x.id ? ' sel' : '') + '" style="--rc:' + (RARITY_COLOR[x.rarity] || '#64748b') + ';">' +
+          '<span class="cs-rar">' + esc(RARITY_NAME[x.rarity] || 'Everyday') + '</span>' + badgeRight +
+          '<button type="button" class="cs-avcard-pic" onclick="ClassroomStore.ui.avTry(\'' + esc(x.id) + '\')" title="Preview on ' + firstName(s) + '">' +
+            '<img src="' + esc(avTrimmed[x.pic] || x.pic) + '" alt="" loading="lazy" onload="ClassroomStore.ui.avTrim(this)" onerror="this.style.visibility=\'hidden\'">' +
+            '<b>' + esc(x.name) + '</b></button>' +
+          actHtml + '</div>';
+      }).join('');
+
+      rightBody = ownPills + (shown.length ? '<div class="cs-avgrid">' + grid + '</div>' : '<div class="cs-glass-card" style="text-align:center;padding:28px;color:#94a3b8;">No items in this filter right now.</div>');
+    }
+
+    clearTimeout(avPrevTimer);
+    avPrevTimer = setTimeout(function () { avRefreshPreview(s.id); }, 0);
+
+    return '<div class="cs-avwrap">' +
+      '<div class="cs-avstage">' +
+        '<div class="cs-avstage-hd"><span class="cs-avstage-nm">' + firstName(s) + '</span><div style="display:flex;gap:6px;align-items:center;"><span class="cs-lvl-pill">⭐ Lv ' + pLvl + '</span>' + coinPill(bal) + '</div></div>' +
+        '<div class="cs-avstage-in"><img id="cs-av-preview" src="' + esc(P.pictureFor(s.id)) + '" alt="' + firstName(s) + '"><i></i></div>' +
+        tryBar + emoRow + stanceRow + idRow + colorTray + wearingHtml +
+      '</div>' +
+      '<div class="cs-avlist"><div class="cs-avchips">' + slotChips + '</div>' + rightBody + '</div>' +
+    '</div>';
+  }
+
+  function prizesModeHtml(s, bal) {
+    var d = data(), cfg = d.config, w = wallet(s.id);
+    var mine = store.getMysteryBoxes ? store.getMysteryBoxes(s.id, false) : [];
+    var out = '';
+
+    // 1. Unopened Mystery Boxes banner (if any)
+    if (mine.length) {
+      out += card(h2('🎁 Unopened Mystery Boxes (' + mine.length + ')', 'Tap a box to open your surprise right now!') +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' + mine.map(function (b) {
+          var bi = BOX_INFO[b.boxTier] || BOX_INFO.WOODEN;
+          return btn(bi.icon + ' Open ' + bi.name, "ClassroomStore.ui.openBox('" + b.id + "')", 'gold');
+        }).join('') + '</div>', 'border-color:#f59e0b;');
+    }
+
+    // 2. Mystery Boxes Shelf
+    if (!isOff('tabs', 'boxes')) {
+      var visibleTiers = TIERS.filter(function (t) { return !isOff('boxes', t); });
+      if (visibleTiers.length) {
+        out += '<div style="margin-bottom:18px;">' +
+          '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">' +
+            '<div style="font:800 1.15rem Fraunces,Georgia,serif;color:#f8fafc;">🎁 Mystery Boxes</div>' +
+            '<div style="font-size:.8rem;color:#94a3b8;">Every box guarantees a non-duplicate item, board flair, free class pass, or coin jackpot!</div>' +
+          '</div>' +
+          '<div class="cs-prize-grid">' + visibleTiers.map(function (t) {
+            var price = cfg.boxPrices[t], can = bal >= price, bi = BOX_INFO[t];
+            return '<div class="cs-prize-card" style="border-color:' + bi.color + ';">' +
+              '<div><div style="font-size:2.7rem;line-height:1.1;">' + (root.MysteryBoxArt ? root.MysteryBoxArt(t) : bi.icon) + '</div>' +
+              '<div style="font-weight:900;font-size:1.02rem;color:' + bi.text + ';margin-top:4px;">' + bi.name + '</div>' +
+              '<div style="font-size:.76rem;color:#cbd5e1;margin:4px 0 10px;">' + bi.blurb + '</div></div>' +
+              '<div><div style="margin-bottom:8px;">' + coinPill(price) + '</div>' +
+              btn(can ? '🪙 Buy ' + bi.name : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyBox('" + t + "')", can ? 'gold' : 'ghost', !can) + '</div></div>';
+          }).join('') + '</div></div>';
+      }
+    }
+
+    // 3. Shared Class Party Fund (compact dark Cyber-Glass banner)
+    if (!isOff('tabs', 'party')) {
+      var cid = classOfStudent(s.id), f = fundFor(cid);
+      if (f && f.goal) {
+        var pct = Math.min(100, Math.round(f.raised / f.goal * 100)), full = f.raised >= f.goal;
+        var donors = Object.keys(f.donors || {}).map(function (id) { return { id: id, n: f.donors[id] }; }).sort(function (a, b) { return b.n - a.n; }).slice(0, 5);
+        out += card('<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">' +
+          '<div style="flex:1;min-width:220px;"><div style="font-weight:900;font-size:1.08rem;color:#fde047;">' + (full ? '🎊 ' : '🎉 ') + 'Class Party Goal: ' + esc(f.name) + '</div>' +
+          '<div style="margin:8px 0;background:#0b1222;border-radius:999px;height:18px;overflow:hidden;border:1.5px solid #334155;"><div style="width:' + pct + '%;height:100%;background:linear-gradient(90deg,#10b981,#f59e0b,#f43f5e);transition:width .4s;"></div></div>' +
+          '<div style="font-size:.82rem;font-weight:800;color:#e5edff;">' + f.raised + ' / ' + f.goal + ' coins (' + pct + '%)' + (donors.length ? ' · Top helpers: ' + donors.map(function (dn) { return esc(studentName(dn.id).split(' ')[0]) + ' (' + dn.n + ')'; }).join(', ') : '') + '</div></div>' +
+          (full ? '<span class="cs-coin-pill" style="font-size:.9rem;padding:6px 14px;">🎊 GOAL REACHED!</span>'
+            : '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + [5, 10, 25].map(function (n) { return btn('Donate ' + n + ' 🪙', 'ClassroomStore.ui.donate(' + n + ')', 'ok', bal < n); }).join('') + '</div>') +
+        '</div>');
+      }
+    }
+
+    // 4. Real Classroom Prizes & Privileges
+    if (!isOff('tabs', 'rewards')) {
+      var activePrivs = cfg.privileges.filter(function (p) { return p.active; });
+      out += '<div style="margin-top:6px;">' +
+        '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">' +
+          '<div style="font:800 1.15rem Fraunces,Georgia,serif;color:#f8fafc;">⭐ Real Prizes &amp; Classroom Passes</div>' +
+          '<div style="font-size:.8rem;color:#94a3b8;">Your teacher approves each request — if declined, coins return automatically.</div>' +
+        '</div>' +
+        '<div class="cs-prize-grid">' + activePrivs.map(function (p) {
+          var used = usedThisWeek(s.id, p.id), left = p.weeklyLimit ? Math.max(0, p.weeklyLimit - used) : 99, can = bal >= p.price && left > 0;
+          var visual = p.image
+            ? '<div style="position:relative;height:132px;margin:-4px -4px 8px;border-radius:12px;overflow:hidden;background:#060911;"><img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" style="width:100%;height:100%;object-fit:cover;display:block;">' +
+              (p.badge ? '<span style="position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:.64rem;font-weight:900;padding:2px 8px;border-radius:999px;">' + esc(p.badge) + '</span>' : '') + '</div>'
+            : '<div style="font-size:2.4rem;margin:6px 0;">' + esc(p.icon) + '</div>';
+          return '<div class="cs-prize-card' + (p.image ? ' real' : '') + '"><div>' + visual +
+            '<div style="font-weight:900;margin:4px 0 6px;color:#f8fafc;font-size:.9rem;line-height:1.25;">' + esc(p.name) + '</div></div>' +
+            '<div>' + coinPill(p.price) +
+            '<div style="font-size:.72rem;color:#94a3b8;margin:5px 0;">' + (p.weeklyLimit ? left + ' left this week' : 'Unlimited') + '</div>' +
+            btn(left <= 0 ? 'Used this week' : (bal < p.price ? 'Need ' + (p.price - bal) + ' more' : '🙋 Ask Teacher'), "ClassroomStore.ui.request('" + p.id + "')", can ? 'ok' : 'ghost', !can) + '</div></div>';
+        }).join('') + '</div></div>';
+    }
+
+    // 5. Collapsible Recent Orders & Coin Ledger
+    var reqs = d.requests.filter(function (r) { return r.studentId === s.id; });
+    var buys = d.purchases.filter(function (p) { return p.studentId === s.id; });
+    var STAT = { pending: '⏳ Waiting for teacher', approved: '✅ Approved!', declined: '↩️ Declined (refunded)', used: '✔️ Completed' };
+    out += '<details class="cs-fold"><summary><span>🧾 ' + firstName(s) + '’s Recent Orders, Requests &amp; Coin History (' + (reqs.length + buys.length) + ')</span></summary>' +
+      '<div style="padding:0 18px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;">' +
+        '<div><div style="font-weight:800;font-size:.82rem;color:#38bdf8;margin-bottom:6px;">Reward Requests</div>' +
+          (reqs.length ? reqs.slice(0, 10).map(function (r) { return '<div class="cs-row-line"><span>' + esc(r.icon) + '</span><span style="flex:1;font-size:.83rem;">' + esc(r.name) + '</span><b style="font-size:.76rem;color:#fde047;">' + (STAT[r.status] || r.status) + '</b></div>'; }).join('') : '<div style="font-size:.8rem;color:#94a3b8;">No requests yet.</div>') + '</div>' +
+        '<div><div style="font-weight:800;font-size:.82rem;color:#34d399;margin-bottom:6px;">Items Bought</div>' +
+          (buys.length ? buys.slice(0, 10).map(function (p) { return '<div class="cs-row-line"><span>' + esc(p.icon) + '</span><span style="flex:1;font-size:.83rem;">' + esc(p.name) + '</span>' + coinPill(p.price) + (p.status === 'refunded' ? '<i style="font-size:.72rem;color:#94a3b8;">refunded</i>' : '') + '</div>'; }).join('') : '<div style="font-size:.8rem;color:#94a3b8;">Nothing bought yet.</div>') + '</div>' +
+        '<div><div style="font-weight:800;font-size:.82rem;color:#fbbf24;margin-bottom:6px;">Coin Ledger</div>' +
+          (w.ledger.length ? w.ledger.slice(0, 10).map(function (l) { return '<div class="cs-row-line"><span style="flex:1;font-size:.8rem;color:#cbd5e1;">' + esc(l.reason) + '</span><b style="color:' + (l.delta >= 0 ? '#4ade80' : '#fb7185') + ';">' + (l.delta >= 0 ? '+' : '') + l.delta + '</b></div>'; }).join('') : '<div style="font-size:.8rem;color:#94a3b8;">1 coin earned per ' + cfg.coinsPerXp + ' XP.</div>') + '</div>' +
+      '</div></details>';
+
+    return out;
+  }
+
   root.renderBoxTierCardsHtml = function () {
     var cfg = data().config;
     function pct(t, k) { var f = BOX_ODDS[t].filter(function (r) { return r[0] === k; })[0]; return f ? f[1] : 0; }
@@ -1202,65 +1431,10 @@
     }).join('') + '</div>';
   };
 
-  var extraKind = 'sound';
-  function plateStyle(x) { return (x && x.css) || ''; }
-  function extraCard(s, x, bal) {
-    var owned = extraOwned(s.id, x.id), eq = equippedExtras(s.id)[x.kind], wearing = eq && eq.id === x.id, price = extraPrice(x), can = bal >= price;
-    var pic = x.kind === 'plate' ? '<div style="height:54px;border-radius:12px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.9rem;' + plateStyle(x) + '">' + esc(s.firstName || 'Name') + '</div>'
-      : x.kind === 'title' ? '<div style="font-size:2rem;">' + x.icon + '</div><div style="display:inline-block;background:#fef3c7;border:2px solid #f59e0b;color:#78350f;border-radius:999px;padding:1px 10px;font-weight:900;font-size:.76rem;margin:2px 0;">' + esc(x.name) + '</div>'
-      : x.kind === 'pack' ? '<img src="bamboozle/memes/' + x.animal + '_celebrate.webp" alt="" style="width:64px;height:64px;object-fit:contain;" onerror="this.outerHTML=\'<div style=&quot;font-size:2.4rem;&quot;>' + x.icon + '</div>\'">'
-      : '<div style="font-size:2.2rem;">' + x.icon + '</div>';
-    var actions = '';
-    if (x.kind === 'sound') actions += btn('▶ Listen', "ClassroomStore.ui.previewSound('" + x.id + "')", 'ghost') + ' ';
-    if (owned) actions += wearing ? '<span style="font-weight:900;color:#16a34a;font-size:.8rem;">✓ Wearing</span>' : btn('Wear it', "ClassroomStore.ui.equip('" + x.kind + "','" + x.id + "')");
-    else if (String(x.id).indexOf('set-') === 0) actions += '<span style="font-size:.72rem;color:var(--text-muted,#64748b);">Finish the costume set</span>';
-    else actions += btn(can ? 'Buy' : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyExtra('" + x.id + "')", 'ok', !can);
-    return '<div style="background:var(--bg-surface,#fff);border:' + (wearing ? '2px solid #16a34a' : '1px solid var(--border-light,#e2e8f0)') + ';border-radius:16px;padding:10px;text-align:center;">' + pic +
-      '<div style="font-weight:900;font-size:.84rem;margin-top:2px;color:var(--text-main,#0f172a);">' + esc(x.name) + '</div>' +
-      '<div style="font-size:.66rem;font-weight:800;color:' + (RARITY_COLOR[x.rarity] || '#64748b') + ';text-transform:uppercase;">' + esc(x.rarity) + '</div>' +
-      '<div style="font-size:.72rem;color:var(--text-muted,#64748b);margin:3px 0;min-height:2.2em;">' + esc(x.desc || '') + '</div>' +
-      (owned || String(x.id).indexOf('set-') === 0 ? '' : '<div style="margin:4px 0;">' + coinPill(price) + '</div>') + '<div>' + actions + '</div></div>';
-  }
-  function renderExtrasTab(s, bal) {
-    var C = CCo();
-    if (!C) return '<div style="padding:30px;text-align:center;color:var(--text-muted,#64748b);">Extras are not loaded.</div>';
-    var eq = equippedExtras(s.id), K = C.KINDS;
-    var look = '<div style="background:linear-gradient(135deg,#ede9fe,#e0f2fe);border:1px solid #c4b5fd;border-radius:16px;padding:12px 14px;margin-bottom:14px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;">' +
-      '<div style="font-weight:900;color:#4c1d95;">Your look</div>' +
-      '<div style="font-size:.85rem;color:#1e1b4b;">🏷️ ' + (eq.title ? '<b>' + esc(eq.title.name) + '</b>' : '<i>no title</i>') + '</div>' +
-      '<div style="font-size:.85rem;color:#1e1b4b;">🦊 ' + (eq.pack ? '<b>' + esc(eq.pack.name) + '</b>' : '<i>no animal</i>') + '</div>' +
-      '<div style="font-size:.85rem;color:#1e1b4b;">🔊 ' + (eq.sound ? '<b>' + esc(eq.sound.name) + '</b> ' + btn('▶', "ClassroomStore.ui.previewSound('" + eq.sound.id + "')", 'ghost') : '<i>no sound</i>') + '</div>' +
-      '<div style="font-size:.85rem;color:#1e1b4b;">🖼️ ' + (eq.plate ? '<b>' + esc(eq.plate.name) + '</b>' : '<i>plain card</i>') + '</div></div>';
-    var chips = Object.keys(K).map(function (k) {
-      var on = extraKind === k;
-      return '<button type="button" onclick="ClassroomStore.ui.extraKind(\'' + k + '\')" style="padding:6px 13px;border-radius:999px;font-size:.8rem;font-weight:800;cursor:pointer;border:1px solid var(--border-light,#cbd5e1);background:' + (on ? '#0f172a' : 'transparent') + ';color:' + (on ? '#fff' : 'var(--text-main,#0f172a)') + ';">' + K[k].icon + ' ' + K[k].label + '</button>';
-    }).join(' ');
-    var list = C.ofKind(extraKind).slice();
-    if (extraKind === 'title') list = setTitleItems(s.id).concat(list);
-    list.sort(function (a, b) { var o = { common: 0, rare: 1, epic: 2, legendary: 3, mythic: 4 }; return (o[a.rarity] - o[b.rarity]) || a.name.localeCompare(b.name); });
-    var note = extraKind === 'sound' ? 'A victory sound plays on the board when your name is picked or you get a star.'
-      : extraKind === 'title' ? 'Your title shows next to your name. Finish a costume set to earn a special title for free.'
-      : extraKind === 'pack' ? 'Your animal is the sticker that reacts when you play.'
-      : 'Your name plate decorates your card on the Class Board.';
-    return look + '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">' + chips + '</div>' +
-      '<div style="font-size:.82rem;color:var(--text-muted,#64748b);margin-bottom:10px;">' + note + '</div>' +
-      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;">' + list.map(function (x) { return extraCard(s, x, bal); }).join('') + '</div>';
-  }
-  function renderPartyTab(s, bal) {
-    var cid = classOfStudent(s.id), f = fundFor(cid);
-    if (!f || !f.goal) return card('<div style="text-align:center;padding:20px;"><div style="font-size:3rem;">🎉</div><div style="font-weight:900;font-size:1.1rem;color:var(--text-main,#0f172a);">No class party fund yet</div><div style="font-size:.85rem;color:var(--text-muted,#64748b);margin-top:6px;">Ask your teacher to start one. Then everyone can give coins to reach the goal together!</div></div>');
-    var pct = Math.min(100, Math.round(f.raised / f.goal * 100)), full = f.raised >= f.goal;
-    var donors = Object.keys(f.donors || {}).map(function (id) { return { id: id, n: f.donors[id] }; }).sort(function (a, b) { return b.n - a.n; }).slice(0, 6);
-    return card('<div style="text-align:center;"><div style="font-size:2.6rem;">' + (full ? '🎊' : '🎉') + '</div><div style="font-weight:900;font-size:1.25rem;color:var(--text-main,#0f172a);">' + esc(f.name) + '</div>' +
-      '<div style="margin:12px auto;max-width:520px;background:#e2e8f0;border-radius:999px;height:26px;overflow:hidden;border:2px solid #0f172a;"><div style="width:' + pct + '%;height:100%;background:linear-gradient(90deg,#22c55e,#facc15,#f97316);transition:width .5s;"></div></div>' +
-      '<div style="font-weight:900;color:var(--text-main,#0f172a);">' + f.raised + ' / ' + f.goal + ' coins' + (full ? ' · GOAL REACHED! 🎉' : '') + '</div>' +
-      (full ? '<div style="font-size:.85rem;color:#15803d;font-weight:800;margin-top:6px;">The class did it together! Your teacher will plan the party.</div>' :
-        '<div style="margin-top:12px;font-size:.82rem;color:var(--text-muted,#64748b);">You have ' + bal + ' coins. Give some to help the class:</div><div style="margin-top:8px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">' +
-        [5, 10, 25].map(function (n) { return btn('Give ' + n, "ClassroomStore.ui.donate(" + n + ")", 'ok', bal < n); }).join('') + '</div>') + '</div>' +
-      (donors.length ? '<div style="margin-top:14px;border-top:1px solid var(--border-light,#e2e8f0);padding-top:10px;"><div style="font-weight:800;font-size:.82rem;margin-bottom:6px;color:var(--text-main,#0f172a);">⭐ Biggest helpers</div>' + donors.map(function (d) { return '<div style="display:flex;justify-content:space-between;font-size:.84rem;padding:2px 0;color:var(--text-main,#0f172a);"><span>' + esc(studentName(d.id)) + '</span><b>' + d.n + ' 🪙</b></div>'; }).join('') + '</div>' : ''));
-  }
-
   // ---------------------------------------------------------------- UI actions
+  var studioModeHold = false;
+  var teacherGroup = 'approvals', teacherTab = 'prices', histPupil = 'all', histKind = 'buys';
+
   function activeStudentId() {
     var role = store.getRole ? store.getRole() : 'teacher';
     if (role !== 'student' && shopStudentId) return shopStudentId;
@@ -1272,15 +1446,94 @@
     else if (root.confirm && root.confirm(title + '\n' + message)) fn();
   }
   var ui = {
-    toggleDrawer: function () { teacherDrawerOpen = !teacherDrawerOpen; rerender(); },
-    openDrawer: function () { teacherDrawerOpen = true; rerender(); },
-    pickStudent: function (sid) {
-      shopStudentId = sid; avTryId = ''; if (store.setActiveStudent) store.setActiveStudent(sid); rerender();
-      // jump to the pupil's shop so the try-on picture is on screen
-      setTimeout(function () { var el = root.document && (document.querySelector('.cs-pshop .cs-coinbar') || document.querySelector('.cs-avwrap')); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 60);
+    openStudio: function (opts) {
+      opts = opts || {};
+      try {
+        var doc = root.document;
+        if (doc) {
+          ['pa-ov', 'cb-pop'].forEach(function (id) { var el = doc.getElementById(id); if (el) el.remove(); });
+          doc.querySelectorAll('.cb-flagm,.cb-grp').forEach(function (el) { el.remove(); });
+        }
+      } catch (e) {}
+      try { if (root.closeModal) root.closeModal('modal-student-detail'); } catch (e2) {}
+      if (opts.cls && opts.cls.id && store.setActiveClass) store.setActiveClass(opts.cls.id);
+      if (opts.pick) {
+        var pStu = store.getStudent ? store.getStudent(opts.pick) : null;
+        if (pStu && pStu.classId && store.setActiveClass) {
+          var curC = store.getActiveClass ? store.getActiveClass() : null;
+          if (!curC || curC.id !== pStu.classId) store.setActiveClass(pStu.classId);
+        }
+        shopStudentId = opts.pick;
+        if (store.setActiveStudent) store.setActiveStudent(opts.pick);
+      }
+      avTryId = '';
+      avEmotion = 'smile';
+      if (opts.slot) avSlot = opts.slot;
+      var m = opts.mode || (opts.tab === 'review' ? 'teacher' : 'avatar');
+      if (m === 'teacher' && inClassMode()) m = 'avatar';
+      studioMode = m;
+      if (m === 'teacher' && opts.tab === 'review') teacherGroup = 'approvals';
+      studioModeHold = true;
+      var targetView = (m === 'teacher') ? 'store-teacher' : 'store-pupil';
+      if (root.switchView) root.switchView(targetView);
+      else rerender();
     },
-    tab: function (t) { studentTab = t; rerender(); },
-    avSlot: function (k) { avSlot = k; rerender(); },
+    mode: function (m) {
+      if (m === 'teacher' && inClassMode()) m = 'avatar';
+      studioMode = m || 'avatar';
+      studioModeHold = true;
+      rerender();
+    },
+    tGroup: function (g) { teacherGroup = g || 'approvals'; studioMode = 'teacher'; studioModeHold = true; rerender(); },
+    toggleDrawer: function () { studioMode = (studioMode === 'teacher') ? 'avatar' : 'teacher'; studioModeHold = true; rerender(); },
+    openDrawer: function () { if (!inClassMode()) { studioMode = 'teacher'; studioModeHold = true; } rerender(); },
+    pickStudent: function (sid) {
+      var pStu = sid && store.getStudent ? store.getStudent(sid) : null;
+      if (pStu && pStu.classId && store.setActiveClass) {
+        var curC = store.getActiveClass ? store.getActiveClass() : null;
+        if (!curC || curC.id !== pStu.classId) store.setActiveClass(pStu.classId);
+      }
+      shopStudentId = sid; avTryId = ''; avEmotion = 'smile';
+      if (store.setActiveStudent) store.setActiveStudent(sid);
+      studioModeHold = true;
+      rerender();
+    },
+    pick: function (sid) { return ui.pickStudent(sid); },
+    tab: function (t) {
+      studentTab = t;
+      if (t === 'boxes' || t === 'party' || t === 'rewards' || t === 'orders') studioMode = 'prizes';
+      else { studioMode = 'avatar'; if (t === 'extras') avSlot = 'extras'; }
+      studioModeHold = true;
+      rerender();
+    },
+    avSlot: function (k) { avSlot = k; studioModeHold = true; rerender(); },
+    avOwnFilter: function (f) { avOwnFilter = f || 'all'; studioModeHold = true; rerender(); },
+    avEmotion: function (e) {
+      avEmotion = e || 'smile';
+      studioModeHold = true;
+      rerender();
+    },
+    avToggleColors: function () { avColorsOpen = !avColorsOpen; studioModeHold = true; rerender(); },
+    avSetStyle: function (k, v) {
+      var sid = activeStudentId(), P = PA();
+      if (!sid || !P || !P.setStyle) return;
+      var patch = {}; patch[k] = v;
+      if (k === 'stance') avEmotion = 'smile';
+      studioModeHold = true;
+      P.setStyle(sid, patch).then(function () { studioModeHold = true; rerender(); });
+    },
+    avSurprise: function () {
+      var sid = activeStudentId(), P = PA();
+      if (!sid || !P || !P.surpriseMe) return;
+      avTryId = ''; avEmotion = 'smile'; studioModeHold = true;
+      P.surpriseMe(sid).then(function () { notify('🎲 New outfit on!'); studioModeHold = true; rerender(); });
+    },
+    avReset: function () {
+      var sid = activeStudentId(), P = PA();
+      if (!sid || !P || !P.resetLook) return;
+      avTryId = ''; avEmotion = 'smile'; studioModeHold = true;
+      P.resetLook(sid).then(function () { notify('🧹 Back to starter outfit.'); studioModeHold = true; rerender(); });
+    },
     avTrim: function (im) {
       try {
         if (!im || im.__trim || /^data:/.test(im.src)) return;
@@ -1293,7 +1546,7 @@
         for (var y = 0; y < H; y += 2) for (var x = 0; x < W; x += 2) if (d[(y * W + x) * 4 + 3] > 20) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
         if (x1 < 0) return;
         var bw = x1 - x0 + 1, bh = y1 - y0 + 1;
-        if (bw * bh > W * H * 0.45) { avTrimmed[key] = key; return; }      // already fills the picture
+        if (bw * bh > W * H * 0.45) { avTrimmed[key] = key; return; }
         var pad = Math.round(Math.max(bw, bh) * 0.08), side = Math.max(bw, bh) + pad * 2;
         var o = document.createElement('canvas'); o.width = side; o.height = side;
         o.getContext('2d').drawImage(c, x0, y0, bw, bh, Math.round((side - bw) / 2), Math.round((side - bh) / 2), bw, bh);
@@ -1305,64 +1558,76 @@
       var ids = giveTargets(sel ? sel.value : 'class', P.cls, P.students);
       if (!ids.length) { notify('Pick who gets the box', 'error'); return; }
       confirm('Gift a ' + BOX_INFO[tier].name + '?', ids.length + (ids.length === 1 ? ' pupil gets' : ' pupils get') + ' a free box to open in the shop.', 'Gift it', function () {
-        var n = giftBoxes(ids, tier); notify('🎁 Gifted ' + n + ' ' + BOX_INFO[tier].name + (n === 1 ? '' : 'es') + '!'); rerender();
+        var n = giftBoxes(ids, tier); notify('🎁 Gifted ' + n + ' ' + BOX_INFO[tier].name + (n === 1 ? '' : 'es') + '!'); studioModeHold = true; rerender();
       });
     },
-    avTry: function (id) { avTryId = id || ''; rerender(); },
+    avTry: function (id) { avTryId = (avTryId === id ? '' : (id || '')); studioModeHold = true; rerender(); },
     avBuy: function (id) {
       var sid = activeStudentId(), P = PA(), x = P && P.itemInfo ? P.itemInfo(id) : null; if (!sid || !x) return;
-      confirm('Buy ' + x.name + '?', 'It costs ' + avPrice(x) + ' coins. You have ' + balance(sid) + '.', 'Buy', function () {
+      var pr = avPrice(x), bal = balance(sid);
+      if (bal < pr) { avTryId = id; notify('Need ' + (pr - bal) + ' more coins — previewing on ' + studentName(sid).split(' ')[0] + '!', 'info'); studioModeHold = true; rerender(); return; }
+      confirm('Buy ' + x.name + '?', 'It costs ' + pr + ' coins. You have ' + bal + '.', 'Buy & Wear', function () {
         var r = buyAvatar(sid, id);
-        notify(r.success ? 'You bought ' + r.item.name + '! It is on your avatar now.' : r.error, r.success ? 'success' : 'error');
-        if (r.success) { try { if (root.classSoundboard && root.classSoundboard.playCoinReward) root.classSoundboard.playCoinReward(); } catch (e) { /* optional */ } P.wearItem(sid, id).then(rerender); }
+        notify(r.success ? 'You bought ' + r.item.name + '! Wearing it now.' : r.error, r.success ? 'success' : 'error');
+        studioModeHold = true;
+        if (r.success) {
+          avTryId = '';
+          try { if (root.classSoundboard && root.classSoundboard.playCoinReward) root.classSoundboard.playCoinReward(); } catch (e) { /* optional */ }
+          P.wearItem(sid, id, x.slot).then(function () { studioModeHold = true; rerender(); });
+        } else rerender();
+      });
+    },
+    avWear: function (id, on, slot) {
+      var sid = activeStudentId(), P = PA(), x = (id && P && P.itemInfo) ? P.itemInfo(id) : null;
+      var sl = slot || (x && x.slot) || '';
+      if (!sid || !P || !sl) return;
+      if (on && id && avState(sid, id) === 'shop') { notify('Buy it first!', 'error'); return; }
+      studioModeHold = true;
+      P.wearItem(sid, on ? id : null, sl).then(function () {
+        notify(on && x ? 'Now wearing ' + x.name + '!' : 'Taken off.');
+        if (!on && avTryId === id) avTryId = '';
+        studioModeHold = true;
         rerender();
       });
     },
-    avWear: function (id, on) {
-      var sid = activeStudentId(), P = PA(), x = P && P.itemInfo ? P.itemInfo(id) : null; if (!sid || !x) return;
-      if (on && avState(sid, id) === 'shop') { notify('Buy it first!', 'error'); return; }
-      P.wearItem(sid, on ? id : null, x.slot).then(function () { notify(on ? 'Now wearing ' + x.name + '!' : 'Taken off.'); avTryId = on ? id : ''; rerender(); });
-    },
-    extraKind: function (k) { extraKind = k; rerender(); },
+    avApprove: function (sid) { var P = PA(); if (P && P._approve) { studioModeHold = true; P._approve(sid); setTimeout(function () { studioModeHold = true; rerender(); }, 180); } },
+    avReject: function (sid) { var P = PA(); if (P && P._reject) { studioModeHold = true; P._reject(sid); setTimeout(function () { studioModeHold = true; rerender(); }, 180); } },
+    avLockToggle: function () { var P = PA(); if (P && P._toggleLockMode) { studioModeHold = true; P._toggleLockMode(); setTimeout(function () { studioModeHold = true; rerender(); }, 80); } },
+    extraKind: function (k) { extraKind = k; studioModeHold = true; rerender(); },
     previewSound: function (id) { if (root.ClassroomCosmetics) root.ClassroomCosmetics.playSound(id); },
     buyExtra: function (id) {
       var sid = activeStudentId(), x = findExtra(id); if (!sid || !x) return;
       confirm('Buy ' + x.name + '?', 'It costs ' + extraPrice(x) + ' coins. You have ' + balance(sid) + '.', 'Buy', function () {
-        var r = buyExtra(sid, id); notify(r.success ? 'You bought ' + r.item.name + '! It is on right away.' : r.error, r.success ? 'success' : 'error');
+        var r = buyExtra(sid, id); notify(r.success ? 'You bought ' + r.item.name + '! Equipped right away.' : r.error, r.success ? 'success' : 'error');
         if (r.success && x.kind === 'sound' && root.ClassroomCosmetics) root.ClassroomCosmetics.playSound(id);
-        rerender();
+        studioModeHold = true; rerender();
       });
     },
     equip: function (kind, id) {
       var sid = activeStudentId(); if (!sid) return;
-      var r = equipExtra(sid, kind, id); notify(r.success ? 'Now wearing it!' : r.error, r.success ? 'success' : 'error');
-      if (r.success && kind === 'sound' && root.ClassroomCosmetics) root.ClassroomCosmetics.playSound(id);
-      rerender();
+      var r = equipExtra(sid, kind, id); notify(r.success ? (id ? 'Equipped!' : 'Removed.') : r.error, r.success ? 'success' : 'error');
+      if (r.success && id && kind === 'sound' && root.ClassroomCosmetics) root.ClassroomCosmetics.playSound(id);
+      studioModeHold = true; rerender();
     },
     donate: function (n) {
       var sid = activeStudentId(); if (!sid) return;
-      var r = donate(sid, n); notify(r.success ? (r.full ? 'The fund is FULL! Thank you! 🎉' : 'Thank you! You gave ' + r.amount + ' coins.') : r.error, r.success ? 'success' : 'error'); rerender();
+      var r = donate(sid, n); notify(r.success ? (r.full ? 'The fund is FULL! Thank you! 🎉' : 'Thank you! You gave ' + r.amount + ' coins.') : r.error, r.success ? 'success' : 'error');
+      studioModeHold = true; rerender();
     },
     setFund: function (classId) {
       var nm = document.getElementById('cs-fund-name'), gl = document.getElementById('cs-fund-goal');
-      var r = setFund(classId, nm ? nm.value : '', gl ? gl.value : 0); notify(r.success ? 'Party fund saved' : r.error, r.success ? 'success' : 'error'); rerender();
+      var r = setFund(classId, nm ? nm.value : '', gl ? gl.value : 0); notify(r.success ? 'Party fund saved' : r.error, r.success ? 'success' : 'error');
+      studioModeHold = true; rerender();
     },
-    resetFund: function (classId) { confirm('Start the fund again?', 'The coins already given stay spent. The bar goes back to zero.', 'Reset', function () { resetFund(classId); rerender(); }); },
-    filter: function (c) { itemFilter = c; rerender(); },
+    resetFund: function (classId) { confirm('Start the fund again?', 'The coins already given stay spent. The bar goes back to zero.', 'Reset', function () { resetFund(classId); studioModeHold = true; rerender(); }); },
+    filter: function (c) { itemFilter = c; studioModeHold = true; rerender(); },
     tryOn: function (itemId) {
       var id = activeStudentId(), item = findItem(itemId); if (!id || !item) return;
       var price = itemPrice(item), bal = balance(id), lvl = levelOf(id), locked = lvl < shopLevel(item), mon = tryOnHtml(id, item);
-      var petObj = (item.category === 'pet' && root.MonsterPets && root.MonsterPets.byId) ? root.MonsterPets.byId(item.id) : null;
-      var poseBar = (petObj && petObj.poses) ? '<div style="display:flex;gap:6px;justify-content:center;margin:8px 0;">' +
-        [['idle', '🧍 Idle'], ['wave', '👋 Wave'], ['jump', '⚡ Action Jump']].map(function (p) {
-          return '<button type="button" onclick="if(window.MonsterPets)window.MonsterPets.setPose(\'' + esc(item.id) + '\',\'' + p[0] + '\')" style="padding:5px 11px;border-radius:999px;font-size:.76rem;font-weight:800;cursor:pointer;background:#1e293b;color:#e5edff;border:1.5px solid #475569;border-bottom:3px solid #334155;">' + p[1] + '</button>';
-        }).join('') + '</div>' : '';
       var o = document.createElement('div'); o.className = 'cs-try-ovl';
       o.innerHTML = '<div class="cs-try-card" style="--rc:' + (RARITY_COLOR[item.rarity] || '#64748b') + ';"><div style="font-weight:900;font-size:1.15rem;margin-bottom:6px;">' + esc(item.name) + '</div>' +
         '<div class="cs-try-mon" style="background:radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--rc) 30%,transparent) 0%,transparent 65%),url(assets/store/shop_stage.webp) center/cover no-repeat;">' + (mon || itemPicHtml(item)) + '</div>' +
-        poseBar +
-        '<div style="font-size:.85rem;color:#cbd5e1;margin:8px 0 12px;">' + (mon ? 'This is how ' + esc(studentName(id).split(' ')[0]) + '’s monster looks with it.' : '') + '</div>' +
-        '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' + (locked ? '<span class="monster-item-lock-pill">' + (isLevelReward(item) ? '🎁 Free at level ' : '🔒 Level ') + shopLevel(item) + '</span>' : btn(bal >= price ? 'Buy for 🪙 ' + price : 'Need ' + (price - bal) + ' more', "this.closest('.cs-try-ovl').remove();ClassroomStore.ui.buyItem('" + item.id + "')", 'ok', bal < price)) +
+        '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px;">' + (locked ? '<span class="monster-item-lock-pill">' + (isLevelReward(item) ? '🎁 Free at level ' : '🔒 Level ') + shopLevel(item) + '</span>' : btn(bal >= price ? 'Buy for 🪙 ' + price : 'Need ' + (price - bal) + ' more', "this.closest('.cs-try-ovl').remove();ClassroomStore.ui.buyItem('" + item.id + "')", 'ok', bal < price)) +
         btn('Close', "this.closest('.cs-try-ovl').remove()", 'ghost') + '</div></div>';
       o.addEventListener('click', function (e) { if (e.target === o) o.remove(); });
       document.body.appendChild(o);
@@ -1370,42 +1635,42 @@
     buyItem: function (itemId) {
       var id = activeStudentId(), item = findItem(itemId); if (!id || !item) return;
       confirm('Buy ' + item.name + '?', 'It costs ' + itemPrice(item) + ' coins. You have ' + balance(id) + '.', 'Buy', function () {
-        var r = buyItem(id, itemId); notify(r.success ? 'You bought ' + r.item.name + '! Find it in Monster Studio.' : r.error, r.success ? 'success' : 'error'); rerender();
+        var r = buyItem(id, itemId); notify(r.success ? 'You bought ' + r.item.name + '!' : r.error, r.success ? 'success' : 'error'); studioModeHold = true; rerender();
       });
     },
     buyBox: function (tier) {
       var id = activeStudentId(); if (!id) return;
       confirm('Buy a ' + BOX_INFO[tier].name + '?', 'It costs ' + data().config.boxPrices[tier] + ' coins.', 'Buy', function () {
-        var r = buyBox(id, tier); notify(r.success ? 'Box bought! Open it below.' : r.error, r.success ? 'success' : 'error'); studentTab = 'boxes'; rerender();
+        var r = buyBox(id, tier); notify(r.success ? 'Box bought! Open it right at the top.' : r.error, r.success ? 'success' : 'error'); studioMode = 'prizes'; studioModeHold = true; rerender();
       });
     },
-    openBox: function (boxId) { var id = activeStudentId(); if (root.openMysteryBoxModal) root.openMysteryBoxModal(boxId, id, { onClose: rerender }); else notify('Mystery box viewer is not loaded', 'error'); },
+    openBox: function (boxId) { var id = activeStudentId(); if (root.openMysteryBoxModal) root.openMysteryBoxModal(boxId, id, { onClose: function () { studioModeHold = true; rerender(); } }); else notify('Mystery box viewer is not loaded', 'error'); },
     request: function (privId) {
       var id = activeStudentId(), p = privilege(privId); if (!id || !p) return;
       confirm('Ask for: ' + p.name + '?', 'It costs ' + p.price + ' coins. Your teacher will say yes or no. If no, you get the coins back.', 'Ask', function () {
-        var r = requestPrivilege(id, privId); notify(r.success ? 'Request sent to your teacher!' : r.error, r.success ? 'success' : 'error'); rerender();
+        var r = requestPrivilege(id, privId); notify(r.success ? 'Request sent to your teacher!' : r.error, r.success ? 'success' : 'error'); studioModeHold = true; rerender();
       });
     },
-    decide: function (rid, status) { var r = decide(rid, status); notify(r.success ? (status === 'approved' ? 'Approved' : 'Marked as used') : r.error, r.success ? 'success' : 'error'); rerender(); },
+    decide: function (rid, status) { var r = decide(rid, status); notify(r.success ? (status === 'approved' ? 'Approved' : 'Marked as used') : r.error, r.success ? 'success' : 'error'); studioModeHold = true; rerender(); },
     decline: function (rid) {
       var note = root.prompt ? root.prompt('Reason for the student (optional):', '') : '';
       if (note === null) return;
-      var r = decide(rid, 'declined', note || ''); notify(r.success ? 'Declined. Coins given back.' : r.error, r.success ? 'success' : 'error'); rerender();
+      var r = decide(rid, 'declined', note || ''); notify(r.success ? 'Declined. Coins given back.' : r.error, r.success ? 'success' : 'error'); studioModeHold = true; rerender();
     },
-    give: function (sid, n) { var r = grant(sid, n); notify(r.success ? (r.amount > 0 ? 'Gave ' + r.amount + ' coins' : 'Took ' + (-r.amount) + ' coins') : r.error, r.success ? 'success' : 'error'); rerender(); },
+    give: function (sid, n) { var r = grant(sid, n); notify(r.success ? (r.amount > 0 ? 'Gave ' + r.amount + ' coins' : 'Took ' + (-r.amount) + ' coins') : r.error, r.success ? 'success' : 'error'); studioModeHold = true; rerender(); },
     cleanUnearned: function () {
       confirm('Remove items nobody earned?', 'Automatic and test mystery boxes, the prizes that came out of them (items, titles, name plates, coins) and the free test reward will be removed. XP stays the same. A copy is kept on this device so you can undo.', 'Remove them', function () {
-        var n = cleanUnearned(); notify(n ? 'Removed ' + n + ' unearned items.' : 'Nothing to remove.'); rerender();
+        var n = cleanUnearned(); notify(n ? 'Removed ' + n + ' unearned items.' : 'Nothing to remove.'); studioModeHold = true; rerender();
       });
     },
-    undoClean: function () { var ok = undoClean(); notify(ok ? 'Clean-up undone.' : 'No copy found on this device.', ok ? 'success' : 'error'); rerender(); },
-    wsName: function (v) { wsName = String(v || '').trim() || 'Revision worksheet'; wsDraft = {}; rerender(); },
+    undoClean: function () { var ok = undoClean(); notify(ok ? 'Clean-up undone.' : 'No copy found on this device.', ok ? 'success' : 'error'); studioModeHold = true; rerender(); },
+    wsName: function (v) { wsName = String(v || '').trim() || 'Revision worksheet'; wsDraft = {}; studioModeHold = true; rerender(); },
     wsPick: function (sid, n) {
       wsDraft[sid] = Math.max(0, Math.min(10, Math.round(Number(n) || 0)));
       var el = root.document && root.document.getElementById('cs-ws-' + sid); if (el) el.innerHTML = wsRowHtml(sid);
       var c = root.document && root.document.getElementById('cs-ws-count'); if (c) { var k = Object.keys(wsDraft).length; c.textContent = k + (k === 1 ? ' score picked' : ' scores picked'); }
     },
-    wsClear: function () { wsDraft = {}; rerender(); },
+    wsClear: function () { wsDraft = {}; studioModeHold = true; rerender(); },
     wsGive: function () {
       var ids = Object.keys(wsDraft); if (!ids.length) { notify('Pick a score for at least one pupil first.', 'error'); return; }
       var w = data().worksheets, id = wsId();
@@ -1417,7 +1682,7 @@
         w[id].scores[sid] = n;
       });
       w[id].updatedAt = new Date().toISOString(); save();
-      wsDraft = {}; notify('Worksheet coins saved: ' + given + ' pupils changed, ' + coins + ' coins in total.'); rerender();
+      wsDraft = {}; notify('Worksheet coins saved: ' + given + ' pupils changed, ' + coins + ' coins in total.'); studioModeHold = true; rerender();
     },
     giveCustom: function (sid) {
       var v = root.prompt ? root.prompt('How many coins? Use a minus sign to take coins away (for example -10).', '10') : null;
@@ -1437,109 +1702,91 @@
       p[field] = field === 'active' ? !!v : Math.max(field === 'price' ? 1 : 0, Math.round(Number(v) || 0)); data().config.updatedAt = Date.now(); save();
     },
     removePriv: function (id) {
-      confirm('Remove this reward?', 'Students will no longer see it. Past requests are kept.', 'Remove', function () { data().config.privileges = data().config.privileges.filter(function (p) { return p.id !== id; }); data().config.updatedAt = Date.now(); save(); rerender(); });
+      confirm('Remove this reward?', 'Students will no longer see it. Past requests are kept.', 'Remove', function () { data().config.privileges = data().config.privileges.filter(function (p) { return p.id !== id; }); data().config.updatedAt = Date.now(); save(); studioModeHold = true; rerender(); });
     },
     addPriv: function () {
       var name = root.prompt ? root.prompt('Name of the new reward (for example: Choose the story):', '') : null; if (!name) return;
       var price = root.prompt ? root.prompt('How many coins?', '50') : null; if (price === null) return;
-      data().config.privileges.push({ id: uid('p'), icon: '🎁', name: name.trim(), price: Math.max(1, Math.round(Number(price) || 50)), weeklyLimit: 1, active: true }); data().config.updatedAt = Date.now(); save(); rerender();
+      data().config.privileges.push({ id: uid('p'), icon: '🎁', name: name.trim(), price: Math.max(1, Math.round(Number(price) || 50)), weeklyLimit: 1, active: true }); data().config.updatedAt = Date.now(); save(); studioModeHold = true; rerender();
     },
-    setOff: function (kind, key, v) { var o = data().config.off; if (!o[kind]) o[kind] = {}; if (v) o[kind][key] = 1; else delete o[kind][key]; data().config.updatedAt = Date.now(); save(); notify(v ? 'Closed in the shop' : 'Open in the shop again'); rerender(); },
-    tTab: function (t) { teacherTab = t; rerender(); },
-    hist: function (k, v) { if (k === 'pupil') histPupil = v; else histKind = v; rerender(); },
+    setOff: function (kind, key, v) { var o = data().config.off; if (!o[kind]) o[kind] = {}; if (v) o[kind][key] = 1; else delete o[kind][key]; data().config.updatedAt = Date.now(); save(); notify(v ? 'Closed in the shop' : 'Open in the shop again'); studioModeHold = true; rerender(); },
+    tTab: function (t) {
+      teacherTab = t;
+      studioMode = 'teacher';
+      if (t === 'requests') teacherGroup = 'approvals';
+      else if (t === 'coins' || t === 'gift' || t === 'worksheet' || t === 'party') teacherGroup = 'coins';
+      else teacherGroup = 'prices';
+      studioModeHold = true;
+      rerender();
+    },
+    hist: function (k, v) { if (k === 'pupil') histPupil = v; else histKind = v; studioModeHold = true; rerender(); },
     giveTo: function (n) {
       var P = renderTeacher(null, 'parts'), tEl = document.getElementById('cs-give-target'), rEl = document.getElementById('cs-give-reason');
       var ids = giveTargets(tEl ? tEl.value : 'class', P.cls, P.students), why = rEl && rEl.value.trim() ? rEl.value.trim() : '';
       if (!ids.length) { notify('Nobody to give coins to', 'error'); return; }
       if (n === undefined) { var v = root.prompt ? root.prompt('How many coins for each pupil? Use a minus sign to take (for example -10).', '10') : null; if (v === null) return; n = Math.round(Number(v) || 0); }
       if (!n) return;
-      function go() { var c = 0; ids.forEach(function (sid) { var r = grant(sid, n, why || null); if (r.success) c++; }); notify((n > 0 ? 'Gave ' + n : 'Took ' + (-n)) + ' coins · ' + c + (c === 1 ? ' pupil' : ' pupils')); rerender(); }
+      function go() { var c = 0; ids.forEach(function (sid) { var r = grant(sid, n, why || null); if (r.success) c++; }); notify((n > 0 ? 'Gave ' + n : 'Took ' + (-n)) + ' coins · ' + c + (c === 1 ? ' pupil' : ' pupils')); studioModeHold = true; rerender(); }
       if (ids.length > 1 || n < 0) confirm((n > 0 ? 'Give ' + n : 'Take ' + (-n)) + ' coins?', ids.length + (ids.length === 1 ? ' pupil' : ' pupils') + (why ? ' · ' + why : ''), n > 0 ? 'Give' : 'Take', go); else go();
     },
     undo: function (pid) {
-      confirm('Undo this purchase?', 'The coins go back to the student and the item or unopened box is removed.', 'Undo purchase', function () { var r = undoPurchase(pid); notify(r.success ? 'Purchase undone, coins refunded' : r.error, r.success ? 'success' : 'error'); rerender(); });
+      confirm('Undo this purchase?', 'The coins go back to the student and the item or unopened box is removed.', 'Undo purchase', function () { var r = undoPurchase(pid); notify(r.success ? 'Purchase undone, coins refunded' : r.error, r.success ? 'success' : 'error'); studioModeHold = true; rerender(); });
     }
   };
 
-  // ---------------------------------------------------------------- two store pages (9 Nov 2026)
-  // Pupil shop: opened from the Class Board. Big pupil buttons, then the pupil's own shop. Nothing for the teacher to manage here.
-  // Teacher store: prices and what is on sale, give or take coins (pupil, team or class), who bought what, requests.
-  var teacherTab = 'prices', histPupil = 'all', histKind = 'buys';
+  // ---------------------------------------------------------------- Dark Cyber-Glass Teacher Cards & Unified Studio
   function firstName(s) { var n = String(s.firstName || s.name || 'Pupil'); return esc(/^Pupil \d+$/.test(n) ? n : n.split(' ')[0]); }
-  function renderPupilShop(container) {
-    var P = renderTeacher(null, 'parts'), cls = P.cls, students = P.students, cur = P.curStu;
-    var html = '<div class="cs-pshop" style="max-width:1180px;margin:0 auto;padding:4px 8px 60px;color:#e5edff;">' +
-      '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;">' +
-        btn('← Class Board', "switchView('board')", 'ghost') +
-        '<h1 class="tines-h1" style="font-size:1.6rem;font-weight:800;color:#e5edff;margin:0;flex:1;">🛍️ Class Shop' + (cls ? ' · ' + esc(cls.name || cls.id) : '') + '</h1>' +
-        btn('🏆 Podium', "switchView('rewards')", 'ghost') +
-      '</div>' +
-      (students.length ? '<div style="font-weight:800;font-size:.9rem;color:#cbd5e1;margin:0 0 6px 2px;">Who is shopping? Tap your name.</div>' +
-        '<div class="cs-pgrid">' + students.map(function (s) {
-          var on = cur && s.id === cur.id;
-          return '<button type="button" class="cs-pbtn' + (on ? ' on' : '') + '" onclick="ClassroomStore.ui.pickStudent(\'' + esc(s.id) + '\')"><b>' + firstName(s) + '</b><span>🪙 ' + balance(s.id) + '</span></button>';
-        }).join('') + '</div>' : '<div style="padding:30px;text-align:center;">No pupils in this class yet.</div>') +
-      (cur ? '<div style="margin-top:14px;">' + shopBodyHtml(cur) + '</div>' : '') + '</div>';
-    container.innerHTML = pshopStyle() + html;
-  }
-  function pshopStyle() {
-    return '<style>.cs-pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}' +
-      '.cs-pbtn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:16px;cursor:pointer;background:#1e293b;color:#e5edff;border:2px solid #334155;border-bottom:5px solid #0f172a;font:700 1rem Fredoka,system-ui,sans-serif}' +
-      '.cs-pbtn span{font-size:.8rem;color:#fcd34d}.cs-pbtn.on{background:#6E56CF;border-color:#8D75E6;border-bottom-color:#37267A}.cs-pbtn:active{transform:translateY(3px);border-bottom-width:2px}' +
-      '.cs-tbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}.cs-tbar button{padding:9px 14px;border-radius:12px;font-weight:800;font-size:.88rem;cursor:pointer;background:#1e293b;color:#e5edff;border:1.5px solid #334155;border-bottom:3px solid #0f172a}' +
-      '.cs-tbar button.on{background:#6E56CF;border-color:#4C389E;border-bottom-color:#37267A}' +
-      '.cs-sw{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;border:1.5px solid #334155;background:#1e293b;color:#e5edff;font-weight:800;font-size:.85rem;cursor:pointer;margin:0 8px 8px 0}' +
-      '.cs-sw input{width:18px;height:18px}.cs-sw.off{opacity:.55;text-decoration:line-through}</style>';
-  }
+
   function onOffCard() {
     var cats = [['pet', '🐾 Pets'], ['creature', '🐉 Creatures'], ['hat', '🎩 Hats'], ['glasses', '👓 Glasses'], ['accessory', '💍 Accessories'], ['backpack', '🎒 Backpacks'], ['clothing', '👕 Outfits'], ['background', '🌄 Worlds'], ['aura', '✨ Auras'], ['trail', '💫 Trails'], ['body', '🎨 Colours']];
     function sw(kind, key, label) {
       var off = isOff(kind, key);
       return '<label class="cs-sw' + (off ? ' off' : '') + '"><input type="checkbox" ' + (off ? '' : 'checked') + ' onchange="ClassroomStore.ui.setOff(\'' + kind + '\',\'' + key + '\',!this.checked)"> ' + label + '</label>';
     }
-    return card(h2('🔛 What is on sale', 'Untick to close it. Pupils keep what they already have.') +
-      '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:4px 0 6px;">Shop parts</div>' +
-      SHOP_TABS.filter(function (t) { return t[0] !== 'orders'; }).map(function (t) { return sw('tabs', t[0], t[1]); }).join('') +
-      (monstersHidden() ? '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:8px 0 6px;">Avatar item groups</div>' +
-        AV_SLOTS.filter(function (c) { return c[0] !== 'all'; }).map(function (c) { return sw('cats', 'av-' + c[0], c[1]); }).join('')
-      : '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:8px 0 6px;">Monster item groups</div>' +
+    return card(h2('🔛 What is on sale', 'Untick to hide a section in the pupil shop. Pupils keep everything they already own.') +
+      '<div style="font-weight:800;font-size:.78rem;color:#94a3b8;margin:4px 0 6px;">Shop sections</div>' +
+      SHOP_TABS.map(function (t) { return sw('tabs', t[0], t[1]); }).join('') +
+      (monstersHidden() ? '<div style="font-weight:800;font-size:.78rem;color:#94a3b8;margin:10px 0 6px;">Avatar closet categories</div>' +
+        AV_SLOTS.filter(function (c) { return c[0] !== 'all' && c[0] !== 'extras'; }).map(function (c) { return sw('cats', 'av-' + c[0], c[1]); }).join('')
+      : '<div style="font-weight:800;font-size:.78rem;color:#94a3b8;margin:10px 0 6px;">Monster item groups</div>' +
         cats.map(function (c) { return sw('cats', c[0], c[1]); }).join('')) +
-      '<div style="font-weight:800;font-size:.8rem;color:var(--text-muted,#64748b);margin:8px 0 6px;">Mystery boxes</div>' +
+      '<div style="font-weight:800;font-size:.78rem;color:#94a3b8;margin:10px 0 6px;">Mystery boxes</div>' +
       TIERS.map(function (t) { return sw('boxes', t, BOX_INFO[t].icon + ' ' + BOX_INFO[t].name); }).join(''));
   }
+
   function giveCard(cls, students) {
     var groups = (cls && store.getGroups) ? (store.getGroups(cls.id) || []) : [];
-    var opts = '<option value="class">👥 The whole class (' + students.length + ')</option>' +
+    var opts = '<option value="class">👥 Whole class (' + students.length + ')</option>' +
       groups.map(function (g) { return '<option value="group:' + esc(g.id) + '">🏳️ Team ' + esc(g.name) + ' (' + (g.studentIds || []).length + ')</option>'; }).join('') +
       students.map(function (s) { return '<option value="pupil:' + esc(s.id) + '">🧑‍🎓 ' + esc(studentName(s.id)) + ' (🪙 ' + balance(s.id) + ')</option>'; }).join('');
-    var inp = 'padding:8px;border-radius:10px;border:1.5px solid #cbd5e1;font-weight:700;';
-    return card(h2('🪙 Give or take coins', 'Pick who, then press a button. Taking never goes below zero.') +
+    return card(h2('🪙 Give or take coins', 'Pick who, add an optional note, then tap a coin button. Balances never go below zero.') +
       '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">' +
-        '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Who<select id="cs-give-target" style="display:block;margin-top:3px;min-width:240px;' + inp + '">' + opts + '</select></label>' +
-        '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Why (pupils see it)<input id="cs-give-reason" type="text" maxlength="50" placeholder="Great teamwork" style="display:block;margin-top:3px;width:220px;' + inp + '"></label>' +
+        '<label class="cs-field-lbl">Who<select id="cs-give-target" class="cs-dark-inp" style="min-width:240px;">' + opts + '</select></label>' +
+        '<label class="cs-field-lbl">Reason (pupils see it)<input id="cs-give-reason" class="cs-dark-inp" type="text" maxlength="50" placeholder="Great speaking teamwork" style="width:230px;"></label>' +
       '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">' +
-        [1, 5, 10, 20].map(function (n) { return btn('+' + n, 'ClassroomStore.ui.giveTo(' + n + ')'); }).join('') +
+        [1, 5, 10, 20].map(function (n) { return btn('+' + n + ' 🪙', 'ClassroomStore.ui.giveTo(' + n + ')', 'ok'); }).join('') +
         [-5, -10].map(function (n) { return btn('−' + (-n), 'ClassroomStore.ui.giveTo(' + n + ')', 'danger'); }).join('') +
-        btn('Other amount…', 'ClassroomStore.ui.giveTo()', 'ghost') +
+        btn('Custom…', 'ClassroomStore.ui.giveTo()', 'ghost') +
       '</div>');
   }
+
   function giftCard(cls, students) {
     var groups = (cls && store.getGroups) ? (store.getGroups(cls.id) || []) : [];
-    var opts = '<option value="class">👥 The whole class (' + students.length + ')</option>' +
+    var opts = '<option value="class">👥 Whole class (' + students.length + ')</option>' +
       groups.map(function (g) { return '<option value="group:' + esc(g.id) + '">🏳️ Team ' + esc(g.name) + ' (' + (g.studentIds || []).length + ')</option>'; }).join('') +
       students.map(function (s) { return '<option value="pupil:' + esc(s.id) + '">🧑‍🎓 ' + esc(studentName(s.id)) + '</option>'; }).join('');
-    var inp = 'padding:8px;border-radius:10px;border:1.5px solid #cbd5e1;font-weight:700;';
     var waiting = {};
     (store.state.mysteryBoxes || []).forEach(function (b) { if (!b.isOpened) waiting[b.studentId] = (waiting[b.studentId] || 0) + 1; });
     var list = students.filter(function (s) { return waiting[s.id]; }).map(function (s) { return esc(studentName(s.id)) + ' (' + waiting[s.id] + ')'; });
-    return card(h2('🎁 Gift a mystery box', 'Free for the pupil. Inside: a surprise avatar item they do not have yet (or a sound, title, free reward or coins). Pupils open it in the shop: Mystery boxes tab.') +
+    return card(h2('🎁 Gift a free Mystery Box', 'Pupils open gifted boxes inside Boxes &amp; Prizes.') +
       '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">' +
-        '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Who<select id="cs-gift-target" style="display:block;margin-top:3px;min-width:240px;' + inp + '">' + opts + '</select></label>' +
+        '<label class="cs-field-lbl">Who<select id="cs-gift-target" class="cs-dark-inp" style="min-width:240px;">' + opts + '</select></label>' +
       '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">' +
-        TIERS.map(function (t) { return btn(BOX_INFO[t].icon + ' Gift a ' + BOX_INFO[t].name, "ClassroomStore.ui.giftBox('" + t + "')"); }).join('') +
+        TIERS.map(function (t) { return btn(BOX_INFO[t].icon + ' Gift ' + BOX_INFO[t].name, "ClassroomStore.ui.giftBox('" + t + "')", 'gold'); }).join('') +
       '</div>' +
-      '<div style="margin-top:12px;font-size:.82rem;color:var(--text-muted,#64748b);">' + (list.length ? '📦 Boxes waiting to be opened: ' + list.join(', ') : 'No unopened boxes in this class.') + '</div>');
+      '<div style="margin-top:10px;font-size:.8rem;color:#94a3b8;">' + (list.length ? '📦 Waiting to be opened: ' + list.join(', ') : 'No unopened boxes in this class right now.') + '</div>');
   }
+
   function giftBoxes(ids, tier) {
     var n = 0;
     ids.forEach(function (id) {
@@ -1549,9 +1796,10 @@
     save();
     return n;
   }
+
   function historyCard(students) {
     var d = data(), ids = {}; students.forEach(function (s) { ids[s.id] = 1; });
-    var sel = '<select onchange="ClassroomStore.ui.hist(\'pupil\',this.value)" style="padding:7px;border-radius:10px;border:1.5px solid #cbd5e1;font-weight:700;"><option value="all">Everyone</option>' +
+    var sel = '<select class="cs-dark-inp" onchange="ClassroomStore.ui.hist(\'pupil\',this.value)"><option value="all">Everyone in class</option>' +
       students.map(function (s) { return '<option value="' + esc(s.id) + '"' + (histPupil === s.id ? ' selected' : '') + '>' + esc(studentName(s.id)) + '</option>'; }).join('') + '</select>';
     var kinds = [['buys', '🛍️ Bought'], ['coins', '🪙 Coins given / taken'], ['all', '📜 Everything']];
     var kb = kinds.map(function (k) { return btn(k[1], "ClassroomStore.ui.hist('kind','" + k[0] + "')", histKind === k[0] ? '' : 'ghost'); }).join(' ');
@@ -1571,38 +1819,142 @@
     }
     rows.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
     var total = rows.length; rows = rows.slice(0, 80);
-    return card(h2('🧾 Who bought what', 'Newest first. Undo gives the coins back and removes the item or unopened box.') +
+    return card(h2('🧾 Full Class Ledger', 'Newest first. Undo refunds coins and removes the item or unopened box.') +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">' + sel + ' ' + kb + '</div>' +
       (rows.length ? rows.map(function (r) {
-        return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--border-light,#e2e8f0);color:var(--text-main,#0f172a);font-size:.86rem;">' +
-          '<span style="font-size:1.2rem;width:26px;text-align:center;">' + esc(r.icon || '•') + '</span>' +
-          '<b style="min-width:120px;">' + esc(studentName(r.sid)) + '</b><span style="flex:1;">' + esc(r.text) + '</span>' +
-          '<span style="font-weight:900;color:' + (r.n > 0 ? '#16a34a' : r.n < 0 ? '#b91c1c' : '#64748b') + ';">' + (r.n > 0 ? '+' : '') + r.n + '</span>' +
-          '<span style="font-size:.74rem;color:var(--text-muted,#64748b);width:110px;text-align:right;">' + when(r.ts) + '</span>' +
-          (r.undo ? btn('Undo', "ClassroomStore.ui.undo('" + r.undo + "')", 'ghost') : (r.refunded ? '<span style="font-size:.72rem;color:#64748b;">refunded</span>' : '')) + '</div>';
-      }).join('') + (total > rows.length ? '<div style="font-size:.78rem;color:#64748b;padding-top:6px;">Showing the newest 80 of ' + total + '. Pick one pupil to see more.</div>' : '')
-        : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">Nothing here yet.</div>'));
+        return '<div class="cs-row-line" style="font-size:.85rem;">' +
+          '<span style="font-size:1.15rem;width:24px;text-align:center;">' + esc(r.icon || '•') + '</span>' +
+          '<b style="min-width:120px;color:#f8fafc;">' + esc(studentName(r.sid)) + '</b><span style="flex:1;color:#cbd5e1;">' + esc(r.text) + '</span>' +
+          '<span style="font-weight:900;color:' + (r.n > 0 ? '#4ade80' : r.n < 0 ? '#fb7185' : '#94a3b8') + ';">' + (r.n > 0 ? '+' : '') + r.n + '</span>' +
+          '<span style="font-size:.74rem;color:#94a3b8;width:105px;text-align:right;">' + when(r.ts) + '</span>' +
+          (r.undo ? btn('Undo', "ClassroomStore.ui.undo('" + r.undo + "')", 'ghost') : (r.refunded ? '<span style="font-size:.72rem;color:#94a3b8;">refunded</span>' : '')) + '</div>';
+      }).join('') + (total > rows.length ? '<div style="font-size:.78rem;color:#94a3b8;padding-top:6px;">Showing newest 80 of ' + total + '. Pick one pupil to filter.</div>' : '')
+        : '<div style="font-size:.85rem;color:#94a3b8;">Nothing logged yet.</div>'));
   }
-  function renderTeacherStore(container) {
-    var P = renderTeacher(null, 'parts'), S = P.sections, cls = P.cls, students = P.students;
-    var tabs = [['prices', '🏷️ Prices & on sale'], ['coins', '🪙 Give or take coins'], ['gift', '🎁 Gift mystery boxes'], ['history', '🧾 Who bought what'], ['requests', '📬 Requests' + (P.pending.length ? ' (' + P.pending.length + ')' : '')], ['worksheet', '📝 Worksheet coins'], ['party', '🎉 Party fund']];
+
+  function avatarTeacherCard(students) {
+    var P = PA();
+    if (!P) return '';
+    var pendIds = P.pendingIds ? P.pendingIds() : [];
+    var lockM = P.lockMode ? P.lockMode() : 'earned';
+    var pendHtml = pendIds.length ? '<div style="margin-bottom:14px;"><div style="font-weight:900;color:#fde047;margin-bottom:6px;">⏳ Pupil Avatars Waiting for Approval (' + pendIds.length + ')</div>' +
+      pendIds.map(function (pid) {
+        return '<div class="cs-row-line"><img src="' + esc(P.pictureFor(pid)) + '" alt="" style="width:46px;height:60px;object-fit:contain;border-radius:8px;background:#060911;">' +
+          '<div style="flex:1;font-weight:800;color:#f8fafc;">' + esc(studentName(pid)) + '</div>' +
+          btn('✓ Approve', "ClassroomStore.ui.avApprove('" + esc(pid) + "')", 'ok') + ' ' +
+          btn('✕ Reject', "ClassroomStore.ui.avReject('" + esc(pid) + "')", 'danger') + '</div>';
+      }).join('') + '</div>' : '';
+
+    var controls = '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">' +
+      btn(lockM === 'earned' ? '🪙 Earned Mode ON (Switch to Free Dress-Up)' : '🔓 Free Dress-Up ON (Switch to Earned Mode)', 'ClassroomStore.ui.avLockToggle()', lockM === 'earned' ? '' : 'gold') +
+      '<label class="cs-3d-btn ghost" style="cursor:pointer;">📁 Bulk Upload Head Photos<input type="file" accept="image/*" multiple style="display:none;" onchange="if(window.PupilAvatars&&PupilAvatars._bulkHeads)PupilAvatars._bulkHeads(this)"></label>' +
+      '</div>';
+
+    var rosterFaces = '<details class="cs-fold" style="margin-top:6px;"><summary><span>🙂 Pupil 3D Face Photos (' + students.filter(function (s) { return P.hasHead && P.hasHead(s.id); }).length + ' / ' + students.length + ' ready in this class)</span></summary>' +
+      '<div style="padding:0 16px 14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:8px;">' +
+      students.map(function (s) {
+        var ok = P.hasHead ? P.hasHead(s.id) : true;
+        return '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 10px;border-radius:12px;background:#0b1222;border:1px solid ' + (ok ? '#1e293b' : '#f59e0b') + ';">' +
+          '<div style="min-width:0;"><div style="font-weight:800;font-size:.8rem;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + firstName(s) + '</div>' +
+          '<div style="font-size:.68rem;color:' + (ok ? '#4ade80' : '#fbbf24') + ';">' + (ok ? '✓ Custom face' : '⚠ Demo face') + '</div></div>' +
+          '<label class="cs-3d-btn ghost" style="padding:5px 9px;font-size:.72rem;cursor:pointer;">📷<input type="file" accept="image/*" style="display:none;" onchange="if(window.PupilAvatars&&PupilAvatars._head)PupilAvatars._head(\'' + esc(s.id) + '\',this)"></label></div>';
+      }).join('') + '</div></details>';
+
+    return card(h2('🧒 Avatar Closet Mode, Approvals &amp; Face Photos', 'Manage Earned vs Free Dress-Up mode, approve pupil-submitted looks, or update 3D head portraits.') + pendHtml + controls + rosterFaces);
+  }
+
+  function teacherModeHtml(P) {
+    var S = P.sections, cls = P.cls, students = P.students;
+    var avPend = (PA() && PA().pendingIds) ? PA().pendingIds().length : 0;
+    var reqCount = P.pending.length + avPend;
+    var groups = [
+      ['approvals', '📬 Approvals & Faces' + (reqCount ? ' (' + reqCount + ')' : '')],
+      ['coins', '🪙 Coins, Boxes & Worksheets'],
+      ['prices', '🏷️ Prices, Sale Rules & Ledger']
+    ];
+    var nav = '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px;">' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' + groups.map(function (g) {
+        return '<button type="button" class="cs-avchip' + (teacherGroup === g[0] ? ' on' : '') + '" onclick="ClassroomStore.ui.tGroup(\'' + g[0] + '\')">' + g[1] + '</button>';
+      }).join('') + '</div>' +
+      '<div id="cs-cloud-status" style="font-size:.78rem;font-weight:800;color:#94a3b8;">' + cloudLabel() + '</div></div>';
+
     var body = '';
-    if (teacherTab === 'prices') body = onOffCard() + (S.prices || '') + (S.odds || '');
-    else if (teacherTab === 'coins') body = giveCard(cls, students) + (S.coins || '');
-    else if (teacherTab === 'gift') body = giftCard(cls, students);
-    else if (teacherTab === 'history') body = historyCard(students);
-    else if (teacherTab === 'requests') body = (S.requests || '') + (S.clean || '');
-    else if (teacherTab === 'worksheet') body = S.worksheet || '';
-    else if (teacherTab === 'party') body = S.party || card(h2('🎉 Class party fund', 'Pick a class at the top first.'));
-    container.innerHTML = pshopStyle() + '<div style="max-width:1180px;margin:0 auto;padding:6px 8px 60px;color:#e5edff;">' +
-      '<div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px;"><div style="flex:1;min-width:240px;">' +
-        '<h1 class="tines-h1" style="font-size:1.7rem;font-weight:800;color:#e5edff;margin:0;">🪙 Store settings' + (cls ? ' · ' + esc(cls.name || cls.id) : '') + '</h1>' +
-        '<div style="font-size:.88rem;color:#cbd5e1;margin-top:4px;">Pupils earn 1 coin for every ' + data().config.coinsPerXp + ' XP. They shop on the Class Board. Use the class menu at the top to switch class.</div>' +
-        '<div id="cs-cloud-status" style="margin-top:4px;font-size:.78rem;font-weight:800;color:#94a3b8;">' + cloudLabel() + '</div></div>' +
-        btn('🛍️ Open the pupil shop', "switchView('store-pupil')") + '</div>' +
-      '<div class="cs-tbar">' + tabs.map(function (t) { return '<button type="button" class="' + (teacherTab === t[0] ? 'on' : '') + '" onclick="ClassroomStore.ui.tTab(\'' + t[0] + '\')">' + t[1] + '</button>'; }).join('') + '</div>' +
-      body + '</div>';
+    if (teacherGroup === 'approvals') {
+      body = (S.requests || '') + avatarTeacherCard(students) + (S.clean || '');
+    } else if (teacherGroup === 'coins') {
+      body = giveCard(cls, students) + giftCard(cls, students) + (S.party || '') + (S.worksheet || '') + (S.coins || '');
+    } else {
+      body = onOffCard() + (S.prices || '') + (S.odds || '') + historyCard(students);
+    }
+    return nav + body;
   }
+
+  function renderUnifiedStudio(container, defaultMode) {
+    ensureStudioStyle();
+    try { var cp = root.document && document.getElementById('cb-pop'); if (cp) cp.remove(); } catch (e) {}
+    var role = store.getRole ? store.getRole() : 'teacher';
+    var isStudentRole = (role === 'student');
+    if (!studioModeHold && defaultMode) {
+      if (defaultMode === 'teacher' && !inClassMode() && !isStudentRole) studioMode = 'teacher';
+      else if (defaultMode === 'pupil' && studioMode === 'teacher') studioMode = 'avatar';
+    }
+    studioModeHold = false;
+    if (studioMode === 'teacher' && (inClassMode() || isStudentRole)) studioMode = 'avatar';
+
+    var P = renderTeacher(null, 'parts');
+    var cls = P.cls, students = P.students, cur = P.curStu;
+    if (isStudentRole) {
+      cur = (store.getActiveStudent ? store.getActiveStudent() : null) || students[0] || null;
+    }
+    var avPend = (PA() && PA().pendingIds) ? PA().pendingIds().length : 0;
+    var badgeN = P.pending.length + avPend;
+    var unopenedN = cur && store.getMysteryBoxes ? (store.getMysteryBoxes(cur.id, false) || []).length : 0;
+
+    var modes = [
+      ['avatar', '👕 Avatar & Closet'],
+      ['prizes', '🎁 Boxes & Prizes' + (unopenedN ? ' (' + unopenedN + ')' : '')]
+    ];
+    if (!isStudentRole && !inClassMode()) {
+      modes.push(['teacher', '⚙️ Teacher' + (badgeN ? ' (' + badgeN + ')' : '')]);
+    }
+
+    var topBar = '<div class="cs-studio-top">' +
+      (!isStudentRole ? btn('← Class Board', "switchView('board')", 'ghost') : '') +
+      '<h1 class="cs-studio-title">🛍️ Avatar Studio &amp; Shop' + (cls && !isStudentRole ? ' · ' + esc(cls.name || cls.id) : '') + '</h1>' +
+      '<div class="cs-mode-pills">' + modes.map(function (m) {
+        return '<button type="button" class="cs-mode-btn' + (studioMode === m[0] ? ' on' : '') + '" onclick="ClassroomStore.ui.mode(\'' + m[0] + '\')">' + m[1] + '</button>';
+      }).join('') + '</div>' +
+      (!isStudentRole ? btn('🏆 Podium', "switchView('rewards')", 'ghost') : '') +
+    '</div>';
+
+    var rosterStrip = '';
+    if (!isStudentRole && studioMode !== 'teacher') {
+      rosterStrip = students.length
+        ? '<div class="cs-pstrip">' + students.map(function (s) {
+            var on = cur && s.id === cur.id;
+            return '<button type="button" class="cs-pbtn' + (on ? ' on' : '') + '" onclick="ClassroomStore.ui.pickStudent(\'' + esc(s.id) + '\')"><b>' + firstName(s) + '</b><span>🪙 ' + balance(s.id) + '</span></button>';
+          }).join('') + '</div>'
+        : '<div class="cs-glass-card" style="text-align:center;">No pupils enrolled in this class yet.</div>';
+    }
+
+    var mainBody = '';
+    if (studioMode === 'teacher') {
+      mainBody = teacherModeHtml(P);
+    } else if (!cur) {
+      mainBody = '<div class="cs-glass-card" style="text-align:center;padding:32px;">Select a class with pupils to open the Studio.</div>';
+    } else if (studioMode === 'prizes') {
+      mainBody = prizesModeHtml(cur, balance(cur.id));
+    } else {
+      mainBody = avatarStudioHtml(cur, balance(cur.id));
+    }
+
+    container.innerHTML = '<div class="cs-studio">' + topBar + rosterStrip + mainBody + '</div>';
+  }
+
+  function renderStudent(container) {
+    renderUnifiedStudio(container, 'pupil');
+  }
+
   function giveTargets(v, cls, students) {
     if (v === 'class') return students.map(function (s) { return s.id; });
     if (v.indexOf('group:') === 0) { var g = store.getGroup ? store.getGroup(v.slice(6)) : null; return g ? (g.studentIds || []) : []; }
@@ -1615,7 +1967,7 @@
     fund: { get: fundFor, set: setFund, donate: donate, reset: resetFund },
     itemPic: itemPicHtml, refundRetired: refundRetired,
     avatar: { owns: avOwns, state: avState, buy: buyAvatar, items: avItems, price: avPrice, gift: giftBoxes,
-      wear: function (sid, id) { var P = PA(); return P ? P.wearItem(sid, id) : Promise.resolve(false); } },
+      wear: function (sid, id, slot) { var P = PA(); return P ? P.wearItem(sid, id, slot) : Promise.resolve(false); } },
     openBox: openBox2, BOX_ODDS: BOX_ODDS, TIERS: TIERS, BOX_INFO: BOX_INFO,
     ui: ui, findUnearned: findUnearned, getTimetable: ui.getTimetable, setTimetable: ui.setTimetable, getCalendar: ui.getCalendar, setCalendar: ui.setCalendar, getCalendarFlag: ui.getCalendarFlag, setCalendarFlag: ui.setCalendarFlag, getBoardGoal: ui.getBoardGoal, setBoardGoal: ui.setBoardGoal, data: data, wallet: wallet, balance: balance, grant: grant, buyItem: buyItem, buyBox: buyBox,
     requestPrivilege: requestPrivilege, decide: decide, cloud: { pull: cloudPull, push: cloudPush, bundleFor: bundleFor, adoptDoc: adoptDoc, stampOf: stampOf, id: CLOUD_ID, state: function () { return cloudState; } }, undoPurchase: undoPurchase, shopItems: shopItems, usedThisWeek: usedThisWeek, DEFAULTS: DEFAULTS
@@ -1624,10 +1976,10 @@
   root.renderClassroomStoreView = function (container) {
     var role = store.getRole ? store.getRole() : 'teacher';
     if (cloudClient() && Date.now() - lastPull > 30000) cloudPull().then(function (c) { if (c && root.renderCurrentView) root.renderCurrentView(); });
-    if (role === 'student') renderStudent(container); else renderTeacherStore(container);
+    if (role === 'student') renderStudent(container); else renderUnifiedStudio(container, 'teacher');
   };
   root.renderPupilShopView = function (container) {
     if (cloudClient() && Date.now() - lastPull > 30000) cloudPull().then(function (c) { if (c && root.renderCurrentView) root.renderCurrentView(); });
-    if ((store.getRole ? store.getRole() : 'teacher') === 'student') renderStudent(container); else renderPupilShop(container);
+    renderUnifiedStudio(container, 'pupil');
   };
 })(typeof window !== 'undefined' ? window : this);

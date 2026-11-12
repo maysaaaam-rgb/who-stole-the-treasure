@@ -45,12 +45,14 @@
     var id = student.id, d = null;
     try { d = root.CommandCenter && root.CommandCenter.profileData ? root.CommandCenter.profileData(id, ctx.onSheet) : null; } catch (e) { d = null; }
     var ms = ctx.monsterState || {}, total = ctx.totalXP || 0;
-    var toNext = ms.xpToNext > 0 ? (ms.xpToNext.toLocaleString('en-US') + ' XP to the next evolution') : (ms.isHatched === false ? 'Egg: ' + (ms.eggCrackPct || 0) + '% cracked' : 'Ultimate form');
+    var hideM = root.EAA_HIDE_MONSTERS !== false;
+    var toNext = ms.xpToNext > 0 ? (ms.xpToNext.toLocaleString('en-US') + (hideM ? ' XP to next level' : ' XP to the next evolution')) : (ms.isHatched === false ? 'Egg: ' + (ms.eggCrackPct || 0) + '% cracked' : 'Max level');
     var stCls = d ? 'pp-' + d.statusCls.replace('cc-', '') : 'pp-t4';
+    var stageLbl = hideM ? ('Level ' + (ms.currentLevel || 1)) : (ms.stageName || ('Level ' + (ms.currentLevel || 1)));
     var html = '<div class="pp-head">' +
-      '<div class="pp-mon" onclick="openMonsterCreator(\'' + esc(id) + '\')" title="Customize the monster">' + (ctx.avatar || '') + '</div>' +
+      '<div class="pp-mon" onclick="openMonsterCreator(\'' + esc(id) + '\')" title="' + (hideM ? 'Open Avatar Studio & Shop' : 'Customize the monster') + '">' + (ctx.avatar || '') + '</div>' +
       '<div class="pp-id"><h2>' + esc(student.firstName + ' ' + student.lastName) + '</h2>' +
-        '<div class="pp-sub">' + esc(ms.stageName || ('Level ' + (ms.currentLevel || 1))) + ' · ' + esc(student.grade || '') + ' · Age ' + esc(student.age || '?') + ' · ' + esc(student.overallCefr || '') + ' · ID ' + esc(student.studentIdNumber || '') + '</div>' +
+        '<div class="pp-sub">' + esc(stageLbl) + ' · ' + esc(student.grade || '') + ' · Age ' + esc(student.age || '?') + ' · ' + esc(student.overallCefr || '') + ' · ID ' + esc(student.studentIdNumber || '') + '</div>' +
         (d ? '<div class="pp-st"><span class="pp-chip ' + stCls + '">' + esc(d.status) + '</span><span class="pp-why">' + esc(d.why.join(' · ')) + '</span></div>' : '') +
         '<div class="pp-act">' +
           '<button class="pp-b g" onclick="PupilProfile.award(\'' + esc(id) + '\',5)">+5 XP</button><button class="pp-b g" onclick="PupilProfile.award(\'' + esc(id) + '\',10)">+10 XP</button>' +
@@ -58,14 +60,14 @@
           '<button class="pp-b o" style="color:#fbbf24" onclick="CommandCenter.ladder(\'' + esc(id) + '\')">🪜 Private steps</button>' +
           '<button class="pp-b" onclick="openGiveXPSkillsModal(\'student\',\'' + esc(id) + '\')">⭐ Custom XP</button>' +
           '<button class="pp-b o" onclick="openStudentModal(\'' + esc(id) + '\')">✏️ Edit pupil</button>' +
-          '<button class="pp-b o" onclick="openMonsterCreator(\'' + esc(id) + '\')">🎨 Monster</button>' +
-          '<button class="pp-b o" onclick="openEvolutionPathModal(\'' + esc(id) + '\')">🗺️ Evolution</button>' +
+          '<button class="pp-b o" onclick="openMonsterCreator(\'' + esc(id) + '\')">' + (hideM ? '👕 Avatar & Shop' : '🎨 Monster') + '</button>' +
+          (hideM ? '' : '<button class="pp-b o" onclick="openEvolutionPathModal(\'' + esc(id) + '\')">🗺️ Evolution</button>') +
           '<button class="pp-b o" onclick="PupilCard.open(\'' + esc(id) + '\')">🃏 Card</button>' +
           '<button class="pp-b o" onclick="if(window.ParentReport&&ParentReport.openForStudent)ParentReport.openForStudent(\'' + esc(id) + '\');else openReportGenerator(\'' + esc(id) + '\')">🖨️ Report</button>' +
           '<div class="card-more-menu-wrap" style="position:relative;"><button class="pp-b o" onclick="toggleCardDropdown(\'prof-' + esc(id) + '\', event)" title="More">⋯</button>' +
             '<div class="card-dropdown-menu" id="menu-prof-' + esc(id) + '">' +
               '<button class="card-dropdown-item" onclick="openEditStudentXPModal(\'' + esc(id) + '\')">✏️ Edit XP total</button>' +
-              '<button class="card-dropdown-item" onclick="openMonsterFullscreenModal(\'' + esc(id) + '\')">✨ Monster fullscreen</button>' +
+              (hideM ? '' : '<button class="card-dropdown-item" onclick="openMonsterFullscreenModal(\'' + esc(id) + '\')">✨ Monster fullscreen</button>') +
               '<button class="card-dropdown-item" onclick="handleRemoveStudentFromClass(\'' + esc(id) + '\')">Unenroll from class</button>' +
               '<button class="card-dropdown-item" style="color:var(--color-danger);" onclick="handleArchiveStudent(\'' + esc(id) + '\')">Archive pupil</button>' +
             '</div></div>' +
@@ -133,7 +135,7 @@
   }
 
   var SECTIONS = [
-    ['monster', '👾 Monster & evolution'], ['progress', '📈 Progress & CEFR'], ['assignments', '📝 Assignments'], ['assessments', '🧪 Assessments'],
+    ['monster', (root.EAA_HIDE_MONSTERS !== false) ? '👕 Avatar & level unlocks' : '👾 Monster & evolution'], ['progress', '📈 Progress & CEFR'], ['assignments', '📝 Assignments'], ['assessments', '🧪 Assessments'],
     ['badges', '🏅 Badges'], ['attendance', '📋 Attendance'], ['portfolio', '🗂️ Portfolio'], ['xp', '⭐ XP ledger'], ['rewards', '🎁 Rewards'], ['notes', '🗒️ Notes'], ['allaboutme', '🌟 All About Me (Survey & Secret Friends)'], ['alice', '🫖 Alice']
   ];
   function more(counts, openTab) {
