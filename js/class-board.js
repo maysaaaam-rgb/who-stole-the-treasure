@@ -129,7 +129,8 @@
     '.cb-gnums button.cb-gnum{min-width:78px;min-height:72px;font-size:1.85rem;font-weight:800;border-radius:20px;background:#38bdf8;color:#06101f;border-bottom:5px solid #0369a1}' +
     '.cb-gnums button.cb-gnum.on{background:#f59e0b;color:#2b1700;border-bottom-color:#b45309}' +
     '.cb-hat{font-size:.78rem;font-weight:700;color:#cbd5e1;padding:0 6px;white-space:nowrap;align-self:center}' +
-    '.cb-dock{gap:6px;padding:6px 10px;border-radius:20px;flex-wrap:nowrap;max-width:96vw;overflow:visible}.cb-dock button{padding:7px 12px;font-size:.86rem;border-radius:12px;border-bottom-width:3px;white-space:nowrap}.cb-dock button.sm{padding:5px 8px}.cb-dock button.ic{padding:7px 9px;font-size:1rem}.cb-dock .sep{margin:2px 2px}' +
+    ':root{--cb-side-w:250px}html.class-mode{--cb-side-w:112px}body:has(.app-sidebar.is-collapsed){--cb-side-w:68px}@media(max-width:900px){:root,html.class-mode{--cb-side-w:0px}}' +
+    '.cb-dock{gap:6px;padding:6px 10px;border-radius:20px;flex-wrap:wrap;left:calc(50% + (var(--cb-side-w, 250px) / 2));width:max-content;max-width:calc(100vw - var(--cb-side-w, 250px) - 24px);overflow:visible}.cb-dock button{padding:7px 12px;font-size:.86rem;border-radius:12px;border-bottom-width:3px;white-space:nowrap;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),background-color .14s}.cb-dock button.sm{padding:5px 8px}.cb-dock button.ic{padding:7px 9px;font-size:1rem}.cb-dock .sep{margin:2px 2px}' +
     '.cb-tm-pills{display:inline-flex;gap:3px;background:rgba(0,0,0,.18);padding:3px;border-radius:13px;align-items:center}' +
     '.cb-more-wrap{position:relative;display:inline-flex}' +
     '.cb-more-menu{position:absolute;right:0;bottom:calc(100% + 10px);background:#1e1b4b;border:1px solid rgba(255,255,255,.26);border-radius:18px;padding:8px;display:none;grid-template-columns:repeat(2,minmax(138px,1fr));gap:6px;box-shadow:0 20px 50px rgba(0,0,0,.6);z-index:80;transform-origin:bottom right;animation:cbPopUp .16s cubic-bezier(.16,1,.3,1)}' +
@@ -1023,8 +1024,21 @@ function render(container) {
     full: function () {
       var el = document.getElementById('cb-root'); if (!el) return;
       if (document.fullscreenElement) document.exitFullscreen(); else if (el.requestFullscreen) el.requestFullscreen();
+    },
+    closePopups: function () {
+      ['.cb-win', '.cb-grp', '.cb-gm', '#cb-pop', '.cb-flagm'].forEach(function (sel) {
+        var el = document.querySelector(sel); if (el) el.remove();
+      });
+      var more = document.getElementById('cb-dock-more'); if (more) more.classList.remove('open');
     }
   };
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Escape') return;
+    var hit = document.querySelector('.cb-win, .cb-grp, .cb-gm, #cb-pop, .cb-flagm');
+    if (hit) { hit.remove(); return; }
+    var more = document.getElementById('cb-dock-more');
+    if (more && more.classList.contains('open')) more.classList.remove('open');
+  });
   root.ClassBoard = api;
   root.renderClassBoardView = render;
 })(typeof window !== 'undefined' ? window : this);

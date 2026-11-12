@@ -6,8 +6,9 @@
   function S() { return root.schoolStore || root.store; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function avatarOf(p) {
+    if (p && p.pa) return '';
     var M = root.MilestoneCeremony, u = (M && M.pictureOf ? M.pictureOf(p) : (M && (M.photos.get(p.id) || M.photos.get(p.name)))) || p.avatarUrl || '';
-    return u ? '<img class="cr-av' + (M && M.isAvatar(u) ? ' is-cartoon' : '') + '" src="' + esc(u) + '" alt="">' : '';
+    return u ? '<img class="cr-av' + (M && M.isAvatar(u) ? ' is-cartoon' : '') + '" src="' + esc(u) + '" alt="" onerror="this.style.display=\'none\'">' : '';
   }
   function goldTitle(p) {
     var M = root.MilestoneCeremony, t = M && (M.titleFor(p.id) || M.titleFor(p.name));
@@ -23,12 +24,14 @@
   function tierOf(level) { level = Number(level) || 1; for (var i = 0; i < TIERS.length; i++) if (level >= TIERS[i].min) return TIERS[i]; return TIERS[TIERS.length - 1]; }
 
   function pupils(cls) {
-    var st = S(), CS = root.ClassroomStore;
+    var st = S(), CS = root.ClassroomStore, PA = root.PupilAvatars;
     return st.getStudentsByClass(cls.id).map(function (s) {
       var m = st.calculateMonsterState ? st.calculateMonsterState(s.id) : {}, prof = st.getMonsterProfile ? st.getMonsterProfile(s.id) : null, img = '';
-      try { img = root.getStudentMonsterAvatarUrl ? root.getStudentMonsterAvatarUrl(s, prof, m) : ''; } catch (e) { img = ''; }
+      var hasPa = !!(PA && PA.on && PA.on() && PA.has && PA.has(s.id));
+      try { img = hasPa && PA.imgFor ? (PA.imgFor(s.id) || '') : (root.getStudentMonsterAvatarUrl ? root.getStudentMonsterAvatarUrl(s, prof, m) : ''); } catch (e) { img = ''; }
+      if (!img) { try { img = root.getStudentMonsterAvatarUrl ? root.getStudentMonsterAvatarUrl(s, prof, m) : ''; } catch (e0) { img = ''; } }
       var coins = 0; try { coins = CS && CS.balance ? CS.balance(s.id) : 0; } catch (e2) { coins = 0; }
-      return { id: s.id, name: s.firstName || s.name || 'Student', firstName: s.firstName, lastName: s.lastName, avatarUrl: s.avatarUrl, extraData: s.extraData, xp: Number(m.totalXP != null ? m.totalXP : s.xp) || 0, level: Number(m.currentLevel) || 1, img: img, coins: coins };
+      return { id: s.id, pa: hasPa, name: s.firstName || s.name || 'Student', firstName: s.firstName, lastName: s.lastName, avatarUrl: s.avatarUrl, extraData: s.extraData, xp: Number(m.totalXP != null ? m.totalXP : s.xp) || 0, level: Number(m.currentLevel) || 1, img: img, coins: coins };
     }).sort(function (a, b) { return b.xp - a.xp; });
   }
 
@@ -42,8 +45,8 @@
       '.cr-btn{font:inherit;font-weight:800;font-size:.92rem;cursor:pointer;border:1.5px solid #26324a;border-bottom:4px solid #26324a;border-radius:13px;padding:9px 16px;background:rgba(15, 23, 42, 0.86);color:#e5edff;transition:transform .12s cubic-bezier(.175,.885,.32,1.275)}.cr-btn:active{transform:translateY(3px);border-bottom-width:1px}' +
       '.cr-podium{display:flex;align-items:flex-end;justify-content:center;gap:2vw;margin:2vh 0 1.5vh;min-height:28vh}' +
       '.cr-pod{position:relative;display:flex;flex-direction:column;align-items:center;width:clamp(130px,19vw,210px);padding:1.2vh 1vw;border-radius:24px 24px 14px 14px;border:1.5px solid #26324a;border-bottom:6px solid #26324a;background:linear-gradient(180deg,rgba(15, 23, 42, 0.86),var(--c));box-shadow:0 8px 20px -8px rgba(37,36,43,.14)}' +
-      '.cr-pod .mon{height:12.5vh;width:auto;object-fit:contain;filter:drop-shadow(0 .6vh .6vh rgba(0,0,0,.22));animation:crBob 3s ease-in-out infinite}.cr-pod .med{height:6vh;margin-top:-1vh}.cr-pod b{font-size:1.15rem;font-weight:800;color:#e5edff}.cr-pod .xp{display:flex;align-items:center;gap:6px;font-weight:800;font-size:1.05rem;color:#a894f9}.cr-pod .xp img{height:1.4em}' +
-      '.cr-pod.p1{--c:#FEF3C7;min-height:29vh;border-color:#F59E0B;border-bottom-color:#B45309}.cr-pod.p2{--c:#EFEBF9;min-height:25vh;border-color:#8D75E6;border-bottom-color:#4C389E}.cr-pod.p3{--c:#FFEDD5;min-height:22vh;border-color:#FB923C;border-bottom-color:#C2410C}' +
+      '.cr-pod .mon{height:14.5vh;width:auto;object-fit:contain;filter:drop-shadow(0 .6vh .6vh rgba(0,0,0,.35));animation:crBob 3s ease-in-out infinite}.cr-pod .med{height:5.4vh;margin-top:-.8vh}.cr-pod .place{font-style:normal;font-weight:900;font-size:.82rem;letter-spacing:.04em;padding:3px 11px;border-radius:999px;background:rgba(15,23,42,.75);border:1px solid rgba(255,255,255,.2);color:#fde68a;margin-bottom:4px}.cr-pod .crown{height:4.4vh;margin-top:-2.8vh;margin-bottom:2px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}.cr-pod b{font-size:1.15rem;font-weight:800;color:#f8fafc;text-shadow:0 2px 6px rgba(0,0,0,.45)}.cr-pod .xp{display:flex;align-items:center;gap:6px;font-weight:800;font-size:1.05rem;color:#fde68a}.cr-pod .xp img{height:1.4em}' +
+      '.cr-pod.p1{--c:rgba(120,53,15,.62);min-height:29vh;border-color:#F59E0B;border-bottom-color:#B45309;box-shadow:0 12px 28px -8px rgba(245,158,11,.28)}.cr-pod.p2{--c:rgba(76,29,149,.58);min-height:25vh;border-color:#8D75E6;border-bottom-color:#4C389E}.cr-pod.p3{--c:rgba(124,45,18,.58);min-height:22vh;border-color:#FB923C;border-bottom-color:#C2410C}' +
       '.cr-legend{display:flex;gap:2vw;justify-content:center;flex-wrap:wrap;margin:1vh 0 2vh;background:rgba(15, 23, 42, 0.86);border:1.5px solid #26324a;border-bottom:3px solid #26324a;border-radius:18px;padding:10px 18px}.cr-legend span{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;color:#e5edff}.cr-legend img{height:4.2vh}' +
       '.cr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px}' +
       '.cr-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 12px 16px;border:1.5px solid #26324a;border-bottom:5px solid #26324a;border-radius:20px;background:rgba(15, 23, 42, 0.86);cursor:pointer;font:inherit;color:#e5edff;box-shadow:0 4px 14px rgba(37,36,43,.06);transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-color .14s}' +
@@ -77,10 +80,10 @@
     var fundHtml = fund && fund.goal ? '<div class="cr-fund"><img src="' + ART + 'r_chest.webp" alt=""><div style="flex:1"><b style="font-size:1.25rem;color:#e5edff">' + esc(fund.name || 'Class party') + '</b><div class="bar"><i style="width:' + Math.min(100, Math.round((fund.raised || 0) / fund.goal * 100)) + '%"></i></div></div><b style="font-size:1.4rem;color:#94f9da">' + fmt(fund.raised) + ' / ' + fmt(fund.goal) + ' 🪙</b></div>' : '';
     var hubBar = '<div class="tines-hub-bar">' +
       '<div class="tines-hub-tabs">' +
-        '<button type="button" class="tines-tab-btn" onclick="switchView(\'store\')">🛍️ Coin Shop &amp; Mystery Boxes</button>' +
+        '<button type="button" class="tines-tab-btn" onclick="if(window.ClassroomStore&&ClassroomStore.ui)ClassroomStore.ui.setMode(\'wardrobe\');switchView(\'store-pupil\')">🛍️ Avatar Studio &amp; Shop</button>' +
         '<button type="button" class="tines-tab-btn is-active" onclick="switchView(\'rewards\')">🏆 Class Podium &amp; Badges</button>' +
-        '<button type="button" class="tines-tab-btn" onclick="switchView(\'store\');setTimeout(function(){if(window.ClassroomStore&&ClassroomStore.ui&&ClassroomStore.ui.openDrawer)ClassroomStore.ui.openDrawer();},60);">📄 Worksheet Coins &amp; Requests</button>' +
-        (root.EAA_ILLUSTRATED_MONSTERS === true ? '<button type="button" class="tines-tab-btn" onclick="MonsterCloset.open()">👗 Monster Closet</button>' : '') +
+        '<button type="button" class="tines-tab-btn" onclick="if(window.ClassroomStore&&ClassroomStore.ui)ClassroomStore.ui.setMode(\'boxes\');switchView(\'store-pupil\')">🎁 Mystery Boxes &amp; Prizes</button>' +
+        (document.documentElement.classList.contains('class-mode') ? '' : '<button type="button" class="tines-tab-btn" onclick="if(window.ClassroomStore&&ClassroomStore.ui)ClassroomStore.ui.setMode(\'teacher\');switchView(\'store-pupil\')">⚙️ Teacher Bank &amp; Requests</button>') +
       '</div>' +
       '<button type="button" class="tines-tab-btn" onclick="switchView(\'board\')">📺 Give Points on Board →</button>' +
     '</div>';
@@ -102,10 +105,13 @@
       var cls = S().getActiveClass(), p = pupils(cls).filter(function (x) { return x.id === id; })[0]; if (!p) return;
       var t = tierOf(p.level), w = document.createElement('div'); w.className = 'cr-burst';
       w.innerHTML = '<div class="cr-big">' + monsterImg(p, 'mon') + '<br><img class="bdg" src="' + ART + t.pic + '.webp" alt="">' + avatarOf(p).replace('class="cr-av', 'class="cr-av cr-av-big') + '<h2>' + esc(p.name) + '</h2><p>' + t.name + ' · level ' + p.level + '</p><p><img src="' + ART + 'r_xp_gem.webp" alt="" style="height:1.4em;vertical-align:middle"> ' + fmt(p.xp) + ' XP &nbsp; 🪙 ' + fmt(p.coins) + '</p>' + (root.EAA_ILLUSTRATED_MONSTERS === true ? '<button type="button" class="cr-btn" style="margin-top:6px" onclick="this.closest(\'.cr-burst\').remove();MonsterCloset.open(\'' + esc(p.id) + '\')">👗 Dress up</button>' : '') + '</div>';
-      w.addEventListener('click', function () { w.remove(); }); document.body.appendChild(w);
+      function closeBurst() { document.removeEventListener('keydown', onEsc); if (w.parentNode) w.remove(); }
+      function onEsc(ev) { if (ev.key === 'Escape') closeBurst(); }
+      document.addEventListener('keydown', onEsc);
+      w.addEventListener('click', closeBurst); document.body.appendChild(w);
       try { root.classSoundboard && root.classSoundboard.playFanfare && root.classSoundboard.playFanfare(); } catch (e) { /* optional */ }
       try { if (root.speechSynthesis) { var u = new SpeechSynthesisUtterance('Well done, ' + p.name + '!'); u.rate = 0.88; u.pitch = 1.05; u.lang = 'en-US'; root.speechSynthesis.cancel(); root.speechSynthesis.speak(u); } } catch (e2) { /* optional */ }
-      setTimeout(function () { if (w.parentNode) w.remove(); }, 6000);
+      setTimeout(closeBurst, 6000);
     }
   };
   root.ClassRewards = api; root.renderRewardsHall = render;

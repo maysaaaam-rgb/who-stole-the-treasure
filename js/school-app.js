@@ -120,7 +120,7 @@
   async function initApp() {
     if (window.__pendingDashboardOpen) {
       if (store) store.setRole('teacher');
-      currentView = document.documentElement.classList.contains('class-mode') ? 'board' : 'command';
+      currentView = document.documentElement.classList.contains('class-mode') ? 'board' : 'today';
       window.__pendingDashboardOpen = false;
     }
     const initialClass = store.getActiveClass();
@@ -141,15 +141,20 @@
     });
     handleHashRouting();
 
-    // Subscribe to store updates for reactive re-renders
+    // Subscribe to store updates for reactive re-renders (coalesced once per animation frame)
+    let _storeRenderRaf = 0;
     store.subscribe(() => {
-      renderNavigation();
-      updateHeaderBadges();
-      renderCurrentView();
-      const profModal = document.getElementById('modal-student-profile');
-      if (profModal && profModal.classList.contains('is-open') && currentProfileStudentId) {
-        openStudentDetail(currentProfileStudentId, studentProfileActiveTab);
-      }
+      if (_storeRenderRaf) return;
+      _storeRenderRaf = requestAnimationFrame(() => {
+        _storeRenderRaf = 0;
+        renderNavigation();
+        updateHeaderBadges();
+        renderCurrentView();
+        const profModal = document.getElementById('modal-student-profile');
+        if (profModal && profModal.classList.contains('is-open') && currentProfileStudentId) {
+          openStudentDetail(currentProfileStudentId, studentProfileActiveTab);
+        }
+      });
     });
 
     // Cloud First: Guarantee DATABASE -> APPLICATION STATE -> UI on page load
@@ -859,15 +864,31 @@
     if (active) sel.value = active.id;
   }
 
+  window.triggerQuickSearch = function() {
+    const candidates = ['#search-input', '#lib-search-input', '.ls-q', '.cc-find', '#app-view-container input[type="search"]'];
+    for (let i = 0; i < candidates.length; i++) {
+      const el = document.querySelector(candidates[i]);
+      if (el && el.offsetParent !== null) {
+        el.focus();
+        if (typeof el.select === 'function') el.select();
+        return;
+      }
+    }
+    if (window.PlatformNav && typeof window.PlatformNav.search === 'function') {
+      window.PlatformNav.search();
+    }
+  };
+
   function setupGlobalShortcuts() {
     document.addEventListener('keydown', (e) => {
       if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
         e.preventDefault();
-        const search = document.getElementById('search-input') || document.getElementById('lib-search-input');
-        if (search) {
-          search.focus();
-          search.select();
-        }
+        window.triggerQuickSearch();
+      } else if (e.key === 'Escape') {
+        const cm = document.getElementById('header-create-menu');
+        if (cm && cm.classList.contains('is-open')) { cm.classList.remove('is-open'); activeCreateMenuOpen = false; }
+        const rm = document.getElementById('role-dropdown-menu');
+        if (rm && rm.classList.contains('is-open')) rm.classList.remove('is-open');
       }
     });
   }
@@ -876,7 +897,7 @@
     const hash = window.location.hash.replace(/^#[/]*/, '').trim();
     if (hash) {
       const parts = hash.split('/');
-      const primaryView = parts[0];
+      let primaryView = parts[0];
       const validViews = [
         'dashboard', 'classes', 'class-detail', 'students', 'attendance',
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
@@ -898,7 +919,8 @@
           if (parts[2]) selectedClassDetailTab = parts[2];
         }
         currentView = primaryView;
-        renderNavigation();
+        if (window.PlatformNav && typeof window.PlatformNav.closeSearch === 'function') window.PlatformNav.closeSearch();
+        if (window.ClassBoard && typeof window.ClassBoard.closePopups === 'function') window.ClassBoard.closePopups();
         renderCurrentView();
         return;
       }
@@ -1010,13 +1032,23 @@
     }
   };
 
+  function closeTransientPopups() {
+    if (window.PlatformNav && typeof window.PlatformNav.closeSearch === 'function') window.PlatformNav.closeSearch();
+    if (window.ClassBoard && typeof window.ClassBoard.closePopups === 'function') window.ClassBoard.closePopups();
+    const cm = document.getElementById('header-create-menu');
+    if (cm) cm.classList.remove('is-open');
+    activeCreateMenuOpen = false;
+    const rm = document.getElementById('role-dropdown-menu');
+    if (rm) rm.classList.remove('is-open');
+  }
+
   window.renderCurrentView = renderCurrentView;
   window.switchView = function(viewName, updateHash = true) {
     if (viewName === 'classview') viewName = 'board';
+    closeTransientPopups();
     currentView = viewName;
     if (typeof window.closeMobileSidebar === 'function') window.closeMobileSidebar();
     if (typeof window.updateMobileTabbar === 'function') window.updateMobileTabbar(viewName);
-    currentView = viewName;
     if (updateHash) {
       if (viewName === 'class-detail') {
         window.location.hash = '#class-detail/' + selectedClassDetailId + '/' + selectedClassDetailTab;
@@ -1024,7 +1056,6 @@
         window.location.hash = '#' + viewName;
       }
     }
-    renderNavigation();
     renderCurrentView();
     if (typeof window.updateClassroomTheme === 'function') {
       const actClass = store.getActiveClass();
@@ -1038,7 +1069,7 @@
       const teacherViews = ['dashboard', 'classes', 'class-detail', 'students', 'lessons', 'assignments', 'progress'];
       floatingToolkit.style.display = (role === 'teacher' && teacherViews.includes(currentView)) ? 'flex' : 'none';
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   };
 
   // Open Dedicated Class Dashboard

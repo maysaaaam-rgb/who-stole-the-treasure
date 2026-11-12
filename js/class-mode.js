@@ -40,6 +40,7 @@
   }
   root.openGameMaker = openGameMaker;
   function rail(view) {
+    if (root.PlatformNav && root.PlatformNav.railHtml) return root.PlatformNav.railHtml(view);
     return '<nav class="cm-rail" aria-label="Class menu">' + RAIL.map(function (r) {
       var act = r.views.indexOf(view) >= 0, src = r.pic.indexOf('/') >= 0 ? r.pic : ART + r.pic + '.webp';
       return '<button type="button" class="cm-b' + (act ? ' is-on' : '') + '" data-rail="' + esc(r.id) + '" style="--c:' + r.c + '" onclick="ClassMode.go(\'' + r.id + '\')" title="' + esc(r.t) + '">' +
@@ -50,7 +51,7 @@
   /* ---------- the switch in the header ---------- */
   function paintToggle() {
     var b = document.getElementById('cm-toggle'); if (!b) return;
-    b.innerHTML = on() ? '<span>🧑‍🏫</span> Teacher<em class="cm-mode-word" style="font-style:normal"> Hub</em>' : '<span>🏫</span> Smartboard<em class="cm-mode-word" style="font-style:normal"> Rail</em>';
+    b.innerHTML = on() ? '<span>🧑‍🏫</span> <span class="cm-hdr-lbl">Teacher<em class="cm-mode-word" style="font-style:normal"> Hub</em></span>' : '<span>🏫</span> <span class="cm-hdr-lbl">Smartboard<em class="cm-mode-word" style="font-style:normal"> Rail</em></span>';
     b.title = on() ? 'Switch sidebar to compact text menu' : 'Switch sidebar to big picture buttons';
   }
   function ensureToggle() {
@@ -59,7 +60,7 @@
     var oldSl = document.getElementById('cm-sleepy-btn'); if (oldSl) oldSl.remove();
     if (!document.getElementById('cm-gm-btn')) {
       var gm = document.createElement('button'); gm.type = 'button'; gm.id = 'cm-gm-btn'; gm.className = 'cm-toggle cm-gm-btn';
-      gm.innerHTML = '<span>🎮</span> Game Maker';
+      gm.innerHTML = '<span>🎮</span> <span class="cm-hdr-lbl">Game Maker</span>';
       gm.title = 'Open Game Maker with the active class and monsters';
       gm.style.cssText = 'background:linear-gradient(180deg,#6E56CF,#4C389E);color:#fff;border:1.5px solid #8D75E6;border-bottom:4px solid #37267A;border-radius:12px;padding:7px 14px;font-weight:800;font-size:.86rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 3px 10px rgba(110,86,207,.28);transition:transform .12s cubic-bezier(.175,.885,.32,1.275)';
       gm.addEventListener('click', function () { openGameMaker(); });
@@ -68,9 +69,9 @@
     // The Smart Board is a main tool: one tap from every page, next to Game Maker (opens in its own tab so the platform stays open)
     if (!document.getElementById('cm-sb-btn')) {
       var sbb = document.createElement('button'); sbb.type = 'button'; sbb.id = 'cm-sb-btn'; sbb.className = 'cm-toggle cm-sb-btn';
-      sbb.innerHTML = '<span>🪄</span> Smart Board';
+      sbb.innerHTML = '<span>🪄</span> <span class="cm-hdr-lbl">Smart Board</span>';
       sbb.title = 'Open the Smart Board: neat handwriting, word cards, quizzes, stories and pictures with AI';
-      sbb.style.cssText = 'background:linear-gradient(180deg,#0ea5e9,#0369a1);color:#fff;border:1.5px solid #38bdf8;border-bottom:4px solid #075985;border-radius:12px;padding:7px 14px;font-weight:800;font-size:.86rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer';
+      sbb.style.cssText = 'background:linear-gradient(180deg,#0ea5e9,#0369a1);color:#fff;border:1.5px solid #38bdf8;border-bottom:4px solid #075985;border-radius:12px;padding:7px 14px;font-weight:800;font-size:.86rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:transform .12s cubic-bezier(.175,.885,.32,1.275)';
       sbb.addEventListener('click', function () { root.open('smart-board/index.html', 'smartboard'); });
       var gmb = document.getElementById('cm-gm-btn');
       right.insertBefore(sbb, gmb ? gmb.nextSibling : right.firstChild);

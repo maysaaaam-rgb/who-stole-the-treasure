@@ -50,7 +50,7 @@
       case 'groups': sw('board'); setTimeout(function () { try { root.ClassBoard.groups(); } catch (e) { /* optional */ } }, 400); return;
       case 'sleepy': if (root.SleepyMonster && root.SleepyMonster.open) root.SleepyMonster.open(); else if (root.openSleepyMonster) root.openSleepyMonster(); return;
       case 'bathroom': if (root.BathroomPass) root.BathroomPass.open(); return;
-      case 'karaoke': sw('board'); setTimeout(function () { try { root.ClassBoard.karaoke(); } catch (e) { /* optional */ } }, 400); return;
+      case 'karaoke': if (root.ClassBoard && root.ClassBoard.karaoke) root.ClassBoard.karaoke(); else openUrl('karaoke-stage/index.html', 'karaoke'); return;
       case 'game': if (root.launchGame) root.launchGame(arg); return;
       case 'class': try { S().setActiveClass(arg); } catch (e) { /* optional */ } sw('board'); return;
       case 'url': openUrl(arg); return;
@@ -137,7 +137,8 @@
     '@media(prefers-reduced-motion:reduce){.pn-a,.pn-tile{transition:none}}' +
     '</style>';
   var SIDE_CSS = '' +
-    '.pn-search-btn{display:flex;align-items:center;gap:8px;width:100%;margin:2px 0 10px;padding:9px 12px;border-radius:12px;cursor:pointer;background:var(--bg-muted,#1e293b);border:1.5px solid var(--border-light,#334155);color:var(--text-main,#e5edff);font-weight:800;font-size:.9rem}' +
+    '.pn-search-btn{display:flex;align-items:center;gap:8px;width:100%;margin:2px 0 10px;padding:9px 12px;border-radius:12px;cursor:pointer;background:var(--bg-muted,#1e293b);border:1.5px solid var(--border-light,#334155);border-bottom:4px solid #020617;color:var(--text-main,#e5edff);font-weight:800;font-size:.9rem;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-color .14s}' +
+    '.pn-search-btn:hover{border-color:#6E56CF}.pn-search-btn:active{transform:translateY(3px);border-bottom-width:1px}' +
     '.pn-search-btn kbd{margin-left:auto;font:700 .7rem system-ui;opacity:.7;border:1px solid currentColor;border-radius:6px;padding:1px 5px}.nav-link-btn.pn-sub{padding-left:30px!important;font-size:.86em;opacity:.92}' +
     '.app-sidebar.is-collapsed .pn-search-btn kbd,.app-sidebar.is-collapsed .pn-search-btn .nav-label{display:none}' +
     '';
@@ -171,7 +172,7 @@
     var C = root.CalendarView, L = C && C.linksOf ? C.linksOf(e) : [], out = [], seen = {}, g = gradeOf(e), pg = firstPage(e);
     var RANK = { p: 0, v: 1 };
     function add(cls, label, onclick) { if (seen[label]) return; seen[label] = 1; out.push({ r: (RANK[cls] != null ? RANK[cls] : /Game/.test(label) ? 2 : /Smart/.test(label) ? 3 : /Plan/.test(label) ? 4 : 5) + out.length / 100, h: '<button type="button" class="pn-a ' + cls + (big ? '' : ' s') + '" onclick="' + onclick + '">' + label + '</button>' }); }
-    var hasBook = /magic-book/.test((e.note || '') + ' ' + L.map(function (l) { return l[1]; }).join(' '));
+    var hasBook = /magic-book/.test((e.note || '') + ' ' + L.map(function (l) { return l[1]; }).join(' ')) || (e.type === 'unit5' && pg > 0);
     L.forEach(function (l) {
       var u = l[1];
       if (/^magic-book\//.test(u)) return;            /* the Magic Book button below opens the right page */
@@ -180,7 +181,7 @@
     });
     if (hasBook && g) add('v', '📖 Magic Book' + (pg ? ' p. ' + pg : ''), "PlatformNav.openBook(" + g + ',' + (pg || 0) + ')');
     add('', '🪄 Smart Board', "PlatformNav.go('smartboard')");
-    if (e.type === 'unit5' && g && !seen['🎮 Game']) add('', '🎮 Game', "PlatformNav.go('gm','g" + g + "-u5-vocab')");
+    if (e.type === 'unit5' && g && !seen['🎮 Game']) add('', '🎮 Game', "PlatformNav.go('gm','g" + g + "-u5-" + (/Lesson 5|Revision|Mega/i.test(e.title || '') ? 'mega' : 'vocab') + "')");
     if (e.classId && big) add('', '📺 Class Board ' + esc(shortCls(e.classId)), "PlatformNav.go('class','" + jsq(e.classId) + "')");
     return out.sort(function (x, y) { return x.r - y.r; }).map(function (x) { return x.h; }).join('');
   }
@@ -210,6 +211,7 @@
     var sub = finished ? 'Today’s lessons are done. Here is ' + dayName(day) + '.' : tries ? 'No lessons today. Here is ' + dayName(day) + '.' : dayName(now) + ', ' + timed.length + (timed.length === 1 ? ' lesson' : ' lessons');
     var html = CSS + '<div class="pn"><div class="pn-top"><div><h1>' + esc(hello) + '</h1><div class="sub">' + esc(sub) + '</div></div>' +
       '<button type="button" class="pn-a s" onclick="PlatformNav.search()">🔍 Search</button>' +
+      '<button type="button" class="pn-a s" onclick="PlatformNav.go(\'url\',\'lesson-plans/Week-9-13-November-Order.html\')">📋 Week 9 K12 Sheet</button>' +
       '<button type="button" class="pn-a s" onclick="PlatformNav.go(\'calendar\')">📅 Whole week</button></div>';
     if (timed.length > 1) {
       html += '<div class="pn-rib" aria-label="Lessons in order">' + timed.map(function (e, k) {
@@ -290,7 +292,8 @@
 
   /* ---------------------------------------------------------------- Search everywhere */
   var SETS = [['g3-u5-vocab', "Unit 5 words · Let's Go Back (Grade 3)"], ['g3-u5-timebook', 'The Time Book (Grade 3)'], ['g3-u5-capsules', 'Time capsules (Grade 3)'], ['g3-u5-mega', 'Unit 5 mega mix (Grade 3)'],
-    ['g4-u5-vocab', 'Unit 5 words · Make Some Noise (Grade 4)'], ['smart-g3', 'Smart mix (Grade 3)'], ['smart-g4', 'Smart mix (Grade 4)'], ['u14-g3', 'Units 1–4 (Grade 3)'], ['u14-g4', 'Units 1–4 (Grade 4)']];
+    ['g4-u5-vocab', 'Unit 5 words · Make Some Noise (Grade 4)'], ['g4-u5-foley', 'Foley sound studio (Grade 4)'], ['g4-u5-beethoven', 'Beethoven & the concert hall (Grade 4)'], ['g4-u5-mega', 'Unit 5 mega mix (Grade 4)'],
+    ['smart-g3', 'Smart mix (Grade 3)'], ['smart-g4', 'Smart mix (Grade 4)'], ['u14-g3', 'Units 1–4 (Grade 3)'], ['u14-g4', 'Units 1–4 (Grade 4)']];
   var TOOLS = [['🪄', 'Smart Board', 'smartboard'], ['📙', 'Magic Book Grade 3', 'book', 3], ['📘', 'Magic Book Grade 4', 'book', 4], ['🎮', 'Game Maker', 'gm'], ['⏱️', 'Timer', 'timer'], ['🎲', 'Pick a pupil', 'pick'], ['👥', 'Groups', 'groups'],
     ['😴', 'Sleepy Mio', 'sleepy'], ['🎤', 'Karaoke', 'karaoke'], ['🚻', 'Bathroom pass', 'bathroom'], ['🛍️', 'Pupil shop', 'store-pupil'], ['🏆', 'Class Podium', 'rewards'], ['🏝️', 'Practice Island', 'island']];
   function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ı/g, 'i'); }
@@ -340,7 +343,7 @@
     o.innerHTML = '<div style="width:min(720px,100%);background:#0f172a;border:1.5px solid #4C389E;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:hidden;color:#e5edff;font-family:inherit">' +
       '<div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid #26324a"><span style="font-size:1.4rem">🔍</span>' +
       '<input id="pn-q" type="search" autocomplete="off" placeholder="Find a lesson, game, plan, book page, pupil or tool…" style="flex:1;background:transparent;border:0;outline:0;color:#e5edff;font:700 1.15rem inherit">' +
-      '<button type="button" data-x style="background:#1e293b;border:1px solid #334155;color:#cbd5e1;border-radius:9px;padding:4px 9px;cursor:pointer;font-weight:800">Esc</button></div>' +
+      '<button type="button" data-x style="background:#1e293b;border:1px solid #334155;border-bottom:3px solid #020617;color:#cbd5e1;border-radius:9px;padding:4px 9px;cursor:pointer;font-weight:800">Esc</button></div>' +
       '<div id="pn-res" style="max-height:62vh;overflow:auto;padding:6px 8px 10px"></div></div>';
     document.body.appendChild(o); srch.el = o;
     o.addEventListener('click', function (e) { if (e.target === o || e.target.hasAttribute('data-x')) closeSearch(); });
