@@ -78,8 +78,8 @@
     return html;
   }
   /* the picture rail used in Class Mode */
-  var RAIL_ART = { today: 'm_home', board: 'm_scoreboard', library: 'm_lesson', tools: 'm_pick', calendar: 'h_calendar', more: 'm_teacher_key' };
-  var RAIL_C = { today: '#22c55e', board: '#6E56CF', library: '#0ea5e9', tools: '#ec4899', calendar: '#f59e0b', more: '#64748b' };
+  var RAIL_ART = { today: 'm_home', board: 'm_scoreboard', shop: 'r_chest', library: 'm_lesson', tools: 'm_pick', calendar: 'h_calendar', more: 'm_teacher_key' };
+  var RAIL_C = { today: '#22c55e', board: '#6E56CF', shop: '#10b981', library: '#0ea5e9', tools: '#ec4899', calendar: '#f59e0b', more: '#64748b' };
   function railHtml(view) {
     var cur = placeOf(view);
     return '<nav class="cm-rail" aria-label="Class menu">' + PLACES.map(function (p) {

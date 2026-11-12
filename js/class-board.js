@@ -664,7 +664,10 @@ function render(container) {
       if (ev) ev.stopPropagation();
       var old = document.getElementById('cb-pop'), same = old && old.dataset.id === id; closeMenus(); if (same) return;
       var st = S().getStudent ? S().getStudent(id) : null, name = st ? (st.firstName || st.name || '') : '';
-      var items = [['profile', '👤 Profile'], ['history', '📜 XP history'], ['fix', '✏️ Correct XP'], ['skills', '🎯 Give XP for a skill'], ['avatar', '👗 Dress avatar'], ['monster', '🐾 Customize monster'], ['edit', '⚙️ Edit student'], ['birthday', '🎂 Birthday today']];
+      var lookItems = (root.EAA_HIDE_MONSTERS !== false)
+        ? [['avatar', '👕 Avatar & Shop']]
+        : [['avatar', '👗 Dress avatar'], ['monster', '🐾 Customize monster']];
+      var items = [['profile', '👤 Profile'], ['history', '📜 XP history'], ['fix', '✏️ Correct XP'], ['skills', '🎯 Give XP for a skill']].concat(lookItems, [['edit', '⚙️ Edit student'], ['birthday', '🎂 Birthday today']]);
       var p = document.createElement('div'); p.id = 'cb-pop'; p.dataset.id = id;
       p.innerHTML = '<b>' + esc(name) + '</b>' + items.map(function (it) { return '<button data-a="' + it[0] + '">' + it[1] + '</button>'; }).join('');
       p.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) api.act(b.dataset.a, id); });

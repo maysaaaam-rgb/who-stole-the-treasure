@@ -84,7 +84,8 @@
     "av-shoes-red",
     "av-shoes-slippers",
     "av-shoes-sparkle",
-    "av-shoes-wellies"
+    "av-shoes-wellies",
+    "av-legs-jeans"
   ],
   "head": [
     "cs-beanie",
@@ -135,7 +136,8 @@
     "av-legs-rainbow",
     "av-legs-shorts",
     "av-legs-skirt",
-    "av-legs-tutu"
+    "av-legs-tutu",
+    "av-legs-jeans"
   ],
   "shoes": [
     "av-shoes-boots",
