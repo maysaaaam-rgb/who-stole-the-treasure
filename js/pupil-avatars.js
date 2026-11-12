@@ -16,7 +16,7 @@
   var BUCKET = 'pupil-avatars';
   var LOOK_KEY = 'eaa_board_look';
   var BASE = 'assets/avatars/';
-  var ASSET_V = '?v=21';
+  var ASSET_V = '?v=22';
   var TONES = [
     { id: 'auto', label: 'Match Face ✨' },
     { id: 'light', label: 'Light' }, { id: 'medium', label: 'Medium' },
@@ -1293,7 +1293,7 @@
         var auraIm = mergedEq.aura ? ims[k++] : null;
         var hasPet = !!(petIm && petIm.width > 0 && petIm.height > 0);
 
-        var W = hasPet ? 730 : BODY_W, H = BODY_H + PAD + PAD_BOTTOM;
+        var W = hasPet ? 690 : BODY_W, H = BODY_H + PAD + PAD_BOTTOM;
         var c = document.createElement('canvas'); c.width = Math.round(W * OUT_SCALE); c.height = Math.round(H * OUT_SCALE);
         var ctx = c.getContext('2d'); ctx.scale(OUT_SCALE, OUT_SCALE);
 
@@ -1541,8 +1541,8 @@
         if (hasPet) {
           var pBox = getPetTightBox(petIm, petUrl) || { sx: 0, sy: 0, sw: petIm.width, sh: petIm.height };
           var aspect = pBox.sw / Math.max(1, pBox.sh);
-          var maxPW = aspect > 1.15 ? 430 : (aspect >= 0.75 ? 396 : 380);
-          var maxPH = aspect < 0.62 ? 600 : (aspect < 0.82 ? 510 : 460);
+          var maxPW = aspect > 1.15 ? 323 : (aspect >= 0.75 ? 297 : 285); // 25% smaller (teacher asked)
+          var maxPH = aspect < 0.62 ? 450 : (aspect < 0.82 ? 383 : 345);
           var pSc = Math.min(maxPW / pBox.sw, maxPH / pBox.sh);
           var pW = Math.round(pBox.sw * pSc), pH = Math.round(pBox.sh * pSc);
           var pCx = aspect < 0.62 ? 530 : 516, pBottom = PAD + 756;
