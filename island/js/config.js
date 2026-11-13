@@ -5,14 +5,15 @@
    hides its HUD buttons and world entry points cleanly.
    ═══════════════════════════════════════════════════════════════ */
 const FEATURES = {
-  sports: false,
-  home: false,
-  crafting: false,
+  sports: true,
+  home: true,
+  crafting: true,
   energy: false,
-  battles: false,
-  villagers: false,
-  store: false,
-  look: false
+  battles: true,
+  villagers: true,
+  store: true,
+  look: true,
+  cinema: true
 };
 
 if (typeof window !== 'undefined') {

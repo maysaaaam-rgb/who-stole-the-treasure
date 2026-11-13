@@ -224,8 +224,9 @@
               '<button type="button" class="ch1-btn cyan sm" id="ch1-silver-replay" aria-label="Listen again">🔊 Listen Again</button>' +
             '</div>' +
           '</div>' +
-          '<div class="ch1-finale-actions">' +
-            '<button type="button" class="ch1-btn emerald" id="ch1-fin-done" aria-label="Finish Chapter 1">🎉 Claim Rewards &amp; Return to Harbour ✓</button>' +
+          '<div class="ch1-finale-actions" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">' +
+            '<button type="button" class="ch1-btn gold" id="ch1-fin-sail2" aria-label="Sail to Chapter 2">⛵ Sail to Chapter 2: Hispaniola Bay! ▶</button>' +
+            '<button type="button" class="ch1-btn emerald" id="ch1-fin-done" aria-label="Finish Chapter 1">🎉 Stay in Harbour ✓</button>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -252,6 +253,15 @@
     if (replayBtn) {
       replayBtn.onclick = function () {
         if (A().speak) A().speak(silverLine, { lineId: 'ch1_finale_silver' });
+      };
+    }
+    var sailBtn = document.getElementById('ch1-fin-sail2');
+    if (sailBtn) {
+      sailBtn.onclick = function () {
+        if (A().sfxFanfare) A().sfxFanfare();
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        if (onDone) onDone();
+        if (root.SceneDirector) root.SceneDirector.goZone(2, { sailIntro: true });
       };
     }
     var doneBtn = document.getElementById('ch1-fin-done');

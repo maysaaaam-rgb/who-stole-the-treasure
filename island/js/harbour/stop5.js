@@ -1,130 +1,156 @@
-/* Treasure Island · Chapter 1 · Stop 5: Billy Bones's Sea Chest
-   Grade 3 (special days): four padlocks with dates; Billy asks "What special day is 29 October?"; each right answer
-   opens a lock. Grade 4 (numbers): Billy says three numbers; turn each dial to it; then ask "Can I open the chest?". */
+/* Treasure Island · Chapter 1 · Stop 5: Billy Bones's Sea Chest Boss (Global Reading Unit 1 Finale)
+   - Grade 3 (Global Readings 2 · Unit 1 "What Does It Do?" Mastery):
+     Unlock 4 brass gadget padlocks covering vocabulary, sequence, `cl-` phonics, and nature inventions!
+   - Grade 4 (Global Readings 3 · Unit 1 "I Love Reading" Mastery):
+     Unlock 4 brass story padlocks covering Alice's adventure, Brain lobes/synapses, `5W1H`, and `-er` words!
+   - Opening all 4 locks bursts Billy's Sea Chest open -> Map Piece #1 + +25 Coins + Sail to Chapter 2! */
 (function (root) {
   'use strict';
   var H = root.Harbour;
   if (!H || !H.scene) return;
   var FLAT = 'art/flat/';
-  var DAYS = [
-    { date: '29 October', spoken: 'twenty-nine October', day: 'Republic Day', img: FLAT + 'o_republic_day.webp' },
-    { date: '23 April', spoken: 'twenty-three April', day: "Children's Day", img: FLAT + 'o_balloon.webp' },
-    { date: '19 May', spoken: 'nineteen May', day: 'Youth and Sports Day', img: 'art/z4/s_players_court.webp' },
-    { date: '30 August', spoken: 'thirty August', day: 'Victory Day', img: FLAT + 'subj_trophy.webp' }
+  var Z1 = 'art/z1/';
+
+  var G3_LOCKS = [
+    {
+      tag: 'Lock 1 · Purpose',
+      q: 'Lock One! What does Clara\'s room-cleaning machine do?',
+      ok: { t: 'It cleans up the messy room!', img: Z1 + 's_clara_machine.webp' },
+      no: [
+        { t: 'It makes a bigger mess.', img: Z1 + 'w_mess.webp' },
+        { t: 'It sleeps until noon.', img: Z1 + 'w_sleep.webp' }
+      ]
+    },
+    {
+      tag: 'Lock 2 · Inventor Grit',
+      q: 'Lock Two! What should an inventor do when a plan does not work the first time?',
+      ok: { t: 'Change the plan and try again!', img: Z1 + 's_try_again.webp' },
+      no: [
+        { t: 'Hide in the corner.', img: Z1 + 'w_hide.webp' },
+        { t: 'Stop inventing forever.', img: Z1 + 's_z1_broken.webp' }
+      ]
+    },
+    {
+      tag: 'Lock 3 · Nature Idea',
+      q: 'Lock Three! Engineers copied a kingfisher bird\'s beak to improve which fast machine?',
+      ok: { t: 'A fast, quiet bullet train!', img: Z1 + 'w_wheels.webp' },
+      no: [
+        { t: 'A wooden bookshelf.', img: Z1 + 'w_shelf.webp' },
+        { t: 'A paper pillow.', img: Z1 + 'w_sleep.webp' }
+      ]
+    },
+    {
+      tag: 'Lock 4 · cl- Blend',
+      q: 'Final Lock! Which pair of words BOTH start with the CL sound?',
+      ok: { t: 'Clock and clean!', img: Z1 + 's_tidy_room.webp' },
+      no: [
+        { t: 'Mirror and mess.', img: Z1 + 'w_mirror.webp' },
+        { t: 'Broom and wheel.', img: Z1 + 'w_broom.webp' }
+      ]
+    }
   ];
-  var CODE = [
-    { n: 18, word: 'eighteen', options: [12, 18, 28, 48] },
-    { n: 35, word: 'thirty-five', options: [15, 25, 35, 45] },
-    { n: 50, word: 'fifty', options: [15, 30, 40, 50] }
+
+  var G4_LOCKS = [
+    {
+      tag: 'Lock 1 · Alice',
+      q: 'Lock One! Why did Alice chase the White Rabbit down the rabbit hole?',
+      ok: { t: 'Because she felt curious about his waistcoat watch!', img: Z1 + 's_alice_chase.webp' },
+      no: [
+        { t: 'Because she wanted to clean shelves.', img: Z1 + 'w_broom.webp' },
+        { t: 'Because it was snowing.', Z1: true, img: Z1 + 'w_freeze.webp' }
+      ]
+    },
+    {
+      tag: 'Lock 2 · Your Brain',
+      q: 'Lock Two! What happens inside your brain lobes when you practice reading?',
+      ok: { t: 'Brain cells and fibers connect to send messages!', img: Z1 + 'w_workout.webp' },
+      no: [
+        { t: 'Brain cells turn into stone.', img: FLAT + 'm_stone.webp' },
+        { t: 'Your brain goes to sleep.', img: Z1 + 'w_sleepy.webp' }
+      ]
+    },
+    {
+      tag: 'Lock 3 · Visualize',
+      q: 'Lock Three! What does it mean to visualize while you read?',
+      ok: { t: 'To picture the characters and setting in your mind!', img: Z1 + 's_visualize_read.webp' },
+      no: [
+        { t: 'To skip every page.', img: Z1 + 'w_run.webp' },
+        { t: 'To close your book tightly.', img: FLAT + 'o_book.webp' }
+      ]
+    },
+    {
+      tag: 'Lock 4 · -er Words',
+      q: 'Final Lock! Which sentence uses TWO -er words accurately?',
+      ok: { t: 'A curious reader becomes a stronger thinker!', img: Z1 + 's_love_reading.webp' },
+      no: [
+        { t: 'A sleepy rabbit fell down.', img: Z1 + 's_alice_fall.webp' },
+        { t: 'The shelves are in the corner.', img: Z1 + 'w_shelf.webp' }
+      ]
+    }
   ];
 
   function chest(S) {
     S.play.insertAdjacentHTML('beforeend',
-      '<div class="s5-chest" id="s5-chest"><img class="s5-closed" src="' + FLAT + 'o_billy_chest.webp" alt="" draggable="false">' +
-      '<img class="s5-open" src="' + FLAT + 'o_chest_open.webp" alt="" draggable="false"></div>');
+      '<div class="s5-chest" id="s5-chest">' +
+        '<img class="s5-closed" src="' + FLAT + 'o_billy_chest.webp" alt="" draggable="false">' +
+        '<img class="s5-open" src="' + FLAT + 'o_chest_open.webp" alt="" draggable="false">' +
+        (H.hasArt('o_dial_lock') ? '<img class="s5-padlock" src="art/ch1/o_dial_lock.webp" alt="" draggable="false">' : '') +
+      '</div>');
   }
+
   function openChest(S, cb) {
     var c = S.$('#s5-chest');
     if (c) c.classList.add('opened');
     if (root.Ch1Audio && root.Ch1Audio.sfxChestOpen) root.Ch1Audio.sfxChestOpen();
-    setTimeout(cb, 1200);
+    setTimeout(cb, 1150);
   }
 
-  H.stops[5] = function (ctx) { return ctx.grade === 4 ? numberLock(ctx) : specialDays(ctx); };
-
-  function specialDays(ctx) {
-    var order = H.shuffle(DAYS);
-    var S = H.scene(ctx, { stop: 5, cls: 's5', bg: ['bg_s5_dock', 'dock'], npc: { art: 'c_billy', name: 'Billy' }, rounds: order.length });
+  H.stops[5] = function (ctx) {
+    var isG4 = ctx.grade === 4;
+    var bank = isG4 ? G4_LOCKS : G3_LOCKS;
+    var S = H.scene(ctx, { stop: 5, cls: 's5', bg: ['bg_s5_dock', 'dock'], npc: { art: 'c_billy', name: 'Billy Bones' }, rounds: bank.length });
     chest(S);
-    var locks = '<div class="s5-locks">';
-    DAYS.forEach(function (d, k) { locks += '<div class="s5-lock" data-k="' + k + '"><span>🔒</span><b>' + d.date + '</b></div>'; });
-    S.play.insertAdjacentHTML('beforeend', locks + '</div>');
-    function round() {
-      if (S.closed) return;
-      S.quiet();
-      var d = order[S.i], k = DAYS.indexOf(d);
-      var lock = S.play.querySelector('.s5-lock[data-k="' + k + '"]');
-      [].forEach.call(S.play.querySelectorAll('.s5-lock'), function (n) { n.classList.toggle('now', n === lock); });
-      var q = 'What special day is ' + d.date + '?';
-      S.replay = function () { S.npcSay(q); S.say('What special day is ' + d.spoken + '?'); };
-      S.replay();
-      var others = H.shuffle(DAYS.filter(function (x) { return x !== d; })).slice(0, 2);
-      setTimeout(function () {
-        S.choices([{ t: d.day, img: d.img, ok: true, say: "It's " + d.day + '!' }].concat(others.map(function (o) { return { t: o.day, img: o.img, say: "It's " + o.day + '!' }; })), function () {
-          lock.classList.remove('now'); lock.classList.add('open');
-          lock.querySelector('span').textContent = '🔓';
-          S.npcSay(d.date + ' is ' + d.day + '!');
-          S.say(d.spoken + ' is ' + d.day + '!', function () {
-            if (S.i + 1 >= S.n) openChest(S, function () { S.next(round); });
-            else S.next(round);
-          });
-        }, { cls: 'pics-t' });
-      }, 600);
-    }
-    setTimeout(round, 600);
-  }
 
-  function numberLock(ctx) {
-    var S = H.scene(ctx, { stop: 5, cls: 's5 g4', bg: ['bg_s5_dock', 'dock'], npc: { art: 'c_billy', name: 'Billy' }, rounds: CODE.length + 1 });
-    chest(S);
-    // Billy's brass number lock hangs on the chest until it opens
-    if (H.hasArt('o_dial_lock')) S.$('#s5-chest').insertAdjacentHTML('beforeend', '<img class="s5-padlock" src="art/ch1/o_dial_lock.webp" alt="" draggable="false">');
-    var html = '<div class="s5-dials">';
-    CODE.forEach(function (c, k) {
-      html += '<div class="s5-dial" data-k="' + k + '"><div class="s5-val">?</div><div class="s5-opts">' +
-        H.shuffle(c.options).map(function (n) { return '<button type="button" class="s5-opt" data-n="' + n + '">' + n + '</button>'; }).join('') + '</div></div>';
+    var locksHtml = '<div class="s5-locks">';
+    bank.forEach(function (d, k) {
+      locksHtml += '<div class="s5-lock" data-k="' + k + '"><span>🔒</span><b>' + d.tag + '</b></div>';
     });
-    S.play.insertAdjacentHTML('beforeend', html + '</div>');
-    var busy = false, miss = 0;
+    S.play.insertAdjacentHTML('beforeend', locksHtml + '</div>');
+
     function round() {
       if (S.closed) return;
       S.quiet();
-      if (S.i >= CODE.length) return askToOpen();
-      var c = CODE[S.i], dial = S.play.querySelector('.s5-dial[data-k="' + S.i + '"]');
-      miss = 0;
-      [].forEach.call(S.play.querySelectorAll('.s5-dial'), function (n) { n.classList.toggle('now', n === dial); });
-      S.replay = function () { S.npcSay('Number ' + (S.i + 1) + '!'); S.say('Number ' + (S.i + 1) + ' is ' + c.word + '!'); };
+      var d = bank[S.i];
+      var lock = S.play.querySelector('.s5-lock[data-k="' + S.i + '"]');
+      [].forEach.call(S.play.querySelectorAll('.s5-lock'), function (n) { n.classList.toggle('now', n === lock); });
+
+      S.replay = function () { S.npcSay(d.q); S.say(d.q); };
       S.replay();
-      [].forEach.call(dial.querySelectorAll('.s5-opt'), function (b) {
-        H.mark(b, Number(b.dataset.n) === c.n);
-        b.onclick = function () {
-          if (busy || S.closed || !dial.classList.contains('now')) return;
-          busy = true;
-          S.tap();
-          var n = Number(b.dataset.n);
-          dial.querySelector('.s5-val').textContent = n;
-          S.say(String(n), function () {
-            if (n === c.n) {
-              S.right(dial); dial.classList.remove('now'); dial.classList.add('set');
-              [].forEach.call(dial.querySelectorAll('.s5-opt'), function (o) { o.disabled = true; H.mark(o, false); });
-              setTimeout(function () { busy = false; S.next(round); }, 500);
+
+      var opts = [{ t: d.ok.t, img: d.ok.img, ok: true, say: d.ok.t }].concat(
+        d.no.map(function (o) { return { t: o.t, img: o.img, say: o.t }; })
+      );
+
+      setTimeout(function () {
+        S.choices(opts, function () {
+          if (lock) {
+            lock.classList.remove('now');
+            lock.classList.add('open');
+            lock.querySelector('span').textContent = '🔓';
+          }
+          if (root.Ch1Audio && root.Ch1Audio.sfxGear) root.Ch1Audio.sfxGear();
+          S.npcSay('Click! Lock ' + (S.i + 1) + ' is open!');
+          S.say('Click! Lock ' + (S.i + 1) + ' is open!', function () {
+            if (S.i + 1 >= S.n) {
+              openChest(S, function () { S.next(round); });
             } else {
-              S.wrong(b, c.word); miss++;
-              setTimeout(function () {
-                busy = false; dial.querySelector('.s5-val').textContent = '?';
-                if (miss >= 2) { S.hints++; var g = dial.querySelector('.s5-opt[data-n="' + c.n + '"]'); if (g) g.classList.add('hint'); S.slow(c.word); }
-                else S.say('Listen! ' + c.word + '!');
-              }, 700);
+              S.next(round);
             }
           });
-        };
-      });
+        }, { cls: 'pics-t' });
+      }, 520);
     }
-    function askToOpen() {
-      var q = 'Click! Now ask me politely!';
-      S.replay = function () { S.npcSay(q); S.say(q); };
-      S.replay();
-      setTimeout(function () {
-        S.choices([
-          { t: 'Can I open the chest?', ic: '🗝️', ok: true },
-          { t: 'Close the door.', ic: '🚪' },
-          { t: 'Fifty coins!', ic: '🪙' }
-        ], function () {
-          S.npcSay('Yes, you can!');
-          S.say('Yes, you can!', function () { openChest(S, function () { S.next(round); }); });
-        });
-      }, 500);
-    }
-    setTimeout(round, 600);
-  }
+
+    setTimeout(round, 560);
+  };
 })(typeof window !== 'undefined' ? window : this);

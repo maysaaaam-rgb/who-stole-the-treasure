@@ -1,0 +1,25 @@
+{
+  "name": "Practice Island • Global Readings Adventure",
+  "short_name": "Practice Island",
+  "description": "Free-roam 2.5D WebGL reading adventure for Grades 3 & 4 (Macmillan Global Readings Chapters 1 & 2).",
+  "start_url": "./index.html?demo=g3",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#060911",
+  "theme_color": "#060911",
+  "icons": [
+    {
+      "src": "art/real/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "art/real/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

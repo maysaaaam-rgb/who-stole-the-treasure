@@ -34,10 +34,11 @@
     sc.id = 'hb-scene';
     sc.className = 'hb-scene kit ' + (opts.cls || '');
     var npc = opts.npc || { art: 'c_jim', name: 'Jim' };
+    var npcSrc = npc.src || (FLAT + npc.art + '.webp');
     sc.innerHTML =
       '<div class="k-bg" style="' + bgCss(opts.bg[0], opts.bg[1]) + '"></div>' +
       '<div class="k-play" id="k-play"></div>' +
-      '<div class="k-npc" id="k-npc"><img src="' + FLAT + npc.art + '.webp" alt="' + npc.name + '" draggable="false"></div>' +
+      '<div class="k-npc" id="k-npc"><img src="' + npcSrc + '" alt="' + npc.name + '" draggable="false"></div>' +
       '<div class="k-cat"><img src="' + FLAT + 'c_benbow.webp" alt="" draggable="false"></div>' +
       '<div class="k-hero" id="k-hero"><div class="s1-say" id="k-say"></div>' + ctx.hero(240) + '</div>' +
       '<div class="s1-jimsay k-npcsay" id="k-npcsay"></div>' +
@@ -45,7 +46,10 @@
       '<div class="hb-scene-top">' +
         '<button type="button" class="hb-btn" id="k-close" aria-label="Back to the harbour">✕</button>' +
         '<div class="hb-dots" id="k-dots"></div>' +
-        '<button type="button" class="hb-btn" id="k-again" aria-label="Listen again">🔁</button>' +
+        '<div style="display:flex;gap:8px;align-items:center">' +
+          '<button type="button" class="hb-btn" id="k-star" title="Play Star Speaking &amp; Word Order Challenge" style="width:auto;padding:0 12px;font-size:0.85em;background:linear-gradient(180deg,#fbbf24,#d97706);color:#060911">⭐ Star</button>' +
+          '<button type="button" class="hb-btn" id="k-again" aria-label="Listen again">🔁</button>' +
+        '</div>' +
       '</div>';
     document.body.appendChild(sc);
     requestAnimationFrame(function () { sc.classList.add('in'); });
@@ -170,6 +174,15 @@
     };
     S.$('#k-close').onclick = function () { S.tap(); S.end(false); };
     S.$('#k-again').onclick = function () { S.tap(); if (S.replay) S.replay(); };
+    if (S.$('#k-star')) {
+      S.$('#k-star').onclick = function () {
+        S.tap();
+        S.end(false);
+        if (root.Chapter1 && root.Chapter1.openClue) {
+          setTimeout(function () { root.Chapter1.openClue(opts.stop, 'star'); }, 220);
+        }
+      };
+    }
     S.dots();
     return S;
   };
