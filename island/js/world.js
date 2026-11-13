@@ -2553,20 +2553,34 @@
   }
 
   /* ---------- start, once the pupil is known ---------- */
-  function startWorld() {
-    var visitId = Q.get('visit');
-    if (visitId) {
-      S.visitingFriend = buildFriendWorldData(visitId);
-    }
-    var rawZ = Q.get('zone');
-    var want = visitId ? 0 : ((rawZ !== null && rawZ !== '') ? Number(rawZ) : 1);
-    var z = want === 0 ? 0 : 1;
-    for (var i = 1; i <= 4; i++) if (i <= want && isOpen(i)) z = i;
-    S.zone = z;
-    // Chapter 1 has its own painted harbour (js/harbour). ?oldmap=1 opens the older map.
-    if (z === 1 && root.Harbour && Q.get('oldmap') !== '1') { root.Harbour.start(); return; }
+  function bootOrGoZone(targetZone, inHouseFlag) {
+    var tz = (targetZone !== undefined && targetZone !== null) ? Number(targetZone) : 0;
+    document.body.classList.remove('hb-on', 'ch2-on');
     document.body.classList.add('w-on');
-    $('w-load').classList.add('on');
+    var hbEl = $('hb-root'); if (hbEl) hbEl.style.display = 'none';
+    var ch2El = $('ch2-root'); if (ch2El) ch2El.style.display = 'none';
+    if (root.RealIsland && typeof root.RealIsland.pause === 'function') root.RealIsland.pause();
+    var wEl = $('world'); if (wEl) wEl.style.display = '';
+    var uiEl = $('w-ui'); if (uiEl) uiEl.style.display = '';
+
+    if (root.WORLD && root.WORLD.game) {
+      try { if (root.WORLD.game.loop) root.WORLD.game.loop.wake(); } catch (e) {}
+      if (scene && S.zone === tz && !!S.inHouse === !!inHouseFlag) {
+        if (tz === 0) refreshHome(false);
+        return;
+      }
+      if (scene) {
+        goZone(tz, tz > S.zone ? 1 : -1, !!inHouseFlag);
+        return;
+      }
+      S.zone = tz;
+      S.inHouse = !!inHouseFlag;
+      return;
+    }
+
+    S.zone = tz;
+    S.inHouse = !!inHouseFlag;
+    if ($('w-load')) $('w-load').classList.add('on');
     setupJoystick();
     if ($('w-back')) $('w-back').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openWorldMap(); else { var u = new URLSearchParams(root.location.search); u.delete('zone'); root.location.href = 'index.html?' + u.toString(); } };
     if ($('w-energy')) { $('w-energy').style.display = feat('energy') ? '' : 'none'; $('w-energy').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openEnergyCharge(); }; }
@@ -2575,8 +2589,8 @@
     if ($('w-jobs')) { $('w-jobs').style.display = feat('villagers') ? '' : 'none'; $('w-jobs').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openJobsBoard(); }; }
     if ($('w-wall')) $('w-wall').onclick = function () { sound('playTap'); if (root.IslandWall) root.IslandWall.open(); };
     if ($('w-book')) $('w-book').onclick = function () { sound('playTap'); if (root.IslandRewards) root.IslandRewards.openStickerBook(); };
-    if ($('w-story')) $('w-story').onclick = function () { sound('playTap'); if (root.WorldGame && root.WorldGame.replayStoryIntro) root.WorldGame.replayStoryIntro(); };
-    if ($('w-sports')) { $('w-sports').style.display = feat('sports') ? '' : 'none'; $('w-sports').onclick = function () { sound('playTap'); if (root.WorldGame && root.WorldGame.openSportsArena) root.WorldGame.openSportsArena('soccer', '2v2'); }; }
+    if ($('w-story')) $('w-story').onclick = function () { sound('playTap'); if (root.IslandCinema) root.IslandCinema.open(); else if (root.WorldGame && root.WorldGame.replayStoryIntro) root.WorldGame.replayStoryIntro(); };
+    if ($('w-sports')) { $('w-sports').style.display = feat('sports') ? '' : 'none'; $('w-sports').onclick = function () { sound('playTap'); if (root.IslandGamesHub) root.IslandGamesHub.open(); else if (root.WorldGame && root.WorldGame.openSportsArena) root.WorldGame.openSportsArena('soccer', '2v2'); }; }
     if ($('w-dress')) { $('w-dress').style.display = feat('look') ? '' : 'none'; $('w-dress').onclick = function () { sound('playTap'); App().openDressingRoom(); }; }
     if ($('w-shop')) { $('w-shop').style.display = feat('store') ? '' : 'none'; $('w-shop').onclick = function () { sound('playTap'); root.IslandShop.open(); }; }
     if ($('w-status')) $('w-status').onclick = function () { sound('playTap'); if (root.IslandShop) root.IslandShop.open(); };
@@ -2594,6 +2608,33 @@
       physics: { default: 'arcade', arcade: { debug: !!Q.get('debug') } },
       render: { antialias: true }, scene: [WorldScene]
     });
+  }
+
+  function startWorld() {
+    var visitId = Q.get('visit');
+    if (visitId) {
+      S.visitingFriend = buildFriendWorldData(visitId);
+    }
+    var rawZ = Q.get('zone');
+    var want = visitId ? 0 : ((rawZ !== null && rawZ !== '') ? Number(rawZ) : 1);
+    var z = want === 0 ? 0 : 1;
+    for (var i = 1; i <= 4; i++) {
+      var canEnter = isOpen(i) || (i === 2 && root.Ch2Progress && root.Ch2Progress.isUnlocked && root.Ch2Progress.isUnlocked());
+      if (i <= want && canEnter) z = i;
+    }
+    S.zone = z;
+    // Chapter 1 & Chapter 2 have bespoke painted 2.5D worlds unless ?oldmap=1 is set.
+    if (z === 1 && root.Harbour && Q.get('oldmap') !== '1') {
+      if (root.SceneDirector) root.SceneDirector.goZone(1);
+      else root.Harbour.start();
+      return;
+    }
+    if (z === 2 && root.BayWorld && Q.get('oldmap') !== '1') {
+      if (root.SceneDirector) root.SceneDirector.goZone(2);
+      else root.BayWorld.start();
+      return;
+    }
+    bootOrGoZone(z, false);
   }
   function walkToActiveGoal() {
     var sc = scene;
@@ -2826,6 +2867,7 @@
   root.WORLD = {
     S: S,
     scene: function () { return scene; },
+    bootOrGoZone: bootOrGoZone,
     walkTo: walkTo,
     goZone: goZone,
     enterHouse: enterHouse,

@@ -18,8 +18,8 @@
   // Ship and boats in picture pixels: centre x, waterline y, width (they sit where the painting had them)
   var SHIP = { x: 1112, y: 548, w: 425 };
   var BOATS = [
-    { img: 'o_rowboat_3', x: 737, y: 584, w: 90, flip: false, d: 0 },
-    { img: 'o_rowboat_2', x: 796, y: 640, w: 74,  flip: true,  d: 0.7 },
+    { img: 'o_rowboat_3', x: 690, y: 556, w: 84, flip: false, d: 0 },
+    { img: 'o_rowboat_2', x: 796, y: 644, w: 74,  flip: true,  d: 0.7 },
     { img: 'o_rowboat_1', x: 630, y: 656, w: 78,  flip: false, d: 1.4 },
     { img: 'o_rowboat_2', x: 698, y: 694, w: 86, flip: false, d: 2.1 },
     { img: 'o_rowboat_1', x: 877, y: 724, w: 80,  flip: true,  d: 2.8 }

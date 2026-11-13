@@ -111,20 +111,20 @@
   function loadDemoRoster() {
     state.studentsByClass = {
       '3A': [
-        { id: 'demo-3a-1', name: 'Ada Lovelace', className: '3A' },
-        { id: 'demo-g3',   name: 'Test Pupil 3', className: '3A' },
-        { id: 'demo-3a-3', name: 'Zeynep Kaya',  className: '3A' }
+        { id: 'demo-3a-1', name: 'Pupil 301', className: '3A' },
+        { id: 'demo-g3',   name: 'Pupil 302', className: '3A' },
+        { id: 'demo-3a-3', name: 'Pupil 303', className: '3A' }
       ],
       '3B': [
-        { id: 'demo-3b-1', name: 'Emir Demir',      className: '3B' },
-        { id: 'demo-star', name: 'Test Pupil Star', className: '3B' }
+        { id: 'demo-3b-1', name: 'Pupil 304', className: '3B' },
+        { id: 'demo-star', name: 'Pupil 305', className: '3B' }
       ],
       '4A': [
-        { id: 'demo-4a-1', name: 'Demo Pupil', className: '4A' },
-        { id: 'demo-g4',   name: 'Test Pupil 4', className: '4A' }
+        { id: 'demo-4a-1', name: 'Pupil 401', className: '4A' },
+        { id: 'demo-g4',   name: 'Pupil 402', className: '4A' }
       ],
       '4B': [
-        { id: 'demo-4b-1', name: 'Kerem Arslan', className: '4B' }
+        { id: 'demo-4b-1', name: 'Pupil 403', className: '4B' }
       ]
     };
 
@@ -264,6 +264,10 @@
       if (weekHead) weekHead.innerHTML = '';
       if (weekBody) weekBody.innerHTML = '';
       if (tabsEl) tabsEl.innerHTML = '';
+      var ch1B = document.getElementById('tch-ch1-body');
+      var ch2B = document.getElementById('tch-ch2-body');
+      if (ch1B) ch1B.innerHTML = '';
+      if (ch2B) ch2B.innerHTML = '';
       return;
     }
 
@@ -333,29 +337,44 @@
     }).join('');
 
     renderCh1Table(list);
+    renderCh2Table(list);
     renderWeekTable(list);
     renderPrintSheet(list, revCodes);
   }
 
-  /* Render Chapter 1: Admiral Benbow Harbour 5-Clue Matrix */
-  function renderCh1Table(list) {
-    var ch1Head = document.getElementById('tch-ch1-head');
-    var ch1Body = document.getElementById('tch-ch1-body');
-    var ch1Sum = document.getElementById('tch-ch1-summary');
-    var ch1Title = document.getElementById('tch-ch1-heading');
-    if (!ch1Head || !ch1Body) return;
+  /* Render Chapter 1 (Unit 1) & Chapter 2 (Unit 2) 5-Clue Global Reading Matrices */
+  function renderChapterMatrix(list, chNum) {
+    var prefix = chNum === 2 ? 'tch-ch2' : 'tch-ch1';
+    var chHead = document.getElementById(prefix + '-head');
+    var chBody = document.getElementById(prefix + '-body');
+    var chSum = document.getElementById(prefix + '-summary');
+    var chTitle = document.getElementById(prefix + '-heading');
+    if (!chHead || !chBody) return;
 
     var isG4 = String(state.activeClass || '').indexOf('4') === 0;
     var g = isG4 ? 4 : 3;
-    if (ch1Title) {
-      ch1Title.textContent = '🏴‍☠️ Chapter 1: Admiral Benbow Harbour — Class ' + state.activeClass + ' (Grade ' + g + ')';
+    if (chTitle) {
+      if (chNum === 2) {
+        var u2Sub = isG4 ? 'Unit 2: What Lives Here?' : 'Unit 2: Thank You';
+        chTitle.textContent = '🗼 Chapter 2: Hispaniola Bay — Class ' + state.activeClass + ' (Grade ' + g + ' · ' + u2Sub + ')';
+      } else {
+        var u1Sub = isG4 ? 'Unit 1: I Love Reading' : 'Unit 1: What Does It Do?';
+        chTitle.textContent = '🏴‍☠️ Chapter 1: Admiral Benbow Harbour — Class ' + state.activeClass + ' (Grade ' + g + ' · ' + u1Sub + ')';
+      }
     }
 
-    var stopLabels = isG4
-      ? ['1. Inn Door (Permission)', '2. Crates (Requests)', '3. Wheel (Flint Says)', '4. Spyglass (1–50)', '5. Chest (Lock+Review)']
-      : ['1. Inn Door (Greetings)', '2. Board (School Rooms)', '3. Wheel (12 Months)', '4. Spyglass (Birthdays)', '5. Chest (National Days)'];
+    var stopLabels;
+    if (chNum === 2) {
+      stopLabels = isG4
+        ? ['1. Two Forests', '2. Winter Adapt', '3. Kind Swallow', '4. ai Sails & Past', '5. Lighthouse Chest']
+        : ['1. Chuseok Feast', '2. Moonlight Loom', '3. Mars Harvest', '4. -st Fishing', '5. Lighthouse Chest'];
+    } else {
+      stopLabels = isG4
+        ? ['1. Alice Rabbit Hole', '2. Brain & Lobes', '3. 5W1H Compass', '4. -er Word Study', '5. Story Chest']
+        : ['1. Clara Inventor', '2. Blueprint Steps', '3. cl- Phonics', '4. Good Ideas Book', '5. Gadget Chest'];
+    }
 
-    ch1Head.innerHTML =
+    chHead.innerHTML =
       '<tr>' +
         '<th>Pupil (A–Z)</th>' +
         stopLabels.map(function (lbl) { return '<th>' + esc(lbl) + '</th>'; }).join('') +
@@ -364,26 +383,31 @@
         '<th>Most-Missed Items</th>' +
       '</tr>';
 
+    var logKey = chNum === 2 ? 'eaa_ch2_teacher_log_v1' : 'eaa_ch1_teacher_log_v1';
+    var storagePrefix = chNum === 2 ? 'eaa_ch2_progress_v1_' : 'eaa_ch1_progress_v1_';
+    var docKey = chNum === 2 ? 'ch2' : 'ch1';
+    var rowAttr = chNum === 2 ? 'data-ch2-student' : 'data-ch1-student';
+
     var localLog = {};
     try {
-      localLog = parseJsonSafe(localStorage.getItem('eaa_ch1_teacher_log_v1'), {}) || {};
+      localLog = parseJsonSafe(localStorage.getItem(logKey), {}) || {};
     } catch (e) { localLog = {}; }
 
     var classMissedCounts = {};
     var completedPupils = 0;
 
-    ch1Body.innerHTML = list.map(function (stu) {
+    chBody.innerHTML = list.map(function (stu) {
       var pDoc = state.islandDocs[stu.id] || {};
-      var ch1Rec = pDoc.ch1 || localLog[stu.id] || null;
+      var chRec = pDoc[docKey] || localLog[stu.id] || null;
       try {
-        var directRaw = localStorage.getItem('eaa_ch1_progress_v1_' + stu.id);
+        var directRaw = localStorage.getItem(storagePrefix + stu.id);
         if (directRaw) {
           var directParsed = parseJsonSafe(directRaw, null);
-          if (directParsed) ch1Rec = directParsed;
+          if (directParsed) chRec = directParsed;
         }
       } catch (e) {}
 
-      var clues = (ch1Rec && ch1Rec.clues) || {};
+      var clues = (chRec && chRec.clues) || {};
       var legacyStars = pDoc.stars || {};
       var totalStars = 0;
       var stamps = 0;
@@ -391,11 +415,18 @@
       var missedArr = [];
 
       var cellsHtml = [1, 2, 3, 4, 5].map(function (sNum) {
-        var cid = 'g' + g + '_c' + sNum;
-        var easyObj = clues[cid + '_easy'];
-        var starObj = clues[cid + '_star'];
-        var legEasy = Number(legacyStars['m_g' + g + '_z1_' + sNum]) || 0;
-        var legStar = Number(legacyStars['s_g' + g + '_z1_' + sNum]) || 0;
+        var cid = chNum === 2 ? ('g' + g + '_z2_c' + sNum) : ('g' + g + '_c' + sNum);
+        var altCid = 'g' + g + '_c' + sNum;
+        var easyObj = clues[cid + '_easy'] || (chNum === 2 ? clues[altCid + '_easy'] : null);
+        var starObj = clues[cid + '_star'] || (chNum === 2 ? clues[altCid + '_star'] : null);
+        var legEasy = Math.max(
+          Number(legacyStars['m_g' + g + '_z' + chNum + '_' + sNum]) || 0,
+          Number(legacyStars['g' + g + '-z' + chNum + '-m' + sNum]) || 0
+        );
+        var legStar = Math.max(
+          Number(legacyStars['s_g' + g + '_z' + chNum + '_' + sNum]) || 0,
+          Number(legacyStars['g' + g + '-z' + chNum + '-s' + sNum]) || 0
+        );
 
         var st = Math.max(
           (easyObj && Number(easyObj.stars)) || 0,
@@ -436,7 +467,7 @@
       var missedStr = missedArr.length ? esc(missedArr.slice(0, 3).join(', ')) : '<span style="color:#6ee7b7">✓ None</span>';
 
       return (
-        '<tr data-ch1-student="' + esc(stu.id) + '">' +
+        '<tr ' + rowAttr + '="' + esc(stu.id) + '">' +
           '<td>' + esc(stu.name) + '</td>' +
           cellsHtml +
           '<td><b style="color:#fbbf24">' + stamps + '/5</b> · ⭐ ' + totalStars + '/15</td>' +
@@ -446,10 +477,18 @@
       );
     }).join('');
 
-    if (ch1Sum) {
+    if (chSum) {
       var topMissed = Object.keys(classMissedCounts).sort(function (a, b) { return classMissedCounts[b] - classMissedCounts[a]; })[0];
-      ch1Sum.textContent = completedPupils + '/' + list.length + ' finished Ch.1' + (topMissed ? (' · Top review: "' + topMissed + '"') : '');
+      chSum.textContent = completedPupils + '/' + list.length + ' finished Ch.' + chNum + (topMissed ? (' · Top review: "' + topMissed + '"') : '');
     }
+  }
+
+  function renderCh1Table(list) {
+    renderChapterMatrix(list, 1);
+  }
+
+  function renderCh2Table(list) {
+    renderChapterMatrix(list, 2);
   }
 
   /* Render "This week" table: per pupil, island XP per day, streak and last day played, sorted by name */

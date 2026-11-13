@@ -1557,6 +1557,10 @@
     closeModal();
     root.IslandSync.loadDemoSession(demoPupilId).then(function (ses) {
       state.session = ses;
+      if (ses && (ses.grade === 3 || ses.grade === 4)) {
+        if (root.Ch1Progress) root.Ch1Progress.setActiveGrade(ses.grade);
+        if (root.Ch2Progress) root.Ch2Progress.setActiveGrade(ses.grade);
+      }
       renderTopBar();
       renderMap();
     });
@@ -1623,8 +1627,12 @@
 
   function init() {
     var params = new URLSearchParams(root.location.search);
-    var isDemo = params.get('demo') === '1';
-    var demoPupil = params.get('pupil') || 'demo-g3';
+    var demoParam = String(params.get('demo') || '').toLowerCase();
+    var isDemo = demoParam === '1' || demoParam === 'g3' || demoParam === 'g4' || demoParam === 'star' || demoParam === '3' || demoParam === '4';
+    var defaultDemoPupil = (demoParam === 'g4' || demoParam === '4')
+      ? 'demo-g4'
+      : (demoParam === 'star' ? 'demo-star' : 'demo-g3');
+    var demoPupil = params.get('pupil') || defaultDemoPupil;
     var code = params.get('p') || '';
 
     var loader = isDemo
@@ -1633,6 +1641,13 @@
 
     root.IslandStory.ready.then(function () { return loader; }).then(function (ses) {
       state.session = ses;
+      if (ses && (ses.grade === 3 || ses.grade === 4)) {
+        if (root.Ch1Progress) root.Ch1Progress.setActiveGrade(ses.grade);
+        if (root.Ch2Progress) root.Ch2Progress.setActiveGrade(ses.grade);
+      }
+      if (demoParam === 'star' && root.Ch1Progress) {
+        root.Ch1Progress.setStarPreferred(true);
+      }
       renderTopBar();
       renderMap();
       maybeShowWelcome();

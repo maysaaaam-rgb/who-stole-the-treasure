@@ -5,19 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <meta name="theme-color" content="#060911">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Treasure Island • Chapter 1: Admiral Benbow Harbour</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="art/real/icon-192.png">
+  <link rel="apple-touch-icon" href="art/real/icon-192.png">
+  <title>Practice Island • Global Readings Adventure (Chapters 1 &amp; 2)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=ch1-20261107c">
-  <link rel="stylesheet" href="css/map.css?v=ch1-20261107c">
-  <link rel="stylesheet" href="css/story.css?v=ch1-20261107c">
-  <link rel="stylesheet" href="css/games.css?v=ch1-20261107c">
-  <link rel="stylesheet" href="css/adventure.css?v=ch1-20261107c">
-  <link rel="stylesheet" href="css/wall.css?v=ch1-20261107c">
-  <link rel="stylesheet" href="css/shop.css?v=ch1-20261107c">
-  <link rel="stylesheet" href="css/world.css?v=ch1-20261107c">
-  <link rel="stylesheet" href="css/chapter1.css?v=ch1-20261107c">
-  <link rel="stylesheet" href="css/harbour.css?v=hb9-kenney">
+  <link rel="stylesheet" href="css/style.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/map.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/story.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/games.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/adventure.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/wall.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/shop.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/world.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/chapter1.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/harbour.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/chapter2.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/unity-feel.css?v=rg-20261114">
+  <link rel="stylesheet" href="css/realgame.css?v=rg-20261114">
 </head>
 <body class="w-page">
   <!-- Practice Island 2D Adventure World (unified entry point). -->
@@ -96,24 +102,23 @@
   <script src="../game-maker/js/sets-unit4.js?v=ch1-20261107c"></script>
   <script src="../game-maker/js/sets-units14.js?v=ch1-20261107c"></script>
   <script src="../game-maker/js/bank.js?v=ch1-20261107c"></script>
-  <script src="js/config.js?v=ch1-20261107c"></script>
-  <script src="js/data.js?v=ch1-20261107d"></script>
-  <script src="js/core/audio.js?v=ch1-20261108"></script>
-  <script src="js/audio.js?v=ch1-20261107d"></script>
-  <script src="js/story.js?v=ch1-20261107d"></script>
-  <script src="js/games.js?v=ch1-20261107d"></script>
-  <script src="js/adventure.js?v=ch1-20261107d"></script>
-  <script src="js/wall.js?v=ch1-20261107d"></script>
-  <script src="js/rewards.js?v=ch1-20261107d"></script>
-  <script src="js/sync.js?v=ch1-20261107d"></script>
-  <script src="js/app.js?v=ch1-20261107d"></script>
-  <script src="js/shop.js?v=ch1-20261107d"></script>
+  <script src="js/config.js?v=rg-20261114"></script>
+  <script src="js/data.js?v=rg-20261114"></script>
+  <script src="js/core/audio.js?v=rg-20261114"></script>
+  <script src="js/audio.js?v=rg-20261114"></script>
+  <script src="js/story.js?v=rg-20261114"></script>
+  <script src="js/games.js?v=rg-20261114"></script>
+  <script src="js/adventure.js?v=rg-20261114"></script>
+  <script src="js/wall.js?v=rg-20261114"></script>
+  <script src="js/rewards.js?v=rg-20261114"></script>
+  <script src="js/sync.js?v=rg-20261114"></script>
+  <script src="js/app.js?v=rg-20261114"></script>
+  <script src="js/shop.js?v=rg-20261114"></script>
   <script src="lib/phaser.min.js"></script>
-  <script src="js/world-game.js?v=ch1-20261108k"></script>
-  <script src="js/world.js?v=hb3"></script>
-  <!-- Chapter 1 Clean Architecture Modules -->
-  <script src="js/core/progress.js?v=ch1-20261107d"></script>
-  <script src="js/core/feedback.js?v=ch1-20261108k"></script>
+  <!-- Core Progress, Unity-Feel Engine, Chapter 1 & Chapter 2 Modules -->
+  <script src="js/core/progress.js?v=rg-20261114"></script>
+  <script src="js/core/feedback.js?v=rg-20261114"></script>
+  <script src="js/core/unity-feel.js?v=rg-20261114"></script>
   <script src="js/minigames/listenTap.js?v=ch1-20261107c"></script>
   <script src="js/minigames/dragMatch.js?v=ch1-20261107fix"></script>
   <script src="js/minigames/wordOrder.js?v=ch1-20261107c"></script>
@@ -122,17 +127,25 @@
   <script src="js/minigames/dialLock.js?v=ch1-20261107fix"></script>
   <script src="js/minigames/wheelOrder.js?v=ch1-20261107c"></script>
   <script src="js/minigames/telescopeSpot.js?v=ch1-20261107c"></script>
-  <script src="js/chapter1/content-g3.js?v=ch1-20261107fix"></script>
-  <script src="js/chapter1/content-g4.js?v=ch1-20261107d"></script>
+  <script src="js/chapter1/content-g3.js?v=rg-20261114"></script>
+  <script src="js/chapter1/content-g4.js?v=rg-20261114"></script>
   <script src="js/chapter1/chapter1.js?v=ch1-20261107d"></script>
-  <script src="js/harbour/harbour.js?v=hb7-kenney"></script>
-  <script src="js/harbour/stop1.js?v=hb2"></script>
-  <script src="js/harbour/kit.js?v=hb3"></script>
-  <script src="js/harbour/stop2.js?v=hb2"></script>
-  <script src="js/harbour/stop3.js?v=hb3"></script>
-  <script src="js/harbour/stop4.js?v=hb2"></script>
-  <script src="js/harbour/stop5.js?v=hb3"></script>
+  <script src="js/harbour/harbour.js?v=rg-20261114"></script>
+  <script src="js/harbour/kit.js?v=rg-20261114"></script>
+  <script src="js/harbour/stop1.js?v=rg-20261114"></script>
+  <script src="js/harbour/stop2.js?v=rg-20261114"></script>
+  <script src="js/harbour/stop3.js?v=rg-20261114"></script>
+  <script src="js/harbour/stop4.js?v=rg-20261114"></script>
+  <script src="js/harbour/stop5.js?v=rg-20261114"></script>
   <script src="js/harbour/life.js?v=hb4"></script>
-  <script src="js/harbour/scenery.js?v=hb2"></script>
+  <script src="js/harbour/scenery.js?v=rg-20261114"></script>
+  <script src="js/chapter2/bay-world.js?v=rg-20261114"></script>
+  <script src="js/chapter2/stops.js?v=rg-20261114"></script>
+  <script src="js/chapter2/star-clues.js?v=rg-20261114"></script>
+  <!-- Real free-roam game engine (Phaser 4 WebGL) for Chapters 1 & 2 -->
+  <script src="js/realgame/rg-chapters.js?v=rg-20261114"></script>
+  <script src="js/realgame/rg-engine.js?v=rg-20261114"></script>
+  <script src="js/world-game.js?v=rg-20261114"></script>
+  <script src="js/world.js?v=rg-20261114"></script>
 </body>
 </html>
