@@ -1,12 +1,12 @@
 /* English Adventure Academy: offline safety net.
-   Rule 1: when the internet works, ALWAYS use the internet (so a push is live at once
-           and nobody ever gets an old version because of this file).
+   Rule 1: when the internet works, pages, pictures and unnumbered files ALWAYS come from
+           the internet, so a push is live at once. (Numbered ?v= scripts: see fastThenFresh.)
    Rule 2: keep a copy of everything that was opened, and use that copy only when the
            internet is down or too slow. So a lesson opened once keeps working if the
            school Wi-Fi drops.
    Never touched: the cloud database (Supabase), anything that is not a simple GET. */
 'use strict';
-var VERSION = 'eaa-offline-v1';
+var VERSION = 'eaa-offline-v2';
 var CODE = VERSION + '-code';     // pages, scripts, styles, json
 var MEDIA = VERSION + '-media';   // pictures, sounds, fonts, pdf
 var MEDIA_MAX = 1500;             // oldest copies are dropped past this
@@ -64,6 +64,20 @@ function netFirst(req, cacheName) {
   });
 }
 
+/* Scripts and styles that carry a ?v= number: show the saved copy at once and fetch the
+   newest in the background for next time. A push changes the ?v= number, which is a new
+   address, so new code is still fetched straight away. This removes about a hundred
+   "has it changed?" round trips on every start. */
+function fastThenFresh(req) {
+  return caches.open(CODE).then(function (c) {
+    return c.match(req).then(function (hit) {
+      var net = fetch(req).then(function (res) { keep(CODE, req, res); return res; });
+      if (hit) { net.catch(function () {}); return hit; }
+      return net.catch(function (err) { return saved(req).then(function (old) { if (old) return old; throw err; }); });
+    });
+  });
+}
+
 self.addEventListener('fetch', function (e) {
   var req = e.request;
   if (req.method !== 'GET' || req.headers.has('range')) return;
@@ -72,6 +86,7 @@ self.addEventListener('fetch', function (e) {
   var same = url.origin === self.location.origin;
   if (!same && EXTRA_HOSTS.indexOf(url.hostname) < 0) return;      // Supabase etc. go straight through
   if (url.pathname.slice(-6) === '/sw.js') return;
+  if (same && /\.(js|css)$/i.test(url.pathname) && /(^|[?&])v=[^&]+/.test(url.search)) { e.respondWith(fastThenFresh(req)); return; }
   e.respondWith(netFirst(req, MEDIA_RE.test(url.pathname) ? MEDIA : CODE));
 });
 
