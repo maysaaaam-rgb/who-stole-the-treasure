@@ -511,38 +511,174 @@
   }
 
   /* Practice Island — Global Readings 2.5D Adventure Entry Screen */
+  var _enginePromise = null;
+  var _entryGrade = 3;
+
+  function loadScriptOnce(src) {
+    return new Promise(function (resolve) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.async = false;
+      s.onload = function () { resolve(true); };
+      s.onerror = function () { resolve(false); };
+      document.body.appendChild(s);
+    });
+  }
+
+  function setLoadOverlay(visible, title, sub) {
+    var el = document.getElementById('w-load');
+    if (!el) return;
+    if (!visible) {
+      el.classList.remove('on');
+      el.style.display = 'none';
+      return;
+    }
+    el.style.display = 'flex';
+    el.classList.add('on');
+    el.innerHTML = (title || '⛵ Loading Practice Island...') + '<small id="w-load-small">' + esc(sub || 'Getting your adventure ready...') + '</small>';
+  }
+
+  function loadGameEngine() {
+    if (_enginePromise) return _enginePromise;
+    window.GM = window.GM || {};
+    window.EAA_AVATAR_BASE = '../assets/avatars/';
+    var queue = [
+      '../js/voice.js?v=ch1-20261107c',
+      '../js/evolution-levels.js?v=ch1-20261107c',
+      '../js/monster-costumes.js?v=ch1-20261107c',
+      '../js/monster-costumes2.js?v=ch1-20261107c',
+      '../js/monster-costumes3.js?v=ch1-20261107c',
+      '../js/monster-costumes4.js?v=ch1-20261107c',
+      '../js/monster-pets.js?v=7',
+      '../js/monster-outfits.js?v=3',
+      '../js/monster-renderer.js?v=ch1-20261107c',
+      '../bamboozle/data.js?v=ch1-20261107c',
+      '../unit2-arcade/data.js?v=ch1-20261107c',
+      '../unit3-data/data.js?v=ch1-20261107c',
+      '../game-maker/js/data.js?v=ch1-20261107c',
+      '../game-maker/js/sets-unit4.js?v=ch1-20261107c',
+      '../game-maker/js/sets-units14.js?v=ch1-20261107c',
+      '../game-maker/js/bank.js?v=ch1-20261107c',
+      'js/games.js?v=rg-20261114d',
+      'js/adventure.js?v=rg-20261114d',
+      'js/wall.js?v=rg-20261114d',
+      'js/rewards.js?v=rg-20261114d',
+      'js/shop.js?v=rg-20261114d',
+      'lib/phaser.min.js',
+      'js/core/unity-feel.js?v=rg-20261114d',
+      'js/minigames/listenTap.js?v=ch1-20261107c',
+      'js/minigames/dragMatch.js?v=ch1-20261107fix',
+      'js/minigames/wordOrder.js?v=rg-20261114d',
+      'js/minigames/flintSays.js?v=ch1-20261107c',
+      'js/minigames/countTap.js?v=ch1-20261107c',
+      'js/minigames/dialLock.js?v=ch1-20261107fix',
+      'js/minigames/wheelOrder.js?v=ch1-20261107c',
+      'js/minigames/telescopeSpot.js?v=ch1-20261107c',
+      'js/chapter1/content-g3.js?v=rg-20261114d',
+      'js/chapter1/content-g4.js?v=rg-20261114d',
+      'js/chapter1/chapter1.js?v=ch1-20261107d',
+      'js/harbour/harbour.js?v=rg-20261114d',
+      'js/harbour/kit.js?v=rg-20261114d',
+      'js/harbour/stop1.js?v=rg-20261114d',
+      'js/harbour/stop2.js?v=rg-20261114d',
+      'js/harbour/stop3.js?v=rg-20261114d',
+      'js/harbour/stop4.js?v=rg-20261114d',
+      'js/harbour/stop5.js?v=rg-20261114d',
+      'js/harbour/life.js?v=hb4',
+      'js/harbour/scenery.js?v=rg-20261114d',
+      'js/chapter2/bay-world.js?v=rg-20261114d',
+      'js/chapter2/stops.js?v=rg-20261114d',
+      'js/chapter2/star-clues.js?v=rg-20261114d',
+      'js/realgame/rg-chapters.js?v=w1-20261114b',
+      'js/realgame/rg-engine.js?v=w1-20261114c',
+      'js/world-game.js?v=rg-20261114d',
+      'js/world.js?v=rg-20261114d',
+      '../js/pupil-avatars.js?v=26',
+      'js/avatar-walker.js?v=1'
+    ];
+    _enginePromise = (async function () {
+      for (var i = 0; i < queue.length; i++) {
+        var pct = Math.round(((i + 1) / queue.length) * 100);
+        setLoadOverlay(true, '⛵ Sailing to Practice Island...', 'Loading ' + pct + '%');
+        await loadScriptOnce(queue[i]);
+        if (i % 4 === 3) {
+          await new Promise(function (r) { setTimeout(r, 8); });
+        }
+      }
+      return true;
+    })();
+    return _enginePromise;
+  }
+
+  function selectEntryGrade(g) {
+    _entryGrade = (Number(g) === 4) ? 4 : 3;
+    if (root.IslandAudio && root.IslandAudio.playTap) root.IslandAudio.playTap();
+    var b3 = document.getElementById('isl-grade-3');
+    var b4 = document.getElementById('isl-grade-4');
+    if (b3) b3.className = 'isl-btn ' + (_entryGrade === 3 ? 'cyan' : 'ghost');
+    if (b4) b4.className = 'isl-btn ' + (_entryGrade === 4 ? 'emerald' : 'ghost');
+  }
+
   function renderCodeEntry(container) {
-    var errMsg = (state.session && state.session.status === 'invalid_code')
-      ? '<p style="color:#fda4af;font-weight:700;margin:8px 0">Code "' + esc(state.session.code) + '" not found. Check your Sailor Pass code!</p>'
-      : (state.session && state.session.message ? '<p style="color:#fde68a;font-weight:700">' + esc(state.session.message) + '</p>' : '');
+    setLoadOverlay(false);
+    var savedName = '';
+    try {
+      savedName = localStorage.getItem('eaa_island_last_name') || '';
+      var sg = Number(localStorage.getItem('eaa_island_last_grade'));
+      if (sg === 3 || sg === 4) _entryGrade = sg;
+    } catch (e) {}
 
     container.innerHTML =
-      '<div class="isl-card-modal" id="isl-code-entry-card" style="max-width:680px;margin:24px auto;text-align:center;background:linear-gradient(180deg,rgba(15,23,42,0.85),rgba(6,9,17,0.96)),url(art/bg_benbow.webp) center/cover no-repeat;border:2px solid rgba(56,189,248,0.55);box-shadow:0 22px 56px rgba(0,0,0,0.8)">' +
-        '<div style="display:flex;justify-content:center;align-items:flex-end;gap:14px;margin-bottom:8px">' +
-          '<img src="art/c_jim_happy.webp" alt="Jim Hawkins" style="width:88px;height:110px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
-          '<img src="art/o_compass.webp" alt="Compass" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
-          '<img src="art/c_benbow_happy.webp" alt="Benbow" style="width:82px;height:90px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
-          '<img src="art/flat/c_silver_happy.webp" alt="Captain Silver" style="width:86px;height:108px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
+      '<div class="isl-card-modal" id="isl-code-entry-card" style="max-width:460px;margin:28px auto;padding:26px 22px;text-align:center;background:linear-gradient(180deg,rgba(15,23,42,0.92),rgba(6,9,17,0.98));border:2px solid rgba(56,189,248,0.55);border-radius:24px;box-shadow:0 20px 50px rgba(0,0,0,0.75)">' +
+        '<div style="display:flex;justify-content:center;align-items:flex-end;gap:12px;margin-bottom:10px">' +
+          '<img src="art/c_jim_happy.webp" alt="Jim" style="width:76px;height:94px;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.55))">' +
+          '<img src="art/c_benbow_happy.webp" alt="Benbow" style="width:74px;height:82px;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.55))">' +
         '</div>' +
-        '<div style="display:inline-block;padding:5px 15px;border-radius:99px;background:rgba(56,189,248,0.18);border:1px solid rgba(56,189,248,0.65);color:#7dd3fc;font-size:0.88rem;font-weight:800;margin-bottom:6px">🏝️ FREE-ROAM 2.5D GAME · CHAPTERS 1 &amp; 2</div>' +
-        '<h1 style="margin:4px 0 6px;font-size:2.05rem;color:#fff;text-shadow:0 3px 10px rgba(0,0,0,0.85)">🏴‍☠️ Practice Island Adventure</h1>' +
-        '<p style="color:#e2e8f0;font-size:1.02rem;margin:0 0 16px">Explore <b>Admiral Benbow Harbour</b> &amp; <b>Hispaniola Bay</b> with your Monster, solve Global Readings Unit 1 &amp; 2 clues, and unlock treasure!</p>' +
-        errMsg +
-        '<form onsubmit="IslandApp.submitCode(event)" style="display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:16px">' +
-          '<input id="isl-code-input" type="text" maxlength="8" placeholder="CODE" autocomplete="off" ' +
-            'style="width:200px;text-align:center;font:800 1.65rem Fredoka,sans-serif;letter-spacing:4px;text-transform:uppercase;padding:10px 14px;border-radius:16px;border:3px solid #f59e0b;background:rgba(15,23,42,0.94);color:#fff">' +
-          '<button type="submit" class="isl-btn amber" style="min-width:170px;font-size:1.18rem;padding:12px 20px">⛵ Set Sail!</button>' +
-        '</form>' +
-        '<div style="border-top:1px solid rgba(255,255,255,0.14);padding-top:14px;margin-top:4px">' +
-          '<div style="font-size:0.88rem;color:#bae6fd;font-weight:800;margin-bottom:10px">✨ Instant Classroom &amp; Practice Demo Modes:</div>' +
-          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">' +
-            '<a href="?demo=1&pupil=demo-g3" class="isl-btn cyan" style="text-decoration:none;font-size:0.93rem;min-height:48px;padding:8px 14px">⚓ Grade 3 · Ch.1 Harbour</a>' +
-            '<a href="?demo=1&pupil=demo-g4" class="isl-btn emerald" style="text-decoration:none;font-size:0.93rem;min-height:48px;padding:8px 14px">⚓ Grade 4 · Ch.1 Harbour</a>' +
-            '<a href="?demo=1&pupil=demo-g3&zone=2" class="isl-btn amber" style="text-decoration:none;font-size:0.93rem;min-height:48px;padding:8px 14px">🏝️ Grade 3 · Ch.2 Bay</a>' +
-            '<a href="?demo=1&pupil=demo-g4&zone=2" class="isl-btn violet" style="text-decoration:none;font-size:0.93rem;min-height:48px;padding:8px 14px">🏝️ Grade 4 · Ch.2 Bay</a>' +
+        '<h1 style="margin:2px 0 6px;font-size:1.95rem;color:#fff">🏝️ Practice Island</h1>' +
+        '<p style="color:#cbd5e1;font-size:1.05rem;margin:0 0 18px">Type your name and tap <b>Play!</b></p>' +
+        '<form onsubmit="IslandApp.submitName(event)" style="display:flex;flex-direction:column;gap:12px;align-items:stretch">' +
+          '<input id="isl-name-input" type="text" maxlength="40" placeholder="First &amp; Last Name" value="' + esc(savedName) + '" autocomplete="name" ' +
+            'style="width:100%;box-sizing:border-box;text-align:center;font:800 1.25rem Nunito,sans-serif;padding:13px 16px;border-radius:16px;border:3px solid #38bdf8;background:rgba(15,23,42,0.95);color:#fff;outline:none">' +
+          '<div id="isl-name-err" style="display:none;color:#fda4af;font-weight:800;font-size:0.95rem">Please write your name first!</div>' +
+          '<div style="display:flex;gap:10px;justify-content:center">' +
+            '<button type="button" id="isl-grade-3" onclick="IslandApp.selectEntryGrade(3)" class="isl-btn ' + (_entryGrade === 3 ? 'cyan' : 'ghost') + '" style="flex:1;min-height:46px;font-size:1rem">Grade 3</button>' +
+            '<button type="button" id="isl-grade-4" onclick="IslandApp.selectEntryGrade(4)" class="isl-btn ' + (_entryGrade === 4 ? 'emerald' : 'ghost') + '" style="flex:1;min-height:46px;font-size:1rem">Grade 4</button>' +
           '</div>' +
-        '</div>' +
+          '<button type="submit" id="isl-play-btn" class="isl-btn amber" style="width:100%;min-height:56px;font-size:1.35rem;font-weight:900;margin-top:4px">▶ Play!</button>' +
+        '</form>' +
       '</div>';
+  }
+
+  function submitName(arg) {
+    if (arg && arg.preventDefault) arg.preventDefault();
+    var inp = document.getElementById('isl-name-input');
+    var err = document.getElementById('isl-name-err');
+    var name = inp ? String(inp.value || '').replace(/\s+/g, ' ').trim() : '';
+    if (!name) {
+      if (err) err.style.display = 'block';
+      if (inp) inp.focus();
+      if (root.IslandAudio && root.IslandAudio.playSoftFail) root.IslandAudio.playSoftFail();
+      return Promise.resolve(null);
+    }
+    if (err) err.style.display = 'none';
+    if (root.IslandAudio && root.IslandAudio.playTap) root.IslandAudio.playTap();
+    setLoadOverlay(true, '⛵ Sailing to Practice Island...', 'Starting your adventure...');
+    return root.IslandSync.loadNameSession(name, _entryGrade).then(function (ses) {
+      state.session = ses;
+      return loadGameEngine().then(function () {
+        if (ses && (ses.grade === 3 || ses.grade === 4)) {
+          if (root.Ch1Progress) root.Ch1Progress.setActiveGrade(ses.grade);
+          if (root.Ch2Progress) root.Ch2Progress.setActiveGrade(ses.grade);
+        }
+        renderTopBar();
+        renderMap();
+        setLoadOverlay(false);
+        if (ses && ses.status === 'ok' && root.WORLD && typeof root.WORLD.startWorld === 'function') {
+          root.WORLD.startWorld();
+        }
+        return ses;
+      });
+    });
   }
 
   function submitCode(arg) {
@@ -556,16 +692,19 @@
     root.IslandAudio.playTap();
     return root.IslandSync.loadLiveSession(code).then(function (ses) {
       state.session = ses;
-      if (ses && (ses.grade === 3 || ses.grade === 4)) {
-        if (root.Ch1Progress) root.Ch1Progress.setActiveGrade(ses.grade);
-        if (root.Ch2Progress) root.Ch2Progress.setActiveGrade(ses.grade);
-      }
-      renderTopBar();
-      renderMap();
-      if (ses && ses.status === 'ok' && root.WORLD && typeof root.WORLD.startWorld === 'function') {
-        root.WORLD.startWorld();
-      }
-      return ses;
+      return loadGameEngine().then(function () {
+        if (ses && (ses.grade === 3 || ses.grade === 4)) {
+          if (root.Ch1Progress) root.Ch1Progress.setActiveGrade(ses.grade);
+          if (root.Ch2Progress) root.Ch2Progress.setActiveGrade(ses.grade);
+        }
+        renderTopBar();
+        renderMap();
+        setLoadOverlay(false);
+        if (ses && ses.status === 'ok' && root.WORLD && typeof root.WORLD.startWorld === 'function') {
+          root.WORLD.startWorld();
+        }
+        return ses;
+      });
     });
   }
 
@@ -1650,16 +1789,27 @@
 
     root.IslandStory.ready.then(function () { return loader; }).then(function (ses) {
       state.session = ses;
-      if (ses && (ses.grade === 3 || ses.grade === 4)) {
-        if (root.Ch1Progress) root.Ch1Progress.setActiveGrade(ses.grade);
-        if (root.Ch2Progress) root.Ch2Progress.setActiveGrade(ses.grade);
+      if (!ses || ses.status !== 'ok') {
+        renderTopBar();
+        renderMap();
+        return;
       }
-      if (demoParam === 'star' && root.Ch1Progress) {
-        root.Ch1Progress.setStarPreferred(true);
-      }
-      renderTopBar();
-      renderMap();
-      maybeShowWelcome();
+      return loadGameEngine().then(function () {
+        if (ses && (ses.grade === 3 || ses.grade === 4)) {
+          if (root.Ch1Progress) root.Ch1Progress.setActiveGrade(ses.grade);
+          if (root.Ch2Progress) root.Ch2Progress.setActiveGrade(ses.grade);
+        }
+        if (demoParam === 'star' && root.Ch1Progress) {
+          root.Ch1Progress.setStarPreferred(true);
+        }
+        renderTopBar();
+        renderMap();
+        setLoadOverlay(false);
+        if (root.WORLD && typeof root.WORLD.startWorld === 'function') {
+          root.WORLD.startWorld();
+        }
+        maybeShowWelcome();
+      });
     });
   }
 
@@ -1672,6 +1822,8 @@
     renderTopBar: renderTopBar,
     switchDemo: switchDemo,
     submitCode: submitCode,
+    submitName: submitName,
+    selectEntryGrade: selectEntryGrade,
     tapPin: tapPin,
     monsterHtml: renderMonsterHtml,
     tapChest: tapChest,
