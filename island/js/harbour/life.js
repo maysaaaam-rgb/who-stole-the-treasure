@@ -206,54 +206,22 @@
 
   /* ---------------------------------------------------------------- quiet sea sounds (made in the browser) */
   var Sea = (function () {
-    var ac = null, master = null, on = false;
     function muted() { var A = root.Ch1Audio; return !!(A && A.isMuted && A.isMuted()); }
-    function noiseBuffer() {
-      var len = ac.sampleRate * 2, buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0), last = 0;
-      for (var i = 0; i < len; i++) { var w = Math.random() * 2 - 1; last = (last + 0.02 * w) / 1.02; d[i] = last * 3.5; }
-      return buf;
-    }
-    function start() {
-      if (on || calm) return;
-      var C = root.AudioContext || root.webkitAudioContext; if (!C) return;
-      try {
-        ac = new C(); master = ac.createGain(); master.gain.value = muted() ? 0 : 0.05; master.connect(ac.destination);
-        // the waves: soft brown noise that swells and fades slowly
-        var src = ac.createBufferSource(); src.buffer = noiseBuffer(); src.loop = true;
-        var lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520;
-        var swell = ac.createGain(); swell.gain.value = 0.6;
-        var lfo = ac.createOscillator(); lfo.frequency.value = 0.11;
-        var lfoGain = ac.createGain(); lfoGain.gain.value = 0.4;
-        lfo.connect(lfoGain); lfoGain.connect(swell.gain);
-        src.connect(lp); lp.connect(swell); swell.connect(master);
-        src.start(); lfo.start();
-        on = true;
-        setInterval(function () {
-          if (!master) return;
-          var target = (muted() || document.hidden || sceneOpen()) ? 0 : 0.05;
-          master.gain.setTargetAtTime(target, ac.currentTime, 0.4);
-        }, 500);
-      } catch (e) { on = false; }
-    }
-    function chirp(f0, f1, dur, vol) {
-      if (!on || muted() || sceneOpen()) return;
-      var t = ac.currentTime;
-      [0, 0.16].forEach(function (off) {
-        var o = ac.createOscillator(), g = ac.createGain();
-        o.type = 'sine'; o.frequency.setValueAtTime(f0, t + off); o.frequency.exponentialRampToValueAtTime(f1, t + off + dur);
-        g.gain.setValueAtTime(0.0001, t + off); g.gain.exponentialRampToValueAtTime(vol, t + off + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + off + dur);
-        o.connect(g); g.connect(ac.destination); o.start(t + off); o.stop(t + off + dur + 0.05);
-      });
-    }
     return {
-      start: start,
-      gullCry: function () { chirp(1700, 1150, 0.22, 0.025); },
+      start: function () {
+        if (calm || muted()) return;
+        var A = root.Ch1Audio;
+        if (A && A.startAmbience) A.startAmbience();
+      },
+      gullCry: function () {
+        if (muted() || sceneOpen()) return;
+        var A = root.Ch1Audio;
+        if (A && A.sfxBird) A.sfxBird();
+      },
       splash: function () {
-        if (!on || muted()) return;
-        var t = ac.currentTime, s = ac.createBufferSource(), bp = ac.createBiquadFilter(), g = ac.createGain();
-        s.buffer = noiseBuffer(); bp.type = 'bandpass'; bp.frequency.setValueAtTime(1400, t); bp.frequency.exponentialRampToValueAtTime(380, t + 0.5);
-        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.22, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
-        s.connect(bp); bp.connect(g); g.connect(ac.destination); s.start(t); s.stop(t + 0.7);
+        if (muted()) return;
+        var A = root.Ch1Audio;
+        if (A && A.sfxSplash) A.sfxSplash();
       }
     };
   })();

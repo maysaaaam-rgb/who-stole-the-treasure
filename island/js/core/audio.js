@@ -1,61 +1,99 @@
 /* ═══════════════════════════════════════════════════════════════
-   Treasure Island — Core Audio & Foley Engine (island/js/core/audio.js)
-   - Loads `audio/manifest.json`, `audio/ch1/manifest.json`, AND `audio/ch2/manifest.json`
-   - Plays recorded neural character MP3s with calibrated TTS fallback (en-US, rate 0.88, pitch 1.05)
-   - Generates gentle Web Audio harbour/bay ocean ambience (waves + breeze, ducked on speech)
-   - Synthesizes polyphonic musical chord UI SFX & surface-aware footsteps (stone, wood, sand)
-   - Unlocks cleanly on first user gesture (AGENTS.md Section 1.3 compliant)
+   Treasure Island — Core Audio, Voice & Foley Engine (island/js/core/audio.js)
+   - Loads `audio/manifest.json`, `audio/ch1/manifest.json`, AND `audio/ch2/manifest.json` (2,890+ neural MP3s)
+   - Plays recorded neural character MP3s with smart natural-voice TTS fallback (en-US, rate 0.88, pitch 1.05)
+   - Gentle, zero-static Web Audio island marimba breeze ambience (ducked during speech & video)
+   - Polyphonic dual-oscillator ADSR musical chord UI SFX & tactile surface footsteps (grass, sand, wood, stone)
+   - Strict capture-phase autoplay unlock & unified mute state (AGENTS.md Section 1.3 compliant)
    ═══════════════════════════════════════════════════════════════ */
 (function (root) {
   'use strict';
 
   var MUTE_KEY = 'eaa_island_muted';
+  var LEGACY_MUTE_KEY = 'eaa_island_mute';
   var ctx = null;
+  var masterGain = null;
+  var compressor = null;
+  var userActivated = false;
+
   var manifest = {};
   var manifestByText = {};
   var manifestReady = false;
   var manifestPromise = null;
+
   var currentVo = null;
-  var ambienceNodes = null;
-  var ambienceGain = null;
-  var duckTimer = null;
+  var pendingVo = null;
+  var activeUtterances = []; // Prevents Chrome GC from cutting off SpeechSynthesis mid-sentence
+  var speakSeq = 0;
+
+  var ambienceTimer = null;
+  var ambienceStep = 0;
+  var ambienceDuckedUntil = 0;
+  var ambiencePaused = false;
   var lastStepAt = 0;
+
+  var cachedUsVoice = null;
+  var cachedVoiceKey = '';
 
   function norm(s) {
     return String(s || '')
       .toLowerCase()
-      .replace(/[\u2018\u2019']/g, "'")
+      .replace(/[\u2018\u2019`]/g, "'")
       .replace(/[^a-z0-9' ]+/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
   }
 
+  function normPlain(s) {
+    return norm(s).replace(/'+/g, '');
+  }
+
+  function readStoredMute() {
+    try {
+      var a = localStorage.getItem(MUTE_KEY);
+      if (a === '1' || a === '0') return a === '1';
+      var b = localStorage.getItem(LEGACY_MUTE_KEY);
+      if (b === '1' || b === '0') return b === '1';
+    } catch (e) { /* ignore */ }
+    return false;
+  }
+
+  var mutedState = readStoredMute();
+
   function isMuted() {
-    if (root.IslandAudio && typeof root.IslandAudio.isMuted === 'function') {
-      return root.IslandAudio.isMuted();
-    }
-    try { return localStorage.getItem(MUTE_KEY) === '1'; } catch (e) { return false; }
+    return mutedState;
   }
 
   function setMuted(flag) {
-    var m = !!flag;
-    try { localStorage.setItem(MUTE_KEY, m ? '1' : '0'); } catch (e) { /* ignore */ }
-    if (root.IslandAudio && typeof root.IslandAudio.setMuted === 'function') {
-      root.IslandAudio.setMuted(m);
+    mutedState = !!flag;
+    try {
+      localStorage.setItem(MUTE_KEY, mutedState ? '1' : '0');
+      localStorage.setItem(LEGACY_MUTE_KEY, mutedState ? '1' : '0');
+    } catch (e) { /* ignore */ }
+    if (root.IslandAudio && typeof root.IslandAudio._syncMutedFromCore === 'function') {
+      root.IslandAudio._syncMutedFromCore(mutedState);
     }
-    if (m) {
+    if (mutedState) {
       stopVoice();
-      if (ambienceGain && ctx) {
-        try { ambienceGain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.08); } catch (e) { /* ignore */ }
+      stopAmbience();
+      if (masterGain && ctx) {
+        try { masterGain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.03); } catch (e) { /* ignore */ }
       }
-    } else if (ambienceGain && ctx) {
-      try { ambienceGain.gain.setTargetAtTime(0.042, ctx.currentTime, 0.25); } catch (e) { /* ignore */ }
+    } else {
+      if (userActivated) {
+        ensureCtx();
+        if (masterGain && ctx) {
+          try { masterGain.gain.setTargetAtTime(0.92, ctx.currentTime, 0.05); } catch (e) { /* ignore */ }
+        }
+        startAmbience();
+      }
     }
     updateMuteButtons();
-    return m;
+    return mutedState;
   }
 
   function toggleMute() {
+    userActivated = true;
     return setMuted(!isMuted());
   }
 
@@ -72,17 +110,39 @@
     }
     var uMutes = document.querySelectorAll('.unity-hud-mute');
     for (var i = 0; i < uMutes.length; i++) {
-      uMutes[i].innerHTML = (m ? '🔇' : '🔊');
+      uMutes[i].innerHTML = m ? '🔇' : '🔊';
       uMutes[i].setAttribute('title', m ? 'Sound Off (Tap to Unmute)' : 'Sound On (Tap to Mute)');
     }
   }
 
+  /* ---------- Shared Web Audio Context + Soft Limiter ---------- */
   function ensureCtx() {
-    if (isMuted()) return null;
+    if (isMuted() || !userActivated) return null;
     if (!ctx) {
-      var AC = root.AudioContext || root.webkitAudioContext;
-      if (AC) {
-        try { ctx = new AC(); } catch (e) { ctx = null; }
+      ctx = root.__EAA_ISLAND_AUDIO_CTX || null;
+      if (!ctx) {
+        var AC = root.AudioContext || root.webkitAudioContext;
+        if (AC) {
+          try { ctx = new AC(); root.__EAA_ISLAND_AUDIO_CTX = ctx; } catch (e) { ctx = null; }
+        }
+      }
+      if (ctx) {
+        try {
+          compressor = ctx.createDynamicsCompressor();
+          compressor.threshold.value = -14;
+          compressor.knee.value = 18;
+          compressor.ratio.value = 4;
+          compressor.attack.value = 0.005;
+          compressor.release.value = 0.16;
+
+          masterGain = ctx.createGain();
+          masterGain.gain.value = isMuted() ? 0.0001 : 0.92;
+          compressor.connect(masterGain);
+          masterGain.connect(ctx.destination);
+          ctx.__eaaOut = compressor;
+        } catch (e) {
+          ctx.__eaaOut = ctx.destination;
+        }
       }
     }
     if (ctx && ctx.state === 'suspended') {
@@ -91,13 +151,19 @@
     return ctx;
   }
 
-  var pendingVo = null;
+  function outNode(c) {
+    return (c && c.__eaaOut) ? c.__eaaOut : (c ? c.destination : null);
+  }
 
+  /* ---------- Neural MP3 Manifest Loader (2,890+ Recorded Lines) ---------- */
   function registerEntry(textKey, fileRel, prefix) {
-    var k = norm(textKey);
-    if (!k || !fileRel) return;
+    if (!textKey || !fileRel) return;
     var full = fileRel.indexOf('audio/') === 0 ? fileRel : (prefix + fileRel);
-    manifestByText[k] = full.indexOf('?') >= 0 ? full : (full + '?v=3');
+    var url = full.indexOf('?') >= 0 ? full : (full + '?v=3');
+    var k1 = norm(textKey);
+    var k2 = normPlain(textKey);
+    if (k1 && !manifestByText[k1]) manifestByText[k1] = url;
+    if (k2 && !manifestByText[k2]) manifestByText[k2] = url;
   }
 
   function ingestManifestObj(data, prefix) {
@@ -106,10 +172,14 @@
     Object.keys(lines).forEach(function (k) {
       var item = lines[k];
       if (item && typeof item === 'object' && item.text && item.file) {
-        manifest[k] = item;
+        var full = item.file.indexOf('audio/') === 0 ? item.file : (prefix + item.file);
+        var url = full.indexOf('?') >= 0 ? full : (full + '?v=3');
+        manifest[k] = { text: item.text, file: item.file, speaker: item.speaker, _url: url };
         registerEntry(item.text, item.file, prefix);
       } else if (typeof item === 'string') {
-        manifest[k] = item;
+        var fullStr = item.indexOf('audio/') === 0 ? item : (prefix + item);
+        var urlStr = fullStr.indexOf('?') >= 0 ? fullStr : (fullStr + '?v=3');
+        manifest[k] = { text: k, file: item, _url: urlStr };
         registerEntry(k, item, prefix);
       }
     });
@@ -134,6 +204,9 @@
 
     manifestPromise = Promise.all([pLegacy, pCh1, pCh2])
       .then(function (results) {
+        // Load Ch1 and Ch2 neural lines first so character-specific recordings take priority
+        ingestManifestObj(results[1], 'audio/ch1/');
+        ingestManifestObj(results[2], 'audio/ch2/');
         var leg = results[0];
         if (leg && typeof leg === 'object') {
           Object.keys(leg).forEach(function (k) {
@@ -145,8 +218,6 @@
             }
           });
         }
-        ingestManifestObj(results[1], 'audio/ch1/');
-        ingestManifestObj(results[2], 'audio/ch2/');
         manifestReady = true;
       })
       .catch(function () {
@@ -163,228 +234,265 @@
     return loadManifest();
   }
 
-  /* ---------- Gentle Ocean Ambience (Filtered Pink Surf + Slow Swell) ---------- */
-  function startAmbience() {
-    if (isMuted()) return;
-    var c = ensureCtx();
-    if (!c || ambienceNodes) return;
+  /* ---------- Real Recorded Audio SFX & Sea Waves Ambience ---------- */
+  var sfxPool = {};
+  var ambienceAudio = null;
+
+  function playRealSfx(filename, vol) {
+    if (isMuted() || !userActivated || typeof Audio === 'undefined') return;
     try {
-      var bufferSize = c.sampleRate * 3;
-      var noiseBuffer = c.createBuffer(1, bufferSize, c.sampleRate);
-      var output = noiseBuffer.getChannelData(0);
-      var lastOut = 0.0;
-      for (var i = 0; i < bufferSize; i++) {
-        var white = Math.random() * 2 - 1;
-        output[i] = (lastOut + (0.02 * white)) / 1.02;
-        lastOut = output[i];
-        output[i] *= 0.62;
+      var key = String(filename || '');
+      if (!key) return;
+      if (!sfxPool[key]) sfxPool[key] = [];
+      var pool = sfxPool[key];
+      var audio = null;
+      for (var i = 0; i < pool.length; i++) {
+        if (pool[i].paused || pool[i].ended) {
+          audio = pool[i];
+          break;
+        }
       }
-      var whiteNoise = c.createBufferSource();
-      whiteNoise.buffer = noiseBuffer;
-      whiteNoise.loop = true;
-
-      var filter = c.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.value = 340;
-
-      var lfo = c.createOscillator();
-      lfo.type = 'sine';
-      lfo.frequency.value = 0.16;
-      var lfoGain = c.createGain();
-      lfoGain.gain.value = 175;
-      lfo.connect(lfoGain);
-      lfoGain.connect(filter.frequency);
-      lfo.start();
-
-      ambienceGain = c.createGain();
-      ambienceGain.gain.value = isMuted() ? 0.0001 : 0.038;
-
-      whiteNoise.connect(filter);
-      filter.connect(ambienceGain);
-      ambienceGain.connect(c.destination);
-      whiteNoise.start();
-
-      ambienceNodes = { noise: whiteNoise, lfo: lfo, filter: filter };
+      if (!audio) {
+        if (pool.length >= 4) {
+          audio = pool[0];
+          try { audio.pause(); } catch (e) { /* ignore */ }
+        } else {
+          audio = new Audio('audio/sfx/' + key);
+          audio.preload = 'auto';
+          pool.push(audio);
+        }
+      }
+      audio.volume = Math.max(0, Math.min(1, vol != null ? vol : 0.55));
+      try { audio.currentTime = 0; } catch (e) { /* ignore */ }
+      var p = audio.play();
+      if (p && typeof p.catch === 'function') p.catch(function () {});
     } catch (e) { /* ignore */ }
+  }
+
+  function syncAmbienceVolume() {
+    if (!ambienceAudio) return;
+    var vid = typeof document !== 'undefined' ? document.getElementById('uf-cinema-player') : null;
+    var videoPlaying = !!(vid && !vid.paused && !vid.ended);
+    var hidden = typeof document !== 'undefined' && document.visibilityState && document.visibilityState !== 'visible';
+    if (isMuted() || ambiencePaused || !userActivated || hidden || videoPlaying) {
+      if (!ambienceAudio.paused) {
+        try { ambienceAudio.pause(); } catch (e) { /* ignore */ }
+      }
+      return;
+    }
+    var speakingNow = !!currentVo || activeUtterances.length > 0 || Date.now() < ambienceDuckedUntil;
+    ambienceAudio.volume = speakingNow ? 0.025 : 0.09;
+    if (ambienceAudio.paused) {
+      var p = ambienceAudio.play();
+      if (p && typeof p.catch === 'function') p.catch(function () {});
+    }
+  }
+
+  function startAmbience() {
+    ambiencePaused = false;
+    if (isMuted() || !userActivated || typeof Audio === 'undefined') return;
+    if (!ambienceAudio) {
+      ambienceAudio = new Audio('audio/sfx/sea_waves.mp3');
+      ambienceAudio.loop = true;
+      ambienceAudio.preload = 'auto';
+    }
+    syncAmbienceVolume();
+    if (!ambienceTimer) {
+      ambienceTimer = setInterval(syncAmbienceVolume, 450);
+    }
+  }
+
+  function stopAmbience() {
+    ambiencePaused = true;
+    if (ambienceAudio && !ambienceAudio.paused) {
+      try { ambienceAudio.pause(); } catch (e) { /* ignore */ }
+    }
   }
 
   function duckAmbience(ms) {
-    if (!ambienceGain || !ctx || isMuted()) return;
-    try {
-      ambienceGain.gain.setTargetAtTime(0.009, ctx.currentTime, 0.06);
-      if (duckTimer) clearTimeout(duckTimer);
-      duckTimer = setTimeout(function () {
-        if (ambienceGain && ctx && !isMuted()) {
-          ambienceGain.gain.setTargetAtTime(0.038, ctx.currentTime, 0.35);
-        }
-      }, ms || 2400);
-    } catch (e) { /* ignore */ }
+    ambienceDuckedUntil = Math.max(ambienceDuckedUntil, Date.now() + (ms || 2600));
+    syncAmbienceVolume();
   }
 
-  /* ---------- Polyphonic Dual-Oscillator Chord & Foley Sound Effects ---------- */
-  function tone(freq, dur, type, vol, delay, slideTo) {
-    var c = ensureCtx();
-    if (!c) return;
-    var now = c.currentTime + (delay || 0);
-    var o1 = c.createOscillator();
-    var o2 = c.createOscillator();
-    var g = c.createGain();
-    o1.type = type || 'sine';
-    o2.type = 'triangle';
-    o1.frequency.setValueAtTime(freq, now);
-    o2.frequency.setValueAtTime(freq * 1.0035, now);
-    if (slideTo) {
-      o1.frequency.exponentialRampToValueAtTime(slideTo, now + dur);
-      o2.frequency.exponentialRampToValueAtTime(slideTo * 1.0035, now + dur);
-    }
-    var peak = (vol || 0.14);
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.linearRampToValueAtTime(peak, now + 0.015);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-    o1.connect(g);
-    o2.connect(g);
-    g.connect(c.destination);
-    o1.start(now);
-    o2.start(now);
-    o1.stop(now + dur + 0.02);
-    o2.stop(now + dur + 0.02);
-  }
-
-  function noiseBurst(dur, cutoff, qVal, vol, delay) {
-    var c = ensureCtx();
-    if (!c) return;
-    try {
-      var now = c.currentTime + (delay || 0);
-      var len = Math.max(256, Math.floor(c.sampleRate * dur));
-      var buf = c.createBuffer(1, len, c.sampleRate);
-      var data = buf.getChannelData(0);
-      for (var i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
-      var src = c.createBufferSource();
-      src.buffer = buf;
-      var flt = c.createBiquadFilter();
-      flt.type = 'bandpass';
-      flt.frequency.setValueAtTime(cutoff || 900, now);
-      flt.Q.setValueAtTime(qVal || 1.4, now);
-      var g = c.createGain();
-      g.gain.setValueAtTime(0.0001, now);
-      g.gain.linearRampToValueAtTime(vol || 0.08, now + 0.008);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-      src.connect(flt);
-      flt.connect(g);
-      g.connect(c.destination);
-      src.start(now);
-      src.stop(now + dur + 0.01);
-    } catch (e) { /* ignore */ }
-  }
-
-  function sfxTap() {
-    tone(520, 0.065, 'sine', 0.09, 0, 660);
-  }
-
-  function sfxCorrect() {
-    // Ascending C-Major Pentatonic (C5 -> E5 -> G5 -> C6)
-    [523.25, 659.25, 783.99, 1046.50].forEach(function (n, i) {
-      tone(n, 0.24, 'triangle', 0.14, i * 0.065);
-    });
-  }
-
-  function sfxWrong() {
-    // Warm descending two-tone sine chime (246.94 Hz -> 220 Hz) — zero harsh buzzers
-    tone(246.94, 0.22, 'sine', 0.11, 0);
-    tone(220.00, 0.30, 'sine', 0.11, 0.15);
-  }
-
-  function sfxStamp() {
-    tone(587.33, 0.14, 'triangle', 0.15, 0);
-    tone(880.00, 0.22, 'triangle', 0.16, 0.08);
-    tone(1174.66, 0.36, 'sine', 0.18, 0.16);
-  }
-
-  function sfxCoin() {
-    // Classic two-tone ascending arpeggio (B5 -> E6)
-    tone(987.77, 0.09, 'triangle', 0.13, 0);
-    tone(1318.51, 0.22, 'sine', 0.15, 0.07);
-  }
-
-  function sfxGear() {
-    noiseBurst(0.045, 1350, 2.2, 0.07, 0);
-    tone(440 + Math.random() * 140, 0.08, 'triangle', 0.10, 0.01, 660);
-  }
-
-  function sfxSplash() {
-    noiseBurst(0.22, 680, 0.9, 0.10, 0);
-    tone(330, 0.16, 'sine', 0.08, 0.02, 520);
-  }
+  function sfxTap() { playRealSfx('tap.mp3', 0.42); }
+  function sfxPop() { playRealSfx('hop.wav', 0.48); }
+  function sfxKick() { playRealSfx('kick.wav', 0.52); }
+  function sfxBird() { playRealSfx('birds.mp3', 0.45); }
+  function sfxPurr() { playRealSfx('chest.mp3', 0.32); }
+  function sfxCorrect() { playRealSfx('correct.mp3', 0.62); }
+  function sfxWrong() { playRealSfx('try_again.mp3', 0.55); }
+  function sfxStamp() { playRealSfx('correct.mp3', 0.62); }
+  function sfxCoin() { playRealSfx('chest.mp3', 0.55); }
+  function sfxGear() { playRealSfx('tap.mp3', 0.48); }
+  function sfxSplash() { playRealSfx('splash.mp3', 0.55); }
 
   function sfxFootstep(surface) {
     var nowMs = Date.now();
-    if (nowMs - lastStepAt < 210) return;
+    if (nowMs - lastStepAt < 285) return;
     lastStepAt = nowMs;
-    var pitchJitter = 0.94 + Math.random() * 0.12;
-    if (surface === 'wood') {
-      tone(165 * pitchJitter, 0.055, 'triangle', 0.055, 0, 95);
-      noiseBurst(0.04, 720, 1.8, 0.035, 0);
-    } else if (surface === 'sand') {
-      noiseBurst(0.075, 1650, 1.1, 0.042, 0);
-      tone(125 * pitchJitter, 0.045, 'sine', 0.03, 0, 82);
-    } else {
-      // cobblestone
-      tone(215 * pitchJitter, 0.048, 'sine', 0.048, 0, 128);
-      noiseBurst(0.038, 1180, 2.0, 0.035, 0);
-    }
+    var vol = (surface === 'wood' || surface === 'stone') ? 0.34 : 0.24;
+    playRealSfx('step.mp3', vol);
   }
 
-  function sfxChestOpen() {
-    [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50].forEach(function (n, i) {
-      tone(n, 0.42, 'triangle', 0.15, i * 0.075);
-    });
-  }
+  function sfxChestOpen() { playRealSfx('chest.mp3', 0.65); }
+  function sfxBeacon() { playRealSfx('win.mp3', 0.55); }
+  function sfxFanfare() { playRealSfx('win.mp3', 0.68); }
 
-  function sfxBeacon() {
-    // Warm golden lighthouse chord (G4 - B4 - D5 - G5 - B5)
-    [392.00, 493.88, 587.33, 783.99, 987.77].forEach(function (n, i) {
-      tone(n, 0.72, 'triangle', 0.14, i * 0.09);
-    });
-  }
-
-  function sfxFanfare() {
-    [523.25, 659.25, 783.99, 1046.50].forEach(function (n, i) {
-      tone(n, 0.36, 'triangle', 0.17, i * 0.11);
-    });
-  }
-
+  /* ---------- Voice / Speech Engine (Recorded Neural MP3s + Smart Natural TTS) ---------- */
   function stopVoice() {
+    speakSeq++;
+    pendingVo = null;
     if (currentVo) {
-      try { currentVo.pause(); } catch (e) { /* ignore */ }
+      try {
+        currentVo.onended = null;
+        currentVo.onerror = null;
+        currentVo.pause();
+      } catch (e) { /* ignore */ }
       currentVo = null;
     }
+    activeUtterances = [];
     if (root.speechSynthesis) {
       try { root.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
     }
+    if (root.EAAVoice && typeof root.EAAVoice.stop === 'function') {
+      try { root.EAAVoice.stop(); } catch (e) { /* ignore */ }
+    }
+  }
+
+  function sanitizeSpeechText(raw) {
+    return String(raw || '')
+      .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF\uFE0F]/gu, ' ')
+      .replace(/[➔⬅⬆⬇→←↔🧭⭐✨🔒🔓🪙🦀🐚⛵🏆🎬🛒👕🎮🗺️🔊🔇🔁✕✓]/g, ' ')
+      .replace(/[·•|—–]/g, ', ')
+      .replace(/[_*#`~]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function pickBestEnUsVoice() {
+    var synth = root.speechSynthesis;
+    if (!synth || typeof synth.getVoices !== 'function') return null;
+    var list = synth.getVoices() || [];
+    if (!list.length) return null;
+    var key = list.map(function (v) { return v.name + ':' + v.lang; }).join('|');
+    if (key === cachedVoiceKey && cachedUsVoice) return cachedUsVoice;
+
+    var best = null, bestScore = -1e9;
+    for (var i = 0; i < list.length; i++) {
+      var v = list[i];
+      var lang = String(v.lang || '').replace('_', '-');
+      if (!/^en/i.test(lang)) continue;
+      var n = String(v.name || '');
+      var sc = 0;
+      if (/^en-US/i.test(lang)) sc += 55;
+      else if (/^en-(GB|CA|AU)/i.test(lang)) sc += 25;
+      else sc += 10;
+
+      if (/natural|neural|online/i.test(n)) sc += 60;
+      if (/google|enhanced|premium/i.test(n)) sc += 35;
+      if (/aria|jenny|ana\b|emma|ava|andrew|michelle|steffan|samantha|allison|siri|sonia|libby/i.test(n)) sc += 28;
+      if (/david|mark\b|espeak|compact|whisper|zarvox|novelty/i.test(n)) sc -= 45;
+      if (sc > bestScore) {
+        bestScore = sc;
+        best = v;
+      }
+    }
+    cachedVoiceKey = key;
+    cachedUsVoice = best;
+    return best;
+  }
+
+  if (root.speechSynthesis) {
+    try {
+      root.speechSynthesis.getVoices();
+      if ('onvoiceschanged' in root.speechSynthesis) {
+        root.speechSynthesis.addEventListener('voiceschanged', function () {
+          cachedVoiceKey = '';
+          pickBestEnUsVoice();
+        });
+      }
+    } catch (e) { /* ignore */ }
   }
 
   function resolveAudioFile(text, lineId) {
     loadManifest();
     var cleanText = String(text || '').replace(/[_*#]/g, ' ').trim();
-    if (lineId && manifest[lineId]) {
-      var entry = manifest[lineId];
-      var f = typeof entry === 'string' ? entry : entry.file;
-      if (f) return f.indexOf('audio/') === 0 ? f : ('audio/ch1/' + f + '?v=3');
+    if (lineId && manifest[lineId] && manifest[lineId]._url) {
+      return manifest[lineId]._url;
     }
-    var k = norm(cleanText);
-    if (k && manifestByText[k]) return manifestByText[k];
-    var noDots = norm(cleanText.replace(/\.\.\./g, ' '));
-    if (noDots && manifestByText[noDots]) return manifestByText[noDots];
-    var noColon = norm(cleanText.replace(/^[^:]+:\s*/, ''));
-    if (noColon && manifestByText[noColon]) return manifestByText[noColon];
+    var candidates = [
+      cleanText,
+      cleanText.replace(/\.\.\./g, ' '),
+      cleanText.replace(/^[^:]+:\s*/, ''),
+      sanitizeSpeechText(cleanText)
+    ];
+    for (var i = 0; i < candidates.length; i++) {
+      var k1 = norm(candidates[i]);
+      if (k1 && manifestByText[k1]) return manifestByText[k1];
+      var k2 = normPlain(candidates[i]);
+      if (k2 && manifestByText[k2]) return manifestByText[k2];
+    }
     return null;
   }
 
-  function speakNow(text, opts, onEnd) {
-    if (isMuted() || !text) {
-      if (onEnd) setTimeout(onEnd, 220);
+  function speakTtsFallback(text, opts, onEnd, mySeq) {
+    var clean = sanitizeSpeechText(text);
+    if (!clean || isMuted() || mySeq !== speakSeq) {
+      if (onEnd) setTimeout(onEnd, 180);
       return;
     }
+    if (!userActivated) {
+      pendingVo = { text: text, opts: opts || {} };
+      if (onEnd) setTimeout(onEnd, 280);
+      return;
+    }
+    var synth = root.speechSynthesis;
+    if (synth && typeof SpeechSynthesisUtterance !== 'undefined') {
+      try {
+        synth.cancel();
+        if (synth.paused) synth.resume();
+        var u = new SpeechSynthesisUtterance(clean);
+        // Strictly calibrated to AGENTS.md Section 1.3: en-US, rate 0.88, pitch 1.05
+        u.lang = 'en-US';
+        u.rate = (opts && opts.slow) ? 0.74 : 0.88;
+        u.pitch = 1.05;
+        var v = pickBestEnUsVoice();
+        if (v) u.voice = v;
+
+        var ended = false;
+        var estMs = Math.max(2400, Math.min(14000, 1400 + clean.length * 95));
+        var guardTimer = null;
+        var fin = function () {
+          if (ended) return;
+          ended = true;
+          if (guardTimer) clearTimeout(guardTimer);
+          activeUtterances = activeUtterances.filter(function (item) { return item !== u; });
+          if (mySeq === speakSeq && onEnd) onEnd();
+        };
+        u.onend = fin;
+        u.onerror = fin;
+        activeUtterances.push(u);
+        guardTimer = setTimeout(fin, estMs);
+        duckAmbience(Math.min(6000, estMs));
+        synth.speak(u);
+        return;
+      } catch (e) { /* fall through */ }
+    }
+    if (onEnd) setTimeout(onEnd, 350);
+  }
+
+  function speakNow(text, opts, onEnd, mySeq) {
+    if (isMuted() || !text || mySeq !== speakSeq) {
+      if (onEnd && mySeq === speakSeq) setTimeout(onEnd, 200);
+      return;
+    }
+    // Autoplay Guard (AGENTS.md §1.3): never start Audio/SpeechSynthesis before first user gesture
+    if (!userActivated) {
+      pendingVo = { text: text, opts: opts || {} };
+      if (onEnd) setTimeout(onEnd, 280);
+      return;
+    }
+
     var file = resolveAudioFile(text, opts.lineId);
     if (file && typeof Audio !== 'undefined') {
       try {
@@ -399,95 +507,112 @@
           finished = true;
           if (safetyTimer) clearTimeout(safetyTimer);
           if (currentVo === a) currentVo = null;
-          if (onEnd) onEnd();
+          if (mySeq === speakSeq && onEnd) onEnd();
         };
         a.onended = done;
         a.onerror = function () {
           if (currentVo === a) currentVo = null;
-          // Fall back to calibrated TTS if file fails to load
-          speakTtsFallback(text, opts, done);
+          if (finished || mySeq !== speakSeq) return;
+          finished = true;
+          if (safetyTimer) clearTimeout(safetyTimer);
+          speakTtsFallback(text, opts, onEnd, mySeq);
         };
-        safetyTimer = setTimeout(done, 16000);
+        safetyTimer = setTimeout(done, 15000);
+        duckAmbience(3600);
         var p = a.play();
         if (p && typeof p.catch === 'function') {
           p.catch(function () {
-            pendingVo = { file: file, slow: !!opts.slow };
             if (currentVo === a) currentVo = null;
-            setTimeout(done, 450);
+            if (finished || mySeq !== speakSeq) return;
+            finished = true;
+            if (safetyTimer) clearTimeout(safetyTimer);
+            speakTtsFallback(text, opts, onEnd, mySeq);
           });
         }
         return;
-      } catch (e) { /* ignore */ }
+      } catch (e) { /* fall back to TTS */ }
     }
-    speakTtsFallback(text, opts, onEnd);
-  }
-
-  function speakTtsFallback(text, opts, onEnd) {
-    var synth = root.speechSynthesis;
-    if (synth && typeof SpeechSynthesisUtterance !== 'undefined') {
-      try {
-        var u = new SpeechSynthesisUtterance(String(text).replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu, ''));
-        u.lang = 'en-US';
-        u.rate = (opts && opts.slow) ? 0.72 : 0.88;
-        u.pitch = 1.05;
-        var v = (synth.getVoices() || []).filter(function (x) { return /^en[-_]US/i.test(x.lang); })[0];
-        if (v) u.voice = v;
-        var ended = false;
-        var fin = function () { if (ended) return; ended = true; if (onEnd) onEnd(); };
-        u.onend = fin;
-        u.onerror = fin;
-        setTimeout(fin, 12000);
-        synth.speak(u);
-        return;
-      } catch (e) { /* fall through */ }
-    }
-    if (onEnd) setTimeout(onEnd, 450);
+    speakTtsFallback(text, opts, onEnd, mySeq);
   }
 
   function speak(text, opts, onEnd) {
     if (typeof opts === 'function') { onEnd = opts; opts = {}; }
     opts = opts || {};
-    if (isMuted() || !text) {
-      if (onEnd) setTimeout(onEnd, 220);
+    if (!text) {
+      if (onEnd) setTimeout(onEnd, 180);
+      return;
+    }
+    if (isMuted()) {
+      if (onEnd) setTimeout(onEnd, 200);
       return;
     }
     stopVoice();
-    duckAmbience(2600);
+    var mySeq = speakSeq;
+    duckAmbience(2800);
 
     if (!manifestReady && manifestPromise) {
       manifestPromise.then(function () {
-        speakNow(text, opts, onEnd);
+        if (mySeq === speakSeq) speakNow(text, opts, onEnd, mySeq);
       });
       return;
     }
-    speakNow(text, opts, onEnd);
+    speakNow(text, opts, onEnd, mySeq);
   }
 
   function speakSlow(text, lineId, onEnd) {
     speak(text, { lineId: lineId, slow: true }, onEnd);
   }
 
-  if (typeof document !== 'undefined') {
-    var unlock = function () {
-      ensureCtx();
-      loadManifest();
-      startAmbience();
+  /* ---------- Capture-Phase Gesture Unlock (Never Swallowed by stopPropagation) ---------- */
+  function activateFromGesture() {
+    var wasFirst = !userActivated;
+    userActivated = true;
+    var c = ensureCtx();
+    loadManifest();
+    startAmbience();
+    if (wasFirst) {
       updateMuteButtons();
+      if (root.speechSynthesis) {
+        try { root.speechSynthesis.getVoices(); } catch (e) { /* ignore */ }
+      }
       if (pendingVo && !currentVo && !isMuted()) {
         var pv = pendingVo;
         pendingVo = null;
-        try {
-          var a = new Audio(pv.file);
-          a.playbackRate = pv.slow ? 0.82 : 1.0;
-          currentVo = a;
-          a.onended = a.onerror = function () { if (currentVo === a) currentVo = null; };
-          var pr = a.play();
-          if (pr && pr.catch) pr.catch(function () {});
-        } catch (e) { /* ignore */ }
+        // Delay slightly so if the click itself triggers a new speak(), that new speak() wins cleanly
+        setTimeout(function () {
+          if (!currentVo && activeUtterances.length === 0 && !isMuted()) {
+            speak(pv.text, pv.opts);
+          }
+        }, 90);
       }
-    };
-    ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(function (ev) {
-      document.addEventListener(ev, unlock, { once: true, passive: true });
+    }
+    if (c && c.state === 'running' && unlockInstalled) {
+      // Keep lightweight resume check on visibilitychange, remove heavy per-pointer capture listeners once running
+      removeGestureUnlock();
+    }
+  }
+
+  var unlockInstalled = false;
+  var UNLOCK_EVENTS = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
+  function removeGestureUnlock() {
+    if (!unlockInstalled || typeof document === 'undefined') return;
+    unlockInstalled = false;
+    UNLOCK_EVENTS.forEach(function (ev) {
+      document.removeEventListener(ev, activateFromGesture, true);
+    });
+  }
+
+  if (typeof document !== 'undefined') {
+    unlockInstalled = true;
+    UNLOCK_EVENTS.forEach(function (ev) {
+      document.addEventListener(ev, activateFromGesture, true);
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible' && userActivated && !isMuted()) {
+        ensureCtx();
+      } else if (document.visibilityState !== 'visible') {
+        stopVoice();
+      }
     });
   }
 
@@ -501,7 +626,13 @@
     toggleMute: toggleMute,
     updateMuteButtons: updateMuteButtons,
     startAmbience: startAmbience,
+    stopAmbience: stopAmbience,
+    duckAmbience: duckAmbience,
     sfxTap: sfxTap,
+    sfxPop: sfxPop,
+    sfxKick: sfxKick,
+    sfxBird: sfxBird,
+    sfxPurr: sfxPurr,
     sfxCorrect: sfxCorrect,
     sfxWrong: sfxWrong,
     sfxStamp: sfxStamp,
@@ -511,6 +642,10 @@
     sfxFootstep: sfxFootstep,
     sfxChestOpen: sfxChestOpen,
     sfxBeacon: sfxBeacon,
-    sfxFanfare: sfxFanfare
+    sfxFanfare: sfxFanfare,
+    playRealSfx: playRealSfx,
+    _ensureCtx: ensureCtx,
+    _isActivated: function () { return userActivated; },
+    _activate: activateFromGesture
   };
 })(typeof window !== 'undefined' ? window : this);

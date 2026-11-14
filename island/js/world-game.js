@@ -1721,150 +1721,38 @@
   }
 
   var sportsDiff = 'hard';
-  var sportAudioCtx = null;
+  var sportSfxPool = {};
 
   function playSportSfx(type) {
     try {
       var st = readState();
-      if (st && st.muted) return;
-      var AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return;
-      if (!sportAudioCtx) sportAudioCtx = new AC();
-      if (sportAudioCtx.state === 'suspended') sportAudioCtx.resume();
-      var ctx = sportAudioCtx;
-      var now = ctx.currentTime;
-
-      if (type === 'kick' || type === 'pass') {
-        // Realistic leather football thump (low-pass punch + soft leather transient)
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-        osc.type = 'sine';
-        var startF = type === 'pass' ? 165 : 140;
-        osc.frequency.setValueAtTime(startF, now);
-        osc.frequency.exponentialRampToValueAtTime(42, now + 0.095);
-        gain.gain.setValueAtTime(type === 'pass' ? 0.28 : 0.36, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.105);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.11);
-      } else if (type === 'power_shot') {
-        // Deep cannon strike thud + air whoosh
-        var osc1 = ctx.createOscillator();
-        var osc2 = ctx.createOscillator();
-        var g = ctx.createGain();
-        osc1.type = 'sine';
-        osc2.type = 'triangle';
-        osc1.frequency.setValueAtTime(175, now);
-        osc1.frequency.exponentialRampToValueAtTime(38, now + 0.14);
-        osc2.frequency.setValueAtTime(95, now);
-        osc2.frequency.exponentialRampToValueAtTime(28, now + 0.14);
-        g.gain.setValueAtTime(0.42, now);
-        g.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-        osc1.connect(g);
-        osc2.connect(g);
-        g.connect(ctx.destination);
-        osc1.start(now);
-        osc2.start(now);
-        osc1.stop(now + 0.155);
-        osc2.stop(now + 0.155);
-      } else if (type === 'volley_hit') {
-        // Realistic hollow volleyball bump/set membrane thump
-        var vOsc = ctx.createOscillator();
-        var vGain = ctx.createGain();
-        vOsc.type = 'sine';
-        vOsc.frequency.setValueAtTime(230, now);
-        vOsc.frequency.exponentialRampToValueAtTime(92, now + 0.085);
-        vGain.gain.setValueAtTime(0.28, now);
-        vGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
-        vOsc.connect(vGain);
-        vGain.connect(ctx.destination);
-        vOsc.start(now);
-        vOsc.stop(now + 0.095);
-      } else if (type === 'volley_spike') {
-        // Sharp volleyball smash slap + deep resonant boom
-        var sOsc = ctx.createOscillator();
-        var sOsc2 = ctx.createOscillator();
-        var sGain = ctx.createGain();
-        sOsc.type = 'triangle';
-        sOsc2.type = 'sine';
-        sOsc.frequency.setValueAtTime(320, now);
-        sOsc.frequency.exponentialRampToValueAtTime(78, now + 0.11);
-        sOsc2.frequency.setValueAtTime(150, now);
-        sOsc2.frequency.exponentialRampToValueAtTime(48, now + 0.12);
-        sGain.gain.setValueAtTime(0.38, now);
-        sGain.gain.exponentialRampToValueAtTime(0.001, now + 0.125);
-        sOsc.connect(sGain);
-        sOsc2.connect(sGain);
-        sGain.connect(ctx.destination);
-        sOsc.start(now);
-        sOsc2.start(now);
-        sOsc.stop(now + 0.13);
-        sOsc2.stop(now + 0.13);
-      } else if (type === 'bounce') {
-        var bOsc = ctx.createOscillator();
-        var bGain = ctx.createGain();
-        bOsc.type = 'sine';
-        bOsc.frequency.setValueAtTime(105, now);
-        bOsc.frequency.exponentialRampToValueAtTime(46, now + 0.065);
-        bGain.gain.setValueAtTime(0.16, now);
-        bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
-        bOsc.connect(bGain);
-        bGain.connect(ctx.destination);
-        bOsc.start(now);
-        bOsc.stop(now + 0.075);
-      } else if (type === 'dash') {
-        // Subtle athletic footstep/whoosh
-        var dOsc = ctx.createOscillator();
-        var dGain = ctx.createGain();
-        dOsc.type = 'sine';
-        dOsc.frequency.setValueAtTime(140, now);
-        dOsc.frequency.exponentialRampToValueAtTime(260, now + 0.075);
-        dGain.gain.setValueAtTime(0.14, now);
-        dGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-        dOsc.connect(dGain);
-        dGain.connect(ctx.destination);
-        dOsc.start(now);
-        dOsc.stop(now + 0.085);
-      } else if (type === 'whistle') {
-        // Authentic referee pea-whistle trill
-        var wOsc = ctx.createOscillator();
-        var lfo = ctx.createOscillator();
-        var lfoGain = ctx.createGain();
-        var wGain = ctx.createGain();
-        wOsc.type = 'sine';
-        wOsc.frequency.setValueAtTime(2780, now);
-        lfo.type = 'sine';
-        lfo.frequency.setValueAtTime(28, now);
-        lfoGain.gain.setValueAtTime(110, now);
-        lfo.connect(lfoGain);
-        lfoGain.connect(wOsc.frequency);
-        wGain.gain.setValueAtTime(0.01, now);
-        wGain.gain.linearRampToValueAtTime(0.16, now + 0.02);
-        wGain.gain.setValueAtTime(0.16, now + 0.18);
-        wGain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
-        wOsc.connect(wGain);
-        wGain.connect(ctx.destination);
-        wOsc.start(now);
-        lfo.start(now);
-        wOsc.stop(now + 0.27);
-        lfo.stop(now + 0.27);
-      } else if (type === 'goal_cheer') {
-        // Warm stadium horn chord (C5-E5-G5-C6) + referee whistle
-        playSportSfx('whistle');
-        [523.25, 659.25, 783.99, 1046.5].forEach(function (freq, idx) {
-          var cOsc = ctx.createOscillator();
-          var cGain = ctx.createGain();
-          cOsc.type = 'triangle';
-          cOsc.frequency.setValueAtTime(freq, now + idx * 0.05);
-          cGain.gain.setValueAtTime(0.001, now + idx * 0.05);
-          cGain.gain.linearRampToValueAtTime(0.12, now + idx * 0.05 + 0.03);
-          cGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.45);
-          cOsc.connect(cGain);
-          cGain.connect(ctx.destination);
-          cOsc.start(now + idx * 0.05);
-          cOsc.stop(now + idx * 0.05 + 0.46);
-        });
+      var A = window.Ch1Audio;
+      if ((st && st.muted) || (A && A.isMuted && A.isMuted())) return;
+      var map = {
+        kick: ['kick.wav', 0.55],
+        pass: ['whoosh.mp3', 0.45],
+        power_shot: ['thud.wav', 0.65],
+        volley_hit: ['kick.wav', 0.48],
+        volley_spike: ['thud.wav', 0.65],
+        bounce: ['bounce.mp3', 0.45],
+        dash: ['whoosh.mp3', 0.35],
+        whistle: ['whistle.mp3', 0.55],
+        goal_cheer: ['cheer.mp3', 0.65]
+      };
+      var entry = map[type];
+      if (!entry) return;
+      if (type === 'goal_cheer' && A && A.playRealSfx) {
+        A.playRealSfx('whistle.mp3', 0.5);
+      }
+      if (A && A.playRealSfx) {
+        A.playRealSfx(entry[0], entry[1]);
+        return;
+      }
+      if (typeof Audio !== 'undefined') {
+        var a = sportSfxPool[entry[0]] || (sportSfxPool[entry[0]] = new Audio('audio/sfx/' + entry[0]));
+        a.volume = entry[1];
+        try { a.currentTime = 0; } catch (e) {}
+        a.play().catch(function () {});
       }
     } catch (e) {}
   }

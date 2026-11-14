@@ -213,18 +213,12 @@
       say(g === 4 ? 'Knock on the inn door to meet Alice!' : 'Knock on the inn door to see Clara\'s workshop!');
     }
     function knockSound() {
-      try {
-        var C = root.AudioContext || root.webkitAudioContext; if (!C) return;
-        var ac = knockSound.ac || (knockSound.ac = new C());
-        [0, 0.22].forEach(function (dt) {
-          [110, 165].forEach(function (f, k) {
-            var o = ac.createOscillator(), gn = ac.createGain(), t = ac.currentTime + dt;
-            o.type = k ? 'triangle' : 'sine'; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f * 0.6, t + 0.12);
-            gn.gain.setValueAtTime(0.0001, t); gn.gain.exponentialRampToValueAtTime(0.35 / (k + 1), t + 0.01); gn.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
-            o.connect(gn); gn.connect(ac.destination); o.start(t); o.stop(t + 0.2);
-          });
-        });
-      } catch (e) { /* ignore */ }
+      var A = root.Ch1Audio;
+      if (A && A.isMuted && A.isMuted()) return;
+      if (A && A.playRealSfx) { A.playRealSfx('knock.wav', 0.65); return; }
+      if (typeof Audio !== 'undefined') {
+        try { new Audio('audio/sfx/knock.wav').play().catch(function () {}); } catch (e) { /* ignore */ }
+      }
     }
     function openDoor() { sc.classList.add('open'); }
 
