@@ -150,7 +150,17 @@
     '.cb-win2 .todo{background:rgba(0,0,0,.25);border-radius:16px;padding:10px 14px;text-align:left;margin:10px 0;line-height:1.5}.cb-hist{font-size:.85rem;opacity:.8;margin-top:10px}' +
     '.cb-conf{position:fixed;inset:0;pointer-events:none;z-index:99997;overflow:hidden}.cb-conf i{position:absolute;top:-6vh;font-style:normal;animation:cbFall 2.6s linear forwards}@keyframes cbFall{to{transform:translateY(112vh) rotate(540deg)}}' +
     '@media(max-width:1100px){.cb-dock{gap:5px;padding:7px 8px;border-radius:18px}.cb-dock button{padding:7px 10px;font-size:.82rem;border-radius:12px}.cb-dock .sep{display:none}}' +
-    '@media(max-width:640px){.cb{padding:14px 12px 120px}.cb-mg{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.cb-hd h1{font-size:1.5rem}.cb-tm div{min-width:76px;padding:6px 10px}.cb-tm b{font-size:1.4rem}}';
+    '@media(max-width:640px){.cb{padding:14px 12px 120px}.cb-mg{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.cb-hd h1{font-size:1.5rem}.cb-tm div{min-width:76px;padding:6px 10px}.cb-tm b{font-size:1.4rem}}' +
+    /* Short wide screens (laptops, most smartboards): pupils first. The title, the timer tiles, today's lessons
+       and the goal bar each take one slim row, so two rows of pupils fit instead of one. */
+    '@media(min-width:900px) and (max-height:900px){.cb{padding-top:12px}' +
+    '.cb-hd{gap:8px 10px}.cb-hd h1{font-size:1.5rem;white-space:nowrap}.cb-hd small{font-size:.8rem;white-space:nowrap}.cb-hd .cb-sw{flex:0 1 auto}' +
+    '.cb-tm{flex-wrap:nowrap;gap:6px}.cb-tm div{min-width:70px;padding:4px 10px;border-radius:14px}.cb-tm b{font-size:1.35rem}.cb-tm small{font-size:.68rem}' +
+    '.cb-today{margin-top:8px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.cb-today::-webkit-scrollbar{display:none}' +
+    '.cb-today .lab{flex:0 0 auto}.cb-today a{flex:1 1 0;min-width:230px;max-width:480px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:6px 12px}.cb-today button{flex:0 0 auto;white-space:nowrap;padding:6px 12px}' +
+    '.cb-goal{margin:8px 0 10px;padding:6px 16px}.cb-goal .bar{height:16px}.cb-goal b{font-size:1rem}' +
+    '.cb-mg{grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px}.cb-st{padding:8px 6px 8px;border-radius:20px}.cb-st b.n{font-size:1rem}.cb-add{margin-top:4px}.cb-add button{min-height:36px;padding:6px 12px}}' +
+    '@media(min-width:1200px) and (max-height:900px){.cb-hd{flex-wrap:nowrap}}';
   /* Discipline tools (minus points and flags): OFF by default in every new session. When they are ON the flags are visible to everybody who sees the board (also in Class Mode), so switch them off before you project the board if you do not want that. */
   var disc = false; try { disc = sessionStorage.getItem('cb_disc') === '1'; } catch (e) { disc = false; }
   function discOn() { return disc; }
