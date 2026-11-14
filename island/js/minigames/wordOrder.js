@@ -125,7 +125,11 @@
             '</div>' +
             (t.allowSpeak ? (
               '<div class="ch1-wo-speakrow">' +
-                '<button type="button" class="ch1-btn emerald" id="ch1-wo-mic" aria-label="Say it aloud into the microphone">🎤 Or Say It Aloud: "' + esc(t.targetSentence) + '"</button>' +
+                '<button type="button" class="ch1-btn emerald" id="ch1-wo-mic" aria-label="Say the sentence aloud into the microphone">' +
+                  (built.length >= expected.length
+                    ? ('🎤 Say It Aloud: "' + esc(t.targetSentence) + '"')
+                    : '🎤 Or Tap &amp; Speak the Sentence Aloud!') +
+                '</button>' +
               '</div>'
             ) : '') +
           '</div>';

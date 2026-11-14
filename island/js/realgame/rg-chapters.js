@@ -88,7 +88,8 @@
       leaves: null,
       flint: true,
       swallows: false,
-      ball: null,
+      ball: { x: 312, y: 698 },
+      goal: null,
       crabs: [{ x: 590, y: 650 }],
       board: { x: 902, y: 606, r: 34 },
       stops: [
@@ -116,7 +117,7 @@
           }
         },
         {
-          id: 'billy', name: 'Billy Bones', img: FLAT + 'c_billy.webp', happy: FLAT + 'c_billy_happy.webp', x: 470, y: 612, hMul: 1.1,
+          id: 'billy', name: 'Billy Bones', img: FLAT + 'c_billy.webp', happy: FLAT + 'c_billy_happy.webp', x: 454, y: 616, hMul: 0.92,
           lines: {
             g3: 'Ahoy, matey! An invention solves a problem. My sea chest waits at the end of the pier!',
             g4: 'Ahoy, matey! Good readers ask who, what, where, when, why and how. My sea chest waits on the pier!',
@@ -198,6 +199,7 @@
       swallows: true,
       lighthouse: { x: 1281, y: 112 },
       ball: { x: 742, y: 664 },
+      goal: { x: 832, y1: 683, y2: 719 },
       crabs: [{ x: 790, y: 696 }, { x: 990, y: 738 }, { x: 640, y: 642 }],
       board: { x: 902, y: 606, r: 34 },
       stops: [
@@ -209,7 +211,7 @@
       ],
       npcs: [
         {
-          id: 'silver', name: 'Long John Silver', img: FLAT + 'c_silver.webp', happy: FLAT + 'c_silver_happy.webp', x: 574, y: 574, hMul: 1.14,
+          id: 'silver', name: 'Long John Silver', img: FLAT + 'c_silver.webp', happy: FLAT + 'c_silver_happy.webp', x: 592, y: 584, hMul: 1.08,
           lines: {
             g3: 'Welcome to Hispaniola Bay! At Chuseok, families share a harvest feast. I am thankful for good friends!',
             g4: 'Welcome to Hispaniola Bay! Coniferous trees keep their needles all year, so they can survive the snow!',

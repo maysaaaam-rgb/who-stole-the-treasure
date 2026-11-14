@@ -2412,7 +2412,7 @@
         $('w-fade').classList.remove('on');
         S.cooldown = 500;
         S.ready = true;
-        if (!S.introChecked && !Q.get('nostory') && !Q.get('fps')) {
+        if (S.zone >= 1 && !S.introChecked && !Q.get('nostory') && !Q.get('fps')) {
           S.introChecked = true;
           var introSeen = false;
           try { introSeen = localStorage.getItem('eaa_treasure_intro_v2') === '1'; } catch (e) {}
@@ -2498,7 +2498,7 @@
       // secret shells (hidden under crates or palm trees)
       for (var i = sc.shells.length - 1; i >= 0; i--) {
         var sh = sc.shells[i];
-        if (sh.under && Phaser.Math.Distance.Between(sc.crate.x, sc.crate.y, sh.x, sh.y) < 92) continue;
+        if (sh.under && sc.crate && Phaser.Math.Distance.Between(sc.crate.x, sc.crate.y, sh.x, sh.y) < 92) continue;
         if (Phaser.Math.Distance.Between(m.x, m.y, sh.x, sh.y) < 66) {
           sc.shells.splice(i, 1); saveShell(sh.key2); sound('playCorrect'); say('Secret shell!'); cheer(m); sc.fx.explode(16, sh.x, sh.y);
           if (root.WorldGame) {
@@ -2611,15 +2611,17 @@
   }
 
   function startWorld() {
+    if (S._worldStarted) return;
+    S._worldStarted = true;
     var visitId = Q.get('visit');
     if (visitId) {
       S.visitingFriend = buildFriendWorldData(visitId);
     }
-    var rawZ = Q.get('zone');
+    var rawZ = Q.get('zone') !== null ? Q.get('zone') : Q.get('z');
     var want = visitId ? 0 : ((rawZ !== null && rawZ !== '') ? Number(rawZ) : 1);
     var z = want === 0 ? 0 : 1;
     for (var i = 1; i <= 4; i++) {
-      var canEnter = isOpen(i) || (i === 2 && root.Ch2Progress && root.Ch2Progress.isUnlocked && root.Ch2Progress.isUnlocked());
+      var canEnter = isOpen(i) || (i === 2 && root.Ch2Progress && root.Ch2Progress.isUnlocked && root.Ch2Progress.isUnlocked()) || (Q.get('demo') && i <= 2);
       if (i <= want && canEnter) z = i;
     }
     S.zone = z;
@@ -2867,6 +2869,7 @@
   root.WORLD = {
     S: S,
     scene: function () { return scene; },
+    startWorld: startWorld,
     bootOrGoZone: bootOrGoZone,
     walkTo: walkTo,
     goZone: goZone,

@@ -131,26 +131,24 @@
         d.no.map(function (o) { return { t: o.t, img: o.img, say: o.t }; })
       );
 
-      setTimeout(function () {
-        S.choices(opts, function () {
-          if (lock) {
-            lock.classList.remove('now');
-            lock.classList.add('open');
-            lock.querySelector('span').textContent = '🔓';
+      S.choices(opts, function () {
+        if (lock) {
+          lock.classList.remove('now');
+          lock.classList.add('open');
+          lock.querySelector('span').textContent = '🔓';
+        }
+        if (root.Ch1Audio && root.Ch1Audio.sfxGear) root.Ch1Audio.sfxGear();
+        S.npcSay('Click! Lock ' + (S.i + 1) + ' is open!');
+        S.say('Click! Lock ' + (S.i + 1) + ' is open!', function () {
+          if (S.i + 1 >= S.n) {
+            openChest(S, function () { S.next(round); });
+          } else {
+            S.next(round);
           }
-          if (root.Ch1Audio && root.Ch1Audio.sfxGear) root.Ch1Audio.sfxGear();
-          S.npcSay('Click! Lock ' + (S.i + 1) + ' is open!');
-          S.say('Click! Lock ' + (S.i + 1) + ' is open!', function () {
-            if (S.i + 1 >= S.n) {
-              openChest(S, function () { S.next(round); });
-            } else {
-              S.next(round);
-            }
-          });
-        }, { cls: 'pics-t' });
-      }, 520);
+        });
+      }, { cls: 'pics-t' });
     }
 
-    setTimeout(round, 560);
+    setTimeout(round, 180);
   };
 })(typeof window !== 'undefined' ? window : this);

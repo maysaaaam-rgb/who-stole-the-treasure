@@ -376,6 +376,7 @@
       '<div class="rg-stage" id="rg-stage"></div>' +
       '<div class="rg-loading" id="rg-loading"><div class="rg-loading-card"><b>⛵ Sailing to the island…</b><span class="rg-loading-bar"><i id="rg-loading-fill"></i></span></div></div>' +
       '<div id="rg-hud"></div>' +
+      '<button type="button" class="rg-quest" id="rg-quest" title="Click to follow the golden trail to your next goal"><span class="rg-quest-ic" id="rg-quest-ic">🧭</span><span id="rg-quest-txt">Next Clue</span></button>' +
       '<button type="button" class="uf-wayfinder" id="rg-wayfinder" hidden></button>' +
       '<div class="rg-tip" id="rg-tip" aria-live="polite"></div>' +
       '<div class="rg-joy" id="rg-joy" aria-hidden="true"><div class="rg-joy-knob" id="rg-joy-knob"></div></div>' +
@@ -396,8 +397,9 @@
     $('rg-action').addEventListener('click', function (e) { e.stopPropagation(); gesture(); if (G && G.focus) interact(G.focus); });
     $('rg-talk-ok').addEventListener('click', function () { sfx('sfxTap'); hideTalk(); });
     $('rg-talk-again').addEventListener('click', function () { sfx('sfxTap'); if (G && G.talkLine) say(G.talkLine); });
-    $('rg-talk-go').addEventListener('click', function () { sfx('sfxTap'); hideTalk(); walkToStop(Math.min(5, nextStop()), true); });
-    $('rg-wayfinder').addEventListener('click', function () { sfx('sfxTap'); walkToStop(Math.min(5, nextStop()), true); });
+    $('rg-talk-go').addEventListener('click', function () { sfx('sfxTap'); hideTalk(); walkToQuest(); });
+    $('rg-wayfinder').addEventListener('click', function () { sfx('sfxTap'); walkToQuest(); });
+    $('rg-quest').addEventListener('click', function (e) { e.stopPropagation(); gesture(); sfx('sfxTap'); walkToQuest(); });
   }
 
   function showTip(text, ms) {
@@ -587,13 +589,72 @@
     if (!ap) return;
     walkTo(ap[0], ap[1], function () { interact(t); });
   }
+  function clearGuideTrail() {
+    if (!G || !G.guideDots) return;
+    G.guideDots.forEach(function (d) { if (d && d.scene) d.destroy(); });
+    G.guideDots = [];
+  }
+  function spawnGuideTrail(path) {
+    if (!G || !path || path.length < 2) return;
+    clearGuideTrail();
+    var sc = G.sc, dots = [], acc = 0;
+    for (var i = 1; i < path.length; i++) {
+      var ax = path[i - 1][0], ay = path[i - 1][1], bx = path[i][0], by = path[i][1];
+      var seg = dist(ax, ay, bx, by);
+      acc += seg;
+      if (acc >= 26 || i === path.length - 1) {
+        acc = 0;
+        var dot = sc.add.image(bx, by, 'rg-glint').setDepth(by - 0.55).setTint(0xfde047).setBlendMode(Phaser.BlendModes.ADD).setScale(0.24 * pscale(by)).setAlpha(0);
+        sc.tweens.add({
+          targets: dot, alpha: { from: 0.95, to: 0.15 }, scale: { from: 0.32 * pscale(by), to: 0.14 * pscale(by) },
+          delay: Math.min(900, dots.length * 55), duration: 1550, ease: 'Sine.out',
+          onComplete: function (tw, tg) { if (tg && tg[0] && tg[0].scene) tg[0].destroy(); }
+        });
+        dots.push(dot);
+      }
+    }
+    G.guideDots = dots;
+  }
+  function refreshQuestPill() {
+    var q = $('rg-quest'), ic = $('rg-quest-ic'), tx = $('rg-quest-txt');
+    if (!q || !G) return;
+    var nx = nextStop();
+    if (nx <= 5) {
+      var st = G.def.stops[nx - 1];
+      q.classList.remove('ready');
+      if (ic) ic.textContent = starPreferred() ? '✨' : '🧭';
+      if (tx) tx.textContent = 'Stop ' + nx + ' · ' + (st ? st.name : 'Next Clue');
+    } else if (state.chapter === 1) {
+      q.classList.add('ready');
+      if (ic) ic.textContent = '⛵';
+      if (tx) tx.textContent = 'All 5 Done! Board the Hispaniola →';
+    } else {
+      q.classList.add('ready');
+      if (ic) ic.textContent = '🏆';
+      if (tx) tx.textContent = 'Chapter 2 Complete! Sail On →';
+    }
+  }
+  function walkToQuest() {
+    if (!G || state.busy) return;
+    G.overview = false;
+    var nx = nextStop();
+    if (nx <= 5) {
+      walkToStop(nx, true);
+      if (G.pl.path && G.pl.path.length) spawnGuideTrail(G.pl.path);
+    } else if (G.boardTarget) {
+      goToTarget(G.boardTarget);
+      if (G.pl.path && G.pl.path.length) spawnGuideTrail(G.pl.path);
+      showTip(state.chapter === 1 ? '⛵ Walking to the Hispaniola pier!' : '🗺️ Opening the Grand Sea Chart!', 2200);
+    }
+  }
   function walkToStop(n, auto) {
     if (!G) return;
     var st = G.stops[clamp(n, 1, 5) - 1];
     if (!st) return;
     G.overview = false;
     goToTarget(st.target);
-    if (auto) showTip('🧭 Walking to Stop ' + st.n + '…', 2000);
+    if (auto && G.pl.path && G.pl.path.length) spawnGuideTrail(G.pl.path);
+    if (auto) showTip('🧭 Walking to Stop ' + st.n + ' · ' + st.def.name, 2000);
   }
 
   /* ───────────────────────── player ───────────────────────── */
@@ -760,7 +821,8 @@
       } else if (p.anim !== 'idle') {
         spr.anims.stop();
         var IDLE = (root.IslandWalker && root.IslandWalker.IDLE_FRAME) || { down: 0, diag: 5, side: 10, up: 15 };
-        spr.setFrame(IDLE[p.dir === 'up' ? 'diag' : p.dir] || 0);
+        spr.setFrame(IDLE[p.dir] !== undefined ? IDLE[p.dir] : 0);
+        spr.setFlipX(p.dir !== 'down' && p.dir !== 'up' && p.face < 0);
         p.anim = 'idle';
       }
     } else {
@@ -802,15 +864,34 @@
     if (!c) return;
     var lag = 16, tgt = G.trail.length > lag ? G.trail[G.trail.length - 1 - lag] : null;
     var moving = false;
-    if (tgt && !c.petUntil) {
-      var dx = tgt[0] - c.x, dy = tgt[1] - c.y, d = Math.sqrt(dx * dx + dy * dy);
-      var near = dist(c.x, c.y, G.pl.x, G.pl.y);
-      if (d > 2 && near > 26) {
-        var spd = (BASE_SPEED * 1.05 + Math.max(0, near - 60) * 2.2) * pscale(c.y);
-        var st = Math.min(d, spd * dt);
-        c.x += dx / d * st; c.y += dy / d * st;
-        if (Math.abs(dx) > 0.5) c.face = dx < 0 ? -1 : 1;
-        moving = st > 0.05;
+    var minGap = 32 * pscale(G.pl.y);
+    var near = dist(c.x, c.y, G.pl.x, G.pl.y);
+    if (!c.petUntil) {
+      if (tgt && (G.pl.moving || near > minGap)) {
+        var dx = tgt[0] - c.x, dy = tgt[1] - c.y, d = Math.sqrt(dx * dx + dy * dy);
+        if (d > 2 && near > minGap) {
+          var spd = (BASE_SPEED * 1.05 + Math.max(0, near - 60) * 2.2) * pscale(c.y);
+          var st = Math.min(d, spd * dt);
+          c.x += dx / d * st; c.y += dy / d * st;
+          if (Math.abs(dx) > 0.5) c.face = dx < 0 ? -1 : 1;
+          moving = st > 0.05;
+        }
+      }
+      // Personal-space buddy offset: never stand directly over the hero's face when idle!
+      if (!moving && !G.pl.moving && near < minGap * 0.92) {
+        var sideDir = (G.pl.face || 1) > 0 ? -1 : 1;
+        var wantX = G.pl.x + sideDir * (minGap + 6);
+        var wantY = G.pl.y + 4;
+        var spot = G.nav.nearest(wantX, wantY, 18) || G.nav.nearest(G.pl.x - sideDir * (minGap + 6), wantY, 18);
+        if (spot) {
+          var sdx = spot[0] - c.x, sdy = spot[1] - c.y, sd = Math.sqrt(sdx * sdx + sdy * sdy);
+          if (sd > 2) {
+            var sst = Math.min(sd, BASE_SPEED * 0.95 * pscale(c.y) * dt);
+            c.x += sdx / sd * sst; c.y += sdy / sd * sst;
+            if (Math.abs(sdx) > 0.4) c.face = G.pl.x >= c.x ? 1 : -1;
+            moving = sst > 0.05;
+          }
+        }
       }
     }
     if (c.petUntil && time > c.petUntil) c.petUntil = 0;
@@ -925,6 +1006,7 @@
       if (o.arrow) o.arrow.setVisible(next);
     });
     G.lastNext = nx;
+    refreshQuestPill();
     setBeacon(nx > 5 || (root.Ch2Progress && state.chapter === 2 && root.Ch2Progress.isChestOpened && root.Ch2Progress.isChestOpened(grade())));
     if (G.ship) {
       var ready = state.chapter === 1 && (doneCount() >= 4 || open);
@@ -995,15 +1077,27 @@
     if (UF()) UF().refreshAllUnifiedHuds(false);
   }
 
-  /* ───────────────────────── beach ball + crabs ───────────────────────── */
+  /* ───────────────────────── beach ball + mini-goal + crabs ───────────────────────── */
   function buildBall(sc) {
     var b = G.def.ball;
     if (!b) return;
     var h = 30 * pscale(b.y) + 8;
     var spr = addImg(sc, 'art/flat/o_ball.webp', b.x, b.y, h, 0.5);
-    G.ball = { x: b.x, y: b.y, z: 0, vx: 0, vy: 0, vz: 0, spr: spr, shadow: addShadow(sc, b.x, b.y, h * 0.9), h: h, r: h * 0.45, spin: 0 };
+    G.ball = { x: b.x, y: b.y, hx: b.x, hy: b.y, z: 0, vx: 0, vy: 0, vz: 0, spr: spr, shadow: addShadow(sc, b.x, b.y, h * 0.9), h: h, r: h * 0.45, spin: 0, goals: 0, goalCd: 0 };
     spr.setInteractive({ useHandCursor: true });
     spr.rgTarget = { kind: 'ball' };
+
+    var gl = G.def.goal;
+    if (gl && sc.textures.exists('art/d_flag.webp')) {
+      var line = sc.add.graphics().setDepth(gl.y1 - 2);
+      line.lineStyle(4, 0xfde047, 0.55);
+      line.beginPath(); line.moveTo(gl.x, gl.y1); line.lineTo(gl.x, gl.y2); line.strokePath();
+      var f1 = addImg(sc, 'art/d_flag.webp', gl.x, gl.y1, 40 * pscale(gl.y1)).setDepth(gl.y1);
+      var f2 = addImg(sc, 'art/d_flag.webp', gl.x, gl.y2, 42 * pscale(gl.y2)).setDepth(gl.y2);
+      addShadow(sc, gl.x, gl.y1, 24);
+      addShadow(sc, gl.x, gl.y2, 26);
+      G.goal = { x: gl.x, y1: gl.y1, y2: gl.y2, f1: f1, f2: f2 };
+    }
   }
   function kickBall(power) {
     var b = G.ball, p = G.pl;
@@ -1012,12 +1106,36 @@
     b.vx = dx / d * sp; b.vy = dy / d * sp * 0.85; b.vz = 120 + sp * 0.35;
     sfx('sfxTap');
   }
+  function scoreBeachGoal(b) {
+    var g = G.goal;
+    b.goalCd = 2.4;
+    b.goals = (b.goals || 0) + 1;
+    sfx('sfxFanfare');
+    cheer(1200);
+    if (G.comp) G.comp.petUntil = G.sc.time.now + 1200;
+    if (G.party) G.party.explode(36, g.x, (g.y1 + g.y2) / 2 - 18);
+    if (b.goals <= 3) {
+      try { if (WG() && WG().addBonusCoins) WG().addBonusCoins(5); } catch (e) {}
+      var scr = toScreen(g.x, (g.y1 + g.y2) / 2 - 20);
+      if (UF() && UF().flyCoinsToHud) UF().flyCoinsToHud(5, scr.x, scr.y);
+      showTip('⚽ GOAL! +5 Gold Coins! (' + b.goals + '/3 bonus)', 2400);
+    } else {
+      showTip('⚽ GOAL! Awesome shot, Captain!', 2000);
+    }
+    setTimeout(function () {
+      if (!G || !G.ball) return;
+      G.ball.x = G.ball.hx; G.ball.y = G.ball.hy; G.ball.vx = 0; G.ball.vy = 0; G.ball.vz = 140;
+      if (G.fx) G.fx.explode(10, G.ball.hx, G.ball.hy - 12);
+    }, 950);
+  }
   function updateBall(dt) {
     var b = G.ball;
     if (!b) return;
+    if (b.goalCd > 0) b.goalCd -= dt;
     var p = G.pl, d = dist(b.x, b.y, p.x, p.y);
     if (d < b.r + 12 * pscale(p.y) && b.z < 14 && (p.moving || d < b.r)) kickBall();
     if (b.vx || b.vy) {
+      var prevX = b.x;
       var nx = b.x + b.vx * dt, ny = b.y + b.vy * dt;
       if (!G.nav.ok(nx, b.y)) { b.vx = -b.vx * 0.7; nx = b.x; }
       if (!G.nav.ok(b.x, ny)) { b.vy = -b.vy * 0.7; ny = b.y; }
@@ -1025,6 +1143,11 @@
       var moved = dist(nx, ny, b.x, b.y);
       b.x = nx; b.y = ny;
       b.spin += moved / Math.max(4, b.r) * (b.vx < 0 ? -1 : 1);
+      if (G.goal && b.goalCd <= 0) {
+        var gl = G.goal;
+        var crossed = (prevX <= gl.x && b.x >= gl.x - 6) || (Math.abs(b.x - gl.x) < 12 && Math.abs(b.vx) > 25);
+        if (crossed && b.y >= gl.y1 - 8 && b.y <= gl.y2 + 8) scoreBeachGoal(b);
+      }
       var fr = Math.pow(b.z > 0 ? 0.6 : 0.28, dt);
       b.vx *= fr; b.vy *= fr;
       if (Math.abs(b.vx) < 3 && Math.abs(b.vy) < 3) { b.vx = 0; b.vy = 0; }
@@ -1318,12 +1441,21 @@
   }
   function setPrompt(t) {
     var P = G.prompt;
+    var nx = nextStop();
+    if (G.stops) {
+      G.stops.forEach(function (o) {
+        var focusedHere = !!(t && t.kind === 'stop' && t.n === o.n);
+        if (o.badge) o.badge.setVisible(!focusedHere);
+        if (o.arrow) o.arrow.setVisible(!focusedHere && o.n === nx);
+      });
+    }
     var lbl = t ? t.label() : '';
     if (lbl !== P.label) {
       P.label = lbl;
       P.txt.setText(lbl);
       var showKey = !touchFirst();
       var w = P.txt.width + (showKey ? 52 : 30), h = 42;
+      P.w = w; P.h = h;
       P.bg.clear();
       P.bg.fillStyle(0x020617, 0.55); P.bg.fillRoundedRect(-w / 2, -h / 2 + 5, w, h, 16);
       P.bg.fillStyle(0x0f172a, 0.94); P.bg.fillRoundedRect(-w / 2, -h / 2, w, h, 16);
@@ -1340,8 +1472,18 @@
       if (act && !act.hidden) act.hidden = true;
       return;
     }
-    var zoom = G.sc.cameras.main.zoom;
-    P.c.setVisible(true).setPosition(t.x, (t.top || t.y - 80) - 30).setScale(1 / Math.max(0.6, zoom) * 0.95);
+    var cam = G.sc.cameras.main, zoom = cam.zoom;
+    var scScale = 1 / Math.max(0.6, zoom) * 0.94;
+    var px = t.x, py = (t.top || t.y - 80) - 22;
+    var wv = cam.worldView;
+    if (wv && wv.width > 0) {
+      var halfW = ((P.w || 220) * scScale) / 2 + 10 / Math.max(0.6, zoom);
+      var topSafe = wv.y + 72 / Math.max(0.6, zoom) + ((P.h || 42) * scScale) / 2;
+      var botSafe = wv.y + wv.height - 36 / Math.max(0.6, zoom);
+      px = clamp(px, wv.x + halfW, Math.max(wv.x + halfW, wv.x + wv.width - halfW));
+      py = clamp(py, topSafe, Math.max(topSafe, botSafe));
+    }
+    P.c.setVisible(true).setPosition(px, py).setScale(scScale);
     if (act) {
       act.hidden = false;
       var ic = t.kind === 'stop' ? '⭐' : (t.kind === 'npc' ? '💬' : '⛵');
@@ -1389,7 +1531,7 @@
   function joyHide() { var j = $('rg-joy'), k = $('rg-joy-knob'); if (j) j.classList.remove('on'); if (k) k.style.transform = ''; }
   function setupInput(sc) {
     if (sc.input.keyboard) {
-      G.keys = sc.input.keyboard.addKeys({ up: 'UP', down: 'DOWN', left: 'LEFT', right: 'RIGHT', w: 'W', a: 'A', s: 'S', d: 'D', e: 'E', space: 'SPACE', enter: 'ENTER', shift: 'SHIFT' }, false);
+      G.keys = sc.input.keyboard.addKeys({ up: 'UP', down: 'DOWN', left: 'LEFT', right: 'RIGHT', w: 'W', a: 'A', s: 'S', d: 'D', e: 'E', space: 'SPACE', enter: 'ENTER', shift: 'SHIFT', esc: 'ESC' }, false);
     }
     sc.input.on('pointerdown', function (p, over) {
       if (domBlocked() || state.busy) return;
@@ -1484,6 +1626,7 @@
     if (def.flint) a.push('art/ch1/c_flint_fly1.webp', 'art/ch1/c_flint_fly2.webp');
     if (def.swallows) a.push('art/ch2/c_swallow.webp');
     if (def.ball) a.push('art/flat/o_ball.webp');
+    if (def.goal) a.push('art/d_flag.webp');
     if (def.crabs && def.crabs.length) a.push('art/flat/e_sand_crab.webp');
     a.push('art/flat/c_benbow_happy.webp', 'art/kenney/arrow_down.webp');
     return a.filter(function (v, i) { return v && a.indexOf(v) === i; });
@@ -1625,12 +1768,19 @@
     updateCamera(dt, false);
 
     // keyboard interaction (always read the keys so a press inside a lesson never fires later)
-    var k = G.keys, jd = k ? [Phaser.Input.Keyboard.JustDown(k.e), Phaser.Input.Keyboard.JustDown(k.space), Phaser.Input.Keyboard.JustDown(k.enter)] : [];
+    var k = G.keys, jd = k ? [Phaser.Input.Keyboard.JustDown(k.e), Phaser.Input.Keyboard.JustDown(k.space), Phaser.Input.Keyboard.JustDown(k.enter), Phaser.Input.Keyboard.JustDown(k.esc)] : [];
+    if (G.talkOpen && !blocked && jd[3]) hideTalk();
     var pressed = !blocked && !!(jd[0] || jd[1] || jd[2]);
+    var spaceHop = !blocked && !!jd[1] && !G.talkOpen;
     if (G.talkOpen && pressed) { hideTalk(); pressed = false; }
     G.focus = blocked || G.pl.path ? null : findFocus();
     setPrompt(blocked ? null : G.focus);
     if (pressed && G.focus) interact(G.focus);
+    else if (spaceHop && !G.focus) {
+      cheer(750);
+      sfx('sfxPop');
+      if (G.fx) G.fx.explode(8, G.pl.x, G.pl.y - persp(G.pl.y) * 0.45);
+    }
 
     if (time > G.wayAt) { G.wayAt = time + 120; updateWayfinder(); }
     if (time > G.refreshAt) {
@@ -1722,7 +1872,18 @@
     },
     _test: {
       walkTo: function (x, y) { return G ? walkTo(x, y) : false; },
-      teleport: function (x, y) { if (!G) return false; var p = G.nav.nearest(x, y, 20); if (!p) return false; G.pl.x = p[0]; G.pl.y = p[1]; G.trail = []; updateCamera(0, true); return true; },
+      teleport: function (x, y) {
+        if (!G) return false;
+        var p = G.nav.nearest(x, y, 20);
+        if (!p) return false;
+        G.pl.x = p[0]; G.pl.y = p[1]; G.trail = [];
+        if (G.comp) {
+          var cs = G.nav.nearest(p[0] - 34 * pscale(p[1]), p[1] + 5, 18) || G.nav.nearest(p[0] + 34 * pscale(p[1]), p[1] + 5, 18) || p;
+          G.comp.x = cs[0]; G.comp.y = cs[1];
+        }
+        updateCamera(0, true);
+        return true;
+      },
       ok: function (x, y) { return G ? G.nav.ok(x, y) : false; },
       interactFocus: function () { if (G && G.focus) { interact(G.focus); return true; } return false; }
     }
