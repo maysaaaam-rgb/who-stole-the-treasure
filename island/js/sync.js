@@ -294,6 +294,51 @@
     return Promise.resolve({ ok: true, isDemo: true });
   }
 
+  /* Quick Name-Based Local Session Loader (First + Last Name, no passcode required) */
+  function loadNameSession(fullName, gradeNum) {
+    var cleanName = String(fullName || '').replace(/\s+/g, ' ').trim();
+    var g = (Number(gradeNum) === 4) ? 4 : 3;
+    var pupils = (root.IslandData && root.IslandData.DEMO_PUPILS) || {};
+    var tplKey = g === 4 ? 'demo-g4' : 'demo-g3';
+    var template = pupils[tplKey] ? JSON.parse(JSON.stringify(pupils[tplKey])) : { id: tplKey, grade: g, totalXP: 0, monsterProfile: {} };
+    var slug = cleanName.toLowerCase().replace(/[^a-z0-9\u0600-\u06FF]+/g, '-').replace(/^-|-$/g, '') || ('player-g' + g);
+    var sid = 'name-' + slug + '-g' + g;
+    var first = cleanName.split(' ')[0] || 'Explorer';
+    template.id = sid;
+    template.firstName = first;
+    template.name = cleanName || 'Explorer';
+    template.grade = g;
+
+    try {
+      localStorage.setItem('eaa_island_last_name', cleanName);
+      localStorage.setItem('eaa_island_last_grade', String(g));
+    } catch (e) {}
+
+    var savedRaw = null;
+    try { savedRaw = localStorage.getItem(DEMO_PREFIX + 'doc_' + sid); } catch (e) {}
+    var doc = parseJsonSafe(savedRaw, null) || emptyIslandDoc(sid);
+    if (!doc.lastDay) {
+      doc.streak = doc.streak || 1;
+      doc.lastDay = todayStr();
+    }
+    if (doc.look && template.monsterProfile) {
+      template.monsterProfile.equipped = Object.assign({}, template.monsterProfile.equipped, doc.look);
+    }
+
+    return Promise.resolve({
+      status: 'ok',
+      isDemo: true,
+      code: 'NAME',
+      student: template,
+      grade: g,
+      star: false,
+      cap: 30,
+      appliedDays: {},
+      appliedSum: 0,
+      doc: doc
+    });
+  }
+
   /* Live Cloud Session Loader (?p=CODE) */
   async function loadLiveSession(rawCode) {
     var code = String(rawCode || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -471,6 +516,7 @@
     getPendingQueue: getPendingQueue,
     flushPendingSaves: flushPendingSaves,
     loadDemoSession: loadDemoSession,
+    loadNameSession: loadNameSession,
     loadLiveSession: loadLiveSession,
     saveIslandDoc: saveIslandDoc
   };
