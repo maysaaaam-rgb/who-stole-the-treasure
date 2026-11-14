@@ -397,18 +397,9 @@
     el.hero.classList.remove('cheer'); void el.hero.offsetWidth; el.hero.classList.add('cheer');
     if (A().sfxTap) A().sfxTap();
   }
-  var purrCtx = null;
   function purr() {
     if (A().isMuted && A().isMuted()) return;
-    try {
-      var C = root.AudioContext || root.webkitAudioContext; if (!C) return;
-      purrCtx = purrCtx || new C();
-      var t = purrCtx.currentTime, o = purrCtx.createOscillator(), g = purrCtx.createGain(), lfo = purrCtx.createOscillator(), lg = purrCtx.createGain();
-      o.type = 'triangle'; o.frequency.value = 58;
-      lfo.frequency.value = 22; lg.gain.value = 0.05; lfo.connect(lg); lg.connect(g.gain);
-      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.09, t + 0.1); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
-      o.connect(g); g.connect(purrCtx.destination); o.start(t); lfo.start(t); o.stop(t + 1.2); lfo.stop(t + 1.2);
-    } catch (e2) { /* ignore */ }
+    if (A().sfxPurr) A().sfxPurr();
   }
   function pct(v, of) { return (v / of * 100).toFixed(3) + '%'; }
 

@@ -151,21 +151,10 @@
     };
     setTimeout(go, 6000);
   }
-  var sq = null;
   function squawk() {
     if (A().isMuted && A().isMuted()) return;
-    try {
-      var C = root.AudioContext || root.webkitAudioContext; if (!C) return;
-      sq = sq || new C();
-      var t = sq.currentTime;
-      [0, 0.18].forEach(function (off) {
-        var o = sq.createOscillator(), g = sq.createGain();
-        o.type = 'sawtooth'; o.frequency.setValueAtTime(1300, t + off); o.frequency.exponentialRampToValueAtTime(700, t + off + 0.14);
-        var lp = sq.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2400;
-        g.gain.setValueAtTime(0.0001, t + off); g.gain.exponentialRampToValueAtTime(0.06, t + off + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + off + 0.16);
-        o.connect(lp); lp.connect(g); g.connect(sq.destination); o.start(t + off); o.stop(t + off + 0.2);
-      });
-    } catch (e) { /* no sound */ }
+    if (A().sfxBird) { A().sfxBird(); return; }
+    if (A().playRealSfx) A().playRealSfx('birds.mp3', 0.45);
   }
 
   /* ---------------------------------------------------------------- Jim waves from the inn and points the way */
