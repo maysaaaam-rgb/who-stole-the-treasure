@@ -464,8 +464,9 @@ function ensureCss() {
     if (!t.list.length) return '<span style="opacity:.85">no scheduled slot ' + (t.label === 'Today' ? 'today' : 'on Monday') + '</span>' + quickLesson + libBtn + '<button onclick="Timetable.edit()">📅 Edit</button>';
     var hasRoute = t.list.some(function (e) { return !!e.route; });
     return t.list.map(function (e) {
-      var inner = e.icon + ' ' + (e.time ? '<em>' + esc(e.time) + '</em> ' : '') + esc(e.title);
-      return e.route ? '<a href="' + esc(e.route) + '">' + inner + ' ▶</a>' : (e.view ? '<a href="#" onclick="switchView(\'' + esc(e.view) + '\');return false;">' + inner + ' ▶</a>' : '<button style="cursor:default">' + inner + '</button>');
+      var shortT = root.EAAShortTitle ? root.EAAShortTitle(e.title) : e.title;
+      var inner = e.icon + ' ' + (e.time ? '<em>' + esc(e.time) + '</em> ' : '') + esc(shortT);
+      return e.route ? '<a href="' + esc(e.route) + '" title="' + esc(e.title) + '">' + inner + ' ▶</a>' : (e.view ? '<a href="#" onclick="switchView(\'' + esc(e.view) + '\');return false;">' + inner + ' ▶</a>' : '<button style="cursor:default">' + inner + '</button>');
     }).join('') + (!hasRoute ? quickLesson : '') + libBtn + '<button onclick="Timetable.edit()" title="Edit Timetable">📅</button>';
   }
   function closeMenus() { var p = document.getElementById('cb-pop'); if (p) p.remove(); var m = document.getElementById('cb-dock-more'); if (m) m.classList.remove('open'); }

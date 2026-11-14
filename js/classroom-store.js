@@ -694,6 +694,7 @@
   // ---------------------------------------------------------------- UI (shared)
   var studentTab = (root.EAA_HIDE_MONSTERS !== false) ? 'avatar' : 'items', itemFilter = 'all';
   var studioMode = 'avatar'; // 'avatar' | 'prizes' | 'teacher'
+  var AV_PAGE = 15, avLimit = AV_PAGE;
   var avSlot = 'all', avOwnFilter = 'all', avEmotion = 'smile', avTryId = '', avPrevSid = '', avPrevTimer = 0;
   var avColorsOpen = false;
   var avTrimmed = {};   // wear pictures sit on a full body-sized canvas: crop them to the item for the shop cards
@@ -1286,7 +1287,9 @@
         return (sa - sb) || (avPrice(a) - avPrice(b)) || a.name.localeCompare(b.name);
       });
 
-      var grid = shown.map(function (x) {
+      /* Pages of 15: an 8-year-old should not scroll through 179 cards. */
+      var total = shown.length, moreLeft = Math.max(0, total - avLimit);
+      var grid = shown.slice(0, avLimit).map(function (x) {
         var stX = avState(s.id, x.id), price = avPrice(x), isOn = wearing[x.slot] === x.id;
         var badgeRight = x.free ? '<span class="cs-free-tag">Starter</span>'
           : stX === 'level' ? '<span class="cs-free-tag">Lv Unlock</span>'
@@ -1309,7 +1312,8 @@
           actHtml + '</div>';
       }).join('');
 
-      rightBody = ownPills + (shown.length ? '<div class="cs-avgrid">' + grid + '</div>' : '<div class="cs-glass-card" style="text-align:center;padding:28px;color:#94a3b8;">No items in this filter right now.</div>');
+      rightBody = ownPills + (total ? '<div class="cs-avgrid">' + grid + '</div>' +
+        (moreLeft ? '<div style="text-align:center;margin:14px 0 4px;"><button type="button" class="cs-avcard-act wear" style="width:auto;padding:12px 26px;font-size:1.05rem;" onclick="ClassroomStore.ui.avMore()">⬇ Show ' + Math.min(AV_PAGE, moreLeft) + ' more (' + moreLeft + ' left)</button></div>' : '') : '<div class="cs-glass-card" style="text-align:center;padding:28px;color:#94a3b8;">No items in this filter right now.</div>');
     }
 
     clearTimeout(avPrevTimer);
@@ -1487,7 +1491,7 @@
     tGroup: function (g) { teacherGroup = g || 'approvals'; studioMode = 'teacher'; studioModeHold = true; rerender(); },
     toggleDrawer: function () { studioMode = (studioMode === 'teacher') ? 'avatar' : 'teacher'; studioModeHold = true; rerender(); },
     openDrawer: function () { if (!inClassMode()) { studioMode = 'teacher'; studioModeHold = true; } rerender(); },
-    pickStudent: function (sid) {
+    pickStudent: function (sid) { avLimit = AV_PAGE;
       var pStu = sid && store.getStudent ? store.getStudent(sid) : null;
       if (pStu && pStu.classId && store.setActiveClass) {
         var curC = store.getActiveClass ? store.getActiveClass() : null;
@@ -1506,8 +1510,9 @@
       studioModeHold = true;
       rerender();
     },
-    avSlot: function (k) { avSlot = k; studioModeHold = true; rerender(); },
-    avOwnFilter: function (f) { avOwnFilter = f || 'all'; studioModeHold = true; rerender(); },
+    avSlot: function (k) { avSlot = k; avLimit = AV_PAGE; studioModeHold = true; rerender(); },
+    avMore: function () { avLimit += AV_PAGE; studioModeHold = true; rerender(); },
+    avOwnFilter: function (f) { avOwnFilter = f || 'all'; avLimit = AV_PAGE; studioModeHold = true; rerender(); },
     avEmotion: function (e) {
       avEmotion = e || 'smile';
       studioModeHold = true;
