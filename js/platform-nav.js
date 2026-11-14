@@ -23,7 +23,8 @@
     { v: 'island', icon: '🏝️', label: 'Practice Island', tip: 'Pupils practise at home' },
     { v: 'lesson-archive', icon: '📦', label: 'Old lessons', tip: 'Units 1–4, Halloween, Alice, Wonderland' },
     { v: 'settings', icon: '⚙️', label: 'School settings', tip: 'Classes, school, devices' },
-    { v: 'archived', icon: '🗄️', label: 'Archived & restore', tip: 'Restore classes, pupils and files' }
+    { v: 'archived', icon: '🗄️', label: 'Archived & restore', tip: 'Restore classes, pupils and files' },
+    { v: 'backups', icon: '💾', label: 'Backups', tip: 'A copy of XP and coins every day' }
   ];
   function placeOf(view) {
     for (var i = 0; i < PLACES.length; i++) if (PLACES[i].views.indexOf(view) >= 0) return PLACES[i].id;
@@ -54,6 +55,7 @@
       case 'game': if (root.launchGame) root.launchGame(arg); return;
       case 'class': try { S().setActiveClass(arg); } catch (e) { /* optional */ } sw('board'); return;
       case 'url': openUrl(arg); return;
+      case 'backups': if (root.DailyBackup) root.DailyBackup.open(); return;
       default: sw(act);
     }
   }
