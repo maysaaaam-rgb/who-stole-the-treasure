@@ -15,7 +15,7 @@
 
   var BUCKET = 'pupil-avatars';
   var LOOK_KEY = 'eaa_board_look';
-  var BASE = 'assets/avatars/';
+  var BASE = (root.EAA_AVATAR_BASE || 'assets/avatars/');   // Practice Island loads this file from island/ and sets '../assets/avatars/'
   var ASSET_V = '?v=25';
   var TONES = [
     { id: 'auto', label: 'Match Face ✨' },
@@ -2441,6 +2441,8 @@
     mode: mode, on: on, setMode: setMode, load: load, imgFor: imgFor, has: has, open: open, close: close,
     lockMode: lockMode,
     genderOf: function (id) { return genderOf(id); },
+    /** 'girl' | 'boy' | '' from a first name alone (Practice Island knows only the first name). */
+    genderForName: function (name) { var parts = String(name || '').trim().split(/\s+/); for (var i = 0; i < parts.length; i++) { var fn = foldToken(parts[i]); if (GIRL_NAMES[fn]) return 'girl'; if (BOY_NAMES[fn]) return 'boy'; } return ''; },
     pupilLevel: pupilLevel,
     tones: TONES, tees: TEES, stances: STANCES, toneBg: toneBg,
     lookOf: lookOf, styleOf: styleOf, setStyle: setStyle, previewLook: previewLook,

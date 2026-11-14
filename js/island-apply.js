@@ -177,6 +177,17 @@
         var student = store.getStudent ? store.getStudent(studentId) : null;
         if (!student || student.archived === true) return;
 
+        /* Words this pupil got wrong on the island (most often first): kept on this device so the
+           parent report can list "words to practise at home". Words only, no answers or marks. */
+        try {
+          var rw = pDoc.repeatWrong || {};
+          var ws = Object.keys(rw).filter(function (w) { return w && Number(rw[w]) > 0; })
+            .sort(function (x, y) { return (Number(rw[y]) - Number(rw[x])) || x.localeCompare(y); }).slice(0, 8);
+          var weak = parseJsonSafe(localStorage.getItem('eaa_island_weak_v1'), null) || {};
+          if (ws.length) weak[studentId] = ws; else delete weak[studentId];
+          localStorage.setItem('eaa_island_weak_v1', JSON.stringify(weak));
+        } catch (eWeak) { /* optional */ }
+
         var isStar = !!(syncDoc.star && syncDoc.star[studentId]);
         var cap = Math.floor(Number(syncDoc.cap)) || 30;
         var starCap = Math.floor(Number(syncDoc.starCap)) || 45;

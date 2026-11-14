@@ -252,6 +252,46 @@
     }, 0);
   }
 
+  /* Words to practise: every pupil's island keeps a count of the words they got wrong
+     (doc.repeatWrong). Show the top ones per pupil, and for the class the words most pupils miss,
+     so the teacher can use them as the next warm-up. */
+  function weakWordsOf(doc, max) {
+    var rw = (doc && doc.repeatWrong) || {};
+    return Object.keys(rw).map(function (w) { return { w: w, n: Number(rw[w]) || 0 }; })
+      .filter(function (x) { return x.n > 0 && x.w; })
+      .sort(function (a, b) { return (b.n - a.n) || a.w.localeCompare(b.w); }).slice(0, max || 4);
+  }
+  function classWeakWords(list) {
+    var by = {};
+    list.forEach(function (stu) {
+      weakWordsOf(state.islandDocs[stu.id], 99).forEach(function (x) {
+        var k = x.w.toLowerCase();
+        by[k] = by[k] || { w: x.w, pupils: 0, misses: 0 };
+        by[k].pupils++; by[k].misses += x.n;
+      });
+    });
+    return Object.keys(by).map(function (k) { return by[k]; })
+      .sort(function (a, b) { return (b.pupils - a.pupils) || (b.misses - a.misses) || a.w.localeCompare(b.w); }).slice(0, 12);
+  }
+  function renderClassWeak(list, grid) {
+    var box = document.getElementById('tch-weak-class');
+    if (!box) {
+      box = document.createElement('div'); box.id = 'tch-weak-class';
+      box.style.cssText = 'margin:0 0 16px;padding:14px 16px;border-radius:18px;background:rgba(15,23,42,.8);border:1px solid rgba(245,158,11,.45)';
+      grid.parentNode.insertBefore(box, grid);
+    }
+    var top = classWeakWords(list);
+    state.weakList = top.map(function (x) { return x.w; });
+    box.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">' +
+      '<div style="font-size:1.1rem;font-weight:800;color:#fde047">🎯 Class ' + esc(state.activeClass) + ': words to practise</div>' +
+      (top.length ? '<button type="button" class="isl-btn" style="min-height:40px;padding:6px 14px;font-size:.9rem" onclick="IslandTeacher.copyWeakWords()">📋 Copy the list</button>' : '') + '</div>' +
+      (top.length
+        ? '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">' + top.map(function (x) {
+            return '<span class="tch-stat-pill" style="font-size:1rem;background:rgba(245,158,11,.18);color:#fff"><b>' + esc(x.w) + '</b> · ' + x.pupils + (x.pupils === 1 ? ' pupil' : ' pupils') + '</span>';
+          }).join('') + '</div><div style="margin-top:8px;color:#94a3b8;font-size:.9rem">Words pupils got wrong on Practice Island, most-missed first. Use them as the next warm-up or paste them into Game Maker.</div>'
+        : '<div style="margin-top:8px;color:#94a3b8">No missed words yet. They appear here after pupils practise on the island.</div>');
+  }
+
   function renderAll() {
     var grid = document.getElementById('tch-roster-grid');
     var weekHead = document.getElementById('tch-week-head');
@@ -260,6 +300,7 @@
 
     /* Show nothing about pupils before unlock */
     if (isLocked()) {
+      var wk = document.getElementById('tch-weak-class'); if (wk) wk.remove();
       if (grid) grid.innerHTML = '';
       if (weekHead) weekHead.innerHTML = '';
       if (weekBody) weekBody.innerHTML = '';
@@ -332,10 +373,16 @@
             '<span class="tch-stat-pill">🗓️ Last: ' + esc(lastDay) + '</span>' +
             '<span class="tch-stat-pill">⚡ ' + weekXP + ' XP this week</span>' +
           '</div>' +
+          (weakWordsOf(pDoc, 4).length
+            ? '<div class="tch-stat-strip tch-weak" title="Words this pupil got wrong on the island, most often first">🎯 ' + weakWordsOf(pDoc, 4).map(function (x) {
+                return '<span class="tch-stat-pill" style="background:rgba(245,158,11,.18);color:#fff">' + esc(x.w) + (x.n > 1 ? ' ×' + x.n : '') + '</span>';
+              }).join('') + '</div>'
+            : '') +
         '</div>'
       );
     }).join('');
 
+    renderClassWeak(list, grid);
     renderCh1Table(list);
     renderCh2Table(list);
     renderWeekTable(list);
@@ -762,6 +809,10 @@
     updateCaps: updateCaps,
     saveSyncDoc: saveSyncDoc,
     copyPupilLink: copyPupilLink,
+    copyWeakWords: function () {
+      var txt = (state.weakList || []).join('\n'); if (!txt) return;
+      try { navigator.clipboard.writeText(txt).then(function () { toast('Copied ' + state.weakList.length + ' words'); }, function () { toast('Could not copy'); }); } catch (e) { toast('Could not copy'); }
+    },
     copyClassListForK12: copyClassListForK12,
     printClassCards: printClassCards
   };

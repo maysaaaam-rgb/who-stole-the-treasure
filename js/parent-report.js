@@ -170,6 +170,7 @@
       (hw ? '<div class="pr-h">HOMEWORK · ÖDEV</div><div class="pr-hw">' + hw + '</div>' : '') +
       '<div class="pr-h">TEACHER\'S COMMENT · ÖĞRETMENİN YORUMU</div><div class="pr-2c"><div class="pr-c">' + esc(c.en) + '</div><div class="pr-c">' + esc(c.tr) + '</div></div>' +
       (nt ? '<div class="pr-h">NOTE FROM THE TEACHER · ÖĞRETMENDEN NOT</div><div class="pr-2c"><div class="pr-c">' + esc(nt.en) + '</div><div class="pr-c">' + esc(nt.tr) + '</div></div>' : '') +
+      ((x.practiseWords || []).length ? '<div class="pr-h">WORDS TO PRACTISE AT HOME · EVDE ÇALIŞILACAK KELİMELER</div><div class="pr-hw">' + x.practiseWords.map(function (w) { return '<span>' + esc(w) + '</span>'; }).join('') + '</div><div style="font-size:11px;color:#64748b;margin-top:3px">From Practice Island: say each word and use it in one sentence. · Practice Island\'dan: her kelimeyi söyleyip bir cümlede kullanın.</div>' : '') +
       ((x.goalsEn || []).length ? '<div class="pr-h">NEXT MONTH · GELECEK AY HEDEFLERİ</div><ul class="pr-goals">' + x.goalsEn.map(function (g, i) { return '<li>' + esc(g) + ' <i>' + esc((x.goalsTr || [])[i] || '') + '</i></li>'; }).join('') + '</ul>' : '') +
       '<div class="pr-h">HOW HOMEWORK WORKS · ÖDEV NASIL ÇALIŞIR</div><div class="pr-rules">Homework is on the Google Sheet link and on k12; the due day is in the description. If something does not work (sound, link), write to us on k12 and send the recording to the teacher. Adventure points are earned in class and with homework, and the monster grows with them. · Ödevler Google Sheet bağlantısında ve k12\'de yer alır; son gün açıklamada yazar. Ses veya bağlantı çalışmazsa k12\'den yazın ve ses kaydını öğretmene gönderin. Macera puanları derste ve ödevle kazanılır, canavar puanla büyür.</div>' +
       '<div class="pr-write"><div><span>Teacher\'s notes · Öğretmen notları</span></div><div><span>Parent\'s comment · Veli görüşü</span></div></div>' +
@@ -182,7 +183,8 @@
     var c = comment(x);
     var gl = goals(x), nt = noteOf(id) || px.note || null;
     var par = (x.parents && x.parents.length) ? x.parents : (px.parents || []);
-    return { goalsEn: gl.en, goalsTr: gl.tr, note: nt, first: x.first, name: x.name, cls: x.cls, xp: x.xp, att: x.att, skills: x.skills, best: x.best ? x.best[0].toUpperCase() + x.best.slice(1) : '', quizBand: x.quizBand, quizBandTr: x.quizBandTr, quizTitle: x.quizText, quizScore: x.quizScore, quizPct: x.quizPct, quizBonus: x.quizBonus, quizNote: x.quizNote, quizSpeak: x.quizSpeak, quizParts: x.quizParts, cmp: x.cmp, hw: x.hw, parents: par, month: x.last30, level: x.level, pos30: x.pos30, nw30: x.nw30, comment: c };
+    var weak = []; try { weak = (JSON.parse(localStorage.getItem('eaa_island_weak_v1') || '{}') || {})[id] || []; } catch (e) { weak = []; }
+    return { practiseWords: weak.slice(0, 8), goalsEn: gl.en, goalsTr: gl.tr, note: nt, first: x.first, name: x.name, cls: x.cls, xp: x.xp, att: x.att, skills: x.skills, best: x.best ? x.best[0].toUpperCase() + x.best.slice(1) : '', quizBand: x.quizBand, quizBandTr: x.quizBandTr, quizTitle: x.quizText, quizScore: x.quizScore, quizPct: x.quizPct, quizBonus: x.quizBonus, quizNote: x.quizNote, quizSpeak: x.quizSpeak, quizParts: x.quizParts, cmp: x.cmp, hw: x.hw, parents: par, month: x.last30, level: x.level, pos30: x.pos30, nw30: x.nw30, comment: c };
   }
 
   /** Saves one report for a pupil (replaces this term's earlier parent report of that pupil). */

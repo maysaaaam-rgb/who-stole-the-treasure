@@ -23,7 +23,8 @@
     { v: 'island', icon: '🏝️', label: 'Practice Island', tip: 'Pupils practise at home' },
     { v: 'lesson-archive', icon: '📦', label: 'Old lessons', tip: 'Units 1–4, Halloween, Alice, Wonderland' },
     { v: 'settings', icon: '⚙️', label: 'School settings', tip: 'Classes, school, devices' },
-    { v: 'archived', icon: '🗄️', label: 'Archived & restore', tip: 'Restore classes, pupils and files' }
+    { v: 'archived', icon: '🗄️', label: 'Archived & restore', tip: 'Restore classes, pupils and files' },
+    { v: 'backups', icon: '💾', label: 'Backups', tip: 'A copy of XP and coins every day' }
   ];
   function placeOf(view) {
     for (var i = 0; i < PLACES.length; i++) if (PLACES[i].views.indexOf(view) >= 0) return PLACES[i].id;
@@ -54,6 +55,7 @@
       case 'game': if (root.launchGame) root.launchGame(arg); return;
       case 'class': try { S().setActiveClass(arg); } catch (e) { /* optional */ } sw('board'); return;
       case 'url': openUrl(arg); return;
+      case 'backups': if (root.DailyBackup) root.DailyBackup.open(); return;
       default: sw(act);
     }
   }
@@ -145,6 +147,14 @@
   (function () { try { var st = document.createElement('style'); st.id = 'pn-side-css'; st.textContent = SIDE_CSS; document.head.appendChild(st); } catch (e) { /* optional */ } })();
   function card(inner, cls) { return '<div class="pn-card' + (cls ? ' ' + cls : '') + '">' + inner + '</div>'; }
   var ART = 'platform-art/';
+  /* "Unit 5 Magic Book · Make Some Noise (pp. 72–87): 3D Pop-Out Scenes, Words…" is too long for a
+     board. Show the name; the list after the colon becomes a small second line (or the tooltip). */
+  function splitTitle(t) {
+    t = String(t || 'English').replace(/^[^A-Za-z0-9]+/, '').trim() || 'English';
+    var i = t.indexOf(': ', 12);
+    return i > 0 ? { main: t.slice(0, i), rest: t.slice(i + 2) } : { main: t, rest: '' };
+  }
+  root.EAAShortTitle = function (t) { return splitTitle(t).main; };
   function tile(art, label, small, onclick) {
     var pic = /\.webp$/.test(art) ? '<img src="' + (art.indexOf('/') >= 0 ? art : ART + art) + '" alt="" decoding="async" draggable="false">' : '<span class="e">' + art + '</span>';
     return '<button type="button" class="pn-tile" onclick="' + onclick + '"><span class="art">' + pic + '</span><span class="cap"><b>' + esc(label) + '</b>' + (small ? '<small>' + esc(small) + '</small>' : '') + '</span></button>';
@@ -223,7 +233,7 @@
       var when = tries ? 'First lesson on ' + dayName(day) + ', ' + cur.time : (curIsNow ? 'Now, since ' : 'Next, at ') + cur.time;
       html += '<div class="pn-card pn-now">' +
         (cur.classId ? '<div class="pn-cls" aria-label="Class">' + esc(shortCls(cur.classId)) + '</div>' : '<div></div>') +
-        '<div><div class="pn-when">' + esc(when) + '</div><div class="pn-title">' + esc(cur.title || 'English') + '</div></div>' +
+        '<div><div class="pn-when">' + esc(when) + '</div><div class="pn-title">' + esc(splitTitle(cur.title).main) + '</div>' + (splitTitle(cur.title).rest ? '<div style="opacity:.75;font-size:1rem;margin-top:4px">' + esc(splitTitle(cur.title).rest) + '</div>' : '') + '</div>' +
         '<div class="pn-art"><img src="' + artFor(cur) + '" alt="" decoding="async" draggable="false"></div>' +
         '<div class="pn-acts">' + actions(cur, true) + '</div></div>';
     } else {
@@ -233,7 +243,7 @@
       html += '<div class="pn-card" id="pn-list"><h2 class="pn-h">' + esc(label) + '</h2>' + timed.map(function (e, k) {
         var done = !tries && mins(e.time) + 40 <= nowM;
         return '<div class="pn-row' + (done ? ' done' : '') + (e === cur ? ' on' : '') + '" id="pn-l' + k + '"><span class="pn-t">' + esc(e.time) + '</span>' +
-          '<span class="pn-pill">' + esc(e.classId ? shortCls(e.classId) : '—') + '</span><span class="tx">' + (TYPE_ICON[e.type] || '📖') + ' ' + esc(e.title || 'English') + '</span>' +
+          '<span class="pn-pill">' + esc(e.classId ? shortCls(e.classId) : '—') + '</span><span class="tx" title="' + esc(e.title || '') + '">' + (TYPE_ICON[e.type] || '📖') + ' ' + esc(splitTitle(e.title).main) + '</span>' +
           (e === cur ? '' : '<span class="bt">' + actions(e, false) + '</span>') + '</div>';
       }).join('') +
       notes.map(function (e) { return '<div class="pn-note">' + (TYPE_ICON[e.type] || '📌') + ' ' + esc(e.title) + '</div>'; }).join('') +
