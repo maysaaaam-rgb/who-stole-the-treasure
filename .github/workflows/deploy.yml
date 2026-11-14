@@ -1,9 +1,9 @@
 name: Deploy GitHub Pages
 
+# Manual only. The live site is published from the gh-pages branch
+# ("pages build and deployment"). Running this on every push to main started a
+# second deployment that collided with that one and showed red failures.
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
