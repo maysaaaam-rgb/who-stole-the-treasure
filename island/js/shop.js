@@ -17,7 +17,7 @@
   /* In demo mode nothing leaves the device */
   var RETIRED = { 'cs-gat': 1, 'cs-hanbok': 1, 'cs-lantern': 1 };
   var LADDER = { mythic: [500, 6], legendary: [200, 5], epic: [90, 4], rare: [40, 3], common: [15, 1] };
-  var SHELVES = [['mythic', 'Mythic', '🔴', 'The far dreams'], ['legendary', 'Legendary', '🟡', 'Very few monsters have these'], ['epic', 'Epic', '🟣', 'Worth saving for'], ['rare', 'Cool', '🟢', 'Not far away'], ['common', 'Everyday', '⚪', 'Small wins, soon']];
+  var SHELVES = [['common', 'Everyday', '⚪', 'Ready to wear right now!'], ['rare', 'Cool', '🟢', 'Awesome explorer gear'], ['epic', 'Epic', '🟣', 'Worth saving for'], ['legendary', 'Legendary', '🟡', 'Rare captain treasures'], ['mythic', 'Mythic', '🔴', 'The ultimate dreams']];
   var XP_AT = [0, 30, 200, 500, 1000, 2000, 3500];
   function demoShop() {
     var xp = 0; try { xp = App().getEffectiveXP(); } catch (e) { xp = 0; }

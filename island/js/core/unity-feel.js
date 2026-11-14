@@ -267,6 +267,7 @@
           '<button type="button" class="uf-btn unity-hud-mute" data-uf-act="mute" title="Sound On/Off">' +
             (muted ? '🔇' : '🔊') +
           '</button>' +
+          '<button type="button" class="uf-btn" data-uf-act="fs" title="Classroom Smartboard Fullscreen (F)">⛶</button>' +
         '</div>' +
       '</div>' +
 
@@ -297,6 +298,8 @@
         } else if (act === 'mute') {
           if (root.Ch1Audio) root.Ch1Audio.toggleMute();
           refreshAllUnifiedHuds(false);
+        } else if (act === 'fs') {
+          toggleFullscreen();
         } else if (act === 'cam') {
           if (typeof cfg.onToggleCam === 'function') cfg.onToggleCam();
           renderHudInto(hostEl, cfg, false);
@@ -489,7 +492,7 @@
       src: 'videos/vid_ch2_sail.mp4',
       thumb: 'art/ch2/bg_ch2_bay.webp',
       zone: 2,
-      vo: 'Anchors aweigh! Sail aboard the Hispaniola across turquoise waves to Lighthouse Cove, where Long John Silver and Lulu the otter guard Map Piece Two!'
+      vo: 'Anchors aweigh! Sail aboard the Hispaniola across turquoise waves to Lighthouse Cove, where Long John Silver and Lulu the captain crab guard Map Piece Two!'
     },
     {
       id: 'vid_g3_u2',
@@ -633,7 +636,7 @@
       {
         title: '⚔️ Friendly Word Battles',
         desc: 'Challenge Cheeky Sand Crab, Sleepy Cloud, or Pine Cone Bear with Global Reading power spells!',
-        img: 'art/flat/e_sand_crab.webp',
+        img: 'art/flat/e_pine_bear.webp',
         act: 'IslandGamesHub.launch(\'battle\',' + pickBattleIdx + ')'
       },
       {
@@ -758,6 +761,43 @@
     });
   }
 
+  function toggleFullscreen() {
+    try {
+      var doc = root.document;
+      if (!doc.fullscreenElement) {
+        if (doc.documentElement.requestFullscreen) doc.documentElement.requestFullscreen().catch(function () {});
+      } else if (doc.exitFullscreen) {
+        doc.exitFullscreen().catch(function () {});
+      }
+    } catch (e) {}
+  }
+
+  if (root.addEventListener) {
+    root.addEventListener('keydown', function (ev) {
+      var tag = ev.target && ev.target.tagName ? ev.target.tagName.toLowerCase() : '';
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+      if (ev.key === 'Escape') {
+        var hbClose = document.querySelector('#k-close, #s1-close, #ch2-close, .hb-scene-top .hb-btn:first-child, #ch1-modal-backdrop .ch1-close, #ch1-modal-backdrop button[aria-label*="Close"]');
+        if (hbClose) {
+          ev.preventDefault();
+          hbClose.click();
+          return;
+        }
+        var mr = document.getElementById('isl-modal-root');
+        if (mr && mr.children.length > 0) {
+          ev.preventDefault();
+          if (root.WorldGame && root.WorldGame.closeModal) root.WorldGame.closeModal();
+          if (root.IslandApp && root.IslandApp.closeModal) root.IslandApp.closeModal();
+          mr.innerHTML = '';
+          document.body.classList.remove('isl-modal-open');
+        }
+      } else if ((ev.key === 'f' || ev.key === 'F') && !ev.ctrlKey && !ev.metaKey && !ev.altKey) {
+        var mr2 = document.getElementById('isl-modal-root');
+        if (!mr2 || !mr2.children.length) toggleFullscreen();
+      }
+    });
+  }
+
   root.UnityFeel = {
     perspectiveScale: perspectiveScale,
     spawnDustPuff: spawnDustPuff,
@@ -767,7 +807,8 @@
     notifyLookChanged: notifyLookChanged,
     mountUnifiedHud: mountUnifiedHud,
     refreshAllUnifiedHuds: refreshAllUnifiedHuds,
-    updateWayfinder: updateWayfinder
+    updateWayfinder: updateWayfinder,
+    toggleFullscreen: toggleFullscreen
   };
 
   root.SceneDirector = {

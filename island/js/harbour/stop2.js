@@ -83,12 +83,12 @@
       var r = rounds[S.i];
       var cards = H.shuffle([{ t: r.ok, img: r.okImg, ok: true }].concat(r.no.map(function (n) { return { t: n[0], img: n[1] }; })));
       var els = S.things(cards.map(function (c, k) {
-        return { id: String(k), img: c.img, x: 28 + k * 21, y: 27 + (k % 2) * 5, w: 18, label: c.t };
+        return { id: String(k), img: c.img, x: 37 + k * 18, y: 55 + (k % 2) * 2, w: 16.5, label: c.t };
       }), 's2-photo');
       els.forEach(function (b, k) {
         b.insertAdjacentHTML('beforeend',
           '<i class="s2-pin">' + pins[k] + '</i>' +
-          '<span style="display:block;margin-top:4px;padding:3px 6px;border-radius:8px;background:rgba(6,9,17,0.86);color:#f8fafc;font-size:0.56em;font-weight:800;line-height:1.18">' + cards[k].t + '</span>'
+          '<span class="s2-cap">' + cards[k].t + '</span>'
         );
         b.onclick = function () { pick(cards[k], b, r); };
         H.mark(b, cards[k].ok);

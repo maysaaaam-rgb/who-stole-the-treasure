@@ -193,7 +193,7 @@
     var bar = document.getElementById('isl-topbar');
     if (!bar) return;
     if (!state.session || state.session.status !== 'ok') {
-      bar.innerHTML = '<div class="isl-pupil-chip"><img src="art/o_compass.webp" style="width:32px;height:32px;object-fit:contain" alt=""><span class="isl-pupil-name">🏴‍☠️ Treasure Island · Chapter 1: Admiral Benbow Harbour</span></div>';
+      bar.innerHTML = '<div class="isl-pupil-chip"><img src="art/o_compass.webp" style="width:32px;height:32px;object-fit:contain" alt=""><span class="isl-pupil-name">🏝️ Practice Island · Global Readings 2.5D Adventure (Chapters 1 &amp; 2)</span></div>';
       return;
     }
 
@@ -510,34 +510,36 @@
     }
   }
 
-  /* Treasure Island — Admiral Benbow Harbour Entry Screen */
+  /* Practice Island — Global Readings 2.5D Adventure Entry Screen */
   function renderCodeEntry(container) {
     var errMsg = (state.session && state.session.status === 'invalid_code')
       ? '<p style="color:#fda4af;font-weight:700;margin:8px 0">Code "' + esc(state.session.code) + '" not found. Check your Sailor Pass code!</p>'
       : (state.session && state.session.message ? '<p style="color:#fde68a;font-weight:700">' + esc(state.session.message) + '</p>' : '');
 
     container.innerHTML =
-      '<div class="isl-card-modal" id="isl-code-entry-card" style="max-width:620px;margin:28px auto;text-align:center;background:linear-gradient(180deg,rgba(15,23,42,0.82),rgba(6,9,17,0.95)),url(art/bg_benbow.webp) center/cover no-repeat;border:2px solid rgba(245,158,11,0.55);box-shadow:0 20px 50px rgba(0,0,0,0.75)">' +
-        '<div style="display:flex;justify-content:center;align-items:flex-end;gap:14px;margin-bottom:6px">' +
-          '<img src="art/c_jim_happy.webp" alt="Jim Hawkins" style="width:92px;height:115px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
-          '<img src="art/o_compass.webp" alt="Compass" style="width:76px;height:76px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
-          '<img src="art/c_benbow_happy.webp" alt="Benbow" style="width:88px;height:96px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
-          '<img src="art/c_pip_happy.webp" alt="Parrot Flint" style="width:80px;height:92px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
+      '<div class="isl-card-modal" id="isl-code-entry-card" style="max-width:680px;margin:24px auto;text-align:center;background:linear-gradient(180deg,rgba(15,23,42,0.85),rgba(6,9,17,0.96)),url(art/bg_benbow.webp) center/cover no-repeat;border:2px solid rgba(56,189,248,0.55);box-shadow:0 22px 56px rgba(0,0,0,0.8)">' +
+        '<div style="display:flex;justify-content:center;align-items:flex-end;gap:14px;margin-bottom:8px">' +
+          '<img src="art/c_jim_happy.webp" alt="Jim Hawkins" style="width:88px;height:110px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
+          '<img src="art/o_compass.webp" alt="Compass" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
+          '<img src="art/c_benbow_happy.webp" alt="Benbow" style="width:82px;height:90px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
+          '<img src="art/flat/c_silver_happy.webp" alt="Captain Silver" style="width:86px;height:108px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6))">' +
         '</div>' +
-        '<div style="display:inline-block;padding:4px 14px;border-radius:99px;background:rgba(245,158,11,0.22);border:1px solid #f59e0b;color:#fde047;font-size:0.88rem;font-weight:800;margin-bottom:6px">⚓ STAGE 1 · ADMIRAL BENBOW HARBOUR</div>' +
-        '<h1 style="margin:4px 0 6px;font-size:2.05rem;color:#fff;text-shadow:0 3px 10px rgba(0,0,0,0.8)">🏴‍☠️ Treasure Island Adventure</h1>' +
-        '<p style="color:#e2e8f0;font-size:1.02rem;margin:0 0 16px">Join Jim Hawkins, baby leopard Benbow &amp; Parrot Captain Flint to find the 5 Map Clues!</p>' +
+        '<div style="display:inline-block;padding:5px 15px;border-radius:99px;background:rgba(56,189,248,0.18);border:1px solid rgba(56,189,248,0.65);color:#7dd3fc;font-size:0.88rem;font-weight:800;margin-bottom:6px">🏝️ FREE-ROAM 2.5D GAME · CHAPTERS 1 &amp; 2</div>' +
+        '<h1 style="margin:4px 0 6px;font-size:2.05rem;color:#fff;text-shadow:0 3px 10px rgba(0,0,0,0.85)">🏴‍☠️ Practice Island Adventure</h1>' +
+        '<p style="color:#e2e8f0;font-size:1.02rem;margin:0 0 16px">Explore <b>Admiral Benbow Harbour</b> &amp; <b>Hispaniola Bay</b> with your Monster, solve Global Readings Unit 1 &amp; 2 clues, and unlock treasure!</p>' +
         errMsg +
-        '<form onsubmit="IslandApp.submitCode(event)" style="display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:18px">' +
+        '<form onsubmit="IslandApp.submitCode(event)" style="display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:16px">' +
           '<input id="isl-code-input" type="text" maxlength="8" placeholder="CODE" autocomplete="off" ' +
-            'style="width:200px;text-align:center;font:800 1.65rem Fredoka,sans-serif;letter-spacing:4px;text-transform:uppercase;padding:10px 14px;border-radius:16px;border:3px solid #f59e0b;background:rgba(15,23,42,0.92);color:#fff">' +
+            'style="width:200px;text-align:center;font:800 1.65rem Fredoka,sans-serif;letter-spacing:4px;text-transform:uppercase;padding:10px 14px;border-radius:16px;border:3px solid #f59e0b;background:rgba(15,23,42,0.94);color:#fff">' +
           '<button type="submit" class="isl-btn amber" style="min-width:170px;font-size:1.18rem;padding:12px 20px">⛵ Set Sail!</button>' +
         '</form>' +
-        '<div style="border-top:1px solid rgba(255,255,255,0.14);padding-top:14px;margin-top:6px">' +
-          '<div style="font-size:0.88rem;color:#94a3b8;font-weight:700;margin-bottom:10px">Or jump straight into Stage 1 Demo Mode:</div>' +
-          '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
-            '<a href="?demo=1&pupil=demo-g3" class="isl-btn cyan" style="text-decoration:none;font-size:0.95rem;padding:9px 16px">🧭 Play Grade 3 (Benbow Harbour)</a>' +
-            '<a href="?demo=1&pupil=demo-g4" class="isl-btn emerald" style="text-decoration:none;font-size:0.95rem;padding:9px 16px">🗺️ Play Grade 4 (Benbow Harbour)</a>' +
+        '<div style="border-top:1px solid rgba(255,255,255,0.14);padding-top:14px;margin-top:4px">' +
+          '<div style="font-size:0.88rem;color:#bae6fd;font-weight:800;margin-bottom:10px">✨ Instant Classroom &amp; Practice Demo Modes:</div>' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">' +
+            '<a href="?demo=1&pupil=demo-g3" class="isl-btn cyan" style="text-decoration:none;font-size:0.93rem;min-height:48px;padding:8px 14px">⚓ Grade 3 · Ch.1 Harbour</a>' +
+            '<a href="?demo=1&pupil=demo-g4" class="isl-btn emerald" style="text-decoration:none;font-size:0.93rem;min-height:48px;padding:8px 14px">⚓ Grade 4 · Ch.1 Harbour</a>' +
+            '<a href="?demo=1&pupil=demo-g3&zone=2" class="isl-btn amber" style="text-decoration:none;font-size:0.93rem;min-height:48px;padding:8px 14px">🏝️ Grade 3 · Ch.2 Bay</a>' +
+            '<a href="?demo=1&pupil=demo-g4&zone=2" class="isl-btn violet" style="text-decoration:none;font-size:0.93rem;min-height:48px;padding:8px 14px">🏝️ Grade 4 · Ch.2 Bay</a>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -554,8 +556,15 @@
     root.IslandAudio.playTap();
     return root.IslandSync.loadLiveSession(code).then(function (ses) {
       state.session = ses;
+      if (ses && (ses.grade === 3 || ses.grade === 4)) {
+        if (root.Ch1Progress) root.Ch1Progress.setActiveGrade(ses.grade);
+        if (root.Ch2Progress) root.Ch2Progress.setActiveGrade(ses.grade);
+      }
       renderTopBar();
       renderMap();
+      if (ses && ses.status === 'ok' && root.WORLD && typeof root.WORLD.startWorld === 'function') {
+        root.WORLD.startWorld();
+      }
       return ses;
     });
   }
