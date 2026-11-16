@@ -55,6 +55,11 @@
           if (urlParam && keyParam && urlParam.trim() && keyParam.trim()) {
             const cleanUrl = urlParam.trim();
             const cleanKey = keyParam.trim();
+            // Security whitelist: only accept official HTTPS *.supabase.co endpoints
+            if (!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(cleanUrl)) {
+              console.warn('[AdventureSupabase] Rejected non-Supabase URL parameter.');
+              return;
+            }
             if (typeof localStorage !== 'undefined') {
               localStorage.setItem(URL_STORAGE_KEY, cleanUrl);
               localStorage.setItem(KEY_STORAGE_KEY, cleanKey);
@@ -112,8 +117,48 @@
 
       if (createClientFn) {
         try {
+          // Adaptive Auth Storage:
+          // - Personal Trusted Device ('eaa_device_trust_v2' === 'trusted'): persists session in localStorage.
+          // - Classroom Smartboard (default): isolates session strictly inside sessionStorage and scrubs localStorage.
+          const adaptiveAuthStorage = {
+            _isTrusted() {
+              try { return typeof localStorage !== 'undefined' && localStorage.getItem('eaa_device_trust_v2') === 'trusted'; } catch (e) { return false; }
+            },
+            getItem(key) {
+              try {
+                if (this._isTrusted()) {
+                  return localStorage.getItem(key) || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(key) : null);
+                }
+                if (typeof localStorage !== 'undefined' && /^sb-.*-auth-token/i.test(key)) {
+                  try { localStorage.removeItem(key); } catch (e) {}
+                }
+                return typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(key) : null;
+              } catch (e) { return null; }
+            },
+            setItem(key, value) {
+              try {
+                if (this._isTrusted()) {
+                  localStorage.setItem(key, value);
+                  if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(key, value);
+                } else {
+                  if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(key, value);
+                  if (typeof localStorage !== 'undefined') localStorage.removeItem(key);
+                }
+              } catch (e) {}
+            },
+            removeItem(key) {
+              try { if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(key); } catch (e) {}
+              try { if (typeof localStorage !== 'undefined') localStorage.removeItem(key); } catch (e) {}
+            }
+          };
+
           this.client = createClientFn(creds.url, creds.anonKey, {
-            auth: { persistSession: true, autoRefreshToken: true }
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true,
+              storage: adaptiveAuthStorage
+            }
           });
           this.isConfigured = true;
           this.lastError = null;
@@ -177,6 +222,18 @@
 
       if (typeof navigator !== 'undefined' && !navigator.onLine) {
         this.liveStatus = 'offline';
+        this.notify();
+        return this.liveStatus;
+      }
+
+      if (root.__eaa_offline_emergency === true) {
+        this.liveStatus = 'paused';
+        this.notify();
+        return this.liveStatus;
+      }
+
+      if (root.TeacherAuth && typeof root.TeacherAuth.canSyncCloud === 'function' && !root.TeacherAuth.canSyncCloud()) {
+        this.liveStatus = 'locked';
         this.notify();
         return this.liveStatus;
       }
@@ -261,7 +318,16 @@
     // =========================================================================
     // 1. STUDENTS CRUD (Full student roster & attributes in PostgreSQL)
     // =========================================================================
+    _canWriteTeacherCloud() {
+      if (root.__eaa_offline_emergency === true) return false;
+      if (root.TeacherAuth && typeof root.TeacherAuth.canSyncCloud === 'function') {
+        return root.TeacherAuth.canSyncCloud();
+      }
+      return true;
+    }
+
     async saveStudent(student) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true, error: 'Cloud writes paused until verified online' };
       if (!student || !student.id) return { success: false, error: 'Invalid student' };
       const client = this._ensureClient();
       this.isSyncing = true;
@@ -359,6 +425,7 @@
     }
 
     async deleteStudent(studentId) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!studentId) return { success: false };
       const client = this._ensureClient();
       this.isSyncing = true;
@@ -390,6 +457,7 @@
     // 2. TEACHER NOTES TABLE (PostgreSQL)
     // =========================================================================
     async saveTeacherNote(note) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!note || !note.id) return { success: false, error: 'Invalid note payload' };
       const client = this._ensureClient();
       this.isSyncing = true;
@@ -436,6 +504,7 @@
     }
 
     async deleteTeacherNote(noteId) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!noteId) return { success: false };
       const client = this._ensureClient();
       const { error } = await client.from('teacher_notes').delete().eq('id', String(noteId));
@@ -447,6 +516,7 @@
     // 3. ASSESSMENT RESULTS TABLE (PostgreSQL)
     // =========================================================================
     async saveAssessments(submissionsArray) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true, count: 0 };
       if (!Array.isArray(submissionsArray) || submissionsArray.length === 0) return { success: true, count: 0 };
       const client = this._ensureClient();
       this.isSyncing = true;
@@ -514,6 +584,7 @@
     }
 
     async deleteAssessment(studentId, checkId) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       const client = this._ensureClient();
       const id = studentId + '_' + checkId;
       const { error } = await client.from('assessment_results').delete().eq('id', id);
@@ -525,6 +596,7 @@
     // 4. XP AUDIT LEDGER (PostgreSQL)
     // =========================================================================
     async saveXPTransaction(tx) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!tx || !tx.id || !tx.studentId) return { success: false };
       const client = this._ensureClient();
       const row = {
@@ -568,6 +640,7 @@
     }
 
     async deleteXPTransaction(txId) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!txId) return { success: false };
       const client = this._ensureClient();
       const { error } = await client.from('xp_transactions').delete().eq('id', String(txId));
@@ -576,6 +649,7 @@
     }
 
     async saveXPTransactions(transactionsArray) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true, count: 0 };
       if (!Array.isArray(transactionsArray) || transactionsArray.length === 0) return { success: true, count: 0 };
       const client = this._ensureClient();
       const rows = transactionsArray.map(tx => ({
@@ -601,6 +675,7 @@
     // 5. ATTENDANCE (PostgreSQL)
     // =========================================================================
     async saveAttendance(recordsArray) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!Array.isArray(recordsArray) || recordsArray.length === 0) return { success: true };
       const client = this._ensureClient();
       const rows = recordsArray.map(rec => ({
@@ -621,6 +696,7 @@
     // 5B. CLASSES COHORT TABLE (PostgreSQL)
     // =========================================================================
     async saveClass(cls) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!cls || !cls.id) return { success: false, error: 'Invalid class' };
       const client = this._ensureClient();
       const row = {
@@ -665,6 +741,7 @@
     }
 
     async deleteClass(classId) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!classId) return { success: false };
       const client = this._ensureClient();
       const { error } = await client.from('classes').delete().eq('id', String(classId));
@@ -707,6 +784,7 @@
     }
 
     async saveResource(resource) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!resource) return { success: false, error: 'Invalid resource' };
       const client = this._ensureClient();
       const row = this._formatResourceRow(resource);
@@ -828,6 +906,7 @@
     }
 
     async deleteResource(id) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!id) return { success: false };
       const client = this._ensureClient();
       if (!this._resourcesTableUnavailable) {
@@ -863,6 +942,7 @@
     }
 
     async migrateLocalResourcesToCloud(store) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       const targetStore = store || this._activeStore || (typeof window !== 'undefined' ? (window.store || window.schoolStore) : null);
       if (!targetStore) return { success: false, reason: 'no_store' };
 
@@ -993,8 +1073,9 @@
     async syncAllWithStore(store) {
       if (!this.isConfigured) return { success: false, reason: 'not_configured' };
       if (!store) return { success: false, reason: 'no_store' };
-      // No teacher session: a locked cloud answers with empty lists, which must never look like "the cloud is empty".
-      if (root.TeacherAuth && root.TeacherAuth.required() && !root.TeacherAuth.signedIn()) return { success: false, reason: 'signed_out' };
+      // No teacher session or offline emergency mode: pause cloud sync completely.
+      if (root.__eaa_offline_emergency === true) return { success: false, reason: 'offline_emergency_paused' };
+      if (root.TeacherAuth && root.TeacherAuth.required() && (!root.TeacherAuth.signedIn() || (root.TeacherAuth.canSyncCloud && !root.TeacherAuth.canSyncCloud()))) return { success: false, reason: 'signed_out' };
 
       this._activeStore = store;
       this.isSyncing = true;

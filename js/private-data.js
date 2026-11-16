@@ -60,6 +60,7 @@
 
   root.EAAPrivate = {
     load: load,
+    clear: function () { DATA = null; loading = null; },
     isLoaded: function () { return !!DATA; },
     get: function (section) { return (DATA && DATA[section]) || null; },
     _decryptWith: decrypt   // test hook

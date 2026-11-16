@@ -21,160 +21,59 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236E56CF%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M22 10v6M2 10l10-5 10 5-10 5z%22/><path d=%22M6 12v5c3 3 9 3 12 0v-5%22/></svg>">
 
   <!-- School Platform Unified Stylesheet -->
-  <link rel="stylesheet" href="css/school-platform.css?v=7">
-  <link rel="stylesheet" href="css/eaa-theme.css?v=2">
-  <link rel="stylesheet" href="css/style.css?v=3">
-  <link rel="stylesheet" href="css/ui-polish.css?v=16">
-  <link rel="stylesheet" href="css/glass-theme.css?v=5">
-  <link rel="stylesheet" href="css/class-mode.css?v=13">
-  <link rel="stylesheet" href="css/class-mode-pages.css?v=6">
-  <link rel="stylesheet" href="css/tines-theme.css?v=5">
+  <link rel="stylesheet" href="css/school-platform.css?v=8">
+  <link rel="stylesheet" href="css/eaa-theme.css?v=3">
+  <link rel="stylesheet" href="css/style.css?v=4">
+  <link rel="stylesheet" href="css/ui-polish.css?v=17">
+  <link rel="stylesheet" href="css/glass-theme.css?v=6">
+  <link rel="stylesheet" href="css/class-mode.css?v=14">
+  <link rel="stylesheet" href="css/class-mode-pages.css?v=7">
+  <link rel="stylesheet" href="css/tines-theme.css?v=6">
 
-  <!-- Immediate Auth & Lock Check + Mobile/Cross-Device Controller -->
+  <!-- Immediate Zero-Hash Pre-Paint Lock Gate (Hydrated by js/teacher-auth.js v2.0) -->
   <script>/* Illustrated (3D) monsters are OFF (2026-10-11): the drawn monsters are back. Set to true to try the 3D monsters again. */window.EAA_ILLUSTRATED_MONSTERS = false;</script>
   <script>
     (function() {
       'use strict';
-      // The PIN is no longer written in this page: only a salted hash (PBKDF2, 150,000 rounds) is kept, so reading the page source does not show it.
-      const PIN_SALT = 'eaa-lock-v2-43559dfbce7fd75f-', PIN_ROUNDS = 600000, PIN_HASH = 'f2030d4428f3597b2813341d709b14e03e04745069fa3cdc1970d628dca10936';
-      function pinMatches(value) {
-        try {
-          const enc = new TextEncoder();
-          return crypto.subtle.importKey('raw', enc.encode(String(value)), 'PBKDF2', false, ['deriveBits']).then(function (key) {
-            return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode(PIN_SALT), iterations: PIN_ROUNDS }, key, 256);
-          }).then(function (bits) {
-            const hex = Array.prototype.map.call(new Uint8Array(bits), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
-            return hex === PIN_HASH;
-          }).catch(function () { return false; });
-        } catch (e) { return Promise.resolve(false); }
-      }
-
-      // Immediate lock check (prevents any flash of lesson content)
+      // Static client-side PIN hashes are permanently retired.
+      // Pre-paint lock hides all classroom/student UI until js/teacher-auth.js verifies a live 6-digit OTP or trusted JWT.
       try {
-        const isUnlocked = sessionStorage.getItem('eaa_auth_unlocked') === 'true' || window.__eaa_auth_unlocked === true;
-        if (!isUnlocked) {
+        const isTabUnlocked = sessionStorage.getItem('eaa_auth_unlocked') === 'true' || window.__eaa_auth_unlocked === true;
+        if (!isTabUnlocked) {
           document.documentElement.classList.add('platform-locked');
         }
       } catch (e) {
         document.documentElement.classList.add('platform-locked');
       }
 
-      window.handlePlatformPasswordSubmit = function(event) {
-        if (event) {
-          try { event.preventDefault(); } catch(e) {}
+      window.__eaaFinishUnlock = function() {
+        window.__eaa_auth_unlocked = true;
+        try { sessionStorage.setItem('eaa_auth_unlocked', 'true'); } catch (e) {}
+        document.documentElement.classList.remove('platform-locked');
+
+        if (window.schoolStore) {
+          window.schoolStore.setRole('teacher');
         }
-        const input = document.getElementById('platform-password-input');
-        const err = document.getElementById('platform-password-error');
-        if (!input) return false;
-
-        const val = (input.value || '').trim();
-        pinMatches(val).then(function (ok) { finishPinCheck(ok, input, err); });
-        return false;
-      };
-
-      function finishPinCheck(ok, input, err) {
-        if (ok) {
-          window.__eaa_auth_unlocked = true;
-          try {
-            sessionStorage.setItem('eaa_auth_unlocked', 'true');
-          } catch(e) {}
-
-          if (err) err.style.display = 'none';
-          document.documentElement.classList.remove('platform-locked');
-
-          const lockScreen = document.getElementById('platform-lock-screen');
-          if (lockScreen) {
-            lockScreen.style.opacity = '0';
-            lockScreen.style.pointerEvents = 'none';
-            setTimeout(function() {
-              lockScreen.style.display = 'none';
-            }, 250);
-          }
-
-          // Open main teacher view: respect URL hash if given, otherwise board in Class Mode or Today
-          if (window.schoolStore) {
-            window.schoolStore.setRole('teacher');
-          }
-          const hashPart = (window.location.hash || '').replace(/^#[/]*/, '').trim().split('/')[0];
-          const targetView = hashPart || (document.documentElement.classList.contains('class-mode') ? 'board' : 'today');
-          if (typeof window.switchView === 'function') {
-            window.switchView(targetView, !hashPart);
-          } else {
-            window.__pendingDashboardOpen = true;
-          }
-
-          const userName = document.getElementById('header-user-name');
-          if (userName) userName.textContent = 'Mr. Maysam';
-          return false;
+        const hashPart = (window.location.hash || '').replace(/^#[/]*/, '').trim().split('/')[0];
+        const targetView = hashPart || (document.documentElement.classList.contains('class-mode') ? 'board' : 'today');
+        if (typeof window.switchView === 'function') {
+          window.switchView(targetView, !hashPart);
         } else {
-          if (err) {
-            err.textContent = 'Incorrect password. Try again.';
-            err.style.display = 'block';
-          }
-          input.classList.remove('input-shake');
-          void input.offsetWidth; // Force CSS reflow
-          input.classList.add('input-shake');
-          input.focus();
-          input.select();
-          return false;
+          window.__pendingDashboardOpen = true;
         }
-      }
 
-      window.__eaaFinishUnlock = function() { finishPinCheck(true); };
-
-      window.togglePlatformPasswordVisibility = function() {
-        const input = document.getElementById('platform-password-input');
-        const eyeIcon = document.getElementById('platform-eye-icon');
-        if (!input) return;
-
-        if (input.type === 'password') {
-          input.type = 'text';
-          if (eyeIcon) eyeIcon.textContent = '🔒';
-        } else {
-          input.type = 'password';
-          if (eyeIcon) eyeIcon.textContent = '👁';
-        }
+        const userName = document.getElementById('header-user-name');
+        if (userName) userName.textContent = 'Mr. Maysam';
       };
 
       window.lockPlatformSession = function() {
+        if (window.TeacherAuth && typeof window.TeacherAuth.lock === 'function') {
+          return window.TeacherAuth.lock();
+        }
         window.__eaa_auth_unlocked = false;
-        try {
-          sessionStorage.removeItem('eaa_auth_unlocked');
-        } catch(e) {}
+        try { sessionStorage.removeItem('eaa_auth_unlocked'); } catch (e) {}
         document.documentElement.classList.add('platform-locked');
-        const lockScreen = document.getElementById('platform-lock-screen');
-        if (lockScreen) {
-          lockScreen.style.display = 'flex';
-          lockScreen.style.opacity = '1';
-          lockScreen.style.pointerEvents = 'auto';
-        }
-        const input = document.getElementById('platform-password-input');
-        if (input) {
-          input.value = '';
-          input.type = 'password';
-          const eyeIcon = document.getElementById('platform-eye-icon');
-          if (eyeIcon) eyeIcon.textContent = '👁';
-          setTimeout(function() { input.focus(); }, 120);
-        }
-        const err = document.getElementById('platform-password-error');
-        if (err) err.style.display = 'none';
       };
-
-      // Auto focus password on initial load if locked
-      function checkAutoLockFocus() {
-        if (document.documentElement.classList.contains('platform-locked')) {
-          const input = document.getElementById('platform-password-input');
-          if (input) {
-            setTimeout(function() { input.focus(); }, 100);
-          }
-        }
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', checkAutoLockFocus);
-      } else {
-        checkAutoLockFocus();
-      }
     })();
   </script>
   <style>
@@ -322,56 +221,15 @@
 <body>
 
   <!-- ========================================================================
-       0. PLATFORM PASSWORD SECURITY LOCK SCREEN
+       0. TEACHER VERIFICATION SECURITY GATE (HYDRATED BY js/teacher-auth.js)
        ======================================================================== -->
-  <div id="platform-lock-screen" role="dialog" aria-modal="true" aria-label="Teacher Access Lock">
+  <div id="platform-lock-screen" role="dialog" aria-modal="true" aria-label="Teacher Verification Gate">
     <div class="platform-lock-card">
-      <div class="platform-lock-icon-wrap">
-        <span style="font-size: 2.2rem; user-select: none;">🔐</span>
+      <div class="platform-lock-icon-wrap" style="background:linear-gradient(145deg,rgba(56,189,248,0.25),rgba(168,85,247,0.25));border:1.5px solid rgba(56,189,248,0.4);">
+        <span style="font-size: 2.1rem; user-select: none;">🛡️</span>
       </div>
-
-      <h1 style="font-size: 1.55rem; font-weight: 800; margin: 0 0 8px 0; color: #ffffff; letter-spacing: -0.02em;">🔐 Teacher Access</h1>
-      <p style="font-size: 0.95rem; color: #94a3b8; margin: 0 0 22px 0; line-height: 1.4;">Enter your password to continue.</p>
-
-      <form id="platform-lock-form" onsubmit="return handlePlatformPasswordSubmit(event)">
-        <div class="platform-lock-input-wrap">
-          <div style="position:relative; width:100%;">
-            <input 
-              type="password" 
-              id="platform-password-input" 
-              class="platform-lock-input" 
-              placeholder="Enter password..." 
-              autocomplete="current-password" 
-              inputmode="numeric"
-              pattern="[0-9]*"
-              autocorrect="off"
-              autocapitalize="none"
-              spellcheck="false"
-              required
-            />
-            <button 
-              type="button" 
-              id="platform-password-eye-btn" 
-              class="platform-lock-eye-btn" 
-              onclick="togglePlatformPasswordVisibility()" 
-              title="Show/Hide password" 
-              aria-label="Show or hide password"
-            >
-              <span id="platform-eye-icon" style="font-size: 1.25rem; line-height: 1; user-select: none;">👁</span>
-            </button>
-          </div>
-          <div id="platform-password-error" class="platform-lock-error">Incorrect password. Try again.</div>
-        </div>
-
-        <button type="submit" id="platform-lock-submit-btn" class="platform-lock-submit-btn" onclick="handlePlatformPasswordSubmit(event)">
-          <span>Unlock Platform</span>
-        </button>
-      </form>
-
-      <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; gap:8px; font-size:0.82rem; color:#64748b;">
-        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
-        <span>Teacher: <strong style="color:#e2e8f0;">Mr. Maysam</strong></span>
-      </div>
+      <h1 style="font-size: 1.5rem; font-weight: 800; margin: 0 0 8px 0; color: #ffffff; letter-spacing: -0.02em;">Teacher Verification</h1>
+      <p style="font-size: 0.92rem; color: #94a3b8; margin: 0;">Preparing secure verification gate…</p>
     </div>
   </div>
 
@@ -445,12 +303,18 @@
           </svg>
         </button>
 
-        <div class="user-chip" id="header-user-chip" title="Teacher Account: Mr. Maysam">
+        <div class="user-chip" id="header-user-chip" onclick="if(window.openSecurityCenterModal)window.openSecurityCenterModal()" title="Open Security, Password &amp; Platform Refresh" style="cursor:pointer;">
           <div class="avatar-initials" id="header-avatar-initials">MM</div>
           <span id="header-user-name">Mr. Maysam</span>
         </div>
 
-        <button class="icon-circle-btn" onclick="lockPlatformSession()" title="Lock Platform Session (Log Out)" aria-label="Lock Platform Session" style="color:var(--text-muted);">
+        <button class="icon-circle-btn" onclick="if(window.openSecurityCenterModal)window.openSecurityCenterModal()" title="Security, Password &amp; Platform Refresh" aria-label="Security and Refresh Settings" style="color:#38bdf8;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </button>
+
+        <button class="icon-circle-btn" onclick="lockPlatformSession()" title="Lock Platform Session" aria-label="Lock Platform Session" style="color:var(--text-muted);">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -3059,14 +2923,14 @@
   <script src="js/games-data.js?v=20261111u5g34"></script>
 
   <!-- Supabase PostgreSQL Client SDK (Authoritative Shared Database) -->
-  <script src="js/offline.js?v=1"></script>
+  <script src="js/offline.js?v=2"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=2.3"></script>
-  <script src="js/supabase-client.js?v=4.4"></script>
-  <script src="js/teacher-auth.js?v=1"></script>
+  <script src="js/supabase-config.js?v=2.4"></script>
+  <script src="js/supabase-client.js?v=4.5"></script>
+  <script src="js/teacher-auth.js?v=2.0"></script>
 
   <!-- 2. Cloud Persistence & Cross-Device Sync Service (Single Online Cloud DB) -->
-  <script src="js/school-cloud-sync.js?v=3.0"></script>
+  <script src="js/school-cloud-sync.js?v=3.1"></script>
 
   <!-- Discrete Homework Quests & Verified XP Tasks -->
   <script src="js/homework-data.js?v=3.1"></script>
@@ -3082,26 +2946,26 @@
   <script src="js/monster-pets.js?v=9"></script>
   <script src="js/classroom-cosmetics.js?v=1"></script>
   <script src="js/no-monsters.js?v=2"></script>
-  <script src="js/classroom-store.js?v=38"></script>
+  <script src="js/classroom-store.js?v=39"></script>
   <script src="js/retired-themes.js?v=3"></script>
-  <script src="js/timetable.js?v=20261113"></script>
+  <script src="js/timetable.js?v=20261116"></script>
   <script src="js/unit2-content.js?v=ti101"></script>
-  <script src="js/calendar-view.js?v=20261113"></script>
+  <script src="js/calendar-view.js?v=20261116"></script>
   <script src="js/revision-board.js?v=1"></script>
   <script src="js/class-journey.js?v=2"></script>
-  <script src="js/command-center.js?v=61"></script>
+  <script src="js/command-center.js?v=62"></script>
   <script src="js/sleepy-monster.js?v=4"></script>
   <script src="js/voice-fx.js?v=5"></script>
   <script src="js/library-curate.js?v=3"></script>
   <script src="js/board-scenes.js?v=9"></script>
   <script src="js/pupil-avatars.js?v=26"></script>
-  <script src="js/class-board.js?v=46"></script>
+  <script src="js/class-board.js?v=47"></script>
   <script src="js/bathroom-pass.js?v=3"></script>
   <script src="js/class-view.js?v=14"></script>
   <script src="js/class-rewards.js?v=11"></script>
   <script src="js/monster-closet.js?v=6"></script>
-  <script src="js/class-mode.js?v=20"></script>
-  <script src="js/private-data.js?v=1"></script>
+  <script src="js/class-mode.js?v=21"></script>
+  <script src="js/private-data.js?v=2"></script>
   <script src="js/birthday.js?v=4"></script>
 
   <!-- Global Sound System (Harmonic Web Audio) -->
@@ -3130,9 +2994,9 @@
   <script src="js/daily-report.js?v=1"></script>
   <script src="js/pupil-profile.js?v=10"></script>
   <script src="js/pupil-card.js?v=7"></script>
-  <script src="js/platform-nav.js?v=8"></script>
+  <script src="js/platform-nav.js?v=9"></script>
   <script src="js/daily-backup.js?v=1" defer></script>
-  <script src="js/school-app.js?v=ti110"></script>
+  <script src="js/school-app.js?v=ti111"></script>
   <script src="js/milestone-ceremony.js?v=13"></script>
   <script src="js/simon-says-game.js?v=4.1"></script>
   <script src="js/classroom-sounds.js?v=2"></script>

@@ -35,9 +35,24 @@ scratch/
 /lingo-work/
 /island-work/
 /unit4-work/
+/unit5-work/
+/store-work/
+/revision-work/
+/unit2-work/
 /kenney-work/
 /build/
 /monster day/
+/*.zip
+/hq2.out
+
+# pupil privacy guard (AGENTS.md §8): block pupil-named raster files in assets/avatars/, allow only anonymized student-* & generic rig assets
+/assets/avatars/*.webp
+/assets/avatars/*.png
+/assets/avatars/*.jpg
+!/assets/avatars/student-*
+!/assets/avatars/head_demo*
+!/assets/avatars/body_*
+!/assets/avatars/skin_*
 
 # local classroom movie files (never deployed to GitHub)
 /watch-answer/videos/
