@@ -1,0 +1,38 @@
+{
+  "cols": 4,
+  "rows": 3,
+  "tileWidth": 2752,
+  "tileHeight": 1536,
+  "displayTileWidth": 1376,
+  "displayTileHeight": 768,
+  "worldWidth": 5504,
+  "worldHeight": 2304,
+  "tiles": [
+    "bg_w1_a1_lighthouse.webp",
+    "bg_w1_a2_forest.webp",
+    "bg_w1_a3_waterfall.webp",
+    "bg_w1_a4_lookout.webp",
+    "bg_w1_b1_inn.webp",
+    "bg_w1_b2_village.webp",
+    "bg_w1_b3_farm.webp",
+    "bg_w1_b4_cave.webp",
+    "bg_w1_c1_harbour.webp",
+    "bg_w1_c2_beach.webp",
+    "bg_w1_c3_cove.webp",
+    "bg_w1_c4_bay.webp"
+  ],
+  "grid": [
+    { "id": "a1", "col": 0, "row": 0, "name": "Lighthouse", "file": "bg_w1_a1_lighthouse.webp" },
+    { "id": "a2", "col": 1, "row": 0, "name": "Forest", "file": "bg_w1_a2_forest.webp" },
+    { "id": "a3", "col": 2, "row": 0, "name": "Waterfall", "file": "bg_w1_a3_waterfall.webp" },
+    { "id": "a4", "col": 3, "row": 0, "name": "Lookout", "file": "bg_w1_a4_lookout.webp" },
+    { "id": "b1", "col": 0, "row": 1, "name": "Benbow Inn", "file": "bg_w1_b1_inn.webp" },
+    { "id": "b2", "col": 1, "row": 1, "name": "Village", "file": "bg_w1_b2_village.webp" },
+    { "id": "b3", "col": 2, "row": 1, "name": "Farm", "file": "bg_w1_b3_farm.webp" },
+    { "id": "b4", "col": 3, "row": 1, "name": "Cave", "file": "bg_w1_b4_cave.webp" },
+    { "id": "c1", "col": 0, "row": 2, "name": "Harbour", "file": "bg_w1_c1_harbour.webp" },
+    { "id": "c2", "col": 1, "row": 2, "name": "Beach", "file": "bg_w1_c2_beach.webp" },
+    { "id": "c3", "col": 2, "row": 2, "name": "Palm Cove", "file": "bg_w1_c3_cove.webp" },
+    { "id": "c4", "col": 3, "row": 2, "name": "The Bay", "file": "bg_w1_c4_bay.webp" }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "s_star": {
+    "file": "art/s_star.webp",
+    "raw": "platform-work/passport-art/s_star.png",
+    "size": 512
+  },
+  "s_rocket": {
+    "file": "art/s_rocket.webp",
+    "raw": "platform-work/passport-art/s_rocket.png",
+    "size": 512
+  },
+  "s_teapot": {
+    "file": "art/s_teapot.webp",
+    "raw": "platform-work/passport-art/s_teapot.png",
+    "size": 512
+  },
+  "s_heart": {
+    "file": "art/s_heart.webp",
+    "raw": "platform-work/passport-art/s_heart.png",
+    "size": 512
+  },
+  "s_crown": {
+    "file": "art/s_crown.webp",
+    "raw": "platform-work/passport-art/s_crown.png",
+    "size": 512
+  },
+  "s_planet": {
+    "file": "art/s_planet.webp",
+    "raw": "platform-work/passport-art/s_planet.png",
+    "size": 512
+  },
+  "s_paw": {
+    "file": "art/s_paw.webp",
+    "raw": "platform-work/passport-art/s_paw.png",
+    "size": 512
+  },
+  "s_music": {
+    "file": "art/s_music.webp",
+    "raw": "platform-work/passport-art/s_music.png",
+    "size": 512
+  },
+  "s_rainbow": {
+    "file": "art/s_rainbow.webp",
+    "raw": "platform-work/passport-art/s_rainbow.png",
+    "size": 512
+  },
+  "s_ball": {
+    "file": "art/s_ball.webp",
+    "raw": "platform-work/passport-art/s_ball.png",
+    "size": 512
+  },
+  "s_gem": {
+    "file": "art/s_gem.webp",
+    "raw": "platform-work/passport-art/s_gem.png",
+    "size": 512
+  },
+  "s_lightning": {
+    "file": "art/s_lightning.webp",
+    "raw": "platform-work/passport-art/s_lightning.png",
+    "size": 512
+  },
+  "o_passport_book": {
+    "file": "art/o_passport_book.webp",
+    "raw": "platform-work/passport-art/o_passport_book.png",
+    "size": 512
+  },
+  "o_envelope": {
+    "file": "art/o_envelope.webp",
+    "raw": "platform-work/passport-art/o_envelope.png",
+    "size": 512
+  },
+  "c_pip": {
+    "file": "art/c_pip.webp",
+    "raw": "platform-work/passport-art/c_pip.png",
+    "size": 512
+  }
+}

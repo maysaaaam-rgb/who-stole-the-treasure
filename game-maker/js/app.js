@@ -29,7 +29,7 @@
     connect4: ['Two teams.', 'Answer right to drop your disc in a column.', 'Four in a row wins the round.'],
     bowling: ['Answer right, then time 3 skill steps: Stand Position, Aim Angle (at the lane arrows), and Power + Hook!', 'Angle into the 1-3 or 1-2 pocket for a STRIKE — hitting the headpin dead-center leaves a SPLIT!', 'Use your second ball to pick up spares without rolling into the gutter!'],
     pass: ['A ticking bomb goes round the teams.', 'Answer right to pass it on.', 'When it pops, everybody else wins points.'],
-    penalty: ['Answer right to step up to the 3D penalty spot.', 'Drag the ball back (slingshot) or swipe forward to control aim, power and banana curve!', 'Release to shoot — time your power in the green sweet spot to beat the diving goalkeeper!'],
+    penalty: ['Answer right inside the live 3D Stadium (1st try ignites 🔥 Golden Super Shot!).', 'Swipe the 3D ball forward/curved — OR drag the 3D goal target & time the Sweet-Spot Power Meter!', 'Smash spinning 🌟 Top-Bins Stars for +35, or switch on 🧤 Rival Team Keeper for a live 2-team duel!'],
     whack: ['Answer right to start a 15-second 3D Whack-a-Word wave!', 'Whack ONLY the moles holding the Target Word to build a 3× Combo Streak (and tap 2-hit Boss Moles twice!).', 'Do NOT whack wrong decoy words — they reset your combo and stun your hammer!'],
     tower: ['Answer right to get crane blocks as the crane swings faster with every floor!', 'Overhanging edges are permanently sliced off — your next block is only as wide as what remains!', 'Land a 🌟 Perfect Drop (<8px) for +15 points and +10px bonus width!'],
     balloon: ['Read and listen to the question in the top banner.', 'Pop the fast-weaving answer balloon before it escapes twice — and avoid the 💣 Storm Trap balloon!', 'Right balloon scores +20 (+5 Fast Pop bonus); wrong balloons or traps score 0!'],
@@ -450,7 +450,7 @@
       var setupBtn = h('button', {
         type: 'button',
         class: 'gm-gcard-btn setup',
-        title: 'Customize teams, monsters, timer & rules',
+        title: 'Customize teams, avatars, timer & rules',
         text: '⚙️ Setup'
       });
       setupBtn.addEventListener('click', function (e) {
@@ -614,7 +614,7 @@
     S.teams.forEach(function (t, i) {
       var f = h('div', { class: 'gm-tface' }), name = h('input', { class: 'gm-tname-in', value: t.name, maxlength: '14', title: 'Team name' });
       f.style.setProperty('--c', t.color);
-      var mon = h('button', { type: 'button', class: 'gm-tmon', title: 'Tap for another monster' }, [U.monFace(t.mon, 96)]);
+      var mon = h('button', { type: 'button', class: 'gm-tmon', title: 'Tap for another avatar' }, [U.monFace(t.mon, 96)]);
       mon.addEventListener('click', function () {
         A.play('tap');
         if (t.roster && t.roster.length > 1) {
@@ -634,7 +634,7 @@
     });
     right.appendChild(faces);
     if (S.classId && S.teams.some(function (t) { return t.roster && t.roster.length; })) right.appendChild(teamLists(m));
-    else right.appendChild(h('div', { class: 'gm-hint center', text: classes.length ? 'Choose your class above to put the pupils in teams.' : 'Tap a monster to change it. Tap a name to rename the team.' }));
+    else right.appendChild(h('div', { class: 'gm-hint center', text: classes.length ? 'Choose your class above to put the pupils in teams.' : 'Tap an avatar to change it. Tap a name to rename the team.' }));
     (m.fields || []).forEach(function (f) {
       var fk = f.key || f.k, fl = f.label || f.l;
       var cur = S.cfg[fk] != null ? S.cfg[fk] : f.def;

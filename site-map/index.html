@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Map &amp; Architecture Atlas | English Adventure Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=3">
+  <script>
+    (function () {
+      try {
+        var unlocked = sessionStorage.getItem('eaa_auth_unlocked') === 'true'
+          || (localStorage.getItem('eaa_device_trust_v2') === 'trusted' && localStorage.getItem('eaa_explicit_locked_v2') !== '1');
+        if (!unlocked) document.documentElement.classList.add('platform-locked');
+      } catch (e) {
+        document.documentElement.classList.add('platform-locked');
+      }
+    })();
+  </script>
+  <style>
+    html.platform-locked .sm-header,
+    html.platform-locked .sm-main,
+    html.platform-locked .sm-drawer-backdrop {
+      display: none !important;
+    }
+    html:not(.platform-locked) #platform-lock-screen {
+      display: none !important;
+    }
+    #platform-lock-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%);
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="platform-lock-screen">
+    <div style="max-width:430px;width:100%;background:rgba(15,23,42,0.88);border:1px solid rgba(56,189,248,0.28);border-radius:24px;padding:30px 26px;text-align:center;backdrop-filter:blur(16px);color:#f8fafc;box-shadow:0 24px 60px rgba(0,0,0,0.7);">
+      <div style="font-size:2.6rem;margin-bottom:10px;">🛡️</div>
+      <h2 style="margin:0 0 8px;font-size:1.45rem;font-weight:800;">Teacher Verification Required</h2>
+      <p style="margin:0 0 18px;color:#94a3b8;font-size:0.9rem;line-height:1.45;">Verify your teacher session with a 6-digit code to open the Platform Architecture Atlas.</p>
+      <a href="../index.html?next=site-map/index.html" class="btn-3d btn-3d-emerald" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:14px;text-decoration:none;font-weight:800;">🔐 Verify Teacher Session →</a>
+    </div>
+  </div>
+  <!-- Ambient Background Glows -->
+  <div class="ambient-orb orb-cyan" aria-hidden="true"></div>
+  <div class="ambient-orb orb-violet" aria-hidden="true"></div>
+  <div class="ambient-orb orb-amber" aria-hidden="true"></div>
+
+  <!-- Top Sticky Cyber-Glass Header -->
+  <header class="sm-header">
+    <div class="sm-header-inner">
+      <div class="sm-brand">
+        <div class="sm-brand-badge" aria-hidden="true">🗺️</div>
+        <div>
+          <h1 class="sm-title">Adventure Academy <span class="accent-cyan">Atlas</span></h1>
+          <p class="sm-subtitle" id="sm-generated-meta">Interactive Site Map &amp; Codebase Navigator</p>
+        </div>
+      </div>
+
+      <!-- Instant Search Bar -->
+      <div class="sm-search-wrap">
+        <span class="sm-search-icon" aria-hidden="true">🔍</span>
+        <input
+          type="search"
+          id="sm-global-search"
+          class="sm-search-input"
+          placeholder="Search any screen, JS file, function, Game Maker mode, lesson, key… (Press /)"
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <button type="button" id="sm-search-clear" class="sm-clear-btn" style="display:none;" aria-label="Clear search">✕</button>
+      </div>
+
+      <!-- Header Quick Actions -->
+      <div class="sm-header-actions">
+        <button type="button" id="sm-sound-toggle" class="btn-3d btn-3d-slate sm-compact-btn" title="Toggle UI Musical Chimes">
+          <span id="sm-sound-icon">🔊</span> <span>SFX</span>
+        </button>
+        <a href="../index.html" class="btn-3d btn-3d-emerald sm-compact-btn" title="Open Main School Platform">
+          <span>🏫</span> <span>Open Platform</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Tactile 7-Tab Navigation Rail -->
+    <nav class="sm-tabs-rail" id="sm-tabs-rail" aria-label="Site Map Sections">
+      <button type="button" class="btn-3d sm-tab-btn is-active" data-tab="graph">
+        <span>🕸️</span> <span>Interactive Graph</span>
+      </button>
+      <button type="button" class="btn-3d sm-tab-btn" data-tab="overview">
+        <span>🧭</span> <span>Launch &amp; Cheat-Sheet</span>
+      </button>
+      <button type="button" class="btn-3d sm-tab-btn" data-tab="screens">
+        <span>🖥️</span> <span>Screens &amp; Giant JS</span>
+      </button>
+      <button type="button" class="btn-3d sm-tab-btn" data-tab="avatars">
+        <span>🎨</span> <span>Avatars &amp; Store</span>
+      </button>
+      <button type="button" class="btn-3d sm-tab-btn" data-tab="gamemaker">
+        <span>🎮</span> <span>Game Maker</span> <span class="sm-pill-count" id="cnt-gm">22</span>
+      </button>
+      <button type="button" class="btn-3d sm-tab-btn" data-tab="curriculum">
+        <span>📚</span> <span>Lessons &amp; Worlds</span> <span class="sm-pill-count" id="cnt-lessons">120</span>
+      </button>
+      <button type="button" class="btn-3d sm-tab-btn" data-tab="cloud">
+        <span>🛡️</span> <span>Cloud &amp; Git Safety</span> <span class="sm-pill-count" id="cnt-folders">180</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Viewport -->
+  <main class="sm-main">
+    <!-- Live Global Search Results Overlay Panel -->
+    <section id="sm-search-results-panel" class="sm-glass-panel sm-search-panel" style="display:none;" aria-live="polite"></section>
+
+    <!-- Active Tab Viewport -->
+    <div id="sm-tab-viewport"></div>
+  </main>
+
+  <!-- Slide-Over Inspector Drawer (for Deep JS Chapters, Functions & File Details) -->
+  <div id="sm-drawer-backdrop" class="sm-drawer-backdrop" style="display:none;">
+    <aside class="sm-drawer" id="sm-drawer" role="dialog" aria-modal="true" aria-labelledby="sm-drawer-title">
+      <div class="sm-drawer-header">
+        <div>
+          <span class="sm-eyebrow" id="sm-drawer-eyebrow">MODULE INSPECTOR</span>
+          <h2 id="sm-drawer-title" class="sm-drawer-title">File Details</h2>
+        </div>
+        <button type="button" id="sm-drawer-close" class="btn-3d btn-3d-coral sm-compact-btn">✕ Close</button>
+      </div>
+      <div id="sm-drawer-body" class="sm-drawer-body"></div>
+    </aside>
+  </div>
+
+  <!-- Copy Toast -->
+  <div id="sm-toast" class="sm-toast" role="status" aria-live="polite">Copied!</div>
+
+  <script src="data.js?v=3"></script>
+  <script src="app.js?v=3"></script>
+</body>
+</html>

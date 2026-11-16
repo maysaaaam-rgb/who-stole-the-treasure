@@ -1,0 +1,111 @@
+{
+  "version": "1.0.0",
+  "pilotPack": {
+    "character": {
+      "id": "kid-base",
+      "name": "Academy Kid Base (A-Pose Rigged)",
+      "glbPath": "assets/3d/characters/kid-base.glb",
+      "refPath": "assets/3d/refs/kid-base-a-pose.png",
+      "targetHeight": 1.65,
+      "recommendedTool": "Hunyuan3D-2.1 or Tripo3D (Auto-Rigged Biped)"
+    },
+    "items": [
+      {
+        "id": "crown",
+        "name": "Royal Gold Crown",
+        "slot": "headwear",
+        "boneCandidates": ["mixamorigHead", "Head", "head", "Bip01_Head"],
+        "fallbackOffset": [0, 1.68, 0.0],
+        "socketOffset": [0, 0.46, 0.0],
+        "scale": 0.28,
+        "rotation": [0, 0, 0],
+        "glbPath": "assets/3d/items/crown.glb",
+        "refPath": "assets/3d/refs/item-crown.png"
+      },
+      {
+        "id": "cap",
+        "name": "Cyan Academy Cap",
+        "slot": "headwear",
+        "boneCandidates": ["mixamorigHead", "Head", "head", "Bip01_Head"],
+        "fallbackOffset": [0, 1.56, 0.02],
+        "socketOffset": [0, 0.2, 0.02],
+        "scale": 0.26,
+        "rotation": [0, 0, 0],
+        "glbPath": "assets/3d/items/cap.glb",
+        "refPath": "assets/3d/refs/item-cap.png"
+      },
+      {
+        "id": "shades",
+        "name": "Cyber Aviator Shades",
+        "slot": "glasses",
+        "boneCandidates": ["mixamorigHead", "Head", "head", "Bip01_Head"],
+        "fallbackOffset": [0, 1.41, 0.14],
+        "socketOffset": [0, 0.05, 0.14],
+        "scale": 0.2,
+        "rotation": [0, 0, 0],
+        "glbPath": "assets/3d/items/shades.glb",
+        "refPath": "assets/3d/refs/item-shades.png"
+      },
+      {
+        "id": "wings",
+        "name": "Astral Cyan Wings",
+        "slot": "back",
+        "boneCandidates": ["mixamorigSpine2", "Spine2", "Chest", "spine_02", "Spine1"],
+        "fallbackOffset": [0, 1.08, -0.18],
+        "socketOffset": [0, 0.12, -0.18],
+        "scale": 0.72,
+        "rotation": [0, 0, 0],
+        "glbPath": "assets/3d/items/wings.glb",
+        "refPath": "assets/3d/refs/item-wings.png"
+      },
+      {
+        "id": "cape",
+        "name": "Hero Crimson Cape",
+        "slot": "back",
+        "boneCandidates": ["mixamorigSpine2", "Spine2", "Chest", "spine_02", "Spine1"],
+        "fallbackOffset": [0, 1.02, -0.15],
+        "socketOffset": [0, 0.08, -0.15],
+        "scale": 0.78,
+        "rotation": [0, 0, 0],
+        "glbPath": "assets/3d/items/cape.glb",
+        "refPath": "assets/3d/refs/item-cape.png"
+      },
+      {
+        "id": "backpack",
+        "name": "Explorer Backpack",
+        "slot": "back",
+        "boneCandidates": ["mixamorigSpine2", "Spine2", "Chest", "spine_02", "Spine1"],
+        "fallbackOffset": [0, 1.04, -0.18],
+        "socketOffset": [0, 0.04, -0.18],
+        "scale": 0.42,
+        "rotation": [0, 0, 0],
+        "glbPath": "assets/3d/items/backpack.glb",
+        "refPath": "assets/3d/refs/item-backpack.png"
+      },
+      {
+        "id": "wand",
+        "name": "Star Magic Wand",
+        "slot": "hand_r",
+        "boneCandidates": ["mixamorigRightHand", "RightHand", "hand_r", "R_Hand"],
+        "fallbackOffset": [0.34, 0.92, 0.16],
+        "socketOffset": [0, 0.04, 0.05],
+        "scale": 0.36,
+        "rotation": [0.35, 0, -0.25],
+        "glbPath": "assets/3d/items/wand.glb",
+        "refPath": "assets/3d/refs/item-wand.png"
+      },
+      {
+        "id": "soccer-ball",
+        "name": "Pro Match Football",
+        "slot": "ground",
+        "boneCandidates": [],
+        "fallbackOffset": [0.42, 0.13, 0.25],
+        "socketOffset": [0.42, 0.13, 0.25],
+        "scale": 0.24,
+        "rotation": [0, 0, 0],
+        "glbPath": "assets/3d/items/soccer-ball.glb",
+        "refPath": "assets/3d/refs/item-soccer-ball.png"
+      }
+    ]
+  }
+}
