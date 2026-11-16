@@ -1098,8 +1098,98 @@
     ['extras', '🔊 Titles & Sounds']
   ];
   var AV_STATE_ORDER = { have: 0, level: 1, shop: 2 };
+  var av3DMode = false;
+  var av3DCrownDemo = true;
+  var av3DStageInst = null;
+  var av3DScriptsPromise = null;
+
+  function loadScriptSeq(urls) {
+    return urls.reduce(function (p, u) {
+      return p.then(function () {
+        return new Promise(function (resolve, reject) {
+          var s = document.createElement('script');
+          s.src = u;
+          s.onload = resolve;
+          s.onerror = function () { reject(new Error('Failed ' + u)); };
+          document.head.appendChild(s);
+        });
+      });
+    }, Promise.resolve());
+  }
+
+  function ensureShop3DEngine() {
+    if (root.Avatar3DEngine && root.THREE && root.THREE.GLTFLoader) return Promise.resolve(root.Avatar3DEngine);
+    if (av3DScriptsPromise) return av3DScriptsPromise;
+    var chain = [];
+    if (!root.THREE) chain.push('game-maker/js/vendor/three.min.js?v=160');
+    chain.push(
+      'game-maker/js/vendor/BufferGeometryUtils.js?v=160',
+      'game-maker/js/vendor/GLTFLoader.js?v=160',
+      'game-maker/js/vendor/OrbitControls.js?v=160',
+      'js/avatar-3d-engine.js?v=2'
+    );
+    av3DScriptsPromise = loadScriptSeq(chain).then(function () { return root.Avatar3DEngine; });
+    av3DScriptsPromise.catch(function () { av3DScriptsPromise = null; });
+    return av3DScriptsPromise;
+  }
+
+  function skinHexOf(toneId) {
+    var m = { light: '#fbd3b6', medium: '#f4c29f', tan: '#d08e66', dark: '#8d5524' };
+    return m[toneId] || '#f4c29f';
+  }
+
+  function avMount3DStage(sid) {
+    var host = root.document && document.getElementById('cs-av-3d-host');
+    if (!host) {
+      if (av3DStageInst) { try { av3DStageInst.dispose(); } catch (e) {} av3DStageInst = null; }
+      return;
+    }
+    var P = PA();
+    var st = (P && P.styleOf) ? P.styleOf(sid) : { skin: 'auto', tee: '#22c55e', stance: 'stand' };
+    var wearing = (P && P.wearingOf) ? P.wearingOf(sid) : {};
+    var wantCrown = av3DCrownDemo || /crown/i.test(String(wearing.hat || '')) || /crown/i.test(String(avTryId || ''));
+
+    ensureShop3DEngine().then(function (Eng) {
+      var curHost = document.getElementById('cs-av-3d-host');
+      if (!curHost || !Eng) return;
+      if (av3DStageInst) { try { av3DStageInst.dispose(); } catch (e) {} av3DStageInst = null; }
+      var pal = {
+        teeHex: st.tee || '#22c55e',
+        skinHex: skinHexOf(st.skin),
+        shortsHex: '#1e3a8a',
+        soleHex: st.tee || '#38bdf8'
+      };
+      var stg = new Eng.Stage(curHost, { autoRotate: true, targetHeight: 1.65, palette: pal });
+      av3DStageInst = stg;
+      stg.setCharacterFromSource('assets/3d/characters/kid-base.glb', pal).then(function () {
+        if (av3DStageInst !== stg) return;
+        var stc = String(st.stance || 'stand');
+        if (stc === 'wave') stg.playAnimation('Wave');
+        else if (stc === 'cheer' || stc === 'jump') stg.playAnimation('Cheer');
+        else stg.playAnimation('Idle');
+
+        if (wantCrown) {
+          stg.equipItemFromSource({
+            id: 'crown',
+            name: 'Royal Gold Crown',
+            slot: 'headwear',
+            boneCandidates: ['mixamorigHead', 'Head'],
+            socketOffset: [0, 0.46, 0],
+            fallbackOffset: [0, 1.68, 0],
+            scale: 0.28,
+            rotation: [0, 0, 0]
+          }, 'assets/3d/items/crown.glb').catch(function () {});
+        }
+      }).catch(function () {});
+    }).catch(function () {});
+  }
 
   function avRefreshPreview(sid) {
+    if (av3DMode) {
+      avMount3DStage(sid);
+      return;
+    }
+    if (av3DStageInst) { try { av3DStageInst.dispose(); } catch (e) {} av3DStageInst = null; }
     var P = PA(), el = root.document && document.getElementById('cs-av-preview');
     if (!P || !el || !sid) return;
     var want = sid + '|' + avTryId + '|' + avEmotion;
@@ -1319,10 +1409,20 @@
     clearTimeout(avPrevTimer);
     avPrevTimer = setTimeout(function () { avRefreshPreview(s.id); }, 0);
 
+    var stageInner = av3DMode
+      ? '<div id="cs-av-3d-host" style="position:absolute;inset:0;z-index:2;cursor:grab;"></div>' +
+        '<div style="position:absolute;top:8px;left:8px;right:8px;z-index:3;display:flex;justify-content:space-between;pointer-events:none;">' +
+          '<span style="background:rgba(6,9,17,.78);border:1px solid rgba(56,189,248,.5);color:#7dd3fc;border-radius:999px;padding:3px 9px;font-size:.68rem;font-weight:900;">🔄 Drag 360°</span>' +
+          '<button type="button" onclick="ClassroomStore.ui.avToggle3DCrown()" style="pointer-events:auto;cursor:pointer;background:' + (av3DCrownDemo ? '#f59e0b' : 'rgba(15,23,42,.88)') + ';color:' + (av3DCrownDemo ? '#111827' : '#e5edff') + ';border:1.5px solid #fbbf24;border-bottom:3px solid #b45309;border-radius:999px;padding:3px 10px;font-size:.68rem;font-weight:900;">👑 3D Crown ' + (av3DCrownDemo ? 'ON' : 'OFF') + '</button>' +
+        '</div>'
+      : '<img id="cs-av-preview" src="' + esc(P.pictureFor(s.id)) + '" alt="' + firstName(s) + '"><i></i>';
+
     return '<div class="cs-avwrap">' +
       '<div class="cs-avstage">' +
-        '<div class="cs-avstage-hd"><span class="cs-avstage-nm">' + firstName(s) + '</span><div style="display:flex;gap:6px;align-items:center;"><span class="cs-lvl-pill">⭐ Lv ' + pLvl + '</span>' + coinPill(bal) + '</div></div>' +
-        '<div class="cs-avstage-in"><img id="cs-av-preview" src="' + esc(P.pictureFor(s.id)) + '" alt="' + firstName(s) + '"><i></i></div>' +
+        '<div class="cs-avstage-hd"><span class="cs-avstage-nm">' + firstName(s) + '</span><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">' +
+          '<button type="button" class="cs-pose-btn' + (av3DMode ? ' on' : '') + '" style="padding:4px 10px;font-size:.74rem;" onclick="ClassroomStore.ui.avToggle3D()" title="Switch between 2D Portrait and Live 360° Rigged 3D .GLB!">🧊 ' + (av3DMode ? '360° 3D ON' : '360° 3D') + '</button>' +
+          '<span class="cs-lvl-pill">⭐ Lv ' + pLvl + '</span>' + coinPill(bal) + '</div></div>' +
+        '<div class="cs-avstage-in">' + stageInner + '</div>' +
         tryBar + emoRow + stanceRow + idRow + colorTray + wearingHtml +
       '</div>' +
       '<div class="cs-avlist"><div class="cs-avchips">' + slotChips + '</div>' + rightBody + '</div>' +
@@ -1566,6 +1666,8 @@
         var n = giftBoxes(ids, tier); notify('🎁 Gifted ' + n + ' ' + BOX_INFO[tier].name + (n === 1 ? '' : 'es') + '!'); studioModeHold = true; rerender();
       });
     },
+    avToggle3D: function () { av3DMode = !av3DMode; studioModeHold = true; rerender(); },
+    avToggle3DCrown: function () { av3DCrownDemo = !av3DCrownDemo; studioModeHold = true; rerender(); },
     avTry: function (id) { avTryId = (avTryId === id ? '' : (id || '')); studioModeHold = true; rerender(); },
     avBuy: function (id) {
       var sid = activeStudentId(), P = PA(), x = P && P.itemInfo ? P.itemInfo(id) : null; if (!sid || !x) return;

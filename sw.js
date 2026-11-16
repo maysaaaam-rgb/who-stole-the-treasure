@@ -6,7 +6,7 @@
            school Wi-Fi drops.
    Never touched: the cloud database (Supabase), anything that is not a simple GET. */
 'use strict';
-var VERSION = 'eaa-offline-v4-20261116';
+var VERSION = 'eaa-offline-v5-20261116';
 var CODE = VERSION + '-code';     // pages, scripts, styles, json
 var MEDIA = VERSION + '-media';   // pictures, sounds, fonts, pdf
 var MEDIA_MAX = 1500;             // oldest copies are dropped past this

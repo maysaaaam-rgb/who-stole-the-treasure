@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" class="platform-locked">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Passport Teacher Studio — English Adventure Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=1">
+  <style>
+    html.platform-locked #teacher-app-shell {
+      display: none !important;
+    }
+    html:not(.platform-locked) #platform-lock-screen {
+      display: none !important;
+    }
+    #platform-lock-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%);
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Teacher Security Gate (Managed by ../js/teacher-auth.js) -->
+  <div id="platform-lock-screen">
+    <div class="pass-modal-card" style="max-width:440px;text-align:center">
+      <div style="font-size:3.2rem;margin-bottom:12px">🛡️</div>
+      <h2 style="font-size:1.7rem;margin-bottom:8px">Teacher Verification</h2>
+      <p style="color:#cbd5e1;font-size:0.95rem;margin-bottom:20px">Verifying your teacher session before opening Passport Studio…</p>
+      <a href="../index.html?next=passport/teacher.html" class="pass-btn cyan" style="text-decoration:none;display:inline-block;">Verify with 6-Digit Code →</a>
+    </div>
+  </div>
+
+  <!-- Unlocked Teacher App Shell -->
+  <div id="teacher-app-shell">
+    <header class="pass-topbar">
+      <div class="pass-pupil-meta">
+        <img src="art/o_passport_book.webp" alt="" style="width:40px;height:40px;object-fit:contain">
+        <div>
+          <span class="pass-pupil-name">Passport Teacher Studio</span>
+          <div class="pass-pupil-sub">English Adventure Academy • Moderation & Gallery</div>
+        </div>
+      </div>
+      <div class="pass-actions">
+        <a href="../island/teacher.html" class="pass-btn cyan">🏝️ Island Studio ↗</a>
+        <a href="index.html?demo=1" class="pass-btn amber" target="_blank">Student View ↗</a>
+        <a href="../index.html" class="pass-btn">🏠 Platform</a>
+        <button type="button" class="pass-btn" onclick="PassportTeacher.relock()">Lock 🔒</button>
+      </div>
+    </header>
+
+    <main class="pass-teacher-wrap">
+      <!-- Toolbar: Class selector, Gallery toggle, Smartboard shortcut -->
+      <section class="pass-teacher-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="tch-class-tabs"></div>
+          <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:1rem;cursor:pointer">
+              <span>Class Gallery:</span>
+              <label class="pass-toggle-switch">
+                <input type="checkbox" id="tch-gallery-toggle" onchange="PassportTeacher.toggleGallery()">
+                <span class="pass-toggle-slider"></span>
+              </label>
+              <span id="tch-gallery-status" style="color:#94a3b8;font-size:0.9rem">Off</span>
+            </label>
+            <button type="button" class="pass-btn violet" id="tch-btn-board" onclick="PassportTeacher.openSmartboard()">📺 Open Smartboard Gallery</button>
+            <button type="button" class="pass-btn emerald" id="tch-btn-approve-all" onclick="PassportTeacher.approveAll()">✓ Approve All for Class</button>
+          </div>
+        </div>
+        <div id="tch-toast" style="margin-top:12px;font-weight:700;color:#34d399;min-height:22px"></div>
+      </section>
+
+      <!-- Waiting for You Section -->
+      <section class="pass-teacher-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+          <div>
+            <h2 style="font-size:1.45rem;display:flex;align-items:center;gap:8px">
+              <span>⏳ Waiting for You</span>
+              <span id="tch-waiting-badge" style="background:#f59e0b;color:#060911;font-size:0.9rem;font-weight:900;padding:2px 10px;border-radius:9999px">0</span>
+            </h2>
+            <p style="color:#cbd5e1;font-size:0.92rem;margin-top:2px">Pupils who updated their passport since it was last approved. Approving publishes their changes to classmates.</p>
+          </div>
+        </div>
+        <div class="pass-waiting-grid" id="tch-waiting-grid"></div>
+      </section>
+
+      <!-- Full Class Roster & Hide Controls -->
+      <section class="pass-teacher-card">
+        <h2 style="font-size:1.45rem;margin-bottom:6px">👥 Class Roster & Gallery Visibility</h2>
+        <p style="color:#cbd5e1;font-size:0.92rem;margin-bottom:16px">You can hide any pupil who prefers not to share their passport in the gallery. Nothing is shown to pupils.</p>
+        <div id="tch-roster-list" style="display:flex;flex-direction:column;gap:12px"></div>
+      </section>
+
+      <!-- Step 3: Everyone Gets Noticed ("Got nothing this week") -->
+      <section class="pass-teacher-card" id="tch-quiet-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+          <div>
+            <h2 style="font-size:1.45rem;display:flex;align-items:center;gap:8px">
+              <span>🌱 Got Nothing This Week</span>
+              <span id="tch-quiet-badge" style="background:#38bdf8;color:#060911;font-size:0.9rem;font-weight:900;padding:2px 10px;border-radius:9999px">0</span>
+            </h2>
+            <p style="color:#cbd5e1;font-size:0.92rem;margin-top:2px">Quiet in the last 7 days. Pair these pupils up in your next class activity so everyone receives encouragement!</p>
+          </div>
+        </div>
+        <div class="pass-quiet-grid" id="tch-quiet-grid"></div>
+      </section>
+
+      <!-- Step 3: Kind Notes Moderation & Smartboard Shout-Outs -->
+      <section class="pass-teacher-card" id="tch-notes-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+          <div>
+            <h2 style="font-size:1.45rem;display:flex;align-items:center;gap:8px">
+              <span>💌 Kind Notes Moderation & Shout-Outs</span>
+              <span id="tch-notes-badge" style="background:#a855f7;color:#ffffff;font-size:0.9rem;font-weight:900;padding:2px 10px;border-radius:9999px">0</span>
+            </h2>
+            <p style="color:#cbd5e1;font-size:0.92rem;margin-top:2px">Review notes sent between classmates over the last 14 days. Star any note to feature it on the Smartboard warm-up shout-outs!</p>
+          </div>
+        </div>
+        <div id="tch-notes-list" style="display:flex;flex-direction:column;gap:12px"></div>
+      </section>
+
+      <!-- Step 3: Notes Hidden by Pupils -->
+      <section class="pass-teacher-card" id="tch-hidden-pupils-section">
+        <h2 style="font-size:1.45rem;margin-bottom:6px">🙈 Hidden by Pupils</h2>
+        <p style="color:#cbd5e1;font-size:0.92rem;margin-bottom:14px">Notes that pupils chose to hide from their own mailbox. Useful for checking in with individual pupils.</p>
+        <div id="tch-hidden-pupils-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Supabase & Platform Core -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js?v=2.5"></script>
+  <script src="../js/supabase-client.js?v=4.6"></script>
+  <script src="../js/teacher-auth.js?v=2.1" data-guard="1"></script>
+  <script src="../js/monster-renderer.js?v=4.6"></script>
+
+  <!-- My Passport Modules -->
+  <script src="js/data.js?v=1"></script>
+  <script src="js/sync.js?v=1"></script>
+  <script src="js/teacher.js?v=2"></script>
+</body>
+</html>

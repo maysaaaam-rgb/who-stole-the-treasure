@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Avatar &amp; Item Forge Studio | English Adventure Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <header class="f3d-header">
+    <div class="f3d-header-inner">
+      <div class="f3d-brand">
+        <div class="f3d-logo" aria-hidden="true">🧊</div>
+        <div>
+          <h1 class="f3d-title">3D Avatar &amp; Item <span class="accent-cyan">Forge Studio</span></h1>
+          <p class="f3d-sub">Pilot Pack Reference Generator · Live .GLB 360° Turntable · Bone-Socket Fitter</p>
+        </div>
+      </div>
+
+      <div class="f3d-actions">
+        <a href="https://huggingface.co/spaces/tencent/Hunyuan3D-2.1" target="_blank" rel="noopener" class="btn-3d btn-3d-violet sm-btn">✨ Open Hunyuan3D-2.1</a>
+        <a href="https://huggingface.co/spaces/microsoft/TRELLIS.2" target="_blank" rel="noopener" class="btn-3d btn-3d-cyan sm-btn">💎 Open TRELLIS.2</a>
+        <a href="../site-map/index.html" class="btn-3d btn-3d-slate sm-btn">🗺️ Site Map</a>
+        <a href="../index.html#store-pupil" class="btn-3d btn-3d-emerald sm-btn">🛍️ Store</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="f3d-main">
+    <!-- Left Column: Live 360° Turntable & Bone-Socket Controls -->
+    <section class="f3d-glass f3d-stage-panel">
+      <div class="f3d-stage-head">
+        <div>
+          <h2 class="f3d-h2">🎥 Live 360° Three.js Turntable</h2>
+          <p class="f3d-muted" id="f3d-status-line">Drop any <code>.glb</code> file onto this stage — or click a Pilot Pack item below.</p>
+        </div>
+        <div class="f3d-stage-btns">
+          <button type="button" id="btn-spin-toggle" class="btn-3d btn-3d-cyan sm-btn">🔄 Spin: ON</button>
+          <button type="button" id="btn-bake-png" class="btn-3d btn-3d-amber sm-btn">📸 Bake Card PNG</button>
+          <button type="button" id="btn-export-obj" class="btn-3d btn-3d-violet sm-btn" title="Download Mixamo-ready .OBJ">⬇ Mixamo .OBJ</button>
+        </div>
+      </div>
+
+      <div id="f3d-viewport" class="f3d-viewport">
+        <div class="f3d-drop-overlay" id="f3d-drop-overlay">
+          <div class="f3d-drop-badge">Drop <strong>.glb</strong> Character or Item Here</div>
+        </div>
+      </div>
+
+      <div class="f3d-controls-strip">
+        <label class="btn-3d btn-3d-emerald sm-btn" style="cursor:pointer;">
+          <span>📂 Load Character .GLB</span>
+          <input type="file" id="input-char-glb" accept=".glb,.gltf" hidden>
+        </label>
+        <label class="btn-3d btn-3d-violet sm-btn" style="cursor:pointer;">
+          <span>🧢 Test Prop .GLB</span>
+          <input type="file" id="input-prop-glb" accept=".glb,.gltf" hidden>
+        </label>
+        <div id="f3d-anim-bar" class="f3d-anim-bar"></div>
+      </div>
+
+      <div id="f3d-bone-info" class="f3d-bone-info">
+        Drop or load <code>assets/3d/characters/kid-base.glb</code> to inspect its skeleton bones &amp; test sockets.
+      </div>
+    </section>
+
+    <!-- Right Column: Pilot Pack (1 Rigged Kid + 8 Signature Items) -->
+    <section class="f3d-glass f3d-pack-panel">
+      <div class="f3d-stage-head">
+        <div>
+          <h2 class="f3d-h2">🚀 Pilot Pack (1 Kid + 8 Signature 3D Items)</h2>
+          <p class="f3d-muted">Step 1: Download/drag any clean PNG into Hunyuan3D-2.1 or TRELLIS.2. Step 2: Save or drop the <code>.glb</code> here.</p>
+        </div>
+      </div>
+
+      <div id="f3d-pack-grid" class="f3d-pack-grid"></div>
+    </section>
+  </main>
+
+  <script src="../game-maker/js/vendor/three.min.js?v=160"></script>
+  <script src="../game-maker/js/vendor/BufferGeometryUtils.js?v=160"></script>
+  <script src="../game-maker/js/vendor/GLTFLoader.js?v=160"></script>
+  <script src="../game-maker/js/vendor/OrbitControls.js?v=160"></script>
+  <script src="../js/avatar-3d-engine.js?v=1"></script>
+  <script src="app.js?v=1"></script>
+</body>
+</html>

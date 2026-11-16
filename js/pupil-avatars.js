@@ -342,7 +342,10 @@
   function lockMode() {
     return (data.settings && data.settings.lockMode === 'free') ? 'free' : 'earned';
   }
-  function rerender() { try { if (root.renderCurrentView) root.renderCurrentView(); } catch (e) { /* ignore */ } }
+  function rerender() {
+    try { if (root.renderCurrentView) root.renderCurrentView(); } catch (e) { /* ignore */ }
+    try { if (root.dispatchEvent && typeof CustomEvent === 'function') root.dispatchEvent(new CustomEvent('eaa:avatars-ready')); } catch (e2) { /* ignore */ }
+  }
 
   function loadImg(url) {
     if (imgCache[url]) return imgCache[url];
@@ -1545,7 +1548,7 @@
           // Drawn Wave / Cheer outfits include their own complete drawn sleeves & 5-finger hands:
           // erase base arms outside chest [172..340] above waist and outside jeans hips [138..374] below waist
           var hasPosedSleeveTop = L.tops.some(function (tid, idx) {
-            return !!topsIms[idx] && !!POSED_TOPS[tid] && !TORSO_ONLY_TOPS[tid];
+            return !!topsIms[idx] && !!POSED_TOPS[tid] && !TORSO_ONLY_TOPS[tid] && tid !== 'cs-sport-shirt';
           });
           if (hasPosedSleeveTop) {
             bg.clearRect(0, 0, 172, 392);
@@ -1821,6 +1824,677 @@
         .catch(function () { /* keep the placeholder */ });
     }
     return DEFAULT_PIC;
+  }
+
+  /* ---------- Game Maker & 3D Stadium Avatar Bridge ---------- */
+  var DEMO_HEAD_ROSTER = [
+    'student-3a-209', 'student-3a-206',
+    'student-3a-224', 'student-3a-211',
+    'demo-boy', 'demo-girl',
+    'student-4b-208', 'student-4b-306'
+  ];
+  var composedDemo = {}, pendingDemo = {};
+
+  function parseHexRgbArr(hex, fb) {
+    var s = String(hex || '').trim().replace(/^#/, '');
+    if (s.length === 3) s = s[0] + s[0] + s[1] + s[1] + s[2] + s[2];
+    if (!/^[0-9a-fA-F]{6}$/.test(s)) return fb || [56, 189, 248];
+    var n = parseInt(s, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+
+  /* Color-grade cs-sport-shirt green stripes to any Team Kit color while keeping 100% of Pixar 3D cloth folds & highlights! */
+  function gradeProSportJersey(shirtIm, kitRgb, opts) {
+    opts = opts || {};
+    var c = document.createElement('canvas'); c.width = BODY_W; c.height = BODY_H;
+    var g = c.getContext('2d');
+    if (!shirtIm) return c;
+    g.drawImage(shirtIm, 0, 0, BODY_W, BODY_H);
+    var idat = g.getImageData(0, 0, BODY_W, BODY_H), d = idat.data;
+    var kr = kitRgb[0], kg = kitRgb[1], kb = kitRgb[2];
+    var addSides = opts.sidePanels !== false;
+    var tintCrest = opts.goldCrest !== false;
+
+    /* Measure opaque torso bounds per row (y = 210..500) so 3D dark-navy + gold side panels hug the exact Pixar ribcage! */
+    var rowMinX = new Int16Array(BODY_H), rowMaxX = new Int16Array(BODY_H);
+    for (var ry = 205; ry < 505; ry++) {
+      var mn = 512, mx = -1;
+      for (var rx = 158; rx <= 354; rx++) {
+        if (d[(ry * BODY_W + rx) * 4 + 3] > 80) {
+          if (rx < mn) mn = rx;
+          if (rx > mx) mx = rx;
+        }
+      }
+      rowMinX[ry] = mn; rowMaxX[ry] = mx;
+    }
+
+    for (var y = 0; y < BODY_H; y++) {
+      var mnX = rowMinX[y], mxX = rowMaxX[y];
+      var hasTorsoSpan = (y >= 212 && y <= 496 && mxX - mnX > 110);
+      for (var x = 0; x < BODY_W; x++) {
+        var o = (y * BODY_W + x) * 4;
+        var a = d[o + 3];
+        if (a < 16) continue;
+        var r = d[o], gr = d[o + 1], b = d[o + 2];
+        var lum = (0.22 * r + 0.66 * gr + 0.12 * b) / 118.0;
+
+        /* 1. Recolor green jersey stripes, collar & cuffs smoothly to Team Color */
+        var greenness = Math.max(0, Math.min(1, (gr - Math.max(r, b)) / 40.0));
+        if (greenness > 0.01) {
+          var nr, ng, nb;
+          if (lum <= 1.0) {
+            nr = kr * lum; ng = kg * lum; nb = kb * lum;
+          } else {
+            var hi = Math.min(0.48, (lum - 1.0) * 0.56);
+            nr = kr + (255 - kr) * hi; ng = kg + (255 - kg) * hi; nb = kb + (255 - kb) * hi;
+          }
+          r = r + (nr - r) * greenness;
+          gr = gr + (ng - gr) * greenness;
+          b = b + (nb - b) * greenness;
+        }
+
+        /* 2. Embroidered Gold Club Shield Crest on left chest */
+        if (tintCrest && x >= 274 && x <= 325 && y >= 164 && y <= 230) {
+          var cxDist = Math.abs(x - 299.5) / 25.0, cyDist = Math.abs(y - 196.0) / 33.0;
+          if (cxDist * cxDist + cyDist * cyDist < 1.05) {
+            var shieldShade = Math.min(1.18, Math.max(0.45, (0.299 * d[o] + 0.587 * d[o + 1] + 0.114 * d[o + 2]) / 215.0));
+            r = Math.min(255, 250 * shieldShade);
+            gr = Math.min(255, 204 * shieldShade);
+            b = Math.min(255, 42 * shieldShade);
+          }
+        }
+
+        /* 3. Contrasting 3D Dark-Navy Breathable Side Panels + Twin Gold/White Piping along outer ribcage */
+        if (addSides && hasTorsoSpan && x >= mnX && x <= mxX) {
+          var dSide = Math.min(x - mnX, mxX - x);
+          var clothShade = Math.min(1.15, Math.max(0.38, (0.299 * d[o] + 0.587 * d[o + 1] + 0.114 * d[o + 2]) / 165.0));
+          if (dSide < 11) {
+            r = 15 * clothShade; gr = 24 * clothShade; b = 44 * clothShade;
+          } else if (dSide < 14) {
+            r = Math.min(255, 250 * clothShade); gr = Math.min(255, 204 * clothShade); b = Math.min(255, 21 * clothShade);
+          } else if (dSide < 16) {
+            r = Math.min(255, 246 * clothShade); gr = Math.min(255, 248 * clothShade); b = Math.min(255, 252 * clothShade);
+          }
+        }
+
+        d[o] = Math.round(r); d[o + 1] = Math.round(gr); d[o + 2] = Math.round(b);
+      }
+    }
+    g.putImageData(idat, 0, 0);
+    /* Clear any stray background dust below the jersey hem (y >= 402) in cs-sport-shirt */
+    g.clearRect(0, 402, BODY_W, BODY_H - 402);
+    return c;
+  }
+
+  /* Color-grade av-legs-shorts + av-shoes-football into Dark-Navy Pro Shorts (with 3D side stripes), Skin-Matched Knees, Hooped Socks & Cleats! */
+  function gradeProShortsSocksCleats(shortsIm, shoesIm, skinRgb, kitRgb) {
+    var c = document.createElement('canvas'); c.width = BODY_W; c.height = BODY_H;
+    var g = c.getContext('2d');
+    if (shortsIm) {
+      var skinGraded = getGradedLeg(shortsIm, 'av-legs-shorts', skinRgb);
+      g.drawImage(skinGraded, 0, 0, BODY_W, BODY_H);
+      var idat = g.getImageData(0, 365, BODY_W, 320), d = idat.data;
+      var kr = kitRgb[0], kg = kitRgb[1], kb = kitRgb[2];
+
+      for (var py = 0; py < 320; py++) {
+        var y = py + 365;
+        /* Find outer shorts edge per row for 3D side stripes */
+        var mnL = 512, mxR = -1;
+        if (y < 516) {
+          for (var sx = 140; sx <= 372; sx++) {
+            var so = (py * BODY_W + sx) * 4;
+            if (d[so + 3] > 60 && !(sx > 236 && sx < 276 && y > 442 && d[so] > 235 && d[so + 1] > 235 && d[so + 2] > 230)) {
+              if (sx < mnL) mnL = sx;
+              if (sx > mxR) mxR = sx;
+            }
+          }
+        }
+        for (var x = 0; x < BODY_W; x++) {
+          var o = (py * BODY_W + x) * 4;
+          var a = d[o + 3];
+          /* Trim studio white cutout AA halo (<78 alpha) so shorts, knees & socks have razor-sharp contours against dark green turf! */
+          if (a < 78) { d[o + 3] = 0; continue; }
+          var r = d[o], gr = d[o + 1], b = d[o + 2];
+
+          /* Strip any trapped neutral white/grey inner-thigh background pixels in av-legs-shorts */
+          if (x > 232 && x < 280 && y > 432 && y < 580 && r > 198 && gr > 198 && b > 192 && (Math.max(r, gr, b) - Math.min(r, gr, b)) < 24) {
+            d[o + 3] = 0;
+            continue;
+          }
+
+          /* Recolor red shorts fabric cleanly all the way to the outer edge (y < 512 is 100% shorts; y = 512..524 blends cuff above knees!) */
+          if (y < 524) {
+            var redness = (y < 511) ? 1.0 : Math.max(0, Math.min(1, ((r - gr) - (gr - b) * 1.42 - 18.0) / 36.0));
+            if (redness > 0.02) {
+              var sShade = Math.min(1.20, Math.max(0.32, r / 176.0));
+              var nr = 20 * sShade, ng = 31 * sShade, nb = 56 * sShade;
+              var dOut = Math.min(Math.abs(x - mnL), Math.abs(mxR - x));
+              if (mxR > mnL && dOut < 8) {
+                nr = Math.min(255, kr * sShade * 1.05);
+                ng = Math.min(255, kg * sShade * 1.05);
+                nb = Math.min(255, kb * sShade * 1.05);
+              } else if (mxR > mnL && dOut < 11) {
+                nr = Math.min(255, 250 * sShade);
+                ng = Math.min(255, 204 * sShade);
+                nb = Math.min(255, 21 * sShade);
+              }
+              d[o]     = Math.round(r + (nr - r) * redness);
+              d[o + 1] = Math.round(gr + (ng - gr) * redness);
+              d[o + 2] = Math.round(b + (nb - b) * redness);
+            }
+          }
+
+          /* Cylindrical Pixar Hooped Team Football Socks on lower shins (y = 586..675) */
+          if (y >= 586) {
+            var legCyl = Math.min(1.18, Math.max(0.38, (0.299 * r + 0.587 * gr + 0.114 * b) / 136.0));
+            var sockBlend = Math.min(1, (y - 586) / 4.0);
+            var sr, sg2, sb2;
+            if (y < 596) {
+              sr = 246 * legCyl; sg2 = 248 * legCyl; sb2 = 252 * legCyl;
+            } else if (y < 604) {
+              sr = 250 * legCyl; sg2 = 204 * legCyl; sb2 = 21 * legCyl;
+            } else {
+              sr = kr * legCyl; sg2 = kg * legCyl; sb2 = kb * legCyl;
+            }
+            d[o]     = Math.min(255, Math.round(r + (sr - r) * sockBlend));
+            d[o + 1] = Math.min(255, Math.round(gr + (sg2 - gr) * sockBlend));
+            d[o + 2] = Math.min(255, Math.round(b + (sb2 - b) * sockBlend));
+          }
+        }
+      }
+      g.putImageData(idat, 0, 365);
+    }
+
+    if (shoesIm) {
+      var sc = document.createElement('canvas'); sc.width = BODY_W; sc.height = BODY_H;
+      var sg = sc.getContext('2d');
+      sg.drawImage(shoesIm, 0, 0, BODY_W, BODY_H);
+      var sdat = sg.getImageData(130, 645, 252, 95), sd = sdat.data;
+      for (var si = 0; si < sd.length; si += 4) {
+        if (sd[si + 3] < 20) continue;
+        var r2 = sd[si], g2 = sd[si + 1], b2 = sd[si + 2];
+        var grn = Math.max(0, Math.min(1, (g2 - Math.max(r2, b2)) / 36.0));
+        if (grn > 0.05) {
+          var blum = (0.25 * r2 + 0.65 * g2 + 0.10 * b2) / 165.0;
+          sd[si]     = Math.min(255, Math.round(r2 + (kitRgb[0] * blum * 1.15 - r2) * grn));
+          sd[si + 1] = Math.min(255, Math.round(g2 + (kitRgb[1] * blum * 1.15 - g2) * grn));
+          sd[si + 2] = Math.min(255, Math.round(b2 + (kitRgb[2] * blum * 1.15 - b2) * grn));
+        }
+      }
+      sg.putImageData(sdat, 130, 645);
+      g.drawImage(sc, 0, 0);
+    }
+    return c;
+  }
+
+  /* Tint sculpted 5-finger Pixar hands into Pro Neon Goalkeeper Gloves while keeping every finger shadow! */
+  function applyPixarKeeperGloves(canvas, skinMask, pose) {
+    if (!canvas) return canvas;
+    var g = canvas.getContext('2d');
+    var idat = g.getImageData(0, 0, BODY_W, BODY_H), d = idat.data;
+    var boxes = pose === 'cheer'
+      ? [{ x0: 6, x1: 162, y0: 32, y1: 156 }, { x0: 350, x1: 506, y0: 32, y1: 156 }]
+      : pose === 'wave'
+        ? [{ x0: 352, x1: 506, y0: 32, y1: 156 }, { x0: 50, x1: 170, y0: 355, y1: 485 }]
+        : [{ x0: 48, x1: 156, y0: 368, y1: 488 }, { x0: 356, x1: 464, y0: 368, y1: 488 }];
+
+    for (var bi = 0; bi < boxes.length; bi++) {
+      var bx = boxes[bi];
+      for (var y = bx.y0; y < bx.y1; y++) {
+        var strap = (pose === 'stand') ? (y < bx.y0 + 16) : (y > bx.y1 - 16);
+        for (var x = bx.x0; x < bx.x1; x++) {
+          var o = (y * BODY_W + x) * 4;
+          if (d[o + 3] < 40) continue;
+          var lum = Math.min(1.20, Math.max(0.42, (0.299 * d[o] + 0.587 * d[o + 1] + 0.114 * d[o + 2]) / 172.0));
+          if (strap) {
+            d[o] = Math.min(255, Math.round(248 * lum));
+            d[o + 1] = Math.min(255, Math.round(250 * lum));
+            d[o + 2] = Math.min(255, Math.round(252 * lum));
+          } else {
+            d[o] = Math.min(255, Math.round(163 * lum));
+            d[o + 1] = Math.min(255, Math.round(230 * lum));
+            d[o + 2] = Math.min(255, Math.round(53 * lum));
+          }
+        }
+      }
+    }
+    g.putImageData(idat, 0, 0);
+    return canvas;
+  }
+
+  /* Build Rear-View Pixar Head Canvas preserving 100% of the pupil's exact ears, curls, spikes & hair palette! */
+  function buildPixarHeadBackCanvas(frontHeadCanvas, info) {
+    var S = frontHeadCanvas.width;
+    var c = document.createElement('canvas'); c.width = S; c.height = S;
+    var g = c.getContext('2d');
+
+    /* 1. Mirror front Pixar head so outer hair silhouette, curls, spikes & ears align 100% in 3D space! */
+    g.save();
+    g.translate(S, 0);
+    g.scale(-1, 1);
+    g.drawImage(frontHeadCanvas, 0, 0, S, S);
+    g.restore();
+
+    /* Sample rich hair tones from upper hair crown of frontHeadCanvas */
+    var idat = g.getImageData(0, 0, S, S), d = idat.data;
+    var hrSum = 0, hgSum = 0, hbSum = 0, hCnt = 0;
+    for (var sy = Math.round(S * 0.16); sy < Math.round(S * 0.36); sy += 2) {
+      for (var sx = Math.round(S * 0.30); sx < Math.round(S * 0.70); sx += 2) {
+        var so = (sy * S + sx) * 4;
+        if (d[so + 3] > 200) {
+          hrSum += d[so]; hgSum += d[so + 1]; hbSum += d[so + 2]; hCnt++;
+        }
+      }
+    }
+    var hBase = hCnt > 20 ? [hrSum / hCnt, hgSum / hCnt, hbSum / hCnt] : [68, 44, 30];
+
+    /* 2. Soft Pixar-lit 3D Rear Hair Dome covering only the central face oval while keeping real Pixar ears & side curls! */
+    var dome = document.createElement('canvas'); dome.width = S; dome.height = S;
+    var dg = dome.getContext('2d');
+    var cx = S * 0.50, cy = S * 0.55, rx = S * 0.275, ry = S * 0.305;
+
+    var baseGrd = dg.createRadialGradient(cx - S * 0.06, cy - S * 0.16, S * 0.02, cx, cy + S * 0.05, S * 0.34);
+    baseGrd.addColorStop(0.00, 'rgb(' + Math.min(255, Math.round(hBase[0] * 1.28 + 14)) + ',' + Math.min(255, Math.round(hBase[1] * 1.26 + 10)) + ',' + Math.min(255, Math.round(hBase[2] * 1.22 + 8)) + ')');
+    baseGrd.addColorStop(0.48, 'rgb(' + Math.round(hBase[0]) + ',' + Math.round(hBase[1]) + ',' + Math.round(hBase[2]) + ')');
+    baseGrd.addColorStop(1.00, 'rgb(' + Math.round(hBase[0] * 0.56) + ',' + Math.round(hBase[1] * 0.54) + ',' + Math.round(hBase[2] * 0.54) + ')');
+    dg.fillStyle = baseGrd;
+    dg.fillRect(0, 0, S, S);
+
+    /* Subtle organic Pixar crown sheen & soft curved hair flow (no harsh stripes!) */
+    var sheen = dg.createRadialGradient(cx - S * 0.04, cy - S * 0.15, S * 0.01, cx - S * 0.02, cy - S * 0.12, S * 0.16);
+    sheen.addColorStop(0.0, 'rgba(255,248,235,0.16)');
+    sheen.addColorStop(1.0, 'rgba(255,248,235,0.0)');
+    dg.fillStyle = sheen;
+    dg.fillRect(0, 0, S, S);
+
+    /* Feather dome strictly to the inner face region AND clip to head silhouette alpha */
+    dg.globalCompositeOperation = 'destination-in';
+    dg.save();
+    dg.translate(cx, cy);
+    dg.scale(1.0, ry / rx);
+    var fMask = dg.createRadialGradient(0, 0, rx * 0.62, 0, 0, rx * 1.04);
+    fMask.addColorStop(0.0, 'rgba(0,0,0,1)');
+    fMask.addColorStop(0.76, 'rgba(0,0,0,0.96)');
+    fMask.addColorStop(1.0, 'rgba(0,0,0,0)');
+    dg.fillStyle = fMask;
+    dg.beginPath();
+    dg.arc(0, 0, rx * 1.05, 0, Math.PI * 2);
+    dg.fill();
+    dg.restore();
+
+    /* Clip dome to existing opaque head pixels so zero hair spills outside the chin! */
+    var silMask = document.createElement('canvas'); silMask.width = S; silMask.height = S;
+    silMask.getContext('2d').drawImage(c, 0, 0);
+    dg.globalCompositeOperation = 'destination-in';
+    dg.drawImage(silMask, 0, 0);
+
+    g.drawImage(dome, 0, 0);
+    return c;
+  }
+
+  /* Build Rear-View Pixar Jersey Torso with Seamless Striped Back, Crew Collar & Cloth-Shaded Squad Number! */
+  function buildPixarTorsoBackCanvas(frontTorsoCanvas, kitRgb, squadNumber) {
+    var W = frontTorsoCanvas.width, H = frontTorsoCanvas.height;
+    var c = document.createElement('canvas'); c.width = W; c.height = H;
+    var g = c.getContext('2d');
+
+    /* 1. Mirror front Pixar torso so left/right arms & side panels match 3D front silhouette 100%! */
+    g.save();
+    g.translate(W, 0);
+    g.scale(-1, 1);
+    g.drawImage(frontTorsoCanvas, 0, 0);
+    g.restore();
+
+    /* 2. Clone clean vertical jersey stripes from lower back (y=235..305) over the mirrored chest crest (x=184..240, y=148..218) */
+    g.save();
+    g.beginPath();
+    g.rect(182, 145, 62, 76);
+    g.clip();
+    g.drawImage(c, 182, 232, 62, 76, 182, 145, 62, 76);
+    g.restore();
+
+    /* 3. High Crew-Neck Back Collar covering front V-neck skin triangle */
+    g.save();
+    g.globalCompositeOperation = 'source-atop';
+    g.fillStyle = 'rgb(' + kitRgb[0] + ',' + kitRgb[1] + ',' + kitRgb[2] + ')';
+    g.beginPath();
+    g.ellipse(W * 0.5, 86, 56, 26, 0, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = '#f8fafc';
+    g.lineWidth = 4;
+    g.stroke();
+
+    /* 4. Crisp Dark-Navy Back Number Plate Glow + "ACADEMY" + Outlined Pro Squad Number */
+    var numStr = String(squadNumber || '10');
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+
+    g.font = '900 20px Fredoka, Nunito, system-ui, sans-serif';
+    g.lineWidth = 5;
+    g.strokeStyle = '#0f172a';
+    g.strokeText('ACADEMY', W * 0.5, 146);
+    g.fillStyle = '#ffffff';
+    g.fillText('ACADEMY', W * 0.5, 146);
+
+    g.font = '900 94px Fredoka, Nunito, system-ui, sans-serif';
+    g.lineWidth = 11;
+    g.lineJoin = 'round';
+    g.strokeStyle = '#0f172a';
+    g.strokeText(numStr, W * 0.5, 224);
+    g.lineWidth = 4;
+    g.strokeStyle = '#facc15';
+    g.strokeText(numStr, W * 0.5, 224);
+    g.fillStyle = '#ffffff';
+    g.fillText(numStr, W * 0.5, 224);
+    g.restore();
+
+    return c;
+  }
+
+  /**
+   * Compose genuine Pixar 3D Avatar Rig parts (Head Smile/Laugh/Wink/Back, Torso Stand/Wave/Cheer/Back, Left/Right Articulated Legs)
+   * directly from the pupil's real PupilAvatars head + Pixar body & pro team football kit assets!
+   */
+  function composePitchRigParts(idOrKey, opts) {
+    opts = opts || {};
+    var key = String(idOrKey || 'student-3a-209');
+    var isDemo = (key === 'demo-boy' || key === 'demo-girl');
+    var kitRgb = parseHexRgbArr(opts.kitColor || '#f97316', [249, 115, 22]);
+    var squadNum = String(opts.number || '10');
+    var isKeeper = !!opts.isKeeper;
+
+    return Promise.all([
+      fetchWear(),
+      resolveHeadImage(key, 'smile'),
+      resolveHeadImage(key, 'laugh'),
+      resolveHeadImage(key, 'wink'),
+      loadImg(BASE + 'body_light.webp' + ASSET_V),
+      loadImg(BASE + 'skin_mask.webp' + ASSET_V),
+      loadWithFallback(BASE + 'body_wave.webp' + ASSET_V, BASE + 'body_light.webp' + ASSET_V),
+      loadWithFallback(BASE + 'skin_wave.webp' + ASSET_V, BASE + 'skin_mask.webp' + ASSET_V),
+      loadWithFallback(BASE + 'body_cheer.webp' + ASSET_V, BASE + 'body_light.webp' + ASSET_V),
+      loadWithFallback(BASE + 'skin_cheer.webp' + ASSET_V, BASE + 'skin_mask.webp' + ASSET_V),
+      loadImg(BASE + 'wear/cs-sport-shirt.webp' + ASSET_V),
+      loadWithFallback(BASE + 'wear/cs-sport-shirt__wave.webp' + ASSET_V, BASE + 'wear/cs-sport-shirt.webp' + ASSET_V),
+      loadWithFallback(BASE + 'wear/cs-sport-shirt__cheer.webp' + ASSET_V, BASE + 'wear/cs-sport-shirt.webp' + ASSET_V),
+      loadImg(BASE + 'wear/av-legs-shorts.webp' + ASSET_V),
+      loadImg(BASE + 'wear/av-shoes-football.webp' + ASSET_V)
+    ]).then(function (res) {
+      var smileIm = res[1], laughIm = res[2] || smileIm, winkIm = res[3] || smileIm;
+      var bodyStand = res[4], maskStand = res[5];
+      var bodyWave = res[6], maskWave = res[7];
+      var bodyCheer = res[8], maskCheer = res[9];
+      var shirtStand = res[10], shirtWave = res[11], shirtCheer = res[12];
+      var shortsIm = res[13], shoesIm = res[14];
+
+      var ch = isDemo
+        ? { skin: 'auto', gender: key === 'demo-girl' ? 'girl' : 'boy', wear: {} }
+        : lookOf(key);
+      var eff = isDemo ? {} : effectiveWear(ch, equippedOf(key), key, smileIm);
+      var L = wearLayers(eff);
+      /* Keep pupil's real glasses/hats on the pitch while outfitting body in matching Pro Team Kit! */
+      var headWearIds = L.head || [];
+
+      return Promise.all(headWearIds.map(function (hid) {
+        return loadImg(BASE + 'wear/' + hid + '.webp' + ASSET_V).catch(function () { return null; });
+      })).then(function (headWearIms) {
+        var info = analyzeHead(smileIm);
+        var tone = TONES.some(function (t) { return t.id === ch.skin; }) ? ch.skin : 'auto';
+        var targetRgb = TONE_PRESET_RGB[tone] || info.skinRgb || [215, 152, 114];
+        var isGirl = (isDemo ? (key === 'demo-girl') : (genderOf(key, ch, smileIm) === 'girl'));
+
+        var hScale = info.headScale || 1;
+        var chinNorm = info.chinNorm || CHIN;
+        var hSize = Math.round(HEAD * hScale);
+
+        function renderHeadFrame(hImg) {
+          var S = 400;
+          var hc = document.createElement('canvas'); hc.width = S; hc.height = S;
+          var hg = hc.getContext('2d');
+          var prep = prepareHead(hImg, headWearIds);
+          var drawX = Math.round((S - hSize) * 0.5);
+          var drawY = Math.round((S - hSize) * 0.5);
+          if (prep.img) hg.drawImage(prep.img, drawX, drawY, hSize, hSize);
+          headWearIms.forEach(function (wim) {
+            if (wim) hg.drawImage(wim, drawX, drawY, hSize, hSize);
+          });
+          return hc;
+        }
+
+        var headSmileCv = renderHeadFrame(smileIm);
+        var headLaughCv = renderHeadFrame(laughIm);
+        var headWinkCv  = renderHeadFrame(winkIm);
+        var headBackCv  = buildPixarHeadBackCanvas(headSmileCv, info);
+
+        /* Pre-grade Pro Shorts + Skin Knees + Hooped Socks + Studded Cleats in 512x768 body frame */
+        var fullLower512 = gradeProShortsSocksCleats(shortsIm, shoesIm, targetRgb, kitRgb);
+
+        /* Shape fullLower512 through drawShapedBody so boy/girl proportions match PupilAvatars 100%! */
+        var shapedLower = document.createElement('canvas'); shapedLower.width = BODY_W; shapedLower.height = BODY_DRAW_H;
+        drawShapedBody(shapedLower.getContext('2d'), fullLower512, 0, isGirl, 'stand');
+
+        /* Helper: Compose Upper Body + Pixar 5-Finger Arms + Shorts Waistband Pelvis (yd = 0..468 in 512x716 draw space) */
+        var TORSO_H = 468; /* Covers raised cheer hands (yd=28), neck (yd=87), shorts waistband (yd=410) & hanging stand hands (yd=448)! */
+        var HIP_YD = 400;  /* True anatomical hip socket right at pelvis waistband so entire shorts thigh swings with each leg! */
+        function buildTorsoPose(poseName, bLight, sMask, sShirt) {
+          var gBody = getGradedBody(bLight, sMask, targetRgb, poseName);
+          var bodyOnly = document.createElement('canvas'); bodyOnly.width = BODY_W; bodyOnly.height = BODY_H;
+          var bog = bodyOnly.getContext('2d');
+          bog.drawImage(gBody, 0, 0, BODY_W, BODY_H);
+          /* Keep ONLY pure bare Pixar skin (neck, elbows, forearms & 5-finger hands) from gBody — zero grey T-shirt or blue jeans! */
+          if (sMask) {
+            var mc = document.createElement('canvas'); mc.width = BODY_W; mc.height = BODY_H;
+            var mg = mc.getContext('2d');
+            mg.drawImage(sMask, 0, 0, BODY_W, BODY_H);
+            var bDat = bog.getImageData(0, 0, BODY_W, BODY_H), bp = bDat.data;
+            var mDat = mg.getImageData(0, 0, BODY_W, BODY_H).data;
+            for (var mi = 0, mn = BODY_W * BODY_H * 4; mi < mn; mi += 4) {
+              var mVal = mDat[mi]; /* white = bare skin, black = shirt/jeans; trim outer 1.5px white AA rim */
+              if (mVal < 72) {
+                bp[mi + 3] = 0;
+              } else if (mVal < 190) {
+                bp[mi + 3] = Math.round(bp[mi + 3] * ((mVal - 72) / 118.0));
+              }
+            }
+            bog.putImageData(bDat, 0, 0);
+          } else {
+            bog.clearRect(138, 380, 236, 388);
+          }
+
+          var rawComp = document.createElement('canvas'); rawComp.width = BODY_W; rawComp.height = BODY_H;
+          var rcg = rawComp.getContext('2d');
+          /* Draw crisp opaque shorts pelvis waistband (y = 366..430 -> yd = 341..401) so zero semi-transparent depth seam occurs in WebGL! */
+          rcg.drawImage(fullLower512, 0, 366, BODY_W, 64, 0, 366, BODY_W, 64);
+
+          rcg.drawImage(bodyOnly, 0, 0);
+          var gradedJersey = gradeProSportJersey(getGradedTop(sShirt, 'cs-sport-shirt', targetRgb, poseName), kitRgb, { sidePanels: true, goldCrest: false });
+          rcg.drawImage(gradedJersey, 0, 0, BODY_W, BODY_H);
+          if (isKeeper) applyPixarKeeperGloves(rawComp, sMask, poseName);
+
+          var out = document.createElement('canvas'); out.width = BODY_W; out.height = TORSO_H;
+          var og = out.getContext('2d');
+          var shapedTmp = document.createElement('canvas'); shapedTmp.width = BODY_W; shapedTmp.height = BODY_DRAW_H;
+          drawShapedBody(shapedTmp.getContext('2d'), rawComp, 0, isGirl, poseName);
+          og.drawImage(shapedTmp, 0, 0, BODY_W, TORSO_H, 0, 0, BODY_W, TORSO_H);
+          return out;
+        }
+
+        var torsoStandCv = buildTorsoPose('stand', bodyStand, maskStand, shirtStand);
+        var torsoWaveCv  = buildTorsoPose('wave',  bodyWave,  maskWave,  shirtWave);
+        var torsoCheerCv = buildTorsoPose('cheer', bodyCheer, maskCheer, shirtCheer);
+        var torsoBackStandCv = buildPixarTorsoBackCanvas(torsoStandCv, kitRgb, squadNum);
+        var torsoBackWaveCv  = buildPixarTorsoBackCanvas(torsoWaveCv,  kitRgb, squadNum);
+        var torsoBackCheerCv = buildPixarTorsoBackCanvas(torsoCheerCv, kitRgb, squadNum);
+
+        /* Extract Left & Right Full Articulated Pixar Legs (Shorts Thigh + Knee + Hooped Sock + Cleat: yd = 384..692 -> 176 x 308) */
+        var LEG_W = 176, LEG_H = 308, LEG_TOP_YD = 384;
+        function extractLeg(isLeft) {
+          var lc = document.createElement('canvas'); lc.width = LEG_W; lc.height = LEG_H;
+          var lg = lc.getContext('2d');
+          var srcX = isLeft ? 116 : 220; /* Left center ~204 -> x=88 in 176; Right center ~308 -> x=88 in 176! */
+          lg.save();
+          lg.beginPath();
+          if (isLeft) lg.rect(0, 0, 256 - srcX, LEG_H);
+          else lg.rect(256 - srcX, 0, LEG_W - (256 - srcX), LEG_H);
+          lg.clip();
+          lg.drawImage(shapedLower, srcX, LEG_TOP_YD, LEG_W, LEG_H, 0, 0, LEG_W, LEG_H);
+          lg.restore();
+
+          /* Crisp opaque rounded hip-ball dome at top of leg so ±55° 3D rotation has zero WebGL depth-buffer seam! */
+          lg.globalCompositeOperation = 'destination-in';
+          lg.fillStyle = '#000000';
+          lg.beginPath();
+          lg.arc(88, 38, 52, Math.PI, 0, false);
+          lg.lineTo(LEG_W, 38);
+          lg.lineTo(LEG_W, LEG_H);
+          lg.lineTo(0, LEG_H);
+          lg.lineTo(0, 38);
+          lg.closePath();
+          lg.fill();
+          return lc;
+        }
+
+        function buildLegBack(frontLegCv) {
+          var bc2 = document.createElement('canvas'); bc2.width = LEG_W; bc2.height = LEG_H;
+          var bg2 = bc2.getContext('2d');
+          bg2.translate(LEG_W, 0);
+          bg2.scale(-1, 1);
+          bg2.drawImage(frontLegCv, 0, 0);
+          return bc2;
+        }
+
+        var legLeftCv  = extractLeg(true);
+        var legRightCv = extractLeg(false);
+        var legLeftBackCv  = buildLegBack(legLeftCv);
+        var legRightBackCv = buildLegBack(legRightCv);
+
+        /* Chin landing in 400x400 head canvas is at y = (400 - hSize)/2 + chinNorm * hSize */
+        var chinYInHead = (400 - hSize) * 0.5 + chinNorm * hSize;
+
+        return {
+          id: key,
+          skinRgb: targetRgb,
+          kitRgb: kitRgb,
+          isGirl: isGirl,
+          headSmile: headSmileCv,
+          headLaugh: headLaughCv,
+          headWink: headWinkCv,
+          headBack: headBackCv,
+          headCanvasSize: 400,
+          chinYInHead: chinYInHead,
+          torsoStand: torsoStandCv,
+          torsoWave: torsoWaveCv,
+          torsoCheer: torsoCheerCv,
+          torsoBack: torsoBackStandCv,
+          torsoBackStand: torsoBackStandCv,
+          torsoBackWave: torsoBackWaveCv,
+          torsoBackCheer: torsoBackCheerCv,
+          torsoW: BODY_W,
+          torsoH: TORSO_H,
+          neckYd: NECK_DRAW_Y,
+          hipYd: HIP_YD,
+          legLeft: legLeftCv,
+          legRight: legRightCv,
+          legLeftBack: legLeftBackCv,
+          legRightBack: legRightBackCv,
+          legW: LEG_W,
+          legH: LEG_H,
+          legHipOffsetY: HIP_YD - LEG_TOP_YD, /* 16px down from top of 176x308 leg canvas */
+          soleYd: Math.round(730 * BODY_VSCALE)
+        };
+      });
+    });
+  }
+
+  function resolveHeadImage(idOrKey, emotionKind) {
+    if (state === 'idle') load();
+    var key = String(idOrKey || 'demo-boy');
+    if (key === 'demo-boy') {
+      return loadImg(BASE + 'head_demo.webp' + ASSET_V).catch(function () { return null; });
+    }
+    if (key === 'demo-girl') {
+      return loadImg(BASE + 'head_demo_girl.webp' + ASSET_V).catch(function () {
+        return loadImg(BASE + 'head_demo.webp' + ASSET_V).catch(function () { return null; });
+      });
+    }
+    var baseP = heads[key]
+      ? Promise.resolve(heads[key])
+      : fetchHead(key).then(function (im) {
+          if (im) { heads[key] = im; return im; }
+          return defaultHeadFor(key);
+        });
+    if (emotionKind === 'laugh' || emotionKind === 'wink') {
+      return fetchEmotionHead(key, emotionKind).then(function (emIm) {
+        return emIm || baseP;
+      }).catch(function () { return baseP; });
+    }
+    return baseP;
+  }
+
+  function headAssetFor(idOrKey, emotionKind) {
+    var key = String(idOrKey || 'demo-boy');
+    var isDemo = (key === 'demo-boy' || key === 'demo-girl');
+    return resolveHeadImage(key, emotionKind).then(function (im) {
+      var info = analyzeHead(im);
+      var ch = isDemo
+        ? { skin: 'auto', gender: key === 'demo-girl' ? 'girl' : 'boy', wear: {} }
+        : lookOf(key);
+      var eff = isDemo ? {} : effectiveWear(ch, equippedOf(key), key, im);
+      var gen = isDemo ? (key === 'demo-girl' ? 'girl' : 'boy') : genderOf(key, ch, im);
+      return { id: key, img: im, info: info, wear: eff, gender: gen, tee: ch.tee || '' };
+    });
+  }
+
+  function demoPictureFor(index, teamHex, theme) {
+    var idx = Math.abs(Number(index) || 0) % DEMO_HEAD_ROSTER.length;
+    var hKey = DEMO_HEAD_ROSTER[idx];
+    var th = theme === 'halloween' ? 'hal' : 'cls';
+    var cKey = hKey + ':' + String(teamHex || '') + ':' + th;
+    if (composedDemo[cKey]) return composedDemo[cKey];
+    if (state === 'idle') load();
+    if (!pendingDemo[cKey]) {
+      pendingDemo[cKey] = 1;
+      var kitHex = teamHex || TEES[idx % TEES.length];
+      composePitchRigParts(hKey, { kitColor: kitHex, number: String(10 + (idx % 4)), isKeeper: false }).then(function (rig) {
+        var W = BODY_W, H = BODY_DRAW_H + PAD + PAD_BOTTOM;
+        var outC = document.createElement('canvas'); outC.width = Math.round(W * OUT_SCALE); outC.height = Math.round(H * OUT_SCALE);
+        var ctx = outC.getContext('2d'); ctx.scale(OUT_SCALE, OUT_SCALE);
+
+        var charC = document.createElement('canvas'); charC.width = W; charC.height = H;
+        var cc = charC.getContext('2d');
+        var legTopY = PAD + (rig.hipYd - rig.legHipOffsetY);
+        cc.drawImage(rig.legLeft, 116, legTopY);
+        cc.drawImage(rig.legRight, 220, legTopY);
+        cc.drawImage(idx % 2 === 1 ? rig.torsoWave : rig.torsoStand, 0, PAD);
+        var hx = Math.round(W * 0.5 - rig.headCanvasSize * 0.5);
+        var hy = Math.round(PAD + rig.neckYd - rig.chinYInHead);
+        cc.drawImage(rig.headSmile, hx, hy);
+
+        drawArcadePedestal(ctx, W * 0.5, PAD + Math.round(744 * BODY_VSCALE), {
+          hex: kitHex,
+          glow: 'rgba(' + rig.kitRgb[0] + ',' + rig.kitRgb[1] + ',' + rig.kitRgb[2] + ',0.42)',
+          soft: 'rgba(' + rig.kitRgb[0] + ',' + rig.kitRgb[1] + ',' + rig.kitRgb[2] + ',0.15)'
+        });
+
+        var sil = document.createElement('canvas'); sil.width = W; sil.height = H;
+        var sg = sil.getContext('2d'); sg.drawImage(charC, 0, 0);
+        var silData = sg.getImageData(0, 0, W, H), spx = silData.data;
+        for (var si2 = 0, sn2 = W * H; si2 < sn2; si2++) {
+          var sa2 = spx[si2 * 4 + 3];
+          spx[si2 * 4] = 255; spx[si2 * 4 + 1] = 255; spx[si2 * 4 + 2] = 255;
+          spx[si2 * 4 + 3] = sa2 > 48 ? 255 : 0;
+        }
+        sg.putImageData(silData, 0, 0);
+        for (var aIdx = 0; aIdx < 16; aIdx++) {
+          var ang = (aIdx / 16) * Math.PI * 2;
+          ctx.drawImage(sil, Math.cos(ang) * 5.0, Math.sin(ang) * 5.0);
+        }
+        ctx.drawImage(charC, 0, 0);
+        var dataUrl = outC.toDataURL('image/png');
+        if (dataUrl) { composedDemo[cKey] = dataUrl; scheduleRerender(); }
+      }).catch(function () { /* keep fallback */ });
+    }
+    return hKey === 'demo-girl' ? (BASE + 'head_demo_girl.webp' + ASSET_V) : DEFAULT_PIC;
   }
   /* ---------- for the shop & unified studio: item facts, try-on, style and wearing ---------- */
   function allStoreItemIds(studentId) {
@@ -2450,7 +3124,8 @@
     hasHead: function (id) { return !!(id && (heads[id] || headB64[id] || BUILTIN_HEADS.indexOf(id) >= 0)); },
     pendingIds: function () { return Object.keys(data.pending || {}); },
     pendingChoice: function (id) { return id && data.pending[id] ? JSON.parse(JSON.stringify(data.pending[id])) : null; },
-    pictureFor: pictureFor, itemInfo: itemInfo, storeItemIds: allStoreItemIds, previewWith: previewWith,
+    pictureFor: pictureFor, demoPictureFor: demoPictureFor, headAssetFor: headAssetFor, composePitchRigParts: composePitchRigParts,
+    itemInfo: itemInfo, storeItemIds: allStoreItemIds, previewWith: previewWith,
     wearItem: wearItem, wearingOf: wearingOf, monstersHidden: monstersHidden,
     // lock check for the shop (ignores which tab the dress-up window was last on)
     levelFor: function (id) { return LEVEL_BY_RARITY[rarityOf(id)] || 0; },

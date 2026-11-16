@@ -1,0 +1,785 @@
+/* ==========================================================================
+   Game Maker — Real 3D Penalty Shootout (Three.js WebGL Arena & Broadcast HUD)
+   60-30-10 Cyber-Glassmorphism • Tactile 5px 3D Push-Buttons • 4m Readability
+   ========================================================================== */
+
+/* Game Maker-wide Pixar 3D Avatar badge framing (Setup circles, Team Pods & Podium) */
+.gm-monface img.gm-av-img {
+  position: absolute;
+  left: -18%;
+  top: -4%;
+  width: 136% !important;
+  height: 136% !important;
+  object-fit: cover !important;
+  object-position: 50% 8% !important;
+  filter: none !important;
+}
+
+.gm-monfull img.gm-av-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+/* Full-bleed 3D Arena stage when Penalty 3D is active */
+body.gm-on-play.gm-mode-penalty .gm-stage {
+  padding: 4px 12px 10px !important;
+}
+body.gm-on-play.gm-mode-penalty .gm-area {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+body.gm-on-play.gm-mode-penalty .gm-enter {
+  animation: none !important;
+  opacity: 1 !important;
+}
+
+.gm-pen3d-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 540px;
+  flex: 1;
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #1d4ed8 0%, #38bdf8 55%, #168a3d 100%);
+  box-shadow: 0 18px 44px -10px rgba(6, 9, 17, 0.62), inset 0 0 0 2px rgba(255, 255, 255, 0.28);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  font-family: 'Fredoka', system-ui, -apple-system, sans-serif;
+}
+
+.gm-pen3d-canvas-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.gm-pen3d-canvas-wrap canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: none;
+}
+
+/* ---------- Top Broadcast Scorebug & Status Bar ---------- */
+.gm-pen3d-top {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  right: 14px;
+  z-index: 10;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.gm-pen3d-scorebug {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(6, 9, 17, 0.84);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(148, 163, 184, 0.28);
+  border-radius: 18px;
+  padding: 8px 12px;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+  max-width: min(440px, 48vw);
+}
+
+.gm-pen3d-sb-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 11px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1.5px solid transparent;
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1), border-color 140ms ease-out, background-color 140ms ease-out;
+}
+
+.gm-pen3d-sb-row.is-turn {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: var(--tc, #38bdf8);
+  transform: translateX(3px);
+}
+
+.gm-pen3d-sb-swatch {
+  width: 8px;
+  height: 26px;
+  border-radius: 5px;
+  background: var(--tc, #38bdf8);
+  flex-shrink: 0;
+}
+
+.gm-pen3d-sb-av {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.28), rgba(15, 23, 42, 0.85));
+  border: 1.5px solid var(--tc, #38bdf8);
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.gm-pen3d-sb-av img {
+  width: 118%;
+  height: 118%;
+  object-fit: cover;
+  object-position: 50% 18%;
+}
+
+.gm-pen3d-sb-name {
+  font-size: clamp(0.95rem, 1.35vw, 1.15rem);
+  font-weight: 800;
+  color: #f8fafc;
+  min-width: 78px;
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gm-pen3d-sb-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.gm-pen3d-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: rgba(148, 163, 184, 0.16);
+  border: 1.5px solid rgba(148, 163, 184, 0.32);
+  color: #cbd5e1;
+}
+
+.gm-pen3d-dot.goal {
+  background: rgba(16, 185, 129, 0.28);
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+.gm-pen3d-dot.super {
+  background: rgba(245, 158, 11, 0.34);
+  border-color: #f59e0b;
+  color: #fef08a;
+}
+
+.gm-pen3d-dot.miss {
+  background: rgba(244, 63, 94, 0.22);
+  border-color: rgba(244, 63, 94, 0.65);
+  color: #fecdd3;
+}
+
+.gm-pen3d-sb-pts {
+  font-size: clamp(1.05rem, 1.5vw, 1.28rem);
+  font-weight: 900;
+  color: #fbbf24;
+  min-width: 38px;
+  text-align: right;
+}
+
+/* Center Banner Pill */
+.gm-pen3d-banner {
+  pointer-events: none;
+  background: rgba(15, 23, 42, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(56, 189, 248, 0.42);
+  border-radius: 20px;
+  padding: 8px 20px;
+  text-align: center;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.48);
+  max-width: min(560px, 46vw);
+  transition: transform 180ms cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 160ms ease-out;
+}
+
+.gm-pen3d-banner-title {
+  font-size: clamp(1.15rem, 1.9vw, 1.6rem);
+  font-weight: 900;
+  color: #f8fafc;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+.gm-pen3d-banner-sub {
+  font-size: clamp(0.88rem, 1.2vw, 1.05rem);
+  font-weight: 700;
+  color: #bae6fd;
+  margin-top: 2px;
+}
+
+/* Top-Right Keeper Mode + Wind Badges */
+.gm-pen3d-topright {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.gm-pen3d-pill-btn {
+  cursor: pointer;
+  font: 800 clamp(0.88rem, 1.15vw, 1.02rem) 'Fredoka', system-ui, sans-serif;
+  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(148, 163, 184, 0.36);
+  border-bottom: 5px solid #020617;
+  border-radius: 14px;
+  padding: 8px 14px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 120ms cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 140ms ease-out, border-color 140ms ease-out;
+}
+
+.gm-pen3d-pill-btn:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: #38bdf8;
+}
+
+.gm-pen3d-pill-btn:active {
+  transform: translateY(4px) scale(0.97);
+  border-bottom-width: 1px;
+}
+
+.gm-pen3d-pill-btn.duel-on {
+  background: linear-gradient(180deg, #7c3aed, #5b21b6);
+  border-color: #c4b5fd;
+  border-bottom-color: #3b0764;
+}
+
+.gm-pen3d-wind-badge {
+  background: rgba(15, 23, 42, 0.84);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(148, 163, 184, 0.3);
+  border-radius: 12px;
+  padding: 5px 12px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #fde68a;
+}
+
+/* ---------- Live In-Stadium Broadcast Question HUD (Bottom 35% Tray) ---------- */
+.gm-pen3d-qdock {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  width: min(1140px, calc(100% - 24px));
+  z-index: 20;
+  background: rgba(10, 15, 30, 0.90);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 2px solid var(--tc, #38bdf8);
+  border-radius: 24px;
+  padding: 12px 18px 14px;
+  box-shadow: 0 18px 42px -6px rgba(0, 0, 0, 0.72), 0 0 28px -8px var(--tc, #38bdf8);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease-out;
+}
+
+.gm-pen3d-qdock.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(28px);
+}
+
+.gm-pen3d-qhead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.gm-pen3d-team-badge {
+  background: var(--tc, #38bdf8);
+  color: #060911;
+  font-weight: 900;
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  padding: 4px 14px 4px 6px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gm-pen3d-qav {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(6, 9, 17, 0.82);
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.gm-pen3d-qav img {
+  width: 122%;
+  height: 122%;
+  object-fit: cover;
+  object-position: 50% 16%;
+}
+
+.gm-pen3d-power-hint {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fde047;
+}
+
+.gm-pen3d-qprompt-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gm-pen3d-qpic {
+  width: clamp(68px, 9vh, 96px);
+  height: clamp(68px, 9vh, 96px);
+  border-radius: 16px;
+  background: radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.25), rgba(15, 23, 42, 0.85));
+  border: 2px solid rgba(148, 163, 184, 0.3);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.gm-pen3d-qpic img {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+}
+
+.gm-pen3d-qpic .gm-emoji {
+  font-size: clamp(2.2rem, 5vh, 3.2rem);
+}
+
+.gm-pen3d-qtext-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.gm-pen3d-qpass {
+  font-size: clamp(0.95rem, 1.35vw, 1.15rem);
+  font-weight: 700;
+  color: #bae6fd;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 12px;
+  padding: 5px 12px;
+  margin-bottom: 5px;
+  max-height: 62px;
+  overflow-y: auto;
+}
+
+.gm-pen3d-qtext {
+  font-size: clamp(1.35rem, 2.35vw, 2.05rem);
+  font-weight: 900;
+  color: #f8fafc;
+  line-height: 1.18;
+}
+
+.gm-pen3d-say-btn {
+  cursor: pointer;
+  min-width: 64px;
+  min-height: 64px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #38bdf8, #0284c7);
+  color: #ffffff;
+  border: 2px solid #bae6fd;
+  border-bottom: 5px solid #075985;
+  font-size: 1.55rem;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 120ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.gm-pen3d-say-btn:active {
+  transform: translateY(4px) scale(0.96);
+  border-bottom-width: 1px;
+}
+
+/* 4 Tactile 3D Smartboard Answer Pads */
+.gm-pen3d-opts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 960px) {
+  .gm-pen3d-opts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.gm-pen3d-opt {
+  cursor: pointer;
+  min-height: 66px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #1e293b, #0f172a);
+  color: #f8fafc;
+  border: 2px solid rgba(148, 163, 184, 0.38);
+  border-bottom: 5px solid #020617;
+  font: 800 clamp(1.12rem, 1.55vw, 1.38rem) 'Fredoka', system-ui, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1), opacity 140ms ease-out, border-color 140ms ease-out, background-color 140ms ease-out;
+}
+
+.gm-pen3d-opt:hover:not(:disabled) {
+  border-color: #38bdf8;
+  background: linear-gradient(180deg, #26354d, #162238);
+  transform: translateY(-2px);
+}
+
+.gm-pen3d-opt:active:not(:disabled) {
+  transform: translateY(4px) scale(0.97);
+  border-bottom-width: 1px;
+}
+
+.gm-pen3d-opt-key {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+  color: #060911;
+  background: #38bdf8;
+}
+
+.gm-pen3d-opt:nth-child(2) .gm-pen3d-opt-key { background: #f59e0b; }
+.gm-pen3d-opt:nth-child(3) .gm-pen3d-opt-key { background: #10b981; }
+.gm-pen3d-opt:nth-child(4) .gm-pen3d-opt-key { background: #a855f7; color: #ffffff; }
+
+.gm-pen3d-opt.correct {
+  background: linear-gradient(180deg, #10b981, #059669) !important;
+  border-color: #a7f3d0 !important;
+  border-bottom-color: #064e3b !important;
+  color: #ffffff !important;
+  transform: scale(1.04);
+}
+
+.gm-pen3d-opt.wrong {
+  opacity: 0.42;
+  cursor: not-allowed;
+  animation: gmPenSoftWobble 320ms ease-out;
+}
+
+@keyframes gmPenSoftWobble {
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-6px); }
+  50%  { transform: translateX(6px); }
+  75%  { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+/* Speaking Judge Row */
+.gm-pen3d-speak-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gm-pen3d-word-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gm-pen3d-word-pill {
+  cursor: pointer;
+  min-height: 48px;
+  padding: 6px 14px;
+  border-radius: 12px;
+  background: rgba(56, 189, 248, 0.16);
+  color: #e0f2fe;
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  border-bottom: 4px solid #0c4a6e;
+  font: 800 1.05rem 'Fredoka', sans-serif;
+  touch-action: manipulation;
+  transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gm-pen3d-word-pill.on {
+  background: #f59e0b;
+  color: #1c1100;
+  border-color: #fde68a;
+  border-bottom-color: #92400e;
+}
+
+.gm-pen3d-judge-btns {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* ---------- 2-Team Rival Keeper Secret Dive Picker ---------- */
+.gm-pen3d-duel-dock {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 22;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(16px);
+  border: 2px solid #a855f7;
+  border-radius: 24px;
+  padding: 14px 22px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.68);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(760px, calc(100% - 28px));
+}
+
+.gm-pen3d-duel-dock.hidden {
+  display: none;
+}
+
+.gm-pen3d-duel-btns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+/* ---------- Live 3D Shoot Controls Dock (Bottom-Right Ergonomic Cluster) ---------- */
+.gm-pen3d-shoot-dock {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 18;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  background: rgba(6, 9, 17, 0.84);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(148, 163, 184, 0.32);
+  border-radius: 22px;
+  padding: 12px 14px;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.55);
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), opacity 160ms ease-out;
+}
+
+.gm-pen3d-shoot-dock.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+}
+
+.gm-pen3d-spin-row {
+  display: flex;
+  gap: 6px;
+}
+
+.gm-pen3d-spin-btn {
+  cursor: pointer;
+  min-height: 48px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: rgba(30, 41, 59, 0.92);
+  color: #e2e8f0;
+  border: 1.5px solid rgba(148, 163, 184, 0.35);
+  border-bottom: 4px solid #020617;
+  font: 800 0.95rem 'Fredoka', sans-serif;
+  touch-action: manipulation;
+  transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1), background-color 120ms ease-out;
+}
+
+.gm-pen3d-spin-btn.on {
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+  color: #060911;
+  border-color: #fde68a;
+  border-bottom-color: #78350f;
+}
+
+.gm-pen3d-spin-btn:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
+
+/* Live Oscillating Sweet-Spot Power Meter */
+.gm-pen3d-meter-wrap {
+  width: 100%;
+  min-width: 230px;
+}
+
+.gm-pen3d-meter-lbl {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  margin-bottom: 4px;
+}
+
+.gm-pen3d-meter-bar {
+  position: relative;
+  height: 18px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: linear-gradient(90deg, #38bdf8 0%, #10b981 48%, #22c55e 76%, #f59e0b 88%, #f43f5e 100%);
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45);
+}
+
+.gm-pen3d-meter-sweet {
+  position: absolute;
+  left: 55%;
+  width: 25%;
+  top: 0;
+  bottom: 0;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.gm-pen3d-meter-needle {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 7px;
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow: 0 0 10px #ffffff, 0 0 4px #000000;
+  transform: translateX(-50%);
+}
+
+/* Giant Tactile 3D Kick Button */
+.gm-pen3d-kick-btn {
+  cursor: pointer;
+  width: 100%;
+  min-height: 68px;
+  padding: 12px 22px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #10b981, #059669);
+  color: #ffffff;
+  border: 2px solid #a7f3d0;
+  border-bottom: 6px solid #064e3b;
+  font: 900 clamp(1.25rem, 1.8vw, 1.55rem) 'Fredoka', sans-serif;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 24px -6px rgba(16, 185, 129, 0.6);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 120ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.gm-pen3d-kick-btn.super {
+  background: linear-gradient(180deg, #f59e0b, #ea580c);
+  border-color: #fef08a;
+  border-bottom-color: #7c2d12;
+  box-shadow: 0 10px 28px -4px rgba(245, 158, 11, 0.7);
+}
+
+.gm-pen3d-kick-btn:active {
+  transform: translateY(5px) scale(0.97);
+  border-bottom-width: 1px;
+}
+
+/* Big Broadcast Goal / Save Splash (Docked cleanly at lower pitch edge so Celebrating 3D Avatar Faces stay 100% clear!) */
+.gm-pen3d-splash {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  top: auto;
+  transform: translate(-50%, 16px) scale(0.65);
+  opacity: 0;
+  z-index: 25;
+  pointer-events: none;
+  text-align: center;
+  transition: transform 240ms cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 180ms ease-out;
+}
+
+.gm-pen3d-splash.show {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.gm-pen3d-splash-txt {
+  font-size: clamp(2.4rem, 5.2vw, 4.4rem);
+  font-weight: 900;
+  color: #fde047;
+  text-shadow: 0 6px 0 #0f172a, 0 12px 30px rgba(0, 0, 0, 0.75);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.gm-pen3d-splash-sub {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 5px 18px;
+  border-radius: 999px;
+  background: rgba(6, 9, 17, 0.85);
+  border: 2px solid rgba(253, 224, 71, 0.55);
+  color: #f8fafc;
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+  font-weight: 800;
+}
+
+@media (max-height: 800px) {
+  .gm-pen3d-qdock {
+    padding: 9px 14px 11px;
+    gap: 7px;
+  }
+  .gm-pen3d-opt {
+    min-height: 56px;
+    padding: 8px 12px;
+  }
+  .gm-pen3d-say-btn {
+    min-width: 54px;
+    min-height: 54px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gm-pen3d-opt, .gm-pen3d-splash, .gm-pen3d-qdock {
+    transition: opacity 150ms ease-out !important;
+  }
+}
