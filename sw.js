@@ -6,7 +6,7 @@
            school Wi-Fi drops.
    Never touched: the cloud database (Supabase), anything that is not a simple GET. */
 'use strict';
-var VERSION = 'eaa-offline-v2';
+var VERSION = 'eaa-offline-v3-20261116';
 var CODE = VERSION + '-code';     // pages, scripts, styles, json
 var MEDIA = VERSION + '-media';   // pictures, sounds, fonts, pdf
 var MEDIA_MAX = 1500;             // oldest copies are dropped past this
@@ -91,7 +91,15 @@ self.addEventListener('fetch', function (e) {
 });
 
 self.addEventListener('message', function (e) {
-  if (e.data === 'eaa-offline-clear') {
-    caches.keys().then(function (keys) { keys.forEach(function (k) { if (k.indexOf('eaa-offline-') === 0) caches.delete(k); }); });
+  if (e.data === 'eaa-offline-clear' || (e.data && e.data.type === 'EAA_FORCE_REFRESH')) {
+    e.waitUntil(
+      caches.keys().then(function (keys) {
+        return Promise.all(keys.filter(function (k) { return k.indexOf('eaa-offline-') === 0; }).map(function (k) { return caches.delete(k); }));
+      }).then(function () {
+        if (e.source && e.source.postMessage) e.source.postMessage({ type: 'EAA_CACHES_CLEARED', version: VERSION });
+      })
+    );
+  } else if (e.data === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
 });

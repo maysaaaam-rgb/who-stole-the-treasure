@@ -46,48 +46,32 @@
   .ok { color: #6ee7b7; } .warn { color: #fcd34d; }
 </style>
 <script>
-  /* the same teacher lock as the platform */
+  /* Unified teacher verification gate (static PIN hash retired) */
   (function () {
-    var PIN_SALT = 'eaa-lock-v2-43559dfbce7fd75f-', PIN_ROUNDS = 600000, PIN_HASH = 'f2030d4428f3597b2813341d709b14e03e04745069fa3cdc1970d628dca10936';
-    function pinMatches(value) {
-      try {
-        var enc = new TextEncoder();
-        return crypto.subtle.importKey('raw', enc.encode(String(value)), 'PBKDF2', false, ['deriveBits']).then(function (key) {
-          return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode(PIN_SALT), iterations: PIN_ROUNDS }, key, 256);
-        }).then(function (bits) {
-          return Array.prototype.map.call(new Uint8Array(bits), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('') === PIN_HASH;
-        }).catch(function () { return false; });
-      } catch (e) { return Promise.resolve(false); }
+    try {
+      if (sessionStorage.getItem('eaa_auth_unlocked') !== 'true' && window.__eaa_auth_unlocked !== true) {
+        document.documentElement.classList.add('platform-locked');
+      }
+    } catch (e) {
+      document.documentElement.classList.add('platform-locked');
     }
-    try { if (sessionStorage.getItem('eaa_auth_unlocked') !== 'true' && window.__eaa_auth_unlocked !== true) document.documentElement.classList.add('platform-locked'); }
-    catch (e) { document.documentElement.classList.add('platform-locked'); }
-    window.handlePlatformPasswordSubmit = function (ev) {
-      if (ev && ev.preventDefault) ev.preventDefault();
-      var input = document.getElementById('platform-password-input'), err = document.getElementById('platform-password-error');
-      pinMatches((input.value || '').trim()).then(function (ok) {
-        if (ok) { window.__eaa_auth_unlocked = true; try { sessionStorage.setItem('eaa_auth_unlocked', 'true'); } catch (e) { /* ignore */ } document.documentElement.classList.remove('platform-locked'); if (window.TeamWishes) TeamWishes.start(); }
-        else err.style.display = 'block';
-      });
-      return false;
+    window.__eaaFinishUnlock = function () {
+      if (window.TeamWishes) window.TeamWishes.start();
     };
   })();
 </script>
 </head>
 <body>
 <div id="lock"><div class="card" style="max-width:420px;width:100%;text-align:center">
-  <h2>🔐 Teacher</h2><p class="muted" style="margin:0 0 14px">Enter your teacher password to open Team Wishes.</p>
-  <form onsubmit="return handlePlatformPasswordSubmit(event)" style="display:flex;flex-direction:column;gap:12px">
-    <input id="platform-password-input" type="password" placeholder="Password" style="padding:14px;border-radius:14px;border:2px solid #38bdf8;background:#090d16;color:#fff;font-size:1.2rem;text-align:center">
-    <div id="platform-password-error" style="display:none;color:#fda4af;font-weight:700">That is not the password.</div>
-    <button type="submit" class="btn">Open 🔓</button>
-  </form>
+  <h2>🛡️ Teacher Verification</h2><p class="muted" style="margin:0 0 14px">Checking your verified teacher session…</p>
+  <a href="../index.html?next=teams/index.html" class="btn" style="text-decoration:none;display:inline-block;">Verify with 6-Digit Code →</a>
 </div></div>
 <div id="app"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/supabase-config.js?v=2.3"></script>
-<script src="../js/supabase-client.js?v=3.1"></script>
-<script src="../js/teacher-auth.js?v=1" data-guard="1"></script>
+<script src="../js/supabase-config.js?v=2.4"></script>
+<script src="../js/supabase-client.js?v=4.5"></script>
+<script src="../js/teacher-auth.js?v=2.0" data-guard="1"></script>
 <script>
 /* Team Wishes: pupils choose 2 classmates they would like to work with, one by one on the teacher's iPad.
    Only the teacher sees the wishes and the suggested teams. Saved on this device and in one private cloud row

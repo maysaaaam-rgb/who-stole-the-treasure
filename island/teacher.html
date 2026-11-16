@@ -164,55 +164,22 @@
   </style>
   <script>
     (function () {
-      const PIN_SALT = 'eaa-lock-v2-43559dfbce7fd75f-', PIN_ROUNDS = 600000, PIN_HASH = 'f2030d4428f3597b2813341d709b14e03e04745069fa3cdc1970d628dca10936';
-      function pinMatches(value) {
-        try {
-          const enc = new TextEncoder();
-          return crypto.subtle.importKey('raw', enc.encode(String(value)), 'PBKDF2', false, ['deriveBits']).then(function (key) {
-            return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode(PIN_SALT), iterations: PIN_ROUNDS }, key, 256);
-          }).then(function (bits) {
-            const hex = Array.prototype.map.call(new Uint8Array(bits), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
-            return hex === PIN_HASH;
-          }).catch(function () { return false; });
-        } catch (e) { return Promise.resolve(false); }
-      }
       try {
         const isUnlocked = sessionStorage.getItem('eaa_auth_unlocked') === 'true' || window.__eaa_auth_unlocked === true;
         if (!isUnlocked) document.documentElement.classList.add('platform-locked');
       } catch (e) {
         document.documentElement.classList.add('platform-locked');
       }
-      window.handlePlatformPasswordSubmit = function (ev) {
-        if (ev && ev.preventDefault) ev.preventDefault();
-        const input = document.getElementById('platform-password-input');
-        const err = document.getElementById('platform-password-error');
-        if (!input) return false;
-        pinMatches((input.value || '').trim()).then(function (ok) {
-          if (ok) {
-            window.__eaa_auth_unlocked = true;
-            try { sessionStorage.setItem('eaa_auth_unlocked', 'true'); } catch (e) {}
-            if (err) err.style.display = 'none';
-            document.documentElement.classList.remove('platform-locked');
-          } else if (err) {
-            err.style.display = 'block';
-          }
-        });
-        return false;
-      };
     })();
   </script>
 </head>
 <body>
-  <!-- Teacher Lock Screen -->
+  <!-- Teacher Verification Gate (Managed by ../js/teacher-auth.js) -->
   <div id="platform-lock-screen">
     <div class="isl-card-modal" style="max-width:420px;text-align:center">
-      <h2 style="margin:0 0 10px">🔐 Teacher Access</h2>
-      <p style="color:#cbd5e1;margin:0 0 16px">Enter your teacher PIN to open Practice Island Studio:</p>
-      <form onsubmit="return handlePlatformPasswordSubmit(event)" style="display:flex;flex-direction:column;gap:12px">
-        <input id="platform-password-input" type="password" placeholder="Teacher PIN" style="padding:12px;border-radius:14px;border:2px solid #38bdf8;background:#090d16;color:#fff;font-size:1.15rem;text-align:center">
-        <div id="platform-password-error" style="display:none;color:#fda4af;font-weight:700">Incorrect PIN.</div>
-        <button type="submit" class="isl-btn cyan">Unlock Studio 🔓</button>
-      </form>
+      <h2 style="margin:0 0 10px">🛡️ Teacher Verification</h2>
+      <p style="color:#cbd5e1;margin:0 0 16px">Checking your verified teacher session…</p>
+      <a href="../index.html?next=island/teacher.html" class="isl-btn cyan" style="text-decoration:none;display:inline-block;">Verify with 6-Digit Code →</a>
     </div>
   </div>
 
@@ -330,9 +297,9 @@
   <div id="tch-print-area"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=2.3"></script>
-  <script src="../js/supabase-client.js?v=3.1"></script>
-  <script src="../js/teacher-auth.js?v=1" data-guard="1"></script>
+  <script src="../js/supabase-config.js?v=2.4"></script>
+  <script src="../js/supabase-client.js?v=4.5"></script>
+  <script src="../js/teacher-auth.js?v=2.0" data-guard="1"></script>
   <script src="js/data.js?v=1"></script>
   <script src="js/sync.js?v=2"></script>
   <script src="js/teacher-wall.js?v=1"></script>

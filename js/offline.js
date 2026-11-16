@@ -13,8 +13,31 @@
   }
 
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register(ROOT + 'sw.js', { scope: ROOT }).catch(function () {});
+    navigator.serviceWorker.register(ROOT + 'sw.js?v=20261116', { scope: ROOT }).then(function (reg) {
+      try { reg.update(); } catch (e) {}
+    }).catch(function () {});
   });
+
+  window.EAAOffline = {
+    forceRefresh: async function () {
+      try {
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({ type: 'EAA_FORCE_REFRESH' });
+        }
+        if (window.caches) {
+          var ks = await caches.keys();
+          await Promise.all(ks.filter(function (k) { return k.indexOf('eaa-offline-') === 0; }).map(function (k) { return caches.delete(k); }));
+        }
+        if (navigator.serviceWorker) {
+          var regs = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map(function (r) { return r.update().catch(function () {}); }));
+        }
+      } catch (e) {}
+      var u = new URL(location.href);
+      u.searchParams.set('refreshed', String(Date.now()));
+      location.replace(u.toString());
+    }
+  };
 
   var pill = null;
   function show() {

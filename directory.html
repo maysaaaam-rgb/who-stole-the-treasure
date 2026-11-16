@@ -4,8 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Students Directory &amp; Monster Companions</title>
-  <link rel="stylesheet" href="css/school-platform.css">
+  <link rel="stylesheet" href="css/school-platform.css?v=8">
+  <script>
+    (function () {
+      try {
+        if (sessionStorage.getItem('eaa_auth_unlocked') !== 'true' && window.__eaa_auth_unlocked !== true) {
+          document.documentElement.classList.add('platform-locked');
+        }
+      } catch (e) {
+        document.documentElement.classList.add('platform-locked');
+      }
+    })();
+  </script>
   <style>
+    html.platform-locked .directory-wrapper,
+    html.platform-locked #modal-closet-customizer {
+      display: none !important;
+    }
+    html:not(.platform-locked) #platform-lock-screen {
+      display: none !important;
+    }
+    #platform-lock-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%);
+      padding: 20px;
+    }
     body {
       margin: 0;
       padding: 0;
@@ -55,6 +83,14 @@
   </style>
 </head>
 <body>
+  <div id="platform-lock-screen">
+    <div style="max-width:420px;width:100%;background:rgba(15,23,42,0.88);border:1px solid rgba(56,189,248,0.28);border-radius:24px;padding:30px 26px;text-align:center;backdrop-filter:blur(16px);color:#f8fafc;">
+      <div style="font-size:2.4rem;margin-bottom:10px;">🛡️</div>
+      <h2 style="margin:0 0 8px;font-size:1.4rem;font-weight:800;">Teacher Verification</h2>
+      <p style="margin:0 0 18px;color:#94a3b8;font-size:0.9rem;">Verifying your teacher session before opening Students Directory…</p>
+      <a href="index.html?next=directory.html" style="display:inline-block;padding:12px 20px;border-radius:14px;background:#38bdf8;color:#06101f;font-weight:800;text-decoration:none;border-bottom:5px solid #0284c7;">Verify with 6-Digit Code →</a>
+    </div>
+  </div>
 
   <div class="directory-wrapper">
     <!-- Header -->
@@ -123,8 +159,12 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=2.4"></script>
+  <script src="js/supabase-client.js?v=4.5"></script>
+  <script src="js/teacher-auth.js?v=2.0" data-guard="1"></script>
   <script src="js/monster-outfits.js?v=3"></script>
-  <script src="js/monster-renderer.js"></script>
+  <script src="js/monster-renderer.js?v=4.17"></script>
   <script>
     // Asset Resolver matching our standard
     function getMonsterAsset(speciesOrArchetype, level) {
@@ -163,16 +203,16 @@
       return getMonsterAsset(archetype, lvl);
     }
 
-    // Demo Directory Student Data across levels 1 to 7 and archetypes
+    // Privacy-safe placeholder Student Data across levels 1 to 7 and archetypes (AGENTS.md §8)
     let students = [
-      { id: 'st-1', firstName: 'Emma', lastName: 'Watson', archetype: 'ignis', level: 3, xp: 480, streak: 5, cefr: 'A1', equipped: { furColor: 'blue', color: 'blue' } },
-      { id: 'st-2', firstName: 'Liam', lastName: 'Smith', archetype: 'flora', level: 4, xp: 820, streak: 8, cefr: 'A2', equipped: { hat: 'hat-cap', furColor: 'green' } },
-      { id: 'st-3', firstName: 'Sophia', lastName: 'Chen', archetype: 'volt', level: 1, xp: 50, streak: 2, cefr: 'Pre-A1', equipped: {} },
-      { id: 'st-4', firstName: 'Noah', lastName: 'Taylor', archetype: 'astral', level: 2, xp: 190, streak: 4, cefr: 'A1', equipped: {} },
-      { id: 'st-5', firstName: 'Mia', lastName: 'Johnson', archetype: 'aqua', level: 5, xp: 1450, streak: 12, cefr: 'B1', equipped: { wings: 'wings-dragon', furColor: 'blue' } },
-      { id: 'st-6', firstName: 'Oliver', lastName: 'Brown', archetype: 'ignis', level: 6, xp: 2300, streak: 15, cefr: 'B1', equipped: { clothing: 'clothing-vest', furColor: 'orange' } },
-      { id: 'st-7', firstName: 'Ava', lastName: 'Davis', archetype: 'flora', level: 7, xp: 3800, streak: 21, cefr: 'B2', equipped: { aura: 'aura-sparkle', furColor: 'gold' } },
-      { id: 'st-8', firstName: 'Lucas', lastName: 'Miller', archetype: 'volt', level: 3, xp: 520, streak: 6, cefr: 'A1', equipped: { furColor: 'blue' } }
+      { id: 'student-3a-101', firstName: 'Pupil 101', lastName: '', archetype: 'ignis', level: 3, xp: 480, streak: 5, cefr: 'A1', equipped: { furColor: 'blue', color: 'blue' } },
+      { id: 'student-3a-102', firstName: 'Pupil 102', lastName: '', archetype: 'flora', level: 4, xp: 820, streak: 8, cefr: 'A2', equipped: { hat: 'hat-cap', furColor: 'green' } },
+      { id: 'student-3b-103', firstName: 'Pupil 103', lastName: '', archetype: 'volt', level: 1, xp: 50, streak: 2, cefr: 'Pre-A1', equipped: {} },
+      { id: 'student-3b-104', firstName: 'Pupil 104', lastName: '', archetype: 'astral', level: 2, xp: 190, streak: 4, cefr: 'A1', equipped: {} },
+      { id: 'student-4a-105', firstName: 'Pupil 105', lastName: '', archetype: 'aqua', level: 5, xp: 1450, streak: 12, cefr: 'B1', equipped: { wings: 'wings-dragon', furColor: 'blue' } },
+      { id: 'student-4a-106', firstName: 'Pupil 106', lastName: '', archetype: 'ignis', level: 6, xp: 2300, streak: 15, cefr: 'B1', equipped: { clothing: 'clothing-vest', furColor: 'orange' } },
+      { id: 'student-4b-107', firstName: 'Pupil 107', lastName: '', archetype: 'flora', level: 7, xp: 3800, streak: 21, cefr: 'B2', equipped: { aura: 'aura-sparkle', furColor: 'gold' } },
+      { id: 'student-4b-108', firstName: 'Pupil 108', lastName: '', archetype: 'volt', level: 3, xp: 520, streak: 6, cefr: 'A1', equipped: { furColor: 'blue' } }
     ];
 
     // Comprehensive Cosmetic Catalog

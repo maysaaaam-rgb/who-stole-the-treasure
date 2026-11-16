@@ -56,29 +56,41 @@
       return {
         provider: 'Supabase PostgreSQL',
         isConfigured: Boolean(sbStatus.isConfigured),
+        isPaused: Boolean(root.__eaa_offline_emergency === true),
         url: sbStatus.url || '',
         endpoint: sbStatus.url || 'Supabase Cloud Database',
         isSyncing: Boolean(this.isSyncing || sbStatus.isSyncing),
         lastSyncTime: this.lastSyncTime || sbStatus.lastSyncTime,
-        lastSyncStatus: this.lastSyncStatus || sbStatus.lastSyncStatus || 'idle',
+        lastSyncStatus: root.__eaa_offline_emergency === true ? 'paused' : (this.lastSyncStatus || sbStatus.lastSyncStatus || 'idle'),
         lastError: this.lastError || sbStatus.lastError
       };
+    }
+
+    _canWriteTeacherCloud() {
+      if (root.__eaa_offline_emergency === true) return false;
+      if (root.TeacherAuth && typeof root.TeacherAuth.canSyncCloud === 'function') {
+        return root.TeacherAuth.canSyncCloud();
+      }
+      return true;
     }
 
     // =========================================================================
     // 1. STUDENTS CRUD (Supabase Authoritative Persistence)
     // =========================================================================
     async saveStudent(student) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true, error: 'Cloud sync paused until verified online' };
       if (!root.AdventureSupabase) return { success: false, error: 'Supabase client not initialized' };
       return root.AdventureSupabase.saveStudent(student);
     }
 
     async deleteStudent(studentId) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true, error: 'Cloud sync paused until verified online' };
       if (!root.AdventureSupabase) return { success: false, error: 'Supabase client not initialized' };
       return root.AdventureSupabase.deleteStudent(studentId);
     }
 
     async getStudents() {
+      if (!this._canWriteTeacherCloud()) return [];
       if (!root.AdventureSupabase) return [];
       return root.AdventureSupabase.getStudents();
     }
@@ -99,11 +111,13 @@
     // 2. TEACHER NOTES CRUD (Supabase Authoritative Persistence)
     // =========================================================================
     async saveTeacherNote(note) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: false };
       return root.AdventureSupabase.saveTeacherNote(note);
     }
 
     async deleteTeacherNote(noteId) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: false };
       return root.AdventureSupabase.deleteTeacherNote(noteId);
     }
@@ -112,11 +126,13 @@
     // 3. FOUR-SKILL ASSESSMENTS (Supabase Authoritative Persistence)
     // =========================================================================
     async saveAssessments(submissionsArray) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true, count: 0 };
       if (!root.AdventureSupabase) return { success: true, count: 0 };
       return root.AdventureSupabase.saveAssessments(submissionsArray);
     }
 
     async deleteAssessment(studentId, checkId) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: false };
       return root.AdventureSupabase.deleteAssessment(studentId, checkId);
     }
@@ -125,11 +141,13 @@
     // 4. XP AUDIT LEDGER (Supabase Authoritative Persistence)
     // =========================================================================
     async saveXPTransaction(tx) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: false };
       return root.AdventureSupabase.saveXPTransaction(tx);
     }
 
     async deleteXPTransaction(txId) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: false };
       return root.AdventureSupabase.deleteXPTransaction(txId);
     }
@@ -138,6 +156,7 @@
     // 5. ATTENDANCE (Supabase Authoritative Persistence)
     // =========================================================================
     async saveAttendance(recordsArray) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: true };
       return root.AdventureSupabase.saveAttendance(recordsArray);
     }
@@ -146,16 +165,19 @@
     // 5B. CLASSES CRUD (Supabase Authoritative Persistence)
     // =========================================================================
     async saveClass(cls) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: false };
       return root.AdventureSupabase.saveClass(cls);
     }
 
     async getClasses() {
+      if (!this._canWriteTeacherCloud()) return [];
       if (!root.AdventureSupabase) return [];
       return root.AdventureSupabase.getClasses();
     }
 
     async deleteClass(classId) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: false };
       return root.AdventureSupabase.deleteClass(classId);
     }
@@ -164,21 +186,25 @@
     // 5C. EDUCATIONAL RESOURCES & LIBRARY (Supabase Authoritative Persistence)
     // =========================================================================
     async saveResource(resource) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true, error: 'Cloud paused' };
       if (!root.AdventureSupabase) return { success: false, error: 'Supabase client not initialized' };
       return root.AdventureSupabase.saveResource(resource);
     }
 
     async getResources(includeArchived = false) {
+      if (!this._canWriteTeacherCloud()) return [];
       if (!root.AdventureSupabase) return [];
       return root.AdventureSupabase.getResources(includeArchived);
     }
 
     async deleteResource(resourceId) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: false };
       return root.AdventureSupabase.deleteResource(resourceId);
     }
 
     async migrateLocalResourcesToCloud(store) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: false, error: 'Supabase client not initialized' };
       return root.AdventureSupabase.migrateLocalResourcesToCloud(store);
     }
@@ -187,11 +213,13 @@
     // 6. TWO-WAY STORE SYNCHRONIZATION & SAFE ROSTER MIGRATION
     // =========================================================================
     async uploadLocalStudentsToCloud(store) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: false, error: 'Supabase client not loaded' };
       return root.AdventureSupabase.uploadLocalStudentsToCloud(store);
     }
 
     async migrateLocalRosterToCloud(store) {
+      if (!this._canWriteTeacherCloud()) return { success: false, paused: true };
       if (!root.AdventureSupabase) return { success: false, error: 'Supabase client not loaded' };
       return root.AdventureSupabase.migrateLocalRosterToCloud(store);
     }
@@ -199,6 +227,9 @@
     async syncWithStore(store) {
       if (!store) return { success: false, reason: 'Invalid store' };
       this._activeStore = store;
+      if (!this._canWriteTeacherCloud()) {
+        return { success: false, paused: true, reason: 'Cloud sync paused until verified online.' };
+      }
 
       if (!root.AdventureSupabase || !root.AdventureSupabase.isConfigured) {
         return { success: false, reason: 'Supabase is not configured. Please connect in Settings.' };

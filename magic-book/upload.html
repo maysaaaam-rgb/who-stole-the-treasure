@@ -14,7 +14,15 @@
   .bar{height:16px;border-radius:10px;background:#5a3b22;overflow:hidden;margin:18px 0 8px}
   .bar i{display:block;height:100%;width:0;background:#3cc46a;transition:width .2s}
   #log{font-size:14px;max-height:160px;overflow:auto;color:#e9cfa5;white-space:pre-wrap}
+  html.platform-locked .card{display:none!important}
 </style>
+<script>
+  try {
+    if (sessionStorage.getItem('eaa_auth_unlocked') !== 'true' && window.__eaa_auth_unlocked !== true) {
+      document.documentElement.classList.add('platform-locked');
+    }
+  } catch (e) { document.documentElement.classList.add('platform-locked'); }
+</script>
 </head>
 <body>
 <div class="card">
@@ -27,9 +35,9 @@
   <div id="log"></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/supabase-config.js?v=2.3"></script>
-<script src="../js/supabase-client.js?v=3.3"></script>
-<script src="../js/teacher-auth.js?v=1" data-guard="1"></script>
+<script src="../js/supabase-config.js?v=2.4"></script>
+<script src="../js/supabase-client.js?v=4.5"></script>
+<script src="../js/teacher-auth.js?v=2.0" data-guard="1"></script>
 <script>
 (function () {
   'use strict';

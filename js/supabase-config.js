@@ -16,7 +16,8 @@
     anonKey: 'sb_publishable_8A_Nu2aZRvySm4fzlcOA_A_L_sFckGO',
     projectId: 'raraoopavipwypvgpuhe',
     environment: 'production',
-    cloudLocked: true   // true once the cloud only answers the signed-in teacher (js/teacher-auth.js)
+    authMode: 'email-otp-v2',
+    cloudLocked: true   // true: cloud RLS + client sync strictly require a verified teacher session (js/teacher-auth.js)
   };
 
   // Provide console confirmation for transparency
