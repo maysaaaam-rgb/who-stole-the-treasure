@@ -155,7 +155,7 @@
           this.client = createClientFn(creds.url, creds.anonKey, {
             auth: {
               persistSession: true,
-              autoRefreshToken: true,
+              autoRefreshToken: adaptiveAuthStorage._isTrusted(),
               detectSessionInUrl: true,
               storage: adaptiveAuthStorage
             }
