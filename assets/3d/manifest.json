@@ -2,13 +2,36 @@
   "version": "1.0.0",
   "pilotPack": {
     "character": {
-      "id": "kid-base",
-      "name": "Academy Kid Base (A-Pose Rigged)",
-      "glbPath": "assets/3d/characters/kid-base.glb",
-      "refPath": "assets/3d/refs/kid-base-a-pose.png",
+      "id": "kid-boy",
+      "name": "Academy Boy (A-Pose Rigged)",
+      "glbPath": "assets/3d/characters/kid-boy.glb",
+      "refPath": "assets/3d/refs/kid-boy-a-pose.jpg",
       "targetHeight": 1.65,
-      "recommendedTool": "Hunyuan3D-2.1 or Tripo3D (Auto-Rigged Biped)"
+      "recommendedTool": "Tripo3D (Best Quality + Smart Low Poly + Auto-Rigged Mixamo)"
     },
+    "characters": [
+      {
+        "id": "kid-boy",
+        "name": "Academy Boy (A-Pose Rigged)",
+        "glbPath": "assets/3d/characters/kid-boy.glb",
+        "refPath": "assets/3d/refs/kid-boy-a-pose.jpg",
+        "targetHeight": 1.65
+      },
+      {
+        "id": "kid-girl",
+        "name": "Academy Girl (A-Pose Rigged)",
+        "glbPath": "assets/3d/characters/kid-girl.glb",
+        "refPath": "assets/3d/refs/kid-girl-a-pose.jpg",
+        "targetHeight": 1.65
+      },
+      {
+        "id": "kid-base",
+        "name": "Academy Kid Base (Legacy)",
+        "glbPath": "assets/3d/characters/kid-base.glb",
+        "refPath": "assets/3d/refs/kid-base-a-pose.png",
+        "targetHeight": 1.65
+      }
+    ],
     "items": [
       {
         "id": "crown",
@@ -20,7 +43,7 @@
         "scale": 0.28,
         "rotation": [0, 0, 0],
         "glbPath": "assets/3d/items/crown.glb",
-        "refPath": "assets/3d/refs/item-crown.png"
+        "refPath": "assets/3d/refs/item-crown-simple.jpg"
       },
       {
         "id": "cap",
@@ -105,6 +128,68 @@
         "rotation": [0, 0, 0],
         "glbPath": "assets/3d/items/soccer-ball.glb",
         "refPath": "assets/3d/refs/item-soccer-ball.png"
+      },
+      {
+        "id": "cannon-barrel",
+        "name": "Cartoon Cannon Barrel",
+        "slot": "prop",
+        "glbPath": "assets/3d/items/cannon-barrel.glb",
+        "size": 450632
+      },
+      {
+        "id": "cannon-base",
+        "name": "Cartoon Cannon Carriage",
+        "slot": "prop",
+        "glbPath": "assets/3d/items/cannon-base.glb",
+        "size": 846788
+      },
+      {
+        "id": "haystack",
+        "name": "Fluffy Golden Haystack",
+        "slot": "prop",
+        "glbPath": "assets/3d/items/haystack.glb",
+        "size": 758676
+      },
+      {
+        "id": "target",
+        "name": "Bullseye Target Stand",
+        "slot": "prop",
+        "glbPath": "assets/3d/items/target.glb",
+        "size": 459020
+      }
+    ],
+    "monsters": [
+      {
+        "id": "emberwing",
+        "name": "Emberwing",
+        "team": "pink",
+        "glbPath": "assets/3d/monsters/emberwing.glb",
+        "refPath": "assets/monsters/art/emberwing_growing.webp",
+        "size": 915456
+      },
+      {
+        "id": "aquafind",
+        "name": "Aquafind",
+        "team": "blue",
+        "glbPath": "assets/3d/monsters/aquafind.glb",
+        "refPath": "assets/monsters/art/aquafind_growing.webp",
+        "size": 695732
+      },
+      {
+        "id": "sparktail",
+        "name": "Sparktail",
+        "team": "yellow",
+        "glbPath": "assets/3d/monsters/sparktail.glb",
+        "refPath": "assets/monsters/art/sparktail_growing.webp",
+        "size": 787264
+      },
+      {
+        "id": "florasprout",
+        "name": "Florasprout",
+        "team": "green",
+        "glbPath": "assets/3d/monsters/florasprout.glb",
+        "refPath": "assets/monsters/art/florasprout_growing.webp",
+        "size": 706316
       }
     ]
   }

@@ -1,0 +1,191 @@
+/* Bomb or Bonus (the restaged Tile Board): mystery gift boxes that bob, then shake and burst open. */
+.gm-grid.gm-bob { gap: clamp(6px, 1vw, 14px); }
+.gm-grid.gm-bob .gm-tile.gm-box:not(.used) {
+  background: transparent !important;
+  border: 0; box-shadow: none; -webkit-text-stroke: 0; text-shadow: none; overflow: visible;
+  animation: gmtilein .5s var(--spring) both, gmboxbob 2.6s ease-in-out var(--bob, 0s) infinite;
+}
+.gm-grid.gm-bob .gm-tile.gm-box::before { display: none; }
+.gm-box-pic { position: absolute; inset: 2% 6% 8%; background: url('../art/pu_gift.webp') center / contain no-repeat; filter: hue-rotate(var(--hue, 0deg)) drop-shadow(0 8px 6px rgba(31,42,68,.28)); transition: transform .18s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+.gm-box-num { position: absolute; left: 50%; bottom: 2%; transform: translateX(-50%); min-width: 1.9em; padding: .08em .5em; border-radius: 999px; background: #fff; color: #1f2a44; font: 700 clamp(.95rem, 2.6vh, 1.7rem) var(--font); border: 3px solid #1f2a44; box-shadow: 0 3px 0 rgba(31,42,68,.35); pointer-events: none; }
+.gm-grid.gm-bob .gm-tile.gm-box:not(.used):hover .gm-box-pic { transform: scale(1.12) rotate(-5deg); }
+.gm-grid.gm-bob .gm-tile.gm-box:not(.used):active .gm-box-pic { transform: scale(.9); }
+.gm-grid.gm-bob .gm-tile.gm-box.used { animation: none; background: transparent !important; border: 0 !important; box-shadow: none !important; display: grid; place-items: center; font-size: clamp(1.2rem, 3.6vh, 2.4rem); color: #1f2a44; -webkit-text-stroke: 0; }
+.gm-grid.gm-bob .gm-tile.gm-box.used::after { content: ''; position: absolute; left: 50%; top: 50%; width: min(70%, 9vh); aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: color-mix(in srgb, var(--c, #94a3b8) 30%, #fff); border: 4px solid var(--c, #94a3b8); box-shadow: 0 4px 0 rgba(31,42,68,.2); z-index: -1; animation: gmprizein .4s cubic-bezier(.34,1.56,.64,1) both; }
+.gm-grid.gm-bob .gm-tile.gm-box.used { z-index: 0; isolation: isolate; }
+.gm-grid.gm-bob .gm-tile.gm-box.locked { opacity: .55; }
+.gm-grid.gm-bob .gm-tile.gm-tile-final:not(.used) .gm-box-pic { filter: drop-shadow(0 0 14px #ffe066) drop-shadow(0 8px 6px rgba(31,42,68,.28)); animation: gmboxshake .5s ease-in-out infinite; }
+@keyframes gmboxbob { 0%, 100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(-7%) rotate(1.5deg); } }
+
+/* the opening moment */
+.gm-over.gm-boxstage { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; background: radial-gradient(circle at 50% 45%, rgba(255,240,170,.55), rgba(20,24,60,.72) 70%); }
+.gm-bigbox { position: relative; width: min(46vh, 40vw); aspect-ratio: 1; animation: gmboxin .45s cubic-bezier(.34,1.56,.64,1) both, gmboxshake .28s ease-in-out .45s infinite; }
+.gm-bigbox-pic { position: absolute; inset: 0; background: url('../art/pu_gift.webp') center / contain no-repeat; filter: hue-rotate(var(--hue, 0deg)) drop-shadow(0 22px 18px rgba(0,0,0,.4)); }
+.gm-bigbox-glow { position: absolute; inset: -22%; border-radius: 50%; background: conic-gradient(from 0deg, rgba(255,224,102,.0), rgba(255,224,102,.75), rgba(255,224,102,.0), rgba(255,255,255,.7), rgba(255,224,102,.0)); filter: blur(10px); animation: gmboxspin 2.2s linear infinite; }
+.gm-bigbox-q { position: absolute; left: 50%; top: 56%; transform: translate(-50%, -50%); font: 700 clamp(3rem, 14vh, 8rem) var(--font); color: #fff; -webkit-text-stroke: 4px rgba(31,42,68,.55); paint-order: stroke fill; animation: gmboxpulse .5s ease-in-out infinite alternate; }
+.gm-bigbox.burst { animation: gmboxburst .38s cubic-bezier(.3,1.6,.6,1) forwards; }
+.gm-bigbox.burst .gm-bigbox-q { display: none; }
+.gm-boxcap { font: 700 clamp(1.3rem, 4.2vh, 2.6rem) var(--font); color: #fff; text-shadow: 0 4px 0 rgba(0,0,0,.35); letter-spacing: .02em; }
+.gm-boxprize { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 1vh; animation: gmprizein .55s cubic-bezier(.34,1.56,.64,1) both; }
+.gm-boxprize .gm-art { width: min(30vh, 26vw); height: auto; filter: drop-shadow(0 14px 12px rgba(0,0,0,.35)); animation: gmboxbob 1.2s ease-in-out infinite; }
+.gm-boxprize .gm-art-emoji { font-size: 18vh; }
+.gm-boxprize b { font: 700 clamp(2.6rem, 11vh, 6.5rem) var(--font); color: #ffe066; -webkit-text-stroke: 5px #1f2a44; paint-order: stroke fill; text-shadow: 0 6px 0 rgba(0,0,0,.3); }
+.gm-boxprize.bad b { color: #ff8a9a; }
+@keyframes gmboxin { from { transform: scale(.15) translateY(40vh) rotate(-30deg); opacity: 0; } }
+@keyframes gmboxshake { 0%, 100% { transform: rotate(-5deg) translateX(-1.5%); } 50% { transform: rotate(5deg) translateX(1.5%) scale(1.04); } }
+@keyframes gmboxspin { to { transform: rotate(360deg); } }
+@keyframes gmboxpulse { to { transform: translate(-50%, -50%) scale(1.18); } }
+@keyframes gmboxburst { 40% { transform: scale(1.35, .7); } 100% { transform: scale(2.2); opacity: 0; } }
+@keyframes gmprizein { from { transform: translate(-50%, -20%) scale(.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .gm-grid.gm-bob .gm-tile.gm-box, .gm-bigbox, .gm-bigbox-glow, .gm-bigbox-q { animation: none !important; } }
+
+/* ===== Prize Machine (the restaged Plink-oh): an arcade cabinet with chasing lights, a swinging dropper and a flashing jackpot ===== */
+.gm-pm-box { align-items: flex-start; }
+.gm-pm-cab { position: relative; flex: none; padding: 58px 22px 20px; border-radius: 46px 46px 34px 34px;
+  background: linear-gradient(160deg, #ff8ac4, #b48cff 55%, #6fb8ff); box-shadow: 0 16px 0 rgba(31,42,68,.28), inset 0 0 0 6px rgba(255,255,255,.45), inset 0 -14px 0 rgba(0,0,0,.12); }
+.gm-pm-cab .gm-pl { border-color: #fff; box-shadow: inset 0 0 0 6px rgba(191,227,255,.9), inset 0 20px 40px rgba(255,255,255,.7), 0 0 0 5px rgba(31,42,68,.35); }
+.gm-pm-sign { z-index: 2; position: absolute; left: 50%; top: 12px; transform: translateX(-50%); padding: 6px 26px; border-radius: 999px; background: #1f2a44; color: #ffe066;
+  font: 700 1.9rem var(--font); letter-spacing: .06em; white-space: nowrap; text-shadow: 0 0 10px #ffb21a, 0 0 22px #ff5d9e; box-shadow: 0 5px 0 rgba(0,0,0,.25); animation: gmpmsign 1.6s ease-in-out infinite; }
+@keyframes gmpmsign { 50% { text-shadow: 0 0 4px #ffb21a; color: #fff3b8; } }
+.gm-pm-bulbs { position: absolute; inset: 14px; pointer-events: none; z-index: 1; }
+.gm-pm-bulbs i { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff3b8; box-shadow: 0 0 10px #ffe066; animation: gmpmbulb .72s steps(1) infinite; }
+@keyframes gmpmbulb { 50% { background: #ff7eb6; box-shadow: 0 0 6px #ff7eb6; } }
+
+/* prizes in the slots */
+.gm-pm-slot { flex-direction: column; gap: 0; overflow: visible; }
+.gm-pm-slot .gm-pm-prize { position: absolute; top: -44px; left: 50%; width: 54px; height: 54px; transform: translateX(-50%); object-fit: contain; filter: drop-shadow(0 4px 4px rgba(31,42,68,.3)); animation: gmboxbob 2.2s ease-in-out infinite; }
+.gm-pm-slot .gm-art-emoji.gm-pm-prize { font-size: 2.2rem; text-align: center; }
+.gm-pm-slot .gm-pm-jp { display: none; position: absolute; bottom: -26px; left: 50%; transform: translateX(-50%); white-space: nowrap; padding: 2px 10px; border-radius: 999px; background: #ffe066; color: #1f2a44; font: 700 .85rem var(--font); -webkit-text-stroke: 0; border: 2px solid #1f2a44; }
+.gm-pm-slot.jackpot { animation: gmpmjack .5s ease-in-out infinite alternate; box-shadow: 0 0 0 4px #ffe066, 0 0 30px #ffe066; z-index: 2; }
+.gm-pm-slot.jackpot .gm-pm-jp { display: block; }
+@keyframes gmpmjack { to { filter: brightness(1.35) saturate(1.3); transform: translateY(-4px); } }
+.gm-pm-slot.pop .gm-pm-prize { animation: gmpmprize .9s cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes gmpmprize { 40% { transform: translate(-50%, -60px) scale(1.9) rotate(-12deg); } 100% { transform: translate(-50%, -110px) scale(.4); opacity: 0; } }
+
+/* the dropper */
+.gm-pm-dropper { position: absolute; top: 6px; left: 50%; width: 92px; height: 46px; margin-left: -46px; z-index: 5; pointer-events: none; transition: opacity .2s; }
+.gm-pm-dropper i { position: absolute; inset: 0; border-radius: 16px 16px 30px 30px; background: linear-gradient(180deg, #ffe066, #ffb21a); border: 4px solid #1f2a44; box-shadow: 0 5px 0 rgba(0,0,0,.2); }
+.gm-pm-dropper i::before, .gm-pm-dropper i::after { content: ''; position: absolute; bottom: -18px; width: 14px; height: 24px; background: #1f2a44; border-radius: 0 0 10px 10px; transition: transform .2s cubic-bezier(.34,1.56,.64,1); }
+.gm-pm-dropper i::before { left: 14px; transform-origin: top; transform: rotate(18deg); }
+.gm-pm-dropper i::after { right: 14px; transform-origin: top; transform: rotate(-18deg); }
+.gm-pm-dropper.open i::before { transform: rotate(-30deg); }
+.gm-pm-dropper.open i::after { transform: rotate(30deg); }
+.gm-pm-dropper:not(.on):not(.open) { opacity: .55; }
+.gm-pm-dropper.on i { animation: gmpmglow .6s ease-in-out infinite alternate; }
+@keyframes gmpmglow { to { box-shadow: 0 5px 0 rgba(0,0,0,.2), 0 0 22px #ffe066; } }
+.gm-mode-plinko .gm-pl { cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .gm-pm-bulbs i, .gm-pm-sign, .gm-pm-slot .gm-pm-prize, .gm-pm-slot.jackpot { animation: none !important; } }
+
+/* bigger candy pegs (the physics still uses the same peg centre) */
+body.gm-mode-plinko .gm-pm-cab .gm-peg { width: 22px !important; height: 22px !important; margin: -4px 0 0 -4px !important; border-radius: 50%; border: 3px solid #fff !important;
+  background: radial-gradient(circle at 35% 30%, #fff, #c9b6ff 40%, #8b6cf0) !important; box-shadow: 0 3px 0 rgba(31,42,68,.25); }
+body.gm-mode-plinko .gm-pm-cab .gm-peg:nth-child(3n+1) { background: radial-gradient(circle at 35% 30%, #fff, #ffb3d4 40%, #f06aa6) !important; }
+body.gm-mode-plinko .gm-pm-cab .gm-peg:nth-child(3n+2) { background: radial-gradient(circle at 35% 30%, #fff, #a8e6d4 40%, #33b98f) !important; }
+body.gm-mode-plinko .gm-pm-cab .gm-peg.hit { transform: scale(1.5); box-shadow: 0 0 16px #fff, 0 0 26px #ffe066; }
+.gm-pm-slot .gm-pm-prize { width: 66px; height: 66px; top: -54px; }
+
+/* ===== Monster Race (Restaged): pastel racetrack, 3-2-1-GO lights, dust puffs, snapping finish ribbon & podium ===== */
+body .gm-race-wrap .gm-race-track {
+  background: linear-gradient(180deg, rgba(255,246,252,.9), rgba(235,247,255,.92)), url('../art/bg_classic_race.webp') center / cover no-repeat !important;
+  background-blend-mode: overlay;
+  border: 4px solid #fff !important;
+  box-shadow: 0 18px 40px -16px rgba(31,42,68,.35), inset 0 0 0 3px rgba(255,190,224,.55);
+}
+body .gm-race-wrap .gm-race-lane {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--c, #38bdf8) 22%, #fff), rgba(255,255,255,.9)) !important;
+  border: 3px solid rgba(255,255,255,.95) !important;
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--c, #38bdf8) 28%, #dbe4f2) !important;
+}
+body .gm-race-wrap .gm-race-lane.on {
+  box-shadow: 0 0 0 4px var(--c, #38bdf8), 0 8px 18px rgba(31,42,68,.2) !important;
+}
+body .gm-race-wrap .gm-race-road {
+  background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--c, #38bdf8) 12%, #fff8fc) 0 34px, rgba(255,255,255,.78) 34px 68px) !important;
+  border: 3px solid color-mix(in srgb, var(--c, #38bdf8) 38%, #e2d4f0) !important;
+  border-radius: 18px !important;
+}
+body .gm-race-wrap .gm-race-tag { min-width: 158px; gap: 6px; }
+body .gm-race-wrap .gm-race-tag b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 110px; }
+.gm-race-rank {
+  display: inline-grid; place-items: center; min-width: 26px; height: 24px; padding: 0 6px;
+  border-radius: 999px; background: #fff; border: 2px solid #1f2a44; font-size: .82rem; font-weight: 800; color: #1f2a44;
+}
+.gm-race-dice { position: relative; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 14px; background: #fff; border: 3px solid #1f2a44; }
+.gm-race-dice img { width: 28px; height: 28px; object-fit: contain; }
+.gm-race-dice span { font: 700 1.4rem var(--font); color: #1f2a44; }
+.gm-race-info .gm-art { width: 38px; height: 38px; object-fit: contain; }
+
+/* Finish Ribbon (snaps cleanly on win) */
+.gm-race-finish { overflow: visible !important; }
+.gm-ribbon-half {
+  position: absolute; left: 50%; width: 10px; margin-left: -5px;
+  background: repeating-linear-gradient(180deg, #ff5d9e 0 12px, #ffe066 12px 24px);
+  border: 2px solid #1f2a44; border-radius: 6px;
+  transition: transform .55s cubic-bezier(.34,1.56,.64,1), opacity .55s ease;
+}
+.gm-ribbon-half.top { top: 4%; height: 46%; transform-origin: top center; }
+.gm-ribbon-half.bot { bottom: 4%; height: 46%; transform-origin: bottom center; }
+.gm-race-finish.snapped .gm-ribbon-half.top { transform: translate(28px, -22px) rotate(-42deg) scaleY(.7); opacity: .25; }
+.gm-race-finish.snapped .gm-ribbon-half.bot { transform: translate(28px, 22px) rotate(42deg) scaleY(.7); opacity: .25; }
+.gm-ribbon-knot { position: relative; z-index: 2; }
+.gm-ribbon-knot .gm-art { width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,.25)); }
+.gm-race-finish.snapped .gm-ribbon-knot { transform: scale(1.35) rotate(14deg); transition: transform .35s var(--spring); }
+
+/* Dust puff sprite */
+.gm-race-puff {
+  position: fixed; width: 44px; height: 44px; object-fit: contain; pointer-events: none; z-index: 90;
+  transform: translate(-50%, -50%) scale(.5);
+  animation: gmRacePuff .62s ease-out forwards;
+}
+@keyframes gmRacePuff {
+  0% { opacity: .95; transform: translate(-50%, -50%) scale(.55); }
+  100% { opacity: 0; transform: translate(-110%, -90%) scale(1.45) rotate(-18deg); }
+}
+
+/* 3-2-1-GO Starting Lights */
+.gm-over.gm-race-cd { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: rgba(20,24,60,.62); }
+.gm-cd-lights { display: flex; gap: 18px; padding: 14px 24px; border-radius: 999px; background: #1f2a44; border: 4px solid #fff; box-shadow: 0 12px 0 rgba(0,0,0,.28); }
+.gm-cd-bulb { width: 34px; height: 34px; border-radius: 50%; background: #3b4668; border: 3px solid #0f172a; transition: background .18s, box-shadow .18s, transform .2s; }
+.gm-cd-bulb.r.on { background: #ff5d73; box-shadow: 0 0 22px #ff5d73; transform: scale(1.1); }
+.gm-cd-bulb.y.on { background: #ffe066; box-shadow: 0 0 22px #ffe066; transform: scale(1.1); }
+.gm-cd-bulb.g.on, .gm-cd-bulb.go { background: #2ecc71 !important; box-shadow: 0 0 26px #2ecc71 !important; transform: scale(1.14); }
+.gm-cd-num { font: 700 clamp(4rem, 16vh, 9rem) var(--font); color: #ffe066; -webkit-text-stroke: 6px #1f2a44; paint-order: stroke fill; text-shadow: 0 8px 0 rgba(0,0,0,.35); }
+.gm-cd-num.go { color: #2ecc71; }
+
+/* Race Podium Overlay */
+.gm-over.gm-race-podium { display: grid; place-items: center; background: radial-gradient(circle, rgba(255,234,167,.58), rgba(20,24,60,.78) 72%); }
+.gm-rp-card { width: min(92vw, 660px); padding: 24px 26px; border-radius: 30px; background: #fff; border: 5px solid #1f2a44; box-shadow: 0 16px 0 rgba(31,42,68,.32); text-align: center; }
+.gm-rp-card h2 { margin: 0 0 16px; font: 700 clamp(1.4rem, 3.8vh, 2.2rem) var(--font); color: #1f2a44; }
+.gm-rp-bars { display: flex; align-items: flex-end; justify-content: center; gap: 18px; height: 220px; }
+.gm-rp-col { flex: 1; max-width: 150px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; }
+.gm-rp-mon { position: relative; display: flex; flex-direction: column; align-items: center; }
+.gm-rp-mon .gm-art { width: 42px; height: 42px; object-fit: contain; margin-bottom: -6px; animation: gmboxbob 1.2s ease-in-out infinite; }
+.gm-rp-medal { font-size: 1.5rem; }
+.gm-rp-step { width: 100%; height: var(--hp, 60%); min-height: 54px; border-radius: 16px 16px 8px 8px; background: var(--c, #38bdf8); border: 4px solid #1f2a44; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--font); box-shadow: inset 0 -6px 0 rgba(0,0,0,.18); }
+.gm-rp-step b { font-size: 1.4rem; }
+.gm-rp-step span { font-size: .85rem; font-weight: 700; }
+.gm-rp-name { font: 700 1rem var(--font); color: #1f2a44; }
+
+/* ===== Memory Match (Restaged): flying matched card ghosts & 3-in-a-row streak flash ===== */
+.gm-mem-flycard {
+  position: fixed; z-index: 260; width: 72px; height: 92px; border-radius: 16px;
+  background: linear-gradient(135deg, #fff9db, #ffe3f1); border: 3px solid #ffe066;
+  box-shadow: 0 12px 24px rgba(31,42,68,.35), 0 0 18px #fde047;
+  display: grid; place-items: center; font-size: 1.45rem; pointer-events: none;
+  transform: translate(-50%, -50%) scale(1);
+  transition: left .62s cubic-bezier(.34,1.35,.64,1), top .62s cubic-bezier(.34,1.35,.64,1), transform .62s ease, opacity .62s ease;
+}
+.gm-mem-streak-flash {
+  position: absolute; inset: 0; z-index: 120; pointer-events: none;
+  display: grid; place-items: center;
+  background: radial-gradient(circle, rgba(254,240,138,.55), rgba(251,191,36,0) 70%);
+  animation: gmMemFlash 1.3s ease-out forwards;
+}
+.gm-mem-streak-pill {
+  padding: 16px 34px; border-radius: 999px; background: linear-gradient(90deg, #fde047, #fb923c);
+  color: #1f2a44; border: 4px solid #fff; box-shadow: 0 14px 32px rgba(31,42,68,.38);
+  font: 900 clamp(1.3rem, 3.6vh, 2.2rem) var(--font); letter-spacing: .03em;
+  animation: gmMemStreakPop .55s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes gmMemFlash { 0% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes gmMemStreakPop { from { transform: scale(.4) rotate(-6deg); } }

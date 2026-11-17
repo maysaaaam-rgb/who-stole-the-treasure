@@ -1,0 +1,41 @@
+{
+  "_about": "Every piece the world can use. 'file' is looked for in assets/3d/world/. If the file is missing, the game draws a simple stand-in shape ('fallback'). w = width (x), d = depth (z), h = height, in metres. The model is scaled to fit w x d.",
+  "pieces": {
+    "tree-round":    { "file": "tree-round.glb",    "w": 3,  "d": 3,  "h": 4.5, "fallback": "tree" },
+    "tree-pine":     { "file": "tree-pine.glb",     "w": 2.6,"d": 2.6,"h": 5.5, "fallback": "pine" },
+    "tree-blossom":  { "file": "tree-blossom.glb",  "w": 3,  "d": 3,  "h": 4.2, "fallback": "blossom" },
+    "bush":          { "file": "bush.glb",          "w": 1.6,"d": 1.4,"h": 1.0, "fallback": "bush" },
+    "flower-bed":    { "file": "flower-bed.glb",    "w": 2,  "d": 2,  "h": 0.5, "fallback": "flowers" },
+    "rock":          { "file": "rock.glb",          "w": 1.6,"d": 1.3,"h": 1.0, "fallback": "rock" },
+    "fence":         { "file": "fence.glb",         "w": 4,  "d": 0.3,"h": 1.0, "fallback": "fence" },
+    "hedge":         { "file": "hedge.glb",         "w": 4,  "d": 1,  "h": 1.3, "fallback": "hedge" },
+    "bench":         { "file": "bench.glb",         "w": 2,  "d": 0.8,"h": 1.0, "fallback": "bench" },
+    "lamp":          { "file": "lamp.glb",          "w": 0.6,"d": 0.6,"h": 3.6, "fallback": "lamp" },
+    "signpost":      { "file": "signpost.glb",      "w": 1.4,"d": 0.4,"h": 2.6, "fallback": "signpost" },
+    "picnic-table":  { "file": "picnic-table.glb",  "w": 2.2,"d": 2,  "h": 0.9, "fallback": "picnic" },
+    "fountain":      { "file": "fountain.glb",      "w": 7,  "d": 7,  "h": 3.5, "fallback": "fountain" },
+    "ice-cream-cart":{ "file": "ice-cream-cart.glb","w": 3,  "d": 1.8,"h": 2.8, "fallback": "stall" },
+    "bleachers":     { "file": "bleachers.glb",     "w": 8,  "d": 4,  "h": 2.6, "fallback": "bleachers" },
+    "goal":          { "file": "goal.glb",          "w": 7.3,"d": 2.4,"h": 2.6, "fallback": "goal" },
+    "scoreboard":    { "file": "scoreboard.glb",    "w": 5,  "d": 1,  "h": 5,   "fallback": "board" },
+    "windmill":      { "file": "windmill.glb",      "w": 6,  "d": 6,  "h": 11,  "fallback": "windmill" },
+    "windmill-blades":{"file": "windmill-blades.glb","w": 9, "d": 1,  "h": 9,   "fallback": "blades", "spin": true },
+    "carousel":      { "file": "carousel.glb",      "w": 9,  "d": 9,  "h": 6,   "fallback": "carousel", "turn": true },
+    "school":        { "file": "school.glb",        "w": 14, "d": 10, "h": 9,   "fallback": "house" },
+    "cottage":       { "file": "cottage.glb",       "w": 7,  "d": 6,  "h": 6,   "fallback": "house" },
+    "castle":        { "file": "castle.glb",        "w": 26, "d": 20, "h": 22,  "fallback": "castle" },
+    "hot-air-balloon":{"file": "hot-air-balloon.glb","w": 5, "d": 5,  "h": 7,   "fallback": "balloon", "float": true },
+    "gate-arch":     { "file": "gate-arch.glb",     "w": 6,  "d": 1.2,"h": 5,   "fallback": "arch" },
+    "bridge":        { "file": "bridge.glb",        "w": 8,  "d": 4,  "h": 1.8, "fallback": "bridge" }
+  },
+  "grounds": {
+    "_about": "Flat ground areas. 'texture' is looked for in games/world/art/ (seamless square pictures). Missing texture = plain colour.",
+    "grass": { "texture": "grass.jpg", "color": "#8fdc7a", "tile": 8 },
+    "path":  { "texture": "path.jpg",  "color": "#f3dcb8", "tile": 4 },
+    "track": { "texture": "track.jpg", "color": "#f08a6c", "tile": 6 },
+    "pitch": { "texture": "pitch.jpg", "color": "#6fd07a", "tile": 10 },
+    "sand":  { "texture": "sand.jpg",  "color": "#ffe3a8", "tile": 6 },
+    "water": { "texture": "water.jpg", "color": "#7fd3ff", "tile": 10 },
+    "plaza": { "texture": "plaza.jpg", "color": "#ffe9f2", "tile": 4 }
+  }
+}

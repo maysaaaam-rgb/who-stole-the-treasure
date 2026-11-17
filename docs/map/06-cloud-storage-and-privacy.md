@@ -95,12 +95,12 @@
 | :--- | :--- |
 | `eaa:avatars-ready` | [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) |
 | `eaa:private-loaded` | [private-data.js](file:///C:/Users/maysa/Desktop/DV/js/private-data.js) |
-| `eaa:teacher-unlocked` | [teacher-auth.js](file:///C:/Users/maysa/Desktop/DV/js/teacher-auth.js) |
+| `eaa:teacher-unlocked` | [games-points-bridge.js](file:///C:/Users/maysa/Desktop/DV/js/games-points-bridge.js), [teacher-auth.js](file:///C:/Users/maysa/Desktop/DV/js/teacher-auth.js) |
 | `monsterProfileUpdated` | [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) |
 
 ---
 
-## 5. Complete Root Directory & Git Safety Classification (183 entries)
+## 5. Complete Root Directory & Git Safety Classification (184 entries)
 
 > **Why `git add -A` is forbidden:** Entries marked `MISSING LOCALLY (GIT DELETED)` exist on the live published site (`main` / `gh-pages`) but were cleaned from this local disk. Running `git add -A` would delete them from the live school website!
 
@@ -115,13 +115,13 @@
 | `404.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `adventure-engine/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 6 tracked files missing on local disk — NEVER run git add -A! |
 | `advice/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 7 tracked files missing on local disk — NEVER run git add -A! |
-| `AGENTS.md` | Documentation / Rule | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `AGENTS.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
 | `all-about-me/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `ARCHITECTURE_STANDARDS.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
 | `art-prompts/` | Folder | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
-| `assets/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Shared 3D packs, avatars (`student-*`), icons & audio |
+| `assets/` | Lesson / Game Module | ✅ | — | — | **MODIFIED** | Shared 3D packs, avatars (`student-*`), icons & audio |
 | `audit-report/` | Folder | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
-| `avatar-3d-studio/` | Lesson / Game Module | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `avatar-3d-studio/` | Lesson / Game Module | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `bamboozle/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `biome-crafter/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `brain/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
@@ -142,7 +142,7 @@
 | `dino-dig/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `dino-expedition/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `directory.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
-| `docs/` | Platform Infrastructure | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `docs/` | Platform Infrastructure | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `eco-engineers/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 6 tracked files missing on local disk — NEVER run git add -A! |
 | `egypt-project/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `fantasy-creatures/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 6 tracked files missing on local disk — NEVER run git add -A! |
@@ -153,6 +153,7 @@
 | `forest-safari/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 16 tracked files missing on local disk — NEVER run git add -A! |
 | `freeze-game/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `game-maker/` | Core App / World | ✅ | ✅ | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `games/` | Lesson / Game Module | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `good-ideas-lab/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `halloween-pet-shop/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `harvest-feast/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 6 tracked files missing on local disk — NEVER run git add -A! |
@@ -192,7 +193,7 @@
 | `ninja-trials/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `ocean-cleaners/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 6 tracked files missing on local disk — NEVER run git add -A! |
 | `part6_battle_flat_complete.zip` | Root File | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `passport/` | Core App / World | ✅ | — | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `passport/` | Core App / World | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `pharaoh-living-book.html` | HTML Entry Page | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `phonics/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 1 tracked files missing on local disk — NEVER run git add -A! |
 | `platform-art/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -218,8 +219,8 @@
 | `school-subjects-challenge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `scratch/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `simon-says/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
-| `site-map/` | Platform Infrastructure | ✅ | — | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `site-map/` | Platform Infrastructure | ✅ | — | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `small-inventor/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 1 tracked files missing on local disk — NEVER run git add -A! |
 | `smart-board/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `smart-farm/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 7 tracked files missing on local disk — NEVER run git add -A! |
@@ -235,13 +236,13 @@
 | `story-engine/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 106 tracked files missing on local disk — NEVER run git add -A! |
 | `supabase/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
 | `supabase-mystery-boxes.sql` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
-| `sw.js` | Root File | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `sw.js` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `talk-show/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `tea-party-cards/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 44 tracked files missing on local disk — NEVER run git add -A! |
 | `teams/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `telephone-pictionary/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `time-machine/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 1 tracked files missing on local disk — NEVER run git add -A! |
-| `tools/` | Platform Infrastructure | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `tools/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
 | `treasure/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `twin-gates/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `unit-1-diagnostic/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 2 tracked files missing on local disk — NEVER run git add -A! |

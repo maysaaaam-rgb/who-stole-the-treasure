@@ -25,9 +25,9 @@
 
 ---
 
-## 3. Registered `GAMES_DATA` Modules (120 total in [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js))
+## 3. Registered `GAMES_DATA` Modules (122 total in [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js))
 
-### Grade 3 Modules (73)
+### Grade 3 Modules (75)
 | ID | Title | URL | Worksheet | Local Disk | `404.html` |
 | :--- | :--- | :--- | :---: | :---: | :---: |
 | `pharaoh-living-book` | 👑 👑 The Pharaoh's Kingdom • 3D Living Pop-Up Book (Lessons 1–8) | `pharaoh-living-book.html` | — | ✅ Present | — |
@@ -64,6 +64,8 @@
 | `dino-expedition` | 🦖 🦖 Dino Expedition: Prehistoric Habitats | `dino-expedition/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `monster-evolution` | 🐉 🐉 Monster Evolution: Elemental Growth Cycles | `monster-evolution/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `karaoke-stage` | 🎤 🎤 Karaoke Stage: Read It One by One (Grades 3 and 4) | `karaoke-stage/index.html` | — | ✅ Present | — |
+| `games-collection` | ✦ ✦ Games Collection: Smart-Board Arcade | `games/index.html` | — | ✅ Present | ✅ |
+| `time-train` | 🚂 🚂 Time Train: Past Simple Journey (Grade 3 Unit 5) | `games/past/index.html` | — | ✅ Present | ✅ |
 | `gamemaker-g3` | 📘 🎮 Game Maker: Units 1–3 (Grade 3) | `game-maker/index.html?grade=3` | — | ✅ Present | — |
 | `rev-u14-g3` | 📘 🏆 Units 1–4 Revision Game (Grade 3) | `game-maker/index.html?set=u14-g3&game=cannon` | — | ✅ Present | — |
 | `unit3-money-mission` | 🚀 🚀 Unit 3 Mission: How Much Is It? (Among Us + 2P Tug-of-War) | `unit3-money-mission/index.html` | 🖨️ Yes | ✅ Present | ✅ |

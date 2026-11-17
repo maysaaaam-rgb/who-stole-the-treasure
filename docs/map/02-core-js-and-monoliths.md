@@ -23,15 +23,15 @@
 
 ---
 
-## 2. All `js/*.js` Modules Grouped by Subsystem (89 files)
+## 2. All `js/*.js` Modules Grouped by Subsystem (90 files)
 
-### Utilities & Helpers (20)
+### Utilities & Helpers (21)
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
 | [academy-audio.js](file:///C:/Users/maysa/Desktop/DV/js/academy-audio.js) | 4.2 KB | 121 | #40 (`v=3.1`) | `AcademySoundEngine`, `academyAudio` | Adventure Academy - Global Sound System (Harmonic Web Audio) |
 | [app.js](file:///C:/Users/maysa/Desktop/DV/js/app.js) | 58.7 KB | 1580 | Standalone | `app`, `addQuickXP`, `syncSingleStudentXP`, `openDirectXPEdit` | Main Application Engine: State, Transitions, Interactions, Responsive Stage Scaling |
 | [audio.js](file:///C:/Users/maysa/Desktop/DV/js/audio.js) | 11.6 KB | 402 | Standalone | `soundEngine` | Audio Engine for "Who Stole the Treasure?" |
-| [avatar-3d-engine.js](file:///C:/Users/maysa/Desktop/DV/js/avatar-3d-engine.js) | 34.4 KB | 966 | Standalone | `Avatar3DEngine` | ENGLISH ADVENTURE ACADEMY — 3D .GLB AVATAR, AUTO-RIGGER & BONE-SOCKET ENGINE (v2) |
+| [avatar-3d-engine.js](file:///C:/Users/maysa/Desktop/DV/js/avatar-3d-engine.js) | 35.3 KB | 966 | Standalone | `Avatar3DEngine` | ENGLISH ADVENTURE ACADEMY — 3D .GLB AVATAR, AUTO-RIGGER & BONE-SOCKET ENGINE (v2) |
 | [clil-data.js](file:///C:/Users/maysa/Desktop/DV/js/clil-data.js) | 26.3 KB | 546 | Standalone | — | CLIL CRIME LAB: FOUR MYSTERY CASES (4th Grade English & CLIL Revision) |
 | [clil-game.js](file:///C:/Users/maysa/Desktop/DV/js/clil-game.js) | 6.8 KB | 205 | Standalone | `clilEngine` | CLIL CRIME LAB: GAME ENGINE |
 | [clil-svg.js](file:///C:/Users/maysa/Desktop/DV/js/clil-svg.js) | 27 KB | 432 | Standalone | — | CLIL CRIME LAB: VECTOR SVG ASSET GENERATOR |
@@ -42,6 +42,7 @@
 | [expedition-svg.js](file:///C:/Users/maysa/Desktop/DV/js/expedition-svg.js) | 18.9 KB | 315 | Standalone | — | THE LAST EXPEDITION: VECTOR SVG ASSET GENERATOR |
 | [expedition-ui.js](file:///C:/Users/maysa/Desktop/DV/js/expedition-ui.js) | 74.1 KB | 1731 | Standalone | `expeditionUI` | THE LAST EXPEDITION: UI CONTROLLER |
 | [game.js](file:///C:/Users/maysa/Desktop/DV/js/game.js) | 19.1 KB | 375 | Standalone | `gameEngine` | Core Game Engine for "Who Stole the Treasure?" & "Detective Preparation" |
+| [games-points-bridge.js](file:///C:/Users/maysa/Desktop/DV/js/games-points-bridge.js) | 7.4 KB | 212 | #65 (`v=1`) | `GamesPointsBridge` | ENGLISH ADVENTURE ACADEMY — GAMES COLLECTION XP BRIDGE (js/games-points-bridge.js) |
 | [room-data.js](file:///C:/Users/maysa/Desktop/DV/js/room-data.js) | 18.4 KB | 339 | Standalone | — | Room Rescue: The Lost Things Mission (4th Grade English Revision Game) |
 | [room-game.js](file:///C:/Users/maysa/Desktop/DV/js/room-game.js) | 5.3 KB | 196 | Standalone | `roomGameEngine` | Room Rescue: Core Engine |
 | [room-svg.js](file:///C:/Users/maysa/Desktop/DV/js/room-svg.js) | 14.4 KB | 258 | Standalone | — | Room Rescue: Rich Vector/SVG Visual Assets |
@@ -55,10 +56,10 @@
 | [all-about-me-data.js](file:///C:/Users/maysa/Desktop/DV/js/all-about-me-data.js) | 6.2 KB | 250 | #52 (`v=2.0`) | `ALL_ABOUT_ME_TEAMS`, `AllAboutMeData` | ALL ABOUT ME: classroom teams (public, ids and team names only) + survey answers. |
 | [all-about-me-profile.js](file:///C:/Users/maysa/Desktop/DV/js/all-about-me-profile.js) | 16.3 KB | 422 | #53 (`v=1.0`) | `AllAboutMeProfile` | All About Me (AAM) Student Profile View Component |
 | [gamification-milestones.js](file:///C:/Users/maysa/Desktop/DV/js/gamification-milestones.js) | 24.9 KB | 552 | #46 (`v=3.4`) | `playHarmonicChime`, `renderCurrentView`, `EVOLUTION_TIERS`, `getStageFromXP` | ENGLISH ADVENTURE ACADEMY — GAMIFICATION & EVOLUTION MILESTONES ENGINE |
-| [milestone-ceremony.js](file:///C:/Users/maysa/Desktop/DV/js/milestone-ceremony.js) | 26.8 KB | 350 | #65 (`v=13`) | `openMonsterLevelUpModal`, `updateHeaderBadges`, `openStudentDetail`, `MilestoneCeremony` | 1,000 XP Grand Ceremony: a big full-screen celebration for a pupil who reaches Level 5 (Adventurer), |
+| [milestone-ceremony.js](file:///C:/Users/maysa/Desktop/DV/js/milestone-ceremony.js) | 26.8 KB | 350 | #66 (`v=13`) | `openMonsterLevelUpModal`, `updateHeaderBadges`, `openStudentDetail`, `MilestoneCeremony` | 1,000 XP Grand Ceremony: a big full-screen celebration for a pupil who reaches Level 5 (Adventurer), |
 | [parent-report.js](file:///C:/Users/maysa/Desktop/DV/js/parent-report.js) | 47 KB | 427 | #58 (`v=21`) | `ParentReport` | Parent report cards. One clean A4 card per pupil: parents' names, the 4 skills, Unit 3 quiz in words, homework, XP, attendance and a short teacher comment in En |
 | [progress-check.js](file:///C:/Users/maysa/Desktop/DV/js/progress-check.js) | 107.1 KB | 1583 | #45 (`v=3.0`) | `setProgressCheckViewMode`, `triggerManualCloudSync`, `switchProgressCheckSelection`, `switchProgressCheckClass` | ENGLISH ADVENTURE ACADEMY — FOUR-SKILL WHOLE-CLASS PROGRESS CHECK |
-| [quiz-engine.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-engine.js) | 18.7 KB | 521 | #68 (`v=1.2`) | `ClassroomSoundboard`, `classSoundboard`, `playCoinChime`, `playPartyHorn` | Adventure Academy - Quiz & Task-by-Task Worksheet Grading Engine |
+| [quiz-engine.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-engine.js) | 18.7 KB | 521 | #69 (`v=1.2`) | `ClassroomSoundboard`, `classSoundboard`, `playCoinChime`, `playPartyHorn` | Adventure Academy - Quiz & Task-by-Task Worksheet Grading Engine |
 | [quiz-results.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-results.js) | 21.8 KB | 177 | #56 (`v=15`) | `QuizResults` | Unit 3 paper quiz results (Grade 3, Form B, 15 Oct 2026). Opens from the library card "Unit 3 Quiz Results". |
 | [quiz-skills.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-skills.js) | 11 KB | 133 | #57 (`v=5`) | `QuizSkills` | Unit 3 quiz -> the pupil's 4 skills (listening, reading, writing, speaking) -> saved as an assessment, so the report generator, the Progress & CEFR page and the |
 | [sheet-sync.js](file:///C:/Users/maysa/Desktop/DV/js/sheet-sync.js) | 15 KB | 172 | #54 (`v=9`) | `SheetSync` | Google Sheet sync for the Assignments page. |
@@ -75,15 +76,15 @@
 | [class-mode.js](file:///C:/Users/maysa/Desktop/DV/js/class-mode.js) | 26.5 KB | 442 | #37 (`v=21`) | `openGameMaker`, `switchView`, `ClassMode`, `renderGameShelf` | Class Mode: a bright, picture-first skin for the whole platform, used on the smartboard. |
 | [class-rewards.js](file:///C:/Users/maysa/Desktop/DV/js/class-rewards.js) | 14.8 KB | 119 | #35 (`v=11`) | `EAA_ILLUSTRATED_MONSTERS`, `ClassRewards`, `renderRewardsHall` | Rewards Hall: the smartboard Podium & Badges view inside the unified Store & Podium Hub. |
 | [class-view.js](file:///C:/Users/maysa/Desktop/DV/js/class-view.js) | 20.1 KB | 203 | #34 (`v=14`) | `ClassView`, `renderClassView` | Class view: one simple smartboard screen for the classroom. Big 3D picture buttons only. |
-| [classroom-sounds.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-sounds.js) | 31 KB | 451 | #67 (`v=2`) | `ClassroomSoundboard`, `ClassroomSoundList`, `classSoundboard` | English Adventure Academy - Classroom Soundboard Engine v2 |
-| [simon-says-game.js](file:///C:/Users/maysa/Desktop/DV/js/simon-says-game.js) | 58.1 KB | 1223 | #66 (`v=4.1`) | `renderMonsterAvatar`, `closeModal`, `SimonSaysController`, `simonGame` | ENGLISH ADVENTURE ACADEMY — SIMON SAYS CLASSROOM GAME |
+| [classroom-sounds.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-sounds.js) | 31 KB | 451 | #68 (`v=2`) | `ClassroomSoundboard`, `ClassroomSoundList`, `classSoundboard` | English Adventure Academy - Classroom Soundboard Engine v2 |
+| [simon-says-game.js](file:///C:/Users/maysa/Desktop/DV/js/simon-says-game.js) | 58.1 KB | 1223 | #67 (`v=4.1`) | `renderMonsterAvatar`, `closeModal`, `SimonSaysController`, `simonGame` | ENGLISH ADVENTURE ACADEMY — SIMON SAYS CLASSROOM GAME |
 | [voice-fx.js](file:///C:/Users/maysa/Desktop/DV/js/voice-fx.js) | 35.1 KB | 436 | #28 (`v=5`) | `VoiceFX` | Voice Changer (teacher toolkit): speak into the microphone and the speakers play your voice as a character. |
 
 ### Curriculum, Library & Island (13)
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
 | [calendar-view.js](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js) | 94.1 KB | 826 | #23 (`v=20261116`) | `renderCalendarView`, `CalendarView` | Teacher calendar (sidebar: 📅 Calendar). Month and Week views of: the lessons of every class (from the weekly timetable, or the k12 timetable until it is set), |
-| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 414.1 KB | 10321 | #1 (`v=20261111u5g34`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
+| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 406.4 KB | 10373 | #1 (`v=20261111u5g34`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
 | [homework-data.js](file:///C:/Users/maysa/Desktop/DV/js/homework-data.js) | 15.3 KB | 392 | #8 (`v=3.1`) | `ALICE_HOMEWORK_ASSIGNMENTS`, `ALICE_WONDERLAND_XP_QUEST`, `AdventureAcademy`, `openMonsterLevelUpModal` | ADVENTURE ACADEMY — DISCRETE HOMEWORK XP TASKS DATA |
 | [island-apply.js](file:///C:/Users/maysa/Desktop/DV/js/island-apply.js) | 13.3 KB | 319 | #11 (`v=2`) | `IslandApply` | Practice Island — Platform XP & Monster Look Auto-Applier (js/island-apply.js) |
 | [island-curriculum-data.js](file:///C:/Users/maysa/Desktop/DV/js/island-curriculum-data.js) | 202.6 KB | 3813 | Standalone | `ISLAND_CURRICULUM_DATA` | ISLAND HOMEWORK REVISION PROJECT — MASTER CURRICULUM DATASET |
@@ -377,7 +378,7 @@
 
 ---
 
-### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10321 lines (414.1 KB)
+### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10373 lines (406.4 KB)
 
 
 
@@ -1062,7 +1063,7 @@
 
 ---
 
-### 📦 [js/avatar-3d-engine.js](file:///C:/Users/maysa/Desktop/DV/js/avatar-3d-engine.js) — 966 lines (34.4 KB)
+### 📦 [js/avatar-3d-engine.js](file:///C:/Users/maysa/Desktop/DV/js/avatar-3d-engine.js) — 966 lines (35.3 KB)
 
 
 

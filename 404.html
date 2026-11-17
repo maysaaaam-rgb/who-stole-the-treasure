@@ -343,6 +343,27 @@
       } else if (pathname.includes('site-map') || pathname.includes('sitemap') || pathname.includes('atlas')) {
         targetUrl = basePrefix + 'site-map/index.html';
         targetName = '🗺️ Adventure Academy Site Map & Architecture Atlas';
+      } else if (pathname.includes('/games/pickers')) {
+        targetUrl = basePrefix + 'games/pickers/index.html';
+        targetName = '🎲 Student Pickers';
+      } else if (pathname.includes('/games/live')) {
+        targetUrl = basePrefix + 'games/live/index.html';
+        targetName = '📡 Live & Special Games';
+      } else if (pathname.includes('/games/words')) {
+        targetUrl = basePrefix + 'games/words/index.html';
+        targetName = '🔤 Word Arcade Games';
+      } else if (pathname.includes('/games/scene')) {
+        targetUrl = basePrefix + 'games/scene/index.html';
+        targetName = '🗺️ Tap the Scene Games';
+      } else if (pathname.includes('/games/prize')) {
+        targetUrl = basePrefix + 'games/prize/index.html';
+        targetName = '🏆 Team Prize Games';
+      } else if (pathname.includes('time-train') || pathname.includes('/games/past')) {
+        targetUrl = basePrefix + 'games/past/index.html';
+        targetName = '🚂 Time Train: Past Simple Journey';
+      } else if (pathname.includes('games-collection') || pathname.includes('/games/reveal') || pathname.endsWith('/games') || pathname.endsWith('/games/')) {
+        targetUrl = basePrefix + 'games/index.html';
+        targetName = '✦ Games Collection';
       } else if (pathname.includes('library')) {
         targetUrl = basePrefix + 'index.html#library';
         targetName = 'ESL Academy Library';

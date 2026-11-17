@@ -1,0 +1,592 @@
+/* Hidden Picture Games (v2) · Handcrafted Kawaii Worlds for All 7 Reveal Games */
+.app { min-height: 100%; }
+
+/* ================= Setup Screen ================= */
+.setup-screen {
+  max-width: 1220px; margin: 0 auto; padding: 82px 18px 32px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.hero {
+  display: grid; grid-template-columns: 250px 1fr; gap: 22px; align-items: center;
+  background: linear-gradient(135deg, #fff6fb 0%, #f5f0ff 55%, #eef9ff 100%);
+}
+.hero-poster {
+  width: 100%; aspect-ratio: 16 / 10; border-radius: 20px; overflow: hidden;
+  border: 4px solid #fff; box-shadow: 0 12px 26px -10px rgba(64, 28, 98, .38);
+  background: #ffe9f4;
+}
+.hero-poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-info { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.hero h1 { margin: 0; font-size: 2.15em; font-weight: 900; letter-spacing: -.01em; line-height: 1.05; }
+.hero p { margin: 0; font-weight: 800; font-size: 1.02em; }
+.how { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.how li {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 7px;
+  border-radius: 999px; background: #fff; border: 2px solid var(--line);
+  box-shadow: 0 3px 0 #f0dff1; font-weight: 800; font-size: .84em;
+}
+.how b {
+  width: 26px; height: 26px; border-radius: 50%; background: var(--pink); color: #fff;
+  display: grid; place-items: center; font-size: .88em; flex: none;
+}
+
+.setup-cols { display: grid; grid-template-columns: 1.38fr 1fr; gap: 16px; align-items: start; }
+.setup-side { display: flex; flex-direction: column; gap: 16px; }
+.set-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)); gap: 12px; }
+.set-card {
+  text-align: left; padding: 10px; border-radius: 20px; border: 3px solid #f2e2f4;
+  background: #fdf9fe; cursor: pointer; display: flex; flex-direction: column; gap: 4px;
+  box-shadow: 0 4px 0 #eedbf1;
+  transition: transform .14s var(--snap), border-color .15s, background .15s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .set-card:hover { transform: translateY(-3px); background: #fff; border-color: #e4bfe9; }
+}
+.set-card.on {
+  border-color: var(--pink); background: #fff;
+  box-shadow: 0 5px 0 var(--pink-d), 0 12px 22px -12px rgba(222, 72, 130, .5);
+}
+.set-card b { font-size: .94em; font-weight: 900; }
+.set-card small { color: var(--plum-soft); font-weight: 700; font-size: .73em; line-height: 1.28; }
+.set-thumbs {
+  display: flex; height: 68px; align-items: center; justify-content: center; margin-bottom: 4px;
+  border-radius: 14px; background: linear-gradient(135deg, #ffe6f2, #ece4ff, #e2f5ff);
+}
+.set-thumbs img { width: 52px; height: 52px; object-fit: contain; margin: 0 -5px; filter: drop-shadow(0 4px 6px rgba(64, 28, 98, .22)); }
+.set-thumbs img:nth-child(2) { transform: translateY(-5px) scale(1.12); z-index: 1; }
+.row-end { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.range-row { display: flex; align-items: center; gap: 10px; font-size: 1.2em; font-weight: 800; }
+.range-row input { flex: 1; }
+.go {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  background: linear-gradient(135deg, #ffffff, #fff1f8);
+}
+.go b { display: block; font-size: 1.14em; font-family: var(--font-display); }
+.go small { font-weight: 800; }
+.keys-hint { text-align: center; font-size: .82em; font-weight: 800; margin: 2px 0 0; }
+
+/* ================= Play Screen Layout (`100dvh` Smartboard Lock) ================= */
+.play-screen {
+  height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto 1fr auto;
+  gap: 8px; padding: 68px 14px 12px; overflow: hidden;
+}
+.play-head { display: flex; align-items: center; gap: 10px; justify-content: space-between; min-height: 52px; }
+.team-bar { flex: 1; min-width: 0; }
+.count-pill, .worth-pill {
+  display: flex; flex-direction: column; align-items: center; padding: 5px 16px;
+  border-radius: 18px; background: #fff; border: 2.5px solid #f2e1f4;
+  box-shadow: 0 4px 0 #ead6ee; min-width: 106px; flex: none;
+}
+.count-pill span, .worth-pill span { font-size: .66em; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; color: var(--plum-soft); }
+.count-pill b, .worth-pill b { font-size: 1.2em; font-weight: 900; font-family: var(--font-display); }
+.worth-pill b { color: #d48906; }
+.worth-pill.bump { animation: bump .42s var(--spring); }
+.class-stars {
+  display: inline-flex; align-items: center; gap: 6px; padding: 7px 20px; border-radius: 999px;
+  background: #fff; border: 2.5px solid var(--butter); box-shadow: 0 4px 0 var(--butter-d);
+  font-family: var(--font-display); font-weight: 900; font-size: 1.15em;
+}
+.play-head-wrap { display: flex; justify-content: center; }
+
+.stage-box { position: relative; min-height: 0; display: grid; place-items: center; }
+.stage {
+  position: relative; border-radius: 30px; overflow: hidden; background: #fff;
+  border: 5px solid #fff;
+  box-shadow: 0 22px 50px -18px rgba(52, 24, 82, .45), 0 5px 0 #ead8ee;
+}
+.stage .layer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+.controls { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; min-height: 58px; }
+.controls .btn.round { width: 50px; }
+.label-btn { opacity: 1 !important; box-shadow: none !important; background: transparent !important; border: 0 !important; padding: 0 6px !important; }
+.team-btn .tdot { width: 28px; height: 28px; border-radius: 50%; display: inline-grid; place-items: center; color: #fff; font-size: .9em; overflow: hidden; }
+.team-btn .tdot img { width: 100%; height: 100%; object-fit: contain; }
+.team-btn b { color: var(--pink-d); }
+.team-btn.turn { outline: 3px solid var(--butter); }
+
+/* Answer Reveal Ribbon & Ornate Frame */
+.ribbon {
+  position: absolute; left: 50%; bottom: 5.5%; transform: translateX(-50%); z-index: 70;
+  animation: ribbonIn .45s var(--spring);
+}
+.ribbon span {
+  display: inline-flex; align-items: center; gap: 12px; padding: 10px 38px; border-radius: 999px;
+  background: linear-gradient(135deg, var(--pink), var(--lilac)); color: #fff;
+  font-family: var(--font-display); font-weight: 900; font-size: 2.05em; letter-spacing: .02em;
+  border: 4px solid #fff;
+  box-shadow: 0 7px 0 var(--lilac-d), 0 18px 32px -10px rgba(42, 18, 68, .65); white-space: nowrap;
+}
+@keyframes ribbonIn { from { transform: translate(-50%, 32px) scale(.82); opacity: 0; } }
+
+/* Preview Clip Mode (`?preview=1` & Video Recorder) */
+body.preview { overflow: hidden; background: transparent; }
+.is-preview { padding: 0; grid-template-rows: 1fr; gap: 0; }
+.is-preview .controls, .is-preview .play-head { display: none !important; }
+.is-preview .stage-box { position: absolute; inset: 0; }
+.is-preview .stage { border-radius: 0; border: 0; box-shadow: none; width: 100% !important; height: 100% !important; }
+.caption {
+  position: fixed; left: 50%; top: 14px; transform: translateX(-50%); z-index: 95;
+  display: flex; align-items: center; gap: 10px; padding: 7px 22px 7px 8px; border-radius: 999px;
+  background: rgba(34, 18, 58, .86); backdrop-filter: blur(8px); border: 2.5px solid rgba(255, 255, 255, .9);
+  color: #fff; font-family: var(--font-display); font-weight: 900; font-size: clamp(14px, 2.8vw, 22px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .35); white-space: nowrap;
+}
+.caption b {
+  width: 1.75em; height: 1.75em; border-radius: 50%; background: var(--butter); color: var(--plum);
+  display: grid; place-items: center; font-size: .92em;
+}
+.caption.in { animation: popIn .32s var(--spring); }
+
+/* ================= 1. 🚪 SNEAKY DOORS (Moonlit Rooftops + Double Doors + Cat Detective) ================= */
+.stage-doors { background: #141236; }
+.doors-world-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  filter: saturate(1.05); pointer-events: none; z-index: 0;
+}
+.doors-world-tint {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(16, 14, 44, .32) 0%, rgba(16, 14, 44, .18) 60%, rgba(16, 14, 44, .52) 100%);
+}
+.doors-mascot {
+  position: absolute; right: 2%; bottom: 1%; width: 17%; max-width: 165px; z-index: 25;
+  pointer-events: none; filter: drop-shadow(0 10px 16px rgba(8, 6, 26, .65));
+  animation: detectiveBob 2.8s ease-in-out infinite;
+}
+@keyframes detectiveBob { 50% { transform: translateY(-6px) rotate(-2deg); } }
+
+.hall {
+  position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3.5%; padding: 2% 4%;
+}
+.hall-banner {
+  padding: 8px 26px; border-radius: 999px; background: rgba(24, 20, 58, .86);
+  border: 2.5px solid rgba(190, 208, 255, .75); color: #fff;
+  font-family: var(--font-display); font-weight: 900; font-size: 1.32em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .4); text-align: center;
+}
+.hall-doors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.6% 3%; width: 82%; max-width: 780px; }
+
+/* Kawaii Double-Door Card (EasyPeasy Sneaky Spotlight style!) */
+.mini-door {
+  --dc1: #a8dcff; --dc2: #8ec9ff; --acc: #ffc2de;
+  position: relative; aspect-ratio: .82; border: 0; border-radius: 16px; padding: 0; cursor: pointer;
+  background: transparent; animation: popIn .32s var(--spring) both;
+  transition: transform .16s var(--snap), filter .15s;
+}
+.mini-door:nth-child(8n+2) { --dc1: #9cf2ec; --dc2: #7ce6df; --acc: #c8f7b8; }
+.mini-door:nth-child(8n+3) { --dc1: #fff3b0; --dc2: #ffe588; --acc: #d8c8ff; }
+.mini-door:nth-child(8n+4) { --dc1: #ffc8dd; --dc2: #ffafcc; --acc: #cde8ff; }
+.mini-door:nth-child(8n+5) { --dc1: #dec9ff; --dc2: #cbb0ff; --acc: #ffe8a3; }
+.mini-door:nth-child(8n+6) { --dc1: #ffe09e; --dc2: #ffd078; --acc: #ffb8d1; }
+.mini-door:nth-child(8n+7) { --dc1: #c8eeb0; --dc2: #b2e296; --acc: #ffd6e6; }
+.mini-door:nth-child(8n+8) { --dc1: #ffd1c2; --dc2: #ffbba6; --acc: #c9f0dd; }
+@media (hover: hover) and (pointer: fine) {
+  .mini-door:hover:not(:disabled) { transform: translateY(-6px) scale(1.03); filter: brightness(1.05); }
+}
+.mini-door.chosen { animation: doorZoomPick .42s var(--ease-out) forwards; }
+@keyframes doorZoomPick { to { transform: scale(1.28); opacity: 0; } }
+
+.md-leaves {
+  position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
+  padding: 3px; border-radius: 16px; background: #261b47;
+  box-shadow: 0 10px 22px -8px rgba(6, 4, 22, .75), 0 0 0 2.5px rgba(255, 255, 255, .85);
+}
+.md-leaf {
+  position: relative; border-radius: 11px; background: linear-gradient(180deg, var(--dc1), var(--dc2));
+  overflow: hidden; box-shadow: inset 0 4px 0 rgba(255, 255, 255, .65);
+}
+.md-leaf::before {
+  content: ''; position: absolute; inset: 58% 12% 16% 12%; border-radius: 6px;
+  background: repeating-linear-gradient(180deg, var(--acc) 0 6px, rgba(42, 26, 74, .22) 6px 8px, #fff4fa 8px 14px, rgba(42, 26, 74, .22) 14px 16px);
+  border: 1.5px solid rgba(42, 26, 74, .35);
+}
+.md-handle {
+  position: absolute; top: 38%; width: 20%; height: 15%; border-radius: 6px;
+  background: var(--acc); border: 2px solid #3a275a;
+}
+.md-leaf.left .md-handle { right: 9%; }
+.md-leaf.right .md-handle { left: 9%; }
+.mini-num {
+  position: absolute; left: 50%; bottom: 6%; transform: translateX(-50%); z-index: 3;
+  padding: 2px 12px; border-radius: 999px; background: #fff; border: 2px solid #2b1d4c;
+  color: #2b1d4c; font-family: var(--font-display); font-weight: 900; font-size: .82em;
+  white-space: nowrap; box-shadow: 0 2px 0 #2b1d4c;
+}
+.mini-door.used { cursor: default; }
+.mini-door.used .md-leaves { background: rgba(255, 255, 255, .94); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; }
+.mini-door.used img { width: 72%; height: 64%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .18)); }
+.mini-word { font-weight: 900; font-size: .78em; color: var(--plum); margin-top: 3px; }
+
+/* Zoomed Double-Door Peek Stage */
+.dd-stage-wrap {
+  position: absolute; inset: 6% 15% 8% 15%; z-index: 8; perspective: 1300px;
+  border-radius: 24px; box-shadow: 0 24px 50px rgba(5, 4, 20, .75), 0 0 0 6px rgba(255, 255, 255, .92);
+  overflow: visible;
+}
+.dd-interior {
+  position: absolute; inset: 0; border-radius: 20px; overflow: hidden; background: #0d0a22;
+}
+.dd-doors {
+  position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr;
+  pointer-events: none; transform-style: preserve-3d; z-index: 12;
+}
+.dd-wing {
+  --dc1: #a8dcff; --dc2: #84c2ff;
+  position: relative; background: linear-gradient(180deg, var(--dc1), var(--dc2));
+  border: 4px solid #2b1d4c;
+  box-shadow: inset 0 8px 0 rgba(255, 255, 255, .65), inset 0 -10px 0 rgba(43, 29, 76, .14);
+  transition: transform .68s cubic-bezier(.26, 1.22, .54, 1);
+  backface-visibility: visible;
+}
+.dd-wing.left { border-radius: 20px 4px 4px 20px; transform-origin: 0% 50%; }
+.dd-wing.right { border-radius: 4px 20px 20px 4px; transform-origin: 100% 50%; }
+.dd-wing .dd-shine {
+  position: absolute; top: 4%; width: 28%; height: 22%; border-radius: 999px;
+  background: rgba(255, 255, 255, .52);
+}
+.dd-wing.left .dd-shine { left: 8%; }
+.dd-wing.right .dd-shine { right: 8%; }
+.dd-wing .dd-slats {
+  position: absolute; inset: 60% 11% 10% 11%; display: flex; flex-direction: column; gap: 8px;
+}
+.dd-wing .dd-slats i {
+  flex: 1; display: block; border-radius: 999px; border: 2.5px solid #2b1d4c;
+  background: #ffd1e6;
+}
+.dd-wing .dd-slats i:nth-child(odd) { background: #e2d1ff; }
+.dd-wing .dd-tag {
+  position: absolute; top: 38%; width: 18%; height: 15%; border-radius: 12px;
+  background: #e2d1ff; border: 3px solid #2b1d4c; box-shadow: 0 3px 0 rgba(43, 29, 76, .25);
+}
+.dd-wing.left .dd-tag { right: 9%; }
+.dd-wing.right .dd-tag { left: 9%; }
+.dd-badge {
+  position: absolute; left: 50%; top: -16px; transform: translateX(-50%); z-index: 20;
+  padding: 5px 22px; border-radius: 999px; background: #fff; border: 3px solid #2b1d4c;
+  font-family: var(--font-display); font-weight: 900; color: #2b1d4c; box-shadow: 0 4px 0 #2b1d4c;
+}
+
+/* ================= 2. 📸 SNAP CAMERAS (4 Kawaii Animal Instant Cameras + Polaroid Strip + Candy Choices) ================= */
+.stage-camera {
+  background-color: #fff6fa;
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, .92) 0 35%, transparent 72%),
+    repeating-linear-gradient(0deg, rgba(255, 176, 208, .22) 0 18px, transparent 18px 36px),
+    repeating-linear-gradient(90deg, rgba(255, 176, 208, .22) 0 18px, transparent 18px 36px);
+}
+.cam-studio {
+  position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr auto;
+  padding: 2.2% 3.5% 2.5%; gap: 2%; z-index: 4; transition: opacity .35s ease;
+}
+.cam-studio.away { opacity: 0; pointer-events: none; }
+.cam-strip-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px;
+}
+.cam-prompt-pill {
+  padding: 7px 20px; border-radius: 999px; background: #fff; border: 2.5px solid #f7cde0;
+  box-shadow: 0 4px 0 #f0bdd5; font-family: var(--font-display); font-weight: 900; font-size: 1.05em;
+}
+.cam-clue-tray { display: flex; gap: 8px; align-items: center; }
+.mini-pola {
+  width: 56px; height: 64px; padding: 4px 4px 12px; background: #fff; border-radius: 6px;
+  border: 2px solid #e6cfe6; box-shadow: 0 6px 12px -4px rgba(52, 29, 74, .35);
+  cursor: pointer; transition: transform .15s var(--snap); position: relative;
+}
+.mini-pola:hover { transform: scale(1.18) rotate(-3deg); z-index: 15; }
+.mini-pola canvas { width: 100%; height: 100%; object-fit: cover; border-radius: 3px; display: block; }
+.mini-pola b { position: absolute; left: 0; right: 0; bottom: 1px; font-size: .56em; text-align: center; color: var(--plum-soft); }
+
+.cams {
+  display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; gap: 2.5%;
+  padding: 0 1%; min-height: 0;
+}
+.cam-toy {
+  position: relative; border: 0; background: transparent; padding: 0; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; max-height: 270px; touch-action: manipulation;
+  transition: transform .16s var(--snap), filter .15s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cam-toy:hover { transform: translateY(-7px) rotate(-2deg) scale(1.03); }
+}
+.cam-toy:active { transform: translateY(3px) scale(.96); }
+.cam-toy img {
+  width: 100%; max-height: 82%; object-fit: contain;
+  filter: drop-shadow(0 14px 16px rgba(68, 32, 92, .26));
+  pointer-events: none;
+}
+.cam-toy.shot img { animation: camBounce .45s var(--spring); }
+@keyframes camBounce { 30% { transform: scale(1.12) rotate(3deg); } 70% { transform: scale(.96); } }
+.cam-pedestal {
+  margin-top: -4px; padding: 3px 16px; border-radius: 999px; background: #fff;
+  border: 2.5px solid var(--cc, #ff9cc8); box-shadow: 0 4px 0 color-mix(in srgb, var(--cc, #ff9cc8) 65%, #fff);
+  font-family: var(--font-display); font-weight: 900; font-size: .84em; display: inline-flex; align-items: center; gap: 6px;
+}
+.cam-toy.used .cam-pedestal::after {
+  content: '✓'; width: 20px; height: 20px; border-radius: 50%; background: var(--mint); color: #fff;
+  font-size: .78em; display: inline-grid; place-items: center;
+}
+
+/* Candy Answer Choices Row inside Snap Cameras & Pixel Quiz */
+.cam-choices {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+}
+.candy-ans {
+  display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 6px 10px 6px 10px;
+  border-radius: 18px; background: #ffeaf3; border: 2.5px solid #f7bed8;
+  box-shadow: 0 4px 0 #eba4c4; cursor: pointer; font-weight: 900; font-size: .95em;
+  transition: transform .12s var(--snap), background .15s;
+}
+.candy-ans:nth-child(2) { background: #e8f7ff; border-color: #b4dfff; box-shadow: 0 4px 0 #8ec7f2; }
+.candy-ans:nth-child(3) { background: #e9fcf5; border-color: #aeead4; box-shadow: 0 4px 0 #85d6b9; }
+.candy-ans:nth-child(4) { background: #fff8df; border-color: #fae096; box-shadow: 0 4px 0 #ecc768; }
+@media (hover: hover) and (pointer: fine) {
+  .candy-ans:hover:not(.disabled) { transform: translateY(-2px); filter: saturate(1.08); }
+}
+.candy-ans.right { background: #ccf7e4 !important; border-color: var(--mint) !important; box-shadow: 0 4px 0 var(--mint-d) !important; }
+.candy-ans.wrong { opacity: .45; pointer-events: none; animation: wobble .34s ease; }
+.candy-ans .c-let {
+  width: 28px; height: 28px; border-radius: 50%; background: #fff; color: var(--plum);
+  display: grid; place-items: center; font-family: var(--font-display); font-size: .86em; flex: none;
+}
+.candy-ans .c-word { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.candy-ans .c-say {
+  width: 32px; height: 32px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .85);
+  cursor: pointer; display: grid; place-items: center; font-size: .86em; flex: none;
+}
+.candy-ans .c-say:hover { background: #fff; transform: scale(1.1); }
+
+.flash { position: absolute; inset: 0; background: #fff; z-index: 45; animation: flash .52s ease-out forwards; pointer-events: none; }
+@keyframes flash { from { opacity: .95; } to { opacity: 0; } }
+.cam-big {
+  position: absolute; inset: 0; z-index: 38; display: grid; place-items: center;
+  background: rgba(38, 18, 58, .38); backdrop-filter: blur(3px); cursor: pointer;
+}
+.cam-big.in .polaroid { animation: ejectDevelop .48s var(--spring); }
+.cam-big.out { opacity: 0; transition: opacity .32s ease; }
+.polaroid {
+  background: #fff; padding: 14px 14px 48px; border-radius: 14px;
+  border: 3px solid #f5e6f7;
+  box-shadow: 0 30px 55px -16px rgba(32, 14, 52, .65);
+  transform: rotate(-2.5deg); position: relative; width: min(56%, 430px);
+}
+.polaroid canvas { display: block; width: 100%; height: auto; border-radius: 6px; }
+.polaroid span {
+  position: absolute; left: 0; right: 0; bottom: 12px; text-align: center;
+  font-family: var(--font-display); font-weight: 900; color: var(--plum);
+}
+@keyframes ejectDevelop { from { transform: translateY(34px) rotate(-8deg) scale(.62); filter: brightness(2.4); opacity: 0; } }
+.full-reveal { animation: fadeIn .42s ease; z-index: 20; }
+
+/* ================= 3. 🧩 ORBIT PUZZLE (Cosmic Aurora + True Interlocking Jigsaw Pieces) ================= */
+.stage-orbit {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(0, 212, 200, .28) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(157, 123, 255, .26) 0%, transparent 48%),
+    radial-gradient(circle at 50% 50%, #0b1e33 0%, #050d1a 100%);
+}
+.orbit-hud {
+  position: absolute; left: 14px; right: 14px; top: 12px; z-index: 35;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  pointer-events: none;
+}
+.orbit-hud > * { pointer-events: auto; }
+.orbit-pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 999px;
+  background: rgba(12, 32, 52, .82); border: 1.5px solid rgba(110, 232, 224, .4);
+  color: #e6fbff; font-size: .78em; font-weight: 800; backdrop-filter: blur(8px);
+}
+.orbit-pill select {
+  background: transparent; border: 0; color: #7ef7e8; font-weight: 900; cursor: pointer; outline: none;
+}
+.orbit-pill select option { color: #15102e; background: #fff; }
+.orbit-pill input[type=range] { width: 78px; accent-color: #5eead4; }
+
+.orbit-board {
+  position: absolute; inset: 12% 14% 9% 14%; border-radius: 18px; z-index: 4;
+  transition: box-shadow .35s, border-color .35s;
+}
+.orbit-board.framed {
+  background: rgba(255, 255, 255, .06);
+  border: 2.5px dashed rgba(126, 247, 232, .38);
+  box-shadow: inset 0 0 30px rgba(94, 234, 212, .08);
+}
+.orbit-board.done {
+  border: 5px solid #ffd875;
+  box-shadow: 0 0 40px rgba(255, 216, 117, .45);
+}
+.orbit-arena { position: absolute; inset: 0; perspective: 980px; z-index: 12; pointer-events: none; }
+.orbit-ring { position: absolute; inset: 0; transform-style: preserve-3d; }
+.jigsaw-piece {
+  position: absolute; left: 0; top: 0; will-change: transform, opacity;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, .55));
+  backface-visibility: visible;
+}
+.jigsaw-piece.placed { z-index: 6 !important; filter: none; }
+
+/* ================= 4. 🧱 BRICK BLAST (Sunny Courtyard + 3D Studded Candy Bricks + Star Mallet) ================= */
+.stage-bricks { background: #fdf3f8; }
+.bricks-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.bricks-frame {
+  position: absolute; inset: 5% 8%; border-radius: 24px; overflow: hidden; z-index: 4;
+  border: 6px solid #fff; box-shadow: 0 18px 40px -14px rgba(59, 30, 84, .5);
+  background: #fff;
+}
+.wall { position: absolute; inset: 0; z-index: 6; }
+.brick {
+  --bc: #ff9ebb; --bd: #df6d92; --bl: #ffc6d9;
+  position: absolute; border: 0; padding: 0; cursor: pointer;
+  background: linear-gradient(180deg, var(--bl) 0%, var(--bc) 22%, var(--bc) 82%, var(--bd) 100%);
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 2px rgba(56, 28, 82, .52), inset 0 3px 0 rgba(255, 255, 255, .55);
+  transition: transform .18s var(--spring), opacity .2s ease, filter .12s;
+}
+.brick::before, .brick::after {
+  content: ''; position: absolute; top: 14%; width: 18%; height: 22%; border-radius: 999px;
+  background: rgba(255, 255, 255, .36); border: 1.5px solid rgba(56, 28, 82, .22);
+}
+.brick::before { left: 20%; }
+.brick::after { right: 20%; }
+@media (hover: hover) and (pointer: fine) {
+  .brick:hover { filter: brightness(1.08); transform: scale(1.03); z-index: 3; }
+}
+.brick.gone { transform: scale(.25) rotate(22deg); opacity: 0; pointer-events: none; }
+.mallet-swing {
+  position: fixed; z-index: 390; width: 118px; height: 118px; pointer-events: none;
+  transform-origin: 80% 80%;
+  animation: malletBonk .38s var(--snap) forwards;
+}
+@keyframes malletBonk {
+  0% { transform: translate(-65%, -85%) rotate(32deg) scale(.85); opacity: 0; }
+  35% { transform: translate(-55%, -68%) rotate(-28deg) scale(1.08); opacity: 1; }
+  70% { transform: translate(-55%, -68%) rotate(-12deg) scale(1); opacity: 1; }
+  100% { transform: translate(-55%, -80%) rotate(15deg) scale(.8); opacity: 0; }
+}
+.chunk { position: fixed; z-index: 380; width: 18px; height: 12px; border-radius: 4px; border: 1.5px solid rgba(56, 28, 82, .45); pointer-events: none; animation: chunk .75s ease-in forwards; }
+@keyframes chunk { to { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; } }
+
+/* ================= 5. 🔤 LETTER TILES (Candy Jigsaw Alphabet Tiles) ================= */
+.stage-tiles { background: linear-gradient(180deg, #e5f5ff 0%, #fff0f8 100%); }
+.tiles-frame {
+  position: absolute; inset: 4% 7%; border-radius: 24px; overflow: hidden; z-index: 4;
+  border: 6px solid #fff; box-shadow: 0 18px 40px -14px rgba(59, 30, 84, .45);
+}
+.tiles { position: absolute; inset: 0; z-index: 6; perspective: 900px; }
+.tile { --tc: #ff8ec0; --td: #de5d96; position: absolute; border: 0; padding: 0; cursor: pointer; background: transparent; animation: popIn .32s var(--spring) both; }
+.tile span {
+  position: absolute; inset: 3px; border-radius: 16px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--tc) 82%, #fff) 0%, var(--tc) 100%);
+  border: 2.5px solid #fff;
+  display: grid; place-items: center; font-family: var(--font-display); font-weight: 900; font-size: 2.1em; color: #fff;
+  -webkit-text-stroke: 1.5px rgba(52, 29, 74, .45);
+  text-shadow: 0 3px 0 rgba(52, 29, 74, .28);
+  box-shadow: 0 5px 0 var(--td), inset 0 4px 0 rgba(255, 255, 255, .48);
+  transition: transform .42s var(--spring), opacity .32s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover span { transform: translateY(-4px) scale(1.03); }
+}
+.tile.gone { pointer-events: none; }
+.tile.gone span { transform: translateY(-34px) rotate(12deg) scale(.4); opacity: 0; }
+
+/* ================= 6. 🟪 PIXEL QUIZ (Pastel Arcade Screen + Candy Choices) ================= */
+.stage-pixels {
+  background: linear-gradient(135deg, #f3ebff 0%, #ffe9f5 52%, #e8f7ff 100%);
+}
+.pix-cabinet {
+  position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr auto;
+  padding: 2% 4% 2.5%; gap: 2%; z-index: 5;
+}
+.pix-top { display: flex; align-items: center; gap: 14px; }
+.pix-bar {
+  flex: 1; height: 16px; border-radius: 999px; background: rgba(255, 255, 255, .85);
+  border: 2.5px solid #fff; box-shadow: inset 0 2px 4px rgba(52, 29, 74, .12); overflow: hidden;
+}
+.pix-bar i {
+  display: block; height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--mint), var(--butter), var(--pink)); border-radius: 999px;
+}
+.pix-screen-wrap {
+  position: relative; min-height: 0; border-radius: 22px; overflow: hidden;
+  border: 5px solid #fff; box-shadow: 0 14px 32px -12px rgba(52, 29, 74, .4); background: #fff;
+}
+@keyframes wobble { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+/* ================= 7. 🔦 FLASHLIGHT FINDER (Midnight Starry Stage + Tilted Clue Sign + Live Dock) ================= */
+.stage-flashlight { background: #0c0920; }
+.stage-flashlight .layer { cursor: none; touch-action: none; }
+.fl-hud {
+  position: absolute; left: 16px; right: 16px; top: 14px; z-index: 14;
+  display: flex; align-items: flex-start; justify-content: space-between; pointer-events: none;
+}
+.fl-dots {
+  display: flex; gap: 7px; padding: 7px 14px; border-radius: 999px;
+  background: rgba(255, 255, 255, .1); backdrop-filter: blur(6px);
+}
+.fl-dots i { width: 11px; height: 11px; border-radius: 50%; background: rgba(255, 255, 255, .28); display: block; transition: transform .2s var(--spring), background .2s; }
+.fl-dots i.done { background: var(--mint); transform: scale(1.15); }
+.fl-dots i.cur { background: var(--butter); box-shadow: 0 0 10px var(--butter); transform: scale(1.25); }
+
+.clue {
+  position: absolute; left: 50%; top: 14px; transform: translateX(-50%) rotate(-1.8deg); z-index: 16;
+  display: inline-flex; gap: 12px; align-items: center; padding: 10px 22px 10px 24px;
+  border-radius: 22px; background: linear-gradient(135deg, #6950a8, #553d94);
+  border: 2.5px solid #c5b3f9; color: #fff;
+  box-shadow: 0 7px 0 #3a276e, 0 18px 30px rgba(0, 0, 0, .48);
+  font-family: var(--font-display); font-size: 1.45em; cursor: pointer; max-width: 78%;
+  transition: transform .15s var(--snap);
+}
+.clue:hover { transform: translateX(-50%) rotate(0deg) scale(1.03); }
+.clue b { font-weight: 900; letter-spacing: .01em; line-height: 1.15; text-align: center; }
+.clue span {
+  width: 40px; height: 40px; border-radius: 50%; background: #ffb88c; color: #3b2254;
+  display: grid; place-items: center; font-size: .72em; flex: none; box-shadow: 0 3px 0 #d9895b;
+}
+.clue.in { animation: cluePop .35s var(--spring); }
+@keyframes cluePop { from { transform: translateX(-50%) translateY(-16px) scale(.85); opacity: 0; } }
+
+.fl-bar {
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;
+}
+.fl-slider-pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px;
+  background: #fff; border: 2px solid var(--line); box-shadow: 0 3px 0 #ead8ee; font-size: .84em; font-weight: 800;
+}
+.fl-slider-pill input[type=range] { width: 92px; }
+.fl-pack-sel {
+  min-height: 40px; padding: 6px 14px; border-radius: 999px; border: 2px solid var(--line);
+  background: #fff; font-weight: 800; font-size: .84em; cursor: pointer; box-shadow: 0 3px 0 #ead8ee;
+}
+
+/* ================= Podium & End Screen ================= */
+.stage-end { background: radial-gradient(circle at 50% 0%, #ffffff 0%, #fff0f7 50%, #ede4ff 100%); overflow: auto; }
+.podium-wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4%; padding: 4%; }
+.podium-main { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4%; min-width: 0; }
+.podium-wrap.has-xp { display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; justify-items: center; gap: 20px; padding: 3% 4%; }
+.podium-wrap.has-xp .win-title { font-size: 1.78em; text-align: center; }
+.podium-wrap.has-xp .podium { width: 96%; height: 58%; }
+.win-title { margin: 0; font-size: 2.2em; font-weight: 900; animation: popIn .42s var(--spring); }
+.podium { display: flex; align-items: flex-end; justify-content: center; gap: 3%; width: 86%; height: 62%; }
+.pod { --tc: var(--pink); flex: 1; max-width: 165px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; font-weight: 900; animation: rise .6s var(--spring) both; }
+.pod-mascot { width: 58px; height: 58px; position: relative; display: grid; place-items: center; font-size: 2em; }
+.pod-mascot img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 6px 8px rgba(52, 29, 74, .25)); }
+.pod-crown { position: absolute; top: -18px; left: 50%; transform: translateX(-50%) rotate(-6deg); font-size: 1.25em; }
+.pod-bar { width: 100%; height: var(--h); border-radius: 20px 20px 8px 8px; background: var(--tc); border: 3px solid #fff; display: flex; justify-content: center; padding-top: 10px; color: #fff; font-family: var(--font-display); font-size: 1.6em; box-shadow: inset 0 -8px 0 rgba(0, 0, 0, .12), 0 8px 18px -8px rgba(52, 29, 74, .35); }
+@keyframes rise { from { transform: translateY(55%); opacity: 0; } }
+.big-stars { font-family: var(--font-display); font-size: 2.4em; font-weight: 900; margin: 0; }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-poster { max-width: 360px; margin: 0 auto; }
+  .setup-cols { grid-template-columns: 1fr; }
+  .play-screen { padding: 56px 8px 10px; gap: 6px; }
+  .play-head { flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .team-bar { flex: 1 1 100%; order: 3; }
+  .count-pill, .worth-pill { min-width: 72px; padding: 3px 10px; }
+  .ribbon span { font-size: 1.38em; padding: 8px 24px; }
+  .cam-choices { grid-template-columns: 1fr 1fr; }
+  .dd-stage-wrap { inset: 8% 6% 10% 6%; }
+  .stage-end { width: 100% !important; height: 100% !important; }
+  .podium-wrap.has-xp { position: relative; inset: auto; min-height: 100%; grid-template-columns: 1fr; padding: 14px 10px; gap: 12px; }
+  .podium-wrap.has-xp .podium-main { height: 190px; }
+}

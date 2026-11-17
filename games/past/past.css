@@ -1,0 +1,441 @@
+/* Time Train (games/past/) · Past Simple 3-Station Railway Journey */
+.app { min-height: 100%; }
+
+/* ================= Setup Screen ================= */
+.setup-screen {
+  max-width: 1220px; margin: 0 auto; padding: 82px 18px 32px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.hero {
+  display: grid; grid-template-columns: 260px 1fr; gap: 22px; align-items: center;
+  background: linear-gradient(135deg, #fff4fa 0%, #f3ecff 52%, #fff7e2 100%);
+}
+.hero-poster {
+  width: 100%; aspect-ratio: 16 / 10; border-radius: 20px; overflow: hidden;
+  border: 4px solid #fff; box-shadow: 0 12px 26px -10px rgba(64, 28, 98, .38);
+}
+.hero-poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-info { display: flex; flex-direction: column; gap: 10px; }
+.hero h1 { margin: 0; font-size: 2.2em; font-weight: 900; line-height: 1.05; }
+.hero p { margin: 0; font-weight: 800; font-size: 1.02em; }
+.how { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.how li {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 7px;
+  border-radius: 999px; background: #fff; border: 2px solid var(--line);
+  box-shadow: 0 3px 0 #f0dff1; font-weight: 800; font-size: .84em;
+}
+.how b { width: 26px; height: 26px; border-radius: 50%; background: var(--pink); color: #fff; display: grid; place-items: center; font-size: .86em; }
+
+.setup-cols { display: grid; grid-template-columns: 1.32fr 1fr; gap: 16px; align-items: start; }
+.setup-side { display: flex; flex-direction: column; gap: 16px; }
+.pack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.pack-card {
+  text-align: left; padding: 12px; border-radius: 20px; border: 3px solid #f2e2f4;
+  background: #fdf9fe; cursor: pointer; display: flex; flex-direction: column; gap: 5px;
+  box-shadow: 0 4px 0 #eedbf1; transition: transform .14s var(--snap), border-color .15s, background .15s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .pack-card:hover { transform: translateY(-3px); background: #fff; border-color: #e4bfe9; }
+}
+.pack-card.on { border-color: var(--pink); background: #fff; box-shadow: 0 5px 0 var(--pink-d); }
+.pack-thumbs {
+  display: flex; height: 64px; align-items: center; justify-content: center; gap: 4px;
+  border-radius: 14px; background: linear-gradient(135deg, #ffe7f3, #eee5ff, #fff3d4); margin-bottom: 2px;
+}
+.pack-thumbs img { width: 48px; height: 48px; object-fit: contain; filter: drop-shadow(0 4px 5px rgba(52, 29, 74, .2)); }
+.pack-thumbs span { font-size: 2em; }
+.pack-card b { font-size: .96em; font-weight: 900; }
+.pack-card small { color: var(--plum-soft); font-weight: 700; font-size: .75em; line-height: 1.3; }
+.row-end { display: flex; justify-content: flex-end; margin-top: 14px; }
+.go { display: flex; align-items: center; justify-content: space-between; gap: 14px; background: linear-gradient(135deg, #fff, #fff1f8); }
+.go b { display: block; font-size: 1.14em; font-family: var(--font-display); }
+.go small { font-weight: 800; }
+.keys-hint { text-align: center; font-size: .82em; font-weight: 800; margin: 2px 0 0; }
+
+/* ================= Play Screen (`100dvh` Smartboard Lock) ================= */
+.play-screen {
+  height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto 1fr auto;
+  gap: 8px; padding: 68px 14px 12px; overflow: hidden;
+}
+.play-head { display: flex; align-items: center; gap: 10px; justify-content: space-between; min-height: 52px; }
+.team-bar { flex: 1; min-width: 0; }
+.count-pill, .worth-pill {
+  display: flex; flex-direction: column; align-items: center; padding: 5px 16px;
+  border-radius: 18px; background: #fff; border: 2.5px solid #f2e1f4;
+  box-shadow: 0 4px 0 #ead6ee; min-width: 108px; flex: none;
+}
+.count-pill span, .worth-pill span { font-size: .66em; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; color: var(--plum-soft); }
+.count-pill b, .worth-pill b { font-size: 1.18em; font-weight: 900; font-family: var(--font-display); }
+.worth-pill b { color: #d48906; }
+.class-stars {
+  display: inline-flex; align-items: center; gap: 6px; padding: 7px 20px; border-radius: 999px;
+  background: #fff; border: 2.5px solid var(--butter); box-shadow: 0 4px 0 var(--butter-d);
+  font-family: var(--font-display); font-weight: 900; font-size: 1.15em;
+}
+.play-head-wrap { display: flex; justify-content: center; }
+
+.stage-box { position: relative; min-height: 0; display: grid; place-items: center; }
+.stage {
+  position: relative; border-radius: 30px; overflow: hidden; background: #261b47;
+  border: 5px solid #fff;
+  box-shadow: 0 22px 50px -18px rgba(52, 24, 82, .45), 0 5px 0 #ead8ee;
+}
+.controls { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; min-height: 54px; }
+
+/* Preview Clip Mode */
+body.preview { overflow: hidden; background: transparent; }
+.is-preview { padding: 0; grid-template-rows: 1fr; gap: 0; }
+.is-preview .controls, .is-preview .play-head { display: none !important; }
+.is-preview .stage-box { position: absolute; inset: 0; }
+.is-preview .stage { border-radius: 0; border: 0; box-shadow: none; width: 100% !important; height: 100% !important; }
+.caption {
+  position: fixed; left: 50%; top: 12px; transform: translateX(-50%); z-index: 95;
+  display: flex; align-items: center; gap: 10px; padding: 7px 22px 7px 8px; border-radius: 999px;
+  background: rgba(34, 18, 58, .88); backdrop-filter: blur(8px); border: 2.5px solid rgba(255, 255, 255, .92);
+  color: #fff; font-family: var(--font-display); font-weight: 900; font-size: clamp(14px, 2.8vw, 22px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .35); white-space: nowrap;
+}
+.caption b { width: 1.75em; height: 1.75em; border-radius: 50%; background: var(--butter); color: var(--plum); display: grid; place-items: center; font-size: .92em; }
+
+/* ================= World Backdrop, Route Map, Owl Conductor & Animated Train ================= */
+.tt-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;
+  transition: opacity .45s ease;
+}
+.tt-top-hud {
+  position: absolute; left: 16px; right: 16px; top: 12px; z-index: 25;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; pointer-events: none;
+}
+.tt-route {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px;
+  background: rgba(255, 255, 255, .92); border: 2.5px solid #fff;
+  box-shadow: 0 6px 18px -6px rgba(42, 20, 68, .35); font-size: .76em; font-weight: 900;
+}
+.tt-stop {
+  display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px;
+  color: var(--plum-soft); transition: background .2s, color .2s, transform .2s var(--spring);
+}
+.tt-stop.done { background: #d6faeb; color: #0f7a5a; }
+.tt-stop.now { background: var(--pink); color: #fff; transform: scale(1.05); box-shadow: 0 2px 0 var(--pink-d); }
+.tt-timer {
+  padding: 6px 16px; border-radius: 999px; background: rgba(255, 255, 255, .94);
+  border: 2.5px solid var(--butter); font-family: var(--font-display); font-weight: 900; font-size: .92em; color: #9c6b08;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .18);
+}
+.tt-timer.urgent { background: #ffe0ec; border-color: var(--pink); color: var(--pink-d); animation: bump .45s var(--spring) infinite; }
+
+/* Steal Banner */
+.steal-pill {
+  padding: 5px 14px; border-radius: 999px; background: var(--butter); color: var(--plum);
+  border: 2px solid #fff; font-family: var(--font-display); font-weight: 900; font-size: .82em;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .2); animation: popIn .3s var(--spring);
+}
+
+/* Station 1 Portal Glow & Station 3 Lighthouse Beam */
+.gate-portal-fx {
+  position: absolute; right: 7%; top: 20%; width: 22%; aspect-ratio: 1; border-radius: 50%; z-index: 2;
+  background: radial-gradient(circle, rgba(255, 238, 158, .85) 0%, rgba(192, 148, 255, .45) 50%, transparent 72%);
+  opacity: 0; transform: scale(.7); pointer-events: none; transition: opacity .45s ease, transform .55s var(--spring);
+}
+.gate-portal-fx.open { opacity: 1; transform: scale(1.18) rotate(35deg); }
+
+.bridge-gap-box {
+  position: absolute; left: 42%; bottom: 7.5%; width: 17%; height: 11%; z-index: 4;
+  border-radius: 10px; background: rgba(14, 24, 58, .72); border: 2.5px dashed rgba(255, 214, 130, .78);
+  display: grid; place-items: center; color: #ffe59e; font-family: var(--font-display); font-weight: 900; font-size: .78em;
+  transition: transform .42s var(--spring), background .3s, border-color .3s;
+}
+.bridge-gap-box.fixed {
+  background: repeating-linear-gradient(90deg, #d89b62 0 18px, #9e6534 18px 21px);
+  border: 3px solid #6e421d; color: #fff; text-shadow: 0 2px 0 #523013;
+  box-shadow: 0 6px 0 #523013; animation: plankDrop .42s var(--spring);
+}
+@keyframes plankDrop { from { transform: translateY(-48px) scale(1.12); opacity: 0; } }
+
+.tower-beam {
+  position: absolute; right: 13.5%; top: 13%; width: 68%; height: 28%; z-index: 2; pointer-events: none;
+  transform-origin: 100% 35%;
+  background: linear-gradient(270deg, rgba(255, 236, 145, .88) 0%, rgba(255, 224, 130, .34) 45%, transparent 100%);
+  clip-path: polygon(100% 24%, 100% 46%, 0% 100%, 0% 0%);
+  opacity: 0; transition: opacity .4s ease;
+}
+.tower-beam.lit { opacity: 1; animation: sweepSea 3.2s ease-in-out infinite alternate; }
+@keyframes sweepSea { from { transform: rotate(-7deg); } to { transform: rotate(9deg); } }
+
+/* Owl Conductor & Hint Speech Bubble */
+.tt-owl-wrap {
+  position: absolute; right: 1.5%; bottom: 15%; z-index: 26; display: flex; align-items: flex-end; gap: 6px;
+  pointer-events: none;
+}
+.tt-owl {
+  width: clamp(68px, 8.8vw, 108px); object-fit: contain;
+  filter: drop-shadow(0 10px 14px rgba(30, 14, 52, .42));
+  animation: owlBob 3s ease-in-out infinite;
+}
+@keyframes owlBob { 50% { transform: translateY(-5px) rotate(2deg); } }
+.tt-owl-speech {
+  max-width: 230px; padding: 8px 14px; border-radius: 18px 18px 4px 18px;
+  background: #fff; border: 2.5px solid var(--butter); color: var(--plum);
+  font-weight: 900; font-size: .8em; line-height: 1.28;
+  box-shadow: 0 8px 20px -6px rgba(34, 16, 56, .4);
+  animation: popIn .28s var(--spring);
+}
+
+/* Live Animated Time Train Consist on the Bottom Railway Track */
+.tt-railway {
+  position: absolute; left: 0; right: 0; bottom: 2.2%; height: 22%; z-index: 15; pointer-events: none;
+}
+.tt-train {
+  position: absolute; left: 3.5%; bottom: 0; height: 100%;
+  display: flex; flex-direction: row-reverse; align-items: flex-end;
+  transition: transform 1.15s cubic-bezier(.42, 0, .22, 1);
+}
+.tt-train.departing { transform: translateX(118vw); }
+.tt-train.arriving { animation: trainArrive .85s var(--ease-out) both; }
+@keyframes trainArrive { from { transform: translateX(-65%); } to { transform: translateX(0); } }
+
+.tt-engine {
+  position: relative; height: 100%; aspect-ratio: 460 / 360; flex: none;
+  filter: drop-shadow(0 8px 12px rgba(28, 12, 48, .38));
+  animation: chugIdle .75s ease-in-out infinite;
+}
+.tt-engine img { width: 100%; height: 100%; object-fit: contain; display: block; }
+@keyframes chugIdle { 50% { transform: translateY(-2.5px); } }
+
+.tt-puff {
+  position: absolute; right: 24%; top: -10%; width: 22px; height: 22px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff, #f3dffb);
+  opacity: 0; animation: steamPuff 1.8s ease-out infinite;
+}
+.tt-puff.p2 { animation-delay: .6s; width: 17px; height: 17px; }
+.tt-puff.p3 { animation-delay: 1.2s; width: 25px; height: 25px; }
+@keyframes steamPuff {
+  0% { transform: translate(0, 8px) scale(.45); opacity: 0; }
+  25% { opacity: .9; }
+  100% { transform: translate(-34px, -38px) scale(1.45); opacity: 0; }
+}
+
+.tt-cars { display: flex; flex-direction: row-reverse; align-items: flex-end; height: 80%; margin-right: -6px; }
+.tt-car {
+  height: 100%; aspect-ratio: 380 / 290; margin-right: -7px; flex: none;
+  filter: drop-shadow(0 6px 10px rgba(28, 12, 48, .32));
+  animation: chugIdle .75s ease-in-out infinite;
+}
+.tt-car.just-added { animation: coupleSnap .48s var(--spring); }
+@keyframes coupleSnap { from { transform: translateX(-36px) scale(.65); opacity: 0; } }
+.tt-car img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+/* ================= Center Workbench Card (Stations 1, 2 & 3) ================= */
+.tt-workbench {
+  position: absolute; left: 50%; top: 41%; transform: translate(-50%, -50%);
+  width: min(88%, 840px); z-index: 20;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.tt-card {
+  width: 100%; background: rgba(255, 255, 255, .95); backdrop-filter: blur(10px);
+  border: 4px solid #fff; border-radius: 26px; padding: 14px 20px;
+  box-shadow: 0 18px 38px -14px rgba(28, 12, 52, .48), 0 4px 0 #ead8ee;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  animation: popIn .28s var(--spring);
+}
+.tt-card-top {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.tt-station-tag {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px;
+  background: #f6edff; color: var(--lilac-d); font-family: var(--font-display); font-weight: 900; font-size: .78em;
+}
+.tt-source-pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 999px;
+  background: #fff6e0; border: 2px solid #f7dc94; font-weight: 800; font-size: .84em; color: #7a5208;
+}
+
+.tt-sentence-row {
+  display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; text-align: center;
+}
+.tt-pic {
+  width: 68px; height: 68px; border-radius: 18px; background: linear-gradient(135deg, #ffe8f3, #ece4ff);
+  border: 2.5px solid #fff; box-shadow: 0 5px 12px -4px rgba(52, 29, 74, .25);
+  display: grid; place-items: center; font-size: 2.1em; overflow: hidden; flex: none;
+}
+.tt-pic img { width: 90%; height: 90%; object-fit: contain; }
+.tt-sentence {
+  font-family: var(--font-display); font-weight: 900; font-size: clamp(1.18em, 2.2vw, 1.58em);
+  line-height: 1.32; color: var(--plum);
+}
+.tt-base-hint {
+  display: inline-block; margin-left: 6px; padding: 2px 10px; border-radius: 999px;
+  background: #f3ecff; color: var(--lilac-d); font-size: .72em; vertical-align: middle;
+}
+
+/* Interactive Gap Slots */
+.tt-gap {
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  min-width: 108px; min-height: 44px; padding: 3px 14px; margin: 0 3px;
+  border-radius: 14px; border: 3px dashed #d5b4ee; background: #faf4ff;
+  color: var(--lilac-d); font-family: var(--font-display); font-weight: 900; font-size: .95em;
+  vertical-align: middle; cursor: pointer; position: relative;
+  transition: transform .2s var(--spring), background .2s, border-color .2s;
+}
+.tt-gap.active-slot { border-color: var(--pink); background: #fff0f7; box-shadow: 0 0 0 4px rgba(255, 116, 166, .2); }
+.tt-gap.filled {
+  border-style: solid; border-color: var(--lilac); background: #fff; color: var(--plum);
+  box-shadow: 0 3px 0 #d5c2f7; animation: slotSnap .32s var(--spring);
+}
+.tt-gap.right {
+  border-style: solid; border-color: var(--mint) !important; background: #d6faeb !important;
+  color: #0b6b4f !important; box-shadow: 0 4px 0 var(--mint-d) !important;
+}
+.tt-gap.wrong {
+  border-color: var(--pink) !important; background: #ffe4ee !important; animation: wobble .36s ease;
+}
+@keyframes slotSnap { from { transform: scale(.78); } }
+@keyframes wobble { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+/* Station 1: Golden Verb Tickets (`ticket.webp`) */
+.ticket-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%;
+}
+.verb-ticket {
+  position: relative; min-height: 68px; border: 0; background: transparent; cursor: pointer;
+  padding: 8px 12px; display: grid; place-items: center; touch-action: manipulation;
+  transition: transform .14s var(--snap), filter .15s, opacity .2s;
+}
+.verb-ticket img.tk-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; pointer-events: none;
+  filter: drop-shadow(0 6px 10px rgba(52, 29, 74, .28));
+}
+.verb-ticket .tk-num {
+  position: absolute; left: 10px; top: 8px; width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(52, 29, 74, .14); color: var(--plum); font-size: .7em; font-weight: 900;
+  display: grid; place-items: center; z-index: 2;
+}
+.verb-ticket .tk-word {
+  position: relative; z-index: 2; font-family: var(--font-display); font-weight: 900;
+  font-size: 1.22em; color: #3c2154;
+}
+@media (hover: hover) and (pointer: fine) {
+  .verb-ticket:hover:not(:disabled) { transform: translateY(-4px) scale(1.04); filter: brightness(1.04); }
+}
+.verb-ticket:active:not(:disabled) { transform: translateY(2px) scale(.96); }
+.verb-ticket.wrong { opacity: .44; animation: wobble .36s ease; pointer-events: none; }
+.verb-ticket.right { transform: scale(1.08); filter: drop-shadow(0 0 14px var(--mint)); }
+
+/* Stations 2 & 3: Tactile Word Chips + Signature ⏪ Clock-Rewind Spin! */
+.chip-slots-row {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center;
+  padding: 6px 10px; border-radius: 18px; background: #f9f3fc; border: 2px solid #eeddf4; width: 100%; min-height: 58px;
+}
+.chip-tray {
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center;
+}
+.word-chip {
+  position: relative; display: inline-flex; align-items: center; gap: 6px;
+  min-height: 50px; padding: 8px 20px; border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #fff4fa 100%);
+  border: 2.5px solid #e7c6ee; box-shadow: 0 5px 0 #d5aee2, 0 8px 16px -8px rgba(52, 29, 74, .35);
+  font-family: var(--font-display); font-weight: 900; font-size: 1.14em; color: var(--plum);
+  cursor: pointer; user-select: none; touch-action: none;
+  transition: transform .15s var(--snap), opacity .18s, border-color .2s, background .2s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .word-chip:hover:not(.used) { transform: translateY(-3px); border-color: var(--lilac); }
+}
+.word-chip:active:not(.used) { transform: translateY(3px) scale(.97); box-shadow: 0 2px 0 #d5aee2; }
+.word-chip.used { opacity: .26; pointer-events: none; transform: scale(.92); }
+.word-chip.dragging { position: fixed; z-index: 420; pointer-events: none; transform: scale(1.08) rotate(-2deg); }
+
+/* Signature ⏪ Clock-Rewind Animation (saw -> see, went -> go!) */
+.rewinding {
+  animation: clockRewindFlip .68s var(--spring);
+  border-color: var(--mint) !important;
+  background: #e2fcf1 !important;
+}
+@keyframes clockRewindFlip {
+  0% { transform: scale(1) rotate(0deg); }
+  40% { transform: scale(1.22) rotate(-14deg); filter: brightness(1.15); }
+  75% { transform: scale(1.12) rotate(6deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+.rewind-badge {
+  position: absolute; right: -16px; top: -22px; width: 42px; height: 42px; z-index: 30;
+  pointer-events: none; animation: spinRewind .75s var(--spring) forwards;
+}
+@keyframes spinRewind {
+  0% { transform: scale(.4) rotate(140deg); opacity: 0; }
+  45% { transform: scale(1.18) rotate(-25deg); opacity: 1; }
+  85% { transform: scale(1) rotate(-360deg); opacity: 1; }
+  100% { transform: scale(.8) rotate(-380deg); opacity: 0; }
+}
+
+/* Station 3 Yes/No Story Bonus Overlay */
+.yn-bonus-row {
+  display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
+  padding-top: 4px; animation: popIn .3s var(--spring);
+}
+.yn-bonus-row span { font-weight: 900; font-size: .92em; color: var(--lilac-d); }
+
+/* Clockwork Time Tunnel Transition -> Ancient Egypt Finale */
+.time-tunnel {
+  position: absolute; inset: 0; z-index: 60; display: grid; place-items: center;
+  background: radial-gradient(circle, #ffe89e 0%, #c084fc 38%, #3b1d6e 78%, #140b2e 100%);
+  animation: tunnelSwirl 1.25s ease-in-out forwards; pointer-events: none;
+}
+.time-tunnel img { width: 150px; height: 150px; animation: tunnelClock 1.25s linear infinite; }
+@keyframes tunnelClock { to { transform: rotate(-720deg) scale(1.3); } }
+@keyframes tunnelSwirl {
+  0% { opacity: 0; transform: scale(.85); }
+  30% { opacity: 1; transform: scale(1.02); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.35); }
+}
+
+/* Finale Podium Overlay over Ancient Egypt */
+.finale-card {
+  position: absolute; inset: 54px 6% 24% 6%; z-index: 22;
+  background: rgba(255, 255, 255, .92); backdrop-filter: blur(10px);
+  border: 4px solid #fff; border-radius: 28px; padding: 14px 20px;
+  box-shadow: 0 22px 44px -16px rgba(34, 16, 56, .48);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  overflow: auto;
+}
+.finale-card.has-xp {
+  display: grid; grid-template-columns: 1.12fr 1fr; align-items: center; justify-items: center; gap: 16px;
+}
+.finale-main { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+.finale-title { margin: 0; font-size: 1.75em; font-weight: 900; text-align: center; }
+.finale-sub { margin: 0; font-weight: 800; font-size: .92em; color: var(--plum-soft); }
+.podium { display: flex; align-items: flex-end; justify-content: center; gap: 12px; width: 92%; height: 58%; min-height: 110px; }
+.pod { --tc: var(--pink); flex: 1; max-width: 135px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; font-weight: 900; animation: rise .55s var(--spring) both; }
+.pod-mascot { width: 46px; height: 46px; position: relative; display: grid; place-items: center; font-size: 1.7em; }
+.pod-mascot img { width: 100%; height: 100%; object-fit: contain; }
+.pod-crown { position: absolute; top: -15px; left: 50%; transform: translateX(-50%) rotate(-6deg); font-size: 1.1em; }
+.pod-bar { width: 100%; height: var(--h); border-radius: 16px 16px 6px 6px; background: var(--tc); border: 2.5px solid #fff; display: flex; justify-content: center; padding-top: 6px; color: #fff; font-family: var(--font-display); font-size: 1.35em; }
+@keyframes rise { from { transform: translateY(50%); opacity: 0; } }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-poster { max-width: 340px; margin: 0 auto; }
+  .setup-cols { grid-template-columns: 1fr; }
+  .play-screen { padding: 56px 8px 10px; gap: 6px; }
+  .play-head { flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .team-bar { flex: 1 1 100%; order: 3; }
+  .stage { width: 100% !important; height: 100% !important; }
+  .tt-top-hud { top: 8px; left: 8px; right: 8px; }
+  .tt-route { gap: 2px; padding: 3px 5px; font-size: .67em; max-width: 100%; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  .tt-route::-webkit-scrollbar { display: none; }
+  .tt-stop { padding: 3px 6px; }
+  .ticket-row { grid-template-columns: 1fr 1fr; }
+  .tt-owl-wrap { display: none; }
+  .tt-workbench { width: 95%; top: 43%; }
+  .tt-card { padding: 12px 12px; gap: 8px; border-radius: 22px; }
+  .tt-card-top { flex-wrap: wrap; gap: 6px; }
+  .tt-source-pill { font-size: .76em; padding: 3px 10px; }
+  .tt-pic { width: 52px; height: 52px; border-radius: 14px; font-size: 1.6em; }
+  .tt-sentence { font-size: 1.08em; }
+  .tt-gap { min-width: 78px; min-height: 38px; padding: 2px 10px; font-size: .9em; }
+  .word-chip { min-height: 42px; padding: 6px 14px; font-size: 1em; border-radius: 14px; }
+  .finale-card { inset: 50px 4% 20% 4%; padding: 12px 14px; }
+  .finale-title { font-size: 1.35em; }
+  .finale-card.has-xp { grid-template-columns: 1fr; }
+}

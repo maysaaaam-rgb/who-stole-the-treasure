@@ -349,6 +349,26 @@
         if (Object.prototype.hasOwnProperty.call(PASS_ART, k)) passGetImg(k);
       }
 
+      var SEAT_AV_CACHE = {};
+      function getSeatAvatarImg(monObj, idx) {
+        var key = 'seat_' + idx + '_' + (typeof monObj === 'string' ? monObj : (monObj && (monObj.id || monObj.name || monObj.avatarId) ? (monObj.id || monObj.name || monObj.avatarId) : idx));
+        if (SEAT_AV_CACHE[key]) return SEAT_AV_CACHE[key];
+        var im = passMonImg(monObj);
+        if (im) { SEAT_AV_CACHE[key] = im; return im; }
+        try {
+          var node = U().monFull(monObj, 220);
+          var childImg = node && node.querySelector ? node.querySelector('img') : null;
+          if (childImg && childImg.getAttribute('src')) {
+            im = new Image();
+            im.decoding = 'async';
+            im.src = childImg.getAttribute('src');
+            SEAT_AV_CACHE[key] = im;
+            return im;
+          }
+        } catch (e) {}
+        return null;
+      }
+
       var T = (GM.state && GM.state.teams && GM.state.teams.length) ? GM.state.teams : [
         { name: 'Team 1', color: '#38bdf8', mon: 'm01', score: 0 },
         { name: 'Team 2', color: '#f59e0b', mon: 'm02', score: 0 }
@@ -356,7 +376,7 @@
       var nt = T.length;
       var ti;
       for (ti = 0; ti < nt; ti++) {
-        passMonImg(T[ti].mon);
+        getSeatAvatarImg(T[ti].mon, ti);
       }
 
       var maxRounds = +(ctx.cfg && ctx.cfg.rounds) || 5;
@@ -690,14 +710,13 @@
         renderBanner(T[holder].name + ' is answering to pass the ' + thingName() + '...');
 
         var item = ctx.nextItem();
-        U().ask(item, {
-          team: T[holder],
+        U().ask(item, T[holder], {
           timer: Math.min(+(ctx.cfg && ctx.cfg.timer) || 0, 15) || 0,
           label: 'Pass the ' + thingName() + '!'
-        }).then(function (ok) {
+        }).then(function (res) {
           if (ended || phase === 'round_end' || phase === 'finale') return;
 
-          if (ok) {
+          if (res && res.ok) {
             var fromIdx = holder;
             var toIdx = (holder + 1) % nt;
             var fromSeat = getSeatPos(fromIdx);
@@ -958,7 +977,7 @@
           rot = Math.sin(tSec * 14) * 0.1;
         }
 
-        var monIm = passMonImg(team.mon);
+        var monIm = getSeatAvatarImg(team.mon, idx);
         g.save();
         g.translate(sp.x, sp.y - monSize * 0.43 + bobY + jumpY);
         g.rotate(rot);
@@ -973,8 +992,37 @@
         }
         g.restore();
 
-        // Dizzy stars above popped monster
+        // Cartoon soot face & soft smoke wisps when popped (soft, not scary)
         if (pose === 'popped') {
+          g.save();
+          g.translate(sp.x, sp.y - monSize * 0.43 + bobY + jumpY);
+          g.rotate(rot);
+          var sootGrad = g.createRadialGradient(0, -4, 4, 0, -4, monSize * 0.28);
+          sootGrad.addColorStop(0, 'rgba(51, 65, 85, 0.55)');
+          sootGrad.addColorStop(0.65, 'rgba(71, 85, 105, 0.32)');
+          sootGrad.addColorStop(1, 'rgba(71, 85, 105, 0)');
+          g.fillStyle = sootGrad;
+          g.beginPath();
+          g.arc(0, -4, monSize * 0.28, 0, Math.PI * 2);
+          g.fill();
+          // Rosy soot cheeks & cute O-mouth
+          g.fillStyle = 'rgba(30, 41, 59, 0.45)';
+          g.beginPath();
+          g.arc(-18, -2, 8, 0, Math.PI * 2);
+          g.arc(18, -2, 8, 0, Math.PI * 2);
+          g.fill();
+          // Soft cartoon smoke wisps rising above head
+          var smI;
+          for (smI = 0; smI < 3; smI++) {
+            var smY = -monSize * 0.54 - ((tSec * 28 + smI * 18) % 36);
+            var smX = (smI - 1) * 18 + Math.sin(tSec * 4 + smI) * 6;
+            g.fillStyle = 'rgba(226, 232, 240, 0.65)';
+            g.beginPath();
+            g.arc(smX, smY, 9 + smI * 2, 0, Math.PI * 2);
+            g.fill();
+          }
+          g.restore();
+
           var stI;
           for (stI = 0; stI < 3; stI++) {
             var sa = tSec * 5.5 + (stI * Math.PI * 2) / 3;
@@ -1045,11 +1093,12 @@
           scale = 1 + Math.sin(k * Math.PI) * 0.28;
         } else {
           var hp = getBombPosForSeat(holder);
-          bx = hp.x;
-          by = hp.y + Math.sin(tSec * (6 + urgency * 10)) * 7;
-          rot = Math.sin(tSec * (7 + urgency * 12)) * (0.08 + urgency * 0.14);
-          var pulse = Math.pow(Math.max(0, Math.sin(tSec * (3 + urgency * 7) * Math.PI)), 2);
-          scale = 1 + pulse * (0.08 + urgency * 0.16);
+          var jit = Math.sin(tSec * (16 + urgency * 36)) * (urgency * 7);
+          bx = hp.x + jit;
+          by = hp.y + Math.sin(tSec * (6 + urgency * 12)) * 7 + Math.cos(tSec * (20 + urgency * 28)) * (urgency * 4);
+          rot = Math.sin(tSec * (7 + urgency * 18)) * (0.08 + urgency * 0.22);
+          var pulse = Math.pow(Math.max(0, Math.sin(tSec * (3 + urgency * 8) * Math.PI)), 2);
+          scale = (1 + urgency * 0.44) + pulse * (0.08 + urgency * 0.18);
         }
 
         var itemIm = passGetImg(hal ? 'pumpkin' : 'bomb');
@@ -1057,9 +1106,9 @@
 
         // Warm glow behind the ticking pumpkin/bomb
         g.save();
-        var glowR = sz * (0.68 + urgency * 0.25);
+        var glowR = sz * (0.68 + urgency * 0.35);
         var bGrad = g.createRadialGradient(bx, by, 6, bx, by, glowR);
-        bGrad.addColorStop(0, urgency > 0.65 ? 'rgba(244, 63, 94, 0.85)' : 'rgba(251, 191, 36, 0.75)');
+        bGrad.addColorStop(0, urgency > 0.65 ? 'rgba(244, 63, 94, 0.88)' : 'rgba(251, 191, 36, 0.78)');
         bGrad.addColorStop(1, 'rgba(251, 191, 36, 0)');
         g.fillStyle = bGrad;
         g.beginPath();
@@ -1068,7 +1117,7 @@
 
         g.translate(bx, by);
         g.rotate(rot);
-        g.scale(scale, 2 - scale * 0.92);
+        g.scale(scale, 2 - scale * 0.85);
         if (passImgReady(itemIm)) {
           g.drawImage(itemIm, -sz * 0.5, -sz * 0.5, sz, sz);
         } else {
@@ -1077,6 +1126,35 @@
           g.arc(0, 0, sz * 0.42, 0, Math.PI * 2);
           g.fill();
         }
+
+        // Visible burning fuse + bright fizzing spark that shrinks as time runs out
+        var fuseRatio = Math.max(0.04, 1 - urgency);
+        var fStartY = -sz * 0.38;
+        var fEndX = 24 * fuseRatio;
+        var fEndY = fStartY - 34 * fuseRatio;
+        g.strokeStyle = '#78350f';
+        g.lineWidth = 6;
+        g.lineCap = 'round';
+        g.beginPath();
+        g.moveTo(0, fStartY);
+        g.quadraticCurveTo(fEndX * 0.45, fStartY - 18 * fuseRatio, fEndX, fEndY);
+        g.stroke();
+        g.strokeStyle = '#fbbf24';
+        g.lineWidth = 2.5;
+        g.setLineDash([4, 4]);
+        g.stroke();
+        g.setLineDash([]);
+
+        // Fizzing spark at the tip of the fuse
+        var spR = 7 + Math.sin(tSec * 28) * 3;
+        g.fillStyle = '#fef08a';
+        g.beginPath();
+        g.arc(fEndX, fEndY, spR, 0, Math.PI * 2);
+        g.fill();
+        g.fillStyle = '#fb7185';
+        g.beginPath();
+        g.arc(fEndX, fEndY, spR * 0.52, 0, Math.PI * 2);
+        g.fill();
         g.restore();
       }
 

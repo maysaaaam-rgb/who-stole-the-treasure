@@ -43,19 +43,29 @@
   }
 
   function getMonImg(monObj) {
-    var key = typeof monObj === 'string' ? monObj : (monObj && (monObj.id || monObj.name) ? (monObj.id || monObj.name) : JSON.stringify(monObj || 'm01'));
+    var key = typeof monObj === 'string' ? monObj : (monObj && (monObj.id || monObj.name || monObj.avatarId) ? (monObj.id || monObj.name || monObj.avatarId) : JSON.stringify(monObj || 'm01'));
     if (MON_IMG_CACHE[key]) return MON_IMG_CACHE[key];
-    if (!GM || !GM.mon || typeof GM.mon.svg !== 'function') return null;
-    var svg = GM.mon.svg(monObj, 220);
-    if (!svg || svg.indexOf('<svg') < 0) return null;
-    if (svg.indexOf('xmlns=') < 0) {
-      svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
-    }
     var im = new Image();
     im.decoding = 'async';
-    im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-    MON_IMG_CACHE[key] = im;
-    return im;
+    var svg = (GM && GM.mon && typeof GM.mon.svg === 'function') ? GM.mon.svg(monObj, 220) : '';
+    if (svg && svg.indexOf('<svg') >= 0) {
+      if (svg.indexOf('xmlns=') < 0) {
+        svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+      }
+      im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      MON_IMG_CACHE[key] = im;
+      return im;
+    }
+    try {
+      var node = U().monFull(monObj, 220);
+      var childImg = node && node.querySelector ? node.querySelector('img') : null;
+      if (childImg && childImg.getAttribute('src')) {
+        im.src = childImg.getAttribute('src');
+        MON_IMG_CACHE[key] = im;
+        return im;
+      }
+    } catch (e) {}
+    return null;
   }
 
   function preloadMemoryArt() {
@@ -121,6 +131,7 @@
 
       var turn = 0;
       var matchedPairs = 0;
+      var streaks = {};
       var flipped = [];
       var busy = false;
       var ended = false;
@@ -293,11 +304,12 @@
       // 3. HUD & Quick Flip Button Updater
       function renderHud() {
         var t = T[turn] || T[0];
+        var st = streaks[turn] || 0;
         banner.style.setProperty('--c', t.color || '#38bdf8');
         banner.innerHTML = '';
         banner.appendChild(U().monFace(t.mon, 42));
         banner.appendChild(U().h('b', { text: t.name + ' — Flip 2 Cards!' }));
-        banner.appendChild(U().h('span', { class: 'gm-real3-sub', text: 'Pairs: ' + matchedPairs + ' / ' + numPairs }));
+        banner.appendChild(U().h('span', { class: 'gm-real3-sub', text: 'Pairs: ' + matchedPairs + ' / ' + numPairs + (st >= 1 ? ' · 🔥 ' + st + ' streak' : '') }));
         banner.classList.add('in');
 
         if (quickBtn) {
@@ -358,6 +370,46 @@
         setTimeout(function () {
           if (orb.parentNode) orb.parentNode.removeChild(orb);
         }, 560);
+      }
+
+      /* Fly sparkling mini-card ghosts from both matched cards straight to the team's score pod */
+      function flyMatchedCardsToScore(c1El, c2El, teamIdx) {
+        var pods = document.querySelectorAll('.gm-teams .gm-pod');
+        var pod = pods && pods[teamIdx] ? pods[teamIdx] : null;
+        var tx = window.innerWidth * 0.5;
+        var ty = window.innerHeight - 54;
+        if (pod && pod.getBoundingClientRect) {
+          var pr = pod.getBoundingClientRect();
+          tx = pr.left + pr.width * 0.5;
+          ty = pr.top + pr.height * 0.5;
+        }
+        [c1El, c2El].forEach(function (srcEl, idx) {
+          if (!srcEl || !srcEl.getBoundingClientRect) return;
+          var r = srcEl.getBoundingClientRect();
+          var ghost = U().h('div', { class: 'gm-mem-flycard', text: idx === 0 ? '❓✨' : '⭐✨' });
+          ghost.style.left = (r.left + r.width * 0.5) + 'px';
+          ghost.style.top = (r.top + r.height * 0.5) + 'px';
+          document.body.appendChild(ghost);
+          activeOrbs.push(ghost);
+          requestAnimationFrame(function () {
+            ghost.style.left = tx + 'px';
+            ghost.style.top = ty + 'px';
+            ghost.style.transform = 'translate(-50%, -50%) scale(.32) rotate(' + (idx === 0 ? '-18deg' : '18deg') + ')';
+            ghost.style.opacity = '0.1';
+          });
+          setTimeout(function () { if (ghost.parentNode) ghost.parentNode.removeChild(ghost); }, 680);
+        });
+      }
+
+      function triggerStreakFlash(streakCount) {
+        var flash = U().h('div', { class: 'gm-mem-streak-flash' }, [
+          U().h('div', { class: 'gm-mem-streak-pill', text: '⚡ ' + streakCount + ' IN A ROW! +15 STREAK BONUS!' })
+        ]);
+        scene.appendChild(flash);
+        if (A()) A().play('pu_star');
+        if (J() && J().shake) J().shake(8);
+        if (J() && J().shockwave) J().shockwave(board, '#fde047', 340, 560);
+        setTimeout(function () { if (flash.parentNode) flash.remove(); }, 1350);
       }
 
       // 5. Canvas Particle & Burst System
@@ -507,16 +559,18 @@
           c1.matched = true;
           c2.matched = true;
           matchedPairs++;
+          streaks[turn] = (streaks[turn] || 0) + 1;
+          var curStreak = streaks[turn];
           syncCardDom(c1);
           syncCardDom(c2);
 
           charPose = 'celebrate';
           charPoseTimer = 3.2;
-          charBubble = 'MATCH! +20! 🎉';
+          charBubble = curStreak >= 3 ? ('⚡ ' + curStreak + ' IN A ROW! +35! 🔥') : 'MATCH! +20! 🎉';
           buddyPose = 'celebrate';
 
-          spawnCardBurst(c1.el, '#34d399', 24);
-          spawnCardBurst(c2.el, '#fde047', 24);
+          spawnCardBurst(c1.el, '#34d399', 26);
+          spawnCardBurst(c2.el, '#fde047', 26);
 
           if (A()) {
             A().play('card_match');
@@ -528,8 +582,13 @@
             showReadAloudDrawer(c1.full, c1, c2, function () {
               if (ended) return;
               U().floatText('+20', c2.el, 'good');
+              flyMatchedCardsToScore(c1.el, c2.el, turn);
               flyScoreToPod(c2.el, turn, '+20', 20);
-              U().confetti(24);
+              if (curStreak > 0 && curStreak % 3 === 0) {
+                triggerStreakFlash(curStreak);
+                flyScoreToPod(c1.el, turn, '+15🔥', 15);
+              }
+              U().confetti(curStreak >= 3 ? 42 : 24);
               if (J()) J().react(turn, 'big');
 
               if (matchedPairs >= numPairs) {
@@ -554,7 +613,8 @@
             });
           }, 340);
         } else {
-          // MISMATCH — keep visible 1.15s, gentle wobble, award +5 for trying!
+          // MISMATCH — keep visible 1.15s, gentle wobble, award +5 for trying, reset streak!
+          streaks[turn] = 0;
           charPose = 'shrug';
           charPoseTimer = 1.6;
           charBubble = 'Good try! +5 😊';

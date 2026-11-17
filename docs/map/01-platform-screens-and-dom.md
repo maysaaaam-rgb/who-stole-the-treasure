@@ -8,10 +8,10 @@
 
 | Entry Page | Size / Lines | Purpose |
 | :--- | :---: | :--- |
-| [index.html](file:///C:/Users/maysa/Desktop/DV/index.html) | 280 KB (4295L) | Main School Platform SPA Host (Teacher, Student, Parent, Class Mode) |
+| [index.html](file:///C:/Users/maysa/Desktop/DV/index.html) | 280 KB (4296L) | Main School Platform SPA Host (Teacher, Student, Parent, Class Mode) |
 | [directory.html](file:///C:/Users/maysa/Desktop/DV/directory.html) | 32.9 KB (627L) | Students Directory & Monster Companions Grid |
-| [site-map/index.html](file:///C:/Users/maysa/Desktop/DV/site-map/index.html) | 6.7 KB (149L) | Interactive Visual Site Map & Developer Explorer (Read-Only) |
-| [game-maker/index.html](file:///C:/Users/maysa/Desktop/DV/game-maker/index.html) | 4.5 KB (91L) | Game Maker 2.0 Arcade Host (22 Modes + 75 Question Sets) |
+| [site-map/index.html](file:///C:/Users/maysa/Desktop/DV/site-map/index.html) | 6.8 KB (149L) | Interactive Visual Site Map & Developer Explorer (Read-Only) |
+| [game-maker/index.html](file:///C:/Users/maysa/Desktop/DV/game-maker/index.html) | 4.5 KB (92L) | Game Maker 2.0 Arcade Host (22 Modes + 75 Question Sets) |
 | [island/index.html](file:///C:/Users/maysa/Desktop/DV/island/index.html) | 5.5 KB (97L) | Practice Island Student Home App (Chapters, Harbour, Shop) |
 | [island/world.html](file:///C:/Users/maysa/Desktop/DV/island/world.html) | 9.2 KB (156L) | Practice Island 2D Walking World |
 | [island/teacher.html](file:///C:/Users/maysa/Desktop/DV/island/teacher.html) | 12.2 KB (309L) | Practice Island Teacher Live Progress Wall |
@@ -21,7 +21,7 @@
 | [magic-book/index.html](file:///C:/Users/maysa/Desktop/DV/magic-book/index.html) | 3.7 KB (93L) | The Magic Book Interactive Unit 5 Textbook Reader |
 | [monster-studio/index.html](file:///C:/Users/maysa/Desktop/DV/monster-studio/index.html) | 35.1 KB (1014L) | Standalone Monster Studio Preview Host |
 | [pharaoh-living-book.html](file:///C:/Users/maysa/Desktop/DV/pharaoh-living-book.html) | 116.8 KB (2680L) | The Pharaoh's Kingdom 3D Living Pop-Up Book (Grade 3 Egypt) |
-| [404.html](file:///C:/Users/maysa/Desktop/DV/404.html) | 21.2 KB (363L) | GitHub Pages Deep-Link Router & Detective Navigation Hub |
+| [404.html](file:///C:/Users/maysa/Desktop/DV/404.html) | 22.5 KB (384L) | GitHub Pages Deep-Link Router & Detective Navigation Hub |
 
 ---
 
@@ -143,24 +143,24 @@
 | `#modal-rewards-manager` | [L2730](file:///C:/Users/maysa/Desktop/DV/index.html#L2730) | Classroom Rewards & Redemption |
 | `#modal-big-ideas-editor` | [L2782](file:///C:/Users/maysa/Desktop/DV/index.html#L2782) | Post a Big Idea |
 | `#modal-cloud-sync` | [L2829](file:///C:/Users/maysa/Desktop/DV/index.html#L2829) | Supabase Cloud Database |
-| `#modal-simon-says` | [L3013](file:///C:/Users/maysa/Desktop/DV/index.html#L3013) | Simon Says: Classroom Live |
-| `#modal-worksheet-preview` | [L3068](file:///C:/Users/maysa/Desktop/DV/index.html#L3068) | Worksheet Title |
-| `#modal-alice-poster` | [L3095](file:///C:/Users/maysa/Desktop/DV/index.html#L3095) | 📘 Alice in Wonderland: XP Challenges Master Reference |
-| `#modal-space-cadet-poster` | [L3113](file:///C:/Users/maysa/Desktop/DV/index.html#L3113) | 🚀 Space Cadet Mission: Master Blueprint &amp; Report Card (A2) |
-| `#modal-alice-quest-grader` | [L3132](file:///C:/Users/maysa/Desktop/DV/index.html#L3132) | modal-alice-quest-grader |
-| `#modal-homework-grading` | [L3209](file:///C:/Users/maysa/Desktop/DV/index.html#L3209) | Homework Submissions &amp; Grading |
-| `#modal-quiz-results` | [L3238](file:///C:/Users/maysa/Desktop/DV/index.html#L3238) | Diagnostic Quiz Results &amp; Overrides |
-| `#modal-monster-levelup` | [L3273](file:///C:/Users/maysa/Desktop/DV/index.html#L3273) | MONSTER EVOLUTION! |
-| `#modal-monster-hatch` | [L3334](file:///C:/Users/maysa/Desktop/DV/index.html#L3334) | YOUR EGG HAS HATCHED! |
-| `#modal-evolution-path` | [L3356](file:///C:/Users/maysa/Desktop/DV/index.html#L3356) | 🗺️ The 7 Evolution Stages of Adventure Academy |
-| `#modal-progress-check-runner` | [L3382](file:///C:/Users/maysa/Desktop/DV/index.html#L3382) | English Adventure Progress Check |
-| `#modal-pc-celebration` | [L3431](file:///C:/Users/maysa/Desktop/DV/index.html#L3431) | PROGRESS CHECK COMPLETE! |
-| `#modal-progress-check-builder` | [L3451](file:///C:/Users/maysa/Desktop/DV/index.html#L3451) | Create English Progress Check |
-| `#modal-printable-progress-check` | [L3545](file:///C:/Users/maysa/Desktop/DV/index.html#L3545) | Printable A4 Progress Check |
-| `#modal-progress-check-override` | [L3567](file:///C:/Users/maysa/Desktop/DV/index.html#L3567) | Teacher Score Adjustment &amp; Evidence |
-| `#modal-student-quest` | [L3639](file:///C:/Users/maysa/Desktop/DV/index.html#L3639) | 🐾 Quest: Animal Habitats Explorer |
-| `#modal-quest-completed` | [L3730](file:///C:/Users/maysa/Desktop/DV/index.html#L3730) | QUEST COMPLETED! |
-| `#edit-student-xp-modal` | [L4188](file:///C:/Users/maysa/Desktop/DV/index.html#L4188) | Student Name |
+| `#modal-simon-says` | [L3014](file:///C:/Users/maysa/Desktop/DV/index.html#L3014) | Simon Says: Classroom Live |
+| `#modal-worksheet-preview` | [L3069](file:///C:/Users/maysa/Desktop/DV/index.html#L3069) | Worksheet Title |
+| `#modal-alice-poster` | [L3096](file:///C:/Users/maysa/Desktop/DV/index.html#L3096) | 📘 Alice in Wonderland: XP Challenges Master Reference |
+| `#modal-space-cadet-poster` | [L3114](file:///C:/Users/maysa/Desktop/DV/index.html#L3114) | 🚀 Space Cadet Mission: Master Blueprint &amp; Report Card (A2) |
+| `#modal-alice-quest-grader` | [L3133](file:///C:/Users/maysa/Desktop/DV/index.html#L3133) | modal-alice-quest-grader |
+| `#modal-homework-grading` | [L3210](file:///C:/Users/maysa/Desktop/DV/index.html#L3210) | Homework Submissions &amp; Grading |
+| `#modal-quiz-results` | [L3239](file:///C:/Users/maysa/Desktop/DV/index.html#L3239) | Diagnostic Quiz Results &amp; Overrides |
+| `#modal-monster-levelup` | [L3274](file:///C:/Users/maysa/Desktop/DV/index.html#L3274) | MONSTER EVOLUTION! |
+| `#modal-monster-hatch` | [L3335](file:///C:/Users/maysa/Desktop/DV/index.html#L3335) | YOUR EGG HAS HATCHED! |
+| `#modal-evolution-path` | [L3357](file:///C:/Users/maysa/Desktop/DV/index.html#L3357) | 🗺️ The 7 Evolution Stages of Adventure Academy |
+| `#modal-progress-check-runner` | [L3383](file:///C:/Users/maysa/Desktop/DV/index.html#L3383) | English Adventure Progress Check |
+| `#modal-pc-celebration` | [L3432](file:///C:/Users/maysa/Desktop/DV/index.html#L3432) | PROGRESS CHECK COMPLETE! |
+| `#modal-progress-check-builder` | [L3452](file:///C:/Users/maysa/Desktop/DV/index.html#L3452) | Create English Progress Check |
+| `#modal-printable-progress-check` | [L3546](file:///C:/Users/maysa/Desktop/DV/index.html#L3546) | Printable A4 Progress Check |
+| `#modal-progress-check-override` | [L3568](file:///C:/Users/maysa/Desktop/DV/index.html#L3568) | Teacher Score Adjustment &amp; Evidence |
+| `#modal-student-quest` | [L3640](file:///C:/Users/maysa/Desktop/DV/index.html#L3640) | 🐾 Quest: Animal Habitats Explorer |
+| `#modal-quest-completed` | [L3731](file:///C:/Users/maysa/Desktop/DV/index.html#L3731) | QUEST COMPLETED! |
+| `#edit-student-xp-modal` | [L4189](file:///C:/Users/maysa/Desktop/DV/index.html#L4189) | Student Name |
 
 ---
 
@@ -199,7 +199,7 @@
 
 ---
 
-## 7. Exact Script Load Order in [index.html](file:///C:/Users/maysa/Desktop/DV/index.html#L4395-L4424) (68 scripts)
+## 7. Exact Script Load Order in [index.html](file:///C:/Users/maysa/Desktop/DV/index.html#L4395-L4424) (69 scripts)
 
 | # | Script | `?v=` | Index Line |
 | :---: | :--- | :---: | :---: |
@@ -267,7 +267,8 @@
 | 62 | [js/platform-nav.js](file:///C:/Users/maysa/Desktop/DV/js/platform-nav.js) | `9` | [L3001](file:///C:/Users/maysa/Desktop/DV/index.html#L3001) |
 | 63 | [js/daily-backup.js](file:///C:/Users/maysa/Desktop/DV/js/daily-backup.js) | `1` | [L3002](file:///C:/Users/maysa/Desktop/DV/index.html#L3002) |
 | 64 | [js/school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) | `ti111` | [L3003](file:///C:/Users/maysa/Desktop/DV/index.html#L3003) |
-| 65 | [js/milestone-ceremony.js](file:///C:/Users/maysa/Desktop/DV/js/milestone-ceremony.js) | `13` | [L3004](file:///C:/Users/maysa/Desktop/DV/index.html#L3004) |
-| 66 | [js/simon-says-game.js](file:///C:/Users/maysa/Desktop/DV/js/simon-says-game.js) | `4.1` | [L3005](file:///C:/Users/maysa/Desktop/DV/index.html#L3005) |
-| 67 | [js/classroom-sounds.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-sounds.js) | `2` | [L3006](file:///C:/Users/maysa/Desktop/DV/index.html#L3006) |
-| 68 | [js/quiz-engine.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-engine.js) | `1.2` | [L3007](file:///C:/Users/maysa/Desktop/DV/index.html#L3007) |
+| 65 | [js/games-points-bridge.js](file:///C:/Users/maysa/Desktop/DV/js/games-points-bridge.js) | `1` | [L3004](file:///C:/Users/maysa/Desktop/DV/index.html#L3004) |
+| 66 | [js/milestone-ceremony.js](file:///C:/Users/maysa/Desktop/DV/js/milestone-ceremony.js) | `13` | [L3005](file:///C:/Users/maysa/Desktop/DV/index.html#L3005) |
+| 67 | [js/simon-says-game.js](file:///C:/Users/maysa/Desktop/DV/js/simon-says-game.js) | `4.1` | [L3006](file:///C:/Users/maysa/Desktop/DV/index.html#L3006) |
+| 68 | [js/classroom-sounds.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-sounds.js) | `2` | [L3007](file:///C:/Users/maysa/Desktop/DV/index.html#L3007) |
+| 69 | [js/quiz-engine.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-engine.js) | `1.2` | [L3008](file:///C:/Users/maysa/Desktop/DV/index.html#L3008) |
