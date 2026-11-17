@@ -624,8 +624,9 @@
     var box = K.ui.add(K.el('div', 'endbox'));
     box.innerHTML = '<img class="logo" src="art/logo.png" alt="" onerror="this.remove()"><div class="say" style="--c:#9b7bff;font-size:1.6rem">💥 Monster Cannon — answer right, then BOOM!</div>';
     var rows = K.el('div', 'rows'), go = K.el('button', 'btn green', '▶ Start');
-    go.onclick = function () { K.audio(); K.loadSounds(['countdown', 'go', 'correct', 'wrong', 'boom', 'pop', 'fuse', 'pfft', 'thud', 'hay', 'bullseye', 'load', 'boing', 'whoosh', 'win', 'hello']); start(); };
+    go.onclick = function () { K.audio(); K.loadSounds(['countdown', 'go', 'correct', 'wrong', 'boom', 'pop', 'fuse', 'pfft', 'thud', 'hay', 'bullseye', 'load', 'boing', 'whoosh', 'win', 'hello']); K.cls.assign(TEAMS); start(); };
     rows.appendChild(go); box.appendChild(rows);
+    K.cls.setupRow(box, nTeams);
     K.ui.topButtons();
     chars.forEach(function (c, i) { K.after(.5 + i * .45, function () { if (phase === 'title') { c.setState('hello'); K.after(1.4, function () { if (phase === 'title') c.setState('idle'); }); } }); });
     if (K.DEMO) K.after(2.4, function () { go.onclick(); });
@@ -684,6 +685,7 @@
       var again = K.el('button', 'btn', '↻ Play again'); again.onclick = function () { location.reload(); };
       var back = K.el('button', 'btn soft', '🏠 Games'); back.onclick = function () { location.href = '../index.html'; };
       rows.appendChild(again); rows.appendChild(back); box.appendChild(rows);
+      K.cls.pointsPanel(box, TEAMS, { game: 'cannon3d', title: 'Monster Cannon 3D' });
     });
   }
 

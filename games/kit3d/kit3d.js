@@ -576,7 +576,8 @@
       var choices = K.shuffle([item.a].concat(item.w.slice(0, 2)));
       var wrap = K.ui.add(K.el('div', 'qwrap')), card = K.el('div', 'qcard');
       card.style.setProperty('--c', team.c);
-      card.innerHTML = '<div class="qhead"><span>●</span> Team ' + team.name + (opts.prompt ? ' — ' + opts.prompt : '') + '</div>' +
+      var sp = K.cls && K.cls.speaker(team);
+      card.innerHTML = '<div class="qhead"><span>●</span> ' + (sp ? '<i class="qface" data-k3-face="' + sp.id + '">' + sp.initial + '</i>' + K.esc(sp.name) + '\u2019s turn · Team ' + team.name : 'Team ' + team.name) + (opts.prompt ? ' — ' + opts.prompt : '') + '</div>' +
         '<div class="qtext">' + (item.pic ? '<span class="pic">' + item.pic + '</span>' : '') + '<span>' + item.q + '</span></div>';
       var grid = K.el('div', 'opts'), done = false;
       choices.forEach(function (o) {
@@ -584,6 +585,7 @@
         b.onclick = function () {
           if (done) return; done = true; keyFn = null;
           var ok = o === item.a;
+          if (sp) { sp.turns++; if (ok) sp.right++; team.speakerIdx = (team.speakerIdx || 0) + 1; }
           Array.prototype.forEach.call(grid.children, function (x) { if (x.textContent === item.a) x.classList.add('right'); else if (x === b) x.classList.add('wrong'); });
           K.sfx(ok ? 'correct' : 'wrong');
           K.after(ok ? .7 : 1.3, function () { wrap.remove(); if (opts.onAnswer) opts.onAnswer(ok); resolve(ok); });
@@ -591,6 +593,7 @@
         grid.appendChild(b);
       });
       card.appendChild(grid); wrap.appendChild(card);
+      if (sp) K.cls.paintFaces(card);
       keyFn = function (e) { var n = +e.key; if (n >= 1 && n <= 3 && grid.children[n - 1]) grid.children[n - 1].click(); };
       if (K.DEMO) K.after(1.7 + Math.random() * .6, function () {
         var right = opts.demoRight !== undefined ? opts.demoRight : Math.random() < .8;
@@ -607,5 +610,180 @@
     if (!qs.length) qs = [{ q: 'A king of Ancient Egypt is a…', a: 'pharaoh', w: ['chariot', 'camel'], pic: '👑' }];
     qs = K.shuffle(qs); var i = 0;
     return { next: function () { return qs[i++ % qs.length]; }, title: s ? s.title : '' };
+  };
+
+  /* ---------- the class: real teams, whose turn it is, faces, points to the Class Board ----------
+     Uses the same class data, team shuffling and points inbox as the 2D games (games/kit/classroom.js),
+     so a 3D game behaves like the others. Names and faces appear ONLY when the teacher has unlocked the
+     platform in this browser; otherwise the game plays with colour teams and no pupil data at all.
+     Every game: K.cls.setupRow(titleBox) on the title screen, K.cls.assign(TEAMS) when it starts,
+     K.cls.pointsPanel(endBox, TEAMS, {game, title}) at the end. K.ui.ask does the turns by itself. */
+  var C = K.cls = { on: false, classId: '', pupilsOf: {} };
+  var INBOX_KEY = 'eaa_games_points_inbox';
+  var clsReady = null;
+  function loadOnce(url) {
+    return new Promise(function (res) {
+      if (document.querySelector('script[data-k3-src="' + url + '"]')) return res(true);
+      var s = document.createElement('script'); s.src = url; s.async = true; s.setAttribute('data-k3-src', url);
+      s.onload = function () { res(true); }; s.onerror = function () { res(false); };
+      document.head.appendChild(s);
+    });
+  }
+  /* classroom.js needs a few helpers from the 2D kit; give it small stand-ins when that kit is not on the page */
+  function kitShim() {
+    var Kit = root.Kit = root.Kit || {};
+    if (!Kit.pref) {
+      var PKEY = 'eaa_games_prefs', prefs = {};
+      try { prefs = JSON.parse(localStorage.getItem(PKEY) || '{}') || {}; } catch (e) { prefs = {}; }
+      Kit.pref = function (k, v) { if (arguments.length < 2) return prefs[k]; prefs[k] = v; try { localStorage.setItem(PKEY, JSON.stringify(prefs)); } catch (e) {} return v; };
+    }
+    if (!Kit.shuffle) Kit.shuffle = K.shuffle;
+    if (!Kit.clamp) Kit.clamp = K.clamp;
+    if (!Kit.TEAM_LOOK) Kit.TEAM_LOOK = [];
+    if (Kit.preview == null) Kit.preview = false;
+    if (!root.KIT_ROOT) root.KIT_ROOT = K.ROOT;
+    return Kit;
+  }
+  C.boot = function () {
+    if (clsReady) return clsReady;
+    if (K.DEMO && !Q.has('cls')) return (clsReady = Promise.resolve(false));   // ?cls=1 lets the automatic tests use a made-up class
+    kitShim();
+    clsReady = loadOnce(K.ROOT + 'games/kit/classroom.js?v=3').then(function () {
+      var R = root.Kit && root.Kit.classroom;
+      return !!(R && R.isTeacherSession());
+    });
+    return clsReady;
+  };
+  function R() { return root.Kit && root.Kit.classroom; }
+  C.face = function (id) {
+    try { return (root.PupilAvatars && root.PupilAvatars.pictureFor && root.PupilAvatars.pictureFor(id)) || ''; } catch (e) { return ''; }
+  };
+  C.speaker = function (team) {
+    if (!team || !team.pupils || !team.pupils.length) return null;
+    return team.pupils[(team.speakerIdx || 0) % team.pupils.length];
+  };
+  /* the title screen row: pick the class (or no names), see the teams, shuffle them */
+  C.setupRow = function (box, nTeams) {
+    var wrap = K.el('div', 'clsbox'); box.insertBefore(wrap, box.lastChild);
+    C.boot().then(function (ok) {
+      if (!ok) { wrap.remove(); return; }
+      var list = R().classes();
+      if (!list.length) { wrap.remove(); return; }
+      var Kit = root.Kit;
+      var saved = Kit.pref('classId');
+      C.classId = saved === 'none' ? '' : (list.some(function (c) { return c.id === saved; }) ? saved : R().defaultClassId());
+      function draw(remix) {
+        wrap.innerHTML = '';
+        var pick = K.el('div', 'clspick');
+        list.forEach(function (c) {
+          var b = K.el('button', 'clsbtn' + (c.id === C.classId ? ' on' : ''), c.label);
+          b.onclick = function () { C.classId = c.id; Kit.pref('classId', c.id); draw(); };
+          pick.appendChild(b);
+        });
+        var none = K.el('button', 'clsbtn' + (!C.classId ? ' on' : ''), '🎨 No names');
+        none.title = 'Play with colour teams only';
+        none.onclick = function () { C.classId = ''; Kit.pref('classId', 'none'); draw(); };
+        pick.appendChild(none);
+        wrap.appendChild(pick);
+        C.on = false; C.preview = null;
+        if (!C.classId) return;
+        var teams = R().buildTeams(nTeams, { classId: C.classId, teamMode: 'fair', forceRemix: !!remix });
+        if (!teams.some(function (t) { return t.pupils && t.pupils.length; })) return;
+        C.on = true; C.preview = teams;
+        var grid = K.el('div', 'clsteams');
+        teams.slice(0, nTeams).forEach(function (t, i) {
+          var col = K.el('div', 'clsteam'); col.style.setProperty('--c', K.TEAMS[i].c);
+          col.appendChild(K.el('b', '', K.TEAMS[i].name));
+          (t.pupils || []).forEach(function (p) {
+            var chip = K.el('span', 'clskid');
+            chip.innerHTML = '<i data-k3-face="' + p.id + '">' + p.initial + '</i>' + K.esc(p.name);
+            col.appendChild(chip);
+          });
+          grid.appendChild(col);
+        });
+        wrap.appendChild(grid);
+        var mix = K.el('button', 'clsbtn mix', '🔀 New teams'); mix.onclick = function () { draw(true); };
+        wrap.appendChild(mix);
+        C.paintFaces(wrap);
+      }
+      draw();
+      root.addEventListener('eaa:avatars-ready', function () { C.paintFaces(wrap); });
+      [1500, 4000, 8000].forEach(function (ms) { setTimeout(function () { C.paintFaces(document); }, ms); });
+    });
+  };
+  C.paintFaces = function (scope) {
+    var nodes = (scope || document).querySelectorAll('[data-k3-face]');
+    Array.prototype.forEach.call(nodes, function (n) {
+      var u = C.face(n.getAttribute('data-k3-face'));
+      if (!u) return;
+      var im = n.querySelector('img');
+      if (!im) { n.textContent = ''; im = document.createElement('img'); im.alt = ''; n.appendChild(im); }
+      if (im.getAttribute('src') !== u) im.setAttribute('src', u);
+    });
+  };
+  /* when the game starts: give each colour team its pupils */
+  C.assign = function (TEAMS) {
+    if (!C.on || !C.preview) return;
+    TEAMS.forEach(function (t, i) {
+      var src = C.preview[i];
+      t.pupils = src && src.pupils ? src.pupils.map(function (p) { return { id: p.id, name: p.name, initial: p.initial, right: 0, turns: 0 }; }) : [];
+      t.speakerIdx = 0;
+    });
+  };
+  K.esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  /* how many points each child gets: by the team's place, plus 2 for every own right answer (5..30) */
+  var PLACE_XP = [20, 15, 10, 10];
+  C.pointsPanel = function (box, TEAMS, opts) {
+    opts = opts || {};
+    if (!C.on || !C.classId || !TEAMS.some(function (t) { return t.pupils && t.pupils.length; })) return null;
+    var scoreOf = opts.scoreOf || function (t) { return t.score || 0; };
+    var sorted = TEAMS.map(function (t) { return scoreOf(t); }).sort(function (a, b) { return b - a; });
+    var base = TEAMS.map(function (t) { return PLACE_XP[Math.min(3, sorted.indexOf(scoreOf(t)))]; });
+    var stamp = Date.now().toString(36) + Math.random().toString(36).slice(2, 6), sent = false;
+    var card = K.el('div', 'xpcard');
+    var rows = K.el('div', 'xprows'), send = K.el('button', 'btn green', '');
+    function xpFor(t, i, p) { return K.clamp(base[i] + 2 * (p.right || 0), 5, 30); }
+    function total() { var n = 0, k = 0; TEAMS.forEach(function (t, i) { (t.pupils || []).forEach(function (p) { n += xpFor(t, i, p); k++; }); }); return { xp: n, kids: k }; }
+    function draw() {
+      rows.innerHTML = '';
+      TEAMS.forEach(function (t, i) {
+        if (!t.pupils || !t.pupils.length) return;
+        var r = K.el('div', 'xprow'); r.style.setProperty('--c', t.c);
+        var minus = K.el('button', 'xpstep', '−'), plus = K.el('button', 'xpstep', '+');
+        minus.disabled = sent || base[i] <= 5; plus.disabled = sent || base[i] >= 25;
+        minus.onclick = function () { base[i] = Math.max(5, base[i] - 5); draw(); };
+        plus.onclick = function () { base[i] = Math.min(25, base[i] + 5); draw(); };
+        var kids = t.pupils.map(function (p) { return '<span class="xpkid"><i data-k3-face="' + p.id + '">' + p.initial + '</i>' + K.esc(p.name) + ' <b>+' + xpFor(t, i, p) + '</b></span>'; }).join('');
+        r.innerHTML = '<div class="xpteam">' + t.name + '</div><div class="xpkids">' + kids + '</div>';
+        var ctl = K.el('div', 'xpctl'); ctl.appendChild(minus); ctl.appendChild(K.el('b', '', base[i] + ' XP')); ctl.appendChild(plus);
+        r.appendChild(ctl); rows.appendChild(r);
+      });
+      var tt = total();
+      send.textContent = sent ? '✓ Sent to the Class Board!' : '⭐ Send ' + tt.xp + ' XP to ' + tt.kids + ' pupils';
+      send.disabled = sent;
+      C.paintFaces(card);
+    }
+    send.onclick = function () {
+      if (sent) return;
+      var entries = [];
+      TEAMS.forEach(function (t, i) {
+        (t.pupils || []).forEach(function (p) {
+          entries.push({ id: (opts.game || 'game3d') + '_' + stamp + '_' + p.id, studentId: p.id, classId: C.classId, amount: xpFor(t, i, p),
+            reason: (opts.title || '3D game') + ' · Team ' + t.name, icon: '🎮', ts: Date.now() });
+        });
+      });
+      var inbox = [];
+      try { inbox = JSON.parse(localStorage.getItem(INBOX_KEY) || '[]') || []; } catch (e) { inbox = []; }
+      var have = {}; inbox.forEach(function (e) { if (e && e.id) have[e.id] = 1; });
+      entries.forEach(function (e) { if (!have[e.id]) inbox.push(e); });
+      try { localStorage.setItem(INBOX_KEY, JSON.stringify(inbox)); } catch (e) {}
+      try { if (root.BroadcastChannel) { var bc = new BroadcastChannel('eaa_games_xp'); bc.postMessage({ type: 'XP_QUEUED', count: entries.length }); bc.close(); } } catch (e) {}
+      sent = true; K.sfx('win'); draw();
+    };
+    card.appendChild(K.el('div', 'xphead', '⭐ Points for the Class Board <small>place in the game + 2 for each own right answer</small>'));
+    card.appendChild(rows); card.appendChild(send);
+    box.insertBefore(card, box.firstChild.nextSibling || null);
+    draw();
+    return card;
   };
 })(window);

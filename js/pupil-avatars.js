@@ -3339,5 +3339,30 @@
   };
   root.PupilAvatars = api;
 
+  /* Faces live only in the teacher-locked cloud rows. If the board loaded them while it was still locked
+     (or after its sign-in ran out) the cloud returned nothing and every pupil showed a "?" head.
+     When the teacher unlocks, load the faces and looks again and redraw. Nothing is kept in browser storage. */
+  function refreshAfterUnlock(tries) {
+    if (state === 'idle') return;                       // never loaded yet: the normal first load will read them
+    if (state === 'loading') {                          // a load is running: look again when it is done
+      if ((tries || 0) < 8) setTimeout(function () { refreshAfterUnlock((tries || 0) + 1); }, 1500);
+      return;
+    }
+    var ids = Object.keys(data.approved || {});
+    var missing = ids.filter(function (id) { return !heads[id]; });
+    if (!missing.length && !Object.keys(composedDefault).length) return;
+    composedDefault = {}; pendingDefault = {};
+    Object.keys(composedEmotion).forEach(function (k) { delete composedEmotion[k]; });
+    state = 'idle';
+    load();
+  }
+  api.refreshFaces = function () { refreshAfterUnlock(0); };
+  try {
+    root.addEventListener('eaa:teacher-unlocked', function (e) {
+      if (e && e.detail && e.detail.offline) return;   // offline unlock: the cloud is paused, nothing new to read
+      setTimeout(function () { refreshAfterUnlock(0); }, 700);
+    });
+  } catch (e) { /* no window events (tests) */ }
+
   if (on()) { setTimeout(function () { if (state === 'idle') load(); }, 1500); }
 })(typeof window !== 'undefined' ? window : this);

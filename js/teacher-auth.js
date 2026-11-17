@@ -1582,7 +1582,10 @@
           root.__eaa_auth_unlocked = false;
           try { sessionStorage.removeItem(UNLOCK_SESSION_KEY); } catch (e) {}
           if (IS_GUARDED_SUBPAGE) redirectToMainGate();
-          else if (el('platform-lock-screen')) lockPlatform();
+          else if (el('platform-lock-screen')) {
+            // On the classroom board the phone-code sign-in cannot renew itself, so this is the usual reason.
+            lockPlatform(isTrustedDevice() ? {} : { reason: 'The board’s sign-in has ended. Tap 📱 Code on your phone and enter the new code.' });
+          }
         }
       });
     }
