@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff8f3">
+  <title>Games Collection · English Adventure Academy</title>
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="kit/kit.css?v=3">
+  <style>
+    .hub { max-width: 1260px; margin: 0 auto; padding: 84px 18px 48px; }
+    .hub-hero {
+      position: relative; display: grid; grid-template-columns: 1.32fr 1fr; gap: 24px; align-items: center;
+      padding: 32px 36px; border-radius: 34px; overflow: hidden;
+      background: linear-gradient(135deg, #ffe5f1 0%, #eee4ff 52%, #dff4ff 100%);
+      box-shadow: var(--shadow); border: 4px solid #fff;
+      outline: 2.5px dashed rgba(255, 116, 166, .35); outline-offset: -10px;
+    }
+    .hub-hero h1 {
+      margin: 0; font-size: 3.1em; line-height: 1.02; font-weight: 900; letter-spacing: -.02em;
+      color: var(--plum);
+    }
+    .hub-hero h1 span {
+      background: linear-gradient(90deg, var(--pink-d), var(--lilac-d));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hub-hero p { margin: 12px 0 18px; font-weight: 800; font-size: 1.04em; color: var(--plum-soft); max-width: 540px; line-height: 1.45; }
+    .hub-tag {
+      display: inline-flex; gap: 8px; align-items: center; padding: 6px 16px; border-radius: 999px;
+      background: #fff; font-weight: 900; font-size: .76em; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--pink-d); box-shadow: 0 3px 0 #f4bfd9; margin-bottom: 14px;
+    }
+    .hub-stats { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .hub-stats .stat-pill {
+      padding: 9px 16px; border-radius: 18px; background: rgba(255, 255, 255, .88);
+      border: 2px solid #fff; box-shadow: 0 4px 0 rgba(214, 188, 235, .45);
+      font-weight: 800; font-size: .86em;
+    }
+    .hub-stats .stat-pill b { display: block; font-family: var(--font-display); font-size: 1.48em; color: var(--plum); line-height: 1.05; }
+    .hub-art { position: relative; height: 246px; }
+    .hub-art img {
+      position: absolute; object-fit: contain;
+      filter: drop-shadow(0 14px 16px rgba(74, 34, 108, .25));
+      animation: heroFloat 3.4s ease-in-out infinite;
+    }
+    @keyframes heroFloat { 50% { transform: translateY(-10px) rotate(-3deg); } }
+
+    .hub-tools { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin: 24px 0 14px; }
+    .hub-tools .seg { flex: 1; min-width: 260px; }
+    .hub-right-tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .search { width: 220px; min-height: 44px; border-radius: 999px; padding: 8px 16px; }
+    .sort-sel {
+      min-height: 44px; padding: 8px 14px; border-radius: 999px; border: 2.5px solid var(--line);
+      background: #fff; font-weight: 800; font-size: .88em; cursor: pointer; box-shadow: 0 3px 0 #f0e1f2;
+    }
+
+    .fam-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 28px 4px 14px; }
+    .fam-title h2 { margin: 0; font-size: 1.5em; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+    .fam-title span { font-weight: 800; color: var(--plum-soft); font-size: .88em; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(276px, 1fr)); gap: 20px; }
+    .gcard {
+      display: flex; flex-direction: column; background: #fff; border-radius: 26px; overflow: hidden;
+      border: 3.5px solid #fff;
+      box-shadow: 0 14px 32px -14px rgba(74, 34, 108, .32), 0 5px 0 #eedaf0;
+      transition: transform .18s var(--snap), box-shadow .18s;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .gcard:hover { transform: translateY(-6px); box-shadow: 0 24px 42px -16px rgba(74, 34, 108, .46), 0 7px 0 #e6c9ec; }
+    }
+    .gmedia {
+      position: relative; aspect-ratio: 16 / 10;
+      background: linear-gradient(135deg, #ffe3f0, #e9e1ff);
+      overflow: hidden; cursor: pointer;
+    }
+    .gmedia img.poster, .gmedia video, .gmedia iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 0; display: block;
+    }
+    .gmedia video, .gmedia iframe { opacity: 0; transition: opacity .26s ease; pointer-events: none; }
+    .gmedia video.on, .gmedia iframe.on { opacity: 1; }
+    .gmedia .badge {
+      position: absolute; z-index: 3; padding: 4px 11px; border-radius: 999px;
+      font-family: var(--font-display); font-weight: 900; font-size: .68em; letter-spacing: .04em;
+    }
+    .badge.ready {
+      top: 10px; right: 10px; background: rgba(255, 255, 255, .95); color: var(--pink-d);
+      border: 1.5px solid #ffd0e5; box-shadow: 0 3px 0 rgba(222, 72, 130, .22);
+    }
+    .badge.editable {
+      bottom: 10px; left: 10px; background: #d6faeb; color: #0f7a5a;
+      border: 1.5px solid #96ebd0; box-shadow: 0 3px 0 rgba(23, 163, 123, .22);
+    }
+    .badge.watch-btn {
+      bottom: 10px; right: 10px; background: rgba(42, 22, 68, .82); color: #fff;
+      border: 1.5px solid rgba(255, 255, 255, .75); cursor: pointer;
+      opacity: 0; transform: translateY(4px); transition: opacity .18s, transform .18s;
+    }
+    .gcard:hover .badge.watch-btn { opacity: 1; transform: translateY(0); }
+
+    .gbody { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .gcat { font-size: .7em; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; color: var(--plum-soft); display: flex; align-items: center; gap: 5px; }
+    .gbody h3 { margin: 0; font-size: 1.2em; font-weight: 900; color: var(--plum); }
+    .gsub { margin: 0; font-size: .83em; font-weight: 700; color: var(--plum-soft); line-height: 1.35; }
+    .gmeta { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 8px; }
+    .gmeta span { padding: 3px 10px; border-radius: 999px; background: #faf2fc; border: 1.5px solid #f0ddf4; font-size: .71em; font-weight: 800; }
+    .gactions { margin-top: auto; display: flex; gap: 8px; align-items: center; }
+    .gactions .btn.play-cta { flex: 1; min-height: 46px; font-size: .95em; }
+
+    /* Coming Next Cards with Real Kawaii Sticker Art */
+    .gcard.soon { opacity: .94; }
+    .gcard.soon .gmedia { cursor: default; display: grid; place-items: center; }
+    .gcard.soon .soon-sticker {
+      width: 46%; height: 74%; object-fit: contain; position: relative; z-index: 1;
+      filter: drop-shadow(0 10px 14px rgba(74, 34, 108, .24));
+      animation: heroFloat 3.8s ease-in-out infinite;
+    }
+    .gcard.soon .soon-emoji { font-size: 3.6em; filter: drop-shadow(0 8px 10px rgba(74, 34, 108, .18)); }
+    .gcard.soon .gmedia::after {
+      content: 'COMING NEXT'; position: absolute; top: 10px; right: 10px; z-index: 2;
+      padding: 4px 11px; border-radius: 999px; background: rgba(255, 255, 255, .92);
+      font-family: var(--font-display); font-size: .66em; font-weight: 900; letter-spacing: .08em; color: var(--plum-soft);
+    }
+    .soon-1 { background: linear-gradient(135deg, #ffe2ee, #ffd6c4) !important; }
+    .soon-2 { background: linear-gradient(135deg, #e1f3ff, #e4dcff) !important; }
+    .soon-3 { background: linear-gradient(135deg, #daf9ee, #fff2cc) !important; }
+    .soon-4 { background: linear-gradient(135deg, #efe5ff, #ffe2f1) !important; }
+
+    /* Video Preview Modal */
+    .vid-modal-stage {
+      width: 100%; aspect-ratio: 16 / 10; border-radius: 20px; overflow: hidden;
+      background: #181130; border: 3px solid #f2dff4; margin-bottom: 12px; position: relative;
+    }
+    .vid-modal-stage video, .vid-modal-stage iframe { width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+    .empty { text-align: center; padding: 40px; font-weight: 800; color: var(--plum-soft); }
+
+    @media (max-width: 820px) {
+      .hub-hero { grid-template-columns: 1fr; padding: 24px; }
+      .hub-hero h1 { font-size: 2.25em; }
+      .hub-art { display: none; }
+      .hub-right-tools, .search { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="hub">
+    <section class="hub-hero">
+      <div>
+        <div class="hub-tag">✦ Classroom Smart-Board Arcade</div>
+        <h1>Games <span>Collection</span></h1>
+        <p>Open any game, pick a curriculum pack (or drop your own pictures &amp; Excel questions in the Studio), and play with kawaii mascot teams, real pupil avatars, and 1-tap Class Board XP.</p>
+        <div class="hub-stats" id="stats"></div>
+      </div>
+      <div class="hub-art" aria-hidden="true">
+        <img src="../assets/games/mascots/bunny.webp" alt="" style="left:2%;top:14%;width:118px">
+        <img src="../assets/games/reveal/cam_bunny.webp" alt="" style="left:36%;top:0;width:116px;animation-delay:-.9s">
+        <img src="../assets/games/reveal/prop_star_mallet.webp" alt="" style="right:4%;top:2%;width:108px;animation-delay:-1.8s">
+        <img src="../assets/games/mascots/ducky.webp" alt="" style="left:28%;bottom:0;width:104px;animation-delay:-.5s">
+        <img src="../assets/games/reveal/mascot_sneaky_cat.webp" alt="" style="right:6%;bottom:-2%;width:132px;animation-delay:-1.4s">
+      </div>
+    </section>
+
+    <div class="hub-tools">
+      <div class="seg" id="fams"></div>
+      <div class="hub-right-tools">
+        <select class="sort-sel" id="sortSel" aria-label="Sort games">
+          <option value="default">✦ Featured order</option>
+          <option value="az">🔤 Title A → Z</option>
+          <option value="ready">▶ Ready to play first</option>
+        </select>
+        <input class="input search" id="q" type="search" placeholder="🔍 Search games…" aria-label="Search games">
+      </div>
+    </div>
+
+    <div id="list"></div>
+  </main>
+
+  <script src="kit/packs.js?v=3"></script>
+  <script src="kit/kit.js?v=3"></script>
+  <script src="kit/classroom.js?v=3"></script>
+  <script src="kit/questions.js?v=3"></script>
+  <script>
+  (function () {
+    'use strict';
+    window.KIT_ROOT = '../';
+    var Kit = window.Kit, el = Kit.el;
+
+    var FAMS = [
+      { id: 'reveal', name: 'Hidden Pictures', e: '🔍', note: 'Uncover a mystery picture, shout or tap the word' },
+      { id: 'team', name: 'Team Prize Games', e: '🏆', note: 'Answer curriculum questions, win surprise bonuses' },
+      { id: 'scene', name: 'Tap the Scene', e: '🗺️', note: 'Colour shadows, prepositions & interactive rooms' },
+      { id: 'words', name: 'Word Arcade', e: '🔤', note: 'Phonics, spelling & sentence builders' },
+      { id: 'pickers', name: 'Student Pickers', e: '🎲', note: 'Playful ways to choose the next speaker' },
+      { id: 'live', name: 'Live & Special', e: '📡', note: 'Homework links, QR card scan & webcam slice' }
+    ];
+
+    var R = 'reveal/index.html?game=';
+    var GAMES = [
+      { id: 'flashlight', fam: 'reveal', icon: '🔦', name: 'Flashlight Finder', sub: 'Golden Beam · Word or Sentence Clue · Dark Room', meta: ['Listening', 'Arrangeable', '5–10 min'], steps: ['Hear or read the clue banner', 'Sweep the golden flashlight beam', 'Tap the hidden picture!'] },
+      { id: 'doors', fam: 'reveal', icon: '🚪', name: 'Sneaky Doors', sub: '8 Candy Double-Doors · Spotlight Peek · Rooftop Mystery', meta: ['Speaking', '2–6 Teams', '8–12 min'], steps: ['Pick one of 8 moonlit rooftop doors', 'Sneak a spotlight peek through the gap', 'Swing both doors open & guess!'] },
+      { id: 'camera', fam: 'reveal', icon: '📸', name: 'Snap Cameras', sub: '4 Animal Instant Cameras · Polaroid Clues · Candy Quiz', meta: ['Memory & Reading', 'Audio Choices', '8–12 min'], steps: ['Tap Bunny, Frog, Bear or Duck camera', 'Inspect the ejected Polaroid clue', 'Tap A, B, C, D or shout it out!'] },
+      { id: 'orbit', fam: 'reveal', icon: '🧩', name: 'Orbit Puzzle', sub: '3D Interlocking Jigsaw · 8 Space Motion Modes · Guess Early', meta: ['Speaking', '8 Motion Modes', '8–15 min'], steps: ['Jigsaw pieces orbit in cosmic 3D space', 'Snap pieces into the frame one by one', 'Guess before the puzzle finishes!'] },
+      { id: 'bricks', fam: 'reveal', icon: '🧱', name: 'Brick Blast', sub: 'Toy Star Mallet · 3D Candy Brick Wall · Pop & Reveal', meta: ['Speaking', 'Teams or Class', '8–12 min'], steps: ['Swing the Star Mallet at any brick', 'Pop holes in the pastel brick wall', 'Guess what is hiding behind!'] },
+      { id: 'tiles', fam: 'reveal', icon: '🔤', name: 'Letter Tiles', sub: 'Alphabet A–X · Candy Tiles Pop · Uncover the Picture', meta: ['Alphabet & Phonics', 'Teams or Class', '8–12 min'], steps: ['Students call out a letter A–X', 'That candy letter tile pops away', 'Guess the hidden picture!'] },
+      { id: 'pixels', fam: 'reveal', icon: '🟪', name: 'Pixel Quiz', sub: 'Sharpening Mosaic · 4 Candy Choices · Early Points Bonus', meta: ['Reading', '50/50 Hint', '5–10 min'], steps: ['A blocky candy mosaic appears', 'Tiles sharpen second by second', 'Tap the right word early for max points!'] },
+
+      { id: 'bomb', url: 'prize/index.html?game=bomb', studioTab: 'questions', fam: 'team', icon: '🎁', name: 'Bomb or Bonus', sub: 'Pick a Mystery Box · Safe Points or Silly Boom?', meta: ['4-Choice or Speak', '2–6 Teams', '8–12 min'], steps: ['Answer a question for your team', 'Pick any bobbing mystery gift box', 'Watch it burst into +Stars, 2×, Swap or a Silly Bomb!'] },
+      { id: 'claw', url: 'prize/index.html?game=claw', studioTab: 'questions', fam: 'team', icon: '🧸', name: 'Claw Prize', sub: 'Drop the Arcade Claw · Grab a Plush Toy', meta: ['4-Choice or Speak', '2–6 Teams', '8–12 min'], steps: ['Answer a question to power the claw', 'Tap any plushie slot to aim', 'Drop the claw & win +10 to +40 Stars!'] },
+      { id: 'keepgive', url: 'prize/index.html?game=keepgive', studioTab: 'questions', fam: 'team', icon: '🎀', name: 'Keep It or Give It', sub: 'Keep the Mystery Gift or Give It to Rivals', meta: ['4-Choice or Speak', '2–6 Teams', '8–12 min'], steps: ['Answer a question to unlock a gift box', 'Peek inside at the secret prize or bomb', 'Decide: KEEP IT or GIVE IT to a rival team!'] },
+      { id: 'croc', url: 'prize/index.html?game=croc', studioTab: 'questions', fam: 'team', icon: '🐊', name: 'Crocodile Snap', sub: "Press a Tooth · Don't Wake the Croc!", meta: ['4-Choice or Speak', '2–6 Teams', '6–10 min'], steps: ['Answer a question to earn a tooth press', 'Tap any shiny white crocodile tooth (+10 ⭐)', 'Avoid the 1 secret tooth that makes Croc SNAP!'] },
+      { id: 'cups', url: 'prize/index.html?game=cups', studioTab: 'questions', fam: 'team', icon: '🏠', name: '3-House Cup Shuffle', sub: 'Follow the Shuffling Houses · Spot the Trophy', meta: ['Focus & Quiz', '2–6 Teams', '8–12 min'], steps: ['Watch the Golden Trophy hide under a cottage', 'Follow the 3 cottages as they shuffle', 'Answer & tap the cottage hiding the trophy!'] },
+      { id: 'tug', url: 'prize/index.html?game=tug', studioTab: 'questions', fam: 'team', icon: '🪢', name: 'Tug of War', sub: 'Team Showdown · Correct Answers Pull the Rope', meta: ['2 Teams', 'Showdown', '6–10 min'], steps: ['Two teams pull opposite ends of the rope', 'Answer right to yank the rope (+10 ⭐)', 'Pull the flag over your line for +30 ⭐!'] },
+      { id: 'race3d', url: 'race3d/', poster: 'posters/race3d.jpg?v=3', studioTab: 'questions', fam: 'team', icon: '🏃', name: 'Sprint Race 3D', sub: '3D Running Track · Answer Right to Sprint · First to Finish Wins!', meta: ['3D Stadium', '2–4 Teams', '8–12 min'], steps: ['1. Answer the question', '2. Your runner sprints', '3. First to the finish wins!'] },
+      { id: 'cannon3d', url: 'cannon3d/', poster: 'posters/cannon3d.jpg?v=3', studioTab: 'questions', fam: 'team', icon: '💥', name: 'Monster Cannon 3D', sub: '3D Meadow · Answer Right · Aim the Cannon & Pop Balloons!', meta: ['3D Physics', '2–4 Teams', '8–12 min'], steps: ['1. Answer right', '2. Aim the cannon', '3. BOOM — pop balloons!'] },
+      { id: 'penalty3d', url: 'penalty3d/', poster: 'posters/penalty3d.jpg?v=3', studioTab: 'questions', fam: 'team', icon: '⚽', name: 'Penalty Shootout 3D', sub: '3D Football Pitch · Answer Right · Aim & Beat the Keeper!', meta: ['3D Stadium', '2–4 Teams', '8–12 min'], steps: ['1. Answer right', '2. Pick your spot', '3. Shoot and score!'] },
+
+      { id: 'shadows', url: 'scene/index.html?game=shadows', studioTab: 'pictures', fam: 'scene', icon: '🐸', name: 'Peekaboo Shadows', sub: 'Listen · Tap the Matching Silhouette · Watch It Colour In!', meta: ['Listening', 'Teams or Class', '6–10 min'], steps: ['Hear or read the mystery word clue', 'Tap the matching dark shadow silhouette', 'Watch it pop into full 3D colour!'] },
+      { id: 'prep', url: 'scene/index.html?game=prep', studioTab: 'pictures', fam: 'scene', icon: '🐱', name: 'Preposition Room', sub: 'Read & Listen · Move Kitty ON / IN / UNDER / NEXT TO!', meta: ['Prepositions', 'Teams or Class', '6–10 min'], steps: ['Listen to where Kitty wants to go', 'Tap the matching spot in the cozy room', 'Watch Kitty jump ON / IN / UNDER / NEXT TO it!'] },
+      { id: 'looktap', url: 'scene/index.html?game=looktap', studioTab: 'pictures', fam: 'scene', icon: '🔎', name: 'Look & Tap Scene', sub: 'Illustrated Room · Tap Objects · Audio Clue Quiz', meta: ['Vocabulary', 'Teams or Class', '6–10 min'], steps: ['Scan the objects placed around the room', 'Hear or read the target word', 'Tap the matching object for +10 Stars!'] },
+
+      { id: 'time-train', url: 'past/index.html', studioTab: 'sentences', fam: 'words', icon: '🚂', name: 'Time Train', sub: "Past Gate · Didn't Bridge · Did Tower", meta: ['Past Simple', 'Teams or Class', '8–15 min'], steps: ['Station 1 (Past Gate): Pick the golden past-tense verb ticket', "Station 2 (Didn't Bridge): Place didn't & watch the verb ⏪ rewind to base", 'Station 3 (Did Tower): Build the Did…? question & ride to Ancient Egypt!'] },
+      { id: 'meteor', url: 'words/index.html?game=meteor', studioTab: 'pictures', fam: 'words', icon: '☄️', name: 'Meteor Spelling', sub: 'Tap Missing Letters · Rocket Blasts the Meteors', meta: ['Spelling', 'Teams or Class', '6–10 min'], steps: ['See the picture & missing-letter word', 'Tap missing letters in order to blast meteors', 'Complete the word for +10 Stars!'] },
+      { id: 'mochi', url: 'words/index.html?game=mochi', studioTab: 'pictures', fam: 'words', icon: '🍡', name: 'Mochi Word Merge', sub: 'Match Pictures & Words · Merge the Sweets', meta: ['Vocabulary', 'Teams or Class', '6–10 min'], steps: ['Tap a picture mochi tile', 'Match it with its word mochi tile', 'Merge all pairs for sweet stars!'] },
+      { id: 'bubbles', url: 'words/index.html?game=bubbles', studioTab: 'pictures', fam: 'words', icon: '🫧', name: 'Bubble Word Garden', sub: 'Look at the Picture · Pop Floating Letters in Order', meta: ['Spelling', 'Teams or Class', '6–10 min'], steps: ['See the picture & hear the word', 'Pop floating letter bubbles in order', 'Spell the whole word to bloom!'] },
+      { id: 'builder', url: 'words/index.html?game=builder', studioTab: 'sentences', fam: 'words', icon: '🧱', name: 'Sentence Builder', sub: 'Snap Scrambled Words into the Right Sentence', meta: ['Grammar', 'Teams or Class', '8–12 min'], steps: ['Look at the story picture clue', 'Tap scrambled word blocks in order', 'Snap the full sentence & hear it read aloud!'] },
+      { id: 'pairs', url: 'words/index.html?game=pairs', studioTab: 'pictures', fam: 'words', icon: '🃏', name: 'Matching Pairs', sub: 'Flip Cards · Match Words, Pictures & Spoken Audio', meta: ['Memory', 'Teams or Class', '6–10 min'], steps: ['Flip two cards on the pastel board', 'Match each picture with its partner word', 'Clear the board to win!'] },
+      { id: 'bingo', url: 'words/index.html?game=bingo', studioTab: 'pictures', fam: 'words', icon: '🔢', name: 'Picture Bingo', sub: 'Listen to the Caller · Stamp Your 3×3 Board · BINGO!', meta: ['Listening', 'Teams or Class', '6–10 min'], steps: ['Listen to the Picture Caller clue', 'Tap & stamp the matching picture on your 3×3 grid', 'Complete a line of 3 stars for BINGO!'] },
+
+      { id: 'ufo', url: 'pickers/index.html?game=ufo', fam: 'pickers', icon: '🛸', name: 'UFO Beam Picker', sub: 'Class Crowd · UFO Beams Up the Next Speaker', meta: ['Speaking', 'No Repeats', 'Any Time'], steps: ['Tap Beam Up Speaker!', 'Watch the UFO scan the class crowd', 'Pick the lucky speaker & show a prompt!'] },
+      { id: 'wash', url: 'pickers/index.html?game=wash', fam: 'pickers', icon: '🫧', name: 'Bubble Wash Picker', sub: 'Spin the Washer · Which Pupil Pops Out?', meta: ['Speaking', 'No Repeats', 'Any Time'], steps: ['Tap Spin & Pop!', 'Watch names tumble in the soap bubbles', 'Pop out the next speaker for +10 Stars!'] },
+      { id: 'slime', url: 'pickers/index.html?game=slime', fam: 'pickers', icon: '🟢', name: 'Slime Name Clash', sub: 'Bouncing Slimes · Calls Two Speakers Together', meta: ['Pair Work', 'No Repeats', 'Any Time'], steps: ['Tap Clash Two Speakers!', 'Bouncing jelly slimes pick a pair', 'Pair answers or acts out the prompt!'] },
+      { id: 'dragon', url: 'pickers/index.html?game=dragon', fam: 'pickers', icon: '🐉', name: 'Sea Dragon Call', sub: 'Friendly Dragon Calls a Name from the Waves', meta: ['Speaking', 'No Repeats', 'Any Time'], steps: ['Tap Call from the Waves!', 'Sea Dragon dives into the turquoise sea', 'Golden seashell reveals the speaker!'] },
+
+      { id: 'island', url: 'live/index.html?game=island', studioTab: 'questions', fam: 'live', icon: '🏝️', name: 'Island Hop Live', sub: '6-Digit Room Code & Homework Links · Hop Across Islands', meta: ['Homework & Board', '5 Islands', '8–12 min'], steps: ['Copy the 6-digit Room Code homework link', 'Answer curriculum questions to sail ahead', 'Reach Treasure Bay for +30 Bonus Stars!'] },
+      { id: 'scan', url: 'live/index.html?game=scan', studioTab: 'questions', fam: 'live', icon: '🪪', name: 'Card Scan Quiz', sub: 'Pupils Hold Printed Cards · Phone Camera Scans Answers', meta: ['Whole Class', 'Printable Cards', '8–12 min'], steps: ['Print or hold up colour A/B/C/D cards', 'Start the camera scanner or tap votes', 'Reveal the answer & celebrate!'] },
+      { id: 'slice', url: 'live/index.html?game=slice', studioTab: 'questions', fam: 'live', icon: '📷', name: 'Webcam Slice', sub: 'Move Hands in Front of the Board Camera to Slice Answers', meta: ['Motion / Touch', 'Active Play', '6–10 min'], steps: ['Turn on Hand-Motion Cam or use touch', 'Wave or swipe to slice the right floating card', 'Score +15 Stars per clean slice!'] }
+    ];
+
+    var ready = GAMES.filter(function (g) { return !g.soon; }).length;
+    var statsEl = document.getElementById('stats');
+    statsEl.appendChild(el('div', { class: 'stat-pill' }, [el('b', { text: String(ready) }), 'games playable now']));
+    var picCountNode = el('b', { text: String(Kit.sets.builtIn().length) });
+    statsEl.appendChild(el('div', { class: 'stat-pill' }, [picCountNode, 'picture packs']));
+    var qCountNode = el('b', { text: '73+' });
+    statsEl.appendChild(el('div', { class: 'stat-pill' }, [qCountNode, 'question packs']));
+    var sCountNode = el('b', { text: String(Kit.sentences ? Kit.sentences.builtIn().length : 3) });
+    statsEl.appendChild(el('div', { class: 'stat-pill' }, [sCountNode, 'sentence packs']));
+    statsEl.appendChild(el('button', {
+      type: 'button',
+      class: 'btn lilac',
+      text: '🎨 Make It Your Own Studio',
+      onclick: function () { Kit.sound('tap'); Kit.studio({ tab: 'pictures' }, refreshCounts); }
+    }));
+
+    function refreshCounts() {
+      Kit.sets.all().then(function (all) { picCountNode.textContent = String(all.length); });
+      if (Kit.questions) {
+        Kit.questions.all().then(function (allQ) { qCountNode.textContent = String(allQ.length); });
+      }
+      if (Kit.sentences) {
+        Kit.sentences.all().then(function (allS) { sCountNode.textContent = String(allS.length); });
+      }
+    }
+    refreshCounts();
+
+    Kit.topbar({
+      home: '../index.html',
+      homeLabel: 'Platform',
+      title: '✦ Games Collection',
+      onEdit: function () { Kit.studio({ tab: 'pictures' }, refreshCounts); },
+      editLabel: '🎨 Studio'
+    });
+
+    var state = { fam: Kit.pref('hubFam') || 'all', q: '', sort: 'default' };
+    var famBox = document.getElementById('fams'), list = document.getElementById('list'), q = document.getElementById('q'), sortSel = document.getElementById('sortSel');
+
+    function drawFams() {
+      famBox.innerHTML = '';
+      [{ id: 'all', name: 'All games', e: '✦' }].concat(FAMS).forEach(function (f) {
+        famBox.appendChild(el('button', {
+          type: 'button',
+          class: 'chip' + (state.fam === f.id ? ' on' : ''),
+          text: f.e + ' ' + f.name,
+          onclick: function () { Kit.sound('tap'); state.fam = f.id; Kit.pref('hubFam', f.id); drawFams(); draw(); }
+        }));
+      });
+    }
+    q.addEventListener('input', function () { state.q = q.value.trim().toLowerCase(); draw(); });
+    sortSel.addEventListener('change', function () { state.sort = sortSel.value; draw(); });
+
+    function gameUrl(g) { return g.url || (R + g.id); }
+    function previewIframeUrl(g) {
+      var u = gameUrl(g);
+      return u + (u.indexOf('?') >= 0 ? '&' : '?') + 'preview=1';
+    }
+
+    var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var playing = [];
+    function stopPreview(media) {
+      var v = media.querySelector('video'); if (v) { try { v.pause(); } catch (e) {} v.remove(); }
+      var f = media.querySelector('iframe'); if (f) f.remove();
+      playing = playing.filter(function (m) { return m !== media; });
+    }
+    function startPreview(media, g) {
+      if (!g || reduceMotion || media.querySelector('video') || media.querySelector('iframe')) return;
+      while (playing.length >= 2) stopPreview(playing[0]);
+      var vid = el('video', {
+        src: 'previews/' + g.id + '.webm',
+        muted: true,
+        loop: true,
+        playsinline: true,
+        preload: 'auto',
+        'aria-hidden': 'true'
+      });
+      vid.muted = true;
+      vid.addEventListener('playing', function () { vid.classList.add('on'); });
+      vid.addEventListener('error', function () {
+        vid.remove();
+        var f = el('iframe', { src: previewIframeUrl(g), title: 'Preview', tabindex: '-1', 'aria-hidden': 'true' });
+        f.addEventListener('load', function () { f.classList.add('on'); });
+        media.appendChild(f);
+      });
+      media.appendChild(vid);
+      var p = vid.play();
+      if (p && p.catch) p.catch(function () {});
+      playing.push(media);
+    }
+
+    var canHover = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var io = !canHover && !reduceMotion && 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var m = e.target;
+        var g = GAMES.filter(function (x) { return x.id === m.dataset.id; })[0];
+        if (e.isIntersecting && e.intersectionRatio > 0.72) startPreview(m, g);
+        else stopPreview(m);
+      });
+    }, { threshold: [0, 0.72] }) : null;
+
+    function openVideoModal(g, url) {
+      var box = el('div', { class: 'vid-modal-stage' });
+      var vid = el('video', { src: 'previews/' + g.id + '.webm', muted: true, loop: true, autoplay: true, playsinline: true, controls: true });
+      vid.muted = true;
+      vid.addEventListener('error', function () {
+        vid.remove();
+        box.appendChild(el('iframe', { src: previewIframeUrl(g), title: g.name + ' preview' }));
+      });
+      box.appendChild(vid);
+      var stepsList = el('ol', { style: { margin: '0', paddingLeft: '20px', fontWeight: '800', lineHeight: '1.6' } },
+        (g.steps || []).map(function (st) { return el('li', { text: st }); })
+      );
+      Kit.modal({
+        title: g.icon + ' ' + g.name + ' — How It Plays',
+        body: el('div', null, [box, stepsList]),
+        buttons: [
+          { label: 'Close', cls: 'soft', value: false },
+          { label: '▶ Play Now', cls: 'pink', value: 'play' }
+        ]
+      }).then(function (act) {
+        if (act === 'play') location.href = url;
+      });
+    }
+
+    function card(g) {
+      var fam = FAMS.filter(function (f) { return f.id === g.fam; })[0];
+      if (g.soon) {
+        return el('article', { class: 'gcard soon' }, [
+          el('div', { class: 'gmedia soon-' + (1 + FAMS.indexOf(fam) % 4) }, [
+            g.sticker
+              ? el('img', { class: 'soon-sticker', src: g.sticker, alt: '', loading: 'lazy' })
+              : el('span', { class: 'soon-emoji', text: g.icon })
+          ]),
+          el('div', { class: 'gbody' }, [
+            el('div', { class: 'gcat', text: fam.e + ' ' + fam.name }),
+            el('h3', { text: g.name }),
+            el('p', { class: 'gsub', text: g.sub }),
+            el('div', { class: 'gactions' }, [
+              el('button', { type: 'button', class: 'btn soft sm play-cta', text: '⏳ Coming in Next Step', disabled: true })
+            ])
+          ])
+        ]);
+      }
+
+      var url = gameUrl(g);
+      var sTab = g.studioTab || 'pictures';
+      var watchBadge = el('button', {
+        type: 'button',
+        class: 'badge watch-btn',
+        text: '🎬 Preview',
+        onclick: function (ev) { ev.stopPropagation(); Kit.sound('tap'); openVideoModal(g, url); }
+      });
+      var media = el('div', {
+        class: 'gmedia',
+        'data-id': g.id,
+        title: 'Play ' + g.name,
+        onclick: function () { location.href = url; }
+      }, [
+        el('img', { class: 'poster', src: g.poster || ('posters/' + g.id + '.webp?v=3'), alt: g.name + ' cover', loading: 'lazy' }),
+        el('span', { class: 'badge ready', text: '★ READY' }),
+        el('span', { class: 'badge editable', text: '✎ EDITABLE' }),
+        watchBadge
+      ]);
+
+      if (canHover) {
+        media.addEventListener('mouseenter', function () { startPreview(media, g); });
+        media.addEventListener('mouseleave', function () { stopPreview(media); });
+      } else if (io) {
+        io.observe(media);
+      }
+
+      return el('article', { class: 'gcard' }, [
+        media,
+        el('div', { class: 'gbody' }, [
+          el('div', { class: 'gcat', text: fam.e + ' ' + fam.name }),
+          el('h3', { text: g.name }),
+          el('p', { class: 'gsub', text: g.sub }),
+          el('div', { class: 'gmeta' }, g.meta.map(function (m) { return el('span', { text: m }); })),
+          el('div', { class: 'gactions' }, [
+            el('a', { class: 'btn play-cta', href: url, text: '▶ PLAY NOW ↗' }),
+            el('button', {
+              type: 'button',
+              class: 'icon-btn',
+              title: 'Customize content for ' + g.name,
+              text: '✎',
+              onclick: function () { Kit.sound('tap'); Kit.studio({ tab: sTab }, refreshCounts); }
+            })
+          ])
+        ])
+      ]);
+    }
+
+    function sortGames(arr) {
+      var copy = arr.slice();
+      if (state.sort === 'az') copy.sort(function (a, b) { return a.name.localeCompare(b.name, 'en'); });
+      else if (state.sort === 'ready') copy.sort(function (a, b) { return (a.soon ? 1 : 0) - (b.soon ? 1 : 0); });
+      return copy;
+    }
+
+    function draw() {
+      playing.slice().forEach(stopPreview);
+      list.innerHTML = '';
+      var shown = 0;
+      FAMS.forEach(function (f) {
+        if (state.fam !== 'all' && state.fam !== f.id) return;
+        var gs = sortGames(GAMES.filter(function (g) {
+          return g.fam === f.id && (!state.q || (g.name + ' ' + g.sub).toLowerCase().indexOf(state.q) >= 0);
+        }));
+        if (!gs.length) return;
+        shown += gs.length;
+        var readyN = gs.filter(function (g) { return !g.soon; }).length;
+        list.appendChild(el('div', { class: 'fam-title' }, [
+          el('h2', { text: f.e + ' ' + f.name }),
+          el('span', { text: f.note + ' · ' + (readyN ? readyN + ' ready to play' : 'coming next') })
+        ]));
+        list.appendChild(el('div', { class: 'grid' }, gs.map(card)));
+      });
+      if (!shown) list.appendChild(el('p', { class: 'empty', text: 'No games match "' + state.q + '".' }));
+    }
+
+    drawFams();
+    draw();
+  })();
+  </script>
+</body>
+</html>

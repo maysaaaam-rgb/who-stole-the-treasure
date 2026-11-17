@@ -1,0 +1,117 @@
+{
+  "flashlight": {
+    "src": "previews/flashlight.webm",
+    "kb": 240,
+    "frames": 76
+  },
+  "doors": {
+    "src": "previews/doors.webm",
+    "kb": 325,
+    "frames": 67
+  },
+  "camera": {
+    "src": "previews/camera.webm",
+    "kb": 356,
+    "frames": 68
+  },
+  "orbit": {
+    "src": "previews/orbit.webm",
+    "kb": 233,
+    "frames": 67
+  },
+  "bricks": {
+    "src": "previews/bricks.webm",
+    "kb": 332,
+    "frames": 70
+  },
+  "tiles": {
+    "src": "previews/tiles.webm",
+    "kb": 343,
+    "frames": 76
+  },
+  "pixels": {
+    "src": "previews/pixels.webm",
+    "kb": 286,
+    "frames": 68
+  },
+  "time-train": {
+    "src": "previews/time-train.webm",
+    "kb": 652,
+    "frames": 127
+  },
+  "bomb": {
+    "src": "previews/bomb.webm",
+    "kb": 245,
+    "frames": 62
+  },
+  "claw": {
+    "src": "previews/claw.webm",
+    "kb": 186,
+    "frames": 62
+  },
+  "keepgive": {
+    "src": "previews/keepgive.webm",
+    "kb": 277,
+    "frames": 62
+  },
+  "croc": {
+    "src": "previews/croc.webm",
+    "kb": 225,
+    "frames": 62
+  },
+  "cups": {
+    "src": "previews/cups.webm",
+    "kb": 299,
+    "frames": 62
+  },
+  "tug": {
+    "src": "previews/tug.webm",
+    "kb": 196,
+    "frames": 62
+  },
+  "shadows": {
+    "src": "previews/shadows.webm",
+    "kb": 231,
+    "frames": 57
+  },
+  "prep": {
+    "src": "previews/prep.webm",
+    "kb": 230,
+    "frames": 57
+  },
+  "looktap": {
+    "src": "previews/looktap.webm",
+    "kb": 217,
+    "frames": 57
+  },
+  "meteor": {
+    "src": "previews/meteor.webm",
+    "kb": 175,
+    "frames": 55
+  },
+  "mochi": {
+    "src": "previews/mochi.webm",
+    "kb": 139,
+    "frames": 55
+  },
+  "bubbles": {
+    "src": "previews/bubbles.webm",
+    "kb": 200,
+    "frames": 54
+  },
+  "builder": {
+    "src": "previews/builder.webm",
+    "kb": 204,
+    "frames": 54
+  },
+  "pairs": {
+    "src": "previews/pairs.webm",
+    "kb": 121,
+    "frames": 55
+  },
+  "bingo": {
+    "src": "previews/bingo.webm",
+    "kb": 196,
+    "frames": 55
+  }
+}

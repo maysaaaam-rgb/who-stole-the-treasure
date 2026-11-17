@@ -9,26 +9,27 @@
   var SOON = [];
   var TIMERS = [[0, 'Off'], [10, '10 s'], [20, '20 s'], [30, '30 s'], [45, '45 s']];
   /* Featured smartboard games ordered for quick classroom access */
-  var ORDER = ['race', 'cannon', 'fling', 'boardgame', 'storydice', 'bingo', 'guesseroo', 'penalty', 'whack', 'tower', 'balloon', 'baseball', 'jigsaw', 'snakes', 'memory', 'board', 'plinko', 'hunt', 'ttt', 'connect4', 'bowling', 'pass'];
+  /* Order = best first. Hidden (weak, plain-grid) games stay loadable but are not listed: ttt, connect4, guesseroo, storydice. */
+  var ORDER = ['board', 'cannon', 'fling', 'bowling', 'penalty', 'baseball', 'whack', 'tower', 'balloon', 'boardgame', 'snakes', 'race', 'pass', 'memory', 'hunt', 'plinko', 'bingo', 'jigsaw'];
   var GAME_CATS = [
     ['all', '⭐ All Games', null],
     ['action', '🎯 Aim & Action', ['race', 'cannon', 'fling', 'penalty', 'whack', 'tower', 'balloon', 'baseball', 'bowling']],
     ['board', '🎲 Board & Strategy', ['boardgame', 'board', 'bingo', 'snakes', 'hunt', 'plinko', 'pass']],
-    ['versus', '⚔️ 2 Teams', ['fling', 'jigsaw', 'ttt', 'connect4']],
-    ['word', '🗣️ Speaking & Memory', ['storydice', 'guesseroo', 'memory', 'bingo', 'whack', 'balloon', 'jigsaw']]
+    ['versus', '⚔️ 2 Teams', ['fling', 'jigsaw']],
+    ['word', '🗣️ Words & Memory', ['memory', 'bingo', 'whack', 'balloon', 'jigsaw']]
   ];
   var HOW = {
-    race: ['Every team has a lane and a monster.', 'Answer right: roll a boost and your monster sprints!', 'First over the finish line wins 50 bonus points.'],
+    race: ['3-2-1-GO! Monsters line up on the pastel racetrack.', 'Answer right to spin a Turbo Boost, fly past rivals with dust puffs, and shake the camera!', 'First to snap the finish ribbon wins +50 bonus points on the podium!'],
     cannon: ['Answer right to hop into the cannon.', 'Drag back from the cannon to aim against the wind and let go!', 'Pop balloons (10 to 50 pts), hit the Bullseye (+50), or land in the haystack (+15)!'],
     fling: ['Two teams battle across the backyard fence with shifting stances, strong wind, and a patrolling Wasp hazard!', 'Answer right, then Step 1: Lock your Throw Angle (20°–78°), and Step 2: Time the fast Power Bar (or pull the slingshot manually)!', 'Headshots score +35, Body Hits +25, Yard Knockouts +30 — hitting the fence or missing wide scores 0!'],
     boardgame: ['Roll the 3D dice to hop around the 24-square Speaking Monopoly & Trade loop!', 'Speak the target sentence aloud to claim properties, complete Color Set Monopolies (2× Houses & 3× Castles), and collect rent!', 'Tap 🤝 Propose Trade on your turn to negotiate property swaps with other teams in English!'],
-    board: ['A team picks a numbered tile.', 'Answer the question on the card (or uncover an instant Mystery Card!).', 'Golden 2× tiles, streaks, and the Final Tile can change everything!'],
+    board: ['A team picks a mystery box.', 'Answer the question to open it.', 'Bonus or bomb? The box shakes… and bursts open!'],
     plinko: ['Answer the question right.', 'Pick a column and drop your disc.', 'It bounces into a points slot. The big slot is in the middle!'],
     hunt: ['Answer right to get a digging number.', 'Your monster digs a line of that many squares.', 'Find treasure: coins, gems, trophies and crowns!'],
     ttt: ['Two teams.', 'Answer right to put your monster on a square.', 'Three in a row wins the round.'],
     connect4: ['Two teams.', 'Answer right to drop your disc in a column.', 'Four in a row wins the round.'],
     bowling: ['Answer right, then time 3 skill steps: Stand Position, Aim Angle (at the lane arrows), and Power + Hook!', 'Angle into the 1-3 or 1-2 pocket for a STRIKE — hitting the headpin dead-center leaves a SPLIT!', 'Use your second ball to pick up spares without rolling into the gutter!'],
-    pass: ['A ticking bomb goes round the teams.', 'Answer right to pass it on.', 'When it pops, everybody else wins points.'],
+    pass: ['A fizzing bomb with a burning fuse goes round the circle of teams.', 'Answer right (+5) to toss it on — watch it grow and shake faster as time runs out!', 'When it goes POOF, every other team wins +10 Safe points!'],
     penalty: ['Answer right inside the live 3D Stadium (1st try ignites 🔥 Golden Super Shot!).', 'Swipe the 3D ball forward/curved — OR drag the 3D goal target & time the Sweet-Spot Power Meter!', 'Smash spinning 🌟 Top-Bins Stars for +35, or switch on 🧤 Rival Team Keeper for a live 2-team duel!'],
     whack: ['Answer right to start a 15-second 3D Whack-a-Word wave!', 'Whack ONLY the moles holding the Target Word to build a 3× Combo Streak (and tap 2-hit Boss Moles twice!).', 'Do NOT whack wrong decoy words — they reset your combo and stun your hammer!'],
     tower: ['Answer right to get crane blocks as the crane swings faster with every floor!', 'Overhanging edges are permanently sliced off — your next block is only as wide as what remains!', 'Land a 🌟 Perfect Drop (<8px) for +15 points and +10px bonus width!'],
@@ -39,7 +40,7 @@
     storydice: ['Press Roll: the dice show pictures from your questions.', 'Make a sentence or a little story with ALL the pictures. Say it out loud!', 'The teacher gives stars: 5, 10 or 15 points. Nobody loses points.'],
     bingo: ['The game reads a clue (it is spoken aloud).', 'The team whose turn it is taps the answer on the big board.', 'Win a square for +10. A line of your colour is a BINGO: +25!'],
     guesseroo: ['One secret card is hidden. Teams take turns asking a yes/no question out loud.', 'The teacher taps Yes or No. Tap cards to cross them out.', 'Tap 🎯 when your team knows it: the fewer the questions, the more points!'],
-    memory: ['Take turns flipping two cards on the board.', 'Match each question card with its partner answer card.', 'When you find a match, read the full sentence aloud for +20 and go again!']
+    memory: ['Flip two cards in 3D to match each Question with its Answer!', 'When you match, read the sentence aloud (+20) as the cards fly to your score and sparkle!', 'Match 3 pairs in a row for a flashing +15 Streak Bonus!']
   };
   var S = GM.state = {
     screen: 'home',

@@ -71,9 +71,11 @@
   async function renderPilotPack() {
     if (!manifest || !gridEl) return;
     const charCfg = manifest.pilotPack.character;
+    const extraChars = (manifest.pilotPack.characters || []).filter((c) => c.id !== charCfg.id && c.id !== 'kid-base');
     const items = manifest.pilotPack.items;
     const allEntries = [
       Object.assign({ isChar: true, slot: 'character (A-pose)' }, charCfg),
+      ...extraChars.map((c) => Object.assign({ isChar: true, slot: 'character (A-pose)' }, c)),
       ...items
     ];
 
@@ -111,8 +113,10 @@
 
   window.__loadManifestGlb = function (id) {
     const charCfg = manifest.pilotPack.character;
-    if (id === charCfg.id) {
-      loadCharacterSource('../' + charCfg.glbPath, charCfg.name);
+    const chars = manifest.pilotPack.characters || [charCfg];
+    const matchedChar = chars.find((c) => c.id === id);
+    if (matchedChar) {
+      loadCharacterSource('../' + matchedChar.glbPath, matchedChar.name);
       return;
     }
     const item = manifest.pilotPack.items.find((x) => x.id === id);
@@ -122,7 +126,9 @@
   window.__testSlotFile = function (id, file) {
     if (!file) return;
     const charCfg = manifest.pilotPack.character;
-    if (id === charCfg.id) {
+    const chars = manifest.pilotPack.characters || [charCfg];
+    const matchedChar = chars.find((c) => c.id === id);
+    if (matchedChar) {
       loadCharacterSource(file, file.name);
       return;
     }

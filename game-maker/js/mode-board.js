@@ -37,17 +37,17 @@
   }
 
   GM.modes.board = {
-    id: 'board', name: 'Tile Board', e: '🔢', desc: 'Pick a numbered tile. Answer the question. Some tiles hide power-ups and mystery surprises!',
+    id: 'board', name: 'Bomb or Bonus', e: '🎁', desc: 'Pick a mystery box and answer to open it. It shakes, it bursts… bonus points, a power-up, or a bomb!',
     fields: [
       { key: 'play', label: 'Game type', opts: [['quiz', 'Quiz', 'Questions only'], ['classic', 'Classic', 'Questions and power-ups'], ['jr', 'Classic Jr', 'Only friendly power-ups']], def: 'classic' },
-      { key: 'grid', label: 'Number of tiles', opts: [[8, '8'], [16, '16'], [24, '24'], [36, '36'], [48, '48']], def: 16 },
+      { key: 'grid', label: 'Number of boxes', opts: [[8, '8'], [16, '16'], [24, '24'], [36, '36'], [48, '48']], def: 16 },
       { key: 'mystery', label: 'Mystery cards', opts: [['on', 'On', 'Instant mystery boxes + 2x golden tiles'], ['off', 'Off']], def: 'on' },
       { key: 'retry', label: 'Second chance', opts: [['on', 'On', 'Try again for half the points'], ['off', 'Off']], def: 'on' },
       { key: 'anyone', label: 'Anyone can answer', opts: [['off', 'Off'], ['on', 'On', 'the teacher gives the points to any team']], def: 'off' },
       { key: 'partial', label: 'Partial credit', opts: [['off', 'Off'], ['on', 'On', 'the teacher picks how many points']], def: 'off' },
       { key: 'pass', label: 'Pass button', opts: [['off', 'Off'], ['on', 'On', 'a team can pass a question on']], def: 'off' },
       { key: 'rnd', label: 'Random tile button', opts: [['off', 'Off'], ['on', 'On', 'a 🎲 button picks a tile']], def: 'off' },
-      { key: 'points', label: 'Points for each tile', opts: [['same', 'All the same', '10 points'], ['mixed', 'Different', '10 to 25, chosen by luck']], def: 'same' },
+      { key: 'points', label: 'Points in each box', opts: [['mixed', 'Surprise', '10 to 25, chosen by luck'], ['same', 'All the same', '10 points']], def: 'mixed' },
       { key: 'vcolor', label: 'Colourful grid', opts: [['off', 'Off'], ['on', 'On', 'tile colours show the points']], def: 'off' },
       { key: 'emoji', label: 'Emoji grid', opts: [['off', 'Off'], ['on', 'On', 'pictures instead of numbers']], def: 'off' }
     ],
@@ -81,7 +81,7 @@
       }
       root0.innerHTML = '';
       var info = U().h('div', { class: 'gm-info' });
-      var grid = U().h('div', { class: 'gm-grid gm-t' + n });
+      var grid = U().h('div', { class: 'gm-grid gm-bob gm-t' + n });
       var wrap = U().h('div', { class: 'gm-boardwrap' }, [info, grid]);
       grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
       grid.style.gridTemplateRows = 'repeat(' + Math.ceil(n / cols) + ', 1fr)';
@@ -105,8 +105,8 @@
         info.innerHTML = '';
         info.appendChild(U().monFace(t.mon, 46));
         info.appendChild(U().h('b', {
-          text: t.name + (t.mon && t.mon.name ? ' (' + t.mon.name + ')' : '') + ', pick a tile!  (' +
-            (isFinal ? '🌟 FINAL TILE — 2× POINTS!' : eng.state.data.left + ' left') +
+          text: t.name + (t.mon && t.mon.name ? ' (' + t.mon.name + ')' : '') + ', pick a box!  (' +
+            (isFinal ? '🌟 LAST BOX: 2× POINTS!' : eng.state.data.left + ' left') +
             (st >= 2 ? ' · 🔥 ' + st + ' streak' : '') + ')'
         }));
         if (cfg.rnd === 'on') info.appendChild(U().btn('🎲 Surprise me', 'sm amber', function () {
@@ -121,7 +121,11 @@
       }
 
       tiles.forEach(function (tl) {
-        var b = U().h('button', { type: 'button', class: 'gm-tile', text: tl.sym || String(tl.i + 1) });
+        var b = U().h('button', { type: 'button', class: 'gm-tile gm-box', 'aria-label': 'Box ' + (tl.i + 1) }, [
+          U().h('span', { class: 'gm-box-pic' }), U().h('span', { class: 'gm-box-num', text: tl.sym || String(tl.i + 1) })
+        ]);
+        b.style.setProperty('--hue', ((tl.i * 47) % 360) + 'deg');
+        b.style.setProperty('--bob', (-(tl.i % 7) * 0.37) + 's');
         tl.el = b;
         if (cfg.vcolor === 'on') { b.classList.add('gm-vc'); b.style.setProperty('--vc', VCOL[tl.value]); }
         grid.appendChild(b);
@@ -133,6 +137,35 @@
           playTile(tl);
         });
       });
+
+      /* the box flies to the middle, shakes with a drum roll, then bursts open. prize = { text, good } or null (a power-up card follows) */
+      async function openBox(tl, team, prize, delay) {
+        if (delay) { await eng.wait(delay); if (!eng.state.alive) return; }   /* let the answer celebration finish first */
+        var stage = document.getElementById('gm-stage');
+        var over = U().h('div', { class: 'gm-over gm-boxstage' });
+        var box = U().h('div', { class: 'gm-bigbox' }, [U().h('span', { class: 'gm-bigbox-glow' }), U().h('span', { class: 'gm-bigbox-pic' }), U().h('span', { class: 'gm-bigbox-q', text: '?' })]);
+        box.style.setProperty('--hue', tl.el.style.getPropertyValue('--hue') || '0deg');
+        var cap = U().h('div', { class: 'gm-boxcap', text: (team && team.name ? team.name + ': ' : '') + 'bonus… or bomb?' });
+        over.appendChild(box); over.appendChild(cap); stage.appendChild(over);
+        setTimeout(function () { over.classList.add('in'); }, 16);
+        A().play('drum_roll_short'); A().play('fuse_fizz');
+        await eng.wait(1500);
+        if (!eng.state.alive) { over.remove(); return; }
+        box.classList.add('burst');
+        J().shake(prize && !prize.good ? 12 : 7);
+        J().shockwave(box, prize && !prize.good ? '#ff5d73' : '#ffe066', 320, 560);
+        J().sparks(box, 30, ['#ffe066', '#ff7eb6', '#38bdf8', '#2ecc71', '#ffffff'], 11);
+        A().play(prize && !prize.good ? 'bomb_boom' : 'pop_up');
+        if (prize) {
+          var out = U().h('div', { class: 'gm-boxprize' + (prize.good ? '' : ' bad') }, [U().art(prize.art, prize.e), U().h('b', { text: prize.text })]);
+          over.appendChild(out); cap.textContent = prize.good ? 'BONUS!' : 'Oh no!';
+          if (prize.good) { A().play('coin_collect'); A().play('sparkle'); U().confetti(18); }
+          await eng.wait(1150);
+        } else {
+          await eng.wait(320);
+        }
+        over.remove();
+      }
 
       async function playTile(tl) {
         var turn = eng.state.turn, team = eng.activeTeam();
@@ -148,9 +181,9 @@
           eng.state.data.left--;
           J().squash(tl.el, 1.25, 0.78, 300);
           J().shockwave(tl.el, '#ffe066', 130, 460);
-          eng.award(turn, 5, tl.el, '🃏 Mystery +5');
-          await eng.wait(420);
+          await openBox(tl, team, null);
           if (!eng.state.alive) return;
+          eng.award(turn, 5, tl.el, '🃏 Mystery +5');
           await revealPowerUp(tl, tl.pu, true);
           if (!eng.state.alive) return;
           if (!eng.advanceRound()) return;
@@ -161,7 +194,7 @@
         }
 
         var tp = tl.value * (tl.golden ? 2 : 1);
-        var label = 'Tile ' + (tl.sym || (tl.i + 1)) + ((mixed || tl.golden) ? ' · ' + tp + ' points' : '') + (tl.golden ? ' · 🌟 2× Golden Tile!' : '');
+        var label = 'Box ' + (tl.sym || (tl.i + 1)) + ((mixed || tl.golden) ? ' · ' + tp + ' points' : '') + (tl.golden ? ' · 🌟 2× Golden Box!' : '');
         var askOpts = { label: label, retry: cfg.retry !== 'off', pass: cfg.pass === 'on' && eng.teams.length > 1 };
         var res = await eng.ask(tl.item, askOpts);
         if (!eng.state.alive || res.cancelled) return;
@@ -192,6 +225,8 @@
           var streakBonus = (st >= 2 && frac === 1) ? 5 : 0;
           var totPts = Math.round(basePts * frac) + streakBonus;
 
+          await openBox(tl, sTeam, tl.pu ? null : { text: '+' + totPts + (streakBonus ? ' 🔥' : ''), good: true, art: tl.golden ? 'pu_gold' : 'o_star_coin', e: '⭐' }, 1300);
+          if (!eng.state.alive) return;
           tl.el.style.setProperty('--c', sTeam.color);
           tl.el.classList.add('won');
           tl.el.textContent = tl.pu ? '🎁' : (tl.golden ? '🌟' : '✓');
@@ -202,13 +237,14 @@
           U().fx('smoke_puff', tl.el);
           eng.award(scorer, totPts, tl.el, (tl.golden ? '🌟 2× ' : '') + '+' + totPts + (streakBonus ? ' 🔥' : ''));
           if (tl.pu) {
-            await eng.wait(380);
+            await eng.wait(200);
             if (!eng.state.alive) return;
             await revealPowerUp(tl, tl.pu, false, scorer);
           }
         } else {
           eng.state.data.streaks[turn] = 0;
-          tl.el.textContent = '·';
+          tl.el.textContent = '🔒';
+          tl.el.classList.add('locked');
         }
 
         if (!eng.state.alive) return;

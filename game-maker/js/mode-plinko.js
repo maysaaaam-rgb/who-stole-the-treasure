@@ -7,9 +7,9 @@
   var W = 520, H = 640, PEG = 7, DISC = 24, SLOT_Y = 560, NCOL = 10, SLOTS = [10, 20, 50, 20, 10], G = 1300;
 
   GM.modes.plinko = {
-    id: 'plinko', name: 'Plink-oh!', nameClassic: 'Plink-oh!', e: '🎃',
-    desc: 'Answer right to drop your pumpkin. It bounces through the pegs into a points slot!',
-    descClassic: 'Answer right to drop your monster disc. It bounces through the pegs into a points slot!',
+    id: 'plinko', name: 'Prize Machine', nameClassic: 'Prize Machine', e: '🎰',
+    desc: 'Answer right, then time your DROP! Your ball bounces down the prize machine. Hit the flashing JACKPOT for double!',
+    descClassic: 'Answer right, then time your DROP! Your ball bounces down the prize machine. Hit the flashing JACKPOT for double!',
     fields: [{ key: 'q', label: 'Drops for each team', opts: [[2, '2'], [3, '3'], [4, '4'], [6, '6'], [8, '8']], def: 3 }],
     start: function (ctx) {
       var cfg = ctx.cfg, st = GM.state, rootEl = ctx.root, hal = st.theme === 'halloween';
@@ -19,7 +19,19 @@
 
       var info = U().h('div', { class: 'gm-info' });
       var board = U().h('div', { class: 'gm-pl' });
-      var box = U().h('div', { class: 'gm-plbox' }, [board]);
+      var bulbs = U().h('div', { class: 'gm-pm-bulbs' });
+      /* light bulbs all the way round the cabinet (top, right, bottom, left) */
+      (function () {
+        var pts = [], k, n = 9, m = 11;
+        for (k = 0; k <= n; k++) pts.push([k / n * 100, 0]);
+        for (k = 1; k <= m; k++) pts.push([100, k / m * 100]);
+        for (k = n - 1; k >= 0; k--) pts.push([k / n * 100, 100]);
+        for (k = m - 1; k >= 1; k--) pts.push([0, k / m * 100]);
+        pts.forEach(function (p, j) { bulbs.appendChild(U().h('i', { style: 'left:' + p[0] + '%;top:' + p[1] + '%;animation-delay:' + (-(j % 3) * 0.24) + 's' })); });
+      })();
+      var cab = U().h('div', { class: 'gm-pm-cab' }, [U().h('div', { class: 'gm-pm-sign', text: '★ PRIZE MACHINE ★' }), bulbs, board]);
+      var box = U().h('div', { class: 'gm-plbox gm-pm-box' }, [cab]);
+      var i;
       var cols = U().h('div', { class: 'gm-plcols' });
       var wrap = U().h('div', { class: 'gm-boardwrap' }, [info, box]);
       rootEl.appendChild(wrap);
@@ -31,7 +43,7 @@
       board.style.width = W + 'px';
       board.style.height = H + 'px';
 
-      var pegs = [], r, i, x, y;
+      var pegs = [], r, x, y;
       for (r = 0; r < 6; r++) {
         y = 150 + r * 62;
         var n = r % 2 ? 6 : 5;
@@ -49,7 +61,10 @@
       });
 
       var slotEls = SLOTS.map(function (v, k) {
-        var s = U().h('div', { class: 'gm-slot s' + (v >= 50 ? 'hi' : v >= 20 ? 'mid' : 'lo') }, [U().h('b', { text: String(v) })]);
+        var s = U().h('div', { class: 'gm-slot gm-pm-slot s' + (v >= 50 ? 'hi' : v >= 20 ? 'mid' : 'lo') }, [
+          U().art(v >= 50 ? 'pu_gold' : v >= 20 ? 'pu_gift' : 'o_star_coin', v >= 50 ? '💰' : v >= 20 ? '🎁' : '⭐', 'gm-pm-prize'),
+          U().h('b', { text: String(v) }), U().h('span', { class: 'gm-pm-jp', text: 'JACKPOT ×2' })
+        ]);
         s.style.left = (k * W / 5 + 3) + 'px';
         s.style.width = (W / 5 - 6) + 'px';
         s.style.top = SLOT_Y + 'px';
@@ -63,9 +78,10 @@
       board.appendChild(disc);
 
       function fit() {
-        var s = Math.min((box.clientWidth || W) / W, (box.clientHeight || H) / H, 1.25);
-        board.style.transform = 'scale(' + s + ')';
-        board.style.transformOrigin = 'top center';
+        var CW = W + 44, CH = H + 78;   /* the cabinet adds a frame and a sign */
+        var s = Math.min((box.clientWidth || CW) / CW, (box.clientHeight || CH) / CH, 1.25);
+        cab.style.transform = 'scale(' + s + ')';
+        cab.style.transformOrigin = 'top center';
         box.style.setProperty('--s', s);
       }
       var ro = root.ResizeObserver ? new ResizeObserver(fit) : null;
@@ -74,31 +90,30 @@
       eng.timeout(fit, 30);
       ctx.onEnd(function () { if (ro) ro.disconnect(); });
 
-      var sparkle = [U().rand(0, NCOL - 1), U().rand(0, NCOL - 1)];
-      for (i = 0; i < NCOL; i++) {
-        (function (k) {
-          var b = U().h('button', { type: 'button', class: 'gm-col', text: sparkle.indexOf(k) >= 0 ? '✨' : String(k + 1) });
-          b.style.left = (26 + k * 49.5 - 22) + 'px';
-          b.disabled = true;
-          eng.listen(b, 'pointerdown', function (e) {
-            e.preventDefault();
-            if (!b.disabled) drop(k);
-          });
-          eng.listen(b, 'mouseenter', function () {
-            if (eng.state.phase === 'action') {
-              disc.style.left = (26 + k * 49.5 - DISC) + 'px';
-            }
-          });
-          cols.appendChild(b);
-        })(i);
+      /* the dropper slides left and right; the team presses DROP (or Space / taps the machine) to let the ball go */
+      var dropper = U().h('div', { class: 'gm-pm-dropper' }, [U().h('i')]);
+      board.appendChild(dropper);
+      var jackpot = -1, dropX = W / 2, swing = 0, swingOn = false;
+      function pickJackpot() {
+        slotEls.forEach(function (el) { el.classList.remove('jackpot'); });
+        jackpot = U().rand(0, SLOTS.length - 1);
+        slotEls[jackpot].classList.add('jackpot');
       }
-
-      function setCols(on) {
-        [].forEach.call(cols.children, function (b) {
-          b.disabled = !on;
-          b.classList.toggle('on', on);
+      function startSwing() {
+        swingOn = true; dropper.classList.add('on');
+        var speed = 0.0021 + Math.random() * 0.0009;
+        eng.raf(function (dt) {
+          if (!swingOn || !eng.state.alive) return false;
+          swing += dt * 1000 * speed;
+          dropX = W / 2 + Math.sin(swing) * (W / 2 - DISC - 8);
+          dropper.style.left = dropX + 'px';
+          disc.style.left = (dropX - DISC) + 'px';
+          return true;
         });
       }
+      function setCols(on) { if (!on) { swingOn = false; dropper.classList.remove('on'); } }
+      eng.listen(board, 'pointerdown', function (e) { if (eng.state.phase === 'action') { e.preventDefault(); drop(); } });
+      eng.listen(document, 'keydown', function (e) { if ((e.key === ' ' || e.key === 'Enter') && eng.state.phase === 'action') { e.preventDefault(); drop(); } });
 
       function showTurn() {
         var t = eng.activeTeam();
@@ -115,9 +130,11 @@
         disc.innerHTML = '';
         disc.appendChild(U().monFace(t.mon, DISC * 1.9));
         disc.style.display = '';
-        disc.style.left = (W / 2 - DISC) + 'px';
+        disc.style.left = (dropX - DISC) + 'px';
         disc.style.top = '70px';
         disc.style.transform = '';
+        dropper.style.left = dropX + 'px';
+        pickJackpot();
       }
 
       async function ask() {
@@ -130,8 +147,9 @@
           info.innerHTML = '';
           info.style.setProperty('--c', t.color);
           info.appendChild(U().monFace(t.mon, 46));
-          info.appendChild(U().h('b', { text: '✨ Right! Tap a column (1\u201310) to drop your ' + (hal ? 'pumpkin' : 'disc') + '!' }));
-          setCols(true);
+          info.appendChild(U().h('b', { text: '✨ Right! Watch the machine… press DROP!' }));
+          info.appendChild(U().btn('⬇ DROP!', 'big green', function () { drop(); }));
+          startSwing();
           A().play('round');
         } else {
           eng.setPhase('animating');
@@ -147,15 +165,18 @@
         }
       }
 
-      function drop(k) {
+      function drop() {
         if (eng.state.phase !== 'action' || !eng.state.alive) return;
         eng.setPhase('animating');
         setCols(false);
+        dropper.classList.add('open'); eng.timeout(function () { dropper.classList.remove('open'); }, 400);
+        var dbtn = info.querySelector('.gm-btn'); if (dbtn) dbtn.remove();
+        var tip = info.querySelector('b'); if (tip) tip.textContent = '⬇ Here it goes…';
         A().play('plinko_drop'); A().play('whoosh_soft');
         J().squash(disc, 0.86, 1.18, 200);
 
-        var px = 26 + k * 49.5, py = 70, vx = (Math.random() - 0.5) * 42, vy = 0;
-        var lastSnd = 0, elapsed = 0, bonus = sparkle.indexOf(k) >= 0;
+        var px = dropX, py = 70, vx = (Math.random() - 0.5) * 42, vy = 0;
+        var lastSnd = 0, elapsed = 0;
         disc.style.left = (px - DISC) + 'px';
         disc.style.top = (py - DISC) + 'px';
 
@@ -194,16 +215,16 @@
           disc.style.top = (py - DISC) + 'px';
           disc.style.transform = 'rotate(' + Math.round(px * 1.5) + 'deg)';
           if (py >= SLOT_Y || elapsed > 12) {
-            land(px, bonus);
+            land(px);
             return false;
           }
           return true;
         });
       }
 
-      async function land(x, bonus) {
+      async function land(x) {
         if (!eng.state.alive) return;
-        var si = Math.max(0, Math.min(4, Math.floor(x / (W / 5))));
+        var si = Math.max(0, Math.min(4, Math.floor(x / (W / 5)))), bonus = si === jackpot;
         var base = SLOTS[si], v = base * (bonus ? 2 : 1), el = slotEls[si];
         disc.style.left = (si * W / 5 + W / 10 - DISC) + 'px';
         disc.style.top = (SLOT_Y + 14) + 'px';
@@ -216,9 +237,11 @@
         J().squash(disc, 1.26, 0.76, 260);
         J().shockwave(el, base >= 50 ? '#ff5d9e' : '#2ecc71', base >= 50 ? 180 : 120, 480);
         J().sparks(el, base >= 50 ? 26 : 14, ['#ffe066', '#ff5d73', '#2ecc71', '#ffffff'], 8);
-        if (base >= 50) J().shake(7);
-        eng.award(eng.state.turn, v, el, '+' + v + (bonus ? ' ✨×2' : ''));
-        U().confetti(base >= 50 ? 26 : 10);
+        if (base >= 50 || bonus) J().shake(bonus ? 11 : 7);
+        el.classList.add('pop'); eng.timeout(function () { el.classList.remove('pop'); }, 900);
+        eng.award(eng.state.turn, v, el, (bonus ? '🎰 JACKPOT ' : '') + '+' + v);
+        U().confetti(bonus ? 40 : base >= 50 ? 26 : 10);
+        if (bonus) { A().play('crowd_roar_big'); U().fx('coin_shower', el, 1.6); }
         U().fx(base >= 50 ? 'confetti_burst' : 'sparkle_burst', el, 1.2);
         U().wobble(document.getElementById('gm-team-' + eng.state.turn));
 

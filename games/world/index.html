@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adventure Park · world viewer</title>
+  <link rel="stylesheet" href="../kit3d/kit3d.css?v=2">
+  <style>
+    .zones { position: fixed; left: 14px; top: 14px; display: flex; flex-wrap: wrap; gap: 8px; max-width: 70vw; }
+    .zones button { border: 0; border-radius: 999px; padding: 8px 16px; font: 800 1rem inherit; font-family: inherit; background: #fff; box-shadow: 0 4px 0 rgba(0,0,0,.12); cursor: pointer; }
+    .zones button.on { background: #9b7bff; color: #fff; }
+    .report { position: fixed; right: 14px; bottom: 14px; width: 300px; max-height: 45vh; overflow: auto; background: rgba(255,255,255,.94); border-radius: 18px; padding: 12px 16px; font-size: .9rem; box-shadow: 0 6px 0 rgba(0,0,0,.1); }
+    .report b { display: block; margin-top: 6px; }
+    .report .ok { color: #1f9a6d; } .report .no { color: #b0567d; }
+  </style>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+  <div id="ui"></div>
+  <script src="../../game-maker/js/vendor/three.min.js"></script>
+  <script src="../../game-maker/js/vendor/BufferGeometryUtils.js"></script>
+  <script src="../../game-maker/js/vendor/GLTFLoader.js"></script>
+  <script src="../../game-maker/js/vendor/OrbitControls.js"></script>
+  <script src="../kit3d/kit3d.js?v=2"></script>
+  <script src="../kit3d/world3d.js?v=1"></script>
+  <script>
+  (function () {
+    var K = K3, T3 = THREE;
+    K.init({ fov: 50, fogNear: 200, fogFar: 520 });
+    K.world.sky(); K.world.lights(); K.world.clouds(16, -150, 150);
+    K.cam.manual = true;
+    var cam = K.camera, ctl = new T3.OrbitControls(cam, document.getElementById('scene'));
+    ctl.enableDamping = true; ctl.maxPolarAngle = 1.45; ctl.minDistance = 4; ctl.maxDistance = 260;
+    K.onFrame(function () { ctl.update(); K.cam.look.copy(ctl.target); });
+    var VIEWS = {
+      all: [[0, 150, 170], [0, 0, 0]], plaza: [[22, 16, 26], [0, 1, 0]], cannon: [[60, 22, 40], [66, 1, 0]],
+      race: [[6, 18, -24], [6, 1, -55]], penalty: [[-60, 20, 34], [-75, 1, 0]], fair: [[22, 14, 88], [0, 2, 62]]
+    };
+    function go(v) { var p = VIEWS[v]; cam.position.set(p[0][0], p[0][1], p[0][2]); ctl.target.set(p[1][0], p[1][1], p[1][2]); ctl.update(); }
+    var bar = K.ui.add(K.el('div', 'zones'));
+    Object.keys(VIEWS).forEach(function (v) { var b = K.el('button', '', v === 'all' ? 'Whole park' : v); b.onclick = function () { bar.querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); }); b.classList.add('on'); go(v); }; bar.appendChild(b); });
+    window.__go = go;
+    window.__look = function (a, b) { cam.position.set(a[0], a[1], a[2]); ctl.target.set(b[0], b[1], b[2]); ctl.update(); };
+    K.World.load({ zone: 'plaza' }).then(function (w) {
+      var r = K.ui.add(K.el('div', 'report'));
+      r.innerHTML = '<b class="ok">Real models (' + w.report.real.length + ')</b>' + (w.report.real.join(', ') || '—') +
+        '<b class="no">Stand-in shapes (' + w.report.standIn.length + ')</b>' + w.report.standIn.join(', ');
+      go(new URLSearchParams(location.search).get('view') || 'all');
+      K.start();
+    }).catch(function (e) { K.ui.add(K.el('div', 'loading', 'World failed: ' + e.message)); console.error(e); });
+  })();
+  </script>
+</body>
+</html>
