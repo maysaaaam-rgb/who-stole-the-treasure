@@ -12,6 +12,9 @@ ZONES = {
     "race":    {"x": -15, "z": -55, "rect": [-28, -71, 42, -44],  "title": "Sprint Track"},
     "penalty": {"x": -75, "z": 0,   "rect": [-102, -17, -49, 17], "title": "Football Pitch"},
     "fair":    {"x": 0,   "z": 62,  "rect": [-16, 49, 16, 76],    "title": "Funfair"},
+    "tug":     {"x": -80, "z": 38,  "rect": [-98, 26, -62, 50],   "title": "Tug Meadow"},
+    "bowl":    {"x": -64, "z": 78,  "rect": [-79, 64, -49, 92],   "title": "Bowling Green"},
+    "board":   {"x": 10,  "z": 102, "rect": [-7, 87, 27, 117],    "title": "Board Game Meadow"},
 }
 PATHS = [  # x, z, w, d
     [21, 0, 18, 4], [0, -28.5, 4, 31], [-31, 0, 36, 4], [0, 31, 4, 36], [-7.5, -44, 15, 4],

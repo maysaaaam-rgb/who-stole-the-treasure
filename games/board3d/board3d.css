@@ -1,0 +1,4 @@
+/* Board Game 3D — end table (bright park look) */
+.bd-table { display: grid; gap: 6px; margin: 10px auto 4px; min-width: min(460px, 80vw); }
+.bd-table div { display: grid; grid-template-columns: 120px 1fr auto; align-items: center; gap: 10px; padding: 6px 14px; border-radius: 16px; background: #fff; border: 4px solid var(--c); font-weight: 800; color: #2b1d40; }
+.bd-table b { color: var(--c); } .bd-table span { color: #8a6a2a; font-size: .9rem; } .bd-table i { font-style: normal; font-size: 1.1rem; }

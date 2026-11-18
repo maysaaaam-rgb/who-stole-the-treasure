@@ -156,6 +156,20 @@
         "slot": "prop",
         "glbPath": "assets/3d/items/target.glb",
         "size": 459020
+      },
+      {
+        "id": "gift-box",
+        "name": "Pastel Gift Box",
+        "slot": "prop",
+        "glbPath": "assets/3d/items/gift-box.glb",
+        "size": 380348
+      },
+      {
+        "id": "cartoon-bomb",
+        "name": "Friendly Cartoon Bomb",
+        "slot": "prop",
+        "glbPath": "assets/3d/items/cartoon-bomb.glb",
+        "size": 303300
       }
     ],
     "monsters": [

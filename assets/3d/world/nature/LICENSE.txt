@@ -1,0 +1,3 @@
+Models in this folder: "Stylized Nature MegaKit" (free version) by Quaternius — https://quaternius.com/packs/stylizednaturemegakit.html
+License: CC0 1.0 Universal (public domain) — https://creativecommons.org/publicdomain/zero/1.0/
+Repacked as single .glb files with smaller textures (normal maps removed) for English Adventure Academy.

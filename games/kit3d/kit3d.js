@@ -140,7 +140,15 @@
     hay: function () { noise(.5, .4, 1800); },
     bullseye: function () { [784, 988, 1175, 1568].forEach(function (f, i) { setTimeout(function () { tone(f, .25, 'triangle', .22); }, i * 80); }); noise(1.5, .35, 1200); },
     load: function () { tone(220, .2, 'sine', .25, 440); },
-    boing: function () { tone(250, .4, 'sine', .3, 600); }
+    boing: function () { tone(250, .4, 'sine', .3, 600); },
+    pull: function () { noise(.3, .45, 700); tone(160, .25, 'sine', .3, 110); },
+    splash: function () { noise(.9, .7, 650, 'lowpass'); tone(220, .45, 'sine', .3, 70); },
+    whistle: function () { tone(2200, .55, 'sine', .12, 2350); },
+    dice: function () { for (var i = 0; i < 5; i++) (function (i) { setTimeout(function () { noise(.06, .3, 2600); }, i * 90); })(i); },
+    step: function () { tone(520, .08, 'sine', .15, 620); },
+    ladder: function () { [523, 659, 784, 1046].forEach(function (f, i) { setTimeout(function () { tone(f, .14, 'triangle', .2); }, i * 90); }); },
+    slide: function () { tone(1200, .7, 'sine', .2, 300); },
+    star: function () { [1318, 1568, 2093].forEach(function (f, i) { setTimeout(function () { tone(f, .2, 'sine', .15); }, i * 70); }); }
   };
   K.sfx = function (name, vol) {
     if (K.muted || K.CAPTURE) return;
@@ -155,6 +163,15 @@
         .then(function (b) { return a.decodeAudioData(b); })
         .then(function (buf) { BUF[k] = buf; if (k === 'music' || k === 'crowd') K.loop(k); }).catch(function () {});
     });
+  };
+  /* short English phrases spoken aloud (rate .88, pitch 1.05, en-US); silent in automatic tests */
+  K.say = function (text) {
+    if (K.muted || K.CAPTURE || !root.speechSynthesis || !text) return;
+    try {
+      var u = new SpeechSynthesisUtterance(String(text)); u.lang = 'en-US'; u.rate = .88; u.pitch = 1.05;
+      var v = (speechSynthesis.getVoices() || []).filter(function (x) { return /^en(-|_)US/i.test(x.lang); })[0]; if (v) u.voice = v;
+      speechSynthesis.cancel(); speechSynthesis.speak(u);
+    } catch (e) {}
   };
   K.loop = function (k) {
     if (loops[k] || !BUF[k]) return;
@@ -523,10 +540,27 @@
   K.makeCharacter = function (team, opts) {
     opts = opts || {};
     var monUrl = K.ROOT + 'assets/3d/monsters/' + team.mon + '.glb';
-    var kidUrl = K.ROOT + 'assets/3d/characters/kid-' + team.kid + '.glb';
+    var kind = opts.kid || team.kid, kidUrl2 = K.ROOT + 'assets/3d/characters/kid-' + kind + '.glb';
     return (opts.kidsOnly || K.Q.has('kids') ? Promise.resolve(null) : K.tryGLB(monUrl)).then(function (g) {
       if (g) return new Mon(g, opts.monHeight);
-      return K.loadGLB(kidUrl).then(function (g2) { return new Kid(g2, opts.kidHeight); });
+      return K.loadGLB(kidUrl2).then(function (g2) { var kid = new Kid(g2, opts.kidHeight); if (opts.teamShirt !== false) K.teamShirt(kid, kind, team); return kid; });
+    });
+  };
+  /* children wear their team's colour: the same model, with the shirt picture swapped (assets/3d/characters/tex/kid-<girl|boy>-<team>.jpg).
+     If the picture is missing the child just keeps the normal shirt. */
+  var SHIRTS = {};
+  K.teamShirt = function (kid, kind, team) {
+    var url = K.ROOT + 'assets/3d/characters/tex/kid-' + kind + '-' + team.name.toLowerCase() + '.jpg';
+    var p = SHIRTS[url] || (SHIRTS[url] = new Promise(function (res) {
+      new T3.TextureLoader().load(url, function (t) { t.flipY = false; t.colorSpace = T3.SRGBColorSpace; t.anisotropy = 4; res(t); }, undefined, function () { res(null); });
+    }));
+    return p.then(function (t) {
+      if (!t) return kid;
+      kid.root.traverse(function (o) {
+        if (!o.isMesh || !o.material || !o.material.map) return;
+        o.material = o.material.clone(); o.material.map = t; o.material.needsUpdate = true;
+      });
+      return kid;
     });
   };
 
@@ -548,6 +582,21 @@
   K.ui.clear = function () { K.ui.root().innerHTML = ''; };
   K.ui.big = function (txt, sec, small) { var b = K.ui.add(K.el('div', 'big' + (small ? ' small' : ''), txt)); K.after(sec || .9, function () { b.remove(); }); return b; };
   K.ui.toast = function (txt, sec, color) { var b = K.ui.add(K.el('div', 'toast', txt)); if (color) b.style.setProperty('--c', color); K.after(sec || 2, function () { b.remove(); }); return b; };
+  /* a row of big choice buttons in the middle of the screen; resolves with the chosen value */
+  K.ui.choose = function (title, choices, opts) {
+    opts = opts || {};
+    return new Promise(function (res) {
+      var w = K.ui.add(K.el('div', 'choice')); if (opts.color) w.style.setProperty('--c', opts.color);
+      w.appendChild(K.el('div', 'choice-t', title));
+      var row = K.el('div', 'choice-row'); w.appendChild(row); var done = false;
+      function pick(v) { if (done) return; done = true; w.remove(); res(v); }
+      choices.forEach(function (c) {
+        var b = K.el('button', 'cbtn', c.label); if (c.color) b.style.setProperty('--b', c.color);
+        b.onclick = function () { pick(c.value); }; row.appendChild(b);
+      });
+      if (K.DEMO && opts.demo !== undefined) K.after(1.1, function () { pick(typeof opts.demo === 'function' ? opts.demo() : opts.demo); });
+    });
+  };
   K.ui.teamBar = function (teams, fmt) {
     var bar = K.ui.add(K.el('div', 'hud'));
     teams.forEach(function (t, i) {
