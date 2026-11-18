@@ -3,7 +3,7 @@
    Each piece uses Gemini's model from assets/3d/world/<file> when it exists,
    otherwise a simple built-in stand-in shape, so the world always works.
    Usage (after kit3d.js):
-     K.World.load({ zone: 'cannon' }).then(function (w) { ... })
+     K.World.load({ zone: 'cannon' }).then(function (w) { ... })   (clear: true removes pieces inside the zone)
    The zone's x,z becomes 0,0, so a game keeps its own coordinates. */
 (function () {
   'use strict';
@@ -122,8 +122,11 @@
       }
 
       /* pieces, grouped by type */
-      var byType = {};
-      map.pieces.forEach(function (p) { (byType[p.p] = byType[p.p] || []).push(p); });
+      var byType = {}, clear = opts.clear && zone.rect;   // opts.clear: keep the game's own zone free of trees and rocks
+      map.pieces.forEach(function (p) {
+        if (clear && p.x >= clear[0] && p.x <= clear[2] && p.z >= clear[1] && p.z <= clear[3]) return;
+        (byType[p.p] = byType[p.p] || []).push(p);
+      });
       var jobs = Object.keys(byType).map(function (id) {
         var def = defs[id]; if (!def) return Promise.resolve();
         if (opts.skip && opts.skip.indexOf(id) >= 0) return Promise.resolve();
@@ -131,7 +134,13 @@
           var proto;
           if (gltf) {
             proto = gltf.scene; report.real.push(id);
-            proto.traverse(function (o) { if (o.isMesh && o.material) { o.material.metalness = 0; o.material.roughness = Math.max(.6, o.material.roughness || .6); } });
+            proto.traverse(function (o) {
+              if (!o.isMesh || !o.material) return;
+              o.material.metalness = 0; o.material.roughness = Math.max(.6, o.material.roughness || .6);
+              if (def.glow && o.material.map && o.material.emissive) {   // brighten painted leaves to the park's sunny look
+                o.material.emissive.setRGB(def.glow, def.glow, def.glow); o.material.emissiveMap = o.material.map; o.material.needsUpdate = true;
+              }
+            });
             fitTo(proto, def.w, def.d);
           } else {
             proto = (FB[def.fallback] || FB.rock)(); report.standIn.push(id);

@@ -1,0 +1,13 @@
+{
+  "_note": "Real models for the island home (Tripo, made from our design picture). Each model faces +z (towards the camera). Anchor points are fractions of the model's box: [left→right, bottom→top, back→front]. sign = where the name sign floats (default: above the roof), door = where the path ends (default: middle of the front, on the ground), monster = where the team monster stands (homes only).",
+  "castle": { "sign": [0.5, 0.55, 1.05] },
+  "colosseum": {},
+  "library": {},
+  "shop": {},
+  "stadium": {},
+  "windmill": {},
+  "nest-tower": { "monster": [0.38, 0.58, 0.6] },
+  "pond-waterfall": {},
+  "flower-garden": {},
+  "ship": {}
+}

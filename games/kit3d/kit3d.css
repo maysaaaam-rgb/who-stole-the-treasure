@@ -118,3 +118,22 @@ body.preview .hud { top: 76px; }
 .xpstep { width: 36px; height: 36px; border: 0; border-radius: 50%; font-size: 1.3rem; font-weight: 900; cursor: pointer; background: #fff; color: #2b1d40; box-shadow: 0 4px 0 #d9c9e6; }
 .xpstep:active { transform: translateY(3px); box-shadow: 0 1px 0 #d9c9e6; }
 .xpstep:disabled { opacity: .35; cursor: default; }
+
+/* big choice panel (Keep it or Give it, pick a team) */
+.choice { position: fixed; left: 0; right: 0; margin: 0 auto; width: max-content; bottom: 4vh; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 16px 20px 20px;
+  background: rgba(255,255,255,.97); border-radius: 28px; border: 6px solid var(--c, #9b7bff); box-shadow: 0 24px 40px -18px rgba(0,0,0,.45); animation: cardUp .45s cubic-bezier(.34,1.56,.64,1) both; max-width: 96vw; }
+.choice-t { font-weight: 900; font-size: clamp(1.3rem, 2.6vw, 2rem); color: #2b1d40; text-align: center; }
+.choice-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.cbtn { border: 0; border-radius: 999px; padding: 14px 26px; font-family: inherit; font-weight: 900; font-size: clamp(1.1rem, 2vw, 1.5rem); color: #fff; cursor: pointer;
+  background: var(--b, #9b7bff); box-shadow: 0 6px 0 rgba(0,0,0,.22); transition: transform .12s cubic-bezier(.175,.885,.32,1.275); }
+.cbtn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.22); }
+/* numbered box picker */
+.pickbar { position: fixed; left: 0; right: 0; margin: 0 auto; width: max-content; max-width: 96vw; bottom: 3vh; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 12px 16px 16px;
+  background: rgba(255,255,255,.95); border-radius: 26px; border: 6px solid var(--c, #9b7bff); box-shadow: 0 20px 36px -16px rgba(0,0,0,.45); animation: cardUp .4s cubic-bezier(.34,1.56,.64,1) both; }
+.pickbar .pt { font-weight: 900; font-size: 1.35rem; color: #2b1d40; }
+.pickgrid { display: grid; grid-template-columns: repeat(12, 60px); gap: 10px; }
+@media (max-width: 900px) { .pickgrid { grid-template-columns: repeat(6, 60px); } }
+.pnum { width: 60px; height: 60px; border: 0; border-radius: 18px; font-family: inherit; font-weight: 900; font-size: 1.7rem; color: #fff; cursor: pointer; background: #ff6fae; box-shadow: 0 6px 0 #d4448a; }
+.pnum:nth-child(4n+2) { background: #4f9dff; box-shadow: 0 6px 0 #2c7fd1; } .pnum:nth-child(4n+3) { background: #ffb320; box-shadow: 0 6px 0 #d18a00; } .pnum:nth-child(4n) { background: #2fc58a; box-shadow: 0 6px 0 #1f9a6d; }
+.pnum:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.pnum:disabled { visibility: hidden; }

@@ -3,6 +3,7 @@
 > Local Root: `c:\Users\maysa\Desktop\DV\`  
 > Target Mirror: `monster day/story/mouse/pokemon/firefighter/NH/`  
 > Git Branches: `main` & `gh-pages`  
+> **LOOK & IDENTITY (18 Nov 2026)**: before making any screen, game, picture or 3D model, read `docs/STYLE_GUIDE.md` — bright sunny adventure park, four team monsters, Pink/Blue/Yellow/Green. It replaces the old dark "cyber-glassmorphism" rules.  
 > **FIRST STEP IN EVERY SESSION**: Read `SITE_MAP.md` (and the relevant `docs/map/01..06.md` file) BEFORE grepping the codebase — it maps every screen, `switchView` route, modal, 17k-line JS monolith chapter, Game Maker mode, lesson, Supabase table, and Git/privacy folder rule. After adding/moving files, views, modes, or lessons, run `node tools/build-site-map.js` to keep the map & `site-map/index.html` synced.
 
 You are the **Principal EdTech Game Architect, Lead UI/UX Designer, and Primary ESL/CLIL Curriculum Specialist**. Whenever generating, editing, or wiring any lesson, module, or game in this repository, strictly enforce these operational standards and core craft invariants with zero compromise.
@@ -13,10 +14,11 @@ You are the **Principal EdTech Game Architect, Lead UI/UX Designer, and Primary 
 
 ### 1.1 Anti-Admin Dashboard Mandate
 - **STRICTLY FORBIDDEN**: Flat SaaS forms, 1px table borders, metadata lists, administrative queues, and tiny 32px–48px icon badges.
-- **60-30-10 CYBER-GLASSMORPHISM**:
-  * **60% Obsidian Void Base**: `#060911` with subtle dark radial gradients (`radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%)`).
-  * **30% Structural Glass Panels**: `rgba(15, 23, 42, 0.8)` with `backdrop-filter: blur(14px)` and layered soft drop shadows (`box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2)`).
-  * **10% Vivid Game Accents**: Cyan `#38bdf8`, Amber `#f59e0b`, Emerald `#10b981`, Coral `#f43f5e`, Electric Violet `#a855f7`.
+- **BRIGHT ADVENTURE-PARK LOOK** (full rules in `docs/STYLE_GUIDE.md`; replaces the old dark obsidian / glassmorphism look, which must not be used for new or reworked screens):
+  * **Base**: bright daylight — sky blue `#78c4ff → #c8eaff`, cream `#fff8ec`, white; or the live 3D park behind the screen.
+  * **Panels & cards**: white / cream, rounded 20–30 px, 4–6 px border in a team colour, soft shadow. Text in deep ink `#2b1d40`.
+  * **Accents = the four team colours**: Pink `#ff5fa2`, Blue `#4f9dff`, Yellow `#ffb320`, Green `#2fc58a` (+ lilac `#9b7bff` only when a fifth colour is needed).
+  * **Cast**: the four team monsters (Emberwing, Aquafind, Sparktail, Florasprout) and the children's own avatars. No famous or copyrighted characters.
 - **TACTILE 3D PUSH-BUTTONS**: Every interactive button must have a 5px solid darker bottom border lip (`border-bottom: 5px solid ...`) and a 4px physical travel on `:active` with spring bounce physics (`--spring-snap: cubic-bezier(0.175, 0.885, 0.32, 1.275)`).
 
 ### 1.2 Absolute Ban on Procedural Character Artwork (No SVG Characters)
@@ -32,7 +34,7 @@ You are the **Principal EdTech Game Architect, Lead UI/UX Designer, and Primary 
         ├── items/          <-- 3D tool, badge, and equipment renders
         └── backgrounds/    <-- 16:9 volumetric ambient backdrops
     ```
-  * Every card must follow the **65% Full-Bleed Artwork Rule**: the top 65% of the card is a high-resolution media viewport; the bottom 35% is a dark glassmorphic caption tray.
+  * Every card must follow the **65% Full-Bleed Artwork Rule**: the top 65% of the card is a high-resolution media viewport; the bottom 35% is a white / cream caption tray (see `docs/STYLE_GUIDE.md`).
   * Sprites must be grounded on 3D isometric reflection pedestals (`radial-gradient` discs) featuring active `@keyframes idleBob` floating physics.
 
 ### 1.3 Audio Synthesis Laws (No Raw Oscillator Beeps)
@@ -45,7 +47,7 @@ You are the **Principal EdTech Game Architect, Lead UI/UX Designer, and Primary 
 - **Autoplay Guard**: `AudioContext` and `SpeechSynthesis` must initialize ONLY upon first user gesture (`click`, `touchstart`, or hotkey).
 
 ### 1.4 Reactive State & Gameplay Engine (Arcade Standard)
-- **60-30-10 Cyber-Glassmorphism**: 60% obsidian void (`#060911`), 30% structural glass (`rgba(15, 23, 42, 0.8)` with `backdrop-filter: blur(14px)`), 10% vivid game accents (Cyan `#38bdf8`, Amber `#f59e0b`, Emerald `#10b981`).
+- **Bright park look**: follow `docs/STYLE_GUIDE.md` (sunny daylight, white/cream cards, the four team colours, the four team monsters). 3D games use the shared kit `games/kit3d/` and the shared world `games/world/`.
 - **Tactile 3D Buttons**: All interactive buttons must have a 5px darker bottom border depth lip (`box-shadow: 0 6px 0 var(--border-dark)` or `border-bottom: 5px solid ...`) that physically depresses 4px on `:active` with spring bounce physics.
 - **Reactive State Architecture**: Centralized `playerSession` tracking energy (20% $\to$ 100%), stage progression, and platform XP routing via `AdventureAcademy.awardXP()` / `schoolStore`.
 - **4-Pillar Pedagogical Engine**:
@@ -215,6 +217,7 @@ c:\Users\maysa\Desktop\DV\
 
 - [ ] Has every modified file in the root been copied to `monster day/story/mouse/pokemon/firefighter/NH/`?
 - [ ] Have you run `node --check` on all touched `.js` files in both directories?
+- [ ] Does it follow `docs/STYLE_GUIDE.md` (bright park, team colours, our monsters, no dark/neon screens, no famous characters)?
 - [ ] Are all buttons styled with tactile 3D bottom bevels and active push-down physics?
 - [ ] Does `#avatar-preview-box` adhere to the 8-layer `.monster-composite-stage` z-index hierarchy?
 - [ ] Are locked cosmetics completely unclickable with `🔒 Level X` badges?

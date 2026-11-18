@@ -1,0 +1,54 @@
+{
+  "_note": "Adventure Island layout. Everything on the island is placed from this file: islands (x,z = centre, rx/rz = radius, h = top height), places and homes (x,z = centre of the footprint, w = footprint width the model is scaled to), paths (built automatically from the plaza to each door), tree clusters and small props. Heights come from the islands. Model anchor points are in assets/3d/home/models.json.",
+  "islands": [
+    { "id": "main", "x": -2, "z": 0, "rx": 27, "rz": 17, "seed": 1.2, "wob": 0.12, "h": 0 },
+    { "id": "east", "x": 10, "z": -6, "rx": 16, "rz": 14, "seed": 4.1, "wob": 0.1, "h": 0 },
+    { "id": "beach", "x": 22, "z": 0, "rx": 7, "rz": 12, "seed": 2.0, "wob": 0.12, "h": -0.35, "kind": "sand" },
+    { "id": "hill", "x": -5, "z": -21, "rx": 13, "rz": 7.5, "seed": 0.7, "wob": 0.1, "h": 2.6 },
+    { "id": "cliff", "x": -27, "z": -12, "rx": 7, "rz": 7, "seed": 3.3, "wob": 0.1, "h": 4.2 },
+    { "id": "windmill-isle", "x": -30, "z": 21, "rx": 11, "rz": 7, "seed": 2.2, "wob": 0.12, "h": 0.2 },
+    { "id": "pond-isle", "x": 32, "z": 22, "rx": 11, "rz": 7.5, "seed": 5.1, "wob": 0.12, "h": 0.2 },
+    { "id": "treasure", "x": 44, "z": -22, "rx": 6.5, "rz": 4.6, "seed": 1.1, "wob": 0.08, "h": 0.1, "kind": "sand" }
+  ],
+  "plaza": { "x": 1, "z": 1.6, "r": 3.2 },
+  "places": [
+    { "id": "today", "title": "Today", "link": "index.html#today", "x": -4.9, "z": -24, "w": 16.9, "model": "castle", "fallback": "castle" },
+    { "id": "board", "title": "Class Board", "link": "index.html#board", "x": -15.4, "z": -4.6, "w": 17.6, "model": "colosseum", "fallback": "colosseum" },
+    { "id": "shop", "title": "Shop", "link": "index.html#store", "x": 4, "z": -4.3, "w": 6.6, "model": "shop", "fallback": "stall" },
+    { "id": "library", "title": "Library", "link": "index.html#library", "x": 13, "z": 4.4, "w": 10.1, "model": "library", "fallback": "library" },
+    { "id": "games", "title": "Games", "link": "games/index.html", "x": 1.6, "z": 11, "w": 13.8, "model": "stadium", "fallback": "stadium" }
+  ],
+  "homes": [
+    { "team": 0, "model": "nest-tower", "fallback": "nestTower", "x": -28.6, "z": -12.7, "w": 7.1, "flag": "top", "monster": "anchor", "face": 0.5 },
+    { "team": 1, "model": "pond-waterfall", "fallback": "pond", "x": 32.3, "z": 21.5, "w": 13.6, "flag": [1.2, -3.3, 3.4], "monster": [-2.8, 1.5], "face": -0.3, "door": [-4.5, -1] },
+    { "team": 2, "model": "windmill", "fallback": "windmill", "x": -33.5, "z": 20.5, "w": 7.5, "flag": [1.7, -2.8, 0], "monster": [4, 2.5], "face": 0.25, "flowers": true },
+    { "team": 3, "model": "flower-garden", "fallback": "garden", "x": 15.2, "z": -14, "w": 5.6, "flag": [-2.7, -3.2, 0], "monster": [5.3, 3], "face": -0.4 }
+  ],
+  "harbour": { "x": 27, "z": 5, "door": [25.5, 5] },
+  "treasure": { "x": 44, "z": -22 },
+  "paths": [
+    { "kind": "gold", "to": "today", "from": [-25, 17.5], "via": [[-19, 13], [-12.5, 9], [-8, 4.5], [-6.6, -1.5], [-6.6, -8.5]] },
+    { "to": "games" },
+    { "to": "board" },
+    { "to": "shop" },
+    { "to": "library" },
+    { "to": "harbour" },
+    { "to": "home:1" }
+  ],
+  "trees": [
+    [-15, -24], [-13, -21.5], [3, -23], [5, -21], [-22, -8], [-31, -9], [-25, -3], [-28, -1], [-25, 1.5],
+    [9, -15], [7.5, -12.5], [19, -17], [24, -11], [5, -8.5], [17, 9], [-38, 18], [25, 25], [39, 18]
+  ],
+  "bushes": [[-21, 6], [-11, 13.5], [-2, 7.5], [16, 15], [14, -4], [-27, 25], [37, 26], [24, -6]],
+  "props": [
+    { "kind": "fountain", "x": 1, "z": 1.6 },
+    { "kind": "bench", "x": -2.6, "z": 2.6, "ry": 0.4 },
+    { "kind": "carrots", "x": 7.6, "z": -1.6, "ry": 0.4 },
+    { "kind": "apples", "x": 1.2, "z": -3.2 },
+    { "kind": "apples", "x": 6.8, "z": -3.4 },
+    { "kind": "crate", "x": 7.4, "z": -5.8 },
+    { "kind": "barrel", "x": 25, "z": 2.5 },
+    { "kind": "barrel", "x": 24, "z": 3.6 },
+    { "kind": "crate", "x": 25.5, "z": 8 }
+  ]
+}

@@ -26,7 +26,20 @@
     "castle":        { "file": "castle.glb",        "w": 26, "d": 20, "h": 22,  "fallback": "castle" },
     "hot-air-balloon":{"file": "hot-air-balloon.glb","w": 5, "d": 5,  "h": 7,   "fallback": "balloon", "float": true },
     "gate-arch":     { "file": "gate-arch.glb",     "w": 6,  "d": 1.2,"h": 5,   "fallback": "arch" },
-    "bridge":        { "file": "bridge.glb",        "w": 8,  "d": 4,  "h": 1.8, "fallback": "bridge" }
+    "bridge":        { "file": "bridge.glb",        "w": 8,  "d": 4,  "h": 1.8, "fallback": "bridge" },
+    "q-tree-a":       { "file": "nature/CommonTree_1.glb", "w": 4.3, "d": 4.3, "h": 7.3, "fallback": "tree", "glow": 0.22 },
+    "q-tree-b":       { "file": "nature/CommonTree_2.glb", "w": 4.5, "d": 4.5, "h": 7.6, "fallback": "tree", "glow": 0.22 },
+    "q-tree-c":       { "file": "nature/CommonTree_3.glb", "w": 4.1, "d": 4.1, "h": 9.4, "fallback": "tree", "glow": 0.22 },
+    "q-pine":         { "file": "nature/Pine_1.glb", "w": 4.9, "d": 4.9, "h": 7.3, "fallback": "pine", "glow": 0.18 },
+    "q-autumn":       { "file": "nature/TwistedTree_1.glb", "w": 7, "d": 7, "h": 8.7, "fallback": "blossom", "glow": 0.32 },
+    "q-bush":         { "file": "nature/Bush_Common.glb", "w": 2.4, "d": 2.4, "h": 2, "fallback": "bush", "glow": 0.2 },
+    "q-bush-flowers": { "file": "nature/Bush_Common_Flowers.glb", "w": 2.4, "d": 2.4, "h": 2, "fallback": "bush", "glow": 0.2 },
+    "q-flowers-red":  { "file": "nature/Flower_3_Group.glb", "w": 1.8, "d": 1.8, "h": 2.5, "fallback": "flowers", "glow": 0.15 },
+    "q-flowers-yellow": { "file": "nature/Flower_4_Group.glb", "w": 2.1, "d": 2.1, "h": 2.9, "fallback": "flowers", "glow": 0.15 },
+    "q-mushroom":     { "file": "nature/Mushroom_Common.glb", "w": 1.1, "d": 1.1, "h": 1, "fallback": "rock", "glow": 0.1 },
+    "q-rock-a":       { "file": "nature/Rock_Medium_1.glb", "w": 2.3, "d": 2.3, "h": 1.6, "fallback": "rock" },
+    "q-rock-b":       { "file": "nature/Rock_Medium_2.glb", "w": 2.1, "d": 2.1, "h": 1.3, "fallback": "rock" },
+    "q-plant":        { "file": "nature/Plant_1_Big.glb", "w": 1.8, "d": 1.8, "h": 2.4, "fallback": "bush", "glow": 0.18 }
   },
   "grounds": {
     "_about": "Flat ground areas. 'texture' is looked for in games/world/art/ (seamless square pictures). Missing texture = plain colour.",

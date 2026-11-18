@@ -1,0 +1,6 @@
+/* Bowling 3D — aim bar and score table (bright park look) */
+.bw-aim { position: fixed; bottom: 22px; left: 0; right: 0; margin: 0 auto; width: max-content; display: flex; align-items: center; gap: 14px; padding: 10px 14px 10px 22px; border-radius: 999px;
+  background: #fff8ec; border: 5px solid #ff5f5f; box-shadow: 0 6px 0 rgba(0,0,0,.13); font: 900 1.25rem 'Trebuchet MS', sans-serif; color: #2b1d40; animation: cardUp .35s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.bw-table { display: grid; gap: 6px; margin: 10px auto 4px; min-width: min(460px, 80vw); }
+.bw-table div { display: grid; grid-template-columns: 90px 1fr auto; align-items: center; gap: 10px; padding: 6px 14px; border-radius: 16px; background: #fff; border: 4px solid var(--c); font-weight: 800; color: #2b1d40; }
+.bw-table b { color: var(--c); } .bw-table span { color: #8a6a2a; font-size: .9rem; } .bw-table i { font-style: normal; font-size: 1.2rem; }
