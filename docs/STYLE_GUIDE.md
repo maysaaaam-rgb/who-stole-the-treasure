@@ -2,6 +2,7 @@
 
 **Read this before you make any screen, game, picture or 3D model.** It replaces the old "dark obsidian glass" look.
 Decided by the teacher on 18 November 2026. Target pictures: `docs/design/` (the island home world, the Class Board in the park).
+**Making pictures, 3D models, logos or sounds?** Also read `docs/ART_STYLE.md`: shapes, exact colours, detail level, file limits and prompt blocks.
 
 ## 1. The identity in one sentence
 
@@ -25,6 +26,24 @@ If a new screen, game, picture or model does not fit this sentence, it does not 
 
 - The class's progress is visible in the world. For example, the bridge to Treasure Island grows with the class goal.
 - The 3D world for games lives in `games/world/` (`map.json`, `pieces.json`) and is loaded with `K.World.load({ zone })` from `games/kit3d/world3d.js`.
+
+### Where to use 3D: "3D world, flat tools" (agreed with the teacher, 18 Nov 2026)
+
+- **3D where playing and visiting matter:**
+  - the island home;
+  - the Class Board theatre;
+  - the classroom games;
+  - Treasure Island;
+  - avatar and shop try-on.
+- **Flat (2D) where reading and working matter:**
+  - lesson content, the Magic Book and story pages;
+  - worksheets and quizzes;
+  - the teacher tools (attendance, points, homework, reports, the Today list).
+- **3D behind, flat on top.** Questions, buttons and text always sit on clean white or cream cards over the 3D scene. They never float inside the scene and never move while a child is reading.
+- **Always a fast path.** Every 3D place can also be opened in one tap from a quick bar. Nobody has to wait for a camera flight.
+- **A light mode for weak devices.** Homework is often done on old or cheap phones. When a device is slow, show a still picture or a simpler version instead of a broken or frozen screen.
+- **Test on real devices.** Test on a slow phone setting as well as the smartboard before anything goes to pupils.
+- **Don't rebuild working flat screens in 3D** just for looks.
 
 ## 3. The cast (one family of characters)
 

@@ -3,7 +3,7 @@
 > Local Root: `c:\Users\maysa\Desktop\DV\`  
 > Target Mirror: `monster day/story/mouse/pokemon/firefighter/NH/`  
 > Git Branches: `main` & `gh-pages`  
-> **LOOK & IDENTITY (18 Nov 2026)**: before making any screen, game, picture or 3D model, read `docs/STYLE_GUIDE.md` — bright sunny adventure park, four team monsters, Pink/Blue/Yellow/Green. It replaces the old dark "cyber-glassmorphism" rules.  
+> **LOOK & IDENTITY (18 Nov 2026)**: before making any screen, game, picture, logo, sound or 3D model, read `docs/STYLE_GUIDE.md` AND `docs/ART_STYLE.md` — bright sunny adventure park, chunky toy shapes, four team monsters, Pink/Blue/Yellow/Green. It replaces the old dark "cyber-glassmorphism" rules.  
 > **FIRST STEP IN EVERY SESSION**: Read `SITE_MAP.md` (and the relevant `docs/map/01..06.md` file) BEFORE grepping the codebase — it maps every screen, `switchView` route, modal, 17k-line JS monolith chapter, Game Maker mode, lesson, Supabase table, and Git/privacy folder rule. After adding/moving files, views, modes, or lessons, run `node tools/build-site-map.js` to keep the map & `site-map/index.html` synced.
 
 You are the **Principal EdTech Game Architect, Lead UI/UX Designer, and Primary ESL/CLIL Curriculum Specialist**. Whenever generating, editing, or wiring any lesson, module, or game in this repository, strictly enforce these operational standards and core craft invariants with zero compromise.
