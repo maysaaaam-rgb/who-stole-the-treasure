@@ -58,7 +58,7 @@
 
   var S = {
     phase: 'setup',
-    packId: Kit.pref('pz_pack') || '',
+    packId: (Kit.questions && Kit.questions.current && Kit.questions.current()) || Kit.pref('pz_pack') || '',
     pack: null,
     mode: Kit.pref('pz_mode') || 'choice', // 'choice' | 'speak'
     teams: GAME_ID === 'tug' ? 2 : (+Kit.pref('teams') || 2),
@@ -142,18 +142,10 @@
 
       /* Left: Question Pack Picker + Answer Mode + Rounds */
       var left = el('section', { class: 'panel' }, [el('h2', { text: '📚 Question Pack' })]);
-      var pGrid = el('div', { class: 'packs' });
-      packs.slice(0, 36).forEach(function (p) {
-        pGrid.appendChild(el('button', {
-          type: 'button',
-          class: 'pack' + (p.id === cur.id ? ' on' : ''),
-          onclick: function () { Kit.sound('tap'); S.packId = p.id; Kit.pref('pz_pack', p.id); setup(); }
-        }, [
-          el('b', { text: (p.icon || '❓') + ' ' + p.name }),
-          el('small', { text: (p.grade ? 'G' + p.grade + ' · ' : '') + (p.items ? p.items.length : 0) + ' questions' })
-        ]));
-      });
-      left.appendChild(pGrid);
+      // the shared question picker: the same choice as every other game (2D and 3D) on this computer
+      var pHost = el('div', { class: 'qpick-host' });
+      Kit.questions.picker(pHost, function (p) { S.packId = p.id; S.pack = p; Kit.pref('pz_pack', p.id); });
+      left.appendChild(pHost);
 
       left.appendChild(el('div', { class: 'label', text: '🗣️ Question Style' }));
       left.appendChild(seg([['choice', '4-Choice (A/B/C/D + 🔊)'], ['speak', 'Speak Aloud → Teacher ✓']], S.mode, function (v) {

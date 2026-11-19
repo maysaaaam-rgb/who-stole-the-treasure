@@ -619,6 +619,15 @@
   var keyFn = null;
   addEventListener('keydown', function (e) { if (keyFn) keyFn(e); });
   /* question card: resolves true/false. In demo mode it answers by itself (demoRight decides). */
+  // read English aloud: classroom voice settings (AGENTS.md 1.3)
+  K.say = function (text) {
+    try {
+      var ss = root.speechSynthesis; if (!ss || !text || K.DEMO) return;
+      ss.cancel(); var u = new SpeechSynthesisUtterance(String(text)); u.lang = 'en-US'; u.rate = .88; u.pitch = 1.05;
+      var v = (ss.getVoices() || []).filter(function (x) { return /^en(-|_)US/i.test(x.lang); })[0]; if (v) u.voice = v;
+      ss.speak(u);
+    } catch (e) { /* no voice on this device */ }
+  };
   K.ui.ask = function (item, team, opts) {
     opts = opts || {};
     return new Promise(function (resolve) {
@@ -627,7 +636,8 @@
       card.style.setProperty('--c', team.c);
       var sp = K.cls && K.cls.speaker(team);
       card.innerHTML = '<div class="qhead"><span>●</span> ' + (sp ? '<i class="qface" data-k3-face="' + sp.id + '">' + sp.initial + '</i>' + K.esc(sp.name) + '\u2019s turn · Team ' + team.name : 'Team ' + team.name) + (opts.prompt ? ' — ' + opts.prompt : '') + '</div>' +
-        '<div class="qtext">' + (item.pic ? '<span class="pic">' + item.pic + '</span>' : '') + '<span>' + item.q + '</span></div>';
+        '<div class="qtext">' + (item.img ? '<img class="qimg" alt="" src="' + K.ROOT + item.img + '">' : (item.pic ? '<span class="pic">' + item.pic + '</span>' : '')) + '<span>' + item.q + '</span>' +
+        (typeof item.speak === 'string' && item.speak ? '<button class="qsay" title="Listen again">🔊</button>' : '') + '</div>';
       var grid = K.el('div', 'opts'), done = false;
       choices.forEach(function (o) {
         var b = K.el('button', 'opt'); b.textContent = o;
@@ -643,6 +653,11 @@
       });
       card.appendChild(grid); wrap.appendChild(card);
       if (sp) K.cls.paintFaces(card);
+      if (typeof item.speak === 'string' && item.speak) {   // listening questions: read the sentence aloud (and again on 🔊)
+        var say = function () { K.say(item.speak); };
+        var sb = card.querySelector('.qsay'); if (sb) sb.onclick = say;
+        K.after(.35, say);
+      }
       keyFn = function (e) { var n = +e.key; if (n >= 1 && n <= 3 && grid.children[n - 1]) grid.children[n - 1].click(); };
       if (K.DEMO) K.after(1.7 + Math.random() * .6, function () {
         var right = opts.demoRight !== undefined ? opts.demoRight : Math.random() < .8;
@@ -652,13 +667,49 @@
   };
 
   /* ---------- questions from the Game Maker sets ---------- */
+  // Questions come from the ONE shared library (games/kit/questions.js): every Game Maker set for Units 1-5,
+  // unit packs, the teacher's own sets, mixes, and one remembered choice shared with the 2D games.
+  // Until the library has loaded, the Game Maker sets already on the page are used.
   K.questions = function (fallbackId) {
-    var GM = root.GM || { sets: [] }, id = Q.get('set') || fallbackId || 'g3-u5-vocab';
-    var s = (GM.sets || []).find(function (x) { return x.id === id; }) || (GM.sets || [])[0];
-    var qs = (s && s.questions || []).filter(function (x) { return x && x.q && x.a && x.w && x.w.length; });
-    if (!qs.length) qs = [{ q: 'A king of Ancient Egypt is a…', a: 'pharaoh', w: ['chariot', 'camel'], pic: '👑' }];
-    qs = K.shuffle(qs); var i = 0;
-    return { next: function () { return qs[i++ % qs.length]; }, title: s ? s.title : '' };
+    var GM = root.GM || { sets: [] };
+    function usable(arr) { return (arr || []).filter(function (q) { return q && q.q && q.a && q.w && q.w.length; }); }
+    var qs = [], i = 0, api = { title: '', id: '' };
+    function take(items, id, title) {
+      qs = K.shuffle(usable(items).map(function (x) { var o = {}; for (var k in x) o[k] = x[k]; if (!o.pic && o.img) o.pic = ''; return o; }));
+      if (!qs.length) qs = [{ q: 'A king of Ancient Egypt is a…', a: 'pharaoh', w: ['chariot', 'camel'], pic: '👑' }];
+      i = 0; api.id = id || ''; api.title = title || '';
+    }
+    api.usePack = function (p) { if (p) take(p.items, p.id, p.name); return api; };
+    api.next = function () { return qs[i++ % qs.length]; };
+    var first = Q.get('set') || Q.get('pack') || fallbackId || 'g3-u5-vocab';
+    var gs = (GM.sets || []).find(function (x) { return x.id === first && usable(x.questions || x.items).length; }) || (GM.sets || []).find(function (x) { return usable(x.questions || x.items).length; });
+    if (gs) take(gs.questions || gs.items, gs.id, gs.title); else take([], '', '');
+    api.ready = K.qlib().then(function (QL) {
+      if (!QL) return api;
+      var want = QL.current();
+      return QL.get(want || ('unit:3:5')).then(function (p) { if (p && usable(p.items).length) api.usePack(p); return api; });
+    });
+    K._qs = api;
+    return api;
+  };
+  var qlibP = null;
+  K.qlib = function () {
+    if (qlibP) return qlibP;
+    kitShim();
+    qlibP = (root.Kit && root.Kit.questions ? Promise.resolve() : loadOnce(K.ROOT + 'games/kit/questions.js?v=4'))
+      .then(function () { return root.Kit && root.Kit.questions && root.Kit.questions.picker ? root.Kit.questions : null; })
+      .catch(function () { return null; });
+    return qlibP;
+  };
+
+  // The shared question picker on the title screen (grade · unit · part · "Make a mix").
+  K.ui.setPicker = function (box) {
+    var holder = K.el('div', 'setpick'); box.insertBefore(holder, box.lastChild);
+    K.qlib().then(function (QL) {
+      if (!QL || !K._qs) { holder.remove(); return; }
+      QL.picker(holder, function (p) { K._qs.usePack(p); }, { quizOnly: true, silentFirst: true });
+    });
+    return holder;
   };
 
   /* ---------- the class: real teams, whose turn it is, faces, points to the Class Board ----------
@@ -713,6 +764,7 @@
   };
   /* the title screen row: pick the class (or no names), see the teams, shuffle them */
   C.setupRow = function (box, nTeams) {
+    if (!K.ui.preview) K.ui.setPicker(box);
     var wrap = K.el('div', 'clsbox'); box.insertBefore(wrap, box.lastChild);
     C.boot().then(function (ok) {
       if (!ok) { wrap.remove(); return; }

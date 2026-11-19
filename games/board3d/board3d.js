@@ -147,7 +147,7 @@
     var box = K.ui.add(K.el('div', 'endbox'));
     box.innerHTML = '<img class="logo" src="art/logo.png" alt="" onerror="this.remove()"><div class="say" style="--c:#ff5f5f;font-size:1.5rem">🎲 Answer right to roll the dice! Race to the treasure chest!</div><div class="say" style="--c:#2fc58a">🪜 Ladders go up · 🛝 slides go down · ⭐ = 2 more steps</div>';
     var rows = K.el('div', 'rows'), go = K.el('button', 'btn green', '▶ Start');
-    go.onclick = function () { K.audio(); K.loadSounds(['hello', 'correct', 'wrong', 'dice', 'step', 'ladder', 'slide', 'star', 'whoosh', 'win']); K.cls.assign(TEAMS); start(); };
+    go.onclick = function () { K.audio(); K.loadSounds(['hello', 'correct', 'wrong', 'dice', 'step', 'ladder', 'slide', 'star', 'pop', 'whoosh', 'win']); K.cls.assign(TEAMS); start(); };
     rows.appendChild(go); box.appendChild(rows); K.cls.setupRow(box, nTeams); K.ui.topButtons();
     mons.forEach(function (m, i) { K.after(.4 + i * .45, function () { if (phase === 'title' && m) { m.setState('hello'); K.after(1.3, function () { if (phase === 'title') m.setState('idle'); }); } }); });
     if (K.DEMO) K.after(2.2, function () { go.onclick(); });
