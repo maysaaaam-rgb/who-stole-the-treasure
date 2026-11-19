@@ -95,12 +95,12 @@
 | :--- | :--- |
 | `eaa:avatars-ready` | [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) |
 | `eaa:private-loaded` | [private-data.js](file:///C:/Users/maysa/Desktop/DV/js/private-data.js) |
-| `eaa:teacher-unlocked` | [games-points-bridge.js](file:///C:/Users/maysa/Desktop/DV/js/games-points-bridge.js), [teacher-auth.js](file:///C:/Users/maysa/Desktop/DV/js/teacher-auth.js) |
+| `eaa:teacher-unlocked` | [games-points-bridge.js](file:///C:/Users/maysa/Desktop/DV/js/games-points-bridge.js), [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js), [teacher-auth.js](file:///C:/Users/maysa/Desktop/DV/js/teacher-auth.js) |
 | `monsterProfileUpdated` | [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) |
 
 ---
 
-## 5. Complete Root Directory & Git Safety Classification (184 entries)
+## 5. Complete Root Directory & Git Safety Classification (186 entries)
 
 > **Why `git add -A` is forbidden:** Entries marked `MISSING LOCALLY (GIT DELETED)` exist on the live published site (`main` / `gh-pages`) but were cleaned from this local disk. Running `git add -A` would delete them from the live school website!
 
@@ -110,9 +110,9 @@
 | `.agent/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `.claude/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `.github/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `.gitignore` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
+| `.gitignore` | Root File | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `.nojekyll` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
-| `404.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `404.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
 | `adventure-engine/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 6 tracked files missing on local disk — NEVER run git add -A! |
 | `advice/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 7 tracked files missing on local disk — NEVER run git add -A! |
 | `AGENTS.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -121,7 +121,7 @@
 | `art-prompts/` | Folder | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `assets/` | Lesson / Game Module | ✅ | — | — | **MODIFIED** | Shared 3D packs, avatars (`student-*`), icons & audio |
 | `audit-report/` | Folder | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
-| `avatar-3d-studio/` | Lesson / Game Module | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `avatar-3d-studio/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `bamboozle/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `biome-crafter/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `brain/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
@@ -152,12 +152,13 @@
 | `forest-adaptation/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 6 tracked files missing on local disk — NEVER run git add -A! |
 | `forest-safari/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 16 tracked files missing on local disk — NEVER run git add -A! |
 | `freeze-game/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
-| `game-maker/` | Core App / World | ✅ | ✅ | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `game-maker/` | Core App / World | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `games/` | Lesson / Game Module | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `good-ideas-lab/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `halloween-pet-shop/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `harvest-feast/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 6 tracked files missing on local disk — NEVER run git add -A! |
 | `home-view/` | Core App / World | ✅ | — | — | **LIVE** | Tracked & safe |
+| `home3d/` | Lesson / Game Module | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `hq2.out` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `index.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `inventor-forge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
@@ -165,7 +166,7 @@
 | `inventors-odyssey/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 1 tracked files missing on local disk — NEVER run git add -A! |
 | `island/` | Core App / World | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `island-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `js/` | Platform Infrastructure | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `js/` | Platform Infrastructure | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `jungle/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 16 tracked files missing on local disk — NEVER run git add -A! |
 | `karaoke-stage/` | Core App / World | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `kenney-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
@@ -201,6 +202,7 @@
 | `pokemon/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `predictions/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 7 tracked files missing on local disk — NEVER run git add -A! |
 | `preposition-catapult/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 1 tracked files missing on local disk — NEVER run git add -A! |
+| `quaternius-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `quiz-briefing/` | Lesson / Game Module | ✅ | — | ✅ | **PARTIALLY DELETED LOCALLY** | 4 tracked subfiles deleted locally — stage carefully |
 | `quiz-g3-units1-4/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `quiz-g4-units1-4/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
@@ -219,8 +221,8 @@
 | `school-subjects-challenge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `scratch/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `simon-says/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
-| `site-map/` | Platform Infrastructure | ✅ | — | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
+| `site-map/` | Platform Infrastructure | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `small-inventor/` | Lesson / Game Module | ❌ | — | — | **MISSING LOCALLY (GIT DELETED)** | 1 tracked files missing on local disk — NEVER run git add -A! |
 | `smart-board/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `smart-farm/` | Lesson / Game Module | ❌ | — | ✅ | **MISSING LOCALLY (GIT DELETED)** | 7 tracked files missing on local disk — NEVER run git add -A! |

@@ -52,7 +52,7 @@
   }
 
   // Application State
-  let currentView = 'today';
+  let currentView = 'home';
   let selectedAttDate = new Date().toISOString().split('T')[0];
   let activeArchivedFilter = 'all';
   let selectedClassDetailId = 'class-3a';
@@ -120,7 +120,8 @@
   async function initApp() {
     if (window.__pendingDashboardOpen) {
       if (store) store.setRole('teacher');
-      currentView = document.documentElement.classList.contains('class-mode') ? 'board' : 'today';
+      const hp = (window.location.hash || '').replace(/^#[/]*/, '').trim().split('/')[0];
+      currentView = hp || 'home';
       window.__pendingDashboardOpen = false;
     }
     const initialClass = store.getActiveClass();
@@ -247,7 +248,7 @@
         const role = btn.getAttribute('data-role');
         store.setRole(role);
 
-        if (role === 'teacher') currentView = 'today';
+        if (role === 'teacher') currentView = 'home';
         else if (role === 'student') currentView = 'adventure';
         else if (role === 'parent') currentView = 'parent-home';
 
@@ -899,6 +900,7 @@
       const parts = hash.split('/');
       let primaryView = parts[0];
       const validViews = [
+        'home', 'shop',
         'dashboard', 'classes', 'class-detail', 'students', 'attendance',
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
@@ -914,6 +916,7 @@
       }
       if (validViews.includes(primaryView)) {
         if (primaryView === 'classview') primaryView = 'board';
+        if (primaryView === 'shop') primaryView = 'store-pupil';
         if (primaryView === 'class-detail' && parts[1]) {
           selectedClassDetailId = parts[1];
           if (parts[2]) selectedClassDetailTab = parts[2];
@@ -924,6 +927,9 @@
         renderCurrentView();
         return;
       }
+    } else {
+      currentView = 'home';
+      renderCurrentView();
     }
   }
 
@@ -1045,6 +1051,7 @@
   window.renderCurrentView = renderCurrentView;
   window.switchView = function(viewName, updateHash = true) {
     if (viewName === 'classview') viewName = 'board';
+    if (viewName === 'shop') viewName = 'store-pupil';
     closeTransientPopups();
     currentView = viewName;
     if (typeof window.closeMobileSidebar === 'function') window.closeMobileSidebar();

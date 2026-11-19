@@ -38,7 +38,7 @@
 
 | File | Size | Lines | Cache `?v=` |
 | :--- | :---: | :---: | :---: |
-| [app.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/app.js) | 43 KB | 754 | `28` |
+| [app.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/app.js) | 43.7 KB | 754 | `28` |
 | [audio.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/audio.js) | 15.8 KB | 185 | `7` |
 | [bank.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/bank.js) | 8.8 KB | 253 | `2` |
 | [core.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/core.js) | 36.2 KB | 607 | `17` |
@@ -47,18 +47,18 @@
 | [mode-balloon.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-balloon.js) | 9.8 KB | 257 | `8` |
 | [mode-baseball.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-baseball.js) | 17.2 KB | 436 | `7` |
 | [mode-bingo.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-bingo.js) | 7.7 KB | 126 | `2` |
-| [mode-board.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-board.js) | 18.4 KB | 308 | `13` |
+| [mode-board.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-board.js) | 18.7 KB | 308 | `13` |
 | [mode-board3.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-board3.js) | 62.8 KB | 1502 | `6` |
 | [mode-cannon.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-cannon.js) | 50.6 KB | 1478 | `11` |
-| [mode-extra.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-extra.js) | 106.1 KB | 2770 | `16` |
+| [mode-extra.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-extra.js) | 108.8 KB | 2770 | `16` |
 | [mode-fling.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-fling.js) | 62.7 KB | 1657 | `10` |
 | [mode-guesseroo.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-guesseroo.js) | 9.2 KB | 132 | `2` |
 | [mode-hunt.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-hunt.js) | 9.5 KB | 231 | `9` |
 | [mode-jigsaw.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-jigsaw.js) | 17.8 KB | 471 | `7` |
-| [mode-memory.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-memory.js) | 34.9 KB | 1027 | `8` |
+| [mode-memory.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-memory.js) | 35.9 KB | 1027 | `8` |
 | [mode-penalty.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-penalty.js) | 125.2 KB | 2931 | `31` |
-| [mode-plinko.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-plinko.js) | 11.7 KB | 262 | `10` |
-| [mode-race.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-race.js) | 13.2 KB | 329 | `5` |
+| [mode-plinko.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-plinko.js) | 11.9 KB | 262 | `10` |
+| [mode-race.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-race.js) | 13.6 KB | 329 | `5` |
 | [mode-snakes.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-snakes.js) | 13.5 KB | 338 | `6` |
 | [mode-storydice.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-storydice.js) | 7.9 KB | 132 | `4` |
 | [mode-tower.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-tower.js) | 14.7 KB | 373 | `7` |

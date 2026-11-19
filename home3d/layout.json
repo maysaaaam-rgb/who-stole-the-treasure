@@ -113,7 +113,7 @@
   {
    "id": "shop",
    "title": "Shop",
-   "link": "index.html#store",
+   "link": "index.html#store-pupil",
    "x": 4,
    "z": -4.3,
    "w": 6.6,
@@ -484,79 +484,6 @@
    "y": 13,
    "h": 6,
    "float": 0.6
-  },
-  {
-   "model": "bridge-segment",
-   "x": 28.85,
-   "z": -6.85,
-   "y": -0.25,
-   "h": 2.4,
-   "byLength": true,
-   "ry": 2.356
-  },
-  {
-   "model": "bridge-segment",
-   "x": 30.55,
-   "z": -8.55,
-   "y": -0.25,
-   "h": 2.4,
-   "byLength": true,
-   "ry": 2.356
-  },
-  {
-   "model": "bridge-segment",
-   "x": 32.24,
-   "z": -10.24,
-   "y": -0.25,
-   "h": 2.4,
-   "byLength": true,
-   "ry": 2.356
-  },
-  {
-   "model": "bridge-segment",
-   "x": 33.94,
-   "z": -11.94,
-   "y": -0.25,
-   "h": 2.4,
-   "byLength": true,
-   "ry": 2.356
-  },
-  {
-   "model": "bridge-post",
-   "x": 34.12,
-   "z": -13.46,
-   "y": -0.8,
-   "h": 1.8
-  },
-  {
-   "model": "bridge-post",
-   "x": 35.46,
-   "z": -12.12,
-   "y": -0.8,
-   "h": 1.8
-  },
-  {
-   "model": "bridge-segment",
-   "x": 39.35,
-   "z": -17.35,
-   "y": -0.25,
-   "h": 2.4,
-   "byLength": true,
-   "ry": 2.356
-  },
-  {
-   "model": "bridge-post",
-   "x": 37.83,
-   "z": -17.17,
-   "y": -0.8,
-   "h": 1.8
-  },
-  {
-   "model": "bridge-post",
-   "x": 39.17,
-   "z": -15.83,
-   "y": -0.8,
-   "h": 1.8
   }
  ]
-}
+}

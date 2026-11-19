@@ -14,7 +14,7 @@
 | **Dynamic `switchView()` Views** | **42** | [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L10109-L10168) |
 | **Reusable Modals in `index.html`** | **69** | [index.html](file:///C:/Users/maysa/Desktop/DV/index.html#L480-L4390) |
 | **Platform JS Modules (`js/*.js`)** | **90** (69 in `index.html`) | [02-core-js-and-monoliths.md](file:///C:/Users/maysa/Desktop/DV/docs/map/02-core-js-and-monoliths.md) |
-| **Platform Stylesheets (`css/*.css`)** | **12** (8 in `index.html`) | [01-platform-screens-and-dom.md](file:///C:/Users/maysa/Desktop/DV/docs/map/01-platform-screens-and-dom.md) |
+| **Platform Stylesheets (`css/*.css`)** | **13** (9 in `index.html`) | [01-platform-screens-and-dom.md](file:///C:/Users/maysa/Desktop/DV/docs/map/01-platform-screens-and-dom.md) |
 | **Game Maker 2.0 Arcade Modes** | **22 modes** + **75 question sets** | [04-game-maker.md](file:///C:/Users/maysa/Desktop/DV/docs/map/04-game-maker.md) |
 | **Registered `GAMES_DATA` Modules** | **122** | [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) |
 | **Printable Lesson Plans (Word/PDF)** | **56 lessons** | [05-lessons-island-and-curriculum.md](file:///C:/Users/maysa/Desktop/DV/docs/map/05-lessons-island-and-curriculum.md) |
@@ -25,7 +25,7 @@
 ## 📂 2. Modular Deep-Dive Map Index (`docs/map/`)
 
 1. **[01-platform-screens-and-dom.md](file:///C:/Users/maysa/Desktop/DV/docs/map/01-platform-screens-and-dom.md)** — Entry HTML pages, 7-place sidebar/rail, all 42 `switchView` routes, all 69 modals, toolkit tabs, and exact CSS/JS load order.
-2. **[02-core-js-and-monoliths.md](file:///C:/Users/maysa/Desktop/DV/docs/map/02-core-js-and-monoliths.md)** — All 90 `js/*.js` & 12 `css/*.css` files, plus full line-range chapters inside `school-app.js` (17214 lines) and `school-store.js` (17598 lines).
+2. **[02-core-js-and-monoliths.md](file:///C:/Users/maysa/Desktop/DV/docs/map/02-core-js-and-monoliths.md)** — All 90 `js/*.js` & 13 `css/*.css` files, plus full line-range chapters inside `school-app.js` (17221 lines) and `school-store.js` (17601 lines).
 3. **[03-avatars-monsters-and-store.md](file:///C:/Users/maysa/Desktop/DV/docs/map/03-avatars-monsters-and-store.md)** — `PupilAvatars` (2D + 3D extruded rig), Unified `ClassroomStore`, `MonsterRenderer` 8-layer stage, Mystery Boxes, and `assets/avatars/` layout.
 4. **[04-game-maker.md](file:///C:/Users/maysa/Desktop/DV/docs/map/04-game-maker.md)** — All 22 Game Maker arcade modes (including 3D Penalty Shootout), 75 question sets, engine & audio architecture.
 5. **[05-lessons-island-and-curriculum.md](file:///C:/Users/maysa/Desktop/DV/docs/map/05-lessons-island-and-curriculum.md)** — All Grade 3 & Grade 4 lessons, `GAMES_DATA`, `Timetable` catalog, `lesson-plans/`, `island/`, `passport/`, `home-view/`, and `404.html` routes.
@@ -89,63 +89,63 @@ flowchart TB
 
 ## 🏛️ 5. Giant Monolith Quick-Jump (`school-app.js` & `school-store.js`)
 
-### A. [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) (17214 lines · 1047.7 KB)
+### A. [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) (17221 lines · 1047.9 KB)
 | Line Range | Chapter / Section |
 | :---: | :--- |
-| [L117–L390](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L117-L390) | 1. INITIALIZATION & GLOBAL EVENT LISTENERS |
-| [L391–L930](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L391-L930) | SUPABASE CLOUD DATABASE CONFIGURATION & MANAGEMENT MODAL CONTROLLER |
-| [L931–L1123](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L931-L1123) | GLOBAL GAME LAUNCHER ROUTING |
-| [L1124–L1204](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L1124-L1204) | 4 ELEMENTAL SPECIES ARCHETYPES (LOCAL 3D RASTER MASCOTS) |
-| [L1205–L1548](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L1205-L1548) | CANONICAL STUDENT MONSTER AVATAR & STAGE RENDERER (3D RASTER MASCOTS) |
-| [L1549–L1684](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L1549-L1684) | 2. MODAL & CONFIRMATION CONTROLLERS |
-| [L1685–L2702](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L1685-L2702) | 3. ENTITY CRUD HANDLERS (STUDENTS, CLASSES, GAMES, CURRICULUM, ETC.) |
-| [L2703–L3389](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L2703-L3389) | 4. STUDENT PROFILE MANAGEMENT CENTER (8 SUB-TABS) |
-| [L3390–L3781](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L3390-L3781) | 5. VIEW CONTROLLERS (STUDENTS, CLASSES, CURRICULUM, LIBRARY, ETC.) |
-| [L3782–L4679](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L3782-L4679) | CLASSROOM HUB (Heart of the Class: Visual Avatars, Groups, Points, Toolkit) |
-| [L4680–L5167](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L4680-L5167) | CURRICULUM MANAGEMENT (Reordering, Units, Lessons, Objectives) |
-| [L5168–L6382](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L5168-L6382) | let libraryActiveCatalogTab = 'games'; // 'games' | 'worksheets' |
-| [L6383–L6572](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L6383-L6572) | DETAILED PEDAGOGICAL RESOURCE PREVIEW MODAL |
-| [L6573–L6741](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L6573-L6741) | PRINTABLE WORKSHEETS HUB & REAL LIBRARY |
-| [L6742–L6924](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L6742-L6924) | /* ---- Weekly Assignments & Homework: one place, grouped by week, with every pupil's status ---- */ |
-| [L6925–L7156](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L6925-L7156) | HOMEWORK & QUESTS VIEW (Full CRUD, Student Quest & Centralized XP System) |
-| [L7157–L7407](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L7157-L7407) | 2-COLUMN CREATE / EDIT HOMEWORK MODAL & LIVE PREVIEW |
-| [L7408–L7631](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L7408-L7631) | 3. STUDENT QUEST VIEW & SUBMISSION CONTROLLER |
-| [L7632–L7783](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L7632-L7783) | 4. QUEST COMPLETED CELEBRATION MODAL |
-| [L7784–L8004](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L7784-L8004) | ALICE IN WONDERLAND XP QUEST SINGLE-STUDENT GRADER CONTROLLER |
-| [L8005–L8221](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L8005-L8221) | QUIZZES & QUESTION BUILDER VIEW (Complete CRUD) |
-| [L8222–L8328](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L8222-L8328) | ASSESSMENTS & RUBRICS VIEW (Complete CRUD) |
-| [L8329–L8398](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L8329-L8398) | DYNAMIC REPORTS GENERATOR VIEW (Complete CRUD) |
-| [L8399–L9946](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L8399-L9946) | GAMIFICATION SETTINGS VIEW (Badges, Levels, Items & XP Skills CRUD) |
-| [L9947–L10107](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L9947-L10107) | SIDEBAR NAVIGATION (With Admin & Settings) |
-| [L10108–L10919](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L10108-L10919) | function renderCurrentView() { |
-| [L10920–L10975](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L10920-L10975) | CURRICULUM REORDERING & CRUD HANDLERS |
-| [L10976–L11107](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L10976-L11107) | WORKSHEET CRUD HANDLERS |
-| [L11108–L11265](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11108-L11265) | QUIZ QUESTIONS MANAGER HANDLERS |
-| [L11266–L11359](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11266-L11359) | RUBRICS & CRITERIA HANDLERS |
-| [L11360–L11489](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11360-L11489) | GAMIFICATION & BADGES HANDLERS |
-| [L11490–L11627](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11490-L11627) | DYNAMIC REPORT GENERATOR HANDLERS |
-| [L11628–L11631](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11628-L11631) | SCHOOL SETTINGS MODAL HANDLERS |
-| [L11632–L11744](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11632-L11744) | DEDICATED ARCHIVED & RESTORE FULL PAGE VIEW |
-| [L11745–L11947](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11745-L11947) | DEDICATED SCHOOL SETTINGS FULL PAGE VIEW |
-| [L11948–L11971](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11948-L11971) | GLOBAL ACTION ALIASES FOR COMPLETE ACCESSIBILITY |
-| [L11972–L12187](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11972-L12187) | MISSING & UPGRADED CRUD HANDLERS (Assignments, Homework, Quizzes, Badges) |
-| [L12188–L12269](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12188-L12269) | CALENDAR EVENT HANDLERS |
-| [L12270–L12348](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12270-L12348) | PORTFOLIO ARTIFACT HANDLERS |
-| [L12349–L12406](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12349-L12406) | UNIVERSAL ARCHIVED & RESTORE HANDLERS |
-| [L12407–L12436](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12407-L12436) | MOVE STUDENT HANDLERS |
-| [L12437–L12449](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12437-L12449) | REAL AVATAR CUSTOMIZER HANDLER |
-| [L12450–L12473](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12450-L12473) | MESSAGE THREAD HANDLERS |
-| [L12474–L12530](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12474-L12530) | MOBILE NAVIGATION DRAWER TOGGLE |
-| [L12531–L12917](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12531-L12917) | CLASSROOM STUDENT MANAGEMENT & ADVANCED TEACHER TOOLKIT ENGINE |
-| [L12918–L15664](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12918-L15664) | DEDICATED "EDIT STUDENT XP" MODAL CONTROLLER (INTERACTIVE 3D ARTIFACT) |
-| [L15665–L15849](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15665-L15849) | ORIGINAL TEXTBOOK VIEWER CONTROLLER (GLOBAL READINGS 2) |
-| [L15850–L16498](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15850-L16498) | MONSTER EVOLUTION & COMPANION SYSTEM CONTROLLERS |
-| [L16499–L16550](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16499-L16550) | FULLSCREEN MONSTER SHOWCASE CONTROLLER |
-| [L16551–L16645](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16551-L16645) | SCOPE & SEQUENCE MODAL CONTROLLER |
-| [L16646–L16806](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16646-L16806) | LESSON ATTACHMENT MODALS (Games, Worksheets, Assignments) |
-| [L16807–L17214](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16807-L17214) | CURRICULUM AI TEACHER ASSISTANT |
+| [L117–L391](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L117-L391) | 1. INITIALIZATION & GLOBAL EVENT LISTENERS |
+| [L392–L936](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L392-L936) | SUPABASE CLOUD DATABASE CONFIGURATION & MANAGEMENT MODAL CONTROLLER |
+| [L937–L1130](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L937-L1130) | GLOBAL GAME LAUNCHER ROUTING |
+| [L1131–L1211](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L1131-L1211) | 4 ELEMENTAL SPECIES ARCHETYPES (LOCAL 3D RASTER MASCOTS) |
+| [L1212–L1555](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L1212-L1555) | CANONICAL STUDENT MONSTER AVATAR & STAGE RENDERER (3D RASTER MASCOTS) |
+| [L1556–L1691](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L1556-L1691) | 2. MODAL & CONFIRMATION CONTROLLERS |
+| [L1692–L2709](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L1692-L2709) | 3. ENTITY CRUD HANDLERS (STUDENTS, CLASSES, GAMES, CURRICULUM, ETC.) |
+| [L2710–L3396](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L2710-L3396) | 4. STUDENT PROFILE MANAGEMENT CENTER (8 SUB-TABS) |
+| [L3397–L3788](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L3397-L3788) | 5. VIEW CONTROLLERS (STUDENTS, CLASSES, CURRICULUM, LIBRARY, ETC.) |
+| [L3789–L4686](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L3789-L4686) | CLASSROOM HUB (Heart of the Class: Visual Avatars, Groups, Points, Toolkit) |
+| [L4687–L5174](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L4687-L5174) | CURRICULUM MANAGEMENT (Reordering, Units, Lessons, Objectives) |
+| [L5175–L6389](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L5175-L6389) | let libraryActiveCatalogTab = 'games'; // 'games' | 'worksheets' |
+| [L6390–L6579](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L6390-L6579) | DETAILED PEDAGOGICAL RESOURCE PREVIEW MODAL |
+| [L6580–L6748](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L6580-L6748) | PRINTABLE WORKSHEETS HUB & REAL LIBRARY |
+| [L6749–L6931](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L6749-L6931) | /* ---- Weekly Assignments & Homework: one place, grouped by week, with every pupil's status ---- */ |
+| [L6932–L7163](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L6932-L7163) | HOMEWORK & QUESTS VIEW (Full CRUD, Student Quest & Centralized XP System) |
+| [L7164–L7414](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L7164-L7414) | 2-COLUMN CREATE / EDIT HOMEWORK MODAL & LIVE PREVIEW |
+| [L7415–L7638](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L7415-L7638) | 3. STUDENT QUEST VIEW & SUBMISSION CONTROLLER |
+| [L7639–L7790](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L7639-L7790) | 4. QUEST COMPLETED CELEBRATION MODAL |
+| [L7791–L8011](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L7791-L8011) | ALICE IN WONDERLAND XP QUEST SINGLE-STUDENT GRADER CONTROLLER |
+| [L8012–L8228](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L8012-L8228) | QUIZZES & QUESTION BUILDER VIEW (Complete CRUD) |
+| [L8229–L8335](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L8229-L8335) | ASSESSMENTS & RUBRICS VIEW (Complete CRUD) |
+| [L8336–L8405](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L8336-L8405) | DYNAMIC REPORTS GENERATOR VIEW (Complete CRUD) |
+| [L8406–L9953](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L8406-L9953) | GAMIFICATION SETTINGS VIEW (Badges, Levels, Items & XP Skills CRUD) |
+| [L9954–L10114](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L9954-L10114) | SIDEBAR NAVIGATION (With Admin & Settings) |
+| [L10115–L10926](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L10115-L10926) | function renderCurrentView() { |
+| [L10927–L10982](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L10927-L10982) | CURRICULUM REORDERING & CRUD HANDLERS |
+| [L10983–L11114](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L10983-L11114) | WORKSHEET CRUD HANDLERS |
+| [L11115–L11272](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11115-L11272) | QUIZ QUESTIONS MANAGER HANDLERS |
+| [L11273–L11366](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11273-L11366) | RUBRICS & CRITERIA HANDLERS |
+| [L11367–L11496](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11367-L11496) | GAMIFICATION & BADGES HANDLERS |
+| [L11497–L11634](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11497-L11634) | DYNAMIC REPORT GENERATOR HANDLERS |
+| [L11635–L11638](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11635-L11638) | SCHOOL SETTINGS MODAL HANDLERS |
+| [L11639–L11751](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11639-L11751) | DEDICATED ARCHIVED & RESTORE FULL PAGE VIEW |
+| [L11752–L11954](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11752-L11954) | DEDICATED SCHOOL SETTINGS FULL PAGE VIEW |
+| [L11955–L11978](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11955-L11978) | GLOBAL ACTION ALIASES FOR COMPLETE ACCESSIBILITY |
+| [L11979–L12194](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L11979-L12194) | MISSING & UPGRADED CRUD HANDLERS (Assignments, Homework, Quizzes, Badges) |
+| [L12195–L12276](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12195-L12276) | CALENDAR EVENT HANDLERS |
+| [L12277–L12355](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12277-L12355) | PORTFOLIO ARTIFACT HANDLERS |
+| [L12356–L12413](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12356-L12413) | UNIVERSAL ARCHIVED & RESTORE HANDLERS |
+| [L12414–L12443](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12414-L12443) | MOVE STUDENT HANDLERS |
+| [L12444–L12456](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12444-L12456) | REAL AVATAR CUSTOMIZER HANDLER |
+| [L12457–L12480](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12457-L12480) | MESSAGE THREAD HANDLERS |
+| [L12481–L12537](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12481-L12537) | MOBILE NAVIGATION DRAWER TOGGLE |
+| [L12538–L12924](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12538-L12924) | CLASSROOM STUDENT MANAGEMENT & ADVANCED TEACHER TOOLKIT ENGINE |
+| [L12925–L15671](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12925-L15671) | DEDICATED "EDIT STUDENT XP" MODAL CONTROLLER (INTERACTIVE 3D ARTIFACT) |
+| [L15672–L15856](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15672-L15856) | ORIGINAL TEXTBOOK VIEWER CONTROLLER (GLOBAL READINGS 2) |
+| [L15857–L16505](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15857-L16505) | MONSTER EVOLUTION & COMPANION SYSTEM CONTROLLERS |
+| [L16506–L16557](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16506-L16557) | FULLSCREEN MONSTER SHOWCASE CONTROLLER |
+| [L16558–L16652](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16558-L16652) | SCOPE & SEQUENCE MODAL CONTROLLER |
+| [L16653–L16813](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16653-L16813) | LESSON ATTACHMENT MODALS (Games, Worksheets, Assignments) |
+| [L16814–L17221](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16814-L17221) | CURRICULUM AI TEACHER ASSISTANT |
 
-### B. [school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js) (17598 lines · 762 KB)
+### B. [school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js) (17601 lines · 762.3 KB)
 | Line Range | Chapter / Section |
 | :---: | :--- |
 | [L958–L961](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L958-L961) | GLOBAL READINGS 2 — LEVEL 2 STUDENT'S BOOK (MACMILLAN EDUCATION) |
@@ -158,28 +158,28 @@ flowchart TB
 | [L2492–L2495](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L2492-L2495) | TERM 2 RESET CANCELLED — ARCHIVED XP RESTORATION (IDEMPOTENT, SAFE TO RE-RUN) |
 | [L2496–L3072](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L2496-L3072) | const LEGACY_MIGRATION_KEYS = [ |
 | [L3073–L10421](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L3073-L10421) | 📘 Alice in Wonderland: Discrete Homework XP Tasks |
-| [L10422–L11388](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L10422-L11388) | CORE STORE ENGINE CLASS |
-| [L11389–L11547](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L11389-L11547) | 2. STUDENTS & ENROLLMENT (18 METHODS) |
-| [L11548–L12309](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L11548-L12309) | TRANSACTION-BASED XP ARCHITECTURE & AUDIT LEDGER |
-| [L12310–L12556](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L12310-L12556) | 2. CLASS CRUD & ATTENDANCE CALCULATIONS |
-| [L12557–L12811](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L12557-L12811) | 3. CURRICULUM HIERARCHY CRUD |
-| [L12812–L13129](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L12812-L13129) | 4. RESOURCE / GAME CRUD |
-| [L13130–L13351](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L13130-L13351) | 5. ASSIGNMENTS & HOMEWORK CRUD |
-| [L13352–L14182](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L13352-L14182) | 6. QUIZZES & ASSESSMENTS CRUD |
-| [L14183–L14265](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L14183-L14265) | getClassStory(classId = null, includeArchived = false) { |
-| [L14266–L15141](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L14266-L15141) | 8. UNIVERSAL ACTIVITY COMPLETION HOOK |
-| [L15142–L15198](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15142-L15198) | CALENDAR EVENTS CRUD |
-| [L15199–L15376](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15199-L15376) | UNIVERSAL RESTORE & ARCHIVE AUDIT ENGINE |
-| [L15377–L15414](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15377-L15414) | STUDENT MOVEMENTS & ENROLLMENT |
-| [L15415–L15530](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15415-L15530) | ENHANCED ENTITY EDITS (Assessments, Portfolios, Books, Objectives, Groups) |
-| [L15531–L15613](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15531-L15613) | XP SKILLS MANAGEMENT (ClassDojo-style Positive & Needs Work Skills) |
-| [L15614–L15708](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15614-L15708) | CLASSROOM REWARDS & REDEMPTION SYSTEM |
-| [L15709–L15785](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15709-L15785) | BIG IDEAS CLASSROOM BOARD (ClassDojo-style Brainstorming & Projects) |
-| [L15786–L15814](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15786-L15814) | ORIGINAL ADVENTURE AVATAR SYSTEM (6 Categories) |
-| [L15815–L15915](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15815-L15915) | GROUP TOTAL XP & MONTHLY TEAM RACE XP |
-| [L15916–L15972](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15916-L15972) | STUDENT AWARDS (SEPARATE FROM BADGE DEFINITIONS) |
-| [L15973–L17250](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15973-L17250) | PROGRESS CHECK ENGINE CRUD & PERSISTENCE METHODS |
-| [L17251–L17598](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L17251-L17598) | MYSTERY BOXES, STUDENT INVENTORY & TRADING ENGINE |
+| [L10422–L11391](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L10422-L11391) | CORE STORE ENGINE CLASS |
+| [L11392–L11550](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L11392-L11550) | 2. STUDENTS & ENROLLMENT (18 METHODS) |
+| [L11551–L12312](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L11551-L12312) | TRANSACTION-BASED XP ARCHITECTURE & AUDIT LEDGER |
+| [L12313–L12559](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L12313-L12559) | 2. CLASS CRUD & ATTENDANCE CALCULATIONS |
+| [L12560–L12814](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L12560-L12814) | 3. CURRICULUM HIERARCHY CRUD |
+| [L12815–L13132](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L12815-L13132) | 4. RESOURCE / GAME CRUD |
+| [L13133–L13354](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L13133-L13354) | 5. ASSIGNMENTS & HOMEWORK CRUD |
+| [L13355–L14185](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L13355-L14185) | 6. QUIZZES & ASSESSMENTS CRUD |
+| [L14186–L14268](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L14186-L14268) | getClassStory(classId = null, includeArchived = false) { |
+| [L14269–L15144](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L14269-L15144) | 8. UNIVERSAL ACTIVITY COMPLETION HOOK |
+| [L15145–L15201](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15145-L15201) | CALENDAR EVENTS CRUD |
+| [L15202–L15379](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15202-L15379) | UNIVERSAL RESTORE & ARCHIVE AUDIT ENGINE |
+| [L15380–L15417](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15380-L15417) | STUDENT MOVEMENTS & ENROLLMENT |
+| [L15418–L15533](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15418-L15533) | ENHANCED ENTITY EDITS (Assessments, Portfolios, Books, Objectives, Groups) |
+| [L15534–L15616](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15534-L15616) | XP SKILLS MANAGEMENT (ClassDojo-style Positive & Needs Work Skills) |
+| [L15617–L15711](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15617-L15711) | CLASSROOM REWARDS & REDEMPTION SYSTEM |
+| [L15712–L15788](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15712-L15788) | BIG IDEAS CLASSROOM BOARD (ClassDojo-style Brainstorming & Projects) |
+| [L15789–L15817](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15789-L15817) | ORIGINAL ADVENTURE AVATAR SYSTEM (6 Categories) |
+| [L15818–L15918](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15818-L15918) | GROUP TOTAL XP & MONTHLY TEAM RACE XP |
+| [L15919–L15975](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15919-L15975) | STUDENT AWARDS (SEPARATE FROM BADGE DEFINITIONS) |
+| [L15976–L17253](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L15976-L17253) | PROGRESS CHECK ENGINE CRUD & PERSISTENCE METHODS |
+| [L17254–L17601](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L17254-L17601) | MYSTERY BOXES, STUDENT INVENTORY & TRADING ENGINE |
 
 ---
 

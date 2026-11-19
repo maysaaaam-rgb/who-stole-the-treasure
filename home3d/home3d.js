@@ -34,40 +34,65 @@
   var sc = sun.shadow.camera; sc.left = -62; sc.right = 62; sc.top = 46; sc.bottom = -46; sc.near = 1; sc.far = 200;
   sun.position.set(-34, 70, 46); sun.target.position.set(4, 0, 0); scene.add(sun); scene.add(sun.target);
 
-  // Sea: stylised-real water like the target picture (docs/design/home-world.jpg):
-  // colour by depth (pale green-turquoise in the shallows round each island -> turquoise -> deep teal),
-  // sharp sunlight caustics (moving light web) strongest in the shallows, soft wave shading and sun glints.
-  var seaU = { uT: { value: 0 }, uIsl: { value: [] }, uN: { value: 0 } };
-  for (var si = 0; si < 10; si++) seaU.uIsl.value.push(new T3.Vector4(0, 0, 1, 1));
+  // Sea: sunny cartoon adventure-park water matching docs/design/home-world.jpg:
+  // exact analytical distance to every island's coastline (no spiky polygon rings),
+  // creamy breathing shore foam, warm aqua shallows, bright tropical turquoise water, and soft painterly swells.
+  var seaU = { uT: { value: 0 }, uIsl: { value: [] }, uIslW: { value: [] }, uN: { value: 0 } };
+  for (var si = 0; si < 10; si++) {
+    seaU.uIsl.value.push(new T3.Vector4(0, 0, 1, 1));
+    seaU.uIslW.value.push(new T3.Vector4(0, 0, 0, 0));
+  }
   (function sea() {
     var m = new T3.Mesh(new T3.PlaneGeometry(900, 900, 1, 1), new T3.ShaderMaterial({
       uniforms: seaU,
       vertexShader: 'varying vec2 vW; void main(){ vec4 w = modelMatrix * vec4(position,1.0); vW = w.xz; gl_Position = projectionMatrix * viewMatrix * w; }',
       fragmentShader: [
-        'uniform float uT; uniform vec4 uIsl[10]; uniform int uN; varying vec2 vW;',
-        'vec2 h2(vec2 p){ p = vec2(dot(p, vec2(127.1,311.7)), dot(p, vec2(269.5,183.3))); return fract(sin(p) * 43758.5453); }',
+        'uniform float uT; uniform vec4 uIsl[10]; uniform vec4 uIslW[10]; uniform int uN; varying vec2 vW;',
         'float h(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }',
         'float n(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(h(i),h(i+vec2(1,0)),f.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x), f.y); }',
-        // voronoi edges: small (F2 - F1) = the bright lines of a caustic web
-        'float web(vec2 p, float t){ vec2 i = floor(p), f = fract(p); float f1 = 8.0, f2 = 8.0;',
-        '  for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++) { vec2 g = vec2(float(x), float(y)); vec2 o = .5 + .45 * sin(t + 6.2831 * h2(i + g));',
-        '    float d = length(g + o - f); if (d < f1) { f2 = f1; f1 = d; } else if (d < f2) f2 = d; }',
-        '  return 1.0 - smoothstep(0.0, 0.2, f2 - f1); }',
+        'float fbm(vec2 p){ return n(p) * 0.65 + n(p * 2.1 + 17.3) * 0.35; }',
+        'float smin(float a, float b, float k){ float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0); return mix(b, a, h) - k * h * (1.0 - h); }',
         'void main(){',
-        '  float dist = 999.0;',
-        '  for (int k = 0; k < 10; k++) { if (k >= uN) break; vec4 e = uIsl[k]; vec2 q = (vW - e.xy) / e.zw; float r = length(q); dist = min(dist, (r - 1.0) * min(e.z, e.w)); }',
+        '  float dist = 999.0; float sandNear = 0.0;',
+        '  for (int k = 0; k < 10; k++) {',
+        '    if (k >= uN) break;',
+        '    vec4 e = uIsl[k]; vec4 ew = uIslW[k];',
+        '    vec2 d = vW - e.xy;',
+        '    float a = atan(-d.y, d.x);',
+        '    float w = 1.0 + ew.y * (sin(a * 3.0 + ew.x) * 0.6 + sin(a * 5.0 + ew.x * 2.3) * 0.4);',
+        '    vec2 rad = e.zw * w + vec2(0.82);',
+        '    vec2 q = d / rad;',
+        '    float di = (length(q) - 1.0) * min(rad.x, rad.y);',
+        '    if (ew.z > 0.5) sandNear = max(sandNear, 1.0 - smoothstep(0.0, 7.5, max(di, 0.0)));',
+        '    dist = (k == 0) ? di : smin(dist, di, 2.2);',
+        '  }',
         '  dist = max(dist, 0.0);',
-        '  vec2 wp = vW + vec2(n(vW * .08 + uT * .05), n(vW * .08 - uT * .04)) * 1.6;',   // wobble so lines are never straight
-        '  vec3 shal = vec3(0.42, 0.88, 0.76), turq = vec3(0.10, 0.70, 0.80), teal = vec3(0.03, 0.50, 0.68), deep = vec3(0.015, 0.34, 0.55);',
-        '  vec3 c = mix(shal, turq, smoothstep(0.0, 6.0, dist)); c = mix(c, teal, smoothstep(5.0, 22.0, dist)); c = mix(c, deep, smoothstep(20.0, 70.0, dist));',
-        '  float sh = n(wp * .18 + uT * .03) * .6 + n(wp * .45 - uT * .05) * .4;',             // large soft wave shading
-        '  c *= .9 + .2 * sh;',
-        '  float w1 = web(wp * .22 + vec2(uT * .01, 0.0), uT * .5), w2 = web(wp * .36 + vec2(0.0, uT * .015) + 3.7, uT * .7 + 2.0);',
-        '  float near = 1.0 - smoothstep(4.0, 40.0, dist);',
-        '  float caus = w1 * .65 + w2 * .45;',
-        '  c += vec3(.70, 1.0, .95) * caus * (.02 + .08 * near);',
-        '  float glint = smoothstep(.83, .9, n(wp * 1.6 + uT * .35) * n(wp * 2.3 - uT * .3) * 1.9);',   // little sun sparkles
-        '  c += vec3(1.0) * glint * .10 * (1.0 - smoothstep(20.0, 90.0, dist));',
+        // Soft painterly water palette matching docs/design/home-world.jpg
+        '  vec3 shal = mix(vec3(0.45, 0.89, 0.85), vec3(0.68, 0.92, 0.82), sandNear * 0.65);',
+        '  vec3 turq = vec3(0.24, 0.75, 0.85);',
+        '  vec3 mid  = vec3(0.17, 0.66, 0.79);',
+        '  vec3 deep = vec3(0.14, 0.58, 0.74);',
+        '  vec3 c = mix(shal, turq, smoothstep(0.0, 4.8, dist));',
+        '  c = mix(c, mid,  smoothstep(4.0, 18.0, dist));',
+        '  c = mix(c, deep, smoothstep(16.0, 62.0, dist));',
+        // Broad, calm horizontal water swells (stretched along X like the painting)
+        '  vec2 sp = vec2(vW.x * 0.038 + uT * 0.025, vW.y * 0.11 - uT * 0.035);',
+        '  float swell = fbm(sp);',
+        '  c += vec3(0.05, 0.08, 0.08) * (swell - 0.5);',
+        // Soft sunlit horizontal wave ribbons
+        '  float rib = fbm(vec2(vW.x * 0.08 - uT * 0.04, vW.y * 0.26 + sin(vW.x * 0.07) * 0.25));',
+        '  float streak = smoothstep(0.64, 0.78, rib) * (1.0 - smoothstep(18.0, 85.0, dist));',
+        '  c = mix(c, vec3(0.56, 0.90, 0.94), streak * 0.16);',
+        // Gentle breathing shoreline foam & second coastal ripple ring
+        '  float wave = sin(uT * 1.35 + vW.x * 0.22 + vW.y * 0.18) * 0.22;',
+        '  float dW = dist + wave;',
+        '  float foam1 = 1.0 - smoothstep(0.15, 1.15, dW);',
+        '  float foam2 = smoothstep(1.45, 2.0, dW) * (1.0 - smoothstep(2.0, 2.65, dW));',
+        '  c = mix(c, vec3(0.91, 0.99, 0.98), foam1 * 0.72);',
+        '  c = mix(c, vec3(0.76, 0.96, 0.95), foam2 * 0.28);',
+        // Soft distance horizon blend
+        '  float farHaze = smoothstep(75.0, 210.0, length(vW));',
+        '  c = mix(c, vec3(0.68, 0.89, 0.98), farHaze * 0.65);',
         '  gl_FragColor = vec4(c, 1.0);',
         '  #include <colorspace_fragment>',
         '}'
@@ -77,58 +102,84 @@
     K.onFrame(function (dt, tt) { seaU.uT.value = tt; });
   })();
 
-  // Shore: a soft turquoise shallow band round each island with a white foam line that breathes in and out.
-  var shoreTex = K.canvasTex(4, 128, function (c, W, H) {
-    var g = c.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, 'rgba(225,252,245,0.75)'); g.addColorStop(.12, 'rgba(170,240,232,0.7)');
-    g.addColorStop(.5, 'rgba(120,225,220,0.42)'); g.addColorStop(1, 'rgba(110,215,215,0)');
-    c.fillStyle = g; c.fillRect(0, 0, W, H);
-  });
-  var shoreMat = new T3.MeshBasicMaterial({ map: shoreTex, transparent: true, depthWrite: false });
-  function shoreRing(pts, inner, outer) {   // pts: island outline (Vector2 x, -z)
-    var c = centroid(pts), pos = [], uv = [], idx = [], n = pts.length;
-    for (var i = 0; i < n; i++) {
-      var p = pts[i], d = p.clone().sub(c), l = d.length(), a = c.clone().add(d.clone().multiplyScalar((l + inner) / l)), b = c.clone().add(d.multiplyScalar((l + outer) / l));
-      pos.push(a.x, 0, -a.y, b.x, 0, -b.y); uv.push(i / n, 1, i / n, 0);
-      var j = (i + 1) % n; idx.push(i * 2, j * 2, i * 2 + 1, j * 2, j * 2 + 1, i * 2 + 1);
-    }
-    var g = new T3.BufferGeometry(); g.setAttribute('position', new T3.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new T3.Float32BufferAttribute(uv, 2)); g.setIndex(idx);
-    var m = new T3.Mesh(g, shoreMat); m.position.y = -1.52; m.renderOrder = 1; scene.add(m); return m;
-  }
-  K.onFrame(function (dt, tt) { shoreTex.offset.y = Math.sin(tt * .8) * .03; });
-
-  // Clouds: big soft painted clouds in the corners, framing the island like the target picture (docs/design/home-world.jpg).
+  // Clouds: soft, pillowy 3D storybook cumulus clouds framing the four corners like docs/design/home-world.jpg
   (function clouds() {
     var cv = document.createElement('canvas'); cv.className = 'h3-cloudcv'; var uiEl = document.getElementById('ui'); if (uiEl) uiEl.parentNode.insertBefore(cv, uiEl); else document.body.appendChild(cv);
-    var SPOTS = [[.015, .1, .15], [.11, -.02, .1], [.6, -.04, .09], [.985, .07, .12], [1.0, .42, .09], [-.01, .56, .08], [.03, 1.02, .16], [.97, 1.0, .17]];
-    // a cumulus cloud = many round puffs: back puffs first (a little shaded), front puffs last (bright, lit from the top left),
-    // flat-ish blue-grey underside, crisp edges. Seeded so every cloud keeps its shape.
+    var off = document.createElement('canvas');
+    // Corner and margin cloud banks framing the island without covering any building or Treasure Island
+    var SPOTS = [
+      [-.01, .04, .17], [.13, -.03, .12], [-.03, .19, .13],
+      [-.02, .98, .19], [.14, 1.04, .135], [-.04, .82, .12],
+      [.98, .98, .19], [.83, 1.04, .14], [1.02, .81, .125],
+      [.99, .04, .14], [.87, -.03, .105]
+    ];
     function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
-    function puff(c, x, y, r, shade) {
-      var g = c.createRadialGradient(x - r * .38, y - r * .5, r * .05, x, y + r * .1, r * 1.02);
-      g.addColorStop(0, shade ? '#f4f8fc' : '#ffffff'); g.addColorStop(.45, shade ? '#e9f0f7' : '#fbfdff');
-      g.addColorStop(.85, shade ? '#dbe6f1' : '#eef4fa'); g.addColorStop(1, shade ? '#c9d8e7' : '#e2ebf4');
-      c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
-    }
-    function cloud(c, cx, cy, s, seed) {
-      var R = rng(seed * 997 + 13), back = [], front = [], i, a, rr;
-      for (i = 0; i < 9; i++) { a = Math.PI * (.08 + .84 * i / 8); rr = s * (.32 + R() * .2); back.push([cx + Math.cos(a) * s * .95, cy - Math.sin(a) * s * .38 - s * .05, rr]); }
-      for (i = 0; i < 7; i++) { a = Math.PI * (.15 + .7 * i / 6); rr = s * (.36 + R() * .22); front.push([cx + Math.cos(a) * s * .62 + (R() - .5) * s * .15, cy - Math.sin(a) * s * .48 + s * .08, rr]); }
-      front.push([cx - s * .15, cy - s * .42, s * .5], [cx + s * .3, cy - s * .3, s * .44]);
-      c.save(); c.shadowColor = 'rgba(40,90,140,.18)'; c.shadowBlur = s * .3; c.shadowOffsetY = s * .1;
-      back.forEach(function (p) { puff(c, p[0], p[1], p[2], true); });
+    function cloud(c, cx, cy, s, seed, W, H, d) {
+      var R = rng(seed * 997 + 13), puffs = [], i, a, rr;
+      for (i = 0; i < 8; i++) {
+        a = Math.PI * (.06 + .88 * i / 7);
+        rr = s * (.36 + R() * .18);
+        puffs.push([cx + Math.cos(a) * s * .94, cy - Math.sin(a) * s * .38 - s * .02, rr, true]);
+      }
+      for (i = 0; i < 6; i++) {
+        a = Math.PI * (.14 + .72 * i / 5);
+        rr = s * (.42 + R() * .18);
+        puffs.push([cx + Math.cos(a) * s * .62 + (R() - .5) * s * .12, cy - Math.sin(a) * s * .46 + s * .06, rr, false]);
+      }
+      puffs.push([cx - s * .16, cy - s * .42, s * .54, false], [cx + s * .24, cy - s * .30, s * .48, false]);
+
+      off.width = cv.width; off.height = cv.height;
+      var oc = off.getContext('2d');
+      oc.setTransform(d, 0, 0, d, 0, 0);
+      oc.clearRect(0, 0, W, H);
+
+      // 1. Unified cloud silhouette filled with soft sky-tinted base
+      var bg = oc.createLinearGradient(cx - s * .5, cy - s * .9, cx + s * .5, cy + s * .6);
+      bg.addColorStop(0, '#ffffff');
+      bg.addColorStop(0.55, '#f2f9ff');
+      bg.addColorStop(1, '#d8ecfc');
+      oc.fillStyle = bg;
+      oc.beginPath();
+      puffs.forEach(function (p) { oc.moveTo(p[0] + p[2], p[1]); oc.arc(p[0], p[1], p[2], 0, Math.PI * 2); });
+      oc.fill();
+
+      // 2. Sculpt each puff inside the silhouette: soft sky-blue lower-right curve + bright warm-white upper-left dome
+      oc.globalCompositeOperation = 'source-atop';
+      puffs.forEach(function (p) {
+        var px = p[0], py = p[1], pr = p[2], isBack = p[3];
+        // Lower-right soft sky-blue volume shading
+        var sg = oc.createRadialGradient(px + pr * .22, py + pr * .26, pr * .1, px + pr * .1, py + pr * .1, pr * 1.05);
+        sg.addColorStop(0, isBack ? 'rgba(186,218,244,0.52)' : 'rgba(196,225,248,0.42)');
+        sg.addColorStop(0.65, 'rgba(215,236,252,0.18)');
+        sg.addColorStop(1, 'rgba(235,246,255,0)');
+        oc.fillStyle = sg;
+        oc.beginPath(); oc.arc(px, py, pr * 1.05, 0, Math.PI * 2); oc.fill();
+
+        // Upper-left bright sunlit pillow dome (fades to 0 alpha before the puff edge so zero hard rings)
+        var pg = oc.createRadialGradient(px - pr * .26, py - pr * .30, pr * .04, px - pr * .08, py - pr * .10, pr * .90);
+        pg.addColorStop(0, isBack ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.99)');
+        pg.addColorStop(0.52, isBack ? 'rgba(255,255,255,0.54)' : 'rgba(255,255,255,0.82)');
+        pg.addColorStop(0.85, 'rgba(255,255,255,0.18)');
+        pg.addColorStop(1, 'rgba(255,255,255,0)');
+        oc.fillStyle = pg;
+        oc.beginPath(); oc.arc(px, py, pr, 0, Math.PI * 2); oc.fill();
+      });
+
+      // Stamp finished cloud onto main canvas with a gentle sky shadow
+      c.save();
+      c.shadowColor = 'rgba(35,105,165,0.18)';
+      c.shadowBlur = s * .26;
+      c.shadowOffsetY = s * .07;
+      c.setTransform(1, 0, 0, 1, 0, 0);
+      c.drawImage(off, 0, 0);
       c.restore();
-      front.forEach(function (p) { puff(c, p[0], p[1], p[2], false); });
-      var g = c.createLinearGradient(0, cy, 0, cy + s * .35);   // flat soft underside
-      g.addColorStop(0, 'rgba(190,207,225,0)'); g.addColorStop(1, 'rgba(176,196,218,.55)');
-      c.save(); c.beginPath(); c.ellipse(cx, cy + s * .12, s * 1.15, s * .22, 0, 0, Math.PI * 2); c.clip();
-      c.fillStyle = g; c.fillRect(cx - s * 1.3, cy - s * .2, s * 2.6, s * .6); c.restore();
     }
     function draw() {
       var W = innerWidth, H = innerHeight, d = Math.min(devicePixelRatio || 1, 2);
+      if (W < 2 || H < 2) return;
       cv.width = W * d; cv.height = H * d; var c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H);
-      var base = Math.max(W, H * 1.4);
-      SPOTS.forEach(function (sp, i) { cloud(c, sp[0] * W, sp[1] * H, sp[2] * base * .5, i + 1); });
+      var base = Math.max(W, H * 1.35);
+      SPOTS.forEach(function (sp, i) { cloud(c, sp[0] * W, sp[1] * H, sp[2] * base * .48, i + 1, W, H, d); });
     }
     draw(); addEventListener('resize', draw);
   })();
@@ -166,7 +217,6 @@
     var top = kind === 'sand' ? mat(0xfff0c8, { map: sandTex }) : mat(0x8fd862, { map: grassTex, roughness: .95 });
     var m = new T3.Mesh(g, [top, kind === 'sand' ? mat(0xe6c48a, { map: cliffSand }) : mat(0xffffff, { map: cliffTex, roughness: .95 })]);
     m.position.y = h - depth - .7; m.receiveShadow = true; m.castShadow = true; scene.add(m);
-    shoreRing(pts, 1.0, kind === 'sand' ? 5.2 : 4.6);
     return m;
   }
   /* ---------------- ground: which island is under a point, and how high it is ---------------- */
@@ -187,7 +237,10 @@
   }
   function buildIslands() {
     seaU.uN.value = Math.min(10, LAYOUT.islands.length);
-    LAYOUT.islands.slice(0, 10).forEach(function (il, k) { seaU.uIsl.value[k].set(il.x, il.z, il.rx * 1.08, il.rz * 1.08); });
+    LAYOUT.islands.slice(0, 10).forEach(function (il, k) {
+      seaU.uIsl.value[k].set(il.x, il.z, il.rx, il.rz);
+      seaU.uIslW.value[k].set(il.seed || 0, il.wob != null ? il.wob : .1, il.kind === 'sand' ? 1 : 0, 0);
+    });
     LAYOUT.islands.forEach(function (il) {
       var pts = blobPts(il.x, il.z, il.rx, il.rz, il.seed, il.wob);
       landPiece(pts, il.h, il.kind);
@@ -546,12 +599,30 @@
     if (!drag) { hover = placeAt(e); canvas.style.cursor = hover ? 'pointer' : 'grab'; }
   });
   addEventListener('pointerup', function (e) { var d = drag; drag = null; if (d && !d.moved && e.target === canvas) { var p = placeAt(e); if (p) go(p); } });
-  function go(p) {
-    if (flying) return; flying = true; K.sfx('tap'); K.sfx('whoosh'); K.say(p.title);
+  function openPlace(p) {
+    if (NOLINKS || !p || !p.link) { flying = false; K.after(1.2, home); return; }
+    var m = /index\.html#([a-z0-9-]+)/i.exec(p.link);
+    try {
+      if (m && window.parent && window.parent !== window && typeof window.parent.switchView === 'function') {
+        flying = false;
+        window.parent.switchView(m[1]);
+        return;
+      }
+      if (window.top && window.top !== window) {
+        window.top.location.href = p.link;
+        return;
+      }
+    } catch (e) {}
+    location.href = p.link;
+  }
+  function go(p, fast) {
+    if (!p) return;
+    if (fast || flying) { K.sfx('tap'); openPlace(p); return; }
+    flying = true; K.sfx('tap'); K.sfx('whoosh'); K.say(p.title);
     var c = p.box.getCenter(V());
-    K.cam.follow = null; K.cam.set(V(c.x + 3, c.y + 10, c.z + 17), V(c.x, c.y + 1.5, c.z), 1.6);
-    K.ui.toast('Going to ' + p.title + '…', 1.6, '#9b7bff');
-    K.after(1.5, function () { if (!NOLINKS && p.link) location.href = p.link; else { flying = false; K.after(1.2, home); } });
+    K.cam.follow = null; K.cam.set(V(c.x + 3, c.y + 10, c.z + 17), V(c.x, c.y + 1.5, c.z), 1.3);
+    K.ui.toast('Going to ' + p.title + '…', 1.3, '#9b7bff');
+    K.after(1.2, function () { openPlace(p); });
   }
 
   /* ---------------- camera: frames every place and monster on any screen ---------------- */
@@ -601,21 +672,54 @@
     } catch (e) { /* demo */ }
     return goal;
   }
+  var goalEl = null;
+  function updateGoalUI(animate) {
+    readGoal();
+    var pct = clamp(goal.target ? goal.got / goal.target : 0, 0, 1);
+    if (goalEl) {
+      goalEl.innerHTML = '<span>🌉 ' + (goal.demo ? 'Class goal' : 'Today’s goal') + '</span><div class="bar"><i style="width:' + Math.round(pct * 100) + '%"></i></div><b>' + Math.min(goal.got, goal.target) + ' / ' + goal.target + '</b>';
+    }
+    buildBridge(pct, !!animate);
+  }
   function hud() {
     K.ui.add(K.el('div', 'h3-title', 'English Adventure Academy'));
-    var pct = clamp(goal.target ? goal.got / goal.target : 0, 0, 1);
-    K.ui.add(K.el('div', 'h3-goal', '<span>🌉 ' + (goal.demo ? 'Class goal' : 'Today’s goal') + '</span><div class="bar"><i style="width:' + Math.round(pct * 100) + '%"></i></div><b>' + Math.min(goal.got, goal.target) + ' / ' + goal.target + '</b>'));
+    goalEl = K.ui.add(K.el('div', 'h3-goal'));
+    updateGoalUI(false);
     var teams = K.ui.add(K.el('div', 'h3-teams'));
     K.TEAMS.forEach(function (t) {
       var b = K.el('span', 'h3-team', '<img src="' + ROOT + 'monster-evolution/assets/' + t.mon + '_stage_baby.webp" alt="">' + t.name);
       b.style.setProperty('--c', t.c); teams.appendChild(b);
     });
     var quick = K.ui.add(K.el('div', 'h3-quick'));
-    [['🏛️', 'Class Board', 'board', '#ff5fa2'], ['🏰', 'Today', 'today', '#9b7bff'], ['🎮', 'Games', 'games', '#2fc58a'], ['🛍️', 'Shop', 'shop', '#ffb320'], ['📚', 'Library', 'library', '#4f9dff']].forEach(function (q) {
+    [['🏰', 'Today', 'today', '#9b7bff'], ['🏛️', 'Class Board', 'board', '#ff5fa2'], ['🛍️', 'Shop', 'shop', '#ffb320'], ['🎮', 'Games', 'games', '#2fc58a'], ['📚', 'Library', 'library', '#4f9dff']].forEach(function (q) {
       var b = K.el('button', 'h3-q', '<i>' + q[0] + '</i><span>' + q[1] + '</span>'); b.style.setProperty('--c', q[3]);
-      b.onclick = function () { var p = places.filter(function (x) { return x.id === q[2]; })[0]; if (p) go(p); };
+      b.onclick = function () { var p = places.filter(function (x) { return x.id === q[2]; })[0]; if (p) go(p, true); };
       quick.appendChild(b);
     });
+    var tb = document.querySelector('.topbtns');
+    if (tb) {
+      var btns = tb.querySelectorAll('button');
+      if (btns[1]) {
+        btns[1].onclick = function () {
+          var doc = (window.top && window.top.document) || document;
+          if (!doc.fullscreenElement) { if (doc.documentElement.requestFullscreen) doc.documentElement.requestFullscreen(); }
+          else if (doc.exitFullscreen) doc.exitFullscreen();
+        };
+      }
+      if (btns[2]) {
+        btns[2].textContent = '⚙️';
+        btns[2].title = 'Teacher Hub & More';
+        btns[2].onclick = function () {
+          try {
+            if (window.parent && window.parent !== window && typeof window.parent.switchView === 'function') {
+              window.parent.switchView('more');
+              return;
+            }
+          } catch (e) {}
+          location.href = ROOT + 'index.html#more';
+        };
+      }
+    }
   }
 
   /* ---------------- boot ---------------- */
@@ -727,7 +831,7 @@
     put(palm1, TI.x + 2.8, .1, TI.z - 1.6, .4); put(palm3 || palm1, TI.x - 3.2, .1, TI.z - 1, 2);
     if (chest) { chest.rotation.y = -.4; chestGroup.add(chest); K.onFrame(function (dt, t) { chest.position.y = Math.abs(Math.sin(t * 1.5)) * .12; }); }
     for (var s2 = 0; s2 < 3; s2++) add(new T3.Mesh(new T3.CylinderGeometry(.35, .35, .08, 5), mat(0xff8a5c)), TI.x + rnd(-3, 3), .18, TI.z + rnd(1, 2.5));
-    addPlace({ id: 'island', title: 'Treasure Island', x: TI.x, z: TI.z, group: chestGroup }, null);
+    addPlace({ id: 'island', title: 'Treasure Island', link: 'island/index.html?demo=1', x: TI.x, z: TI.z, group: chestGroup }, null);
     if (dock) for (var d2 = 0; d2 < 4; d2++) put(dock, DOCK.x + d2 * 2.6, -.4, DOCK.z, Math.PI / 2);
     if (ship) {
       ship.position.set(DOCK.x + 6, -1.6, DOCK.z + 5); ship.rotation.y = Math.PI * .5; scene.add(ship);
@@ -764,6 +868,8 @@
     readGoal(); loading.remove(); K.ui.topButtons(); hud(); home(); K.cam.snap();
     buildBridge(clamp(goal.got / (goal.target || 1), 0, 1), true);
     window.__home3d = { places: places.map(function (p) { return p.id; }), goal: goal, groundAt: groundAt, free: free,
+      go: function (id, fast) { var p = places.filter(function (x) { return x.id === id; })[0]; if (p) go(p, !!fast); },
+      refreshGoal: function () { updateGoalUI(true); },
       overlaps: function () {   // test helper: buildings that overlap each other
         var out = [], all2 = places.filter(function (p) { return p.id !== 'island'; }).map(function (p) { return [p.id, p.box]; }).concat(homes.map(function (h, i) { return ['home' + i, h.box]; }));
         all2.forEach(function (a, i) { all2.slice(i + 1).forEach(function (b) { var A = a[1], B = b[1]; if (A.min.x < B.max.x && A.max.x > B.min.x && A.min.z < B.max.z && A.max.z > B.min.z) out.push(a[0] + '×' + b[0]); }); });
