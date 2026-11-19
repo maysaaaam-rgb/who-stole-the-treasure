@@ -1,0 +1,278 @@
+/* Bright platform look (docs/STYLE_GUIDE.md, 19 Nov 2026)
+   Loaded LAST. The old dark "Tines" / "glass" theme is turned into the bright adventure-park look:
+   sky background, cream/white cards, deep-ink text, team-colour borders, tactile 5px button lips.
+   It covers: shell, top bar, left menu, Class Board, lock screen. Pupil screens are not touched here. */
+
+html, html.class-mode, html:not(.class-mode), body {
+  --bp-ink: #2b1d40; --bp-ink2: #4a3b63; --bp-muted: #6b5b84;
+  --bp-cream: #fff8ec; --bp-card: #ffffff; --bp-line: #ead9bf;
+  --bp-pink: #ff5fa2; --bp-blue: #4f9dff; --bp-yellow: #ffb320; --bp-green: #2fc58a; --bp-lilac: #9b7bff;
+
+  --tines-linen: #fff8ec; --tines-linen-alt: #fff3dd; --tines-card: #ffffff;
+  --tines-border: #ead9bf; --tines-border-strong: #d9c19b;
+  --tines-ink: #2b1d40; --tines-ink-secondary: #4a3b63; --tines-ink-muted: #6b5b84;
+  --tines-lavender: rgba(155, 123, 255, .16); --tines-lavender-border: #9b7bff;
+
+  --bg-canvas: #fff8ec !important; --bg-surface: #ffffff !important; --bg-muted: #fff3dd !important; --bg-card-secondary: #fffdf8 !important;
+  --text-main: #2b1d40 !important; --text-secondary: #4a3b63 !important; --text-muted: #6b5b84 !important;
+  --border-light: #ead9bf !important; --border-subtle: #f1e3cc !important;
+  --color-primary-soft: rgba(155, 123, 255, .16) !important;
+
+  --eaa-bg: #fff8ec; --eaa-bg-glow: linear-gradient(180deg, #9fdcff 0%, #d7f0ff 45%, #fff3c4 100%);
+  --eaa-surface: rgba(255, 255, 255, .94); --eaa-surface-2: #ffffff; --eaa-line: #ead9bf;
+  --eaa-text: #2b1d40; --eaa-muted: #6b5b84;
+  --eaa-shadow-1: 0 8px 20px -10px rgba(43, 29, 64, .28); --eaa-shadow-2: 0 18px 36px -14px rgba(43, 29, 64, .35);
+  --eaa-rim: inset 0 1px 0 rgba(255, 255, 255, .8);
+}
+
+/* ---- shell ---- */
+html:not(#_b) body body, html.class-mode:not(.platform-locked) body, html:not(.platform-locked) body {
+  background: linear-gradient(180deg, #9fdcff 0%, #d7f0ff 45%, #fff3c4 100%) fixed !important;
+  color: var(--bp-ink) !important;
+}
+html:not(#_b) body .app-layout, html:not(#_b) body .app-main, html:not(#_b) body #app-view-container { background: transparent !important; color: var(--bp-ink) !important; }
+html:not(#_b) body .app-header, html:not(#_b) body .app-header {
+  background: rgba(255, 255, 255, .94) !important; backdrop-filter: none !important;
+  border-bottom: 4px solid #78c4ff !important; box-shadow: 0 8px 18px -10px rgba(43, 29, 64, .3) !important; color: var(--bp-ink) !important;
+}
+html:not(#_b) body .app-header .brand-logo-btn, html:not(#_b) body .app-header .brand-logo-btn span, html:not(#_b) body .app-header .brand-logo-btn * { color: var(--bp-ink) !important; }
+html:not(#_b) body .app-header button, html:not(#_b) body .app-header .role-pill-group button, html:not(#_b) body .app-header select {
+  background: #ffffff !important; color: var(--bp-ink) !important; border: 2px solid var(--bp-line) !important; border-bottom: 4px solid #d9c19b !important; border-radius: 14px !important; box-shadow: none !important;
+}
+html:not(#_b) body .app-header button:active { transform: translateY(3px); border-bottom-width: 1px !important; }
+html:not(#_b) body .app-header #cm-classes button, html:not(#_b) body .app-header .cm-classes button { background: #eef6ff !important; }
+html:not(#_b) body .app-header #cm-classes button.on, html:not(#_b) body .app-header #cm-classes button.is-on, html:not(#_b) body .app-header #cm-classes button[aria-pressed="true"], html:not(#_b) body .app-header #cm-classes button.active { background: var(--bp-lilac) !important; color: #fff !important; border-bottom-color: #6c4fd6 !important; }
+html:not(#_b) body .app-header .cm-toggle { background: var(--bp-yellow) !important; color: #3b2a00 !important; border-bottom-color: #b87400 !important; }
+
+/* left menu (rail) */
+html:not(#_b) body .app-sidebar, html:not(#_b) body .app-sidebar { background: transparent !important; border: 0 !important; box-shadow: none !important; backdrop-filter: none !important; }
+html:not(#_b) body .cm-b {
+  background: linear-gradient(180deg, #ffffff, color-mix(in srgb, var(--c, #9b7bff) 16%, #ffffff)) !important; color: var(--bp-ink) !important;
+  border: 3px solid color-mix(in srgb, var(--c, #9b7bff) 70%, #ffffff) !important; border-bottom: 6px solid color-mix(in srgb, var(--c, #9b7bff) 80%, #000) !important; border-radius: 22px !important; box-shadow: 0 8px 16px -10px rgba(43, 29, 64, .35) !important;
+}
+html:not(#_b) body .cm-b span { color: var(--bp-ink) !important; }
+html:not(#_b) body .cm-b.is-on { outline: 4px solid var(--c, #9b7bff) !important; background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--c, #9b7bff) 38%, #fff)) !important; }
+html:not(#_b) body .app-sidebar:not(:has(.cm-rail)) a, html:not(#_b) body .app-sidebar:not(:has(.cm-rail)) button { color: var(--bp-ink) !important; }
+
+/* generic cards in the platform */
+html:not(#_b) body .glass-card, html:not(#_b) body .bento-card, html:not(#_b) body .eaa-card, html:not(#_b) body .panel, html:not(#_b) body .card { color: var(--bp-ink); }
+
+/* ---- Class Board ---- */
+html:not(#_b) body .cb, html:not(#_b) body .cb * { text-shadow: none; }
+html:not(#_b) body .cb-hd, html:not(#_b) body .cb-today, html:not(#_b) body .cb-goal {
+  background: rgba(255, 255, 255, .94) !important; color: var(--bp-ink) !important; border: 3px solid #cfe6ff !important; border-bottom-width: 5px !important;
+  border-radius: 24px !important; box-shadow: 0 10px 22px -14px rgba(43, 29, 64, .4) !important; padding: 10px 16px !important;
+}
+html:not(#_b) body .cb-hd h1, html:not(#_b) body .cb-hd small, html:not(#_b) body .cb-today .lab, html:not(#_b) body .cb-goal b, html:not(#_b) body .cb-goal span { color: var(--bp-ink) !important; opacity: 1 !important; }
+html:not(#_b) body .cb-hd small { color: var(--bp-muted) !important; }
+html:not(#_b) body .cb-hd button, html:not(#_b) body .cb-hd select, html:not(#_b) body .cb-today a, html:not(#_b) body .cb-today button, html:not(#_b) body .cb-hd .cb-sw button {
+  background: #fff !important; color: var(--bp-ink) !important; border: 2px solid var(--bp-line) !important; border-bottom: 5px solid #d9c19b !important; border-radius: 16px !important; font-weight: 700 !important; backdrop-filter: none !important;
+}
+html:not(#_b) body .cb-hd button.on, html:not(#_b) body .cb-hd button.p, html:not(#_b) body .cb-hd .cb-sw button.on { background: var(--bp-yellow) !important; border-bottom-color: #b87400 !important; color: #3b2a00 !important; }
+html:not(#_b) body .cb-today a { background: #e9fbf2 !important; border-color: #9fe3c4 !important; border-bottom-color: #2fc58a !important; }
+html:not(#_b) body .cb-hd .cb-tm div { background: #fff8ec !important; color: var(--bp-ink) !important; border: 2px solid var(--bp-line) !important; border-bottom: 4px solid #d9c19b !important; border-radius: 16px !important; }
+html:not(#_b) body .cb-hd .cb-tm div *, html:not(#_b) body .cb-hd .cb-tm b, html:not(#_b) body .cb-hd .cb-tm span, html:not(#_b) body .cb-hd .cb-tm small { color: var(--bp-ink) !important; }
+html:not(#_b) body .cb-goal .bar { background: #ffe9c2 !important; border: 2px solid #f4d49a; }
+html:not(#_b) body .cb-goal .bar i { background: linear-gradient(90deg, var(--bp-yellow), var(--bp-pink)) !important; }
+html:not(#_b) body .cb-goal.won { background: linear-gradient(90deg, #fff0b8, #ffd3e6) !important; }
+
+/* pupil tiles: name chip and +10 button */
+html:not(#_b) body .cb-st b.n { background: rgba(255, 255, 255, .96) !important; color: var(--bp-ink) !important; border: 2px solid var(--bp-line); border-bottom: 4px solid #d9c19b; border-radius: 99px; padding: 4px 14px; text-shadow: none !important; }
+html:not(#_b) body .cb-st.plated b.n { background: #fff !important; }
+html:not(#_b) body .cb-add button, html:not(#_b) body .cb-st.plated .cb-add button { background: var(--bp-green) !important; color: #fff !important; border: 0 !important; border-bottom: 5px solid #1d8f66 !important; border-radius: 99px !important; font-weight: 800 !important; }
+html:not(#_b) body .cb-add button:hover, html:not(#_b) body .cb-st.plated .cb-add button:hover { background: #26b07a !important; }
+html:not(#_b) body .cb-st.pick { background: rgba(255, 179, 32, .35) !important; border-color: var(--bp-yellow) !important; }
+
+/* dock (bottom toolbar) */
+html:not(#_b) body .cb-dock, html:not(#_b) body .cb-dock {
+  background: rgba(255, 255, 255, .96) !important; backdrop-filter: none !important; border: 3px solid #cfe6ff !important; border-bottom-width: 6px !important; box-shadow: 0 14px 28px -12px rgba(43, 29, 64, .45) !important;
+}
+html:not(#_b) body .cb-dock button, html:not(#_b) body .cb-dock button {
+  background: #fff8ec !important; color: var(--bp-ink) !important; border: 2px solid var(--bp-line) !important; border-bottom: 5px solid #d9c19b !important; font-weight: 700 !important;
+}
+html:not(#_b) body .cb-dock button:hover { background: #ffeccb !important; }
+html:not(#_b) body .cb-dock button.p, html:not(#_b) body .cb-dock button.p { background: var(--bp-green) !important; color: #fff !important; border-bottom-color: #1d8f66 !important; }
+html:not(#_b) body .cb-dock .sep { background: var(--bp-line) !important; }
+html:not(#_b) body .cb-dock .cb-more-menu, html:not(#_b) body .cb-more-menu { background: #ffffff !important; border: 3px solid #cfe6ff !important; box-shadow: 0 14px 28px -12px rgba(43, 29, 64, .45) !important; }
+html:not(#_b) body .cb-dock .cb-more-menu button { background: #fff8ec !important; color: var(--bp-ink) !important; border-bottom: 4px solid #d9c19b !important; }
+
+/* ---- lock screen and sign-in boxes ---- */
+html:not(#_b) body #platform-lock-screen { background: linear-gradient(180deg, #78c4ff 0%, #c8eaff 55%, #fff3c4 100%) !important; }
+html:not(#_b) body .eaa-lock-shell, html:not(#_b) body .eaa-sec-modal {
+  background: #fff8ec !important; color: var(--bp-ink) !important; border: 5px solid #78c4ff !important; border-radius: 32px !important; box-shadow: 0 24px 50px -18px rgba(43, 29, 64, .5) !important;
+}
+html:not(#_b) body .eaa-lock-title, html:not(#_b) body .eaa-sec-section h3 { color: var(--bp-ink) !important; }
+html:not(#_b) body .eaa-lock-sub, html:not(#_b) body .eaa-sec-section p { color: var(--bp-muted) !important; }
+html:not(#_b) body .eaa-lock-hero-icon { background: #fff !important; border: 3px solid #cfe6ff !important; }
+html:not(#_b) body .eaa-mode-pill { background: #e6f2ff !important; color: #1d5fb0 !important; border: 2px solid #b7d8ff !important; }
+html:not(#_b) body .eaa-mode-pill.trusted { background: #e3f8ee !important; color: #157a55 !important; border-color: #9fe3c4 !important; }
+html:not(#_b) body .eaa-mode-pill.offline { background: #fff0cf !important; color: #8a5a00 !important; border-color: #ffd47a !important; }
+html:not(#_b) body .eaa-field, html:not(#_b) body .eaa-email-chip { background: #fff !important; color: var(--bp-ink) !important; border: 3px solid var(--bp-line) !important; }
+html:not(#_b) body .eaa-field:focus { border-color: var(--bp-blue) !important; box-shadow: 0 0 0 4px rgba(79, 157, 255, .25) !important; }
+html:not(#_b) body .eaa-otp-slot { background: #fff !important; color: var(--bp-ink) !important; border: 3px solid var(--bp-line) !important; }
+html:not(#_b) body .eaa-otp-slot.filled { border-color: var(--bp-blue) !important; box-shadow: none !important; }
+html:not(#_b) body .eaa-otp-slot.active { border-color: var(--bp-pink) !important; }
+html:not(#_b) body .eaa-otp-orb { background: var(--bp-lilac) !important; box-shadow: none !important; }
+html:not(#_b) body .eaa-key-btn { background: #fff !important; color: var(--bp-ink) !important; border: 2px solid var(--bp-line) !important; border-bottom: 5px solid #d9c19b !important; }
+html:not(#_b) body .eaa-stealth-keypad .eaa-key-btn:hover, html:not(#_b) body .eaa-stealth-keypad .eaa-key-btn:active, html:not(#_b) body .eaa-stealth-keypad .eaa-key-btn:focus { background: #fff !important; color: var(--bp-ink) !important; }
+html:not(#_b) body .eaa-mini-link, html:not(#_b) body .eaa-btn-3d.slate { background: #fff !important; color: var(--bp-ink) !important; border: 2px solid var(--bp-line) !important; border-bottom: 4px solid #d9c19b !important; }
+html:not(#_b) body .eaa-btn-3d { color: #22163a; }
+html:not(#_b) body .eaa-btn-3d.emerald { background: linear-gradient(180deg, #4fdca5, var(--bp-green)) !important; border-bottom-color: #1d8f66 !important; color: #06281c !important; }
+html:not(#_b) body .eaa-trust-box { background: #fff !important; color: var(--bp-ink) !important; border: 2px solid var(--bp-line) !important; }
+html:not(#_b) body .eaa-tab-links { border-top-color: var(--bp-line) !important; }
+html:not(#_b) body .eaa-big-code-box { background: #fff !important; color: #6c4fd6 !important; border-color: var(--bp-lilac) !important; text-shadow: none !important; }
+html:not(#_b) body #eaa-security-modal-backdrop, html:not(#_b) body #eaa-phone-code-backdrop { background: rgba(120, 196, 255, .55) !important; }
+html:not(#_b) body .eaa-sec-section { background: #fff !important; border: 2px solid var(--bp-line) !important; }
+html:not(#_b) body .eaa-auth-msg.err { background: #ffe7ee !important; color: #a3203f !important; border-color: #ffb3c6 !important; }
+html:not(#_b) body .eaa-auth-msg.ok { background: #e3f8ee !important; color: #157a55 !important; border-color: #9fe3c4 !important; }
+html:not(#_b) body .eaa-auth-msg.warn { background: #fff0cf !important; color: #8a5a00 !important; border-color: #ffd47a !important; }
+
+/* extra: text that was white on the old dark panels */
+html:not(#_b) body .cb-hd h1, html:not(#_b) body .cb-hd h1 *, html:not(#_b) body .cb-hd small, html:not(#_b) body .cb-tm small, html:not(#_b) body .cb-tm div small, html:not(#_b) body .cb-today .lab, html:not(#_b) body .cb-goal, html:not(#_b) body .cb-goal b, html:not(#_b) body .cb-goal * { color: var(--bp-ink) !important; text-shadow: none !important; }
+html:not(#_b) body .cb-hd small, html:not(#_b) body .cb-tm div small { color: var(--bp-muted) !important; }
+html:not(#_b) body .cb-goal { background: rgba(255, 255, 255, .94) !important; }
+html:not(#_b) body .cb-st b.n, html:not(#_b) body .cb-mg:not(.scene) .cb-st b.n { background: #fff !important; color: var(--bp-ink) !important; }
+html:not(#_b) body .app-header .brand-logo-btn span, html:not(#_b) body .brand-logo-btn span { color: var(--bp-ink) !important; }
+html:not(#_b) body .cm-b.is-on span, html:not(#_b) body .cm-b.is-on * { color: var(--bp-ink) !important; }
+html:not(#_b) body .app-header .cm-toggle, html:not(#_b) body .app-header .cm-toggle * { color: #3b2a00 !important; }
+html:not(#_b) body .app-header button#cm-toggle, html:not(#_b) body .app-header [class*="teacher"] { color: var(--bp-ink) !important; }
+html:not(#_b) body .eaa-lock-shell .eaa-lock-badge-row ~ * [class*="teacher"], html:not(#_b) body .eaa-lock-shell small, html:not(#_b) body .eaa-lock-shell b, html:not(#_b) body .eaa-lock-shell strong { color: var(--bp-ink) !important; }
+html:not(#_b) body .cb-today a *, html:not(#_b) body .cb-today a b, html:not(#_b) body .cb-today a time, html:not(#_b) body .cb-today a span { color: #157a55 !important; }
+html:not(#_b) body .cb-today a { color: var(--bp-ink) !important; }
+html:not(#_b) body .cb-dock span, html:not(#_b) body .cb-dock .cb-pk, html:not(#_b) body .cb-dock small, html:not(#_b) body .cb-dock > span { color: var(--bp-ink2) !important; opacity: 1 !important; }
+html:not(#_b) body .cb-dock { background: rgba(255, 255, 255, .985) !important; }
+
+/* ===== auto-brightened dark panels (generated from tines/glass/ui-polish) ===== */
+html:not(#_b) body .brand-icon-box { color: var(--bp-ink) !important; }
+html:not(#_b) body .tines-hub-bar { background: #ffffff !important; }
+html:not(#_b) body .tines-tab-btn:hover { background: #ffffff !important; }
+html:not(#_b) body .tines-tab-btn.is-active { color: var(--bp-ink) !important; }
+html:not(#_b) body .tines-tab-btn.is-active .tines-badge { color: var(--bp-ink) !important; }
+html:not(#_b) body .tines-bento-card { background: #ffffff !important; }
+html:not(#_b) body .tines-bento-cta { color: var(--bp-ink) !important; }
+html:not(#_b) body .cc-cmd { background: #ffffff !important; }
+html:not(#_b) body .cc-kp > div { background: #ffffff !important; }
+html:not(#_b) body .cc-pn { background: #ffffff !important; }
+html:not(#_b) body .cc-find { background: #ffffff !important; }
+html:not(#_b) body .cc-chips button { background: #ffffff !important; }
+html:not(#_b) body .cc-t.quiet { color: var(--bp-ink) !important; }
+html:not(#_b) body .cc-hw-no { color: var(--bp-muted) !important; }
+html:not(#_b) body .cc-hw-wait { color: var(--bp-muted) !important; }
+html:not(#_b) body .cc-sk-n { color: var(--bp-muted) !important; }
+html:not(#_b) body .cc-drp, html:not(#_b) body .cc-pal { background: #ffffff !important; }
+html:not(#_b) body .ls-tab { background: #ffffff !important; }
+html:not(#_b) body .ls-tab.on { color: var(--bp-ink) !important; }
+html:not(#_b) body .ls-kbtn { background: #ffffff !important; }
+html:not(#_b) body .ls-card { background: #ffffff !important; }
+html:not(#_b) body .lp-card { background: #ffffff !important; }
+html:not(#_b) body .cr-btn { background: #ffffff !important; }
+html:not(#_b) body .cr-legend { background: #ffffff !important; }
+html:not(#_b) body .cr-card { background: #ffffff !important; }
+html:not(#_b) body .cal-b.g { background: #ffffff !important; }
+html:not(#_b) body .cal-b.on { color: var(--bp-ink) !important; }
+html:not(#_b) body .cal-b.ok { color: var(--bp-ink) !important; }
+html:not(#_b) body .cal-legend { background: #ffffff !important; }
+html:not(#_b) body .cal-cell { background: #ffffff !important; }
+html:not(#_b) body .cal-side { background: #ffffff !important; }
+html:not(#_b) body #cal-modal .cal { background: #ffffff !important; }
+html:not(#_b) body .eaa-mobile-tabbar { background: #ffffff !important; }
+html:not(#_b) body #app-view-container:is([data-view="curriculum"], html:not(#_b) body [data-view="worksheets"], html:not(#_b) body [data-view="assignments"], html:not(#_b) body [data-view="homework"], html:not(#_b) body [data-view="settings"], html:not(#_b) body [data-view="reports"], html:not(#_b) body [data-view="store"], html:not(#_b) body [data-view="monster"]) :is( [style*="--bg-card"], html:not(#_b) body [style*="--bg-surface"], html:not(#_b) body [style*="background:#fff;"], html:not(#_b) body [style*="background: #fff;"], html:not(#_b) body [style*="background:#ffffff"], html:not(#_b) body [style*="background: #ffffff"], html:not(#_b) body [style*="background:white"], html:not(#_b) body [style*="background: white"], html:not(#_b) body [style*="background:#f8fafc"], html:not(#_b) body [style*="background: #f8fafc"], html:not(#_b) body [style*="background:#f1f5f9"], html:not(#_b) body [style*="background: #f1f5f9"], html:not(#_b) body .curriculum-book-card, html:not(#_b) body .unit-accordion-card, html:not(#_b) body .week-lesson-group, html:not(#_b) body .curriculum-toolbar, html:not(#_b) body .hw-quest-card, html:not(#_b) body .worksheet-card, html:not(#_b) body .assignment-card) { background: #ffffff !important; }
+html:not(#_b) body #app-view-container:is([data-view="curriculum"], html:not(#_b) body [data-view="worksheets"], html:not(#_b) body [data-view="assignments"], html:not(#_b) body [data-view="homework"], html:not(#_b) body [data-view="settings"], html:not(#_b) body [data-view="reports"], html:not(#_b) body [data-view="store"], html:not(#_b) body [data-view="monster"], html:not(#_b) body [data-view="library"]) :is(input, html:not(#_b) body select, html:not(#_b) body textarea, html:not(#_b) body .filter-select) { background: #ffffff !important; }
+html:not(#_b) body #global-cloud-sync-btn { background: #ffffff !important; color: var(--bp-ink) !important; border: 1px solid #ead9bf !important; border-bottom: 3px solid rgba(2, 6, 23, 0.7) !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; }
+html:not(#_b) body #app-view-container:is([data-view="curriculum"], html:not(#_b) body [data-view="worksheets"], html:not(#_b) body [data-view="assignments"], html:not(#_b) body [data-view="homework"], html:not(#_b) body [data-view="settings"], html:not(#_b) body [data-view="reports"], html:not(#_b) body [data-view="store"], html:not(#_b) body [data-view="monster"]) :is( [style*="--bg-card"], html:not(#_b) body [style*="--bg-surface"], html:not(#_b) body [style*="background:#fff;"], html:not(#_b) body [style*="background: #fff;"], html:not(#_b) body [style*="background:#ffffff"], html:not(#_b) body [style*="background: #ffffff"], html:not(#_b) body [style*="background:white"], html:not(#_b) body [style*="background: white"], html:not(#_b) body [style*="background:#f8fafc"], html:not(#_b) body [style*="background: #f8fafc"], html:not(#_b) body [style*="background:#f1f5f9"], html:not(#_b) body [style*="background: #f1f5f9"], html:not(#_b) body .curriculum-book-card, html:not(#_b) body .unit-accordion-card, html:not(#_b) body .week-lesson-group, html:not(#_b) body .curriculum-toolbar, html:not(#_b) body .hw-quest-card, html:not(#_b) body .worksheet-card, html:not(#_b) body .assignment-card) { background: #ffffff !important; color: var(--bp-ink) !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; }
+html:not(#_b) body #app-view-container:is([data-view="curriculum"], html:not(#_b) body [data-view="worksheets"], html:not(#_b) body [data-view="assignments"], html:not(#_b) body [data-view="homework"], html:not(#_b) body [data-view="settings"], html:not(#_b) body [data-view="reports"], html:not(#_b) body [data-view="store"], html:not(#_b) body [data-view="monster"]) :is([style*="--bg-card"], html:not(#_b) body .unit-accordion-card, html:not(#_b) body .curriculum-book-card, html:not(#_b) body .hw-quest-card) :is([style*="--bg-card-secondary"], html:not(#_b) body [style*="background:#f8fafc"], html:not(#_b) body [style*="background: #f8fafc"], html:not(#_b) body [style*="background:#f1f5f9"], html:not(#_b) body [style*="background: #f1f5f9"], html:not(#_b) body [style*="background:#fff;"], html:not(#_b) body [style*="background:#ffffff"], html:not(#_b) body .week-lesson-group) { background: #ffffff !important; }
+html:not(#_b) body #app-view-container:is([data-view="curriculum"], html:not(#_b) body [data-view="worksheets"], html:not(#_b) body [data-view="assignments"], html:not(#_b) body [data-view="homework"], html:not(#_b) body [data-view="settings"], html:not(#_b) body [data-view="reports"], html:not(#_b) body [data-view="store"], html:not(#_b) body [data-view="monster"]) :is( [style*="color:#0f172a"], html:not(#_b) body [style*="color: #0f172a"], html:not(#_b) body [style*="color:#1e293b"], html:not(#_b) body [style*="color: #1e293b"], html:not(#_b) body [style*="color:#334155"], html:not(#_b) body [style*="color: #334155"], html:not(#_b) body h1, html:not(#_b) body h2, html:not(#_b) body h3, html:not(#_b) body h4, html:not(#_b) body h5, html:not(#_b) body strong, html:not(#_b) body b) { color: var(--bp-ink) !important; }
+html:not(#_b) body #app-view-container:is([data-view="curriculum"], html:not(#_b) body [data-view="worksheets"], html:not(#_b) body [data-view="assignments"], html:not(#_b) body [data-view="homework"], html:not(#_b) body [data-view="settings"], html:not(#_b) body [data-view="reports"], html:not(#_b) body [data-view="store"], html:not(#_b) body [data-view="monster"], html:not(#_b) body [data-view="library"]) :is(input, html:not(#_b) body select, html:not(#_b) body textarea, html:not(#_b) body .filter-select) { background: #ffffff !important; color: var(--bp-ink) !important; }
+html:not(#_b) body #app-view-container :is(input, html:not(#_b) body textarea)::placeholder { color: var(--bp-muted) !important; }
+html:not(#_b) body #app-view-container :is(.btn-sm-secondary, html:not(#_b) body .btn-3d-secondary), html:not(#_b) body #app-view-container:is([data-view="curriculum"], html:not(#_b) body [data-view="worksheets"], html:not(#_b) body [data-view="assignments"], html:not(#_b) body [data-view="homework"], html:not(#_b) body [data-view="settings"], html:not(#_b) body [data-view="reports"], html:not(#_b) body [data-view="store"], html:not(#_b) body [data-view="monster"], html:not(#_b) body [data-view="archived"]) :is(.btn-sm-secondary, html:not(#_b) body .btn-3d-secondary) { color: var(--bp-ink) !important; }
+html:not(#_b) body #app-view-container:is([data-view="curriculum"], html:not(#_b) body [data-view="worksheets"], html:not(#_b) body [data-view="assignments"], html:not(#_b) body [data-view="homework"], html:not(#_b) body [data-view="settings"], html:not(#_b) body [data-view="reports"], html:not(#_b) body [data-view="store"], html:not(#_b) body [data-view="monster"]) :is( [class*="card"], html:not(#_b) body [class*="tile"], html:not(#_b) body [class*="panel"], html:not(#_b) body [class*="kpi"], html:not(#_b) body [class*="toolbar"], html:not(#_b) body [class*="accordion"], html:not(#_b) body [class*="widget"], html:not(#_b) body [class*="list-item"], html:not(#_b) body [class*="row-item"], html:not(#_b) body [class*="table-wrap"], html:not(#_b) body [style*="--bg-"], html:not(#_b) body table) { color: var(--bp-ink) !important; }
+html:not(#_b) body .lp-section { background: #ffffff !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; }
+html:not(#_b) body .lp-head h2 { color: var(--bp-ink) !important; }
+html:not(#_b) body .lp-head span { color: var(--bp-muted) !important; }
+html:not(#_b) body .lp-card { background: #ffffff !important; color: var(--bp-ink) !important; }
+html:not(#_b) body .lp-card b { color: var(--bp-ink) !important; }
+html:not(#_b) body .lp-card small { color: var(--bp-muted) !important; }
+html:not(#_b) body .lp-btn { color: var(--bp-ink) !important; }
+html:not(#_b) body .app-main[class*="theme-"] { color: var(--bp-ink) !important; }
+html:not(#_b) body .app-main[class*="theme-"] .resource-card-v3, html:not(#_b) body .app-main[class*="theme-"] .hw-quest-card-thumb-wrap { color: var(--bp-ink) !important; }
+html:not(#_b) body .class-card { box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; }
+html:not(#_b) body .class-card-sub { color: var(--bp-muted) !important; }
+html:not(#_b) body .class-stat-lbl { color: var(--bp-muted) !important; }
+html:not(#_b) body .stats-hud-number--empty { color: var(--bp-muted) !important; }
+html:not(#_b) body .tt-empty { color: var(--bp-ink) !important; }
+html:not(#_b) body .tt-btn { color: var(--bp-ink) !important; }
+html:not(#_b) body .stu-glass { background: #ffffff !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; color: var(--bp-ink) !important; }
+html:not(#_b) body .stu-glass .btn-sm-secondary { color: var(--bp-ink) !important; }
+html:not(#_b) body .stu-glass .btn-primary-action { color: var(--bp-ink) !important; }
+html:not(#_b) body .parent-home { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-hero { box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; }
+html:not(#_b) body .par-hero h1 { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-hero p { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-stat, html:not(#_b) body .par-card { background: #ffffff !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; }
+html:not(#_b) body .par-stat strong { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-stat em { color: var(--bp-muted) !important; }
+html:not(#_b) body .par-card h3 { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-skill-top { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-list li { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-list li small { color: var(--bp-muted) !important; }
+html:not(#_b) body .par-story b { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-story p { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-story small { color: var(--bp-muted) !important; }
+html:not(#_b) body .par-page-head h1 { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-msg { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-reply input { color: var(--bp-ink) !important; }
+html:not(#_b) body .par-reply input::placeholder { color: var(--bp-muted) !important; }
+html:not(#_b) body .dock-more-menu { background: #ffffff !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; }
+html:not(#_b) body .cr-pod .place { color: var(--bp-ink) !important; }
+html:not(#_b) body .cc small, html:not(#_b) body .cc em, html:not(#_b) body .cc .cc-dim, html:not(#_b) body .cc-kp small { color: var(--bp-ink) !important; }
+html:not(#_b) body .thematic-companion-card { background: linear-gradient(180deg,#ffffff,#fff3dd) !important; }
+html:not(#_b) body .thematic-companion-card .thematic-tag { color: var(--bp-ink) !important; }
+html:not(#_b) body .thematic-companion-card .thematic-quote { color: var(--bp-ink) !important; }
+html:not(#_b) body .thematic-companion-card .thematic-char-role { color: var(--bp-ink) !important; }
+html:not(#_b) body ::selection { color: var(--bp-ink) !important; }
+@media (max-width: 768px) { html:not(#_b) body .eaa-mobile-drawer-scrim { background: #ffffff !important; } }
+@media (max-width: 768px) { html:not(#_b) body .eaa-mobile-tabbar { border-top: 1px solid #ead9bf !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; } }
+@media (max-width: 768px) { html:not(#_b) body .eaa-mob-tab { color: var(--bp-muted) !important; } }
+@media (max-width: 768px) { html:not(#_b) body .eaa-mob-tab.is-active { color: var(--bp-ink) !important; } }
+
+/* ===== Avatar Studio / Shop / Podium (classroom-store.js, class-rewards.js) ===== */
+html:not(#_b) body .cs-studio-top, html:not(#_b) body .cs-studio, html:not(#_b) body .cs-avwrap, html:not(#_b) body .cs-shelf-top, html:not(#_b) body .cr-hd, html:not(#_b) body .cr-fund, html:not(#_b) body .cr-legend { background: #ffffff !important; border: 3px solid #cfe6ff !important; color: var(--bp-ink) !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; }
+html:not(#_b) body .cs-item, html:not(#_b) body .cs-avcard, html:not(#_b) body .cs-prize-card, html:not(#_b) body .cs-try-card, html:not(#_b) body .cs-glass-card, html:not(#_b) body .cs-info, html:not(#_b) body .cr-card, html:not(#_b) body .cr-pod, html:not(#_b) body .cs-ped, html:not(#_b) body .cs-wearing-box { background: #ffffff !important; border: 3px solid #cfe6ff !important; border-bottom: 6px solid #cfe6ff !important; color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-pbtn, html:not(#_b) body .cs-pose-btn, html:not(#_b) body .cs-avchip, html:not(#_b) body .cs-wchip, html:not(#_b) body .cs-sw, html:not(#_b) body .cs-swatch, html:not(#_b) body .cs-mode-btn, html:not(#_b) body .cs-3d-btn, html:not(#_b) body .cs-3d-mini, html:not(#_b) body .cs-coin-pill, html:not(#_b) body .cs-lvl-pill, html:not(#_b) body .cr-pill, html:not(#_b) body .cs-dark-inp { background: #fff8ec !important; border: 2px solid #ead9bf !important; border-bottom: 4px solid #ead9bf !important; color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-pbtn.on, html:not(#_b) body .cs-pbtn.active, html:not(#_b) body .cs-pose-btn.on, html:not(#_b) body .cs-mode-btn.on, html:not(#_b) body .cs-avchip.on { background: #9b7bff !important; border-color: #6f4fe0 !important; color: #fff !important; }
+html:not(#_b) body .cs-nm, html:not(#_b) body .cs-avbar-name, html:not(#_b) body .cs-avstage-nm, html:not(#_b) body .cs-studio-title, html:not(#_b) body .cs-field-lbl, html:not(#_b) body .cs-swtray-lbl, html:not(#_b) body .cs-avcard-act, html:not(#_b) body .cr-hd *, html:not(#_b) body .cs-studio-top h2, html:not(#_b) body .cs-studio-top h3 { color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-info, html:not(#_b) body .cs-row-line { color: var(--bp-muted) !important; }
+html:not(#_b) body .cs-avstage-in { background: radial-gradient(circle at 50% 40%, #ffffff 0%, #d7f0ff 70%, #bfe3ff 100%) !important; border: 3px solid #cfe6ff !important; }
+html:not(#_b) body .cs-pic, html:not(#_b) body .cs-avcard-pic, html:not(#_b) body .cs-art { background: #f3f9ff !important; }
+/* top bar of the shop view and pupil strip */
+html:not(#_b) body #app-view-container [class*="cs-"][style*="background"][style*="rgba(15"], html:not(#_b) body #app-view-container [class*="cs-"][style*="background"][style*="#0"] { background: #ffffff !important; color: var(--bp-ink) !important; }
+html:not(#_b) body #app-view-container button[class*="cs-"]:not(.on):not(.cs-3d-btn) { color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-avstage, html:not(#_b) body .cs-avstage-hd, html:not(#_b) body .cs-avbar, html:not(#_b) body .cs-pstrip, html:not(#_b) body .cs-grid, html:not(#_b) body .cs-shelf { background: #ffffff !important; border-color: #cfe6ff !important; color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-avstage *, html:not(#_b) body .cs-avstage-hd * { color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-free-tag, html:not(#_b) body .cs-rar { color: #0f6b4a !important; background: #d9f7ea !important; }
+html:not(#_b) body .cs-3d-btn, html:not(#_b) body .cs-3d-mini { color: var(--bp-ink) !important; }
+
+/* Teacher Mode sidebar: readable ink on the bright page */
+html:not(.class-mode):not(#_b) body .app-sidebar, html:not(.class-mode):not(#_b) body .app-sidebar * { color: var(--bp-ink) !important; text-shadow: none !important; }
+html:not(.class-mode):not(#_b) body .app-sidebar { background: rgba(255,255,255,.78) !important; border-radius: 20px !important; }
+html:not(.class-mode):not(#_b) body .app-sidebar .active, html:not(.class-mode):not(#_b) body .app-sidebar [aria-current], html:not(.class-mode):not(#_b) body .app-sidebar .is-active { background: #e6dcff !important; border-color: #9b7bff !important; }
+html:not(#_b) body .cs-glass-card h1, html:not(#_b) body .cs-glass-card h2, html:not(#_b) body .cs-glass-card h3, html:not(#_b) body .cs-glass-card h4, html:not(#_b) body .cs-glass-card strong, html:not(#_b) body .cs-fold h3, html:not(#_b) body .cs-fold h4 { color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-glass-card p, html:not(#_b) body .cs-glass-card small, html:not(#_b) body .cs-glass-card label, html:not(#_b) body .cs-glass-card div { color: var(--bp-ink2) !important; }
+html:not(#_b) body .cs-fold, html:not(#_b) body .cs-fold > summary { background: #fff8ec !important; color: var(--bp-ink) !important; border: 2px solid #ead9bf !important; }
+html:not(#_b) body .cs-fold > summary * { color: var(--bp-ink) !important; }
+
+/* Home / plan hub (school-app.js) + podium + homework banner */
+html:not(#_b) body .kpi-card, html:not(#_b) body .par-card, html:not(#_b) body .sfx-card, html:not(#_b) body .par-hero, html:not(#_b) body .par-empty, html:not(#_b) body .hw-hero, html:not(#_b) body .tines-bento-card { background: #ffffff !important; border: 3px solid #cfe6ff !important; color: var(--bp-ink) !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; }
+html:not(#_b) body .kpi-card *, html:not(#_b) body .par-card *, html:not(#_b) body .par-hero *, html:not(#_b) body .par-empty * { color: var(--bp-ink) !important; }
+html:not(#_b) body .kpi-label, html:not(#_b) body .kpi-sub { color: var(--bp-muted) !important; }
+html:not(#_b) body .cr-pod *, html:not(#_b) body .cr-card * { color: var(--bp-ink) !important; }
+html:not(#_b) body .cr-pod .cr-btn, html:not(#_b) body .cr-card .cr-btn { color: #fff !important; }
+html:not(#_b) body #app-view-container [style*="rgba(15, 23, 42"], html:not(#_b) body #app-view-container [style*="rgba(15,23,42"], html:not(#_b) body #app-view-container [style*="#0f172a"], html:not(#_b) body #app-view-container [style*="#1e293b"] { background: #ffffff !important; color: var(--bp-ink) !important; border-color: #cfe6ff !important; }
+html:not(#_b) body #app-view-container [style*="rgba(15, 23, 42"] *, html:not(#_b) body #app-view-container [style*="rgba(15,23,42"] * { color: var(--bp-ink) !important; }
+
+/* make sure class-mode variable overrides cannot win back pale text */
+html:not(#_b), html.class-mode:not(#_b) { --text-main:#2b1d40 !important; --text-primary:#2b1d40 !important; --text-secondary:#4a3b63 !important; --text-muted:#6b5b84 !important; --text-subtle:#6b5b84 !important; }
+html:not(#_b) body .cr-legend span, html:not(#_b) body .cr-legend { color: var(--bp-ink2) !important; }
+html:not(#_b) body .hw-tab-btn:not(.is-active) { color: var(--bp-ink2) !important; }
+html:not(#_b) body #app-view-container p[style*="text-muted"], html:not(#_b) body #app-view-container [style*="color:var(--text-muted)"], html:not(#_b) body #app-view-container [style*="color: var(--text-muted)"] { color: var(--bp-muted) !important; }
+html:not(#_b) body .cr-hd, html:not(#_b) body .cr-hd h1, html:not(#_b) body .cr-hd h2 { color: var(--bp-ink) !important; }
