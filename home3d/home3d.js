@@ -58,16 +58,16 @@
         '  for (int k = 0; k < 10; k++) { if (k >= uN) break; vec4 e = uIsl[k]; vec2 q = (vW - e.xy) / e.zw; float r = length(q); dist = min(dist, (r - 1.0) * min(e.z, e.w)); }',
         '  dist = max(dist, 0.0);',
         '  vec2 wp = vW + vec2(n(vW * .08 + uT * .05), n(vW * .08 - uT * .04)) * 1.6;',   // wobble so lines are never straight
-        '  vec3 shal = vec3(0.30, 0.78, 0.66), turq = vec3(0.06, 0.60, 0.70), teal = vec3(0.015, 0.40, 0.58), deep = vec3(0.008, 0.26, 0.45);',
+        '  vec3 shal = vec3(0.42, 0.88, 0.76), turq = vec3(0.10, 0.70, 0.80), teal = vec3(0.03, 0.50, 0.68), deep = vec3(0.015, 0.34, 0.55);',
         '  vec3 c = mix(shal, turq, smoothstep(0.0, 6.0, dist)); c = mix(c, teal, smoothstep(5.0, 22.0, dist)); c = mix(c, deep, smoothstep(20.0, 70.0, dist));',
         '  float sh = n(wp * .18 + uT * .03) * .6 + n(wp * .45 - uT * .05) * .4;',             // large soft wave shading
         '  c *= .9 + .2 * sh;',
         '  float w1 = web(wp * .22 + vec2(uT * .01, 0.0), uT * .5), w2 = web(wp * .36 + vec2(0.0, uT * .015) + 3.7, uT * .7 + 2.0);',
         '  float near = 1.0 - smoothstep(4.0, 40.0, dist);',
         '  float caus = w1 * .65 + w2 * .45;',
-        '  c += vec3(.70, 1.0, .95) * caus * (.05 + .2 * near);',
+        '  c += vec3(.70, 1.0, .95) * caus * (.02 + .08 * near);',
         '  float glint = smoothstep(.83, .9, n(wp * 1.6 + uT * .35) * n(wp * 2.3 - uT * .3) * 1.9);',   // little sun sparkles
-        '  c += vec3(1.0) * glint * .18 * (1.0 - smoothstep(20.0, 90.0, dist));',
+        '  c += vec3(1.0) * glint * .10 * (1.0 - smoothstep(20.0, 90.0, dist));',
         '  gl_FragColor = vec4(c, 1.0);',
         '  #include <colorspace_fragment>',
         '}'
@@ -300,7 +300,7 @@
       c.shadowColor = 'transparent'; c.fillStyle = '#2b1d40'; c.font = '800 52px "Trebuchet MS", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(text, W / 2, H / 2 - 5);
     });
     var s = new T3.Sprite(new T3.SpriteMaterial({ map: t, depthTest: false })); s.renderOrder = 6;
-    var k = 2.4; s.scale.set(w / 120 * k, k, 1); s.userData.sx = s.scale.x; s.userData.sy = s.scale.y; return s;
+    var k = 3.3; s.scale.set(w / 120 * k, k, 1); s.userData.sx = s.scale.x; s.userData.sy = s.scale.y; return s;
   }
   function flag(color, x, y, z, parent) {
     var g = new T3.Group(); g.position.set(x, y, z); (parent || scene).add(g);

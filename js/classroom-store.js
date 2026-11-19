@@ -1138,6 +1138,14 @@
     return m[toneId] || '#f4c29f';
   }
 
+  var wear3dPromise = null;
+  function loadWear3d() {
+    if (!wear3dPromise) {
+      wear3dPromise = fetch('assets/3d/items/wear3d.json?v=1').then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
+    }
+    return wear3dPromise;
+  }
+
   function avMount3DStage(sid) {
     var host = root.document && document.getElementById('cs-av-3d-host');
     if (!host) {
@@ -1168,18 +1176,28 @@
         else if (stc === 'cheer' || stc === 'jump') stg.playAnimation('Cheer');
         else stg.playAnimation('Idle');
 
-        if (wantCrown) {
-          stg.equipItemFromSource({
-            id: 'crown',
-            name: 'Royal Gold Crown',
-            slot: 'headwear',
-            boneCandidates: ['mixamorigHead', 'Head'],
-            socketOffset: [0, 0.46, 0],
-            fallbackOffset: [0, 1.68, 0],
-            scale: 0.28,
-            rotation: [0, 0, 0]
-          }, 'assets/3d/items/crown.glb').catch(function () {});
-        }
+        // Real 3D shop items (Tripo models): worn items + the one being tried on.
+        loadWear3d().then(function (W3) {
+          if (av3DStageInst !== stg) return;
+          var bySlot = {}, anyHat = false;
+          Object.keys(wearing || {}).forEach(function (k) {
+            var id = wearing[k];
+            if (id && W3[id]) bySlot[W3[id].slot] = id;
+          });
+          if (avTryId && W3[avTryId]) bySlot[W3[avTryId].slot] = avTryId;
+          Object.keys(bySlot).forEach(function (slot) {
+            var id = bySlot[slot], c = Object.assign({ id: id, name: id }, W3[id]);
+            if (slot === 'headwear') anyHat = true;
+            stg.equipItemFromSource(c, 'assets/3d/items/' + id + '.glb').catch(function () {});
+          });
+          if (wantCrown && !anyHat && !avTryId) {
+            stg.equipItemFromSource({
+              id: 'crown', name: 'Royal Gold Crown', slot: 'headwear',
+              boneCandidates: ['mixamorigHead', 'Head'], socketOffset: [0, 0.46, 0],
+              fallbackOffset: [0, 1.68, 0], scale: 0.28, rotation: [0, 0, 0]
+            }, 'assets/3d/items/crown.glb').catch(function () {});
+          }
+        });
       }).catch(function () {});
     }).catch(function () {});
   }
