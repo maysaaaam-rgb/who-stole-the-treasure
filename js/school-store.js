@@ -11262,10 +11262,13 @@ function mergeDuplicateStudents(a, b) {
 
       this._slimGeneratedAvatars();
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+        // Speed: the same unchanged data is often saved several times while the page starts; skip identical writes.
+        const fullJson = JSON.stringify(this.state);
+        if (localStorage.getItem(STORAGE_KEY) !== fullJson) localStorage.setItem(STORAGE_KEY, fullJson);
         if (this.state && Array.isArray(this.state.students)) {
           try {
-            localStorage.setItem('adventure_students', JSON.stringify(this.state.students));
+            const stuJson = JSON.stringify(this.state.students);
+            if (localStorage.getItem('adventure_students') !== stuJson) localStorage.setItem('adventure_students', stuJson);
           } catch (e) {
             console.warn('MasterSchoolStore: adventure_students save warning', e);
           }

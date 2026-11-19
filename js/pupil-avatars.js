@@ -505,11 +505,14 @@
     if (headB64[id]) {
       return loadImg(headB64[id]).catch(function () { return null; });
     }
-    return loadImg(BASE + 'heads/' + id + '.webp' + ASSET_V).catch(function () {
+    function fromCloud() {
       return readHeadRows([id]).then(function () {
         return headB64[id] ? loadImg(headB64[id]).catch(function () { return null; }) : null;
       });
-    });
+    }
+    // Only pupils with a public face file are looked up on the site; others go straight to the cloud (no 404s).
+    if (!BUILTIN_EMOTIONS[id + '-laugh']) return fromCloud();
+    return loadImg(BASE + 'heads/' + id + '.webp' + ASSET_V).catch(fromCloud);
   }
   function fetchEmotionHead(id, kind) {
     if (!id || (kind !== 'laugh' && kind !== 'wink')) return Promise.resolve(null);
@@ -532,6 +535,46 @@
   function fetchWear() {
     if (wear) return Promise.resolve(wear);
     return fetch(BASE + 'wear/manifest.json' + ASSET_V, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }).then(function (m) { wear = m || {}; return wear; });
+  }
+
+  /* ---------- picture cache (IndexedDB): finished avatar pictures survive a page reload ---------- */
+  var PIC_CACHE_VER = 'p1';
+  var picDb = null, picDbTried = false;
+  function picCacheOpen() {
+    if (picDbTried) return Promise.resolve(picDb);
+    picDbTried = true;
+    return new Promise(function (res) {
+      try {
+        var rq = root.indexedDB.open('eaa-avatar-pics', 1);
+        rq.onupgradeneeded = function () { try { rq.result.createObjectStore('pics'); } catch (e) {} };
+        rq.onsuccess = function () { picDb = rq.result; res(picDb); };
+        rq.onerror = function () { res(null); };
+        setTimeout(function () { res(picDb); }, 1500);
+      } catch (e) { res(null); }
+    });
+  }
+  function headKey(id) {
+    var h = headB64[id];
+    if (h) return 'b' + h.length + ':' + h.slice(-24);
+    var im = heads[id];
+    return 'u' + (im && (im.currentSrc || im.src || '') || '').slice(-60);
+  }
+  function picSig(id, look, eq) {
+    try { return PIC_CACHE_VER + ASSET_V + '|' + JSON.stringify(look || {}) + '|' + JSON.stringify(avatarEquipFromMonster(eq)) + '|' + headKey(id) + '|' + lockMode(); } catch (e) { return ''; }
+  }
+  function picCacheGet(id, sig) {
+    if (!picDb || !sig) return Promise.resolve(null);
+    return new Promise(function (res) {
+      try {
+        var rq = picDb.transaction('pics', 'readonly').objectStore('pics').get(id);
+        rq.onsuccess = function () { var v = rq.result; res(v && v.sig === sig ? v.url : null); };
+        rq.onerror = function () { res(null); };
+      } catch (e) { res(null); }
+    });
+  }
+  function picCachePut(id, sig, url) {
+    if (!picDb || !sig || !url) return;
+    try { picDb.transaction('pics', 'readwrite').objectStore('pics').put({ sig: sig, url: url }, id); } catch (e) {}
   }
 
   var loadPromise = null;
@@ -558,11 +601,34 @@
         return heads[id] ? null : fetchHead(id).then(function (im) { if (im) heads[id] = im; });
       }));
     }).then(function () {
-      return Promise.all(Object.keys(data.approved).map(function (id) {
-        var eq = equippedOf(id);
-        lastEquipSig[id] = JSON.stringify(avatarEquipFromMonster(eq));
-        return compose(ownedLook(id, data.approved[id]), heads[id], eq, 'smile', id).then(function (u) { composed[id] = u; }).catch(function () { /* keep monster */ });
-      }));
+      // Speed: draw the open class first, one pupil at a time with a pause in between (no long freeze),
+      // and reuse yesterday's finished picture when nothing about the pupil changed (picture cache).
+      var all = Object.keys(data.approved), first = [], rest = [];
+      var activeId = '';
+      try { var stA = store(); var ac = stA && stA.getActiveClass && stA.getActiveClass(); activeId = ac && ac.id || ''; } catch (eA) {}
+      var classOf = {};
+      try { ((store() && store().state && store().state.students) || []).forEach(function (st) { if (st) classOf[st.id] = st.classId; }); } catch (eC) {}
+      all.forEach(function (id) { (activeId && classOf[id] === activeId ? first : rest).push(id); });
+      return picCacheOpen().then(function () {
+        function one(id) {
+          var eq = equippedOf(id), look = ownedLook(id, data.approved[id]);
+          lastEquipSig[id] = JSON.stringify(avatarEquipFromMonster(eq));
+          var sig = picSig(id, look, eq);
+          return picCacheGet(id, sig).then(function (hit) {
+            if (hit) { composed[id] = hit; return; }
+            return compose(look, heads[id], eq, 'smile', id).then(function (u) { composed[id] = u; picCachePut(id, sig, u); }).catch(function () { /* keep monster */ });
+          });
+        }
+        function runList(list) {
+          return list.reduce(function (pr, id) {
+            return pr.then(function () { return one(id); }).then(function () { return new Promise(function (r) { setTimeout(r, 0); }); });
+          }, Promise.resolve());
+        }
+        return runList(first).then(function () {
+          if (first.length && on()) { try { rerender(); } catch (eR) {} }
+          return runList(rest);
+        });
+      });
     }).then(function () {
       state = 'ready';
       loadPromise = null;
