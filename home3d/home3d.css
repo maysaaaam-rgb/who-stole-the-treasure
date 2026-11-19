@@ -28,3 +28,6 @@
 .h3-q:active i { transform: translateY(4px); border-bottom-width: 1px; }
 @media (max-width: 1100px) { .h3-teams { top: 74px; right: 16px; } .h3-goal { top: 70px; } .h3-team { font-size: .9rem; } .h3-team img { width: 30px; height: 30px; } }
 @media (max-width: 760px) { .h3-teams { top: 120px; } .h3-q i { width: 44px; height: 44px; font-size: 1.3rem; } .h3-quick { gap: 10px; padding: 8px 14px 6px; } }
+.h3-cloudcv { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; animation: h3drift 14s ease-in-out infinite alternate; }
+@keyframes h3drift { from { transform: translateX(-6px); } to { transform: translateX(6px); } }
+@media (prefers-reduced-motion: reduce) { .h3-cloudcv { animation: none; } }

@@ -628,24 +628,36 @@
       if (sg === 3 || sg === 4) _entryGrade = sg;
     } catch (e) {}
 
+    var ses = state.session || {};
+    var errMsg = ses.status === 'invalid_code' ? 'We could not find that code. Check it and try again!'
+      : (ses.status === 'error' ? (ses.message || 'Ask your teacher for your island link 🏝️') : '');
     container.innerHTML =
-      '<div class="isl-card-modal" id="isl-code-entry-card" style="max-width:460px;margin:28px auto;padding:26px 22px;text-align:center;background:linear-gradient(180deg,rgba(15,23,42,0.92),rgba(6,9,17,0.98));border:2px solid rgba(56,189,248,0.55);border-radius:24px;box-shadow:0 20px 50px rgba(0,0,0,0.75)">' +
+      '<div class="isl-card-modal" id="isl-code-entry-card" style="max-width:460px;margin:28px auto;padding:26px 22px;text-align:center;border-radius:28px">' +
         '<div style="display:flex;justify-content:center;align-items:flex-end;gap:12px;margin-bottom:10px">' +
-          '<img src="art/c_jim_happy.webp" alt="Jim" style="width:76px;height:94px;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.55))">' +
-          '<img src="art/c_benbow_happy.webp" alt="Benbow" style="width:74px;height:82px;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.55))">' +
+          '<img src="art/c_jim_happy.webp" alt="Jim" style="width:76px;height:94px;object-fit:contain">' +
+          '<img src="art/c_benbow_happy.webp" alt="Benbow" style="width:74px;height:82px;object-fit:contain">' +
         '</div>' +
-        '<h1 style="margin:2px 0 6px;font-size:1.95rem;color:#fff">🏝️ Practice Island</h1>' +
-        '<p style="color:#cbd5e1;font-size:1.05rem;margin:0 0 18px">Type your name and tap <b>Play!</b></p>' +
-        '<form onsubmit="IslandApp.submitName(event)" style="display:flex;flex-direction:column;gap:12px;align-items:stretch">' +
-          '<input id="isl-name-input" type="text" maxlength="40" placeholder="First &amp; Last Name" value="' + esc(savedName) + '" autocomplete="name" ' +
-            'style="width:100%;box-sizing:border-box;text-align:center;font:800 1.25rem Nunito,sans-serif;padding:13px 16px;border-radius:16px;border:3px solid #38bdf8;background:rgba(15,23,42,0.95);color:#fff;outline:none">' +
-          '<div id="isl-name-err" style="display:none;color:#fda4af;font-weight:800;font-size:0.95rem">Please write your name first!</div>' +
-          '<div style="display:flex;gap:10px;justify-content:center">' +
-            '<button type="button" id="isl-grade-3" onclick="IslandApp.selectEntryGrade(3)" class="isl-btn ' + (_entryGrade === 3 ? 'cyan' : 'ghost') + '" style="flex:1;min-height:46px;font-size:1rem">Grade 3</button>' +
-            '<button type="button" id="isl-grade-4" onclick="IslandApp.selectEntryGrade(4)" class="isl-btn ' + (_entryGrade === 4 ? 'emerald' : 'ghost') + '" style="flex:1;min-height:46px;font-size:1rem">Grade 4</button>' +
-          '</div>' +
-          '<button type="submit" id="isl-play-btn" class="isl-btn amber" style="width:100%;min-height:56px;font-size:1.35rem;font-weight:900;margin-top:4px">▶ Play!</button>' +
+        '<h1 style="margin:2px 0 6px;font-size:1.95rem">🏝️ Treasure Island</h1>' +
+        '<p style="font-size:1.05rem;margin:0 0 16px">Open the <b>island link</b> from your teacher,<br>or type your <b>island code</b>:</p>' +
+        '<form onsubmit="IslandApp.submitCode(event)" style="display:flex;flex-direction:column;gap:12px;align-items:stretch">' +
+          '<input id="isl-code-input" type="text" maxlength="12" placeholder="Island code" autocomplete="off" autocapitalize="characters" spellcheck="false" ' +
+            'style="width:100%;box-sizing:border-box;text-align:center;font:900 1.45rem Nunito,sans-serif;letter-spacing:0.12em;padding:13px 16px;border-radius:16px;outline:none">' +
+          (errMsg ? '<div id="isl-code-err" style="color:#c93d7d;font-weight:800;font-size:0.95rem">' + esc(errMsg) + '</div>' : '') +
+          '<button type="submit" id="isl-code-btn" class="isl-btn amber" style="width:100%;min-height:56px;font-size:1.35rem;font-weight:900">▶ Play!</button>' +
         '</form>' +
+        '<details class="bp-practice"' + (savedName ? ' open' : '') + '>' +
+          '<summary>No code? Just practise (your stars are not saved)</summary>' +
+          '<form onsubmit="IslandApp.submitName(event)" style="display:flex;flex-direction:column;gap:12px;align-items:stretch">' +
+            '<input id="isl-name-input" type="text" maxlength="40" placeholder="Your first name" value="' + esc(savedName) + '" autocomplete="given-name" ' +
+              'style="width:100%;box-sizing:border-box;text-align:center;font:800 1.2rem Nunito,sans-serif;padding:11px 16px;border-radius:16px;outline:none">' +
+            '<div id="isl-name-err" style="display:none;color:#c93d7d;font-weight:800;font-size:0.95rem">Please write your name first!</div>' +
+            '<div style="display:flex;gap:10px;justify-content:center">' +
+              '<button type="button" id="isl-grade-3" onclick="IslandApp.selectEntryGrade(3)" class="isl-btn ' + (_entryGrade === 3 ? 'cyan' : 'ghost') + '" style="flex:1;min-height:46px;font-size:1rem">Grade 3</button>' +
+              '<button type="button" id="isl-grade-4" onclick="IslandApp.selectEntryGrade(4)" class="isl-btn ' + (_entryGrade === 4 ? 'emerald' : 'ghost') + '" style="flex:1;min-height:46px;font-size:1rem">Grade 4</button>' +
+            '</div>' +
+            '<button type="submit" id="isl-play-btn" class="isl-btn ghost" style="width:100%;min-height:50px;font-size:1.1rem;font-weight:900">Practise</button>' +
+          '</form>' +
+        '</details>' +
       '</div>';
   }
 

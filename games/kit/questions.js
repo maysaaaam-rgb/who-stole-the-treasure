@@ -147,8 +147,22 @@
     return out.length ? out : [STARTER_PACK];
   }
 
+  // pages without kit.js (the 3D games) still reach the teacher's own sets in the same IndexedDB
+  function ownDbTx(storeName, mode, fn) {
+    return new Promise(function (res, rej) {
+      if (!root.indexedDB) return rej(new Error('no indexedDB'));
+      var r = root.indexedDB.open('eaa-games', 3);
+      r.onupgradeneeded = function () { var d = r.result; ['sets', 'qsets', 'ssets'].forEach(function (n) { if (!d.objectStoreNames.contains(n)) d.createObjectStore(n, { keyPath: 'id' }); }); };
+      r.onerror = function () { rej(r.error); };
+      r.onsuccess = function () {
+        var d = r.result, t = d.transaction(storeName, mode), st = t.objectStore(storeName), out = fn(st);
+        t.oncomplete = function () { res(out && out.result !== undefined ? out.result : out); };
+        t.onerror = function () { rej(t.error); };
+      };
+    });
+  }
   function mine() {
-    if (!Kit.dbTx) return Promise.resolve([]);
+    if (!Kit.dbTx) Kit.dbTx = ownDbTx;
     return Kit.dbTx(QSTORE, 'readonly', function (s) { return s.getAll(); })
       .then(function (r) {
         return (r || []).sort(function (a, b) { return (b.updated || 0) - (a.updated || 0); });
@@ -159,15 +173,121 @@
   function all() {
     return ensureLoaded().then(function () {
       var b = builtIn();
-      return mine().then(function (m) { return m.concat(b); });
+      return mine().then(function (m) {
+        var base = m.map(function (x) { x.mine = true; return x; }).concat(b);
+        var mixes = savedMixes().map(function (id) { return buildMix(base, parseMix(id)); }).filter(Boolean);
+        return m.concat(mixes, unitPacks(b), b);
+      });
     });
   }
 
   function get(id) {
     return all().then(function (list) {
-      return list.filter(function (s) { return s.id === id; })[0] || list[0] || STARTER_PACK;
+      var hit = list.filter(function (s) { return s.id === id; })[0];
+      if (!hit && /^mix:/.test(id || '')) hit = buildMix(list, parseMix(id));
+      return hit || list[0] || STARTER_PACK;
     });
   }
+
+  /* =========================================================================
+     ONE LIBRARY FOR EVERY GAME (2D and 3D, Nov 2026)
+     - "Unit packs": every question of one grade + unit together (Units 1-5).
+     - Mixes: grade + any units + any skills + how many ("mix:4:3.4.5:words.listening:20").
+     - One shared choice (pref 'qpack') remembered for all games on this computer,
+       with today's lesson unit (from the Today list) as the default.
+     ========================================================================= */
+  function prefGet(k) {
+    if (Kit.pref) return Kit.pref(k);
+    try { return (JSON.parse(localStorage.getItem('eaa_games_prefs') || '{}') || {})[k]; } catch (e) { return undefined; }
+  }
+  function prefSet(k, v) {
+    if (Kit.pref) return Kit.pref(k, v);
+    try { var p = JSON.parse(localStorage.getItem('eaa_games_prefs') || '{}') || {}; p[k] = v; localStorage.setItem('eaa_games_prefs', JSON.stringify(p)); } catch (e) {}
+    return v;
+  }
+  function quizable(it) { return it && it.q && it.a && it.w && it.w.length; }
+  function unitPacks(packs) {
+    var by = {};
+    packs.forEach(function (p) {
+      if (p.speaking) return;
+      (p.items || []).forEach(function (it) {
+        if (!quizable(it)) return;
+        var g = String(it.grade || p.grade || ''), u = String(it.unit || p.unit || '').replace(/\D/g, '');
+        if (!/^[34]$/.test(g) || !u || u === '0') return;
+        var k = g + ':' + u, b = by[k] || (by[k] = { seen: {}, items: [] });
+        if (b.seen[it.q]) return; b.seen[it.q] = 1; b.items.push(it);
+      });
+    });
+    return Object.keys(by).sort().filter(function (k) { return by[k].items.length >= 4; }).map(function (k) {
+      var g = k.split(':')[0], u = k.split(':')[1];
+      return { id: 'unit:' + g + ':' + u, name: 'Grade ' + g + ' · Unit ' + u + ' · All questions', sub: 'Grade ' + g + ' · Unit ' + u, grade: g, unit: u, e: '📚', builtIn: true, unitPack: true, items: by[k].items };
+    });
+  }
+  function parseMix(id) {
+    var m = /^mix:([34]|all):([\d.]*):([a-z.]*):(\d+)$/i.exec(id || ''); if (!m) return null;
+    return { grade: m[1], units: m[2] ? m[2].split('.') : [], skills: m[3] ? m[3].toLowerCase().split('.') : [], n: +m[4] || 20 };
+  }
+  function mixId(spec) {
+    return 'mix:' + (spec.grade || 'all') + ':' + (spec.units || []).join('.') + ':' + (spec.skills || []).map(function (x) { return String(x).toLowerCase(); }).join('.') + ':' + (spec.n || 20);
+  }
+  function buildMix(packs, spec) {
+    if (!spec) return null;
+    var seen = {}, pool = [];
+    packs.forEach(function (p) {
+      if (p.speaking || p.mix || p.unitPack) return;
+      (p.items || []).forEach(function (it) {
+        if (!quizable(it) || seen[it.q]) return;
+        var g = String(it.grade || p.grade || ''), u = String(it.unit || p.unit || '').replace(/\D/g, ''), sk = String(it.skill || '').toLowerCase();
+        if (spec.grade !== 'all' && g !== spec.grade) return;
+        if (spec.units.length && spec.units.indexOf(u) < 0) return;
+        if (spec.skills.length && spec.skills.indexOf(sk) < 0) return;
+        seen[it.q] = 1; pool.push(it);
+      });
+    });
+    if (!pool.length) return null;
+    var sh = pool.slice(); for (var i = sh.length - 1; i > 0; i--) { var j = (Math.random() * (i + 1)) | 0, t = sh[i]; sh[i] = sh[j]; sh[j] = t; }
+    var cap = function (x) { return x.charAt(0).toUpperCase() + x.slice(1); };
+    return {
+      id: mixId(spec), mix: true, builtIn: true, e: '🎛️', grade: spec.grade === 'all' ? 'All' : spec.grade, unit: spec.units.join(', '),
+      name: 'Mix · ' + (spec.grade === 'all' ? 'All grades' : 'Grade ' + spec.grade) + ' · ' + (spec.units.length ? 'Unit' + (spec.units.length > 1 ? 's ' : ' ') + spec.units.join(', ') : 'All units') + (spec.skills.length ? ' · ' + spec.skills.map(cap).join(', ') : ''),
+      sub: Math.min(spec.n, sh.length) + ' questions', items: sh.slice(0, spec.n)
+    };
+  }
+  function savedMixes() { var v = prefGet('qmixes'); return Array.isArray(v) ? v.filter(function (x) { return !!parseMix(x); }) : []; }
+  function saveMix(spec) {
+    var id = mixId(spec), list = savedMixes().filter(function (x) { return x !== id; });
+    list.unshift(id); prefSet('qmixes', list.slice(0, 8)); setCurrent(id); return id;
+  }
+  function skillsFor(packs, grade, units) {
+    var out = {};
+    packs.forEach(function (p) {
+      if (p.speaking || p.mix || p.unitPack) return;
+      (p.items || []).forEach(function (it) {
+        if (!quizable(it)) return;
+        var g = String(it.grade || p.grade || ''), u = String(it.unit || p.unit || '').replace(/\D/g, '');
+        if (grade && grade !== 'all' && g !== grade) return;
+        if (units && units.length && units.indexOf(u) < 0) return;
+        var sk = String(it.skill || '').trim(); if (sk) out[sk] = (out[sk] || 0) + 1;
+      });
+    });
+    return out;
+  }
+  // today's lesson unit for the chosen class (written by the platform's Today list: localStorage 'eaa_today_units')
+  function todayDefault() {
+    try {
+      var t = JSON.parse(localStorage.getItem('eaa_today_units') || 'null'); if (!t || !t.byClass) return '';
+      var d = new Date(), dk = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+      if (t.date !== dk) return '';
+      var cid = prefGet('classId'), hit = (cid && t.byClass[cid]) || null;
+      if (!hit) { var ks = Object.keys(t.byClass); if (ks.length === 1) hit = t.byClass[ks[0]]; }
+      return hit && hit.grade && hit.unit ? 'unit:' + hit.grade + ':' + hit.unit : '';
+    } catch (e) { return ''; }
+  }
+  function current() {
+    var fromUrl = (Kit.param && Kit.param('pack')) || (function () { try { return new URLSearchParams(location.search).get('pack') || new URLSearchParams(location.search).get('set'); } catch (e) { return ''; } })();
+    return fromUrl || todayDefault() || prefGet('qpack') || '';
+  }
+  function setCurrent(id) { prefSet('qpack', id); return id; }
 
   function save(pack) {
     pack.updated = Date.now();
@@ -176,6 +296,7 @@
   }
 
   function remove(id) {
+    try { var gone = JSON.parse(localStorage.getItem('eaa_qsets_deleted') || '{}') || {}; gone[id] = Date.now(); localStorage.setItem('eaa_qsets_deleted', JSON.stringify(gone)); } catch (e) {}
     return Kit.dbTx(QSTORE, 'readwrite', function (s) { s.delete(id); });
   }
 
@@ -423,7 +544,128 @@
     return { cancel: function () { answered = true; clearInterval(timerId); popKeys(); } };
   }
 
+
+  /* ---------- the shared question picker (same look and the same remembered choice in every game) ---------- */
+  function pickerCss() {
+    if (doc.getElementById('qpick-css')) return;
+    var st = doc.createElement('style'); st.id = 'qpick-css';
+    st.textContent = '.qpick{display:flex;flex-direction:column;align-items:center;gap:7px;max-width:min(980px,96vw);margin:4px auto;font-family:inherit}' +
+      '.qpick .qrow{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center}' +
+      '.qpick .qlab{font-weight:900;color:#2b1d40;background:#fff8ec;padding:6px 12px;border-radius:999px;box-shadow:0 4px 0 #e3d3b4}' +
+      '.qpick button{border:0;border-radius:999px;padding:7px 15px;font:inherit;font-weight:900;font-size:.95rem;cursor:pointer;background:#fff;color:#2b1d40;box-shadow:0 5px 0 #d9c9e6;transition:transform .12s cubic-bezier(.175,.885,.32,1.275)}' +
+      '.qpick button.sm{font-size:.85rem;padding:6px 11px}' +
+      '.qpick button:active{transform:translateY(4px);box-shadow:0 1px 0 #d9c9e6}' +
+      '.qpick button.on{background:#4f9dff;color:#fff;box-shadow:0 5px 0 #2f74c9}' +
+      '.qpick button.unit.on{background:#ffb320;color:#2b1d40;box-shadow:0 5px 0 #c98a0c}' +
+      '.qpick button.tick.on{background:#2fc58a;color:#fff;box-shadow:0 5px 0 #1f9467}' +
+      '.qpick button.go{background:#ff5fa2;color:#fff;box-shadow:0 5px 0 #c93d7d}' +
+      '.qpick .qmix{display:flex;flex-direction:column;gap:6px;align-items:center;background:#fff8ec;border:3px solid #fff;border-radius:22px;padding:10px 12px;box-shadow:0 6px 16px rgba(60,40,90,.18)}' +
+      '.qpick .qnote{font-size:.85rem;font-weight:800;color:#5b4a72}';
+    doc.head.appendChild(st);
+  }
+  function el2(tag, cls, text) { var e = doc.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function shortName(p) {
+    return String(p.name || p.id).replace(/^Grade \d · Unit \d+ · /, '').replace(/^G[34] U(nit)? ?\d+ ?[•·] ?/, '')
+      .replace(/^Units? [\d–-]+ (Mix )?· Grade \d ?/, '').replace(/^Grade \d · /, '').replace(/^\((.*)\)$/, '$1');
+  }
+  function gradeOfPack(p) { var g = String(p.grade || ''); return g === '3' || g === '4' ? g : (/g4|grade 4/i.test(p.id + ' ' + p.name) ? '4' : (/g3|grade 3/i.test(p.id + ' ' + p.name) ? '3' : 'all')); }
+  function groupOfPack(p) {
+    if (p.mine) return 'mine';
+    if (p.mix) return 'mix';
+    if (/mix|u14|units 1/i.test(p.id + ' ' + p.name)) return 'more';
+    var u = String(p.unit || '').replace(/\D/g, '');
+    return u && u !== '0' && u.length === 1 ? u : 'more';
+  }
+  // host: element to put the picker in; onChange(pack) after every choice; opts.quizOnly hides speaking-only packs
+  function picker(host, onChange, opts) {
+    opts = opts || {};
+    pickerCss();
+    var wrap = el2('div', 'qpick'); host.appendChild(wrap);
+    var st = { grade: null, group: null, building: false, mix: { units: [], skills: [], n: 20 } };
+    var list = [], cur = null;
+    function usable(p) { return p && p.items && p.items.length && (!opts.quizOnly || p.items.some(quizable)); }
+    function choose(p, silent) {
+      cur = p; setCurrent(p.id);
+      st.grade = gradeOfPack(p) === 'all' ? (st.grade || '3') : gradeOfPack(p); st.group = groupOfPack(p);
+      draw(); if (!silent && onChange) onChange(p);
+    }
+    function draw() {
+      wrap.innerHTML = '';
+      var grade = st.grade || '3';
+      var inGrade = list.filter(function (p) { var g = gradeOfPack(p); return g === grade || g === 'all' || p.mine; });
+      var groups = []; inGrade.forEach(function (p) { var g = groupOfPack(p); if (groups.indexOf(g) < 0) groups.push(g); });
+      var order = function (g) { return g === 'mine' ? -2 : g === 'mix' ? -1 : g === 'more' ? 99 : +g; };
+      groups.sort(function (a, b) { return order(a) - order(b); });
+      var group = groups.indexOf(st.group) >= 0 ? st.group : groups.filter(function (g) { return /^\d$/.test(g); }).pop() || groups[0];
+      var r1 = el2('div', 'qrow');
+      r1.appendChild(el2('span', 'qlab', '📚 Questions'));
+      ['3', '4'].forEach(function (g) {
+        var b = el2('button', g === grade ? 'on' : '', 'Grade ' + g);
+        b.onclick = function () { st.grade = g; st.group = null; st.building = false; var first = pickDefault(g); if (first) choose(first); else draw(); };
+        r1.appendChild(b);
+      });
+      var r2 = el2('div', 'qrow');
+      groups.forEach(function (g) {
+        var b = el2('button', 'sm unit' + (g === group ? ' on' : ''), g === 'mine' ? '⭐ My sets' : g === 'mix' ? '🎛️ My mixes' : g === 'more' ? 'More' : 'Unit ' + g);
+        b.onclick = function () { st.group = g; st.building = false; var first = inGrade.filter(function (p) { return groupOfPack(p) === g; })[0]; if (first) choose(first); else draw(); };
+        r2.appendChild(b);
+      });
+      var mk = el2('button', 'sm go', st.building ? '✕ Close mix' : '🎛️ Make a mix');
+      mk.onclick = function () { st.building = !st.building; draw(); };
+      r2.appendChild(mk);
+      var r3 = el2('div', 'qrow');
+      inGrade.filter(function (p) { return groupOfPack(p) === group; }).forEach(function (p) {
+        var n = opts.quizOnly ? p.items.filter(quizable).length : p.items.length;
+        var b = el2('button', 'sm' + (cur && p.id === cur.id ? ' on' : ''), shortName(p) + ' · ' + n);
+        b.title = p.name; b.onclick = function () { choose(p); };
+        r3.appendChild(b);
+      });
+      wrap.appendChild(r1); wrap.appendChild(r2);
+      if (st.building) wrap.appendChild(mixBox(grade)); else wrap.appendChild(r3);
+    }
+    function mixBox(grade) {
+      var box = el2('div', 'qmix'), m = st.mix;
+      var units = []; list.forEach(function (p) { var g = gradeOfPack(p), u = groupOfPack(p); if ((g === grade) && /^\d$/.test(u) && units.indexOf(u) < 0) units.push(u); });
+      units.sort();
+      var ru = el2('div', 'qrow'); ru.appendChild(el2('span', 'qnote', 'Units:'));
+      units.forEach(function (u) { var b = el2('button', 'sm tick' + (m.units.indexOf(u) >= 0 ? ' on' : ''), 'Unit ' + u); b.onclick = function () { var i = m.units.indexOf(u); if (i >= 0) m.units.splice(i, 1); else m.units.push(u); m.units.sort(); draw(); }; ru.appendChild(b); });
+      var skills = skillsFor(list, grade, m.units);
+      var rs = el2('div', 'qrow'); rs.appendChild(el2('span', 'qnote', 'Skills:'));
+      Object.keys(skills).sort().forEach(function (k) { var lk = k.toLowerCase(); var b = el2('button', 'sm tick' + (m.skills.indexOf(lk) >= 0 ? ' on' : ''), k + ' · ' + skills[k]); b.onclick = function () { var i = m.skills.indexOf(lk); if (i >= 0) m.skills.splice(i, 1); else m.skills.push(lk); draw(); }; rs.appendChild(b); });
+      var rn = el2('div', 'qrow'); rn.appendChild(el2('span', 'qnote', 'How many:'));
+      [10, 20, 30, 40].forEach(function (n) { var b = el2('button', 'sm tick' + (m.n === n ? ' on' : ''), String(n)); b.onclick = function () { m.n = n; draw(); }; rn.appendChild(b); });
+      var spec = { grade: grade, units: m.units.slice(), skills: m.skills.slice(), n: m.n }, mixPack = buildMix(list, spec);
+      var go = el2('button', 'go', mixPack ? '✓ Use this mix (' + mixPack.items.length + ' questions)' : 'No questions match: pick other units or skills');
+      go.disabled = !mixPack;
+      go.onclick = function () { if (!mixPack) return; saveMix(spec); list = list.filter(function (p) { return p.id !== mixPack.id; }); list.unshift(mixPack); st.building = false; choose(mixPack); };
+      box.appendChild(el2('span', 'qnote', 'Leave units or skills empty to take all of them.'));
+      box.appendChild(ru); box.appendChild(rs); box.appendChild(rn); box.appendChild(go);
+      return box;
+    }
+    function pickDefault(g) {
+      var ups = list.filter(function (p) { return p.unitPack && p.grade === g; });
+      return ups[ups.length - 1] || list.filter(function (p) { return gradeOfPack(p) === g; })[0] || list[0];
+    }
+    all().then(function (packs) {
+      list = packs.filter(usable);
+      var want = current(), hit = list.filter(function (p) { return p.id === want; })[0];
+      if (!hit && /^mix:/.test(want)) { hit = buildMix(list, parseMix(want)); if (hit) list.unshift(hit); }
+      if (!hit) hit = pickDefault('3');
+      if (hit) choose(hit, !!opts.silentFirst); else draw();
+    });
+    return wrap;
+  }
+
   Kit.questions = {
+    picker: picker,
+    current: current,
+    setCurrent: setCurrent,
+    mix: function (spec) { return all().then(function (list) { return buildMix(list, spec); }); },
+    saveMix: saveMix,
+    parseMix: parseMix,
+    mixId: mixId,
+    skillsFor: skillsFor,
+    todayDefault: todayDefault,
     ensureLoaded: ensureLoaded,
     builtIn: builtIn,
     mine: mine,

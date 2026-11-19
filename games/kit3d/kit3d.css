@@ -137,3 +137,15 @@ body.preview .hud { top: 76px; }
 .pnum:nth-child(4n+2) { background: #4f9dff; box-shadow: 0 6px 0 #2c7fd1; } .pnum:nth-child(4n+3) { background: #ffb320; box-shadow: 0 6px 0 #d18a00; } .pnum:nth-child(4n) { background: #2fc58a; box-shadow: 0 6px 0 #1f9a6d; }
 .pnum:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
 .pnum:disabled { visibility: hidden; }
+/* question-set picker on the title screen */
+.setpick { display: flex; flex-direction: column; align-items: center; gap: 6px; max-width: min(980px, 96vw); }
+.setrow { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center; }
+.setlab { font-weight: 900; color: #2b1d40; background: #fff8ec; padding: 6px 12px; border-radius: 999px; box-shadow: 0 4px 0 #e3d3b4; }
+.setbtn { border: 0; border-radius: 999px; padding: 7px 16px; font-family: inherit; font-weight: 900; font-size: 1rem; cursor: pointer; background: #fff; color: #2b1d40; box-shadow: 0 5px 0 #d9c9e6; }
+.setbtn.sm { font-size: .88rem; padding: 6px 12px; }
+.setbtn:active { transform: translateY(4px); box-shadow: 0 1px 0 #d9c9e6; }
+.setbtn.on { background: #4f9dff; color: #fff; box-shadow: 0 5px 0 #2f74c9; }
+.setbtn.unit.on { background: #ffb320; color: #2b1d40; box-shadow: 0 5px 0 #c98a0c; }
+.qtext .qimg { width: 92px; height: 92px; object-fit: contain; border-radius: 16px; background: #fff8ec; flex-shrink: 0; }
+.qtext .qsay { border: 0; border-radius: 999px; width: 46px; height: 46px; font-size: 1.4rem; cursor: pointer; background: #4f9dff; color: #fff; box-shadow: 0 4px 0 #2f74c9; flex-shrink: 0; }
+.qtext .qsay:active { transform: translateY(3px); box-shadow: 0 1px 0 #2f74c9; }

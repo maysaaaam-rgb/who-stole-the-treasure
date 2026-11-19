@@ -1,0 +1,178 @@
+/* Practice Island · bright park look (docs/STYLE_GUIDE.md, 19 Nov 2026)
+   Loaded LAST. Turns the old dark navy HUD, buttons and speech panels into
+   cream/white cards with ink text and team-colour borders, hides the parts that
+   belong to later chapters, and asks phones held upright to turn sideways. */
+
+:root {
+  --bp-cream: #fff8ec;
+  --bp-ink: #2b1d40;
+  --bp-ink-soft: #5b4a72;
+  --bp-pink: #ff5fa2;
+  --bp-blue: #4f9dff;
+  --bp-yellow: #ffb320;
+  --bp-green: #2fc58a;
+  --bp-lip: #e3d3b4;
+  --bp-shadow: 0 6px 16px rgba(60, 40, 90, 0.22);
+}
+
+/* ── Entry card ─────────────────────────────────────────── */
+body.w-page { background: linear-gradient(180deg, #78c4ff 0%, #c8eaff 100%) !important; }
+.isl-topbar { background: rgba(255, 248, 236, 0.92) !important; color: var(--bp-ink) !important; border-color: var(--bp-blue) !important; }
+.isl-topbar * { color: var(--bp-ink); }
+
+#isl-code-entry-card {
+  background: var(--bp-cream) !important;
+  border: 5px solid var(--bp-blue) !important;
+  box-shadow: 0 14px 34px rgba(43, 29, 64, 0.25) !important;
+  color: var(--bp-ink) !important;
+}
+#isl-code-entry-card h1 { color: var(--bp-ink) !important; }
+#isl-code-entry-card p, #isl-code-entry-card .bp-small { color: var(--bp-ink-soft) !important; }
+#isl-code-entry-card input {
+  background: #fff !important; color: var(--bp-ink) !important;
+  border: 3px solid var(--bp-blue) !important;
+}
+#isl-code-entry-card input::placeholder { color: #a99bbd; }
+#isl-code-entry-card img { filter: drop-shadow(0 6px 8px rgba(43, 29, 64, 0.25)) !important; }
+#isl-code-entry-card .isl-btn.ghost { background: #fff !important; color: var(--bp-ink) !important; border-color: var(--bp-lip) !important; }
+.bp-practice { margin-top: 16px; padding-top: 14px; border-top: 2px dashed var(--bp-lip); }
+.bp-practice summary { cursor: pointer; font-weight: 800; color: var(--bp-ink-soft); list-style: none; }
+.bp-practice summary::-webkit-details-marker { display: none; }
+.bp-practice[open] summary { margin-bottom: 12px; }
+
+#w-load { background: linear-gradient(180deg, #78c4ff, #c8eaff) !important; color: var(--bp-ink) !important; }
+.rg-loading-card { background: var(--bp-cream) !important; color: var(--bp-ink) !important; border: 4px solid var(--bp-blue) !important; box-shadow: var(--bp-shadow) !important; }
+
+/* ── In-world HUD ───────────────────────────────────────── */
+.uf-btn, .uf-coin-pill, .uf-center-strip, .rg-quest, .rg-minimap, .rg-run, .hb-btn, .hb-dots {
+  background: var(--bp-cream) !important;
+  color: var(--bp-ink) !important;
+  border: 3px solid #fff !important;
+  border-bottom: 5px solid var(--bp-lip) !important;
+  box-shadow: var(--bp-shadow) !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+.uf-btn.cyan   { background: var(--bp-blue) !important;   color: #fff !important; border-bottom-color: #2f74c9 !important; }
+.uf-btn.coral  { background: var(--bp-pink) !important;   color: #fff !important; border-bottom-color: #c93d7d !important; }
+.uf-btn.amber  { background: var(--bp-yellow) !important; color: var(--bp-ink) !important; border-bottom-color: #c98a0c !important; }
+.uf-btn.emerald{ background: var(--bp-green) !important;  color: #fff !important; border-bottom-color: #1f9467 !important; }
+.uf-btn.violet { background: #9b7bff !important;          color: #fff !important; border-bottom-color: #6f52d6 !important; }
+.uf-btn:active, .rg-run:active, .rg-quest:active, .hb-btn:active { border-bottom-width: 2px !important; }
+
+.uf-ch-title b { color: var(--bp-ink) !important; }
+.uf-ch-title small { color: var(--bp-ink-soft) !important; }
+.uf-stamp-slot { background: #fff !important; color: var(--bp-ink) !important; border: 2px solid var(--bp-lip) !important; border-bottom-width: 4px !important; }
+.uf-stamp-slot.next { border-color: var(--bp-yellow) !important; color: var(--bp-ink) !important; }
+.uf-stamp-slot.done { background: radial-gradient(circle at 35% 30%, #ffe27a, var(--bp-yellow)) !important; border-color: #fff !important; }
+.uf-grade-pill { color: var(--bp-ink) !important; }
+.uf-grade-switch { background: var(--bp-cream) !important; border-color: #fff !important; }
+
+.rg-quest { color: var(--bp-ink) !important; border-color: var(--bp-yellow) !important; border-bottom-color: #c98a0c !important; }
+.rg-mm-title { color: var(--bp-ink) !important; }
+.rg-minimap * { color: var(--bp-ink); }
+.rg-run { color: var(--bp-ink) !important; }
+
+.rg-talk, .rg-tip {
+  background: var(--bp-cream) !important;
+  color: var(--bp-ink) !important;
+  border: 4px solid var(--bp-blue) !important;
+  border-bottom-width: 6px !important;
+  box-shadow: var(--bp-shadow) !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+.rg-talk-body b { color: #c93d7d !important; }
+.rg-talk-body p { color: var(--bp-ink) !important; }
+
+/* ── Stop scenes: speech bubbles and answer cards ───────── */
+.s1-jimsay, .s1-say {
+  background: #fff !important;
+  color: var(--bp-ink) !important;
+  border: 3px solid var(--bp-yellow) !important;
+  border-bottom: 6px solid #c98a0c !important;
+  box-shadow: var(--bp-shadow) !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+.s1-jimsay::after { border-top-color: #c98a0c !important; }
+.s1-say { border-color: var(--bp-blue) !important; border-bottom-color: #2f74c9 !important; }
+
+.s1-choice {
+  background: #fff !important;
+  color: var(--bp-ink) !important;
+  border: 3px solid var(--bp-blue) !important;
+  border-bottom: 6px solid #2f74c9 !important;
+  box-shadow: var(--bp-shadow) !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+.s1-choice .k-cimg { background: var(--bp-cream) !important; }
+.s1-choice:hover { border-color: var(--bp-yellow) !important; }
+.s1-choice.ok { background: #e3fbef !important; border-color: var(--bp-green) !important; border-bottom-color: #1f9467 !important; color: #0f5c3f !important; box-shadow: 0 0 24px rgba(47, 197, 138, 0.6) !important; }
+.s1-choice.no { background: #fff4f8 !important; border-color: var(--bp-pink) !important; border-bottom-color: #c93d7d !important; color: var(--bp-ink) !important; }
+.hb-dots i { background: #e9dcc7 !important; }
+.hb-dots i.now { background: var(--bp-yellow) !important; }
+.hb-dots i.got { background: var(--bp-green) !important; }
+
+/* ── Chapter 1 homework: hide what belongs to later chapters ── */
+body.w-page .uf-coin-pill,
+body.w-page [data-uf-act="store"],
+body.w-page [data-uf-act="look"],
+body.w-page [data-uf-act="games"],
+body.w-page #w-sports,
+body.w-page #w-dress { display: none !important; }
+
+/* ── Phones held upright: ask to turn sideways ──────────── */
+#bp-turn { display: none; }
+@media (orientation: portrait) and (max-width: 600px) {
+  body.w-page:has(#rg-root) #bp-turn {
+    display: flex; position: fixed; inset: 0; z-index: 99999;
+    flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    background: linear-gradient(180deg, #78c4ff 0%, #c8eaff 100%);
+    color: var(--bp-ink); text-align: center; padding: 24px;
+    font: 800 1.45rem 'Fredoka', 'Nunito', sans-serif;
+  }
+  #bp-turn img { width: 130px; height: auto; filter: drop-shadow(0 8px 10px rgba(43, 29, 64, 0.25)); }
+  #bp-turn .bp-phone { font-size: 3.2rem; animation: bpTurn 1.8s ease-in-out infinite; }
+  #bp-turn small { font: 700 1rem 'Nunito', sans-serif; color: var(--bp-ink-soft); }
+}
+@keyframes bpTurn { 0%, 30% { transform: rotate(0); } 60%, 100% { transform: rotate(-90deg); } }
+@media (prefers-reduced-motion: reduce) { #bp-turn .bp-phone { animation: none; } }
+
+/* Dock behind the bottom buttons, and the old title strip above the entry card */
+.uf-bottom-dock {
+  background: rgba(255, 248, 236, 0.9) !important;
+  border: 3px solid #fff !important;
+  border-bottom: 5px solid var(--bp-lip) !important;
+  box-shadow: var(--bp-shadow) !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+body.w-page .isl-topbar { display: none !important; }
+
+/* Stop-specific cards (stop 2 photo cards, stop 3 word chips, stop 4 counting card, stop 5 locks, finds pill, stamp tray) */
+.s2-photo {
+  background: #fff !important; color: var(--bp-ink) !important;
+  border: 3px solid var(--bp-blue) !important; border-bottom: 6px solid #2f74c9 !important;
+  box-shadow: var(--bp-shadow) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+.s2-photo img { background: var(--bp-cream) !important; }
+.s2-photo .s2-cap, .s2-photo > span { color: var(--bp-ink) !important; }
+.s3-month { background: #fff !important; color: var(--bp-ink) !important; border-color: var(--bp-yellow) !important; box-shadow: 0 5px 0 #c98a0c, 0 8px 14px rgba(43, 29, 64, 0.25) !important; }
+.s4-count { background: rgba(255, 248, 236, 0.92) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; box-shadow: var(--bp-shadow) !important; }
+.s4-row b { color: #c93d7d !important; }
+.s5-lock, .s5-dial { background: var(--bp-cream) !important; color: var(--bp-ink) !important; border: 3px solid #fff !important; box-shadow: var(--bp-shadow) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+.hb-finds, .hb-stamps { background: var(--bp-cream) !important; color: var(--bp-ink) !important; border-color: #fff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+
+/* Chapter 1 finale (chest) and the Star-mode clue card */
+.ch1-finale-overlay { background: radial-gradient(circle at 50% 35%, rgba(255, 220, 140, 0.92) 0%, rgba(120, 196, 255, 0.95) 100%) !important; }
+.ch1-finale-card, .ch1-modal-card, .ch1-victory-card {
+  background: var(--bp-cream) !important; color: var(--bp-ink) !important;
+  border: 5px solid var(--bp-yellow) !important; border-bottom-width: 8px !important;
+  box-shadow: 0 16px 36px rgba(43, 29, 64, 0.3) !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+.ch1-finale-title, .ch1-modal-title, .ch1-victory-title { color: var(--bp-ink) !important; text-shadow: none !important; }
+.ch1-finale-msg, .ch1-victory-sub, .ch1-npc-line { color: var(--bp-ink-soft) !important; }
+.ch1-finale-badge, .ch1-finale-badgeamber { background: #fff3d4 !important; color: #8a5a00 !important; border-color: var(--bp-yellow) !important; }
+.ch1-loot-item { background: #fff !important; color: var(--bp-ink) !important; border: 3px solid var(--bp-lip) !important; }
+.ch1-loot-item * { color: var(--bp-ink) !important; }
+.ch1-loot-item.highlight { border-color: var(--bp-yellow) !important; }
+.ch1-silver-bubble, .ch1-npc-speech { background: #fff !important; color: var(--bp-ink) !important; border-color: var(--bp-yellow) !important; }
+.ch1-modal-header { background: transparent !important; }
