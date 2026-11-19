@@ -9,7 +9,8 @@
   function jsq(s) { return esc(String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'")); }
 
   var PLACES = [
-    { id: 'today', icon: '▶️', label: 'Today', tip: 'Your lessons today with one-tap buttons', views: ['today', 'dashboard'] },
+    { id: 'home', icon: '🏝️', label: 'Island', tip: '3D Adventure Island front door: tap the castle, theatre, market, stadium or library tower', views: ['home'] },
+    { id: 'today', icon: '🏰', label: 'Today', tip: 'Your lessons today with one-tap buttons', views: ['today', 'dashboard'] },
     { id: 'board', icon: '📺', label: 'Class Board', tip: 'Points, timer and picker', views: ['board', 'classview', 'rewards'] },
     { id: 'shop', icon: '🛍️', label: 'Shop', tip: 'Avatar items with try-on, mystery boxes and real prizes', views: ['store-pupil', 'closet', 'monster'] },
     { id: 'library', icon: '📖', label: 'Library', tip: 'Lessons, games, Game Maker and lesson plans', views: ['library', 'curriculum', 'shelf'] },
@@ -40,7 +41,9 @@
   function go(act, arg) {
     if (root.closeMobileSidebar) root.closeMobileSidebar();
     switch (act) {
+      case 'home': sw('home'); return;
       case 'shop': sw('store-pupil'); return;
+      case 'games': openUrl('games/index.html'); return;
       case 'island': openUrl('island/index.html?demo=1'); return;
       case 'gm': if (root.openGameMaker) root.openGameMaker(arg ? { setId: arg } : {}); else openUrl('game-maker/index.html'); return;
       case 'plans': sw('library'); setTimeout(function () { if (root.LibraryShelf && root.LibraryShelf.openTab) root.LibraryShelf.openTab('plans'); }, 60); return;
@@ -80,8 +83,8 @@
     return html;
   }
   /* the picture rail used in Class Mode */
-  var RAIL_ART = { today: 'm_home', board: 'm_scoreboard', shop: 'r_chest', library: 'm_lesson', tools: 'm_pick', calendar: 'h_calendar', more: 'm_teacher_key' };
-  var RAIL_C = { today: '#22c55e', board: '#6E56CF', shop: '#10b981', library: '#0ea5e9', tools: '#ec4899', calendar: '#f59e0b', more: '#64748b' };
+  var RAIL_ART = { home: 'm_home', today: 'h_calendar', board: 'm_scoreboard', shop: 'r_chest', library: 'm_lesson', tools: 'm_pick', calendar: 'h_week_path', more: 'm_teacher_key' };
+  var RAIL_C = { home: '#2fc58a', today: '#9b7bff', board: '#ff5fa2', shop: '#ffb320', library: '#4f9dff', tools: '#ec4899', calendar: '#f59e0b', more: '#64748b' };
   function railHtml(view) {
     var cur = placeOf(view);
     return '<nav class="cm-rail" aria-label="Class menu">' + PLACES.map(function (p) {
@@ -143,6 +146,8 @@
     '.pn-search-btn:hover{border-color:#6E56CF}.pn-search-btn:active{transform:translateY(3px);border-bottom-width:1px}' +
     '.pn-search-btn kbd{margin-left:auto;font:700 .7rem system-ui;opacity:.7;border:1px solid currentColor;border-radius:6px;padding:1px 5px}.nav-link-btn.pn-sub{padding-left:30px!important;font-size:.86em;opacity:.92}' +
     '.app-sidebar.is-collapsed .pn-search-btn kbd,.app-sidebar.is-collapsed .pn-search-btn .nav-label{display:none}' +
+    'body:has(#app-view-container[data-view="home"]){overflow:hidden!important}' +
+    'body:has(#app-view-container[data-view="home"]) .app-header,body:has(#app-view-container[data-view="home"]) .app-sidebar{display:none!important}' +
     '';
   (function () { try { var st = document.createElement('style'); st.id = 'pn-side-css'; st.textContent = SIDE_CSS; document.head.appendChild(st); } catch (e) { /* optional */ } })();
   function card(inner, cls) { return '<div class="pn-card' + (cls ? ' ' + cls : '') + '">' + inner + '</div>'; }
@@ -220,6 +225,7 @@
     var hello = now.getHours() < 12 ? 'Good morning' : now.getHours() < 17 ? 'Good afternoon' : 'Good evening';
     var sub = finished ? 'Today’s lessons are done. Here is ' + dayName(day) + '.' : tries ? 'No lessons today. Here is ' + dayName(day) + '.' : dayName(now) + ', ' + timed.length + (timed.length === 1 ? ' lesson' : ' lessons');
     var html = CSS + '<div class="pn"><div class="pn-top"><div><h1>' + esc(hello) + '</h1><div class="sub">' + esc(sub) + '</div></div>' +
+      '<button type="button" class="pn-a s p" onclick="PlatformNav.go(\'home\')">🏝️ 3D Island</button>' +
       '<button type="button" class="pn-a s" onclick="PlatformNav.search()">🔍 Search</button>' +
       '<button type="button" class="pn-a s" onclick="PlatformNav.go(\'url\',\'lesson-plans/Week-9-13-November-Order.html\')">📋 Week 9 K12 Sheet</button>' +
       '<button type="button" class="pn-a s" onclick="PlatformNav.go(\'calendar\')">📅 Whole week</button></div>';
@@ -250,6 +256,7 @@
       birthdaysOn(day).map(function (e) { return '<div class="pn-note">🎂 ' + esc(e.title) + '</div>'; }).join('') + '</div>';
     }
     html += '<h2 class="pn-sec">Open</h2><div class="pn-tiles sm">' +
+      tile('m_home.webp', '3D Island', 'Castle, theatre, market, games', "PlatformNav.go('home')") +
       tile('m_scoreboard.webp', 'Class Board', 'Points, timer, shop', "PlatformNav.go('board')") +
       tile('m_lesson.webp', 'Library', 'Lessons and games', "PlatformNav.go('library')") +
       tile('h_pencil.webp', 'Smart Board', 'Write, cards, pictures', "PlatformNav.go('smartboard')") +
@@ -257,6 +264,26 @@
       tile('m_games.webp', 'Game Maker', 'A game from any words', "PlatformNav.go('gm')") +
       '</div></div>';
     c.innerHTML = html;
+  }
+
+  /* ---------------------------------------------------------------- 3D Island Home (Front Door) */
+  function renderHome(c) {
+    var existing = c.querySelector('#pn-home3d-frame');
+    if (existing) {
+      try {
+        if (existing.contentWindow && existing.contentWindow.__home3d && existing.contentWindow.__home3d.refreshGoal) {
+          existing.contentWindow.__home3d.refreshGoal();
+        }
+      } catch (e) {}
+      return;
+    }
+    c.innerHTML =
+      '<div class="pn-home3d-wrap" style="position:fixed;inset:0;z-index:2000;background:#78c4ff">' +
+        '<iframe id="pn-home3d-frame" class="pn-home3d-frame" src="home3d/index.html?v=8" title="Adventure Island · English Adventure Academy 3D Front Door" allow="autoplay; fullscreen" style="width:100%;height:100%;border:0;display:block"></iframe>' +
+        '<div class="sr-only" aria-hidden="false" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">' +
+          'English Adventure Academy 3D Island Front Door — Tap the Castle for Today, the Theatre for Class Board, the Market for Shop, the Stadium for Games, or the Library Tower for Library.' +
+        '</div>' +
+      '</div>';
   }
 
   /* ---------------------------------------------------------------- Board & Book */
@@ -426,7 +453,7 @@
     arMove: function (id, back) { var LC = root.LibraryCurate; if (!LC) return; if (back) LC.bringBack(id); else LC.sendToArchive(id); if (root.showNotification) root.showNotification(back ? 'It is back in the Library.' : 'Moved to Old lessons.'); var c = document.getElementById('app-view-container'); if (c) renderLessonArchive(c); }
   };
   root.PlatformNav = api;
-  root.PlatformViews = { today: renderToday, tools: renderTools, more: renderMore, 'lesson-archive': renderLessonArchive,
+  root.PlatformViews = { home: renderHome, today: renderToday, tools: renderTools, more: renderMore, 'lesson-archive': renderLessonArchive,
     'store-pupil': function (c) { if (root.renderPupilShopView) root.renderPupilShopView(c); else c.innerHTML = '<div style="padding:40px;text-align:center">The shop is not loaded.</div>'; },
     'store-teacher': function (c) { if (root.renderClassroomStoreView) root.renderClassroomStoreView(c); else c.innerHTML = '<div style="padding:40px;text-align:center">The store is not loaded.</div>'; } };
 })(typeof window !== 'undefined' ? window : this);

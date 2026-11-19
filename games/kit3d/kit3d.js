@@ -53,7 +53,7 @@
     K.scene = new T3.Scene();
     K.scene.fog = new T3.Fog(opts.fog || 0xcdeaff, opts.fogNear || 45, opts.fogFar || 120);
     K.camera = new T3.PerspectiveCamera(opts.fov || 42, 16 / 9, .1, 400);
-    function resize() { var w = innerWidth, h = innerHeight; r.setSize(w, h, false); K.camera.aspect = w / h; K.camera.updateProjectionMatrix(); }
+    function resize() { var w = Math.max(2, innerWidth || 1280), h = Math.max(2, innerHeight || 720); r.setSize(w, h, false); K.camera.aspect = w / h; K.camera.updateProjectionMatrix(); }
     addEventListener('resize', resize); resize();
     if (Q.has('preview')) document.body.classList.add('preview');
     return K;
