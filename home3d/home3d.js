@@ -694,7 +694,9 @@
       var b = K.el('span', 'h3-team', '<img src="' + ROOT + 'monster-evolution/assets/' + t.mon + '_stage_baby.webp" alt="">' + t.name);
       b.style.setProperty('--c', t.c); teams.appendChild(b);
     });
-    var quick = K.ui.add(K.el('div', 'h3-quick'));
+    // Bottom quick bar removed: the 3D buildings are the buttons (add ?bar=1 to bring it back).
+    var quick = K.el('div', 'h3-quick');
+    if (/[?&]bar=1/.test(location.search)) K.ui.add(quick);
     [['🏰', 'Today', 'today', '#9b7bff'], ['🏛️', 'Class Board', 'board', '#ff5fa2'], ['🛍️', 'Shop', 'shop', '#ffb320'], ['🎮', 'Games', 'games', '#2fc58a'], ['📚', 'Library', 'library', '#4f9dff']].forEach(function (q) {
       var b = K.el('button', 'h3-q', '<i>' + q[0] + '</i><span>' + q[1] + '</span>'); b.style.setProperty('--c', q[3]);
       b.onclick = function () { var p = places.filter(function (x) { return x.id === q[2]; })[0]; if (p) go(p, true); };
