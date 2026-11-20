@@ -109,7 +109,7 @@
     var ctx = null, master = null;
     var waveGain = null, windGain = null, rainGain = null;
     var noiseBuf = null;
-    var nextBird = 2.0, nextNote = 1.0, noteIdx = 0;
+    var nextBird = 18.0 + Math.random() * 14.0, nextNote = 1.0, noteIdx = 0;
     var PENT = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5];
 
     function ensure() {
@@ -125,8 +125,8 @@
         master.gain.value = soundMuted ? 0 : 0.22;
         master.connect(ctx.destination);
 
-        // Shared 3s pink-ish noise buffer
-        var len = ctx.sampleRate * 3;
+        // Shared 10s smooth pink-ish noise buffer (no short repetitive seam)
+        var len = ctx.sampleRate * 10;
         noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
         var d = noiseBuf.getChannelData(0), b0 = 0, b1 = 0, b2 = 0;
         for (var i = 0; i < len; i++) {
@@ -196,20 +196,20 @@
 
       if (soundMuted) return;
 
-      // Soft birdsong in calm / returning
+      // Occasional distant birdsong in calm / returning (every 22–48s, never repetitive)
       if (curState === 'calm' || curState === 'returning') {
         nextBird -= dt;
         if (nextBird <= 0) {
-          nextBird = 2.6 + Math.random() * 4.2;
+          nextBird = 22 + Math.random() * 26;
           playBirdChirp();
         }
       }
-      // Gentle pentatonic ukulele/marimba melody in returning (and softly in calm)
-      if (curState === 'returning' || curState === 'calm') {
+      // Gentle pentatonic chime ONLY while returning from loud -> calm (no nonstop plinking in calm)
+      if (curState === 'returning') {
         nextNote -= dt;
         if (nextNote <= 0) {
-          nextNote = curState === 'returning' ? (0.75 + Math.random() * 0.45) : (2.4 + Math.random() * 2.2);
-          playSoftPluck(PENT[noteIdx % PENT.length], curState === 'returning' ? 0.11 : 0.045);
+          nextNote = 1.1 + Math.random() * 0.7;
+          playSoftPluck(PENT[noteIdx % PENT.length], 0.09);
           noteIdx += 1 + ((Math.random() * 2) | 0);
         }
       }

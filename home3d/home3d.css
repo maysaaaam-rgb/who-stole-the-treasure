@@ -1,4 +1,4 @@
-/* Adventure Island home — matches docs/design/home-world.jpg (bright park look, docs/STYLE_GUIDE.md) */
+/* Adventure Island home — calm smooth coastal look (bright park look, docs/STYLE_GUIDE.md) */
 .h3-clouds { position: fixed; inset: 0; pointer-events: none;
   background:
     radial-gradient(ellipse 150px 90px at 3% 6%, #fff 60%, transparent 62%),
@@ -11,7 +11,7 @@
   filter: drop-shadow(0 6px 10px rgba(80,140,200,.25)); opacity: .96; }
 .h3-title { position: fixed; top: 16px; left: 16px; padding: 10px 22px; border-radius: 999px; background: #fffdf7; color: #2b1d40;
   font: 800 1.3rem 'Trebuchet MS', sans-serif; box-shadow: 0 6px 14px rgba(0,0,0,.14); }
-.h3-goal { position: fixed; top: 70px; left: 16px; display: flex; align-items: center; gap: 10px; padding: 7px 16px; border-radius: 999px; background: #fffdf7;
+.h3-goal { position: fixed; top: 16px; left: 16px; display: flex; align-items: center; gap: 10px; padding: 7px 16px; border-radius: 999px; background: #fffdf7;
   color: #2b1d40; font: 800 .95rem 'Trebuchet MS', sans-serif; box-shadow: 0 6px 14px rgba(0,0,0,.12); }
 .h3-goal .bar { width: 130px; height: 12px; border-radius: 99px; background: #ffe7b8; overflow: hidden; }
 .h3-goal .bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #ffd84a, #ffb320); }
@@ -26,8 +26,32 @@
   border-bottom: 5px solid color-mix(in srgb, var(--c) 70%, #000); box-shadow: 0 4px 8px rgba(0,0,0,.15); transition: transform .25s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .h3-q:hover i { transform: translateY(-3px); }
 .h3-q:active i { transform: translateY(4px); border-bottom-width: 1px; }
-@media (max-width: 1100px) { .h3-teams { top: 74px; right: 16px; } .h3-goal { top: 70px; } .h3-team { font-size: .9rem; } .h3-team img { width: 30px; height: 30px; } }
+@media (max-width: 1100px) { .h3-teams { top: 74px; right: 16px; } .h3-goal { top: 16px; } .h3-team { font-size: .9rem; } .h3-team img { width: 30px; height: 30px; } }
 @media (max-width: 760px) { .h3-teams { top: 120px; } .h3-q i { width: 44px; height: 44px; font-size: 1.3rem; } .h3-quick { gap: 10px; padding: 8px 14px 6px; } }
 .h3-cloudcv { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; animation: h3drift 14s ease-in-out infinite alternate; }
 @keyframes h3drift { from { transform: translateX(-6px); } to { transform: translateX(6px); } }
 @media (prefers-reduced-motion: reduce) { .h3-cloudcv { animation: none; } }
+
+/* Tactile 3D Zoom & Pan Controls (bottom-right) */
+.h3-zoom-bar {
+  position: fixed; right: 16px; bottom: 16px; z-index: 40;
+  display: flex; align-items: center; gap: 6px; padding: 6px 8px;
+  border-radius: 999px; background: #fffdf7;
+  border: 4px solid #4f9dff; box-shadow: 0 8px 20px rgba(43,29,64,.18);
+  pointer-events: auto;
+}
+.h3-zbtn {
+  display: grid; place-items: center; width: 42px; height: 42px;
+  border-radius: 50%; border: 0; cursor: pointer;
+  font: 900 1.25rem 'Nunito', 'Trebuchet MS', sans-serif; color: #fff;
+  background: #4f9dff; border-bottom: 5px solid #2d76d4;
+  transition: transform .15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.h3-zbtn.h3-zin { background: #2fc58a; border-bottom-color: #1e9666; }
+.h3-zbtn.h3-zreset { background: #ffb320; border-bottom-color: #c98200; font-size: 1.15rem; }
+.h3-zbtn:hover { transform: translateY(-2px); }
+.h3-zbtn:active { transform: translateY(3px); border-bottom-width: 2px; }
+.h3-zpct {
+  min-width: 48px; text-align: center;
+  font: 900 .9rem 'Nunito', 'Trebuchet MS', sans-serif; color: #2b1d40;
+}
