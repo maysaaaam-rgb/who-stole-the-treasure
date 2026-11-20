@@ -27,7 +27,8 @@
 
   /* ---------------- sky, light, sea ---------------- */
   K.world.sky(0x5ab8ff, 0xaee0ff, 0xe8f8ff);
-  scene.add(new T3.HemisphereLight(0xeaf6ff, 0x9ad08a, .3));
+  var hemiLight = new T3.HemisphereLight(0xeaf6ff, 0x9ad08a, .3);
+  scene.add(hemiLight);
   var sun = new T3.DirectionalLight(0xfff0d8, 2.4);
   sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);   // sharp enough: the shadow camera is fitted to the island after loading
   sun.shadow.bias = -.0004; sun.shadow.normalBias = .03;
@@ -37,17 +38,18 @@
   // Sea: sunny cartoon adventure-park water matching docs/design/home-world.jpg:
   // exact analytical distance to every island's coastline (no spiky polygon rings),
   // creamy breathing shore foam, warm aqua shallows, bright tropical turquoise water, and soft painterly swells.
-  var seaU = { uT: { value: 0 }, uIsl: { value: [] }, uIslW: { value: [] }, uN: { value: 0 } };
+  var seaU = { uT: { value: 0 }, uStorm: { value: 0 }, uIsl: { value: [] }, uIslW: { value: [] }, uN: { value: 0 } };
   for (var si = 0; si < 10; si++) {
     seaU.uIsl.value.push(new T3.Vector4(0, 0, 1, 1));
     seaU.uIslW.value.push(new T3.Vector4(0, 0, 0, 0));
   }
+  var seaMesh = null;
   (function sea() {
     var m = new T3.Mesh(new T3.PlaneGeometry(900, 900, 1, 1), new T3.ShaderMaterial({
       uniforms: seaU,
       vertexShader: 'varying vec2 vW; void main(){ vec4 w = modelMatrix * vec4(position,1.0); vW = w.xz; gl_Position = projectionMatrix * viewMatrix * w; }',
       fragmentShader: [
-        'uniform float uT; uniform vec4 uIsl[10]; uniform vec4 uIslW[10]; uniform int uN; varying vec2 vW;',
+        'uniform float uT; uniform float uStorm; uniform vec4 uIsl[10]; uniform vec4 uIslW[10]; uniform int uN; varying vec2 vW;',
         'float h(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }',
         'float n(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(h(i),h(i+vec2(1,0)),f.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x), f.y); }',
         'float fbm(vec2 p){ return n(p) * 0.65 + n(p * 2.1 + 17.3) * 0.35; }',
@@ -67,38 +69,45 @@
         '    dist = (k == 0) ? di : smin(dist, di, 2.2);',
         '  }',
         '  dist = max(dist, 0.0);',
-        // Soft painterly water palette matching docs/design/home-world.jpg
+        '  float st = clamp(uStorm, 0.0, 1.0);',
+        // Soft painterly water palette matching docs/design/home-world.jpg, darkening with uStorm
         '  vec3 shal = mix(vec3(0.45, 0.89, 0.85), vec3(0.68, 0.92, 0.82), sandNear * 0.65);',
-        '  vec3 turq = vec3(0.24, 0.75, 0.85);',
-        '  vec3 mid  = vec3(0.17, 0.66, 0.79);',
-        '  vec3 deep = vec3(0.14, 0.58, 0.74);',
+        '  vec3 turq = mix(vec3(0.24, 0.75, 0.85), vec3(0.14, 0.33, 0.46), st);',
+        '  vec3 mid  = mix(vec3(0.17, 0.66, 0.79), vec3(0.10, 0.24, 0.36), st);',
+        '  vec3 deep = mix(vec3(0.14, 0.58, 0.74), vec3(0.07, 0.17, 0.28), st);',
+        '  shal = mix(shal, vec3(0.26, 0.46, 0.54), st * 0.75);',
         '  vec3 c = mix(shal, turq, smoothstep(0.0, 4.8, dist));',
         '  c = mix(c, mid,  smoothstep(4.0, 18.0, dist));',
         '  c = mix(c, deep, smoothstep(16.0, 62.0, dist));',
-        // Broad, calm horizontal water swells (stretched along X like the painting)
-        '  vec2 sp = vec2(vW.x * 0.038 + uT * 0.025, vW.y * 0.11 - uT * 0.035);',
+        // Broad horizontal swells — faster and stronger as uStorm rises
+        '  float spd = 1.0 + st * 2.4;',
+        '  vec2 sp = vec2(vW.x * (0.038 + st * 0.02) + uT * 0.025 * spd, vW.y * (0.11 + st * 0.06) - uT * 0.035 * spd);',
         '  float swell = fbm(sp);',
-        '  c += vec3(0.05, 0.08, 0.08) * (swell - 0.5);',
-        // Soft sunlit horizontal wave ribbons
-        '  float rib = fbm(vec2(vW.x * 0.08 - uT * 0.04, vW.y * 0.26 + sin(vW.x * 0.07) * 0.25));',
+        '  c += vec3(0.05 + st * 0.09, 0.08 + st * 0.09, 0.08 + st * 0.1) * (swell - 0.5);',
+        // Soft sunlit horizontal wave ribbons + stormy whitecaps when uStorm > 0.35
+        '  float rib = fbm(vec2(vW.x * 0.08 - uT * 0.04 * spd, vW.y * 0.26 + sin(vW.x * 0.07 + uT * st) * 0.25));',
         '  float streak = smoothstep(0.64, 0.78, rib) * (1.0 - smoothstep(18.0, 85.0, dist));',
-        '  c = mix(c, vec3(0.56, 0.90, 0.94), streak * 0.16);',
-        // Gentle breathing shoreline foam & second coastal ripple ring
-        '  float wave = sin(uT * 1.35 + vW.x * 0.22 + vW.y * 0.18) * 0.22;',
+        '  c = mix(c, vec3(0.56, 0.90, 0.94), streak * 0.16 * (1.0 - st * 0.6));',
+        '  float wcap = smoothstep(0.66 - st * 0.12, 0.78 - st * 0.10, rib) * smoothstep(0.32, 0.95, st);',
+        '  c = mix(c, vec3(0.88, 0.94, 0.98), wcap * 0.58);',
+        // Breathing shoreline foam & second coastal ripple ring
+        '  float wave = sin(uT * (1.35 + st * 1.9) + vW.x * 0.22 + vW.y * 0.18) * (0.22 + st * 0.34);',
         '  float dW = dist + wave;',
-        '  float foam1 = 1.0 - smoothstep(0.15, 1.15, dW);',
+        '  float foam1 = 1.0 - smoothstep(0.15, 1.15 + st * 0.6, dW);',
         '  float foam2 = smoothstep(1.45, 2.0, dW) * (1.0 - smoothstep(2.0, 2.65, dW));',
-        '  c = mix(c, vec3(0.91, 0.99, 0.98), foam1 * 0.72);',
+        '  c = mix(c, vec3(0.91, 0.99, 0.98), foam1 * (0.72 + st * 0.18));',
         '  c = mix(c, vec3(0.76, 0.96, 0.95), foam2 * 0.28);',
-        // Soft distance horizon blend
+        // Soft distance horizon blend (turns stormy grey-blue with uStorm)
         '  float farHaze = smoothstep(75.0, 210.0, length(vW));',
-        '  c = mix(c, vec3(0.68, 0.89, 0.98), farHaze * 0.65);',
+        '  vec3 hazeCol = mix(vec3(0.68, 0.89, 0.98), vec3(0.36, 0.44, 0.54), st);',
+        '  c = mix(c, hazeCol, farHaze * 0.65);',
         '  gl_FragColor = vec4(c, 1.0);',
         '  #include <colorspace_fragment>',
         '}'
       ].join('\n')
     }));
     m.rotation.x = -Math.PI / 2; m.position.y = -1.6; scene.add(m);
+    seaMesh = m;
     K.onFrame(function (dt, tt) { seaU.uT.value = tt; });
   })();
 
@@ -182,6 +191,7 @@
       SPOTS.forEach(function (sp, i) { cloud(c, sp[0] * W, sp[1] * H, sp[2] * base * .48, i + 1, W, H, d); });
     }
     draw(); addEventListener('resize', draw);
+    window.__home3dCloudCv = cv;
   })();
 
   /* ---------------- islands: blobs with grassy tops and earth cliffs ---------------- */
@@ -352,7 +362,7 @@
       c.fillStyle = '#fffdf7'; K.roundRect(c, 10, 8, W - 20, H - 26, 44); c.fill();
       c.shadowColor = 'transparent'; c.fillStyle = '#2b1d40'; c.font = '800 52px "Trebuchet MS", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(text, W / 2, H / 2 - 5);
     });
-    var s = new T3.Sprite(new T3.SpriteMaterial({ map: t, depthTest: false })); s.renderOrder = 6;
+    var s = new T3.Sprite(new T3.SpriteMaterial({ map: t, depthTest: false, transparent: true, opacity: 0 })); s.renderOrder = 6;
     var k = 3.3; s.scale.set(w / 120 * k, k, 1); s.userData.sx = s.scale.x; s.userData.sy = s.scale.y; return s;
   }
   function flag(color, x, y, z, parent) {
@@ -578,16 +588,25 @@
   K.onFrame(function (dt, t) {
     places.forEach(function (p, i) {
       p.hot = K.lerp(p.hot, p === hover ? 1 : 0, dt * 8);
+      // Names appear only on hover / tap (and for the first few seconds, or always with ?names=1).
+      var intro = SHOW_NAMES ? 1 : Math.max(0, Math.min(1, 4.5 - (performance.now() - NAMES_T0) / 1000));
+      p.sign.material.opacity = Math.max(p.hot, intro);
       p.sign.position.y = p.y0 + Math.sin(t * 1.5 + i) * .15 + p.hot * .4;
       var s = 1 + p.hot * .15; p.sign.scale.set(p.sign.userData.sx * s, p.sign.userData.sy * s, 1);
     });
   });
+  var SHOW_NAMES = /[?&]names=1/.test(location.search), NAMES_T0 = performance.now();
   var ray = new T3.Raycaster(), mouse = new T3.Vector2(), flying = false, canvas = K.renderer.domElement;
+  var quietHooks = { overrideMons: false, overrideKids: false, overrideBalloon: false, lighthouseHit: null };
   function placeAt(e) {
     var r = canvas.getBoundingClientRect(); mouse.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
     ray.setFromCamera(mouse, K.camera);
-    var hits = ray.intersectObjects(places.map(function (p) { return p.sign; }).concat(places.map(function (p) { return p.hit; })), false);
-    return hits.length ? hits[0].object.userData.place : null;
+    var targets = places.map(function (p) { return p.sign; }).concat(places.map(function (p) { return p.hit; }));
+    if (quietHooks.lighthouseHit) targets.push(quietHooks.lighthouseHit);
+    var hits = ray.intersectObjects(targets, false);
+    if (!hits.length) return null;
+    if (hits[0].object === quietHooks.lighthouseHit) return { id: 'lighthouse', title: 'Quiet Island' };
+    return hits[0].object.userData.place;
   }
   var drag = null, view = { yaw: 0 };
   var soundsOn = false;
@@ -617,8 +636,13 @@
   }
   function go(p, fast) {
     if (!p) return;
+    if (p.id === 'lighthouse') {
+      K.sfx('tap');
+      if (window.QuietIsland && window.QuietIsland.togglePanel) window.QuietIsland.togglePanel();
+      return;
+    }
     if (fast || flying) { K.sfx('tap'); openPlace(p); return; }
-    flying = true; K.sfx('tap'); K.sfx('whoosh'); K.say(p.title);
+    flying = true; hover = p; K.sfx('tap'); K.sfx('whoosh'); K.say(p.title);
     var c = p.box.getCenter(V());
     K.cam.follow = null; K.cam.set(V(c.x + 3, c.y + 10, c.z + 17), V(c.x, c.y + 1.5, c.z), 1.3);
     K.ui.toast('Going to ' + p.title + '…', 1.3, '#9b7bff');
@@ -690,7 +714,9 @@
       var b = K.el('span', 'h3-team', '<img src="' + ROOT + 'monster-evolution/assets/' + t.mon + '_stage_baby.webp" alt="">' + t.name);
       b.style.setProperty('--c', t.c); teams.appendChild(b);
     });
-    var quick = K.ui.add(K.el('div', 'h3-quick'));
+    // Bottom quick bar removed: the 3D buildings are the buttons (add ?bar=1 to bring it back).
+    var quick = K.el('div', 'h3-quick');
+    if (/[?&]bar=1/.test(location.search)) K.ui.add(quick);
     [['🏰', 'Today', 'today', '#9b7bff'], ['🏛️', 'Class Board', 'board', '#ff5fa2'], ['🛍️', 'Shop', 'shop', '#ffb320'], ['🎮', 'Games', 'games', '#2fc58a'], ['📚', 'Library', 'library', '#4f9dff']].forEach(function (q) {
       var b = K.el('button', 'h3-q', '<i>' + q[0] + '</i><span>' + q[1] + '</span>'); b.style.setProperty('--c', q[3]);
       b.onclick = function () { var p = places.filter(function (x) { return x.id === q[2]; })[0]; if (p) go(p, true); };
@@ -789,13 +815,21 @@
     });
 
     // 5a. extra Tripo pieces from layout.extras (they take space before props and trees)
+    var extrasByModel = {};
     var extraSrc = {}; (LAYOUT._extraNames || []).forEach(function (n, i) { extraSrc[n] = r[8] && r[8][i]; });
     (LAYOUT.extras || []).forEach(function (e) {
       var src = extraSrc[e.model]; if (!src) return;
       var g0 = groundAt(e.x, e.z), y = e.y != null ? e.y : (g0 === null ? 0 : g0);
       var c = K.fitModel(src.clone(true), e.h, { byLength: !!e.byLength }), g = new T3.Group();
       g.add(c); g.position.set(e.x, y, e.z); g.rotation.y = e.ry || 0; scene.add(g);
-      if (e.float) { var y0 = y, ph = Math.random() * 6; K.onFrame(function (dt, t) { g.position.y = y0 + Math.sin(t * .6 + ph) * e.float; g.rotation.y = (e.ry || 0) + Math.sin(t * .2 + ph) * .15; }); }
+      extrasByModel[e.model] = { group: g, spec: e, y0: y };
+      if (e.model === 'lighthouse') {
+        var lhHit = new T3.Mesh(new T3.CylinderGeometry(2.6, 3.0, e.h + 2, 12), new T3.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
+        lhHit.position.set(e.x, y + (e.h + 2) / 2, e.z);
+        scene.add(lhHit);
+        quietHooks.lighthouseHit = lhHit;
+      }
+      if (e.float) { var y0 = y, ph = Math.random() * 6; K.onFrame(function (dt, t) { if (quietHooks.overrideBalloon && e.model === 'hot-air-balloon') return; g.position.y = y0 + Math.sin(t * .6 + ph) * e.float; g.rotation.y = (e.ry || 0) + Math.sin(t * .2 + ph) * .15; }); }
       if (e.block) blockCircle(e.x, e.z, e.block, 'extra');
     });
 
@@ -846,16 +880,20 @@
       K.onFrame(function (dt) { m.update(dt); });
       K.after(1 + i * .6, function () { m.setState('hello'); K.after(1.6, function () { m.setState('idle'); }); });
     });
-    K.onFrame(function (dt) { if (Math.random() < dt * .3) { var m = mons[(Math.random() * 4) | 0]; if (m && m.state === 'idle') { m.setState(Math.random() < .5 ? 'hop' : 'wave'); K.after(1.4, function () { m.setState('idle'); }); } } });
+    K.onFrame(function (dt) { if (quietHooks.overrideMons) return; if (Math.random() < dt * .3) { var m = mons[(Math.random() * 4) | 0]; if (m && m.state === 'idle') { m.setState(Math.random() < .5 ? 'hop' : 'wave'); K.after(1.4, function () { if (!quietHooks.overrideMons) m.setState('idle'); }); } } });
     var roads = [curves.gold, curves.gold, curves.cob[0], curves.cob[1]];
+    var kidStates = [];
     kids.forEach(function (k, i) {
       var road = roads[i]; if (!k || !road) return; scene.add(k.root); k.speed = 0; k.setState('run');
       k.root.traverse(function (o) { if (o.isMesh && o.material) [].concat(o.material).forEach(function (mm) { mm.envMapIntensity = .2; }); });
-      var u = [.12, .5, .25, .5][i], dir = i % 2 ? -1 : 1, spd = 1.2 / road.getLength(), off = [.5, -.5, 0, 0][i];
+      var ks = { k: k, road: road, u: [.12, .5, .25, .5][i], dir: i % 2 ? -1 : 1, spd: 1.2 / road.getLength(), off: [.5, -.5, 0, 0][i] };
+      kidStates.push(ks);
       K.onFrame(function (dt) {
-        k.update(dt); u += dir * spd * dt; if (u > .96 || u < .04) { dir = -dir; u = clamp(u, .04, .96); }
-        var p = road.getPointAt(u), tg = road.getTangentAt(u).multiplyScalar(dir);
-        k.root.position.set(p.x + off, p.y + .08, p.z); k.root.rotation.y = Math.atan2(tg.x, tg.z);
+        k.update(dt);
+        if (quietHooks.overrideKids) return;
+        ks.u += ks.dir * ks.spd * dt; if (ks.u > .96 || ks.u < .04) { ks.dir = -ks.dir; ks.u = clamp(ks.u, .04, .96); }
+        var p = road.getPointAt(ks.u), tg = road.getTangentAt(ks.u).multiplyScalar(ks.dir);
+        k.root.position.set(p.x + ks.off, p.y + .08, p.z); k.root.rotation.y = Math.atan2(tg.x, tg.z);
       });
     });
 
@@ -875,6 +913,13 @@
         all2.forEach(function (a, i) { all2.slice(i + 1).forEach(function (b) { var A = a[1], B = b[1]; if (A.min.x < B.max.x && A.max.x > B.min.x && A.min.z < B.max.z && A.max.z > B.min.z) out.push(a[0] + '×' + b[0]); }); });
         return out;
       } };
+    window.__home3dQuietHost = {
+      K: K, T3: T3, scene: scene, seaU: seaU, seaMesh: seaMesh, hemiLight: hemiLight, sun: sun,
+      cloudCv: window.__home3dCloudCv, places: places, homes: homes, mons: mons, kids: kids,
+      kidStates: kidStates, extrasByModel: extrasByModel, curves: curves, DOCK: DOCK, TI: TI,
+      groundAt: groundAt, quietHooks: quietHooks, layout: LAYOUT, ship: ship, home: home
+    };
+    window.dispatchEvent(new CustomEvent('home3d:ready'));
     K.start();
   }).catch(function (e) { loading.innerHTML = '<span>Could not load 😢<br><small>' + e.message + '</small></span>'; console.error(e); });
 })();

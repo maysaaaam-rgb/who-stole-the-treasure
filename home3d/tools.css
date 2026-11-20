@@ -1,0 +1,463 @@
+/* Island Tools — Bright Adventure Park UI for Classroom Tools (UFO Picker)
+   Follows docs/STYLE_GUIDE.md & island-work/ISLAND-TOOLS-PLAN.md */
+
+/* Give .h3-teams room for 5 round top-right buttons (Quiet, Tools, Sound, Fullscreen, Settings) */
+@media (min-width: 1101px) {
+  .h3-teams { right: 316px !important; }
+}
+
+/* Round 🧰 Tools button in .topbtns */
+.it-top-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 50%;
+  border: 3px solid #ffb320;
+  border-bottom: 5px solid #c98200;
+  background: #fffdf8;
+  color: #2b1d40;
+  font: 900 1.25rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(43, 29, 64, 0.14);
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.15s;
+}
+.it-top-btn:hover { transform: translateY(-2px); }
+.it-top-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+.it-top-btn.on {
+  background: #fff3bf;
+  border-color: #ff5fa2;
+  border-bottom-color: #c93776;
+}
+
+/* Bright Tools Tray (popover below 🧰) */
+.it-tray {
+  position: fixed;
+  top: 72px;
+  right: 16px;
+  z-index: 92;
+  width: min(330px, calc(100vw - 32px));
+  background: #fffdf8;
+  border: 5px solid #ffb320;
+  border-radius: 26px;
+  padding: 14px 16px;
+  box-shadow: 0 18px 40px rgba(43, 29, 64, 0.24), 0 7px 0 #c98200;
+  color: #2b1d40;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  pointer-events: auto;
+  animation: itPop 0.24s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.it-tray.hidden { display: none; }
+@keyframes itPop {
+  from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.it-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.it-head h3 {
+  margin: 0;
+  font-size: 1.18rem;
+  font-weight: 900;
+}
+.it-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2.5px solid #d8c8ee;
+  border-bottom: 4px solid #b79fd8;
+  background: #fff;
+  color: #2b1d40;
+  font: 900 1rem 'Nunito', sans-serif;
+  cursor: pointer;
+}
+.it-close:active { transform: translateY(2px); border-bottom-width: 2px; }
+
+.it-tool-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.it-tool-btn {
+  width: 100%;
+  min-height: 54px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  border: 3px solid #9b7bff;
+  border-bottom: 5px solid #6b4cd1;
+  background: linear-gradient(180deg, #ffffff, #f6f1ff);
+  color: #2b1d40;
+  font: 900 1.06rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: transform 0.14s;
+}
+.it-tool-btn:hover { transform: translateY(-2px); }
+.it-tool-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+.it-kbd {
+  padding: 3px 9px;
+  border-radius: 10px;
+  background: #efe6fa;
+  border: 2px solid #c9b4e3;
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: #5b437a;
+}
+.it-soon-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-top: 6px;
+}
+.it-soon-pill {
+  padding: 7px 9px;
+  border-radius: 14px;
+  background: #f8f4ff;
+  border: 2px dashed #d8c8ee;
+  color: #8c78a8;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* UFO Picker Control Dock (bottom-center floating card) */
+.it-ufo-panel {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 94;
+  width: min(760px, calc(100vw - 28px));
+  background: rgba(255, 253, 248, 0.97);
+  border: 5px solid #9b7bff;
+  border-radius: 28px;
+  padding: 12px 16px;
+  box-shadow: 0 14px 36px rgba(43, 29, 64, 0.25), 0 6px 0 #6b4cd1;
+  color: #2b1d40;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: itPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.it-ufo-panel.hidden { display: none; }
+
+.it-ufo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.it-ufo-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  font-size: 1.08rem;
+}
+.it-left-pill {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #e9f5ff;
+  border: 2.5px solid #4f9dff;
+  color: #1c5ba6;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.it-btn {
+  min-height: 46px;
+  padding: 8px 16px;
+  border-radius: 16px;
+  border: 3px solid #d8c8ee;
+  border-bottom: 5px solid #b79fd8;
+  background: #ffffff;
+  color: #2b1d40;
+  font: 900 0.96rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+  transition: transform 0.14s, background 0.14s;
+}
+.it-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+.it-btn.pick {
+  background: #2fc58a;
+  border-color: #23a370;
+  border-bottom-color: #197a53;
+  color: #ffffff;
+  font-size: 1.08rem;
+  padding: 8px 22px;
+}
+.it-btn.back {
+  background: #4f9dff;
+  border-color: #2d76d4;
+  border-bottom-color: #1e56a3;
+  color: #ffffff;
+}
+.it-btn.skip {
+  background: #fff3bf;
+  border-color: #ffb320;
+  border-bottom-color: #c98200;
+}
+.it-btn.toggle.on {
+  background: #efe6fa;
+  border-color: #9b7bff;
+  border-bottom-color: #6b4cd1;
+  color: #4b2ea8;
+}
+.it-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Big Friendly Winner Banner ("Your turn, <name>!") */
+.it-banner {
+  position: fixed;
+  top: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 96;
+  padding: 14px 32px;
+  border-radius: 999px;
+  background: #fffdf7;
+  border: 6px solid var(--tc, #ff5fa2);
+  box-shadow: 0 16px 36px rgba(43, 29, 64, 0.28), 0 7px 0 color-mix(in srgb, var(--tc, #ff5fa2) 70%, #000);
+  color: #2b1d40;
+  font: 900 clamp(1.4rem, 3vw, 2.3rem) 'Nunito', 'Trebuchet MS', sans-serif;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: itBannerIn 0.36s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.it-banner.hidden { display: none; }
+@keyframes itBannerIn {
+  from { opacity: 0; transform: translate(-50%, -22px) scale(0.8); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+/* ?toolstest=1 Quick Stage Bar */
+.it-testbar {
+  position: fixed;
+  bottom: 150px;
+  left: 16px;
+  z-index: 95;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: rgba(255, 253, 248, 0.96);
+  border: 3.5px solid #ff5fa2;
+  box-shadow: 0 8px 20px rgba(43, 29, 64, 0.2), 0 4px 0 #c93776;
+  font: 900 0.84rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+}
+.it-testbar button {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 2px solid #d8c8ee;
+  border-bottom: 3px solid #b79fd8;
+  background: #fff;
+  color: #2b1d40;
+  font: 900 0.8rem 'Nunito', sans-serif;
+  cursor: pointer;
+}
+
+/* =========================================================================
+   GO Tools 2–9 Styles (Freeze, Sun Timer, Groups, Line-up, Dice/Spinner,
+   Prize Drop, Two Stars, Birthday Party) — Bright Adventure Park style
+   ========================================================================= */
+
+/* Compact scrollable tray for all 9 active tools */
+.it-tray {
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.it-tool-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 7px;
+}
+.it-tool-btn {
+  min-height: 46px;
+  padding: 8px 13px;
+  font-size: 0.98rem;
+}
+
+/* Tool 2: ❄️ Freeze Overlay & Countdown */
+.it-freeze-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 88;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(155, 228, 255, 0.14) 30%, rgba(92, 184, 255, 0.42) 100%);
+  box-shadow: inset 0 0 90px rgba(180, 238, 255, 0.85);
+  backdrop-filter: saturate(0.75) brightness(1.06);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.it-freeze-overlay.on { opacity: 1; }
+
+.it-freeze-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 95;
+  padding: 20px 44px;
+  border-radius: 34px;
+  background: rgba(255, 253, 248, 0.96);
+  border: 6px solid #4f9dff;
+  box-shadow: 0 20px 50px rgba(43, 29, 64, 0.28), 0 8px 0 #2d76d4;
+  text-align: center;
+  color: #1c5ba6;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  pointer-events: auto;
+  cursor: pointer;
+  animation: itPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.it-freeze-card.hidden { display: none; }
+.it-freeze-big {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.05;
+}
+.it-freeze-sub {
+  margin-top: 6px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #5b437a;
+}
+
+/* Tool 3: ⏱️ Big Round Sun Timer Label */
+.it-sun-clock {
+  position: fixed;
+  top: 78px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 91;
+  min-width: 158px;
+  padding: 10px 26px;
+  border-radius: 999px;
+  background: #fffdf7;
+  border: 5px solid #ffb320;
+  box-shadow: 0 12px 30px rgba(43, 29, 64, 0.22), 0 6px 0 #c98200;
+  color: #2b1d40;
+  font: 900 clamp(2rem, 4.5vw, 3.1rem) 'Nunito', 'Trebuchet MS', sans-serif;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+.it-sun-clock.hidden { display: none; }
+.it-sun-clock.warm { border-color: #ff8c42; background: #fff4e6; color: #b54500; }
+.it-sun-clock.urgent { border-color: #ff5fa2; background: #ffe3e3; color: #b81d57; }
+
+/* Shared Floating Tool Dock (bottom-center, reused by Tools 3–9) */
+.it-dock {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 94;
+  width: min(820px, calc(100vw - 28px));
+  background: rgba(255, 253, 248, 0.97);
+  border: 5px solid #4f9dff;
+  border-radius: 28px;
+  padding: 12px 16px;
+  box-shadow: 0 14px 36px rgba(43, 29, 64, 0.24), 0 6px 0 #2d76d4;
+  color: #2b1d40;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  animation: itPop 0.24s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.it-dock.hidden { display: none; }
+.it-dock-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.it-dock-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.it-dock-head h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+.it-input, .it-select {
+  min-height: 42px;
+  padding: 6px 12px;
+  border-radius: 14px;
+  border: 3px solid #d8c8ee;
+  background: #ffffff;
+  color: #2b1d40;
+  font: 800 0.94rem 'Nunito', 'Trebuchet MS', sans-serif;
+}
+.it-input { flex: 1; min-width: 180px; }
+
+/* Tool 4: Groups List Card Overlay */
+.it-groups-card {
+  position: fixed;
+  top: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 93;
+  width: min(740px, calc(100vw - 32px));
+  max-height: 52vh;
+  overflow-y: auto;
+  background: rgba(255, 253, 248, 0.97);
+  border: 5px solid #2fc58a;
+  border-radius: 26px;
+  padding: 14px 18px;
+  box-shadow: 0 16px 38px rgba(43, 29, 64, 0.24), 0 6px 0 #1e9666;
+  color: #2b1d40;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+.it-groups-card.hidden { display: none; }
+.it-grp-box {
+  background: #fff8ec;
+  border: 3px solid #ffe0a3;
+  border-radius: 18px;
+  padding: 10px 12px;
+}
+.it-grp-box b {
+  display: block;
+  font-size: 0.98rem;
+  margin-bottom: 5px;
+  color: #2b1d40;
+}
+.it-grp-mem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  margin: 3px 0;
+}
+.it-grp-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}

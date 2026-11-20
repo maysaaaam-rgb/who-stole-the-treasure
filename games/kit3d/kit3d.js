@@ -359,7 +359,7 @@
   /* ---------- characters ----------
      Both kinds share: .root (place it), .body (bounces), .setState(name), .update(dt), .height
      States: idle wave hello cheer clap sad hop fly tumble dizzy shrug ready run stumble */
-  var BONES = ['Hips', 'Spine', 'Spine1', 'Spine2', 'Neck', 'Head', 'LeftArm', 'RightArm', 'LeftForeArm', 'RightForeArm', 'LeftUpLeg', 'RightUpLeg', 'LeftLeg', 'RightLeg', 'LeftFoot', 'RightFoot'];
+  var BONES = ['Hips', 'Spine', 'Spine1', 'Spine2', 'Neck', 'Head', 'LeftArm', 'RightArm', 'LeftForeArm', 'RightForeArm', 'LeftHand', 'RightHand', 'LeftUpLeg', 'RightUpLeg', 'LeftLeg', 'RightLeg', 'LeftFoot', 'RightFoot'];
   var AX = K.AX = { L: new T3.Vector3(1, 0, 0), U: new T3.Vector3(0, 1, 0), F: new T3.Vector3(0, 0, 1) };
   var _q = new T3.Quaternion(), _pw = new T3.Quaternion(), _pwi = new T3.Quaternion(), _rq = new T3.Quaternion(), _ax = new T3.Vector3();
 
@@ -394,6 +394,20 @@
     function armOut(a, f, sg) { var p1 = new T3.Vector3(), p2 = new T3.Vector3(); self.bones[a].getWorldPosition(p1); self.bones[f].getWorldPosition(p2); var d = p2.sub(p1); return Math.atan2(sg * d.x, -d.y); }
     this.outL = armOut('LeftArm', 'LeftForeArm', 1); this.outR = armOut('RightArm', 'RightForeArm', -1);
     this.P = this.pose('idle', 0);
+    this.model = model;
+    this.mixer = new T3.AnimationMixer(model);
+    this.actions = {};
+    this.activeAction = null;
+    this.useMixer = false;
+    // Automatically attach shared Blender 5.3 65-bone sports & celebration clips to every rigged Kid!
+    if (K.loadAnimClips) {
+      Promise.all([
+        K.loadAnimClips(K.ROOT + 'assets/3d/characters/kid-sports-anims.glb').catch(function () { return []; }),
+        K.loadAnimClips(K.ROOT + 'assets/3d/characters/kid-tug-anims.glb').catch(function () { return []; })
+      ]).then(function (sets) {
+        self.attachClips((sets[0] || []).concat(sets[1] || []));
+      });
+    }
   }
   Kid.prototype = Object.create(Character.prototype);
   Kid.prototype.pose = function (st, t) {
@@ -469,8 +483,83 @@
     this.body.getWorldQuaternion(_q); _ax.copy(axis).applyQuaternion(_q); _rq.setFromAxisAngle(_ax, ang);
     b.parent.getWorldQuaternion(_pw); _pwi.copy(_pw).invert(); b.quaternion.premultiply(_pwi.multiply(_rq).multiply(_pw));
   };
+  var CLIP_CACHE = {};
+  K.loadAnimClips = function (url) {
+    if (!CLIP_CACHE[url]) {
+      CLIP_CACHE[url] = K.loadGLB(url).then(function (g) { return g.animations || []; });
+    }
+    return CLIP_CACHE[url];
+  };
+  Kid.prototype.attachClips = function (clips) {
+    var self = this;
+    (clips || []).forEach(function (cl) {
+      self.actions[cl.name] = self.mixer.clipAction(cl);
+    });
+    return this;
+  };
+  Kid.prototype.playClip = function (name, opts) {
+    opts = opts || {};
+    var next = this.actions[name];
+    if (!next) return false;
+    this.useMixer = true;
+    this.body.position.set(0, 0, 0);
+    this.body.rotation.set(0, 0, 0);
+    next.enabled = true;
+    next.setLoop(opts.once ? T3.LoopOnce : T3.LoopRepeat, opts.once ? 1 : Infinity);
+    next.clampWhenFinished = !!opts.once;
+    next.timeScale = opts.speed != null ? opts.speed : 1;
+    if (this.activeAction === next && !opts.restart) return true;
+    next.reset();
+    if (opts.startPhase) next.time = opts.startPhase * next.getClip().duration;
+    if (this.activeAction && this.activeAction !== next) {
+      next.play();
+      this.activeAction.crossFadeTo(next, opts.fade != null ? opts.fade : 0.22, false);
+    } else {
+      next.play();
+    }
+    this.activeAction = next;
+    return true;
+  };
+  Kid.prototype.stopClip = function () {
+    if (this.activeAction) { this.activeAction.stop(); this.activeAction = null; }
+    this.useMixer = false;
+  };
+  Kid.prototype.getBoneWorldPos = function (shortName, out) {
+    var b = this.bones[shortName];
+    return b ? b.getWorldPosition(out || new T3.Vector3()) : (out || new T3.Vector3()).copy(this.root.position);
+  };
+  // Map standard states to real Blender 5.3 skeletal clips automatically when available
+  var STATE_CLIP_MAP = {
+    run:       { clip: 'SprintRun',  speed: 1.35 },
+    turbo:     { clip: 'SprintTurbo', speed: 1.55 },
+    ready:     { clip: 'SprintSet',  speed: 1.0  },
+    kick:      { clip: 'SoccerKick', speed: 1.35, once: true },
+    keeper:    { clip: 'KeeperReady', speed: 1.0 },
+    cheer:     { clip: 'TugWin',     speed: 1.05 },
+    clap:      { clip: 'SideCheer',  speed: 1.05 },
+    headhands: { clip: 'HandsHead',  speed: 1.0  },
+    sad:       { clip: 'HandsHead',  speed: 0.85 },
+    stumble:   { clip: 'TugSlip',    speed: 1.25 },
+    hop:       { clip: 'BoardHop',   speed: 1.25 },
+    bowl:      { clip: 'BowlThrow',  speed: 1.25, once: true },
+    bombhold:  { clip: 'BombHold',   speed: 1.15 },
+    bombpass:  { clip: 'BombPass',   speed: 1.35, once: true }
+  };
+  Kid.prototype.setState = function (st) {
+    if (this.state !== st) { this.state = st; this.stateT = 0; }
+    var m = STATE_CLIP_MAP[st];
+    if (m && this.actions && this.actions[m.clip]) {
+      this.playClip(m.clip, { speed: m.speed, once: !!m.once, fade: 0.16, restart: !!m.once });
+    } else if (this.useMixer && !m) {
+      this.stopClip();
+    }
+  };
   Kid.prototype.update = function (dt) {
     this.stateT += dt;
+    if (this.useMixer && this.mixer) {
+      this.mixer.update(dt);
+      return;
+    }
     if (this.state === 'run') this.phase += dt * (5 + this.speed * 1.55);
     var tgt = this.pose(this.state, this.stateT), fast = /run|stumble|cheer|clap|tumble|fly|dizzy/.test(this.state);
     var rate = 1 - Math.exp(-dt * (fast ? 22 : 10));
