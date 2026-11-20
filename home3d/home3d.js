@@ -352,7 +352,7 @@
       c.fillStyle = '#fffdf7'; K.roundRect(c, 10, 8, W - 20, H - 26, 44); c.fill();
       c.shadowColor = 'transparent'; c.fillStyle = '#2b1d40'; c.font = '800 52px "Trebuchet MS", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(text, W / 2, H / 2 - 5);
     });
-    var s = new T3.Sprite(new T3.SpriteMaterial({ map: t, depthTest: false })); s.renderOrder = 6;
+    var s = new T3.Sprite(new T3.SpriteMaterial({ map: t, depthTest: false, transparent: true, opacity: 0 })); s.renderOrder = 6;
     var k = 3.3; s.scale.set(w / 120 * k, k, 1); s.userData.sx = s.scale.x; s.userData.sy = s.scale.y; return s;
   }
   function flag(color, x, y, z, parent) {
@@ -578,10 +578,14 @@
   K.onFrame(function (dt, t) {
     places.forEach(function (p, i) {
       p.hot = K.lerp(p.hot, p === hover ? 1 : 0, dt * 8);
+      // Names appear only on hover / tap (and for the first few seconds, or always with ?names=1).
+      var intro = SHOW_NAMES ? 1 : Math.max(0, Math.min(1, 4.5 - (performance.now() - NAMES_T0) / 1000));
+      p.sign.material.opacity = Math.max(p.hot, intro);
       p.sign.position.y = p.y0 + Math.sin(t * 1.5 + i) * .15 + p.hot * .4;
       var s = 1 + p.hot * .15; p.sign.scale.set(p.sign.userData.sx * s, p.sign.userData.sy * s, 1);
     });
   });
+  var SHOW_NAMES = /[?&]names=1/.test(location.search), NAMES_T0 = performance.now();
   var ray = new T3.Raycaster(), mouse = new T3.Vector2(), flying = false, canvas = K.renderer.domElement;
   function placeAt(e) {
     var r = canvas.getBoundingClientRect(); mouse.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
@@ -618,7 +622,7 @@
   function go(p, fast) {
     if (!p) return;
     if (fast || flying) { K.sfx('tap'); openPlace(p); return; }
-    flying = true; K.sfx('tap'); K.sfx('whoosh'); K.say(p.title);
+    flying = true; hover = p; K.sfx('tap'); K.sfx('whoosh'); K.say(p.title);
     var c = p.box.getCenter(V());
     K.cam.follow = null; K.cam.set(V(c.x + 3, c.y + 10, c.z + 17), V(c.x, c.y + 1.5, c.z), 1.3);
     K.ui.toast('Going to ' + p.title + '…', 1.3, '#9b7bff');
