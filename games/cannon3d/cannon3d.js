@@ -649,7 +649,7 @@
   /* ---------------- 3-step How to Play Modal ---------------- */
   var HOWTO_STEPS = [
     { ico: '🎤', c: '#ff5fa2', t: '1. Answer the Question', s: 'Listen and tap the right answer to hop into the giant cannon!' },
-    { ico: '💥', c: '#4f9dff', t: '2. Aim & Fire!', s: 'Check the wind flag, drag back or tap a preset to aim, and BOOM!' },
+    { ico: '💥', c: '#4f9dff', t: '2. Aim & Fire!', s: 'Check the wind flag, drag back to aim angle & power, and let go — BOOM!' },
     { ico: '🎯', c: '#ffb320', t: '3. Pop Balloons & Bullseye!', s: 'Pop balloons for 10 to 50 points, land in the haystack, or hit the bullseye!' }
   ];
   function openHowTo(onClose) {
@@ -752,34 +752,17 @@
     return best || { a: .6, pw: .65 };
   }
 
-  /* aiming: drag back anywhere and let go, OR use Smartboard Preset/Fire Bar */
+  /* aiming: drag back anywhere to aim angle & power, and let go to FIRE! (or arrows + space) */
   var aimPad = null, power = .6;
   function aimPhase(team, ch) {
     setPhase('aim'); shot('aim'); fusing = true; K.sfx('fuse');
-    updateTurnUI(active, 'Drag back to aim OR tap a preset & FIRE!');
+    updateTurnUI(active, '👆 Drag back to aim · let go to FIRE!');
+
+    var hint = K.ui.add(K.el('div', 'hint', '👆 Drag back to aim · let go to FIRE!'));
+    hint.style.setProperty('--c', team.c);
 
     aimPad = K.ui.add(K.el('div', 'aimpad'));
     aimPad.style.cssText = 'position:fixed;inset:0;touch-action:none;cursor:grab;z-index:20';
-
-    var aimBar = K.ui.add(K.el('div', 'cn-aim-bar'));
-    aimBar.style.setProperty('--c', team.c);
-    var presets = K.el('div', 'cn-aim-presets');
-    [
-      { label: '🎈 High Arc', goal: { x: 24, y: 10 } },
-      { label: '🌾 Haystack (+15)', goal: { x: HAY.x, y: 1.0 } },
-      { label: '🎯 Bullseye (+50)', goal: { x: TARGET.x - .3, y: TARGET.y } }
-    ].forEach(function (pr) {
-      var pb = K.el('button', 'cn-pbtn', pr.label);
-      pb.onclick = function () {
-        var sol = solveAimFor(pr.goal);
-        setAim(sol.a); power = sol.pw; showDots(aimAngle, power);
-      };
-      presets.appendChild(pb);
-    });
-    var fireBtn = K.el('button', 'btn green', '💥 FIRE!');
-    fireBtn.onclick = function () { fire(); };
-    aimBar.appendChild(presets);
-    aimBar.appendChild(fireBtn);
 
     var start = null, fired = false;
     function upd(e) {
@@ -788,9 +771,22 @@
       setAim(clamp(Math.atan2(dy, Math.max(1, dx)), .12, 1.4));
       power = clamp(len / 260, .12, 1); showDots(aimAngle, power);
     }
-    aimPad.addEventListener('pointerdown', function (e) { start = { x: e.clientX, y: e.clientY }; aimPad.setPointerCapture(e.pointerId); });
+    aimPad.addEventListener('pointerdown', function (e) {
+      start = { x: e.clientX, y: e.clientY };
+      aimPad.style.cursor = 'grabbing';
+      aimPad.setPointerCapture(e.pointerId);
+    });
     aimPad.addEventListener('pointermove', function (e) { if (start) upd(e); });
-    aimPad.addEventListener('pointerup', function (e) { if (!start) return; upd(e); start = null; if (power > .14) fire(); });
+    aimPad.addEventListener('pointerup', function (e) {
+      if (!start) return;
+      upd(e); start = null;
+      aimPad.style.cursor = 'grab';
+      if (power > .14) fire();
+    });
+    aimPad.addEventListener('pointercancel', function () {
+      start = null;
+      aimPad.style.cursor = 'grab';
+    });
     function key(e) {
       if (e.key === 'ArrowUp') setAim(clamp(aimAngle + .04, .12, 1.4));
       if (e.key === 'ArrowDown') setAim(clamp(aimAngle - .04, .12, 1.4));
@@ -804,7 +800,7 @@
 
     function fire() {
       if (fired) return; fired = true;
-      removeEventListener('keydown', key); aimPad.remove(); aimBar.remove(); hideDots();
+      removeEventListener('keydown', key); aimPad.remove(); hint.remove(); hideDots();
       launch(ch);
     }
     if (K.DEMO) demoAim(fire);

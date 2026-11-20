@@ -415,6 +415,7 @@
         ch.root.traverse(function (o) {
           if (o.isMesh && o.material) [].concat(o.material).forEach(function (m) { m.envMapIntensity = 0.25; });
         });
+        if (ch.attachClips && HOST.animClips) ch.attachClips(HOST.animClips);
         ch.setState('idle');
         holder.add(ch.root);
 

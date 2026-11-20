@@ -8,6 +8,27 @@
 
   var IT = null, B = null, HOST = null, K = null, T3 = null, scene = null;
   var activeToolId = null;
+  var MODEL_CACHE = {};
+  function loadToolGLB(name, targetH, cb) {
+    if (MODEL_CACHE[name]) {
+      if (cb) cb(MODEL_CACHE[name].clone(true));
+      return;
+    }
+    if (!K || !K.tryGLB) return;
+    K.tryGLB('tools/models/' + name + '.glb').then(function (gltf) {
+      if (!gltf || !gltf.scene) return;
+      var fitted = K.fitModel(gltf.scene, targetH || 3.0);
+      fitted.traverse(function (o) {
+        if (o.isMesh) {
+          o.castShadow = true;
+          o.receiveShadow = true;
+          if (o.material) [].concat(o.material).forEach(function (m) { m.envMapIntensity = 0.35; });
+        }
+      });
+      MODEL_CACHE[name] = fitted;
+      if (cb) cb(fitted.clone(true));
+    });
+  }
 
   function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
   function lerp(a, b, t) { return a + (b - a) * t; }
@@ -124,13 +145,41 @@
   }
 
   // =========================================================================
-  // TOOL 2 — ❄️ FREEZE! (Key F)
+  // TOOL 2 — ❄️ FREEZE! (Key F) — Real 3D Ice Crystal ring + Frost overlay
   // =========================================================================
   var FreezeTool = (function () {
     var frozen = false, counting = false;
     var overlay = null, card = null, bigEl = null, subEl = null;
+    var iceGroup = null, iceCrystals = [], iceRaf = 0;
+
+    function tickIce() {
+      if (!frozen || !iceGroup) { iceRaf = 0; return; }
+      var t = performance.now() * 0.001;
+      iceCrystals.forEach(function (ic) {
+        ic.mesh.rotation.y = t * ic.spd + ic.ph;
+        ic.mesh.position.y = ic.y0 + Math.sin(t * 2.2 + ic.ph) * 0.7;
+      });
+      iceRaf = requestAnimationFrame(tickIce);
+    }
 
     function build() {
+      iceGroup = new T3.Group();
+      iceGroup.visible = false;
+      scene.add(iceGroup);
+      loadToolGLB('ice-crystal', 4.6, function (src) {
+        if (!iceGroup) return;
+        for (var i = 0; i < 6; i++) {
+          var ang = (i / 6) * Math.PI * 2;
+          var r = i === 0 ? 0 : 18;
+          var c = src.clone(true);
+          if (i === 0) c.scale.multiplyScalar(1.45);
+          var y0 = i === 0 ? 15.5 : (10.5 + (i % 2) * 2.5);
+          c.position.set(Math.cos(ang) * r, y0, Math.sin(ang) * r);
+          iceGroup.add(c);
+          iceCrystals.push({ mesh: c, y0: y0, ph: i * 1.1, spd: i === 0 ? 0.9 : 1.3 });
+        }
+      });
+
       overlay = document.createElement('div');
       overlay.className = 'it-freeze-overlay';
       document.body.appendChild(overlay);
@@ -153,6 +202,7 @@
       if (frozen || counting) return;
       frozen = true;
       K.timeScale = 0;
+      if (iceGroup) { iceGroup.visible = true; if (!iceRaf) tickIce(); }
       if (window.QuietIsland && window.QuietIsland.state && window.QuietIsland.state() !== 'calm') {
         // pause sound cleanly if needed
       }
@@ -177,6 +227,8 @@
           if (K.say) K.say(txt);
           if (idx === 3) {
             K.timeScale = 1;
+            if (iceGroup) iceGroup.visible = false;
+            if (iceRaf) { cancelAnimationFrame(iceRaf); iceRaf = 0; }
             overlay.classList.remove('on');
             setTimeout(function () {
               card.classList.add('hidden');
@@ -213,16 +265,18 @@
       clockEl.textContent = '2:00';
       document.body.appendChild(clockEl);
 
-      // 3D Sun + Halo moving across the sky
-      sunMesh = new T3.Mesh(
-        new T3.SphereGeometry(3.4, 22, 16),
-        new T3.MeshBasicMaterial({ color: 0xffd84a })
-      );
+      // Real 3D sculpted Pixar Sun mascot moving across the sky
+      sunMesh = new T3.Group();
       haloMesh = new T3.Mesh(
-        new T3.SphereGeometry(4.8, 18, 14),
-        new T3.MeshBasicMaterial({ color: 0xffe896, transparent: true, opacity: 0.32, depthWrite: false })
+        new T3.SphereGeometry(5.8, 18, 14),
+        new T3.MeshBasicMaterial({ color: 0xffe896, transparent: true, opacity: 0.28, depthWrite: false })
       );
+      haloMesh.position.y = 5.0;
       sunMesh.add(haloMesh);
+      loadToolGLB('sun-timer', 10.5, function (m) {
+        if (!sunMesh) return;
+        sunMesh.add(m);
+      });
       sunMesh.visible = false;
       scene.add(sunMesh);
 
@@ -276,10 +330,10 @@
       clockEl.classList.toggle('urgent', remSec <= 10);
 
       // Sun arc across the sky
-      sunMesh.position.set(lerp(-42, 42, frac), 12 + Math.sin(frac * Math.PI) * 20, -48);
+      sunMesh.position.set(lerp(-42, 42, frac), 9 + Math.sin(frac * Math.PI) * 19, -48);
+      sunMesh.rotation.y = Math.sin(performance.now() * 0.0012) * 0.35;
       var sunHex = remSec <= 10 ? 0xff6b3d : (frac >= 0.8 ? 0xff9b35 : 0xffd84a);
-      sunMesh.material.color.setHex(sunHex);
-      haloMesh.material.color.setHex(sunHex);
+      if (haloMesh && haloMesh.material) haloMesh.material.color.setHex(sunHex);
 
       // Warm lighting in last 20% & soft sunset sky in last 10s
       if (origSky && scene.background && scene.background.isColor) {
@@ -466,13 +520,17 @@
         var gy = HOST.groundAt(spot.pos.x, spot.pos.z);
         var sy = (gy !== null && !isNaN(gy)) ? gy : spot.pos.y;
 
-        // Numbered flag at meeting spot
-        var pole = new T3.Mesh(new T3.CylinderGeometry(0.1, 0.1, 4.4, 8), new T3.MeshStandardMaterial({ color: 0xffffff }));
-        pole.position.set(spot.pos.x, sy + 2.2, spot.pos.z);
-        flagGroup.add(pole);
+        // Real 3D adventure-park Team Banner signpost at meeting spot
+        (function (x0, y0, z0) {
+          loadToolGLB('team-banner', 5.4, function (bn) {
+            if (!open) return;
+            bn.position.set(x0, y0, z0);
+            flagGroup.add(bn);
+          });
+        })(spot.pos.x, sy, spot.pos.z);
         var fl = makeSpriteText('Group ' + (gi + 1), '#fffdf7', col, '#2b1d40', 256, 110, 48);
         fl.scale.set(4.8, 2.1, 1);
-        fl.position.set(spot.pos.x, sy + 5.1, spot.pos.z);
+        fl.position.set(spot.pos.x, sy + 6.3, spot.pos.z);
         flagGroup.add(fl);
 
         html += '<div class="it-grp-box" style="border-color:' + col + '"><b>Group ' + (gi + 1) + ' · ' + spot.name + '</b>';
@@ -748,16 +806,28 @@
       grp.visible = false;
       scene.add(grp);
 
-      // Giant 3D Die (order: +X=3, -X=4, +Y=1, -Y=6, +Z=2, -Z=5)
-      var dMats = [makeDieFace(3), makeDieFace(4), makeDieFace(1), makeDieFace(6), makeDieFace(2), makeDieFace(5)];
-      diceMesh = new T3.Mesh(new T3.BoxGeometry(2.4, 2.4, 2.4), dMats);
-      diceMesh.castShadow = true;
-      diceMesh.position.set(STAD.x - 3.6, STAD.y + 2.2, STAD.z);
+      // Giant Real 3D Toy Die (Tripo toy-dice.glb)
+      diceMesh = new T3.Group();
+      diceMesh.position.set(STAD.x - 4.0, STAD.y + 2.2, STAD.z);
       grp.add(diceMesh);
+      loadToolGLB('toy-dice', 3.0, function (m) {
+        if (!diceMesh) return;
+        // Center pivot vertically so tumbling spins around die center
+        m.position.y = -1.5;
+        diceMesh.add(m);
+      });
+
+      // Real 3D Carnival Prize Wheel Stand beside the customizable spinner disc
+      loadToolGLB('prize-wheel', 6.4, function (pw) {
+        if (!grp) return;
+        pw.position.set(STAD.x + 7.2, STAD.y + 0.1, STAD.z - 2.2);
+        pw.rotation.y = -0.38;
+        grp.add(pw);
+      });
 
       // 3D Spinner Wheel beside the die on top of the stadium turf
       wheelGroup = new T3.Group();
-      wheelGroup.position.set(STAD.x + 2.4, STAD.y + 1.15, STAD.z);
+      wheelGroup.position.set(STAD.x + 2.0, STAD.y + 1.15, STAD.z);
       grp.add(wheelGroup);
       rebuildWheel();
 
@@ -1053,57 +1123,43 @@
         var px = gate.x + (idx === 0 ? -3.2 : 3.2), pz = gate.z + 7.4;
         var team = K.TEAMS[(st.team || idx) % 4] || K.TEAMS[0];
 
-        // Gold podium
-        var pod = new T3.Mesh(
-          new T3.CylinderGeometry(1.5, 1.85, 1.35, 22),
-          new T3.MeshStandardMaterial({ color: 0xffd84a, roughness: 0.25, metalness: 0.15 })
-        );
-        pod.position.set(px, baseY + 0.68, pz);
-        grp.add(pod);
+        // Real 3D Golden Star Trophy on marble pedestal (Tripo star-trophy.glb)
+        (function (tx, ty, tz, side) {
+          loadToolGLB('star-trophy', 4.6, function (tr) {
+            if (!open) return;
+            tr.position.set(tx + side * 2.3, ty, tz - 0.8);
+            grp.add(tr);
+            floatStars.push({ mesh: tr, y0: tr.position.y, ph: side * 1.4, spinOnly: true });
+          });
+        })(px, baseY, pz, idx === 0 ? -1 : 1);
 
-        // Soft glow ring
+        // Soft glow ring under pupil
         var ring = new T3.Mesh(
-          new T3.RingGeometry(1.75, 2.35, 28),
+          new T3.RingGeometry(1.4, 2.1, 28),
           new T3.MeshBasicMaterial({ color: 0xffe88a, transparent: true, opacity: 0.65, side: T3.DoubleSide, depthWrite: false })
         );
         ring.rotation.x = -Math.PI * 0.5;
         ring.position.set(px, baseY + 0.08, pz);
         grp.add(ring);
 
-        // Giant spinning gold star behind avatar
-        var star = new T3.Mesh(
-          new T3.OctahedronGeometry(1.3, 0),
-          new T3.MeshStandardMaterial({ color: 0xffd84a, emissive: 0xffb320, emissiveIntensity: 0.5 })
-        );
-        star.position.set(px, baseY + 4.3, pz - 0.8);
-        grp.add(star);
-        floatStars.push({ mesh: star, y0: star.position.y, ph: idx * 2.1 });
-
-        // Floating little stars
-        for (var k = 0; k < 5; k++) {
-          var sm = new T3.Mesh(new T3.OctahedronGeometry(0.26, 0), new T3.MeshBasicMaterial({ color: 0xffe875 }));
-          sm.position.set(px + (Math.random() - 0.5) * 3.2, baseY + 1.5 + Math.random() * 3.5, pz + (Math.random() - 0.5) * 2.5);
-          grp.add(sm);
-          floatStars.push({ mesh: sm, y0: sm.position.y, ph: k * 1.4 + idx });
-        }
-
         // Name plate
-        var lab = makeSpriteText('⭐ ' + st.name, '#fffdf7', team.c, '#2b1d40', 256, 96, 42);
-        lab.scale.set(3.6, 1.35, 1);
-        lab.position.set(px, baseY + 5.7, pz);
+        var lab = makeSpriteText('⭐ ' + st.name, '#fffdf7', team.c, '#2b1d40', 256, 96, 40);
+        lab.scale.set(2.7, 1.0, 1);
+        lab.position.set(px, baseY + 4.3, pz);
         grp.add(lab);
 
-        K.makeCharacter(team, { kidsOnly: true, kidHeight: 2.35 }).then(function (ch) {
+        K.makeCharacter(team, { kidsOnly: true, kidHeight: 2.55 }).then(function (ch) {
           if (!open) return;
-          ch.root.position.set(px, baseY + 1.38, pz);
-          ch.setState('wave');
+          if (ch.attachClips && HOST.animClips) ch.attachClips(HOST.animClips);
+          ch.root.position.set(px, baseY + 0.08, pz);
+          ch.setState('cheer');
           grp.add(ch.root);
           starPupils.push(ch);
         });
       });
 
       K.cam.follow = null;
-      K.cam.set(new T3.Vector3(gate.x, baseY + 8.5, gate.z + 23), new T3.Vector3(gate.x, baseY + 2.8, gate.z + 6), 3.0);
+      K.cam.set(new T3.Vector3(gate.x, baseY + 9.5, gate.z + 29), new T3.Vector3(gate.x, baseY + 2.6, gate.z + 6), 3.0);
       AUDIO.melt();
       B.showBannerText('⭐ Stars of the Week: ' + names.join(' & ') + '!', '#ffb320');
       if (K.say) K.say('Stars of the week: ' + names.join(' and ') + '!');
@@ -1122,8 +1178,8 @@
       if (!open) return;
       starPupils.forEach(function (ch) { ch.update(dt); });
       floatStars.forEach(function (fs) {
-        fs.mesh.position.y = fs.y0 + Math.sin(t * 2.8 + fs.ph) * 0.45;
-        fs.mesh.rotation.y = t * 1.8 + fs.ph;
+        if (!fs.spinOnly) fs.mesh.position.y = fs.y0 + Math.sin(t * 2.8 + fs.ph) * 0.45;
+        fs.mesh.rotation.y = t * (fs.spinOnly ? 0.9 : 1.8) + fs.ph;
       });
     }
 
@@ -1175,49 +1231,32 @@
       balloons = []; flames = []; bdayCh = null;
       grp.visible = true;
 
-      // Multi-tier cartoon Birthday Cake on the amphitheatre stage
-      var tier1 = new T3.Mesh(new T3.CylinderGeometry(2.1, 2.2, 1.2, 24), new T3.MeshStandardMaterial({ color: 0xffd1e8, roughness: 0.4 }));
-      tier1.position.set(amp.x, stageY + 0.6, amp.z);
-      var tier2 = new T3.Mesh(new T3.CylinderGeometry(1.45, 1.5, 1.0, 24), new T3.MeshStandardMaterial({ color: 0xfff8ec, roughness: 0.35 }));
-      tier2.position.set(amp.x, stageY + 1.65, amp.z);
-      var frosting = new T3.Mesh(new T3.TorusGeometry(1.48, 0.2, 10, 24), new T3.MeshStandardMaterial({ color: 0xff5fa2, roughness: 0.3 }));
-      frosting.rotation.x = Math.PI * 0.5; frosting.position.set(amp.x, stageY + 2.1, amp.z);
-      grp.add(tier1, tier2, frosting);
-
-      // 5 glowing candles on top
-      var cCols = [0xff5fa2, 0x4f9dff, 0xffb320, 0x2fc58a, 0x9b7bff];
-      for (var ci = 0; ci < 5; ci++) {
-        var ang = (ci / 5) * Math.PI * 2;
-        var cx = amp.x + Math.cos(ang) * 0.72, cz = amp.z + Math.sin(ang) * 0.72;
-        var candle = new T3.Mesh(new T3.CylinderGeometry(0.09, 0.09, 0.7, 8), new T3.MeshStandardMaterial({ color: cCols[ci] }));
-        candle.position.set(cx, stageY + 2.5, cz);
-        var flame = new T3.Mesh(new T3.SphereGeometry(0.14, 8, 6), new T3.MeshBasicMaterial({ color: 0xffe45e }));
-        flame.scale.set(0.8, 1.45, 0.8);
-        flame.position.set(cx, stageY + 2.95, cz);
-        grp.add(candle, flame);
-        flames.push({ mesh: flame, ph: ci * 1.3 });
-      }
-
-      // 14 floating colourful balloons rising around the amphitheatre stage
-      var bCols = [0xff5fa2, 0x4f9dff, 0xffd84a, 0x2fc58a, 0x9b7bff];
-      for (var bi = 0; bi < 14; bi++) {
-        var ba = (bi / 14) * Math.PI * 2;
-        var br = 3.8 + (bi % 3) * 1.4;
-        var bg = new T3.Group();
-        var ball = new T3.Mesh(new T3.SphereGeometry(0.68, 14, 12), new T3.MeshStandardMaterial({ color: bCols[bi % 5], roughness: 0.25 }));
-        ball.scale.set(0.92, 1.12, 0.92);
-        var str = new T3.Mesh(new T3.CylinderGeometry(0.02, 0.02, 2.2, 4), new T3.MeshBasicMaterial({ color: 0xffffff }));
-        str.position.y = -1.6;
-        bg.add(ball, str);
-        bg.position.set(amp.x + Math.cos(ba) * br, stageY + 3.2 + (bi % 4) * 1.3, amp.z + Math.sin(ba) * br);
-        grp.add(bg);
-        balloons.push({ g: bg, y0: bg.position.y, ph: bi * 0.9 });
-      }
-
-      // Birthday pupil standing beside the cake
-      var team = K.TEAMS[(chosen.team || 0) % 4] || K.TEAMS[0];
-      K.makeCharacter(team, { kidsOnly: true, kidHeight: 2.45 }).then(function (ch) {
+      // Real 3D Pixar-style Birthday Cake on the amphitheatre stage (Tripo birthday-cake.glb)
+      loadToolGLB('birthday-cake', 4.2, function (cake) {
         if (!open) return;
+        cake.position.set(amp.x, stageY, amp.z);
+        grp.add(cake);
+      });
+
+      // 6 Real 3D Balloon Bunches arranged in a scenic semicircle BEHIND the cake (never blocking the camera)
+      loadToolGLB('balloon-bunch', 3.4, function (bunchSrc) {
+        if (!open) return;
+        for (var bi = 0; bi < 6; bi++) {
+          var ba = -Math.PI * 0.92 + (bi / 5) * (Math.PI * 0.84);
+          var br = 4.9 + (bi % 2) * 0.9;
+          var bg = bunchSrc.clone(true);
+          bg.position.set(amp.x + Math.cos(ba) * br, stageY + 0.7 + (bi % 3) * 0.65, amp.z + Math.sin(ba) * br);
+          bg.rotation.y = -ba;
+          grp.add(bg);
+          balloons.push({ g: bg, y0: bg.position.y, ph: bi * 1.1 });
+        }
+      });
+
+      // Birthday pupil standing beside the cake with real Blender 65-bone skeletal celebration
+      var team = K.TEAMS[(chosen.team || 0) % 4] || K.TEAMS[0];
+      K.makeCharacter(team, { kidsOnly: true, kidHeight: 2.55 }).then(function (ch) {
+        if (!open) return;
+        if (ch.attachClips && HOST.animClips) ch.attachClips(HOST.animClips);
         ch.root.position.set(amp.x + 2.8, stageY, amp.z + 1.2);
         ch.root.rotation.y = -0.3;
         ch.setState('cheer');
