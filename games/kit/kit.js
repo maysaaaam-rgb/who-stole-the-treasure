@@ -494,7 +494,9 @@
       big = !big; Kit.pref('big', big); doc.body.classList.toggle('big', big); bt.classList.toggle('on', big);
       if (o.onResize) o.onResize();
     });
+    var canFs = !!(doc.documentElement.requestFullscreen || doc.documentElement.webkitRequestFullscreen);
     var fs = el('button', { type: 'button', class: 'icon-btn', title: 'Present full screen (F)', text: '⛶' });
+    if (!canFs) fs.style.display = 'none';
     fs.addEventListener('click', Kit.fullscreen);
 
     bar.appendChild(musBtn);
@@ -512,9 +514,16 @@
   };
 
   Kit.fullscreen = function () {
-    var d = doc.documentElement;
-    if (!doc.fullscreenElement && !doc.webkitFullscreenElement) { (d.requestFullscreen || d.webkitRequestFullscreen || function () {}).call(d); }
-    else { (doc.exitFullscreen || doc.webkitExitFullscreen || function () {}).call(doc); }
+    try {
+      var d = doc.documentElement;
+      if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+        var req = d.requestFullscreen || d.webkitRequestFullscreen;
+        if (req) { var p = req.call(d); if (p && p.catch) p.catch(function () {}); }
+      } else {
+        var ex = doc.exitFullscreen || doc.webkitExitFullscreen;
+        if (ex) { var p2 = ex.call(doc); if (p2 && p2.catch) p2.catch(function () {}); }
+      }
+    } catch (e) {}
   };
 
   /* ---------------- Keyboard ---------------- */

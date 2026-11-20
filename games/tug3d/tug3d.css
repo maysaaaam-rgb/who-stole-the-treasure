@@ -468,3 +468,37 @@
   .tg-heave-bar { padding: 9px 12px 9px 14px; font-size: 0.96rem; gap: 10px; }
   .tg-heave-bar .btn { min-height: 46px; padding: 8px 14px; font-size: 0.98rem; }
 }
+
+/* Phone & Tablet Compact How-To & HUD Safeguards */
+@media (max-width: 680px), (max-height: 540px) {
+  .tg-howto-modal { padding: 10px; }
+  .tg-howto-card {
+    padding: 14px 14px 16px;
+    border-radius: 24px;
+    border-width: 5px;
+    max-height: calc(100dvh - 20px);
+  }
+  .tg-howto-title { font-size: 1.25rem; margin: 0 0 10px; }
+  .tg-steps { grid-template-columns: 1fr; gap: 8px; margin-bottom: 12px; }
+  .tg-step {
+    display: grid;
+    grid-template-columns: 30px 44px 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    text-align: left;
+    gap: 2px 8px;
+    padding: 9px 10px;
+    border-radius: 16px;
+    border-width: 3px;
+  }
+  .tg-step-num { width: 26px; height: 26px; font-size: 0.85rem; grid-row: 1 / span 2; }
+  .tg-step-ico { font-size: 1.85rem; grid-row: 1 / span 2; text-align: center; }
+  .tg-step b { font-size: 0.96rem; grid-column: 3; }
+  .tg-step p { font-size: 0.82rem; line-height: 1.25; grid-column: 3; }
+  .tg-step-say { grid-column: 4; grid-row: 1 / span 2; min-width: 40px; min-height: 38px; padding: 4px 10px; font-size: 0.8rem; margin-top: 0; }
+  .tg-setup { padding: 7px 10px; gap: 6px 12px; margin: 2px auto; border-radius: 16px; }
+  .tg-setup-grp { font-size: 0.84rem; gap: 4px; }
+  .tg-pill { min-width: 38px; min-height: 36px; padding: 4px 10px; font-size: 0.82rem; border-radius: 12px; border-bottom-width: 4px; }
+  .tg-turn-banner { top: calc(108px + env(safe-area-inset-top, 0px)); font-size: 0.86rem; padding: 5px 12px; max-width: calc(100vw - 20px); white-space: normal; text-align: center; }
+  .endbox { margin: 0 !important; padding: 4px 4px 12px !important; }
+}

@@ -94,60 +94,61 @@
   }
 
   /* ---------------------------------------------------------------- shared bits */
-  /* Design: the room's own vocabulary. The class code (3A, 4B) is the one big thing on Today, set in Fraunces like a door sign;
-     a day ribbon shows the lessons as stops. Everything else is quiet dark glass with tactile push buttons and real 3D art. */
+  /* Design: Bright Adventure Park look (docs/STYLE_GUIDE.md) — deep ink on crisp white/cream cards,
+     team-colour accents, chunky 5px push-button lips, and clear readability on phones, tablets & smartboards. */
   var CSS = '<style>' +
-    '.pn{--void:#060911;--glass:rgba(15,23,42,.8);--line:#26324a;--ink:#e5edff;--mute:#a3b0c8;--now:#f59e0b;--go:#10b981;--brand:#a855f7;--link:#38bdf8;--spring:cubic-bezier(.175,.885,.32,1.275);' +
-      'max-width:1180px;margin:0 auto;padding:6px 8px 70px;color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif}' +
-    '.pn h1{margin:0;font:800 clamp(1.6rem,2.4vw,2.1rem)/1.15 Fraunces,Georgia,serif;letter-spacing:-.01em}.pn .sub{color:var(--mute);font-size:.95rem;margin-top:4px;max-width:70ch}' +
-    '.pn-top{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}.pn-top>div{flex:1;min-width:240px}' +
-    '.pn-card{background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1.5px solid var(--line);border-radius:20px;padding:16px 18px;margin-top:14px;box-shadow:0 4px 20px -2px rgba(0,0,0,.4),0 2px 6px -1px rgba(0,0,0,.2)}' +
+    '.pn{--void:#fff8ec;--glass:#ffffff;--line:#ead9bf;--ink:#2b1d40;--mute:#5b4a75;--now:#ffb320;--go:#2fc58a;--brand:#9b7bff;--link:#4f9dff;--spring:cubic-bezier(.175,.885,.32,1.275);' +
+      'max-width:1180px;margin:0 auto;padding:8px 8px 92px;color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif}' +
+    '.pn h1{margin:0;font:800 clamp(1.6rem,2.4vw,2.1rem)/1.15 Fraunces,Georgia,serif;letter-spacing:-.01em;color:var(--ink)}.pn .sub{color:var(--mute);font-size:.95rem;font-weight:700;margin-top:4px;max-width:70ch}' +
+    '.pn-top{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.pn-top>div{flex:1;min-width:220px}' +
+    '.pn-card{background:#ffffff;border:3px solid #cfe6ff;border-bottom:6px solid #a8d2ff;border-radius:24px;padding:16px 18px;margin-top:14px;box-shadow:0 10px 24px -12px rgba(43,29,64,.25);color:var(--ink)}' +
     /* day ribbon */
-    '.pn-rib{display:flex;align-items:flex-start;margin:18px 0 0;padding:0 4px;overflow-x:auto}.pn-st{flex:1;min-width:74px;position:relative;text-align:center;background:none;border:0;color:var(--mute);cursor:pointer;padding:0 2px;font:inherit}' +
-    '.pn-st:before{content:"";position:absolute;top:9px;left:0;right:0;height:4px;background:#334155}.pn-st:first-child:before{left:50%}.pn-st:last-child:before{right:50%}' +
-    '.pn-st i{position:relative;display:block;width:22px;height:22px;margin:0 auto 6px;border-radius:50%;background:#1e293b;border:3px solid #475569}' +
-    '.pn-st b{display:block;font-size:.86rem;color:var(--ink)}.pn-st small{display:block;font-size:.74rem;font-weight:800}' +
-    '.pn-st.done{opacity:.45}.pn-st.done i{background:#475569}.pn-st.on i{background:var(--now);border-color:#fde68a;box-shadow:0 0 0 6px rgba(245,158,11,.22)}.pn-st.on b,.pn-st.on small{color:#fde68a}' +
+    '.pn-rib{display:flex;align-items:flex-start;margin:16px 0 0;padding:12px 8px 10px;overflow-x:auto;background:rgba(255,255,255,.86);border:2.5px solid #cfe6ff;border-radius:20px;-webkit-overflow-scrolling:touch;scrollbar-width:none}.pn-rib::-webkit-scrollbar{display:none}' +
+    '.pn-st{flex:1;min-width:74px;position:relative;text-align:center;background:none;border:0;color:var(--mute);cursor:pointer;padding:0 2px;font:inherit}' +
+    '.pn-st:before{content:"";position:absolute;top:9px;left:0;right:0;height:4px;background:#d8c8ee}.pn-st:first-child:before{left:50%}.pn-st:last-child:before{right:50%}' +
+    '.pn-st i{position:relative;display:block;width:22px;height:22px;margin:0 auto 6px;border-radius:50%;background:#fff8ec;border:3px solid #9b7bff}' +
+    '.pn-st b{display:block;font-size:.86rem;font-weight:900;color:var(--ink)}.pn-st small{display:block;font-size:.74rem;font-weight:800;color:var(--mute)}' +
+    '.pn-st.done{opacity:.52}.pn-st.done i{background:#d8c8ee}.pn-st.on i{background:var(--now);border-color:#c98200;box-shadow:0 0 0 5px rgba(255,179,32,.28)}.pn-st.on b,.pn-st.on small{color:#a85a00}' +
     '.pn-st:focus-visible{outline:3px solid var(--link);outline-offset:3px;border-radius:10px}' +
     /* the lesson card */
-    '.pn-now{display:grid;grid-template-columns:auto 1fr auto;gap:8px 26px;align-items:center;padding:22px 24px;border-color:rgba(245,158,11,.55);background:radial-gradient(circle at 0% 0%,rgba(245,158,11,.16),transparent 55%),var(--glass)}' +
-    '.pn-cls{font:800 clamp(4.5rem,9vw,7.5rem)/.9 Fraunces,Georgia,serif;letter-spacing:-.03em;color:#fff;text-shadow:0 6px 0 rgba(0,0,0,.35)}' +
-    '.pn-when{color:#fde68a;font-weight:800;font-size:1rem}.pn-title{font:700 clamp(1.25rem,2vw,1.6rem)/1.25 "Plus Jakarta Sans",system-ui,sans-serif;margin:4px 0 0;max-width:34ch}' +
-    '.pn-art{width:150px;height:150px;position:relative;display:flex;align-items:flex-end;justify-content:center}.pn-art img{position:relative;max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 12px 14px rgba(0,0,0,.45))}' +
-    '.pn-art:after{content:"";position:absolute;bottom:-6px;left:12%;right:12%;height:18px;border-radius:50%;background:radial-gradient(ellipse,rgba(168,85,247,.45),transparent 70%)}' +
+    '.pn-now{display:grid;grid-template-columns:auto 1fr auto;gap:8px 24px;align-items:center;padding:20px 22px;border:4px solid #ffb320;border-bottom:7px solid #d18a00;background:linear-gradient(155deg,#fffdf8 0%,#fff4d9 100%)}' +
+    '.pn-cls{font:800 clamp(3.4rem,9vw,6.8rem)/.9 Fraunces,Georgia,serif;letter-spacing:-.03em;color:#6f4fe0;text-shadow:0 4px 0 rgba(155,123,255,.22)}' +
+    '.pn-when{color:#b56500;font-weight:900;font-size:.98rem}.pn-title{font:800 clamp(1.2rem,2vw,1.55rem)/1.25 "Plus Jakarta Sans",system-ui,sans-serif;margin:4px 0 0;max-width:34ch;color:var(--ink)}' +
+    '.pn-art{width:144px;height:144px;position:relative;display:flex;align-items:flex-end;justify-content:center}.pn-art img{position:relative;max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 10px 12px rgba(43,29,64,.25))}' +
+    '.pn-art:after{content:"";position:absolute;bottom:-6px;left:12%;right:12%;height:16px;border-radius:50%;background:radial-gradient(ellipse,rgba(155,123,255,.32),transparent 70%)}' +
     '.pn-now .pn-acts{grid-column:1/-1}' +
-    '@media(max-width:760px){.pn-now{grid-template-columns:auto 1fr}.pn-art{display:none}.pn-cls{font-size:3.6rem}}' +
+    '@media(max-width:760px){.pn-now{grid-template-columns:auto 1fr;padding:16px}.pn-art{display:none}.pn-cls{font-size:3rem}}' +
     /* buttons: 5px lip, 4px travel */
-    '.pn-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}' +
-    '.pn-a{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:14px;font:800 1rem "Plus Jakarta Sans",system-ui,sans-serif;cursor:pointer;color:#fff;background:#1e293b;border:1.5px solid #334155;border-bottom:5px solid #0f172a;transition:transform .18s var(--spring),border-bottom-width .18s var(--spring)}' +
+    '.pn-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}' +
+    '.pn-a{display:inline-flex;align-items:center;gap:7px;padding:11px 16px;border-radius:16px;font:800 .96rem "Plus Jakarta Sans",system-ui,sans-serif;cursor:pointer;color:var(--ink);background:#fff8ec;border:2.5px solid #ead9bf;border-bottom:5px solid #d1b68e;transition:transform .18s var(--spring),border-bottom-width .18s var(--spring)}' +
     '.pn-a:active{transform:translateY(4px);border-bottom-width:1px}.pn-a:focus-visible{outline:3px solid var(--link);outline-offset:2px}' +
-    '.pn-a.p{background:var(--go);border-color:#34d399;border-bottom-color:#047857}.pn-a.v{background:#7c3aed;border-color:#a78bfa;border-bottom-color:#4c1d95}' +
-    '.pn-a.s{padding:7px 12px;font-size:.84rem;border-radius:11px;border-bottom-width:4px}.pn-a.s:active{transform:translateY(3px);border-bottom-width:1px}' +
-    '.pn-pill{display:inline-block;border-radius:10px;padding:3px 10px;font-weight:800;font-size:.85rem;background:#1e293b;border:1px solid #334155;color:var(--ink)}' +
+    '.pn-a.p{background:var(--go);color:#fff;border-color:#23a370;border-bottom-color:#167d54}.pn-a.v{background:#9b7bff;color:#fff;border-color:#7857e6;border-bottom-color:#5738c4}' +
+    '.pn-a.s{padding:7px 12px;font-size:.84rem;border-radius:12px;border-bottom-width:4px}.pn-a.s:active{transform:translateY(3px);border-bottom-width:1px}' +
+    '.pn-pill{display:inline-block;border-radius:10px;padding:3px 10px;font-weight:800;font-size:.84rem;background:#eef6ff;border:2px solid #b7d8ff;color:#1d5fb0}' +
     /* the list */
-    '.pn-h{font:700 1.05rem "Plus Jakarta Sans",system-ui,sans-serif;margin:0 0 4px}' +
-    '.pn-row{display:grid;grid-template-columns:56px 52px 1fr;gap:6px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}.pn-h+.pn-row{border-top:0}' +
-    '.pn-row .tx{font-weight:700}.pn-row .bt{grid-column:3;display:flex;gap:6px;flex-wrap:wrap}.pn-row.done{opacity:.45}.pn-row.on .pn-t{color:var(--now)}' +
-    '.pn-t{font-weight:800;color:#c4b5fd;font-variant-numeric:tabular-nums}.pn-note{padding:8px 0;font-weight:700}' +
+    '.pn-h{font:800 1.08rem "Plus Jakarta Sans",system-ui,sans-serif;margin:0 0 4px;color:var(--ink)}' +
+    '.pn-row{display:grid;grid-template-columns:56px 52px 1fr;gap:6px 12px;align-items:center;padding:12px 0;border-top:2px solid #f2e8d8}.pn-h+.pn-row{border-top:0}' +
+    '.pn-row .tx{font-weight:800;color:var(--ink)}.pn-row .bt{grid-column:3;display:flex;gap:6px;flex-wrap:wrap}.pn-row.done{opacity:.52}.pn-row.on .pn-t{color:#b56500}' +
+    '.pn-t{font-weight:900;color:#6f4fe0;font-variant-numeric:tabular-nums}.pn-note{padding:8px 0;font-weight:800;color:var(--ink)}' +
     '@media(max-width:600px){.pn-row{grid-template-columns:48px 1fr}.pn-row .pn-pill{grid-column:2;justify-self:start}.pn-row .tx,.pn-row .bt{grid-column:1/-1}}' +
     /* tiles: art on top, caption tray below */
-    '.pn-sec{font:700 1.05rem "Plus Jakarta Sans",system-ui,sans-serif;margin:26px 0 0}' +
-    '.pn-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:12px}' +
-    '.pn-tile{display:grid;grid-template-rows:auto 1fr;padding:0;overflow:hidden;text-align:left;border-radius:20px;cursor:pointer;color:var(--ink);font:inherit;background:radial-gradient(circle at 50% 40%,#1b2540,#0b1222);border:1.5px solid var(--line);border-bottom:5px solid #0b1020;transition:transform .18s var(--spring),border-color .15s}' +
-    '.pn-tile:active{transform:translateY(4px);border-bottom-width:1px}.pn-tile:hover{border-color:#6d5bd0}.pn-tile:focus-visible{outline:3px solid var(--link);outline-offset:3px}' +
-    '.pn-tile .art{position:relative;display:flex;align-items:center;justify-content:center;padding:12px 12px 4px}.pn-tiles.sm .pn-tile .art img{height:94px}.pn-tile .art img{height:124px;width:auto;max-width:82%;object-fit:contain;filter:drop-shadow(0 10px 10px rgba(0,0,0,.45))}' +
-    '.pn-tile .art .e{font-size:3.2rem}.pn-tile .cap{background:rgba(6,9,17,.72);padding:10px 14px 12px;display:flex;flex-direction:column;justify-content:flex-start;gap:2px;border-top:1px solid var(--line)}' +
-    '.pn-tile b{font-size:1rem;line-height:1.2}.pn-tile small{color:var(--mute);font-size:.78rem;line-height:1.3}' +
-    '.pn-tiles.sm{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}' +
+    '.pn-sec{font:800 1.08rem "Plus Jakarta Sans",system-ui,sans-serif;margin:24px 0 0;color:var(--ink)}' +
+    '.pn-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:12px;margin-top:12px}' +
+    '.pn-tile{display:grid;grid-template-rows:auto 1fr;padding:0;overflow:hidden;text-align:left;border-radius:22px;cursor:pointer;color:var(--ink);font:inherit;background:linear-gradient(180deg,#eef7ff 0%,#ffffff 100%);border:3px solid #cfe6ff;border-bottom:6px solid #96c5f7;box-shadow:0 8px 18px -10px rgba(43,29,64,.25);transition:transform .18s var(--spring),border-color .15s}' +
+    '.pn-tile:active{transform:translateY(4px);border-bottom-width:2px}.pn-tile:hover{border-color:#9b7bff}.pn-tile:focus-visible{outline:3px solid var(--link);outline-offset:3px}' +
+    '.pn-tile .art{position:relative;display:flex;align-items:center;justify-content:center;padding:12px 12px 6px}.pn-tiles.sm .pn-tile .art img{height:88px}.pn-tile .art img{height:114px;width:auto;max-width:82%;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(43,29,64,.2))}' +
+    '.pn-tile .art .e{font-size:3rem}.pn-tile .cap{background:#ffffff;padding:10px 12px 12px;display:flex;flex-direction:column;justify-content:flex-start;gap:2px;border-top:2px solid #edf4ff}' +
+    '.pn-tile b{font-size:.98rem;line-height:1.2;color:var(--ink)}.pn-tile small{color:var(--mute);font-size:.78rem;line-height:1.3;font-weight:600}' +
+    '.pn-tiles.sm{grid-template-columns:repeat(auto-fill,minmax(142px,1fr))}' +
     '@media(prefers-reduced-motion:reduce){.pn-a,.pn-tile{transition:none}}' +
     '</style>';
   var SIDE_CSS = '' +
-    '.pn-search-btn{display:flex;align-items:center;gap:8px;width:100%;margin:2px 0 10px;padding:9px 12px;border-radius:12px;cursor:pointer;background:var(--bg-muted,#1e293b);border:1.5px solid var(--border-light,#334155);border-bottom:4px solid #020617;color:var(--text-main,#e5edff);font-weight:800;font-size:.9rem;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-color .14s}' +
+    '.pn-search-btn{display:flex;align-items:center;gap:8px;width:100%;margin:2px 0 10px;padding:9px 12px;border-radius:12px;cursor:pointer;background:var(--bg-muted,#fff8ec);border:2px solid var(--border-light,#ead9bf);border-bottom:4px solid #d1b68e;color:var(--text-main,#2b1d40);font-weight:800;font-size:.9rem;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-color .14s}' +
     '.pn-search-btn:hover{border-color:#6E56CF}.pn-search-btn:active{transform:translateY(3px);border-bottom-width:1px}' +
     '.pn-search-btn kbd{margin-left:auto;font:700 .7rem system-ui;opacity:.7;border:1px solid currentColor;border-radius:6px;padding:1px 5px}.nav-link-btn.pn-sub{padding-left:30px!important;font-size:.86em;opacity:.92}' +
     '.app-sidebar.is-collapsed .pn-search-btn kbd,.app-sidebar.is-collapsed .pn-search-btn .nav-label{display:none}' +
     'body:has(#app-view-container[data-view="home"]){overflow:hidden!important}' +
-    'body:has(#app-view-container[data-view="home"]) .app-header,body:has(#app-view-container[data-view="home"]) .app-sidebar{display:none!important}' +
+    'body:has(#app-view-container[data-view="home"]) .app-header,body:has(#app-view-container[data-view="home"]) .app-sidebar,body:has(#app-view-container[data-view="home"]) .eaa-mobile-tabbar,body:has(#app-view-container[data-view="home"]) .classroom-unified-dock{display:none!important}' +
     '';
   (function () { try { var st = document.createElement('style'); st.id = 'pn-side-css'; st.textContent = SIDE_CSS; document.head.appendChild(st); } catch (e) { /* optional */ } })();
   function card(inner, cls) { return '<div class="pn-card' + (cls ? ' ' + cls : '') + '">' + inner + '</div>'; }
@@ -278,8 +279,8 @@
       return;
     }
     c.innerHTML =
-      '<div class="pn-home3d-wrap" style="position:fixed;inset:0;z-index:2000;background:#78c4ff">' +
-        '<iframe id="pn-home3d-frame" class="pn-home3d-frame" src="home3d/index.html?v=10" title="Adventure Island · English Adventure Academy 3D Front Door" allow="autoplay; fullscreen" style="width:100%;height:100%;border:0;display:block"></iframe>' +
+      '<div class="pn-home3d-wrap" style="position:fixed;inset:0;width:100%;height:100%;height:100dvh;z-index:2000;background:#78c4ff">' +
+        '<iframe id="pn-home3d-frame" class="pn-home3d-frame" src="home3d/index.html?v=16" title="Adventure Island · English Adventure Academy 3D Front Door" allow="autoplay; fullscreen; microphone" style="width:100%;height:100%;border:0;display:block"></iframe>' +
         '<div class="sr-only" aria-hidden="false" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">' +
           'English Adventure Academy 3D Island Front Door — Tap the Castle for Today, the Theatre for Class Board, the Market for Shop, the Stadium for Games, or the Library Tower for Library.' +
         '</div>' +

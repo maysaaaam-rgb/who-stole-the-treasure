@@ -40,21 +40,54 @@
   }
 
   /* ---------- renderer / scene ---------- */
+  K.MOBILE = (function () {
+    try {
+      var ua = navigator.userAgent || '';
+      var touch = (navigator.maxTouchPoints > 0) || ('ontouchstart' in root);
+      var small = Math.min(screen.width || innerWidth || 1280, screen.height || innerHeight || 720) <= 920;
+      return /iPhone|iPad|iPod|Android/i.test(ua) || (touch && small);
+    } catch (e) { return false; }
+  })();
   K.init = function (opts) {
     opts = opts || {};
     var canvas = opts.canvas || document.getElementById('scene');
-    var r = K.renderer = new T3.WebGLRenderer({ canvas: canvas, antialias: true, preserveDrawingBuffer: K.CAPTURE, powerPreference: 'high-performance' });
-    // sharp picture: render at least 1.5x on normal screens (smooths jagged edges), up to 2x
-    K.quality = K.Q.get('q') || 'high';
+    var r = K.renderer = new T3.WebGLRenderer({ canvas: canvas, antialias: true, preserveDrawingBuffer: K.CAPTURE, powerPreference: K.MOBILE ? 'default' : 'high-performance' });
+    // sharp picture on desktops (up to 2x), VRAM-safe Retina cap on phones/tablets (up to 1.5x)
+    K.quality = K.Q.get('q') || (K.MOBILE ? 'mobile' : 'high');
     var dpr = root.devicePixelRatio || 1;
-    r.setPixelRatio(K.CAPTURE ? (+K.Q.get('pr') || 1) : K.quality === 'low' ? Math.min(1, dpr) : Math.min(2, Math.max(1.5, dpr)));
+    var pr = K.CAPTURE ? (+K.Q.get('pr') || 1)
+      : K.quality === 'low' ? Math.min(1, dpr)
+      : K.MOBILE ? Math.min(1.5, dpr)
+      : Math.min(2, Math.max(1.5, dpr));
+    r.setPixelRatio(pr);
     r.shadowMap.enabled = true;
     r.shadowMap.type = T3.PCFSoftShadowMap;
     K.scene = new T3.Scene();
     K.scene.fog = new T3.Fog(opts.fog || 0xcdeaff, opts.fogNear || 45, opts.fogFar || 120);
-    K.camera = new T3.PerspectiveCamera(opts.fov || 42, 16 / 9, .1, 400);
-    function resize() { var w = Math.max(2, innerWidth || 1280), h = Math.max(2, innerHeight || 720); r.setSize(w, h, false); K.camera.aspect = w / h; K.camera.updateProjectionMatrix(); }
-    addEventListener('resize', resize); resize();
+    K._baseFov = opts.fov || 42;
+    K._autoPortraitFov = opts.autoPortraitFov !== false;
+    K.camera = new T3.PerspectiveCamera(K._baseFov, 16 / 9, .1, opts.far || 400);
+    function resize() {
+      var vv = root.visualViewport;
+      var w = Math.max(2, Math.round((vv && vv.width) || innerWidth || 1280));
+      var h = Math.max(2, Math.round((vv && vv.height) || innerHeight || 720));
+      r.setSize(w, h, false);
+      var aspect = w / h;
+      K.camera.aspect = aspect;
+      if (K._autoPortraitFov) {
+        K.camera.fov = aspect < 1.05 ? K.clamp(K._baseFov * (1 + (1.05 - aspect) * 0.68), K._baseFov, 68) : K._baseFov;
+      }
+      K.camera.updateProjectionMatrix();
+    }
+    K.resize = resize;
+    addEventListener('resize', resize);
+    addEventListener('orientationchange', function () { setTimeout(resize, 120); setTimeout(resize, 360); });
+    if (root.visualViewport && root.visualViewport.addEventListener) root.visualViewport.addEventListener('resize', resize);
+    if (canvas) {
+      canvas.addEventListener('webglcontextlost', function (e) { e.preventDefault(); }, false);
+      canvas.addEventListener('webglcontextrestored', function () { resize(); }, false);
+    }
+    resize();
     if (Q.has('preview')) document.body.classList.add('preview');
     return K;
   };
@@ -156,17 +189,25 @@
     if (a && BUF[name]) { var s = a.createBufferSource(), g = a.createGain(); s.buffer = BUF[name]; g.gain.value = vol || 1; s.connect(g); g.connect(a.destination); s.start(); return; }
     if (SYN[name]) SYN[name]();
   };
-  K.loadSounds = function (names) {
+  K.loadSounds = function (names, opts) {
     var a = K.audio(); if (!a || K.loadSounds.done || K.CAPTURE) return; K.loadSounds.done = true;
-    names.concat(['music', 'crowd']).forEach(function (k) {
+    var list = (opts && opts.noLoops) ? names.slice() : names.concat(['music', 'crowd']);
+    list.forEach(function (k) {
       fetch('sfx/' + k + '.mp3').then(function (r) { if (!r.ok) throw 0; return r.arrayBuffer(); })
         .then(function (b) { return a.decodeAudioData(b); })
         .then(function (buf) { BUF[k] = buf; if (k === 'music' || k === 'crowd') K.loop(k); }).catch(function () {});
     });
   };
-  /* short English phrases spoken aloud (rate .88, pitch 1.05, en-US); silent in automatic tests */
+  /* Unlock iOS Safari / Android Chrome Web Audio on first user tap */
+  ['pointerdown', 'touchstart'].forEach(function (ev) {
+    root.addEventListener(ev, function unlock() {
+      if (!K.CAPTURE) K.audio();
+      root.removeEventListener(ev, unlock, true);
+    }, { capture: true, passive: true });
+  });
+  /* short English phrases spoken aloud (rate .88, pitch 1.05, en-US); silent in automatic tests or when muted */
   K.say = function (text) {
-    if (K.muted || K.CAPTURE || !root.speechSynthesis || !text) return;
+    if (K.muted || K.CAPTURE || K.DEMO || !root.speechSynthesis || !text) return;
     try {
       var u = new SpeechSynthesisUtterance(String(text)); u.lang = 'en-US'; u.rate = .88; u.pitch = 1.05;
       var v = (speechSynthesis.getVoices() || []).filter(function (x) { return /^en(-|_)US/i.test(x.lang); })[0]; if (v) u.voice = v;
@@ -197,7 +238,7 @@
   K.world.lights = function () {
     K.scene.add(new T3.HemisphereLight(0xffffff, 0x9ad08a, 1.15));
     var sun = K.sun = new T3.DirectionalLight(0xfff4e0, 1.6);
-    sun.castShadow = true; var sm = K.quality === 'low' ? 1024 : 2048; sun.shadow.mapSize.set(sm, sm); sun.shadow.bias = -.0004; sun.shadow.normalBias = .02;
+    sun.castShadow = true; var sm = (K.quality === 'low' || K.MOBILE) ? 1024 : 2048; sun.shadow.mapSize.set(sm, sm); sun.shadow.bias = -.0004; sun.shadow.normalBias = .02;
     var sc = sun.shadow.camera; sc.left = -16; sc.right = 16; sc.top = 12; sc.bottom = -12; sc.near = 1; sc.far = 80;
     K.scene.add(sun); K.scene.add(sun.target);
     K.onFrame(function () {   // shadows follow what the camera looks at
@@ -700,23 +741,28 @@
     var tb = K.ui.add(K.el('div', 'topbtns'));
     var mu = K.el('button', 'ibtn', K.muted ? '🔇' : '🔊'); mu.title = 'Sound on/off';
     mu.onclick = function () { K.muted = !K.muted; mu.textContent = K.muted ? '🔇' : '🔊'; K.loopVol('music', .25); K.loopVol('crowd', .18); };
+    var de = document.documentElement;
+    var canFs = !!(de.requestFullscreen || de.webkitRequestFullscreen);
     var fs = K.el('button', 'ibtn', '⛶'); fs.title = 'Full screen';
-    fs.onclick = function () { if (!document.fullscreenElement) { if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); } else document.exitFullscreen(); };
+    if (!canFs) fs.style.display = 'none';
+    fs.onclick = function () {
+      try {
+        var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+        if (!isFs) {
+          var req = de.requestFullscreen || de.webkitRequestFullscreen;
+          if (req) { var p = req.call(de); if (p && p.catch) p.catch(function () {}); }
+        } else {
+          var ex = document.exitFullscreen || document.webkitExitFullscreen;
+          if (ex) { var p2 = ex.call(document); if (p2 && p2.catch) p2.catch(function () {}); }
+        }
+      } catch (e) {}
+    };
     var bk = K.el('button', 'ibtn', '✕'); bk.title = 'Back to games'; bk.onclick = function () { location.href = back || '../index.html'; };
     tb.appendChild(mu); tb.appendChild(fs); tb.appendChild(bk);
   };
   var keyFn = null;
   addEventListener('keydown', function (e) { if (keyFn) keyFn(e); });
   /* question card: resolves true/false. In demo mode it answers by itself (demoRight decides). */
-  // read English aloud: classroom voice settings (AGENTS.md 1.3)
-  K.say = function (text) {
-    try {
-      var ss = root.speechSynthesis; if (!ss || !text || K.DEMO) return;
-      ss.cancel(); var u = new SpeechSynthesisUtterance(String(text)); u.lang = 'en-US'; u.rate = .88; u.pitch = 1.05;
-      var v = (ss.getVoices() || []).filter(function (x) { return /^en(-|_)US/i.test(x.lang); })[0]; if (v) u.voice = v;
-      ss.speak(u);
-    } catch (e) { /* no voice on this device */ }
-  };
   K.ui.ask = function (item, team, opts) {
     opts = opts || {};
     return new Promise(function (resolve) {
