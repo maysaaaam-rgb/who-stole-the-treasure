@@ -276,3 +276,101 @@ html:not(#_b) body .cr-legend span, html:not(#_b) body .cr-legend { color: var(-
 html:not(#_b) body .hw-tab-btn:not(.is-active) { color: var(--bp-ink2) !important; }
 html:not(#_b) body #app-view-container p[style*="text-muted"], html:not(#_b) body #app-view-container [style*="color:var(--text-muted)"], html:not(#_b) body #app-view-container [style*="color: var(--text-muted)"] { color: var(--bp-muted) !important; }
 html:not(#_b) body .cr-hd, html:not(#_b) body .cr-hd h1, html:not(#_b) body .cr-hd h2 { color: var(--bp-ink) !important; }
+
+/* ===== Cross-Device Phone & Tablet Safeguards (390x844, 844x390, 820x1180, 1024x768) ===== */
+html:not(#_b) body #platform-lock-screen { min-height: 100vh; min-height: 100dvh; }
+html:not(#_b) body .app-header .header-inner {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  overflow: hidden !important;
+}
+html:not(#_b) body .app-header .brand-section {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+html:not(#_b) body .app-header .header-right {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: safe flex-end !important;
+  gap: 6px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px 0;
+}
+html:not(#_b) body .app-header .header-right::-webkit-scrollbar { display: none; }
+html:not(#_b) body .app-header .header-right > * { flex: 0 0 auto !important; }
+html:not(#_b) body .app-header .cm-toggle { margin-right: 0 !important; }
+html:not(#_b) body .app-header .mobile-nav-toggle-btn { margin-right: 0 !important; }
+
+/* Full-screen 3D Island home view: hide phone tabbar & classroom dock so Island HUD never collides */
+body:has(#app-view-container[data-view="home"]) .eaa-mobile-tabbar,
+body:has(#app-view-container[data-view="home"]) .classroom-unified-dock {
+  display: none !important;
+}
+
+/* Tablets (769px–1080px): prevent header crowding/overlap while keeping all controls 1-tap reachable */
+@media (max-width: 1080px) {
+  html:not(#_b) body .app-header .header-inner { padding: 0 10px !important; gap: 6px !important; }
+  html:not(#_b) body .app-header #cm-toggle,
+  html:not(#_b) body .app-header #cm-gm-btn,
+  html:not(#_b) body .app-header #cm-sb-btn,
+  html:not(#_b) body .app-header #btn-header-create,
+  html:not(#_b) body .app-header #btn-role-dropdown {
+    padding: 5px 8px !important;
+    min-height: 34px !important;
+    font-size: 0.76rem !important;
+  }
+  html:not(#_b) body .app-header .cm-classes { padding: 3px !important; gap: 3px !important; }
+  html:not(#_b) body .app-header .cm-classes .cm-cls { padding: 4px 7px !important; min-height: 30px !important; min-width: 32px !important; font-size: 0.76rem !important; }
+}
+@media (max-width: 940px) {
+  html:not(#_b) body .app-header #cm-sb-btn { display: none !important; }
+  html:not(#_b) body .app-header #btn-header-create > svg { display: none !important; }
+}
+
+/* Phones (<= 768px): clean single-row header, sleek single-row scrollable Class Board dock, zero horizontal overflow */
+@media (max-width: 768px) {
+  html:not(#_b) body .app-header .header-inner { padding: 0 8px !important; gap: 5px !important; }
+  html:not(#_b) body .app-header #cm-sb-btn,
+  html:not(#_b) body .app-header #cm-gm-btn { display: none !important; }
+  html:not(#_b) body .app-header #cm-toggle { padding: 5px 8px !important; min-height: 34px !important; font-size: 0.76rem !important; }
+  html:not(#_b) body .app-header .cm-classes { padding: 2px !important; gap: 3px !important; }
+  html:not(#_b) body .app-header .cm-classes .cm-cls { padding: 4px 7px !important; min-height: 30px !important; min-width: 32px !important; font-size: 0.74rem !important; }
+
+  /* Class Board floating dock: single-row horizontal scroll pill above mobile tabbar in BOTH Teacher & Class Modes */
+  html:not(.class-mode):not(#_b) body .cb-dock,
+  html.class-mode:not(#_b) body .cb-dock {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    transform: translateX(-50%) !important;
+    width: max-content !important;
+    max-width: calc(100vw - 12px) !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none !important;
+    padding: 6px 8px !important;
+    gap: 5px !important;
+    border-radius: 18px !important;
+    z-index: 1020 !important;
+  }
+  html:not(#_b) body .cb-dock::-webkit-scrollbar { display: none; }
+  html:not(#_b) body .cb-dock > * { flex: 0 0 auto !important; white-space: nowrap !important; }
+  html:not(#_b) body .cb-dock button { padding: 6px 10px !important; font-size: 0.76rem !important; border-radius: 12px !important; border-bottom-width: 4px !important; }
+  html:not(#_b) body .cb-today { padding: 6px 10px !important; border-radius: 18px !important; }
+  html:not(#_b) body .cb-today a { min-width: 0 !important; max-width: calc(100vw - 108px) !important; }
+  html:not(#_b) body .cb { padding-bottom: 136px !important; }
+}

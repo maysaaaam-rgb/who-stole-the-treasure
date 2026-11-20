@@ -397,6 +397,4 @@ html.class-mode .app-header {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
     gap: 12px !important;
   }
-
-  }
 }

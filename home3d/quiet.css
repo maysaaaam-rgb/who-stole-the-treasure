@@ -318,3 +318,19 @@
 .qi-tbtn.c-uneasy { border-color: #ffb320; border-bottom-color: #c98200; }
 .qi-tbtn.c-loud { border-color: #ff5fa2; border-bottom-color: #c93776; }
 .qi-tbtn.c-ret { border-color: #4f9dff; border-bottom-color: #2d76d4; }
+
+@media (max-width: 680px) {
+  .qi-top-btn { width: 42px; height: 42px; font-size: 1.12rem; border-bottom-width: 4px; }
+  .qi-panel {
+    top: calc(62px + env(safe-area-inset-top, 0px));
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-height: calc(100dvh - 80px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 13px 14px;
+    border-radius: 22px;
+  }
+  .qi-testbar { left: 10px; right: 10px; bottom: calc(66px + env(safe-area-inset-bottom, 0px)); padding: 8px 10px; gap: 6px; }
+}

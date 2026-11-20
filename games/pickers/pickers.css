@@ -424,3 +424,21 @@
   color: #3a2748;
   resize: vertical;
 }
+
+@media (max-width: 680px) {
+  .pk-wrap { padding-top: 56px; gap: 10px; }
+  .pk-hud { padding: 8px 10px; gap: 6px; border-radius: 18px; }
+  .pk-pill { padding: 5px 10px; font-size: 0.82rem; }
+  .pk-stage { min-height: 360px; padding: 12px; border-radius: 22px; }
+  .pk-prompt-card { width: 100%; max-width: 100%; padding: 6px 10px; }
+  .pk-ufo-track { height: 132px; }
+  .pk-ufo-ship { width: 118px; }
+  .pk-washer-wrap { width: 190px; height: 190px; }
+  .pk-washer-img { width: 184px; height: 184px; }
+  .pk-washer-drum { width: 86px; height: 86px; top: 60px; left: 52px; font-size: 0.82rem; }
+  .pk-dragon-img { width: 156px; height: 156px; }
+  .pk-crowd { gap: 7px; }
+  .pk-chip { padding: 6px 11px; font-size: 0.9rem; border-bottom-width: 4px; }
+  .pk-spotlight { padding: 10px 14px; gap: 10px; border-radius: 20px; }
+  .pk-go-btn { font-size: 1.05rem !important; padding: 11px 22px !important; }
+}

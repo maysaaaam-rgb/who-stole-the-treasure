@@ -8,7 +8,7 @@
   var K = window.K3, T3 = window.THREE;
   K.ROOT = '../';
   var rnd = K.rnd, clamp = K.clamp, V = function (x, y, z) { return new T3.Vector3(x, y, z); };
-  K.init({ fov: 30, fog: 0x269dad, fogNear: 210, fogFar: 420 });   // clear ocean view with only gentle far-horizon blend
+  K.init({ fov: 30, fog: 0x269dad, fogNear: 210, fogFar: 420, far: 700, autoPortraitFov: false });   // clear ocean view with only gentle far-horizon blend
   var scene = K.scene, ROOT = '../';
   scene.fog = new T3.Fog(0x52c4d4, 210, 420);
   var NOLINKS = K.Q.has('nolinks') || K.DEMO;
@@ -34,7 +34,8 @@
   var hemiLight = new T3.HemisphereLight(0xd8f3ff, 0x7cb860, 0.78);   // generous soft fill so shadows are airy & soft, never black blotches
   scene.add(hemiLight);
   var sun = new T3.DirectionalLight(0xfff2d8, 1.65);   // gentle warm daylight sun with ultra-soft feathered shadows
-  sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+  var smSz = K.MOBILE ? 1024 : 2048;
+  sun.castShadow = true; sun.shadow.mapSize.set(smSz, smSz);
   sun.shadow.radius = 6.0;
   sun.shadow.bias = -.00045; sun.shadow.normalBias = .032;
   var sc = sun.shadow.camera; sc.left = -68; sc.right = 68; sc.top = 54; sc.bottom = -54; sc.near = 1; sc.far = 230;
@@ -193,7 +194,7 @@
       c.restore();
     }
     function draw() {
-      var W = innerWidth, H = innerHeight, d = Math.min(devicePixelRatio || 1, 2);
+      var W = innerWidth, H = innerHeight, d = Math.min(devicePixelRatio || 1, K.MOBILE ? 1.5 : 2);
       if (W < 2 || H < 2) return;
       cv.width = W * d; cv.height = H * d; var c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H);
       var base = Math.max(W, H * 1.35);
@@ -806,7 +807,7 @@
   var view = { yaw: 0, pitch: .50, zoom: 1, panX: 0, panZ: 0 };
   var parallax = { x: 0, y: 0, tx: 0, ty: 0 };
   addEventListener('pointermove', function (e) {
-    if (drag || flying) return;
+    if (drag || flying || e.pointerType === 'touch') return;
     parallax.tx = clamp((e.clientX / Math.max(1, innerWidth) - 0.5) * 2, -1, 1);
     parallax.ty = clamp((e.clientY / Math.max(1, innerHeight) - 0.5) * 2, -1, 1);
   });
@@ -852,8 +853,8 @@
     if (soundsOn || K.CAPTURE) return;
     soundsOn = true;
     K.audio();
-    // Load only UI sounds (tap, whoosh) — silence the repetitive baked-bird crowd.mp3 loop
-    K.loadSounds(['tap', 'whoosh']);
+    // Load only UI sounds (tap, whoosh) — noLoops skips nonexistent music.mp3 / repetitive crowd.mp3
+    K.loadSounds(['tap', 'whoosh'], { noLoops: true });
     setTimeout(function () { if (K.loopVol) { K.loopVol('crowd', 0); K.loopVol('music', 0); } }, 400);
     setTimeout(function () { if (K.loopVol) { K.loopVol('crowd', 0); K.loopVol('music', 0); } }, 1500);
   }
@@ -889,7 +890,7 @@
       drag = null;
       return;
     }
-    var isPan = (e.button === 2) || e.shiftKey || (e.button === 1);
+    var isPan = (e.button === 2) || e.shiftKey || (e.button === 1) || (e.pointerType === 'touch' && view.zoom < .75);
     drag = {
       id: e.pointerId, x: e.clientX, y: e.clientY,
       yaw: view.yaw, pitch: view.pitch, panX: view.panX, panZ: view.panZ,
@@ -1013,10 +1014,21 @@
     tmpCam.copy(K.camera); tmpCam.position.copy(camPos(d, yaw, PITCH, FIT.look)); tmpCam.lookAt(FIT.look); tmpCam.updateMatrixWorld(true); tmpCam.updateProjectionMatrix();
     return FIT.pts.every(function (p) { var v = p.clone().project(tmpCam); return v.x > SAFE.x0 && v.x < SAFE.x1 && v.y > SAFE.y0 && v.y < SAFE.y1 && v.z < 1; });
   }
+  function updatePortraitFov() {
+    var asp = K.camera.aspect || 1.6;
+    // Landscape/desktop stays exact 30°; portrait phones & tablets gently widen FOV so the entire island stays close, vibrant & uncropped!
+    var wantFov = asp < 1.15 ? clamp(30 + (1.15 - asp) * 32, 30, 52) : 30;
+    if (Math.abs(K.camera.fov - wantFov) > 0.05) {
+      K.camera.fov = wantFov;
+      K.camera.updateProjectionMatrix();
+      FIT.key = '';
+    }
+  }
   function fitDistance(yaw) {
-    var key = K.camera.aspect.toFixed(3) + '/' + yaw.toFixed(2);
+    updatePortraitFov();
+    var key = K.camera.aspect.toFixed(3) + '/' + K.camera.fov.toFixed(1) + '/' + yaw.toFixed(2);
     if (key === FIT.key) return FIT.d;
-    var lo = 20, hi = 320; for (var i = 0; i < 22; i++) { var mid = (lo + hi) / 2; if (fits(mid, yaw)) hi = mid; else lo = mid; }
+    var lo = 20, hi = 420; for (var i = 0; i < 22; i++) { var mid = (lo + hi) / 2; if (fits(mid, yaw)) hi = mid; else lo = mid; }
     FIT.key = key; FIT.d = hi; return hi;
   }
   var curLook = V();
@@ -1029,7 +1041,12 @@
       var yaw = view.yaw + parallax.x * 0.055 * pAmt;
       var pit = clamp(view.pitch + parallax.y * 0.032 * pAmt, .24, 1.18);
       var baseD = fitDistance(Math.round(clamp(view.yaw, -.6, .6) * 20) / 20) * 1.03;
-      var d = clamp(baseD * view.zoom, 11, 220);
+      var maxD = Math.max(240, baseD * 1.25);
+      var d = clamp(baseD * view.zoom, 11, maxD);
+      if (scene.fog) {
+        scene.fog.near = Math.max(210, d * 1.25);
+        scene.fog.far = Math.max(420, d * 2.35);
+      }
       var a = yaw + (view.zoom > .85 ? Math.sin(K.now * .06) * .014 : 0);
       curLook.set(FIT.look.x + view.panX, FIT.look.y + (view.zoom < .4 ? 1.4 : 0), FIT.look.z + view.panZ);
       K.cam.tPos.copy(camPos(d, a, pit, curLook));
@@ -1090,10 +1107,23 @@
     if (tb) {
       var btns = tb.querySelectorAll('button');
       if (btns[1]) {
+        var fsDoc = document;
+        try { if (window.top && window.top.document) fsDoc = window.top.document; } catch (e) { fsDoc = document; }
+        var fsEl = fsDoc.documentElement;
+        if (!(fsEl && (fsEl.requestFullscreen || fsEl.webkitRequestFullscreen))) {
+          btns[1].style.display = 'none';
+        }
         btns[1].onclick = function () {
-          var doc = (window.top && window.top.document) || document;
-          if (!doc.fullscreenElement) { if (doc.documentElement.requestFullscreen) doc.documentElement.requestFullscreen(); }
-          else if (doc.exitFullscreen) doc.exitFullscreen();
+          try {
+            var isFs = !!(fsDoc.fullscreenElement || fsDoc.webkitFullscreenElement);
+            if (!isFs) {
+              var req = fsEl.requestFullscreen || fsEl.webkitRequestFullscreen;
+              if (req) { var p = req.call(fsEl); if (p && p.catch) p.catch(function () {}); }
+            } else {
+              var ex = fsDoc.exitFullscreen || fsDoc.webkitExitFullscreen;
+              if (ex) { var p2 = ex.call(fsDoc); if (p2 && p2.catch) p2.catch(function () {}); }
+            }
+          } catch (e) {}
         };
       }
       if (btns[2]) {

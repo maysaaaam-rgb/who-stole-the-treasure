@@ -1,9 +1,10 @@
 /* 3D Race · overlay UI on top of the live Three.js scene */
-* { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; overflow: hidden; background: #bfe6ff; font-family: "Nunito", "Trebuchet MS", "Segoe UI", system-ui, sans-serif; color: #2b1d40; }
-#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; width: 100%; height: 100%; height: 100dvh; overflow: hidden; overscroll-behavior: none; background: #bfe6ff; font-family: "Nunito", "Trebuchet MS", "Segoe UI", system-ui, sans-serif; color: #2b1d40; }
+#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 #ui { position: fixed; inset: 0; pointer-events: none; }
 #ui > * { pointer-events: auto; }
+button { touch-action: manipulation; }
 
 .btn { border: 0; border-radius: 999px; padding: 14px 30px; font-family: inherit; font-weight: 900; font-size: 1.25rem; color: #fff; cursor: pointer;
   background: #ff6fae; box-shadow: 0 6px 0 #d4448a, 0 14px 24px -10px rgba(0,0,0,.4); transition: transform .1s; }
@@ -149,3 +150,81 @@ body.preview .hud { top: 76px; }
 .qtext .qimg { width: 92px; height: 92px; object-fit: contain; border-radius: 16px; background: #fff8ec; flex-shrink: 0; }
 .qtext .qsay { border: 0; border-radius: 999px; width: 46px; height: 46px; font-size: 1.4rem; cursor: pointer; background: #4f9dff; color: #fff; box-shadow: 0 4px 0 #2f74c9; flex-shrink: 0; }
 .qtext .qsay:active { transform: translateY(3px); box-shadow: 0 1px 0 #2f74c9; }
+
+/* ---------- Phone & Tablet Responsive Safeguards (390x844, 844x390, 820x1180) ---------- */
+.topbtns { top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); z-index: 60; }
+.toast, .hint, .say { max-width: calc(100vw - 24px); white-space: normal; text-align: center; }
+
+@media (max-width: 760px) {
+  .ibtn { width: 42px; height: 42px; font-size: 1.15rem; }
+  .topbtns { gap: 6px; }
+  .hud { top: calc(60px + env(safe-area-inset-top, 0px)); gap: 6px; flex-wrap: wrap; justify-content: center; width: calc(100vw - 16px); }
+  .tpill { padding: 4px 9px 4px 4px; gap: 5px; font-size: 0.84rem; border-width: 3px; }
+  .tpill i { width: 24px; height: 24px; font-size: 0.76rem; }
+  .tpill b { min-width: 20px; }
+  .endbox {
+    top: calc(60px + env(safe-area-inset-top, 0px));
+    bottom: max(10px, env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(560px, calc(100vw - 16px));
+    max-height: calc(100dvh - 72px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    gap: 9px;
+    padding: 4px 4px 12px !important;
+    margin: 0 !important;
+  }
+  .endbox .logo { max-height: 76px; width: auto; max-width: 82vw; flex-shrink: 0; }
+  .say { padding: 8px 14px; font-size: 0.96rem; border-radius: 18px; border-width: 3px; }
+  .btn { padding: 11px 20px; font-size: 1.05rem; }
+  .endbox .rows { flex-wrap: wrap; justify-content: center; width: 100%; }
+  .setbtn { padding: 6px 12px; font-size: 0.88rem; }
+  .setbtn.sm { padding: 5px 10px; font-size: 0.8rem; }
+  .setlab { padding: 5px 10px; font-size: 0.85rem; }
+  .qwrap { padding: 12px 8px max(12px, env(safe-area-inset-bottom)); }
+  .qcard { width: 100%; max-height: 78dvh; overflow-y: auto; padding: 14px 14px 16px; border-radius: 24px; border-width: 5px; }
+  .qtext { font-size: clamp(1.1rem, 4.4vw, 1.45rem); gap: 10px; margin: 4px 0 12px; }
+  .qtext .qimg { width: 64px; height: 64px; }
+  .qtext .pic { font-size: 2rem; }
+  .opts { grid-template-columns: 1fr; gap: 9px; }
+  .opt { padding: 13px 14px; font-size: 1.08rem; border-radius: 16px; }
+  .bottom { bottom: max(12px, env(safe-area-inset-bottom)); gap: 8px; flex-wrap: wrap; justify-content: center; max-width: calc(100vw - 16px); }
+  .hint { bottom: max(14px, env(safe-area-inset-bottom)); padding: 8px 16px; font-size: 1.02rem; }
+  .toast { top: calc(108px + env(safe-area-inset-top, 0px)); font-size: 1.04rem; padding: 8px 16px; }
+  .big { font-size: clamp(2.8rem, 13vw, 6rem); -webkit-text-stroke: 5px #2b1d40; white-space: normal; text-align: center; max-width: 94vw; }
+  .big.small { font-size: clamp(1.7rem, 6.5vw, 3rem); -webkit-text-stroke: 4px #2b1d40; }
+  .pickbar { bottom: max(10px, env(safe-area-inset-bottom)); padding: 10px 12px 12px; border-width: 4px; width: calc(100vw - 16px); }
+  .pickbar .pt { font-size: 1.05rem; text-align: center; }
+  .pickgrid { grid-template-columns: repeat(4, minmax(56px, 1fr)); gap: 8px; width: 100%; }
+  .pnum { width: 100%; height: 52px; font-size: 1.35rem; border-radius: 14px; }
+  .choice { bottom: max(12px, env(safe-area-inset-bottom)); padding: 12px 14px 14px; width: calc(100vw - 16px); border-width: 4px; }
+  .cbtn { padding: 11px 18px; font-size: 1rem; }
+  .powermeter { right: 10px; }
+  .pm-bar { width: 30px; height: 38dvh; }
+  .pm-lab { font-size: 0.85rem; padding: 4px 9px; }
+  .xpcard { max-height: 44dvh; padding: 10px 12px; }
+  .xprow { flex-wrap: wrap; gap: 6px; }
+}
+
+/* Short landscape phones (e.g. 844x390) */
+@media (max-height: 520px) {
+  .endbox {
+    top: 56px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 64px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 4px 8px 10px !important;
+    margin: 0 !important;
+  }
+  .endbox .logo { max-height: 62px; width: auto; }
+  .say { padding: 6px 14px; font-size: 0.94rem; }
+  .btn { padding: 9px 18px; font-size: 1rem; }
+  .qcard { padding: 12px 16px; max-height: 82dvh; overflow-y: auto; }
+  .qtext { font-size: 1.15rem; margin: 2px 0 10px; }
+  .opt { padding: 10px 8px; font-size: 1rem; }
+}

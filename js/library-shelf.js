@@ -91,12 +91,12 @@
   }
 
   var KIND_BADGE = {
-    lesson:    { label: 'LESSON',    bg: 'rgba(168, 85, 247, 0.22)', fg: '#e9d5ff' },
-    review:    { label: 'REVIEW',    bg: 'rgba(245, 158, 11, 0.22)', fg: '#fde68a' },
-    quiz:      { label: 'QUIZ',      bg: 'rgba(244, 63, 94, 0.22)', fg: '#fecdd3' },
-    printable: { label: 'PRINTABLE', bg: 'rgba(16, 185, 129, 0.22)', fg: '#a7f3d0' },
-    homework:  { label: 'HOMEWORK',  bg: 'rgba(56, 189, 248, 0.22)', fg: '#bae6fd' },
-    song:      { label: 'SONG',      bg: 'rgba(139, 92, 246, 0.22)', fg: '#ddd6fe' }
+    lesson:    { label: 'LESSON',    bg: '#efe6ff', fg: '#5b21b6' },
+    review:    { label: 'REVIEW',    bg: '#fff2cc', fg: '#92400e' },
+    quiz:      { label: 'QUIZ',      bg: '#ffe4ec', fg: '#9f1239' },
+    printable: { label: 'PRINTABLE', bg: '#d9f7ea', fg: '#065f46' },
+    homework:  { label: 'HOMEWORK',  bg: '#dff2ff', fg: '#075985' },
+    song:      { label: 'SONG',      bg: '#ede9fe', fg: '#4c1d95' }
   };
 
   function matchingPlan(route) {
@@ -119,7 +119,7 @@
     var kb = KIND_BADGE[c.kind || 'lesson'] || KIND_BADGE.lesson;
     var kindPill = '<span class="ls-k" style="background:' + kb.bg + ';color:' + kb.fg + '">' + kb.label + '</span>';
     var plan = matchingPlan(c.route);
-    var planPill = plan ? '<span class="ls-k" style="background:rgba(232, 166, 48, 0.18);color:#e5edff;border:1px solid #26324a" onclick="event.preventDefault();event.stopPropagation();window.open(\'lesson-plans/' + esc(plan.file) + '.pdf\',\'_blank\')" title="Open PDF Lesson Plan">📄 Plan PDF</span>' : '';
+    var planPill = plan ? '<span class="ls-k" style="background:#fff3d6;color:#7a4500;border:1.5px solid #f0c975" onclick="event.preventDefault();event.stopPropagation();window.open(\'lesson-plans/' + esc(plan.file) + '.pdf\',\'_blank\')" title="Open PDF Lesson Plan">📄 Plan PDF</span>' : '';
     return '<a class="ls-card" href="' + esc(c.route) + '">' +
       '<span class="ls-ic">' + esc(c.icon || '📖') + '</span>' +
       '<span class="ls-tx"><b>' + esc(c.title) + '</b>' +

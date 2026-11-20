@@ -81,7 +81,7 @@
     opts = opts || {};
     var root = new T3.Group(); K.scene.add(root);
     var report = { real: [], standIn: [] };
-    return Promise.all([getJSON(DATA_DIR + 'pieces.json'), getJSON(DATA_DIR + 'map.json')]).then(function (res) {
+    return Promise.all([getJSON(DATA_DIR + 'pieces.json?v=2'), getJSON(DATA_DIR + 'map.json')]).then(function (res) {
       var defs = res[0].pieces, grounds = res[0].grounds, map = res[1];
       var zone = map.zones[opts.zone || 'plaza'] || { x: 0, z: 0 };
       root.position.set(-zone.x, 0, -zone.z);
@@ -130,7 +130,7 @@
       var jobs = Object.keys(byType).map(function (id) {
         var def = defs[id]; if (!def) return Promise.resolve();
         if (opts.skip && opts.skip.indexOf(id) >= 0) return Promise.resolve();
-        return K.tryGLB(MODEL_DIR + def.file).then(function (gltf) {
+        return (def.file ? K.tryGLB(MODEL_DIR + def.file) : Promise.resolve(null)).then(function (gltf) {
           var proto;
           if (gltf) {
             proto = gltf.scene; report.real.push(id);

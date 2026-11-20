@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#fff8f3">
   <title>Games Collection · English Adventure Academy</title>
   <link rel="icon" href="../favicon.ico">
-  <link rel="stylesheet" href="kit/kit.css?v=3">
+  <link rel="stylesheet" href="kit/kit.css?v=4">
   <style>
     .hub { max-width: 1260px; margin: 0 auto; padding: 84px 18px 48px; }
     .hub-hero {
@@ -96,6 +96,9 @@
       opacity: 0; transform: translateY(4px); transition: opacity .18s, transform .18s;
     }
     .gcard:hover .badge.watch-btn { opacity: 1; transform: translateY(0); }
+    @media (hover: none), (pointer: coarse) {
+      .badge.watch-btn { opacity: 1; transform: none; }
+    }
 
     .gbody { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
     .gcat { font-size: .7em; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; color: var(--plum-soft); display: flex; align-items: center; gap: 5px; }
@@ -134,10 +137,12 @@
     .empty { text-align: center; padding: 40px; font-weight: 800; color: var(--plum-soft); }
 
     @media (max-width: 820px) {
-      .hub-hero { grid-template-columns: 1fr; padding: 24px; }
-      .hub-hero h1 { font-size: 2.25em; }
+      .hub { padding: 74px 12px max(36px, env(safe-area-inset-bottom)); }
+      .hub-hero { grid-template-columns: 1fr; padding: 20px 18px; border-radius: 26px; }
+      .hub-hero h1 { font-size: 2.1em; }
       .hub-art { display: none; }
       .hub-right-tools, .search { width: 100%; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
     }
   </style>
 </head>
@@ -175,7 +180,7 @@
   </main>
 
   <script src="kit/packs.js?v=3"></script>
-  <script src="kit/kit.js?v=3"></script>
+  <script src="kit/kit.js?v=4"></script>
   <script src="kit/classroom.js?v=3"></script>
   <script src="kit/questions.js?v=3"></script>
   <script>
@@ -330,14 +335,8 @@
     }
 
     var canHover = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
-    var io = !canHover && !reduceMotion && 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        var m = e.target;
-        var g = GAMES.filter(function (x) { return x.id === m.dataset.id; })[0];
-        if (e.isIntersecting && e.intersectionRatio > 0.72) startPreview(m, g);
-        else stopPreview(m);
-      });
-    }, { threshold: [0, 0.72] }) : null;
+    /* Touch devices (phones/tablets): keep crisp cover posters on scroll — never auto-spawn WebGL preview iframes while scrolling. Users tap 🎬 Preview anytime! */
+    var io = null;
 
     function openVideoModal(g, url) {
       var box = el('div', { class: 'vid-modal-stage' });
