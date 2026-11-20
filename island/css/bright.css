@@ -176,3 +176,16 @@ body.w-page .isl-topbar { display: none !important; }
 .ch1-loot-item.highlight { border-color: var(--bp-yellow) !important; }
 .ch1-silver-bubble, .ch1-npc-speech { background: #fff !important; color: var(--bp-ink) !important; border-color: var(--bp-yellow) !important; }
 .ch1-modal-header { background: transparent !important; }
+
+/* Chapter 1 clue window: readable stop pill + usable on phones held sideways (short screens) */
+.ch1-stop-pill { color: #7a4300 !important; background: #ffe7b0 !important; border-color: #f0b54a !important; }
+@media (max-height: 520px) {
+  .ch1-modal-backdrop { align-items: flex-start !important; padding-top: 1vh !important; }
+  .ch1-modal-card { max-height: 98vh !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
+  .ch1-mg-stage { flex: none !important; overflow: visible !important; justify-content: flex-start !important; }
+  .ch1-modal-header { padding: 4px 12px !important; }
+  .ch1-modal-title { font-size: 1rem !important; }
+  .ch1-stage-Cast { padding: 4px 12px !important; gap: 8px !important; }
+  .ch1-stage-Cast p, .ch1-stage-Cast .ch1-bubble-text { font-size: .82rem !important; line-height: 1.25 !important; }
+  .ch1-actor img, .ch1-actor svg { width: 40px !important; height: 40px !important; }
+}
