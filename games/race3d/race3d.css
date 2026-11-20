@@ -1,63 +1,360 @@
-/* 3D Race · overlay UI on top of the live Three.js scene */
-* { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; overflow: hidden; background: #bfe6ff; font-family: "Nunito", "Trebuchet MS", "Segoe UI", system-ui, sans-serif; color: #2b1d40; }
-#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
-#ui { position: fixed; inset: 0; pointer-events: none; }
-#ui > * { pointer-events: auto; }
+/* Sprint Race 3D — Easy Peasy Arcade Polish (bright Adventure Park look, docs/STYLE_GUIDE.md) */
 
-.btn { border: 0; border-radius: 999px; padding: 14px 30px; font-family: inherit; font-weight: 900; font-size: 1.25rem; color: #fff; cursor: pointer;
-  background: #ff6fae; box-shadow: 0 6px 0 #d4448a, 0 14px 24px -10px rgba(0,0,0,.4); transition: transform .1s; }
-.btn:active { transform: translateY(5px); box-shadow: 0 1px 0 #d4448a; }
-.btn.green { background: #34c991; box-shadow: 0 6px 0 #1f9a6d, 0 14px 24px -10px rgba(0,0,0,.4); }
-.btn.lilac { background: #9b7bff; box-shadow: 0 6px 0 #7255e0, 0 14px 24px -10px rgba(0,0,0,.4); }
-.btn.soft { background: #fff; color: #2b1d40; box-shadow: 0 6px 0 #d9c9e6; }
+/* Setup pills on Title Screen (Teams & Steps to Finish) */
+.rc-setup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 18px;
+  margin: 8px auto 6px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  background: #fff8ec;
+  border: 3px solid #ffe0a3;
+}
+.rc-setup-grp {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 800 0.95rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+}
+.rc-setup-grp span {
+  margin-right: 2px;
+  color: #6e5590;
+}
+.rc-pill {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px 13px;
+  border-radius: 14px;
+  border: 2.5px solid #d8c8ee;
+  border-bottom: 5px solid #b79fd8;
+  background: #ffffff;
+  color: #2b1d40;
+  font: 900 0.95rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+  transition: transform 0.16s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.15s;
+}
+.rc-pill:hover { transform: translateY(-2px); }
+.rc-pill:active { transform: translateY(3px); border-bottom-width: 2px; }
+.rc-pill.on {
+  background: #ffb320;
+  border-color: #e09200;
+  border-bottom-color: #b57100;
+  color: #2b1d40;
+}
 
-/* top bar */
-.hud { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; align-items: center; pointer-events: none; }
-.tpill { display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border-radius: 999px; background: rgba(255,255,255,.92); box-shadow: 0 5px 0 rgba(0,0,0,.12); font-weight: 900; border: 4px solid var(--c); transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
-.tpill i { width: 30px; height: 30px; border-radius: 50%; background: var(--c); color: #fff; display: grid; place-items: center; font-style: normal; font-size: .85rem; }
-.tpill.turn { transform: translateY(4px) scale(1.12); box-shadow: 0 0 0 4px #ffe066, 0 5px 0 rgba(0,0,0,.12); }
-.tpill b { min-width: 28px; text-align: center; }
-.topbtns { position: fixed; top: 14px; right: 14px; display: flex; gap: 8px; }
-.ibtn { width: 48px; height: 48px; border-radius: 50%; border: 0; background: rgba(255,255,255,.92); font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,.12); }
+/* 3-Step Visual "How to Play" Modal */
+.rc-howto-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(43, 29, 64, 0.42);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  pointer-events: auto;
+}
+.rc-howto-card {
+  width: min(820px, 95vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fffdf8;
+  border: 6px solid #4f9dff;
+  border-radius: 30px;
+  padding: 22px 24px;
+  box-shadow: 0 20px 50px rgba(43, 29, 64, 0.28), 0 8px 0 #2d76d4;
+  text-align: center;
+  color: #2b1d40;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  animation: cardUp 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.rc-howto-title {
+  font-size: clamp(1.45rem, 2.6vw, 2rem);
+  font-weight: 900;
+  margin: 0 0 14px;
+  color: #2b1d40;
+}
+.rc-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.rc-step {
+  background: #fff8ec;
+  border: 4px solid var(--sc, #ff5fa2);
+  border-radius: 22px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.08);
+}
+.rc-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--sc, #ff5fa2);
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+.rc-step-ico {
+  font-size: 2.8rem;
+  line-height: 1.1;
+  filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.12));
+}
+.rc-step b {
+  font-size: 1.12rem;
+  font-weight: 900;
+  color: #2b1d40;
+}
+.rc-step p {
+  margin: 0;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #4a3568;
+  line-height: 1.35;
+}
+.rc-step-say {
+  margin-top: auto;
+  min-width: 48px;
+  min-height: 44px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--sc, #ff5fa2);
+  border-bottom: 4px solid color-mix(in srgb, var(--sc, #ff5fa2) 70%, #000);
+  background: #fff;
+  color: #2b1d40;
+  font: 800 0.88rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+}
+.rc-step-say:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
 
-/* centre messages */
-.big { position: fixed; left: 50%; top: 40%; transform: translate(-50%, -50%); font-family: inherit; font-weight: 900; font-size: clamp(4rem, 16vw, 12rem); color: #fff;
-  -webkit-text-stroke: 8px #2b1d40; paint-order: stroke fill; text-shadow: 0 10px 0 rgba(0,0,0,.25); pointer-events: none; animation: bigIn .7s cubic-bezier(.34,1.56,.64,1) both; white-space: nowrap; }
-.big.small { font-size: clamp(2.2rem, 7vw, 5rem); -webkit-text-stroke: 6px #2b1d40; }
-@keyframes bigIn { 0% { transform: translate(-50%, -50%) scale(.2); opacity: 0; } 60% { opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); } }
+/* Active Turn Banner + Live Race Track Progress Map */
+.rc-turn-banner {
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 20px;
+  border-radius: 999px;
+  background: #fffdf7;
+  border: 4px solid var(--c, #ff5fa2);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.12);
+  font: 900 1.06rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.rc-turn-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--c, #ff5fa2);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--c, #ff5fa2) 30%, transparent);
+}
 
-.bottom { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; gap: 12px; align-items: center; }
-.say { padding: 12px 22px; border-radius: 22px; background: rgba(255,255,255,.95); font-weight: 900; font-size: 1.2rem; box-shadow: 0 6px 0 rgba(0,0,0,.12); border: 4px solid var(--c, #ff6fae); }
+.rc-live-board {
+  position: fixed;
+  top: 76px;
+  left: 14px;
+  z-index: 14;
+  background: rgba(255, 253, 247, 0.94);
+  border: 4px solid #4f9dff;
+  border-radius: 20px;
+  padding: 8px 12px;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12);
+  font: 800 0.84rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+  pointer-events: none;
+}
+.rc-live-head {
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #2d76d4;
+  margin-bottom: 4px;
+}
+.rc-live-row {
+  display: grid;
+  grid-template-columns: 58px 104px auto;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 6px;
+  border-radius: 10px;
+}
+.rc-live-row.on {
+  background: color-mix(in srgb, var(--c) 22%, #fff);
+  outline: 2px solid var(--c);
+}
+.rc-live-row b {
+  color: var(--c);
+  font-weight: 900;
+}
+.rc-track-bar {
+  position: relative;
+  height: 11px;
+  border-radius: 999px;
+  background: #f3e2b8;
+  border: 1.5px solid #d5c192;
+  overflow: hidden;
+}
+.rc-track-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--c);
+  transition: width 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 
-/* question card */
-.qwrap { position: fixed; inset: 0; display: grid; place-items: end center; padding-bottom: 3vh; background: linear-gradient(transparent 45%, rgba(43,29,64,.35)); }
-.qcard { width: min(880px, 94vw); background: #fff; border-radius: 30px; padding: 20px 24px 24px; box-shadow: 0 30px 50px -20px rgba(0,0,0,.5); border: 6px solid var(--c); animation: cardUp .45s cubic-bezier(.34,1.56,.64,1) both; }
-@keyframes cardUp { from { transform: translateY(120%); } }
-.qhead { display: flex; align-items: center; gap: 10px; font-weight: 900; color: var(--c); margin-bottom: 6px; }
-.qtext { display: flex; align-items: center; gap: 14px; font-size: clamp(1.3rem, 2.6vw, 2rem); font-weight: 900; line-height: 1.2; margin: 6px 0 16px; }
-.qtext .pic { font-size: 2.6rem; }
-.opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.opt { border: 0; border-radius: 20px; padding: 16px 10px; font-family: inherit; font-weight: 900; font-size: clamp(1.1rem, 2.2vw, 1.6rem); color: #fff; cursor: pointer; transition: transform .12s; }
-.opt:nth-child(1) { background: #ff6f91; box-shadow: 0 6px 0 #d1466a; }
-.opt:nth-child(2) { background: #4fa8ff; box-shadow: 0 6px 0 #2c7fd1; }
-.opt:nth-child(3) { background: #ffb938; box-shadow: 0 6px 0 #d18e12; }
-.opt:hover { transform: translateY(-3px); }
-.opt.right { background: #34c991 !important; box-shadow: 0 6px 0 #1f9a6d !important; animation: pop .4s; }
-.opt.wrong { opacity: .45; animation: shake .4s; }
-@keyframes pop { 50% { transform: scale(1.08); } }
-@keyframes shake { 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+/* Photo-Finish Slow-Mo Badge */
+.rc-photo-badge {
+  position: fixed;
+  top: 132px;
+  right: 22px;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: #ffb320;
+  color: #2b1d40;
+  border: 4px solid #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  font: 900 1.06rem 'Nunito', 'Trebuchet MS', sans-serif;
+  animation: cardUp 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+}
 
-/* end */
-.endbox { position: fixed; left: 50%; bottom: 4vh; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.endbox .rows { display: flex; gap: 10px; }
+/* Final Score Table on End Screen */
+.rc-table {
+  display: grid;
+  gap: 8px;
+  margin: 10px auto 6px;
+  width: min(500px, 88vw);
+}
+.rc-table-row {
+  display: grid;
+  grid-template-columns: 34px 95px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 18px;
+  background: #fff;
+  border: 4px solid var(--c);
+  font-weight: 800;
+  color: #2b1d40;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
+}
+.rc-rank {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--c);
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.95rem;
+}
+.rc-table-row b { color: #2b1d40; font-size: 1.05rem; text-align: left; }
+.rc-table-row span { color: #7a5c2e; font-size: 0.92rem; text-align: left; }
+.rc-table-row i { font-style: normal; font-size: 1.18rem; font-weight: 900; color: #2b1d40; }
+.endbox { margin: auto auto 14px !important; padding: 14px 20px !important; }
 
-/* loading */
-.loading { position: fixed; inset: 0; display: grid; place-items: center; background: linear-gradient(#bfe6ff, #fff3fa); font-weight: 900; font-size: 1.6rem; color: #7255e0; z-index: 10; }
-.loading span { animation: pop 1s infinite; display: inline-block; }
+@media (max-width: 960px) {
+  .rc-live-board { display: none; }
+  .rc-steps { grid-template-columns: 1fr; gap: 10px; }
+}
+@media (max-width: 600px) {
+  .rc-turn-banner { top: 66px; font-size: 0.9rem; padding: 5px 14px; }
+  .rc-table-row { grid-template-columns: 28px 72px 1fr auto; padding: 6px 10px; font-size: 0.88rem; }
+}
 
-/* preview caption */
-.cap { position: fixed; left: 50%; top: 16px; transform: translateX(-50%); display: flex; gap: 10px; align-items: center; padding: 8px 22px 8px 8px; border-radius: 999px;
-  background: linear-gradient(135deg, #ff6fae, #9b7bff); color: #fff; font-weight: 900; font-size: 1.5rem; box-shadow: 0 6px 0 #7255e0; animation: bigIn .4s both; }
-.cap b { width: 40px; height: 40px; border-radius: 50%; background: #fff; color: #ff6fae; display: grid; place-items: center; }
-body.preview .hud { top: 76px; }
+/* Interactive 1-Tap Turbo Boost Timing Bar after Right Answer */
+.rc-boost-bar {
+  position: fixed;
+  bottom: 22px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: min(580px, 94vw);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 16px 12px 22px;
+  border-radius: 999px;
+  background: #fff8ec;
+  border: 5px solid var(--c, #4f9dff);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.16);
+  font: 900 1.15rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+  animation: cardUp 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: auto;
+  z-index: 32;
+}
+.rc-boost-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.rc-boost-track {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4f9dff 0%, #2fc58a 36%, #ffd84a 52%, #2fc58a 68%, #ff5fa2 100%);
+  border: 2.5px solid #2b1d40;
+  overflow: hidden;
+}
+.rc-boost-sweet {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 41%;
+  width: 22%;
+  background: rgba(255, 255, 255, 0.36);
+  border-left: 2.5px dashed #fff;
+  border-right: 2.5px dashed #fff;
+}
+.rc-boost-needle {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 11px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 2.5px solid #2b1d40;
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.35);
+}
+.rc-boost-bar .btn {
+  min-height: 54px;
+  padding: 10px 22px;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .rc-boost-bar { padding: 9px 12px 9px 14px; font-size: 0.96rem; gap: 10px; }
+  .rc-boost-bar .btn { min-height: 46px; padding: 8px 14px; font-size: 0.98rem; }
+}

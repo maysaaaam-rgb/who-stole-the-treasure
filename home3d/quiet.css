@@ -1,0 +1,320 @@
+/* Quiet Island — Teacher Control Panel, Soft Lightning Overlay & ?quiettest=1 Test Bar
+   Matches bright Adventure Park style (docs/STYLE_GUIDE.md) */
+
+/* Give .h3-teams breathing room for the 4th top-right button (Quiet Island) */
+@media (min-width: 1101px) {
+  .h3-teams { right: 256px !important; }
+}
+
+/* Top-bar Quiet Island button (inserted beside sound/fullscreen/settings) */
+.qi-top-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 50%;
+  border: 3px solid #4f9dff;
+  border-bottom: 5px solid #2d76d4;
+  background: #fffdf8;
+  color: #2b1d40;
+  font: 900 1.25rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(43, 29, 64, 0.14);
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.15s;
+}
+.qi-top-btn:hover { transform: translateY(-2px); }
+.qi-top-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+.qi-top-btn.on {
+  background: #d3f9d8;
+  border-color: #2fc58a;
+  border-bottom-color: #1e9666;
+}
+.qi-top-btn.uneasy {
+  background: #fff3bf;
+  border-color: #ffb320;
+  border-bottom-color: #c98200;
+}
+.qi-top-btn.loud {
+  background: #ffe3e3;
+  border-color: #ff5fa2;
+  border-bottom-color: #c93776;
+}
+
+/* Bright Teacher Panel (opened by tapping the Lighthouse or the top Quiet Island button) */
+.qi-panel {
+  position: fixed;
+  top: 72px;
+  right: 16px;
+  z-index: 90;
+  width: min(390px, calc(100vw - 32px));
+  background: #fffdf8;
+  border: 5px solid #4f9dff;
+  border-radius: 26px;
+  padding: 16px 18px;
+  box-shadow: 0 18px 42px rgba(43, 29, 64, 0.24), 0 7px 0 #2d76d4;
+  color: #2b1d40;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  pointer-events: auto;
+  animation: qiPopIn 0.26s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.qi-panel.hidden { display: none; }
+@keyframes qiPopIn {
+  from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.qi-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.qi-head h3 {
+  margin: 0;
+  font-size: 1.22rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.qi-close {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2.5px solid #d8c8ee;
+  border-bottom: 4px solid #b79fd8;
+  background: #fff;
+  color: #2b1d40;
+  font: 900 1rem 'Nunito', sans-serif;
+  cursor: pointer;
+}
+.qi-close:active { transform: translateY(2px); border-bottom-width: 2px; }
+
+/* On/Off Switch Row */
+.qi-power-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: #fff8ec;
+  border: 3px solid #ffe0a3;
+  margin-bottom: 12px;
+}
+.qi-power-btn {
+  min-height: 48px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: 3px solid #d8c8ee;
+  border-bottom: 5px solid #b79fd8;
+  background: #ffffff;
+  color: #2b1d40;
+  font: 900 1.02rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+  transition: transform 0.14s, background 0.14s;
+}
+.qi-power-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+.qi-power-btn.on {
+  background: #2fc58a;
+  border-color: #23a370;
+  border-bottom-color: #197a53;
+  color: #fff;
+}
+.qi-state-pill {
+  padding: 5px 13px;
+  border-radius: 999px;
+  background: #e9f5ff;
+  border: 2.5px solid #4f9dff;
+  font-weight: 900;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+.qi-state-pill.s-calm { background: #d3f9d8; border-color: #2fc58a; color: #145e40; }
+.qi-state-pill.s-uneasy { background: #fff3bf; border-color: #ffb320; color: #7a4f00; }
+.qi-state-pill.s-loud { background: #ffe3e3; border-color: #ff5fa2; color: #9c1c4e; }
+.qi-state-pill.s-returning { background: #fff0d1; border-color: #ffd84a; color: #7a5200; }
+
+/* Activity Buttons */
+.qi-sec-lbl {
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6e5590;
+  margin: 10px 0 6px;
+}
+.qi-acts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.qi-act {
+  min-height: 48px;
+  padding: 8px 10px;
+  border-radius: 16px;
+  border: 3px solid #e4d8f2;
+  border-bottom: 5px solid #c9b4e3;
+  background: #ffffff;
+  color: #2b1d40;
+  font: 900 0.94rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.qi-act:active { transform: translateY(3px); border-bottom-width: 2px; }
+.qi-act.on {
+  background: #fff8ec;
+  border-color: var(--ac, #4f9dff);
+  border-bottom-color: color-mix(in srgb, var(--ac, #4f9dff) 70%, #000);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ac, #4f9dff) 22%, transparent);
+}
+.qi-act-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ac, #4f9dff);
+  flex-shrink: 0;
+}
+
+/* Calibrate Row & Sensitivity Slider */
+.qi-cal-btn {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 12px;
+  padding: 9px 14px;
+  border-radius: 16px;
+  border: 3px solid #ffb320;
+  border-bottom: 5px solid #c98200;
+  background: #fff8ec;
+  color: #2b1d40;
+  font: 900 0.96rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+}
+.qi-cal-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+.qi-cal-bar {
+  height: 10px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: #efe6fa;
+  overflow: hidden;
+  display: none;
+}
+.qi-cal-bar.on { display: block; }
+.qi-cal-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4f9dff, #2fc58a);
+  transition: width 0.1s linear;
+}
+
+.qi-sens-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #5b437a;
+}
+.qi-sens-row input[type="range"] {
+  flex: 1;
+  accent-color: #4f9dff;
+  height: 8px;
+  cursor: pointer;
+}
+
+.qi-msg {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: #fff0f6;
+  border: 2.5px solid #ff5fa2;
+  color: #8c1b4d;
+  font-size: 0.88rem;
+  font-weight: 800;
+  display: none;
+}
+.qi-msg.on { display: block; }
+
+.qi-privacy {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #7c6699;
+  text-align: center;
+}
+
+/* Soft Lightning Flash Overlay (max 25% opacity for 80ms — child-safe, never strobing) */
+.qi-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.08s ease-out;
+}
+
+/* Calm Minute Sparkle Toast */
+.qi-calm-toast {
+  position: fixed;
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: #fffdf7;
+  border: 4px solid #2fc58a;
+  box-shadow: 0 8px 22px rgba(43, 29, 64, 0.2), 0 4px 0 #1e9666;
+  font: 900 1.05rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #145e40;
+  pointer-events: none;
+  animation: qiPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ?quiettest=1 Test Bar (replaces microphone for testing without a mic) */
+.qi-testbar {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  z-index: 95;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 22px;
+  background: rgba(255, 253, 248, 0.96);
+  border: 4px solid #9b7bff;
+  box-shadow: 0 8px 22px rgba(43, 29, 64, 0.22), 0 5px 0 #6f52d6;
+  color: #2b1d40;
+  font: 900 0.88rem 'Nunito', 'Trebuchet MS', sans-serif;
+  pointer-events: auto;
+}
+.qi-testbar input[type="range"] {
+  width: 140px;
+  accent-color: #ff5fa2;
+  cursor: pointer;
+}
+.qi-tbtn {
+  min-height: 36px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 2.5px solid #d8c8ee;
+  border-bottom: 4px solid #b79fd8;
+  background: #fff;
+  color: #2b1d40;
+  font: 900 0.84rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+}
+.qi-tbtn:active { transform: translateY(2px); border-bottom-width: 2px; }
+.qi-tbtn.c-calm { border-color: #2fc58a; border-bottom-color: #1e9666; }
+.qi-tbtn.c-uneasy { border-color: #ffb320; border-bottom-color: #c98200; }
+.qi-tbtn.c-loud { border-color: #ff5fa2; border-bottom-color: #c93776; }
+.qi-tbtn.c-ret { border-color: #4f9dff; border-bottom-color: #2d76d4; }

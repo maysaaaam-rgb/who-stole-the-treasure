@@ -1,4 +1,327 @@
-/* Board Game 3D — end table (bright park look) */
-.bd-table { display: grid; gap: 6px; margin: 10px auto 4px; min-width: min(460px, 80vw); }
-.bd-table div { display: grid; grid-template-columns: 120px 1fr auto; align-items: center; gap: 10px; padding: 6px 14px; border-radius: 16px; background: #fff; border: 4px solid var(--c); font-weight: 800; color: #2b1d40; }
-.bd-table b { color: var(--c); } .bd-table span { color: #8a6a2a; font-size: .9rem; } .bd-table i { font-style: normal; font-size: 1.1rem; }
+/* Board Game 3D — Easy Peasy Arcade Polish (bright Adventure Park look, docs/STYLE_GUIDE.md) */
+
+/* Setup pills on Title Screen (Teams & Max Rounds) */
+.bd-setup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 18px;
+  margin: 8px auto 6px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  background: #fff8ec;
+  border: 3px solid #ffe0a3;
+}
+.bd-setup-grp {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 800 0.95rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+}
+.bd-setup-grp span {
+  margin-right: 2px;
+  color: #6e5590;
+}
+.bd-pill {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px 13px;
+  border-radius: 14px;
+  border: 2.5px solid #d8c8ee;
+  border-bottom: 5px solid #b79fd8;
+  background: #ffffff;
+  color: #2b1d40;
+  font: 900 0.95rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+  transition: transform 0.16s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.15s;
+}
+.bd-pill:hover { transform: translateY(-2px); }
+.bd-pill:active { transform: translateY(3px); border-bottom-width: 2px; }
+.bd-pill.on {
+  background: #ffb320;
+  border-color: #e09200;
+  border-bottom-color: #b57100;
+  color: #2b1d40;
+}
+
+/* 3-Step Visual "How to Play" Modal */
+.bd-howto-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(43, 29, 64, 0.42);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  pointer-events: auto;
+}
+.bd-howto-card {
+  width: min(820px, 95vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fffdf8;
+  border: 6px solid #2fc58a;
+  border-radius: 30px;
+  padding: 22px 24px;
+  box-shadow: 0 20px 50px rgba(43, 29, 64, 0.28), 0 8px 0 #1e9666;
+  text-align: center;
+  color: #2b1d40;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  animation: cardUp 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.bd-howto-title {
+  font-size: clamp(1.45rem, 2.6vw, 2rem);
+  font-weight: 900;
+  margin: 0 0 14px;
+  color: #2b1d40;
+}
+.bd-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.bd-step {
+  background: #fff8ec;
+  border: 4px solid var(--sc, #ff5fa2);
+  border-radius: 22px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.08);
+}
+.bd-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--sc, #ff5fa2);
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+.bd-step-ico {
+  font-size: 2.8rem;
+  line-height: 1.1;
+  filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.12));
+}
+.bd-step b { font-size: 1.12rem; font-weight: 900; color: #2b1d40; }
+.bd-step p { margin: 0; font-size: 0.96rem; font-weight: 700; color: #4a3568; line-height: 1.35; }
+.bd-step-say {
+  margin-top: auto;
+  min-width: 48px;
+  min-height: 44px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--sc, #ff5fa2);
+  border-bottom: 4px solid color-mix(in srgb, var(--sc, #ff5fa2) 70%, #000);
+  background: #fff;
+  color: #2b1d40;
+  font: 800 0.88rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+}
+.bd-step-say:active { transform: translateY(3px); border-bottom-width: 1px; }
+
+/* Active Turn Banner + Live Race Progress Track */
+.bd-turn-banner {
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 20px;
+  border-radius: 999px;
+  background: #fffdf7;
+  border: 4px solid var(--c, #ff5fa2);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.12);
+  font: 900 1.05rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.bd-turn-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--c, #ff5fa2);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--c, #ff5fa2) 30%, transparent);
+}
+
+.bd-live-board {
+  position: fixed;
+  top: 76px;
+  left: 14px;
+  z-index: 14;
+  background: rgba(255, 253, 247, 0.94);
+  border: 4px solid #2fc58a;
+  border-radius: 20px;
+  padding: 8px 12px;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12);
+  font: 800 0.84rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+  pointer-events: none;
+  min-width: 200px;
+}
+.bd-live-head {
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6e5590;
+  margin-bottom: 5px;
+}
+.bd-live-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 42px;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 6px;
+  border-radius: 10px;
+}
+.bd-live-row.on {
+  background: color-mix(in srgb, var(--c) 22%, #fff);
+  outline: 2px solid var(--c);
+}
+.bd-live-row b { color: var(--c); font-weight: 900; }
+.bd-prog-track {
+  height: 10px;
+  border-radius: 99px;
+  background: #f0e6d2;
+  overflow: hidden;
+}
+.bd-prog-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--c);
+  transition: width 0.25s ease;
+}
+.bd-live-sq {
+  font-weight: 900;
+  font-size: 0.86rem;
+  text-align: right;
+}
+
+/* Interactive Roll the Giant Die Bar */
+.bd-roll-bar {
+  position: fixed;
+  bottom: 22px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: max-content;
+  max-width: 94vw;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px 10px 22px;
+  border-radius: 999px;
+  background: #fff8ec;
+  border: 5px solid var(--c, #ffb320);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.15);
+  font: 900 1.2rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+  animation: cardUp 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: auto;
+  z-index: 30;
+}
+.bd-roll-bar .btn {
+  min-height: 54px;
+  padding: 10px 22px;
+  font-size: 1.18rem;
+}
+
+/* Final Standings Table on End Screen */
+.bd-table {
+  display: grid;
+  gap: 8px;
+  margin: 12px auto 6px;
+  width: min(500px, 88vw);
+}
+.bd-table-row {
+  display: grid;
+  grid-template-columns: 36px 95px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 18px;
+  background: #fff;
+  border: 4px solid var(--c);
+  font-weight: 800;
+  color: #2b1d40;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
+}
+.bd-rank {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--c);
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.95rem;
+}
+.bd-table-row b { color: #2b1d40; font-size: 1.05rem; text-align: left; }
+.bd-table-row span { color: #7a5c2e; font-size: 0.92rem; text-align: left; }
+.bd-table-row i { font-style: normal; font-size: 1.15rem; font-weight: 900; color: #2b1d40; }
+.endbox { margin: auto auto 14px !important; padding: 14px 20px !important; }
+
+@media (max-width: 960px) {
+  .bd-live-board { display: none; }
+  .bd-steps { grid-template-columns: 1fr; gap: 10px; }
+}
+@media (max-width: 600px) {
+  .bd-turn-banner { top: 66px; font-size: 0.92rem; padding: 5px 14px; }
+  .bd-roll-bar { padding: 8px 12px 8px 16px; font-size: 1rem; gap: 10px; }
+  .bd-roll-bar .btn { min-height: 46px; padding: 8px 16px; font-size: 1rem; }
+  .bd-table-row { grid-template-columns: 30px 74px 1fr auto; padding: 6px 10px; font-size: 0.9rem; }
+}
+
+/* Lucky Roll Timing Sweet-Spot Meter inside Roll Bar */
+.bd-roll-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.bd-roll-track {
+  position: relative;
+  width: 100%;
+  height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4f9dff 0%, #2fc58a 36%, #ffd84a 52%, #2fc58a 68%, #ff5fa2 100%);
+  border: 2.5px solid #2b1d40;
+  overflow: hidden;
+}
+.bd-roll-sweet {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 40%;
+  width: 24%;
+  background: rgba(255, 255, 255, 0.36);
+  border-left: 2.5px dashed #fff;
+  border-right: 2.5px dashed #fff;
+}
+.bd-roll-needle {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 10px;
+  border-radius: 5px;
+  background: #ffffff;
+  border: 2.5px solid #2b1d40;
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.35);
+}

@@ -1,0 +1,359 @@
+/* Penalty Shootout 3D — Easy Peasy Arcade Polish (bright Adventure Park look, docs/STYLE_GUIDE.md) */
+
+/* Setup pills on Title Screen (Teams & Kicks per team) */
+.pn-setup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 18px;
+  margin: 8px auto 6px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  background: #fff8ec;
+  border: 3px solid #ffe0a3;
+}
+.pn-setup-grp {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 800 0.95rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+}
+.pn-setup-grp span {
+  margin-right: 2px;
+  color: #6e5590;
+}
+.pn-pill {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px 13px;
+  border-radius: 14px;
+  border: 2.5px solid #d8c8ee;
+  border-bottom: 5px solid #b79fd8;
+  background: #ffffff;
+  color: #2b1d40;
+  font: 900 0.95rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+  transition: transform 0.16s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.15s;
+}
+.pn-pill:hover { transform: translateY(-2px); }
+.pn-pill:active { transform: translateY(3px); border-bottom-width: 2px; }
+.pn-pill.on {
+  background: #ffb320;
+  border-color: #e09200;
+  border-bottom-color: #b57100;
+  color: #2b1d40;
+}
+
+/* 3-Step Visual "How to Play" Modal */
+.pn-howto-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(43, 29, 64, 0.42);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  pointer-events: auto;
+}
+.pn-howto-card {
+  width: min(820px, 95vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fffdf8;
+  border: 6px solid #2fc58a;
+  border-radius: 30px;
+  padding: 22px 24px;
+  box-shadow: 0 20px 50px rgba(43, 29, 64, 0.28), 0 8px 0 #1e9666;
+  text-align: center;
+  color: #2b1d40;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  animation: cardUp 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.pn-howto-title {
+  font-size: clamp(1.45rem, 2.6vw, 2rem);
+  font-weight: 900;
+  margin: 0 0 14px;
+  color: #2b1d40;
+}
+.pn-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.pn-step {
+  background: #fff8ec;
+  border: 4px solid var(--sc, #ff5fa2);
+  border-radius: 22px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.08);
+}
+.pn-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--sc, #ff5fa2);
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+.pn-step-ico {
+  font-size: 2.8rem;
+  line-height: 1.1;
+  filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.12));
+}
+.pn-step b {
+  font-size: 1.12rem;
+  font-weight: 900;
+  color: #2b1d40;
+}
+.pn-step p {
+  margin: 0;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #4a3568;
+  line-height: 1.35;
+}
+.pn-step-say {
+  margin-top: auto;
+  min-width: 48px;
+  min-height: 44px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--sc, #ff5fa2);
+  border-bottom: 4px solid color-mix(in srgb, var(--sc, #ff5fa2) 70%, #000);
+  background: #fff;
+  color: #2b1d40;
+  font: 800 0.88rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+}
+.pn-step-say:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
+
+/* Active Turn Banner + Live Shootout Scorecard */
+.pn-turn-banner {
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 20px;
+  border-radius: 999px;
+  background: #fffdf7;
+  border: 4px solid var(--c, #2fc58a);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.12);
+  font: 900 1.06rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.pn-turn-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--c, #2fc58a);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--c, #2fc58a) 30%, transparent);
+}
+
+.pn-live-board {
+  position: fixed;
+  top: 76px;
+  left: 14px;
+  z-index: 14;
+  background: rgba(255, 253, 247, 0.94);
+  border: 4px solid #2fc58a;
+  border-radius: 20px;
+  padding: 8px 12px;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12);
+  font: 800 0.84rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+  pointer-events: none;
+}
+.pn-live-head {
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #1e9666;
+  margin-bottom: 4px;
+}
+.pn-live-row {
+  display: grid;
+  grid-template-columns: 62px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 6px;
+  border-radius: 10px;
+}
+.pn-live-row.on {
+  background: color-mix(in srgb, var(--c) 22%, #fff);
+  outline: 2px solid var(--c);
+}
+.pn-live-row b {
+  color: var(--c);
+  font-weight: 900;
+}
+.pn-kdots {
+  display: flex;
+  gap: 4px;
+}
+.pn-kdot {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff8ec;
+  border: 1.5px solid #dcd0b8;
+  font-size: 0.72rem;
+}
+.pn-kdot.goal {
+  background: #d3f9d8;
+  border-color: #2fc58a;
+}
+.pn-kdot.miss {
+  background: #ffe3e3;
+  border-color: #ff6b6b;
+}
+
+/* Second-Camera Slow-Mo Action Replay Badge */
+.pn-replay-badge {
+  position: fixed;
+  top: 132px;
+  right: 22px;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: #ff3b3b;
+  color: #ffffff;
+  border: 4px solid #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  font: 900 1.05rem 'Nunito', 'Trebuchet MS', sans-serif;
+  letter-spacing: 0.04em;
+  animation: cardUp 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+}
+.pn-replay-rec {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pnBlink 0.6s infinite alternate;
+}
+@keyframes pnBlink {
+  from { opacity: 1; }
+  to { opacity: 0.25; }
+}
+
+/* Smartboard Quick-Shot Target Bar during Aiming */
+.pn-aim-bar {
+  position: fixed;
+  bottom: 18px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: min(640px, 94vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 16px 12px;
+  border-radius: 26px;
+  background: #fff8ec;
+  border: 5px solid var(--c, #2fc58a);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.16);
+  font: 900 1.02rem 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #2b1d40;
+  z-index: 30;
+  pointer-events: auto;
+}
+.pn-target-btns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  width: 100%;
+}
+.pn-tbtn {
+  min-height: 46px;
+  padding: 6px 10px;
+  border-radius: 14px;
+  border: 2.5px solid #2fc58a;
+  border-bottom: 5px solid #1e9666;
+  background: #ffffff;
+  color: #2b1d40;
+  font: 900 0.96rem 'Nunito', 'Trebuchet MS', sans-serif;
+  cursor: pointer;
+  transition: transform 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.pn-tbtn:hover {
+  background: #e6fcf5;
+  transform: translateY(-2px);
+}
+.pn-tbtn:active {
+  transform: translateY(3px);
+  border-bottom-width: 2px;
+}
+
+/* Final Score Table on End Screen */
+.pn-table {
+  display: grid;
+  gap: 8px;
+  margin: 10px auto 6px;
+  width: min(500px, 88vw);
+}
+.pn-table-row {
+  display: grid;
+  grid-template-columns: 34px 95px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 18px;
+  background: #fff;
+  border: 4px solid var(--c);
+  font-weight: 800;
+  color: #2b1d40;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
+}
+.pn-rank {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--c);
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.95rem;
+}
+.pn-table-row b { color: #2b1d40; font-size: 1.05rem; text-align: left; }
+.pn-table-row i { font-style: normal; font-size: 1.18rem; font-weight: 900; color: #2b1d40; }
+.endbox { margin: auto auto 14px !important; padding: 14px 20px !important; }
+
+@media (max-width: 960px) {
+  .pn-live-board { display: none; }
+  .pn-steps { grid-template-columns: 1fr; gap: 10px; }
+}
+@media (max-width: 600px) {
+  .pn-turn-banner { top: 66px; font-size: 0.9rem; padding: 5px 14px; }
+  .pn-aim-bar { padding: 8px 10px 10px; font-size: 0.92rem; }
+  .pn-tbtn { min-height: 42px; font-size: 0.86rem; padding: 4px 6px; }
+  .pn-table-row { grid-template-columns: 28px 72px 1fr auto; padding: 6px 10px; font-size: 0.88rem; }
+}
