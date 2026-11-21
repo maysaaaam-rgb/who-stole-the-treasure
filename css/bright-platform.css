@@ -239,20 +239,32 @@ html:not(#_b) body ::selection { color: var(--bp-ink) !important; }
 
 /* ===== Avatar Studio / Shop / Podium (classroom-store.js, class-rewards.js) ===== */
 html:not(#_b) body .cs-studio-top, html:not(#_b) body .cs-studio, html:not(#_b) body .cs-avwrap, html:not(#_b) body .cs-shelf-top, html:not(#_b) body .cr-hd, html:not(#_b) body .cr-fund, html:not(#_b) body .cr-legend { background: #ffffff !important; border: 3px solid #cfe6ff !important; color: var(--bp-ink) !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; }
-html:not(#_b) body .cs-item, html:not(#_b) body .cs-avcard, html:not(#_b) body .cs-prize-card, html:not(#_b) body .cs-try-card, html:not(#_b) body .cs-glass-card, html:not(#_b) body .cs-info, html:not(#_b) body .cr-card, html:not(#_b) body .cr-pod, html:not(#_b) body .cs-ped, html:not(#_b) body .cs-wearing-box { background: #ffffff !important; border: 3px solid #cfe6ff !important; border-bottom: 6px solid #cfe6ff !important; color: var(--bp-ink) !important; }
-html:not(#_b) body .cs-pbtn, html:not(#_b) body .cs-pose-btn, html:not(#_b) body .cs-avchip, html:not(#_b) body .cs-wchip, html:not(#_b) body .cs-sw, html:not(#_b) body .cs-swatch, html:not(#_b) body .cs-mode-btn, html:not(#_b) body .cs-3d-btn, html:not(#_b) body .cs-3d-mini, html:not(#_b) body .cs-coin-pill, html:not(#_b) body .cs-lvl-pill, html:not(#_b) body .cr-pill, html:not(#_b) body .cs-dark-inp { background: #fff8ec !important; border: 2px solid #ead9bf !important; border-bottom: 4px solid #ead9bf !important; color: var(--bp-ink) !important; }
-html:not(#_b) body .cs-pbtn.on, html:not(#_b) body .cs-pbtn.active, html:not(#_b) body .cs-pose-btn.on, html:not(#_b) body .cs-mode-btn.on, html:not(#_b) body .cs-avchip.on { background: #9b7bff !important; border-color: #6f4fe0 !important; color: #fff !important; }
-html:not(#_b) body .cs-nm, html:not(#_b) body .cs-avbar-name, html:not(#_b) body .cs-avstage-nm, html:not(#_b) body .cs-studio-title, html:not(#_b) body .cs-field-lbl, html:not(#_b) body .cs-swtray-lbl, html:not(#_b) body .cs-avcard-act, html:not(#_b) body .cr-hd *, html:not(#_b) body .cs-studio-top h2, html:not(#_b) body .cs-studio-top h3 { color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-item, html:not(#_b) body .cs-avcard, html:not(#_b) body .cs-prize-card, html:not(#_b) body .cs-try-card, html:not(#_b) body .cs-glass-card, html:not(#_b) body .cs-info, html:not(#_b) body .cr-card, html:not(#_b) body .cr-pod, html:not(#_b) body .cs-wearing-box { background: #ffffff !important; border: 3px solid #cfe6ff !important; border-bottom: 6px solid #b5d8fb !important; color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-ped { background: radial-gradient(ellipse, rgba(79,157,255,.32) 0%, transparent 72%) !important; border: 0 !important; }
+html:not(#_b) body .cs-pbtn, html:not(#_b) body .cs-pose-btn, html:not(#_b) body .cs-avchip, html:not(#_b) body .cs-wchip, html:not(#_b) body .cs-sw, html:not(#_b) body .cs-mode-btn, html:not(#_b) body .cs-3d-btn, html:not(#_b) body .cs-3d-mini, html:not(#_b) body .cs-coin-pill, html:not(#_b) body .cs-lvl-pill, html:not(#_b) body .cr-pill, html:not(#_b) body .cs-dark-inp { background: #fff8ec !important; border: 2px solid #ead9bf !important; border-bottom: 4px solid #d5bc96 !important; color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-swatch { border: 3px solid #ffffff !important; border-bottom: 5px solid rgba(43,29,64,.28) !important; box-shadow: 0 3px 10px rgba(43,29,64,.16) !important; }
+html:not(#_b) body .cs-swatch.on { border-color: #ffb320 !important; box-shadow: 0 0 0 3px #ffb320 !important; transform: scale(1.08); }
+html:not(#_b) body .cs-swtray { background: #fff8ec !important; border: 2px solid #ead9bf !important; }
+html:not(#_b) body .cs-pbtn.on, html:not(#_b) body .cs-pbtn.active, html:not(#_b) body .cs-pose-btn.on, html:not(#_b) body .cs-mode-btn.on, html:not(#_b) body .cs-avchip.on { background: #4f9dff !important; border-color: #96c8ff !important; border-bottom-color: #2573d9 !important; color: #fff !important; }
+html:not(#_b) body .cs-pose-btn.id-girl.on { background: #ff5fa2 !important; border-color: #ffa6cb !important; border-bottom-color: #c93d7d !important; color: #fff !important; }
+html:not(#_b) body .cs-pose-btn.id-boy.on { background: #4f9dff !important; border-color: #96c8ff !important; border-bottom-color: #2573d9 !important; color: #fff !important; }
+html:not(#_b) body .cs-avcard-act.wear, html:not(#_b) body .cs-3d-btn:not(.ghost):not(.ok):not(.gold):not(.danger) { background: #4f9dff !important; border-color: #96c8ff !important; border-bottom: 5px solid #2573d9 !important; color: #fff !important; }
+html:not(#_b) body .cs-avcard-act.on, html:not(#_b) body .cs-3d-btn.ok { background: #2fc58a !important; border-color: #8ee4c2 !important; border-bottom: 5px solid #1b9466 !important; color: #fff !important; }
+html:not(#_b) body .cs-avcard-act.buy, html:not(#_b) body .cs-3d-btn.gold { background: #ffb320 !important; border-color: #ffe09c !important; border-bottom: 5px solid #c98200 !important; color: #2b1d40 !important; }
+html:not(#_b) body .cs-3d-btn.danger { background: #ff5fa2 !important; border-color: #ffa6cb !important; border-bottom: 5px solid #c93d7d !important; color: #fff !important; }
+html:not(#_b) body .cs-avcard-act.short { background: #fff8ec !important; border-color: #ead9bf !important; border-bottom: 4px solid #d5bc96 !important; color: #6b5b84 !important; }
+html:not(#_b) body .cs-nm, html:not(#_b) body .cs-avbar-name, html:not(#_b) body .cs-avstage-nm, html:not(#_b) body .cs-avcard-pic b, html:not(#_b) body .cs-avcard-pic span, html:not(#_b) body .cs-studio-title, html:not(#_b) body .cs-field-lbl, html:not(#_b) body .cs-swtray-lbl, html:not(#_b) body .cr-hd *, html:not(#_b) body .cs-studio-top h2, html:not(#_b) body .cs-studio-top h3 { color: var(--bp-ink) !important; }
 html:not(#_b) body .cs-info, html:not(#_b) body .cs-row-line { color: var(--bp-muted) !important; }
-html:not(#_b) body .cs-avstage-in { background: radial-gradient(circle at 50% 40%, #ffffff 0%, #d7f0ff 70%, #bfe3ff 100%) !important; border: 3px solid #cfe6ff !important; }
-html:not(#_b) body .cs-pic, html:not(#_b) body .cs-avcard-pic, html:not(#_b) body .cs-art { background: #f3f9ff !important; }
+html:not(#_b) body .cs-avstage-in { background: radial-gradient(circle at 50% 40%, #ffffff 0%, #d7f0ff 70%, #bfe3ff 100%) !important; border: 3px solid #78c4ff !important; }
+html:not(#_b) body .cs-avstage-in i { display: none !important; }
+html:not(#_b) body .cs-pic, html:not(#_b) body .cs-avcard-pic, html:not(#_b) body .cs-art { background: #f3f9ff !important; border-radius: 14px; padding: 6px 4px; }
 /* top bar of the shop view and pupil strip */
 html:not(#_b) body #app-view-container [class*="cs-"][style*="background"][style*="rgba(15"], html:not(#_b) body #app-view-container [class*="cs-"][style*="background"][style*="#0"] { background: #ffffff !important; color: var(--bp-ink) !important; }
-html:not(#_b) body #app-view-container button[class*="cs-"]:not(.on):not(.cs-3d-btn) { color: var(--bp-ink) !important; }
+html:not(#_b) body #app-view-container button[class*="cs-"]:not(.on):not(.cs-3d-btn):not(.wear):not(.buy) { color: var(--bp-ink) !important; }
 html:not(#_b) body .cs-avstage, html:not(#_b) body .cs-avstage-hd, html:not(#_b) body .cs-avbar, html:not(#_b) body .cs-pstrip, html:not(#_b) body .cs-grid, html:not(#_b) body .cs-shelf { background: #ffffff !important; border-color: #cfe6ff !important; color: var(--bp-ink) !important; }
-html:not(#_b) body .cs-avstage *, html:not(#_b) body .cs-avstage-hd * { color: var(--bp-ink) !important; }
-html:not(#_b) body .cs-free-tag, html:not(#_b) body .cs-rar { color: #0f6b4a !important; background: #d9f7ea !important; }
-html:not(#_b) body .cs-3d-btn, html:not(#_b) body .cs-3d-mini { color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-avstage-hd *, html:not(#_b) body .cs-avstage-nm { color: var(--bp-ink) !important; }
+html:not(#_b) body .cs-free-tag, html:not(#_b) body .cs-rar { color: #0f6b4a !important; background: #d9f7ea !important; border-color: #8ee4c2 !important; }
+html:not(#_b) body .cs-3d-mini { color: var(--bp-ink) !important; }
 
 /* Teacher Mode sidebar: readable ink on the bright page */
 html:not(.class-mode):not(#_b) body .app-sidebar, html:not(.class-mode):not(#_b) body .app-sidebar * { color: var(--bp-ink) !important; text-shadow: none !important; }
