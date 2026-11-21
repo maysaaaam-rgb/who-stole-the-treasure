@@ -196,7 +196,7 @@
 | 6 | [css/class-mode.css](file:///C:/Users/maysa/Desktop/DV/css/class-mode.css) | `20261121c` | [L29](file:///C:/Users/maysa/Desktop/DV/index.html#L29) |
 | 7 | [css/class-mode-pages.css](file:///C:/Users/maysa/Desktop/DV/css/class-mode-pages.css) | `7` | [L30](file:///C:/Users/maysa/Desktop/DV/index.html#L30) |
 | 8 | [css/tines-theme.css](file:///C:/Users/maysa/Desktop/DV/css/tines-theme.css) | `20261121b` | [L31](file:///C:/Users/maysa/Desktop/DV/index.html#L31) |
-| 9 | [css/bright-platform.css](file:///C:/Users/maysa/Desktop/DV/css/bright-platform.css) | `20261121c` | [L32](file:///C:/Users/maysa/Desktop/DV/index.html#L32) |
+| 9 | [css/bright-platform.css](file:///C:/Users/maysa/Desktop/DV/css/bright-platform.css) | `20261121d` | [L32](file:///C:/Users/maysa/Desktop/DV/index.html#L32) |
 
 ---
 
@@ -219,7 +219,7 @@
 | 13 | [js/monster-costumes2.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes2.js) | `3` | [L2948](file:///C:/Users/maysa/Desktop/DV/index.html#L2948) |
 | 14 | [js/monster-costumes3.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes3.js) | `2` | [L2949](file:///C:/Users/maysa/Desktop/DV/index.html#L2949) |
 | 15 | [js/monster-costumes4.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes4.js) | `1` | [L2950](file:///C:/Users/maysa/Desktop/DV/index.html#L2950) |
-| 16 | [js/monster-pets.js](file:///C:/Users/maysa/Desktop/DV/js/monster-pets.js) | `9` | [L2951](file:///C:/Users/maysa/Desktop/DV/index.html#L2951) |
+| 16 | [js/monster-pets.js](file:///C:/Users/maysa/Desktop/DV/js/monster-pets.js) | `10` | [L2951](file:///C:/Users/maysa/Desktop/DV/index.html#L2951) |
 | 17 | [js/classroom-cosmetics.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-cosmetics.js) | `1` | [L2952](file:///C:/Users/maysa/Desktop/DV/index.html#L2952) |
 | 18 | [js/no-monsters.js](file:///C:/Users/maysa/Desktop/DV/js/no-monsters.js) | `2` | [L2953](file:///C:/Users/maysa/Desktop/DV/index.html#L2953) |
 | 19 | [js/classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js) | `20261121b` | [L2954](file:///C:/Users/maysa/Desktop/DV/index.html#L2954) |
@@ -234,7 +234,7 @@
 | 28 | [js/voice-fx.js](file:///C:/Users/maysa/Desktop/DV/js/voice-fx.js) | `5` | [L2963](file:///C:/Users/maysa/Desktop/DV/index.html#L2963) |
 | 29 | [js/library-curate.js](file:///C:/Users/maysa/Desktop/DV/js/library-curate.js) | `20261121b` | [L2964](file:///C:/Users/maysa/Desktop/DV/index.html#L2964) |
 | 30 | [js/board-scenes.js](file:///C:/Users/maysa/Desktop/DV/js/board-scenes.js) | `9` | [L2965](file:///C:/Users/maysa/Desktop/DV/index.html#L2965) |
-| 31 | [js/pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | `20261121b` | [L2966](file:///C:/Users/maysa/Desktop/DV/index.html#L2966) |
+| 31 | [js/pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | `20261121c` | [L2966](file:///C:/Users/maysa/Desktop/DV/index.html#L2966) |
 | 32 | [js/class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js) | `47` | [L2967](file:///C:/Users/maysa/Desktop/DV/index.html#L2967) |
 | 33 | [js/bathroom-pass.js](file:///C:/Users/maysa/Desktop/DV/js/bathroom-pass.js) | `3` | [L2968](file:///C:/Users/maysa/Desktop/DV/index.html#L2968) |
 | 34 | [js/class-view.js](file:///C:/Users/maysa/Desktop/DV/js/class-view.js) | `14` | [L2969](file:///C:/Users/maysa/Desktop/DV/index.html#L2969) |

@@ -1,1362 +1,1991 @@
-/* Monster Cannon 3D — English Adventure Academy
-   Answer right: your monster hops into the big cannon. Drag back to aim (or tap a preset), let go: BOOM!
-   Fly across the meadow popping balloons (10–50), hit the bullseye (+50) or land in the haystack (+15).
-   Wrong answer: the cannon goes "pfft" and your monster plops out.
-   Options: ?teams=2..4  ?rounds=1..6  ?set=<id>  ?kids (use kid avatars)  ?noworld  ?demo=1  ?capture=1  ?howto=1 */
+/* games/cannon3d/cannon3d.js
+ * Flagship Smart Screen & Mobile 3D Game #1: Pirate & Monster Cannon 3D
+ * Powered by games/engine3d/ (Three 0.169 + pmndrs/postprocessing + Rapier3D + three-mesh-bvh + Yuka + Howler)
+ * & games/kit3d/ (65-bone Pupil 3D Avatars, 4 Team Monsters, 75+ Question Sets, Class Board XP Inbox).
+ */
 (function () {
   'use strict';
-  var K = window.K3, T3 = window.THREE;
-  var rnd = K.rnd, clamp = K.clamp, lerp = K.lerp;
-  var V = function (x, y, z) { return new T3.Vector3(x, y, z); };
-  var IN_WORLD = !!K.World && !K.Q.has('noworld');
-  K.init({ fov: 42, fogNear: IN_WORLD ? 90 : 60, fogFar: IN_WORLD ? 260 : 150 });
-  var scene = K.scene;
 
-  var nTeams = clamp(+K.Q.get('teams') || 4, 2, 4);
-  var ROUNDS = clamp(+K.Q.get('rounds') || 3, 1, 6);
+  var T3 = window.THREE;
+  var K = window.K3;
+  var E3D = window.E3D;
+  var Q = K.Q;
 
-  var ALL_TEAMS = K.TEAMS.map(function (t) {
-    return Object.assign({ score: 0, shots: [], bullseyes: 0 }, t);
-  });
-  var TEAMS = ALL_TEAMS.slice(0, nTeams);
-  var QS = K.questions('g3-u5-vocab');
-  var GRAV = 12;
-  var VALUES = [[10, 0x6fb8ff, '#4f9dff'], [20, 0x5fdc9a, '#2fc58a'], [30, 0xffc94a, '#ffb320'], [50, 0xff7fb0, '#ff5fa2']];
-  var HAY = { x: 27, r: 2.1, top: 1.25 };
-  var TARGET = { x: 44, y: 3.2, r: 2.1 };
-  var NET = { x: 52, h: 9, w: 15 };
-
-  /* ---------------- world & Tripo props ---------------- */
-  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0);
-  K.world.lights();
-  K.world.clouds(14, -60, 110);
-  if (!IN_WORLD) {
-    K.world.ground(0x8fdc7a, [-10, 0, 10, 20, 30, 40, 50].map(function (x) { return { x: x, w: 5, d: 70, c: 0x86d572 }; }));
-    K.world.hills(-30, 90, -42, 11);
-    for (var ti = 0; ti < 22; ti++) {
-      K.world.tree(rnd(-16, 66), ti % 2 ? rnd(-26, -14) : rnd(14, 26), rnd(.9, 1.6), ti % 5 === 0);
-    }
-  }
-  K.world.flowers(140, [-12, 60, -11, 10]);
-
-  var propGroup = new T3.Group();
-  scene.add(propGroup);
-  var podiumGroup = new T3.Group();
-  scene.add(podiumGroup);
-  var archModel = null, flagpoleModel = null, trophyModel = null;
-
-  function placeDecorModels() {
-    while (propGroup.children.length) propGroup.remove(propGroup.children[0]);
-    if (archModel) {
-      var ar = archModel.clone(true);
-      ar.position.set(-4, 0, -5.8);
-      propGroup.add(ar);
-    }
-    if (flagpoleModel) {
-      [15, 35].forEach(function (fx) {
-        var fp = flagpoleModel.clone(true);
-        fp.position.set(fx, 0, -6.2);
-        propGroup.add(fp);
-      });
-    }
-    if (trophyModel) {
-      var ped = new T3.Mesh(
-        new T3.CylinderGeometry(.55, .66, .65, 18),
-        new T3.MeshStandardMaterial({ color: 0xfff8ec, roughness: .35 })
-      );
-      ped.position.set(TARGET.x + 1.4, .325, -4.5);
-      ped.castShadow = true;
-      propGroup.add(ped);
-
-      var tr = trophyModel.clone(true);
-      tr.scale.multiplyScalar(.62);
-      tr.position.set(TARGET.x + 1.4, .66, -4.5);
-      propGroup.add(tr);
-    }
-  }
-
-  // Fence along the back of the field
-  (function fence() {
-    var m = K.mat(0xffffff);
-    for (var x = -8; x < 60; x += 2) {
-      var post = new T3.Mesh(new T3.BoxGeometry(.14, .9, .14), m);
-      post.position.set(x, .45, -7);
-      post.castShadow = true;
-      scene.add(post);
-    }
-    [.35, .7].forEach(function (y) {
-      var rail = new T3.Mesh(new T3.BoxGeometry(68, .1, .08), m);
-      rail.position.set(26, y, -7);
-      scene.add(rail);
-    });
-  })();
-
-  // Distance stones
-  [10, 20, 30, 40, 50].forEach(function (x) {
-    var tex = K.canvasTex(128, 128, function (c) {
-      c.fillStyle = '#fff';
-      c.beginPath(); c.arc(64, 64, 60, 0, 7); c.fill();
-      c.fillStyle = '#7255e0';
-      c.font = '900 56px Nunito, Trebuchet MS, sans-serif';
-      c.textAlign = 'center';
-      c.textBaseline = 'middle';
-      c.fillText(x + 'm', 64, 68);
-    });
-    var s = new T3.Mesh(new T3.CylinderGeometry(.45, .55, .5, 16), [K.mat(0xd9d2ff), new T3.MeshLambertMaterial({ map: tex }), K.mat(0xd9d2ff)]);
-    s.position.set(x, .25, 4.2);
-    s.castShadow = true;
-    scene.add(s);
-  });
-
-  /* ---------------- cannon (code-built; GLB models replace when present) ---------------- */
-  var cannon = new T3.Group();
-  scene.add(cannon);
-  var mound = new T3.Mesh(new T3.SphereGeometry(3.2, 28, 14, 0, Math.PI * 2, 0, Math.PI / 2), K.mat(0x7fd06c));
-  mound.scale.y = .2;
-  mound.receiveShadow = true;
-  scene.add(mound);
-  cannon.position.y = .55;
-  var base = new T3.Group();
-  cannon.add(base);
-  var pivot = new T3.Group();
-  pivot.position.set(0, 1.05, 0);
-  cannon.add(pivot);
-  var barrel = new T3.Group();
-  pivot.add(barrel);
-  var MUZZLE = 2.0;
-
-  (function buildCannon() {
-    var wood = K.mat(0xf2a7c3), gold = K.mat(0xffd166), metal = K.mat(0x5a4fcf), dark = K.mat(0x2b1d40);
-    var cart = new T3.Mesh(new T3.BoxGeometry(1.9, .55, 1.0), wood);
-    cart.position.y = .55; cart.castShadow = true; base.add(cart);
-    var cheek = new T3.Mesh(new T3.BoxGeometry(1.2, .7, .16), wood);
-    [-.5, .5].forEach(function (z) { var c = cheek.clone(); c.position.set(-.1, .95, z); c.castShadow = true; base.add(c); });
-    [-.62, .62].forEach(function (z) {
-      var wheel = new T3.Group(); wheel.position.set(.15, .62, z * 1.05);
-      var tyre = new T3.Mesh(new T3.TorusGeometry(.56, .12, 10, 28), K.mat(0xc98d63)); wheel.add(tyre);
-      for (var s = 0; s < 6; s++) { var sp = new T3.Mesh(new T3.BoxGeometry(.08, 1.05, .07), K.mat(0xe0a878)); sp.rotation.z = s * Math.PI / 6; wheel.add(sp); }
-      var hub = new T3.Mesh(new T3.CylinderGeometry(.16, .16, .22, 16), gold); hub.rotation.x = Math.PI / 2; wheel.add(hub);
-      wheel.traverse(function (o) { if (o.isMesh) o.castShadow = true; });
-      base.add(wheel); base.userData['wheel' + (z > 0 ? 'R' : 'L')] = wheel;
-    });
-    var tube = new T3.Mesh(new T3.CylinderGeometry(.5, .6, 2.5, 28, 1, true), metal);
-    tube.rotation.z = -Math.PI / 2; tube.position.x = .65; tube.castShadow = true; barrel.add(tube);
-    var inside = new T3.Mesh(new T3.CircleGeometry(.5, 28), dark);
-    inside.rotation.y = Math.PI / 2; inside.position.x = 1.89; barrel.add(inside);
-    var back = new T3.Mesh(new T3.SphereGeometry(.6, 24, 16), metal);
-    back.position.x = -.6; back.castShadow = true; barrel.add(back);
-    [[-.25, .64], [.6, .58], [1.85, .58]].forEach(function (r) {
-      var ring = new T3.Mesh(new T3.TorusGeometry(r[1], .09, 10, 30), gold);
-      ring.rotation.y = Math.PI / 2; ring.position.x = r[0]; barrel.add(ring);
-    });
-    var knob = new T3.Mesh(new T3.SphereGeometry(.18, 14, 10), gold); knob.position.x = -1.2; barrel.add(knob);
-    var star = new T3.Mesh(new T3.OctahedronGeometry(.2), gold); star.position.set(.6, .6, 0); barrel.add(star);
-    var fuse = new T3.Mesh(new T3.CylinderGeometry(.03, .03, .4, 6), K.mat(0x7a5a3a));
-    fuse.position.set(-.55, .7, 0); fuse.rotation.z = .5; barrel.add(fuse);
-    barrel.userData.fuseTip = V(-.65, .9, 0);
-  })();
-
-  K.tryGLB(K.ROOT + 'assets/3d/items/cannon-base.glb').then(function (g) {
-    if (!g) return;
-    base.children.slice().forEach(function (c) { base.remove(c); });
-    var m = K.fitModel(g.scene, 2.0, { byLength: true });
-    base.add(m);
-  });
-  K.tryGLB(K.ROOT + 'assets/3d/items/cannon-barrel.glb').then(function (g) {
-    if (!g) return;
-    barrel.children.slice().forEach(function (c) { barrel.remove(c); });
-    var m = K.fitModel(g.scene, 2.9, { byLength: true });
-    var box = new T3.Box3().setFromObject(m), sz = box.getSize(V(0, 0, 0));
-    var holder = new T3.Group(); holder.add(m);
-    if (sz.z > sz.x) holder.rotation.y = -Math.PI / 2;
-    m.position.y -= sz.y / 2; holder.position.x = .65; barrel.add(holder);
-    barrel.userData.fuseTip = V(-.65, .7, 0);
-  });
-
-  var aimAngle = .6;
-  function setAim(a) { aimAngle = a; pivot.rotation.z = a; }
-  setAim(.55);
-  function muzzlePos(a) {
-    var p = V(Math.cos(a) * MUZZLE, Math.sin(a) * MUZZLE, 0);
-    return p.add(pivot.getWorldPosition(V(0, 0, 0)));
-  }
-
-  var recoil = 0;
-  K.onFrame(function (dt) {
-    recoil = Math.max(0, recoil - dt * 2.2);
-    barrel.position.x = -Math.sin(Math.min(1, recoil) * Math.PI) * .45;
-    var s = 1 + Math.sin(Math.min(1, recoil) * Math.PI) * .12;
-    barrel.scale.set(1, s, s);
-    cannon.position.x = -Math.sin(Math.min(1, recoil) * Math.PI) * .25;
-    ['wheelL', 'wheelR'].forEach(function (w) {
-      var wh = base.userData[w];
-      if (wh) wh.rotation.z = cannon.position.x * 2;
-    });
-  });
-
-  /* fuse sparks */
-  var fusing = false;
-  K.onFrame(function () {
-    if (!fusing) return;
-    var tip = barrel.localToWorld(barrel.userData.fuseTip.clone());
-    if (Math.random() < .7) {
-      K.fx.puff(tip, 1, { color: Math.random() < .5 ? 0xffd84a : 0xff9f43, size: .35, life: .4, opacity: 1, dir: V(0, 2, 0) });
-    }
-  });
-
-  /* ---------------- animated windsock + waving wind flag ---------------- */
-  var wind = 0;
-  var sock = new T3.Group();
-  sock.position.set(5, 0, -3.2);
-  scene.add(sock);
-  (function () {
-    var pole = new T3.Mesh(new T3.CylinderGeometry(.06, .08, 3.8, 10), K.mat(0xffffff));
-    pole.position.y = 1.9; pole.castShadow = true; sock.add(pole);
-    var topBall = new T3.Mesh(new T3.SphereGeometry(.14, 12, 10), K.mat(0xffd84a));
-    topBall.position.y = 3.85; sock.add(topBall);
-
-    var cone = new T3.Group();
-    cone.position.y = 3.35;
-    sock.add(cone);
-    sock.userData.cone = cone;
-    for (var i = 0; i < 4; i++) {
-      var seg = new T3.Mesh(
-        new T3.CylinderGeometry(.32 - i * .055, .32 - (i + 1) * .055, .44, 14, 1, true),
-        K.mat(i % 2 ? 0xffffff : 0xff5fa2, { side: T3.DoubleSide })
-      );
-      seg.rotation.z = -Math.PI / 2;
-      seg.position.x = .22 + i * .44;
-      seg.castShadow = true;
-      cone.add(seg);
-    }
-
-    // Waving wind pennant flag above the windsock
-    var fGeo = new T3.PlaneGeometry(1.2, .55, 8, 2);
-    fGeo.translate(.6, 0, 0);
-    var flagMesh = new T3.Mesh(fGeo, new T3.MeshStandardMaterial({ color: 0x4f9dff, side: T3.DoubleSide, roughness: .4 }));
-    flagMesh.position.y = 3.65;
-    sock.add(flagMesh);
-    sock.userData.flag = flagMesh;
-  })();
-
-  K.onFrame(function (dt, t) {
-    var c = sock.userData.cone, fl = sock.userData.flag, strength = Math.abs(wind) / 3;
-    var targetY = wind >= 0 ? 0 : Math.PI;
-    c.rotation.y = lerp(c.rotation.y, targetY, 1 - Math.exp(-dt * 3));
-    c.rotation.z = lerp(-1.25, -.05, strength) + Math.sin(t * 7.5) * .07 * (strength + .25);
-    c.rotation.x = Math.sin(t * 5.2) * .08 * strength;
-    if (fl) {
-      fl.rotation.y = c.rotation.y;
-      var p = fl.geometry.attributes.position;
-      for (var i = 0; i < p.count; i++) {
-        var x = p.getX(i);
-        p.setZ(i, Math.sin(t * (6 + strength * 8) - x * 3.5) * (.04 + strength * .12) * (x / 1.2));
-      }
-      p.needsUpdate = true;
-    }
-  });
-
-  /* ---------------- balloons + confetti pop ---------------- */
-  var balloons = [];
-  function balloonValue(x, y) {
-    var d = clamp((x - 10) / 34 * .55 + (y - 3) / 10 * .45 + rnd(-.2, .2), 0, .999);
-    return VALUES[Math.floor(d * 4)];
-  }
-  function makeBalloon(x, y, z, rise) {
-    var v = balloonValue(x, y), g = new T3.Group();
-    var skin = new T3.Mesh(new T3.SphereGeometry(.64, 22, 16), new T3.MeshLambertMaterial({ color: v[1], emissive: v[1], emissiveIntensity: .14 }));
-    skin.scale.y = 1.15; skin.castShadow = true; g.add(skin);
-    var shine = new T3.Mesh(new T3.SphereGeometry(.14, 10, 8), new T3.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .75 }));
-    shine.position.set(-.2, .3, .45); g.add(shine);
-    var knot = new T3.Mesh(new T3.ConeGeometry(.1, .16, 8), K.mat(v[1]));
-    knot.position.y = -.74; knot.rotation.x = Math.PI; g.add(knot);
-    var str = new T3.Mesh(new T3.CylinderGeometry(.008, .008, 1.6, 4), K.mat(0xffffff));
-    str.position.y = -1.6; g.add(str);
-    var tex = K.canvasTex(128, 128, function (c) {
-      c.font = '900 64px Nunito, Trebuchet MS, sans-serif';
-      c.textAlign = 'center';
-      c.textBaseline = 'middle';
-      c.lineWidth = 10;
-      c.strokeStyle = v[2];
-      c.strokeText(v[0], 64, 68);
-      c.fillStyle = '#fff';
-      c.fillText(v[0], 64, 68);
-    });
-    var num = new T3.Mesh(new T3.PlaneGeometry(.75, .75), new T3.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false }));
-    num.position.z = .66; g.add(num);
-    g.position.set(x, rise ? -2 : y, z);
-    var b = { g: g, x: x, y: y, z: z, v: v[0], col: v[1], ph: rnd(0, 6), alive: true, rise: rise ? 0 : 1 };
-    scene.add(g); balloons.push(b);
-    return b;
-  }
-  function spawnBalloons() {
-    var spots = [];
-    for (var tries = 0; spots.length < 11 && tries < 400; tries++) {
-      var x = rnd(9, 50), y = rnd(3.2, 12.5);
-      if (Math.abs(x - TARGET.x) < 3 && y < 6) continue;
-      if (spots.some(function (s) { return Math.hypot(s[0] - x, s[1] - y) < 2.6; })) continue;
-      spots.push([x, y]);
-    }
-    spots.forEach(function (s) { makeBalloon(s[0], s[1], rnd(-.6, .6), false); });
-  }
-  function refillBalloons() {
-    var alive = balloons.filter(function (b) { return b.alive; }).length;
-    for (var n = alive; n < 11; n++) {
-      for (var tries = 0; tries < 200; tries++) {
-        var x = rnd(9, 50), y = rnd(3.2, 12.5);
-        if (Math.abs(x - TARGET.x) < 3 && y < 6) continue;
-        if (balloons.some(function (b) { return b.alive && Math.hypot(b.x - x, b.y - y) < 2.6; })) continue;
-        makeBalloon(x, y, rnd(-.6, .6), true); break;
-      }
-    }
-  }
-  K.onFrame(function (dt, t) {
-    balloons.forEach(function (b) {
-      if (!b.alive) return;
-      if (b.rise < 1) b.rise = Math.min(1, b.rise + dt * .6);
-      var bobY = Math.sin(t * 1.4 + b.ph) * .25, bBase = lerp(-2, b.y, K.easeOutBack(b.rise));
-      b.g.position.set(b.x + Math.sin(t * .7 + b.ph) * .15 + wind * .05, bBase + bobY, b.z);
-      b.g.rotation.z = Math.sin(t * 1.1 + b.ph) * .1 - wind * .03;
-    });
-  });
-
-  function popBalloon(b, scorer) {
-    b.alive = false;
-    scene.remove(b.g);
-    var p = b.g.position.clone();
-    K.fx.confetti(p.clone(), 45);
-    K.fx.burst(p, [b.col, 0xffd84a, 0xffffff], 18, 7.5);
-    K.fx.ring(p, b.col, 3.4);
-    K.fx.text('🎈 +' + b.v, p.clone().add(V(0, .85, 0)), '#fff', 1.6);
-    K.sfx('pop');
-    addPoints(scorer, b.v);
-  }
-
-  /* ---------------- catch net at the end of the field ---------------- */
-  var net = { A: 0, V: 0, y: 4, z: 0 };
-  (function buildNet() {
-    var g = new T3.Group(); g.position.set(NET.x, 0, 0); scene.add(g);
-    var postM = K.mat(0xffffff), stripe = K.mat(0xff5fa2);
-    [-1, 1].forEach(function (s) {
-      var post = new T3.Mesh(new T3.CylinderGeometry(.16, .2, NET.h + .6, 14), postM);
-      post.position.set(0, (NET.h + .6) / 2, s * NET.w / 2); post.castShadow = true; g.add(post);
-      for (var i = 0; i < 5; i++) {
-        var band = new T3.Mesh(new T3.CylinderGeometry(.18, .18, .35, 14), stripe);
-        band.position.set(0, 1 + i * 1.9, s * NET.w / 2); g.add(band);
-      }
-      var ball = new T3.Mesh(new T3.SphereGeometry(.34, 16, 12), K.mat(0xffd84a));
-      ball.position.set(0, NET.h + .75, s * NET.w / 2); g.add(ball);
-      var foot = new T3.Mesh(new T3.CylinderGeometry(.5, .6, .25, 16), K.mat(0xd9d2ff));
-      foot.position.set(0, .12, s * NET.w / 2); g.add(foot);
-    });
-    var rope = new T3.Mesh(new T3.CylinderGeometry(.06, .06, NET.w, 8), K.mat(0xffffff));
-    rope.rotation.x = Math.PI / 2; rope.position.y = NET.h; g.add(rope);
-    var tex = K.canvasTex(512, 512, function (c, w) {
-      c.clearRect(0, 0, w, w); c.strokeStyle = '#ffffff'; c.lineWidth = 7;
-      for (var i = 0; i <= 8; i++) {
-        c.beginPath(); c.moveTo(i * 64, 0); c.lineTo(i * 64, 512); c.stroke();
-        c.beginPath(); c.moveTo(0, i * 64); c.lineTo(512, i * 64); c.stroke();
-      }
-    });
-    tex.wrapS = tex.wrapT = T3.RepeatWrapping; tex.repeat.set(NET.w / 2.2, NET.h / 2.2);
-    var geo = new T3.PlaneGeometry(NET.w, NET.h, 36, 22);
-    var mesh = new T3.Mesh(geo, new T3.MeshLambertMaterial({ map: tex, transparent: true, alphaTest: .4, side: T3.DoubleSide, color: 0xfff0f7 }));
-    mesh.rotation.y = -Math.PI / 2; mesh.position.y = NET.h / 2; g.add(mesh);
-    net.mesh = mesh; net.base = geo.attributes.position.array.slice();
-    for (var b = 0; b < 12; b++) {
-      var f = new T3.Mesh(new T3.ConeGeometry(.2, .45, 3), K.mat(K.CONF[b % 5]));
-      f.rotation.z = Math.PI;
-      f.position.set(-.05, NET.h - .35, -NET.w / 2 + .6 + b * (NET.w - 1.2) / 11);
-      f.userData.ph = b; g.add(f); net['f' + b] = f;
-    }
-    var sign = K.label('NET +10', '#9b7bff', 220);
-    sign.position.set(0, NET.h + 1.5, 0); g.add(sign);
-  })();
-
-  K.onFrame(function (dt, t) {
-    net.V += (-40 * net.A - 4.5 * net.V) * dt; net.A += net.V * dt;
-    var p = net.mesh.geometry.attributes.position, b = net.base, sig2 = 2 * 1.8 * 1.8;
-    for (var i = 0; i < p.count; i++) {
-      var x = b[i * 3], y = b[i * 3 + 1] + NET.h / 2;
-      var d2 = (x - net.z) * (x - net.z) + (y - net.y) * (y - net.y);
-      var edge = Math.min(1, (NET.w / 2 - Math.abs(x)) / 1.2) * Math.min(1, (NET.h - y) / 1.0) * Math.min(1, y / 1.0);
-      p.array[i * 3 + 2] = -(net.A * Math.exp(-d2 / sig2) * Math.max(0, edge)) + Math.sin(t * 1.7 + x * .4 + y * .3) * .05;
-    }
-    p.needsUpdate = true;
-    for (var k = 0; k < 12; k++) net['f' + k].rotation.x = Math.sin(t * 3 + k) * .25;
-  });
-
-  /* ---------------- haystack + target ---------------- */
-  var hay = new T3.Group(); hay.position.set(HAY.x, 0, 0); scene.add(hay);
-  (function buildHay() {
-    var body = new T3.Mesh(new T3.SphereGeometry(HAY.r, 26, 14, 0, Math.PI * 2, 0, Math.PI / 2), K.mat(0xffd36b));
-    body.scale.y = .62; body.castShadow = true; body.receiveShadow = true; hay.add(body);
-    var straw = new T3.BoxGeometry(.04, .04, .5), sm = K.mat(0xf5c04a);
-    for (var i = 0; i < 70; i++) {
-      var a = rnd(0, 6.28), r = rnd(.4, HAY.r * .95), s = new T3.Mesh(straw, sm);
-      s.position.set(Math.cos(a) * r, Math.sqrt(Math.max(0, 1 - (r / HAY.r) * (r / HAY.r))) * HAY.r * .62 + .02, Math.sin(a) * r);
-      s.rotation.set(rnd(-1, 1), rnd(0, 3), rnd(-1, 1)); hay.add(s);
-    }
-    var sign = K.label('+15', '#ffb320', 160); sign.position.set(0, 2.2, 0); hay.add(sign);
-  })();
-  K.tryGLB(K.ROOT + 'assets/3d/items/haystack.glb').then(function (g) {
-    if (!g) return;
-    hay.children.slice().forEach(function (c) { if (!c.isSprite) hay.remove(c); });
-    hay.add(K.fitModel(g.scene, HAY.r * 2, { byLength: true, receive: true }));
-  });
-  var hayBounce = 0;
-  K.onFrame(function (dt) {
-    hayBounce = Math.max(0, hayBounce - dt * 2);
-    var s = 1 + Math.sin(hayBounce * 14) * hayBounce * .25;
-    hay.scale.set(1 + (1 - s) * .5, s, 1 + (1 - s) * .5);
-  });
-
-  var target = new T3.Group(); target.position.set(TARGET.x, 0, 0); scene.add(target);
-  var board = new T3.Group(); board.position.y = TARGET.y; target.add(board);
-  (function buildTarget() {
-    var tex = K.canvasTex(512, 512, function (c) {
-      var cols = ['#ff5fa2', '#ffffff', '#ff5fa2', '#ffffff', '#ffd84a'];
-      cols.forEach(function (col, i) { c.fillStyle = col; c.beginPath(); c.arc(256, 256, 250 - i * 50, 0, 7); c.fill(); });
-      c.fillStyle = '#2b1d40'; c.font = '900 54px Nunito, Trebuchet MS, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('50', 256, 260);
-    });
-    var face = new T3.Mesh(new T3.CylinderGeometry(TARGET.r, TARGET.r, .3, 40), [K.mat(0xffffff), new T3.MeshLambertMaterial({ map: tex }), new T3.MeshLambertMaterial({ map: tex })]);
-    face.rotation.z = Math.PI / 2; face.castShadow = true; board.add(face);
-    [-1, 1].forEach(function (s) {
-      var leg = new T3.Mesh(new T3.BoxGeometry(.2, TARGET.y + .3, .2), K.mat(0xc98d63));
-      leg.position.set(.3, (TARGET.y + .3) / 2, s * 1.2); leg.rotation.x = s * -.12; leg.castShadow = true; target.add(leg);
-    });
-  })();
-  K.tryGLB(K.ROOT + 'assets/3d/items/target.glb').then(function (g) {
-    if (!g) return;
-    target.children.slice().forEach(function (c) { target.remove(c); });
-    var m = K.fitModel(g.scene, TARGET.y + TARGET.r);
-    var holder = new T3.Group(); holder.add(m); holder.rotation.y = -Math.PI / 2; target.add(holder);
-  });
-  var boardWobble = 0;
-  K.onFrame(function (dt, t) {
-    boardWobble = Math.max(0, boardWobble - dt * 1.5);
-    board.rotation.z = Math.sin(t * 18) * boardWobble * .15;
-  });
-
-  /* ---------------- 3D Projectile Flight Trail Rings ---------------- */
-  var flightRings = [];
-  var flightRingGeo = new T3.TorusGeometry(.36, .045, 8, 20);
-  function spawnFlightRing(pos, colHex) {
-    var mat = new T3.MeshBasicMaterial({ color: colHex || 0xffd84a, transparent: true, opacity: .82 });
-    var m = new T3.Mesh(flightRingGeo, mat);
-    m.position.copy(pos);
-    m.rotation.y = Math.PI / 2;
-    scene.add(m);
-    flightRings.push({ mesh: m, mat: mat, life: 0, maxLife: .5 });
-  }
-  K.onFrame(function (dt) {
-    for (var i = flightRings.length - 1; i >= 0; i--) {
-      var fr = flightRings[i];
-      fr.life += dt;
-      var u = fr.life / fr.maxLife;
-      fr.mesh.scale.setScalar(1 + u * 1.2);
-      fr.mat.opacity = Math.max(0, .82 * (1 - u));
-      if (fr.life >= fr.maxLife) {
-        scene.remove(fr.mesh);
-        flightRings.splice(i, 1);
-      }
-    }
-  });
-
-  /* ---------------- 3D Active Turn Arrow ---------------- */
-  var turnArrow = (function () {
-    var cone = new T3.Mesh(
-      new T3.ConeGeometry(.24, .46, 16),
-      new T3.MeshStandardMaterial({ color: 0xffd84a, emissive: 0xffa000, emissiveIntensity: .35, roughness: .25 })
-    );
-    cone.rotation.x = Math.PI;
-    cone.visible = false;
-    scene.add(cone);
-    K.onFrame(function (dt, t) {
-      if (!cone.visible) return;
-      cone.position.y = 2.45 + Math.sin(t * 5.5) * .16;
-      cone.rotation.y = t * 2.8;
-    });
-    return {
-      set: function (ch) {
-        if (!ch || phase === 'end') { cone.visible = false; return; }
-        cone.visible = true;
-        cone.position.x = ch.home.x;
-        cone.position.z = ch.home.z;
-      }
-    };
-  })();
-
-  /* ---------------- characters (all 4 loaded at boot) ---------------- */
-  var chars = [];
-  function lineupSpot(i) { return V(-6.5 + i * 1.55, 0, 3.2 + (i % 2) * .5); }
-  function makeHolder(ch, i) {
-    var h = new T3.Group();
-    h.add(ch.root);
-    ch.root.position.y = -ch.height / 2;
-    scene.add(h);
-    ch.holder = h;
-    ch.home = lineupSpot(i);
-    h.position.copy(ch.home).add(V(0, ch.height / 2, 0));
-    ch.root.rotation.y = .5;
-    var ring = new T3.Mesh(new T3.RingGeometry(.45, .62, 32), new T3.MeshBasicMaterial({ color: ALL_TEAMS[i].hex, transparent: true, opacity: .9 }));
-    ring.rotation.x = -Math.PI / 2;
-    ring.position.copy(ch.home);
-    ring.position.y = .03;
-    scene.add(ring);
-    ch.ring = ring;
-    ch.badge = K.label(ALL_TEAMS[i].name, ALL_TEAMS[i].c);
-    ch.badge.position.y = ch.height / 2 + .45;
-    h.add(ch.badge);
-  }
-  function placeHome(ch) {
-    ch.holder.position.copy(ch.home).add(V(0, ch.height / 2, 0));
-    ch.holder.rotation.set(0, 0, 0);
-    ch.holder.scale.setScalar(1);
-    ch.holder.visible = true;
-    ch.root.rotation.set(0, .5, 0);
-    ch.root.position.set(0, -ch.height / 2, 0);
-    ch.setState('idle');
-  }
-  function syncCharactersForTeamCount() {
-    TEAMS = ALL_TEAMS.slice(0, nTeams);
-    chars.forEach(function (ch, i) {
-      var vis = i < nTeams;
-      ch.holder.visible = vis;
-      ch.ring.visible = vis;
-      if (vis) placeHome(ch);
-    });
-  }
-  var fpsAvg = 60;
-  K.onFrame(function (dt) {
-    if (dt > 0.0005 && dt < 0.5) fpsAvg = fpsAvg * 0.92 + (1 / dt) * 0.08;
-    chars.forEach(function (c, i) {
-      c.update(dt);
-      var act = i === active && (phase === 'question' || phase === 'turn');
-      var s = act ? 1.15 + .12 * Math.sin(K.now * 6) : 1;
-      c.ring.scale.setScalar(s);
-      c.badge.visible = i < nTeams && phase !== 'end' && (phase !== 'flight' || i === active);
-    });
-  });
-
-  /* ---------------- scoring & HUD ---------------- */
-  var hud, active = 0, round = 1, phase = 'loading', shotPoints = 0;
-  var windBox = null, turnBannerEl = null, liveBoardEl = null;
-
-  function setPhase(p) {
-    phase = p;
-    window.__k3phase = p;
-  }
-
-  function addPoints(i, p) {
-    TEAMS[i].score += p;
-    shotPoints += p;
-    if (hud) { hud.refresh(active); hud.bump(i); }
-    updateLiveScoreUI(active);
-  }
-
-  function showWind() {
-    if (!windBox) windBox = K.ui.add(K.el('div', 'windbox'));
-    var s = Math.abs(wind) < .2 ? 'Calm 🍃' : 'Wind <b style="transform:rotate(' + (wind < 0 ? 180 : 0) + 'deg)">➜</b> ' + Math.round(Math.abs(wind) * 10) / 10;
-    windBox.innerHTML = '💨 ' + s + ' &nbsp;·&nbsp; Round ' + round + '/' + ROUNDS;
-  }
-
-  function updateTurnUI(ti, msg) {
-    if (ti < 0 || ti >= nTeams) {
-      turnArrow.set(null);
-      if (turnBannerEl) turnBannerEl.style.display = 'none';
-      return;
-    }
-    var t = TEAMS[ti];
-    turnArrow.set(chars[ti]);
-    if (!turnBannerEl) return;
-    turnBannerEl.style.display = 'inline-flex';
-    turnBannerEl.style.setProperty('--c', t.c);
-    turnBannerEl.innerHTML =
-      '<span class="cn-turn-dot"></span>' +
-      '<span>💥 Team ' + t.name + '\'s Shot · ' + (msg || ('Round ' + round + ' of ' + ROUNDS)) + '</span>';
-  }
-
-  function updateLiveScoreUI(activeTi) {
-    if (!liveBoardEl) return;
-    var rows = TEAMS.map(function (t, i) {
-      var cells = '';
-      for (var r = 0; r < ROUNDS; r++) {
-        var val = t.shots[r];
-        if (val === undefined) cells += '<span class="cn-rcell">·</span>';
-        else cells += '<span class="cn-rcell' + (val >= 50 ? ' bull' : '') + '">' + val + '</span>';
-      }
-      return '<div class="cn-live-row' + (i === activeTi ? ' on' : '') + '" style="--c:' + t.c + '">' +
-        '<b>' + t.name + '</b>' +
-        '<div class="cn-rshots">' + cells + '</div>' +
-        '<span>' + t.score + '</span>' +
-      '</div>';
-    }).join('');
-    liveBoardEl.innerHTML = '<div class="cn-live-head">💥 Cannon Scores (' + round + '/' + ROUNDS + ')</div>' + rows;
-  }
-
-  /* ---------------- camera shots ---------------- */
-  function shot(name) {
-    K.cam.follow = null;
-    if (name === 'title') {
-      K.cam.follow = function () {
-        var a = K.now * .12;
-        K.cam.tPos.set(-2 + Math.sin(a) * 4, 3.4, 11 + Math.cos(a) * 2);
-        K.cam.tLook.set(-1.5, 1.4, 1);
-      };
-      K.cam.k = 1.5;
-    }
-    if (name === 'intro') { K.cam.set(V(26, 14, 40), V(24, 4, 0), 1.2); }
-    if (name === 'lineup') K.cam.set(V(-3.6, 3.1, 9.8), V(-3.2, -.2, 2.6), 2.5);
-    if (name === 'aim') K.cam.set(V(10, 6.8, 17.5), V(14, 5.0, 0), 2.2);
-    if (name === 'cannon') K.cam.set(V(3.2, 2.6, 7), V(-.4, 1.7, 0), 3);
-    if (name === 'flight') {
-      K.cam.k = 5;
-      K.cam.follow = function () {
-        var p = flier.pos, n = clamp((p.x - (NET.x - 12)) / 8, 0, 1);
-        K.cam.tPos.set(lerp(p.x - 2.6, NET.x - 6.5, n), lerp(Math.max(2.2, p.y + 1.1), 4, n), lerp(10, 6.5, n));
-        K.cam.tLook.set(lerp(p.x + 2.6, NET.x - .5, n), lerp(Math.max(1.2, p.y * .92), Math.max(1.5, p.y * .7), n), 0);
-      };
-    }
-    if (name === 'replaycam') {
-      // Dramatic Bullseye Slow-Mo Replay camera beside the target board!
-      K.cam.set(V(TARGET.x - 6.5, TARGET.y + 1.1, -6.4), V(TARGET.x - .3, TARGET.y, 0), 4.5);
-    }
-    if (name === 'land') {
-      K.cam.k = 3;
-      K.cam.follow = function () {
-        var p = flier.pos, hp = flier.ch ? flier.ch.holder.position : p;
-        if (hp.x > NET.x - 6) {
-          K.cam.tPos.set(NET.x - 6, 2.6, 4.8);
-          K.cam.tLook.set(NET.x - 1.2, 1.4, 0);
-          return;
-        }
-        var nearT = Math.abs(hp.x - TARGET.x) < 4 ? 1 : 0;
-        K.cam.tPos.set(hp.x + 1.4 - nearT * 5.5, Math.max(1.9, hp.y + 1.3) + nearT * 1.5, 5.6 + nearT * 4);
-        K.cam.tLook.set(hp.x, Math.max(.8, hp.y), 0);
-      };
-    }
-    if (name === 'podium') {
-      K.cam.follow = function () {
-        var a = Math.sin(K.now * .3) * .55;
-        K.cam.tPos.set(-4 + a * 2.2, 3.8, 13.8);
-        K.cam.tLook.set(-4, .35, 6);
-      };
-      K.cam.k = 2;
-    }
-  }
-
-  /* ---------------- 3-step How to Play Modal ---------------- */
-  var HOWTO_STEPS = [
-    { ico: '🎤', c: '#ff5fa2', t: '1. Answer the Question', s: 'Listen and tap the right answer to hop into the giant cannon!' },
-    { ico: '💥', c: '#4f9dff', t: '2. Aim & Fire!', s: 'Check the wind flag, drag back to aim angle & power, and let go — BOOM!' },
-    { ico: '🎯', c: '#ffb320', t: '3. Pop Balloons & Bullseye!', s: 'Pop balloons for 10 to 50 points, land in the haystack, or hit the bullseye!' }
-  ];
-  function openHowTo(onClose) {
-    var existing = document.querySelector('.cn-howto-modal');
-    if (existing) existing.remove();
-    var modal = K.ui.add(K.el('div', 'cn-howto-modal'));
-    var card = K.el('div', 'cn-howto-card');
-    card.innerHTML = '<h2 class="cn-howto-title">💥 How to Play Monster Cannon 3D</h2>';
-    var grid = K.el('div', 'cn-steps');
-    HOWTO_STEPS.forEach(function (st, idx) {
-      var box = K.el('div', 'cn-step');
-      box.style.setProperty('--sc', st.c);
-      box.innerHTML =
-        '<span class="cn-step-num">' + (idx + 1) + '</span>' +
-        '<div class="cn-step-ico">' + st.ico + '</div>' +
-        '<b>' + st.t + '</b>' +
-        '<p>' + st.s + '</p>';
-      var sayBtn = K.el('button', 'cn-step-say', '🔊 Listen');
-      sayBtn.onclick = function () { K.sfx('hello'); K.say(st.s); };
-      box.appendChild(sayBtn);
-      grid.appendChild(box);
-    });
-    card.appendChild(grid);
-
-    var gotIt = K.el('button', 'btn green', '👍 Got it! Load the Cannon!');
-    gotIt.onclick = function () {
-      try { localStorage.setItem('eaa_howto_cannon3d_v1', '1'); } catch (e) {}
-      modal.remove();
-      if (typeof onClose === 'function') onClose();
-    };
-    card.appendChild(gotIt);
-    modal.appendChild(card);
-    K.say('How to play Monster Cannon! Step 1: Answer the question to hop into the cannon. Step 2: Aim and fire. Step 3: Pop balloons and hit the bullseye!');
-  }
-
-  function addHelpTopButton() {
-    var top = document.querySelector('.k3-top');
-    if (!top || top.querySelector('.k3-help-btn')) return;
-    var helpBtn = K.el('button', 'k3-icon k3-help-btn', '?');
-    helpBtn.title = 'How to play';
-    helpBtn.onclick = function () { openHowTo(); };
-    top.insertBefore(helpBtn, top.firstChild);
-  }
-
-  window.__cannon3d = {
-    openHowTo: openHowTo,
-    getFps: function () { return Math.round(fpsAvg); }
+  /* ---------- Game Configuration & State ---------- */
+  var STATE = {
+    phase: 'boot',          // boot | title | question | aim | flight | impact | duel | podium
+    context: (K.MOBILE && !Q.has('cls')) ? 'solo' : 'classroom', // 'classroom' | 'solo'
+    boardMode: Q.get('mode') === 'duel' ? 'duel' : 'cinema',     // 'cinema' | 'duel'
+    playLoop: Q.get('loop') === 'target' ? 'target' : 'smash',   // 'smash' (Answer->Smash) | 'target' (Shoot 3D Sails)
+    arcGuide: Q.get('arc') === 'full' ? 'guided' : 'pro',        // 'guided' (78% arc) | 'pro' (42% arc + wind)
+    teamCount: Math.min(4, Math.max(2, +(Q.get('teams') || 2))),
+    totalRounds: Math.min(4, Math.max(2, +(Q.get('rounds') || 4))),
+    round: 1,               // 1..totalRounds (maps to Stages 1..4!)
+    turnIdx: 0,
+    teams: [],
+    currentItem: null,
+    selectedAmmo: 'iron',   // 'iron' | 'bomb' | 'boulder' | 'triple'
+    unlockedSuper: false,
+    midFlightUsed: false,
+    shotScore: 0,
+    lastTrails: {},         // teamIdx -> Array<Vector3> ghost trail of previous shot
+    duelTimeLeft: 35,
+    duelScores: [0, 0]
   };
 
-  /* ---------------- the flier ---------------- */
-  var flier = { pos: V(0, 0, 0), vel: V(0, 0, 0), ch: null, on: false, stars: null, trailT: 0 };
+  var AMMO_TYPES = {
+    iron:    { id: 'iron',    label: '⚫ Iron Ball',      mass: 2.2, radius: 0.34, speedMul: 1.00, desc: 'Classic heavy punch' },
+    bomb:    { id: 'bomb',    label: '💥 Star-Burst',     mass: 2.0, radius: 0.38, speedMul: 0.98, desc: 'Tap mid-air or hit to BOOM!' },
+    boulder: { id: 'boulder', label: '🪨 Runed Boulder',  mass: 6.2, radius: 0.44, speedMul: 0.92, desc: 'Crushes stone walls!' },
+    triple:  { id: 'triple',  label: '⚡ Triple Scatter', mass: 1.8, radius: 0.31, speedMul: 1.02, desc: 'Tap mid-air to split ×3!' }
+  };
 
-  function hopIntoCannon(ch, done) {
-    var from = ch.holder.position.clone(), to = muzzlePos(aimAngle).add(V(0, .6, 0)), t = 0, dur = .85;
-    ch.setState('hop'); K.sfx('boing'); shot('cannon');
-    var fn = K.onFrame(function (dt) {
-      t += dt; var u = clamp(t / dur, 0, 1), e = K.ease(u);
-      ch.holder.position.set(lerp(from.x, to.x, e), lerp(from.y, to.y, e) + Math.sin(u * Math.PI) * 2.6, lerp(from.z, to.z, e));
-      ch.holder.rotation.z = -u * Math.PI * 2;
-      if (u > .75) ch.holder.scale.setScalar(1 - (u - .75) * 3.6);
-      if (u >= 1) {
-        K.offFrame(fn); ch.holder.visible = false; ch.holder.rotation.set(0, 0, 0);
-        recoil = .25; K.sfx('load'); K.fx.puff(muzzlePos(aimAngle), 5, { size: .6 });
-        done();
+  var STAGE_META = [
+    { num: 1, name: 'Stage 1 · Sunny Sandbar Cove',      mult: 1, windMax: 1.2 },
+    { num: 2, name: 'Stage 2 · Moving Pirate Fleet',     mult: 1, windMax: 2.4 },
+    { num: 3, name: 'Stage 3 · Twin Stone Watchtowers',  mult: 1, windMax: 3.1 },
+    { num: 4, name: 'Stage 4 · Boss Flagship Finale (2×)', mult: 2, windMax: 3.6 }
+  ];
+
+  /* ---------- Loaded 3D Asset Registry ---------- */
+  var MODELS = {};
+  var MODEL_URLS = {
+    carriage:  'models/cannon-carriage.glb?v=2',
+    barrel:    'models/cannon-barrel.glb?v=2',
+    tntKeg:    'models/tnt-keg.glb?v=2',
+    woodCrate: 'models/wood-crate.glb?v=2',
+    woodBeam:  'models/wood-beam.glb?v=2',
+    stoneBlk:  'models/stone-block.glb?v=2',
+    buoy:      'models/buoy-bumper.glb?v=2',
+    boulder:   'models/boulder-ammo.glb?v=2',
+    tntAmmo:   'models/tnt-ammo.glb?v=2',
+    sloop:     'models/pirate-sloop.glb?v=2',
+    flagship:  'models/boss-flagship.glb?v=2',
+    goldChest: 'models/gold-chest.glb?v=2',
+    headland:  'models/cove-headland.glb?v=2',
+    sandbar:   'models/cove-sandbar.glb?v=2',
+    trophy:    'models/trophy.glb?v=2',
+    palm1:     '../../assets/3d/world/pirate/Environment_PalmTree_1.glb',
+    palm2:     '../../assets/3d/world/pirate/Environment_PalmTree_2.glb',
+    rock1:     '../../assets/3d/world/pirate/Environment_Rock_1.glb',
+    dock:      '../../assets/3d/world/pirate/Environment_Dock.glb',
+    parrot:    '../../island/planet/models/parrot.glb'
+  };
+
+  /* ---------- Scene & Gameplay Runtime Objects ---------- */
+  var rawRender = null;
+  var skyMesh = null, oceanMesh = null;
+  var worldGroup = null, stageGroup = null, fxGroup = null;
+  var physStage = null;
+  var aiManager = null;
+  var movingShips = [];     // { group, vehicle, kinRec, deckAttachments, foamIdx, isRight, answerTxt, buoyMesh, buoyRec }
+  var activeProjectiles = []; // { rec, mesh, trailTimer, teamIdx }
+  var cannons = [];         // [ cannonRig0, cannonRig1 (for split duel) ]
+  var camDuelLeft = null, camDuelRight = null;
+  var windFlagMesh = null;
+  var qsBank = null;
+  var hudBar = null, windPillEl = null, stageBannerEl = null, targetClueEl = null, flightTapBtn = null;
+
+  /* =========================================================================
+   * 1. INITIALIZATION & SAFE POSTFX RENDER HOOK
+   * ========================================================================= */
+  K.init({ fov: 44, far: 420, fog: 0xdaf2ff, fogNear: 82, fogFar: 215, bloom: false, autoPortraitFov: false });
+  K.cam.noPortraitPull = true;
+  function updateAdaptiveFov() {
+    var asp = (window.innerWidth || 1280) / Math.max(1, window.innerHeight || 720);
+    K.camera.fov = asp < 0.65 ? 65 : asp < 1.05 ? 52 : 44;
+    K.camera.updateProjectionMatrix();
+  }
+  updateAdaptiveFov();
+  window.addEventListener('resize', updateAdaptiveFov);
+  qsBank = K.questions('g3-u5-vocab');
+
+  // Hook K.renderer.render cleanly so pmndrs/postprocessing & Split-Screen Duel run inside kit3d's loop with zero recursion
+  rawRender = K.renderer.render.bind(K.renderer);
+  var _inCustomRender = false;
+  E3D.PostFX.init(K.renderer, K.scene, K.camera, { bloomThreshold: 1.03, bloomIntensity: 0.65 });
+  window.addEventListener('resize', function () {
+    E3D.PostFX.resize(window.innerWidth || 1280, window.innerHeight || 720);
+  });
+
+  K.renderer.render = function (scene, camera) {
+    if (_inCustomRender || scene !== K.scene) {
+      return rawRender(scene, camera);
+    }
+    _inCustomRender = true;
+    try {
+      if (STATE.phase === 'duel' && camDuelLeft && camDuelRight) {
+        E3D.PostFX.renderSplitHorizontal(K.renderer, K.scene, camDuelLeft, camDuelRight);
+      } else if (E3D.PostFX.enabled && E3D.PostFX.composer) {
+        E3D.PostFX.renderSingle(K.renderer, K.scene, camera, 1 / 60);
+      } else {
+        K.renderer.toneMapping = T3.ACESFilmicToneMapping;
+        K.renderer.toneMappingExposure = 1.06;
+        rawRender(scene, camera);
+      }
+    } finally {
+      _inCustomRender = false;
+    }
+  };
+
+  /* =========================================================================
+   * 2. ASSET PRELOADER & COVE WORLD BUILDER
+   * ========================================================================= */
+  function loadAllAssets() {
+    var keys = Object.keys(MODEL_URLS);
+    var jobs = keys.map(function (k) {
+      return K.tryGLB(MODEL_URLS[k]).then(function (g) {
+        if (g && g.scene) {
+          E3D.Shaders.stylizeObject(g.scene, {
+            wind: (k === 'palm1' || k === 'palm2') ? 0.16 : 0,
+            windHeight: 4.2,
+            rim: 0.14
+          });
+          MODELS[k] = g;
+        }
+      });
+    });
+    return Promise.all([E3D.initRapier(), Promise.all(jobs)]);
+  }
+
+  function buildCoveWorld() {
+    worldGroup = new T3.Group();
+    stageGroup = new T3.Group();
+    fxGroup = new T3.Group();
+    K.scene.add(worldGroup);
+    K.scene.add(stageGroup);
+    K.scene.add(fxGroup);
+
+    // 1. Messenger Warm Sky Dome & Sun/Teal-Bounce Lights
+    skyMesh = E3D.Shaders.createSkyDome();
+    K.scene.add(skyMesh);
+    K.onFrame(function () {
+      skyMesh.position.copy(K.camera.position);
+    });
+    K.world.lights();
+    if (K.sun) {
+      K.sun.intensity = 1.72;
+      K.sun.color.setHex(0xfff5de);
+      var sc = K.sun.shadow.camera;
+      sc.left = -26; sc.right = 26; sc.top = 24; sc.bottom = -24; sc.far = 110;
+      sc.updateProjectionMatrix();
+    }
+
+    // 2. Animated Gerstner Ocean + SDF Coastal Shore Foam
+    oceanMesh = E3D.Shaders.createOcean({ size: 360, segments: K.MOBILE ? 96 : 136 });
+    worldGroup.add(oceanMesh);
+
+    // 3. Launch Headland Cliff (z = +15.2, flat plateau at y = 2.02)
+    if (MODELS.headland) {
+      var cliff = MODELS.headland.scene.clone(true);
+      cliff.position.set(0, -0.12, 15.2);
+      cliff.scale.set(1.18, 1.0, 1.05);
+      cliff.receiveShadow = true;
+      worldGroup.add(cliff);
+    }
+    E3D.Shaders.setFoamCollider(0, 0, 15.2, 10.6, 1.0);
+
+    // Wooden launch boardwalk deck on headland
+    if (MODELS.dock) {
+      for (var dx = -1; dx <= 1; dx++) {
+        var dk = MODELS.dock.scene.clone(true);
+        K.fitModel(dk, 0.55);
+        dk.scale.set(1.35, 0.85, 1.2);
+        dk.position.set(dx * 4.1, 1.88, 13.6);
+        worldGroup.add(dk);
+      }
+    }
+
+    // 4. Decorative Coastal Islets, Swaying Palms & Rocks (Instanced / Cloned cleanly)
+    var decorSpots = [
+      { x: -19, z: 8, s: 0.72 },
+      { x:  20, z: 7, s: 0.78 },
+      { x: -27, z: -22, s: 0.95 },
+      { x:  28, z: -24, s: 0.90 }
+    ];
+    decorSpots.forEach(function (sp, idx) {
+      if (MODELS.sandbar) {
+        var isl = MODELS.sandbar.scene.clone(true);
+        isl.position.set(sp.x, -0.1, sp.z);
+        isl.scale.setScalar(sp.s);
+        worldGroup.add(isl);
+        E3D.Shaders.setFoamCollider(1 + idx, sp.x, sp.z, 5.1 * sp.s, 0.95);
+      }
+      var pModel = (idx % 2 === 0 ? MODELS.palm1 : MODELS.palm2) || MODELS.palm1;
+      if (pModel) {
+        var palm = pModel.scene.clone(true);
+        K.fitModel(palm, 4.6 * sp.s + 1.2);
+        palm.position.set(sp.x + (idx % 2 ? -1.1 : 1.1), 0.85 * sp.s, sp.z);
+        palm.rotation.y = idx * 1.7;
+        worldGroup.add(palm);
+      }
+      if (MODELS.rock1) {
+        var rk = MODELS.rock1.scene.clone(true);
+        K.fitModel(rk, 1.6 * sp.s);
+        rk.position.set(sp.x - 1.5, 0.25, sp.z + 1.2);
+        worldGroup.add(rk);
+      }
+    });
+
+    // Headland framing palms (left & right of the launch deck)
+    [-8.6, 8.6].forEach(function (px, i) {
+      var pm = (i === 0 ? MODELS.palm1 : MODELS.palm2) || MODELS.palm1;
+      if (pm) {
+        var p = pm.scene.clone(true);
+        K.fitModel(p, 5.2);
+        p.position.set(px, 1.85, 15.8);
+        p.rotation.y = i ? -0.6 : 0.6;
+        worldGroup.add(p);
+      }
+    });
+
+    // Puffy drifting sky clouds in ONE single InstancedMesh draw call!
+    buildInstancedClouds(K.MOBILE ? 8 : 11, -55, 55);
+
+    // 5. Cliffside 3D Wind Flagpole + Dynamic Wind Pennant
+    buildWindFlagpole();
+
+    // 6. Flying Guide Parrot (Yuka figure-8 over the cove!)
+    aiManager = E3D.AI.createManager();
+    if (MODELS.parrot && aiManager) {
+      var parrotWrap = new T3.Group();
+      var pm2 = MODELS.parrot.scene.clone(true);
+      K.fitModel(pm2, 0.85);
+      parrotWrap.add(pm2);
+      worldGroup.add(parrotWrap);
+      var pv = E3D.AI.createPatrolVehicle([
+        [-9, 6.8, 4], [0, 7.6, -4], [9, 6.8, 4], [0, 6.2, 10]
+      ], 4.2, true);
+      aiManager.add(pv);
+      K.onFrame(function (dt, t) {
+        parrotWrap.position.set(pv.position.x, pv.position.y + Math.sin(t * 7.5) * 0.18, pv.position.z);
+        if (pv.velocity.squaredLength() > 0.01) {
+          parrotWrap.rotation.y = Math.atan2(pv.velocity.x, pv.velocity.z);
+        }
+        pm2.rotation.z = Math.sin(t * 9.0) * 0.14;
+      });
+    }
+
+    // 7. Build Primary Cannon Rig (and Secondary Duel Rig hidden until Duel mode)
+    cannons = [
+      createCannonRig(0, new T3.Vector3(0, 2.02, 13.4)),
+      createCannonRig(1, new T3.Vector3(4.1, 2.02, 13.4))
+    ];
+    cannons[1].root.visible = false;
+
+    camDuelLeft = new T3.PerspectiveCamera(45, 1, 0.1, 400);
+    camDuelRight = new T3.PerspectiveCamera(45, 1, 0.1, 400);
+
+    // Set gorgeous title vista camera
+    K.cam.set(new T3.Vector3(5.8, 6.2, 22.5), new T3.Vector3(0, 2.4, -6), 2.2);
+    K.cam.snap();
+  }
+
+  function buildInstancedClouds(nClouds, x0, x1) {
+    var puffGeo = new T3.SphereGeometry(1.0, 12, 8);
+    var puffMat = new T3.MeshLambertMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.34 });
+    var total = nClouds * 5;
+    var im = new T3.InstancedMesh(puffGeo, puffMat, total);
+    im.frustumCulled = false;
+    worldGroup.add(im);
+    var puffs = [];
+    for (var c = 0; c < nClouds; c++) {
+      var cx = K.rnd(x0, x1), cy = K.rnd(16, 25), cz = K.rnd(-68, -28), spd = K.rnd(0.45, 1.05);
+      for (var p = 0; p < 5; p++) {
+        puffs.push({
+          cloudIdx: c, cx: cx, cy: cy, cz: cz, spd: spd,
+          ox: p * 1.55 - 3.1, oy: K.rnd(-0.3, 0.5), oz: K.rnd(-0.5, 0.5),
+          r: K.rnd(1.25, 2.15)
+        });
+      }
+    }
+    var m4 = new T3.Matrix4(), pos = new T3.Vector3(), quat = new T3.Quaternion(), sc = new T3.Vector3();
+    K.onFrame(function (dt) {
+      for (var i = 0; i < puffs.length; i++) {
+        var pf = puffs[i];
+        pf.cx += pf.spd * dt;
+        if (pf.cx > x1 + 20) pf.cx = x0 - 20;
+        pos.set(pf.cx + pf.ox, pf.cy + pf.oy, pf.cz + pf.oz);
+        sc.set(pf.r, pf.r * 0.68, pf.r);
+        m4.compose(pos, quat, sc);
+        im.setMatrixAt(i, m4);
+      }
+      im.instanceMatrix.needsUpdate = true;
+    });
+  }
+
+  function buildWindFlagpole() {
+    var grp = new T3.Group();
+    grp.position.set(6.8, 2.0, 14.4);
+    if (MODELS.woodBeam) {
+      var pole = MODELS.woodBeam.scene.clone(true);
+      pole.rotation.z = Math.PI * 0.5;
+      pole.scale.set(1.05, 0.25, 0.25);
+      pole.position.y = 1.25;
+      grp.add(pole);
+    }
+    var flagGeo = new T3.PlaneGeometry(1.35, 0.52, 12, 4);
+    flagGeo.translate(0.68, 0, 0);
+    var flagMat = new T3.MeshStandardMaterial({
+      color: 0xff5fa2,
+      roughness: 0.55,
+      side: T3.DoubleSide
+    });
+    windFlagMesh = new T3.Mesh(flagGeo, flagMat);
+    windFlagMesh.position.set(0, 2.32, 0);
+    windFlagMesh.castShadow = true;
+    grp.add(windFlagMesh);
+    worldGroup.add(grp);
+
+    var origPos = flagGeo.attributes.position.array.slice();
+    K.onFrame(function (dt, t) {
+      if (!windFlagMesh) return;
+      var wx = E3D.wind.x, wz = E3D.wind.z;
+      var mag = Math.hypot(wx, wz);
+      var targetAng = mag > 0.08 ? Math.atan2(-wz, wx) : 0;
+      windFlagMesh.rotation.y = K.lerp(windFlagMesh.rotation.y, targetAng, 1 - Math.exp(-dt * 5));
+      var arr = flagGeo.attributes.position.array;
+      var speed = 4.5 + mag * 3.2;
+      var amp = 0.04 + mag * 0.055;
+      for (var i = 0; i < arr.length; i += 3) {
+        var ox = origPos[i], oy = origPos[i + 1];
+        var mask = Math.min(1, ox / 1.55);
+        arr[i + 2] = Math.sin(ox * 4.2 - t * speed + oy * 1.5) * amp * mask;
+      }
+      flagGeo.attributes.position.needsUpdate = true;
+    });
+  }
+
+  /* =========================================================================
+   * 3. ARTICULATED BRASS CANNON RIG + PUPIL 3D AVATAR + TEAM MONSTER + TRAJECTORY
+   * ========================================================================= */
+  function createCannonRig(slotIdx, pos) {
+    var root = new T3.Group();
+    root.position.copy(pos);
+    worldGroup.add(root);
+
+    // Soft Folio floor shadow beneath cannon
+    var cShadow = E3D.Shaders.createContactShadow(1.05, 1.25, 0.72);
+    root.add(cShadow);
+
+    var yawGroup = new T3.Group();
+    root.add(yawGroup);
+
+    if (MODELS.carriage) {
+      var car = MODELS.carriage.scene.clone(true);
+      yawGroup.add(car);
+    }
+
+    var pitchPivot = new T3.Group();
+    pitchPivot.position.set(0, 0.62, 0.02);
+    yawGroup.add(pitchPivot);
+
+    var barrelWrap = new T3.Group();
+    pitchPivot.add(barrelWrap);
+    if (MODELS.barrel) {
+      var bar = MODELS.barrel.scene.clone(true);
+      barrelWrap.add(bar);
+    }
+
+    // Glowing HDR Fuse Spark at breech (+Z of barrel, emissive > 1.0 for selective bloom!)
+    var sparkMat = new T3.MeshStandardMaterial({
+      color: 0xffe066,
+      emissive: new T3.Color(0xff9900),
+      emissiveIntensity: 2.6,
+      roughness: 0.2
+    });
+    var fuseSpark = new T3.Mesh(new T3.OctahedronGeometry(0.085, 1), sparkMat);
+    fuseSpark.position.set(0, 0.24, 0.62);
+    barrelWrap.add(fuseSpark);
+
+    // Trajectory Preview Instanced Spheres (28 live + 22 ghost from last shot)
+    var dotGeo = new T3.SphereGeometry(0.13, 10, 8);
+    var dotMat = new T3.MeshStandardMaterial({
+      color: 0xffffff,
+      emissive: new T3.Color(0xffd447),
+      emissiveIntensity: 1.45,
+      transparent: true,
+      opacity: 0.92
+    });
+    var arcDots = new T3.InstancedMesh(dotGeo, dotMat, 28);
+    arcDots.count = 0;
+    arcDots.frustumCulled = false;
+    fxGroup.add(arcDots);
+
+    var ghostMat = new T3.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.30,
+      depthWrite: false
+    });
+    var ghostDots = new T3.InstancedMesh(dotGeo, ghostMat, 22);
+    ghostDots.count = 0;
+    ghostDots.frustumCulled = false;
+    fxGroup.add(ghostDots);
+
+    var rig = {
+      slotIdx: slotIdx,
+      root: root,
+      yawGroup: yawGroup,
+      pitchPivot: pitchPivot,
+      barrelWrap: barrelWrap,
+      fuseSpark: fuseSpark,
+      arcDots: arcDots,
+      ghostDots: ghostDots,
+      yaw: 0,               // radians (-0.58 .. +0.58)
+      pitch: 0.36,          // radians (0.14 .. 0.82)
+      power: 0.68,          // 0.35 .. 1.00
+      recoil: 0,
+      kidChar: null,
+      monChar: null,
+      activeTeamIdx: slotIdx,
+      activeStudentId: ''
+    };
+
+    K.onFrame(function (dt, t) {
+      if (!root.visible) return;
+      yawGroup.rotation.y = rig.yaw;
+      pitchPivot.rotation.x = rig.pitch;
+      if (rig.recoil > 0.001) {
+        rig.recoil *= Math.exp(-dt * 11);
+        barrelWrap.position.z = rig.recoil * 0.38;
+      } else {
+        barrelWrap.position.z = 0;
+      }
+      fuseSpark.scale.setScalar(0.85 + 0.32 * Math.sin(t * 22 + slotIdx));
+      if (rig.kidChar) rig.kidChar.update(dt);
+      if (rig.monChar) rig.monChar.update(dt);
+    });
+
+    return rig;
+  }
+
+  function syncRigCast(rig, team, teamIdx) {
+    rig.activeTeamIdx = teamIdx;
+    var sp = (K.cls && K.cls.speaker && K.cls.speaker(team)) || null;
+    var sid = sp ? sp.id : '';
+    var key = team.name + '|' + sid;
+    if (rig._castKey === key) {
+      if (rig.kidChar) rig.kidChar.setState('wave');
+      if (rig.monChar) rig.monChar.setState('hop');
+      K.after(1.0, function () {
+        if (rig.kidChar && STATE.phase === 'aim') rig.kidChar.setState('ready');
+        if (rig.monChar && STATE.phase === 'aim') rig.monChar.setState('idle');
+      });
+      return;
+    }
+    rig._castKey = key;
+    if (rig.kidChar && rig.kidChar.root.parent) rig.kidChar.root.parent.remove(rig.kidChar.root);
+    if (rig.monChar && rig.monChar.root.parent) rig.monChar.root.parent.remove(rig.monChar.root);
+    rig.kidChar = null; rig.monChar = null;
+
+    // 1) Spawn Pupil's 3D Kid Avatar on left of cannon!
+    K.makeCharacter(team, { kidsOnly: true, studentId: sid, kidHeight: 1.52 }).then(function (kid) {
+      if (rig._castKey !== key) return;
+      kid.root.position.set(-1.32, 0, 0.25);
+      kid.root.rotation.y = Math.PI * 0.88;
+      kid.root.add(E3D.Shaders.createContactShadow(0.45, 0.45, 0.55));
+      rig.root.add(kid.root);
+      rig.kidChar = kid;
+      kid.setState('wave');
+      K.after(1.1, function () { if (kid.state === 'wave') kid.setState('ready'); });
+    });
+
+    // 2) Spawn Team's 3D Monster Companion on right of cannon!
+    K.makeCharacter(team, { monHeight: 1.15 }).then(function (mon) {
+      if (rig._castKey !== key) return;
+      mon.root.position.set(1.28, 0, 0.28);
+      mon.root.rotation.y = -Math.PI * 0.82;
+      mon.root.add(E3D.Shaders.createContactShadow(0.48, 0.48, 0.55));
+      rig.root.add(mon.root);
+      rig.monChar = mon;
+      mon.setState('cheer');
+      K.after(1.1, function () { if (mon.state === 'cheer') mon.setState('idle'); });
+    });
+  }
+
+  function computeLaunchParams(rig, ammoKey) {
+    var ammo = AMMO_TYPES[ammoKey || STATE.selectedAmmo] || AMMO_TYPES.iron;
+    var speed = (18.5 + rig.power * 13.5) * ammo.speedMul;
+    // Muzzle world position & forward direction (-Z rotated by pitch & yaw)
+    var dir = new T3.Vector3(0, 0, -1);
+    dir.applyAxisAngle(new T3.Vector3(1, 0, 0), rig.pitch);
+    dir.applyAxisAngle(new T3.Vector3(0, 1, 0), rig.yaw);
+    dir.normalize();
+
+    var muzzle = new T3.Vector3(0, 0.62, 0.02);
+    rig.root.localToWorld(muzzle);
+    muzzle.addScaledVector(dir, 0.82);
+
+    var vel = dir.clone().multiplyScalar(speed);
+    return { origin: muzzle, dir: dir, vel: vel, speed: speed, ammo: ammo };
+  }
+
+  function updateTrajectoryArc(rig, visible) {
+    if (!visible) {
+      rig.arcDots.count = 0;
+      rig.ghostDots.count = 0;
+      return;
+    }
+    var lp = computeLaunchParams(rig, STATE.selectedAmmo);
+    var ammoMass = lp.ammo.mass;
+    var ax = (E3D.wind.x * 2.2) / ammoMass;
+    var ay = -16.5;
+    var az = (E3D.wind.z * 2.2) / ammoMass;
+
+    // Estimate total flight time until water y=0
+    var vy = lp.vel.y, y0 = lp.origin.y;
+    var disc = Math.max(0, vy * vy - 2 * ay * y0);
+    var tFlight = Math.min(2.8, (-vy - Math.sqrt(disc)) / ay);
+    var frac = STATE.arcGuide === 'guided' ? 0.78 : 0.42;
+    var nDots = STATE.arcGuide === 'guided' ? 24 : 15;
+    var m4 = new T3.Matrix4(), p = new T3.Vector3(), q = new T3.Quaternion(), sc = new T3.Vector3();
+
+    rig.arcDots.material.color.setHex(K.TEAMS[rig.activeTeamIdx % 4].hex);
+    for (var i = 0; i < nDots; i++) {
+      var t = ((i + 1) / nDots) * (tFlight * frac);
+      p.set(
+        lp.origin.x + lp.vel.x * t + 0.5 * ax * t * t,
+        lp.origin.y + lp.vel.y * t + 0.5 * ay * t * t,
+        lp.origin.z + lp.vel.z * t + 0.5 * az * t * t
+      );
+      var fade = 1.0 - (i / nDots) * 0.58;
+      sc.setScalar(fade);
+      m4.compose(p, q, sc);
+      rig.arcDots.setMatrixAt(i, m4);
+    }
+    rig.arcDots.count = nDots;
+    rig.arcDots.instanceMatrix.needsUpdate = true;
+
+    // Previous shot ghost trail for this team!
+    var ghost = STATE.lastTrails[rig.activeTeamIdx];
+    if (ghost && ghost.length) {
+      var gn = Math.min(22, ghost.length);
+      for (var g = 0; g < gn; g++) {
+        sc.setScalar(0.62 * (1 - g / (gn + 4)));
+        m4.compose(ghost[g], q, sc);
+        rig.ghostDots.setMatrixAt(g, m4);
+      }
+      rig.ghostDots.count = gn;
+      rig.ghostDots.instanceMatrix.needsUpdate = true;
+    } else {
+      rig.ghostDots.count = 0;
+    }
+  }
+
+  /* =========================================================================
+   * 4. STAGE BUILDER: 4 ESCALATING RAPIER 3D DESTRUCTION STAGES + SAIL TARGETS
+   * ========================================================================= */
+  function extractPrimaryMesh(gltfObj) {
+    var found = null;
+    if (!gltfObj || !gltfObj.scene) return null;
+    gltfObj.scene.updateMatrixWorld(true);
+    gltfObj.scene.traverse(function (o) {
+      if (!found && o.isMesh && o.geometry) found = o;
+    });
+    return found;
+  }
+
+  function clearStage() {
+    if (physStage) {
+      physStage.dispose(stageGroup);
+      physStage = null;
+    }
+    movingShips = [];
+    activeProjectiles = [];
+    if (aiManager) {
+      // Keep only parrot (entity 0 if present), remove ship vehicles
+      var ents = aiManager.entities.slice();
+      ents.forEach(function (e) { if (e._isShip) aiManager.remove(e); });
+    }
+    while (stageGroup.children.length) {
+      stageGroup.remove(stageGroup.children[0]);
+    }
+    E3D.Shaders.clearFoamColliders(5);
+  }
+
+  function rollStageWind(stageMeta) {
+    var maxW = STATE.arcGuide === 'guided' ? stageMeta.windMax * 0.35 : stageMeta.windMax;
+    var wx = K.rnd(-maxW, maxW);
+    if (Math.abs(wx) < 0.35 && maxW > 0.8) wx = (wx >= 0 ? 0.55 : -0.55);
+    var wz = K.rnd(-0.45, 0.45);
+    E3D.wind.set(wx, 0, wz);
+    E3D.uWind.value.set(wx * 0.42, wz * 0.42);
+    refreshWindPill();
+  }
+
+  function registerDestructibleBatches(ps) {
+    var map = [
+      { key: 'crate', model: MODELS.woodCrate, max: 64 },
+      { key: 'beam',  model: MODELS.woodBeam,  max: 36 },
+      { key: 'stone', model: MODELS.stoneBlk,  max: 48 },
+      { key: 'tnt',   model: MODELS.tntKeg,    max: 24 },
+      { key: 'chest', model: MODELS.goldChest, max: 12 }
+    ];
+    map.forEach(function (m) {
+      var src = extractPrimaryMesh(m.model);
+      if (src) {
+        var geo = src.geometry.clone();
+        var mat = Array.isArray(src.material) ? src.material[0].clone() : src.material.clone();
+        E3D.Shaders.stylizeMaterial(mat, { rim: 0.14 });
+        ps.registerBatch(m.key, geo, mat, m.max, stageGroup);
       }
     });
   }
 
-  function simulate(a, pw, steps) {
-    var p = muzzlePos(a), v = V(Math.cos(a), Math.sin(a), 0).multiplyScalar(9 + pw * 17), pts = [], dt = 1 / 30;
-    for (var i = 0; i < steps; i++) {
-      v.x += wind * dt; v.y -= GRAV * dt; p.addScaledVector(v, dt); pts.push(p.clone());
-      if (p.y < 0) break;
+  function addSandbarPlatform(ps, x, z, scale, foamSlot) {
+    var topY = 0.92 * scale;
+    if (MODELS.sandbar) {
+      var sb = MODELS.sandbar.scene.clone(true);
+      sb.position.set(x, -0.15, z);
+      sb.scale.setScalar(scale);
+      sb.receiveShadow = true;
+      stageGroup.add(sb);
     }
-    return pts;
+    ps.addStaticBox(4.3 * scale, 0.6, 3.7 * scale, { x: x, y: topY - 0.6, z: z }, 0, 'island');
+    if (foamSlot) E3D.Shaders.setFoamCollider(foamSlot, x, z, 4.9 * scale, 1.0);
+    return topY;
   }
-  var dots = [];
-  (function () {
-    var g = new T3.SphereGeometry(.22, 10, 8), m = new T3.MeshBasicMaterial({ color: 0xfff6b0 });
-    for (var i = 0; i < 16; i++) { var d = new T3.Mesh(g, m); d.visible = false; scene.add(d); dots.push(d); }
-  })();
-  function showDots(a, pw) {
-    var pts = simulate(a, pw, 64);
-    dots.forEach(function (d, i) {
-      var p = pts[i * 2 + 1]; d.visible = !!p;
-      if (p) { d.position.copy(p); d.scale.setScalar(1 - i / 22); }
-    });
-  }
-  function hideDots() { dots.forEach(function (d) { d.visible = false; }); }
 
-  function solveAimFor(goal) {
-    var best = null;
-    for (var a = .25; a < 1.32; a += .04) {
-      for (var pw = .2; pw <= 1; pw += .03) {
-        var pts = simulate(a, pw, 120), d = 1e9;
-        pts.forEach(function (p) { d = Math.min(d, Math.hypot(p.x - goal.x, p.y - goal.y)); });
-        if (!best || d < best.d) best = { a: a, pw: pw, d: d };
+  function spawnCratePyramid(ps, cx, baseY, cz, rows, withTnt, withChest) {
+    var cw = 0.90, ch = 0.92;
+    for (var r = 0; r < rows; r++) {
+      var cols = rows - r;
+      var y = baseY + ch * 0.5 + r * (ch + 0.01);
+      for (var c = 0; c < cols; c++) {
+        var x = cx + (c - (cols - 1) * 0.5) * (cw + 0.05);
+        var isTnt = withTnt && ((r === 0 && c === Math.floor(cols / 2)) || (rows >= 3 && r === 1 && c === 0));
+        if (isTnt) {
+          ps.addDynamicBlock({
+            batchKey: 'tnt', shape: 'cylinder', radius: 0.36, hy: 0.46,
+            pos: { x: x, y: y, z: cz }, density: 1.4, tag: 'tnt', points: 35, sleepInitially: true
+          });
+        } else {
+          ps.addDynamicBlock({
+            batchKey: 'crate', shape: 'box', hx: 0.43, hy: 0.46, hz: 0.44,
+            pos: { x: x, y: y, z: cz }, density: 1.1, tag: 'crate', points: 15, sleepInitially: true
+          });
+        }
       }
     }
-    return best || { a: .6, pw: .65 };
+    if (withChest) {
+      ps.addDynamicBlock({
+        batchKey: 'chest', shape: 'box', hx: 0.52, hy: 0.40, hz: 0.45,
+        pos: { x: cx, y: baseY + rows * (ch + 0.01) + 0.42, z: cz },
+        density: 1.3, tag: 'chest', points: 50, sleepInitially: true
+      });
+    }
   }
 
-  /* aiming: drag back anywhere to aim angle & power, and let go to FIRE! (or arrows + space) */
-  var aimPad = null, power = .6;
-  function aimPhase(team, ch) {
-    setPhase('aim'); shot('aim'); fusing = true; K.sfx('fuse');
-    updateTurnUI(active, '👆 Drag back to aim · let go to FIRE!');
-
-    var hint = K.ui.add(K.el('div', 'hint', '👆 Drag back to aim · let go to FIRE!'));
-    hint.style.setProperty('--c', team.c);
-
-    aimPad = K.ui.add(K.el('div', 'aimpad'));
-    aimPad.style.cssText = 'position:fixed;inset:0;touch-action:none;cursor:grab;z-index:20';
-
-    var start = null, fired = false;
-    function upd(e) {
-      var dx = start.x - e.clientX, dy = e.clientY - start.y;
-      var len = Math.hypot(dx, dy); if (len < 6) return;
-      setAim(clamp(Math.atan2(dy, Math.max(1, dx)), .12, 1.4));
-      power = clamp(len / 260, .12, 1); showDots(aimAngle, power);
+  function spawnStoneGateTower(ps, cx, baseY, cz, stories) {
+    // Two stone pillars + horizontal wood beam lintel per story + central TNT & top Gold Chest!
+    var y = baseY;
+    for (var s = 0; s < stories; s++) {
+      [-1.02, 1.02].forEach(function (ox) {
+        ps.addDynamicBlock({
+          batchKey: 'stone', shape: 'box', hx: 0.42, hy: 0.50, hz: 0.42,
+          pos: { x: cx + ox, y: y + 0.50, z: cz }, rotY: Math.PI * 0.5,
+          density: 2.4, tag: 'stone', points: 20, sleepInitially: true
+        });
+      });
+      // Central TNT Keg or Crate inside the arch!
+      ps.addDynamicBlock({
+        batchKey: s === 0 ? 'tnt' : 'crate',
+        shape: s === 0 ? 'cylinder' : 'box',
+        radius: 0.36, hx: 0.43, hy: 0.46, hz: 0.44,
+        pos: { x: cx, y: y + 0.46, z: cz },
+        density: 1.3, tag: s === 0 ? 'tnt' : 'crate', points: s === 0 ? 35 : 15, sleepInitially: true
+      });
+      y += 1.02;
+      // Wood beam lintel across pillars
+      ps.addDynamicBlock({
+        batchKey: 'beam', shape: 'box', hx: 1.20, hy: 0.34, hz: 0.35,
+        pos: { x: cx, y: y + 0.34, z: cz },
+        density: 1.5, tag: 'beam', points: 20, sleepInitially: true
+      });
+      y += 0.69;
     }
-    aimPad.addEventListener('pointerdown', function (e) {
-      start = { x: e.clientX, y: e.clientY };
-      aimPad.style.cursor = 'grabbing';
-      aimPad.setPointerCapture(e.pointerId);
+    ps.addDynamicBlock({
+      batchKey: 'chest', shape: 'box', hx: 0.52, hy: 0.40, hz: 0.45,
+      pos: { x: cx, y: y + 0.42, z: cz },
+      density: 1.3, tag: 'chest', points: 50, sleepInitially: true
     });
-    aimPad.addEventListener('pointermove', function (e) { if (start) upd(e); });
-    aimPad.addEventListener('pointerup', function (e) {
-      if (!start) return;
-      upd(e); start = null;
-      aimPad.style.cursor = 'grab';
-      if (power > .14) fire();
-    });
-    aimPad.addEventListener('pointercancel', function () {
-      start = null;
-      aimPad.style.cursor = 'grab';
-    });
-    function key(e) {
-      if (e.key === 'ArrowUp') setAim(clamp(aimAngle + .04, .12, 1.4));
-      if (e.key === 'ArrowDown') setAim(clamp(aimAngle - .04, .12, 1.4));
-      if (e.key === 'ArrowRight') power = clamp(power + .04, .12, 1);
-      if (e.key === 'ArrowLeft') power = clamp(power - .04, .12, 1);
-      showDots(aimAngle, power);
-      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); fire(); }
-    }
-    addEventListener('keydown', key);
-    showDots(aimAngle, power);
-
-    function fire() {
-      if (fired) return; fired = true;
-      removeEventListener('keydown', key); aimPad.remove(); hint.remove(); hideDots();
-      launch(ch);
-    }
-    if (K.DEMO) demoAim(fire);
   }
 
-  function demoAim(fire) {
-    var goals = balloons.filter(function (b) { return b.alive; }).map(function (b) { return { x: b.x, y: b.y }; });
-    goals.push({ x: HAY.x, y: .8 });
-    goals.push({ x: TARGET.x - .4, y: TARGET.y });
-    var goal = goals[Math.floor(Math.random() * goals.length)];
-    var sfx = demoTurn > 1 ? demoTurn : '';
-    if (K.Q.has('aimx' + sfx)) goal = { x: +K.Q.get('aimx' + sfx), y: +K.Q.get('aimy' + sfx) || 1 };
-    var best = solveAimFor(goal);
-    var a0 = aimAngle, p0 = power, t = 0, wob = rnd(-.015, .015);
-    K.after(.6, function () {
-      var fn = K.onFrame(function (dt) {
-        t += dt; var u = clamp(t / 1.0, 0, 1), e = K.ease(u);
-        setAim(lerp(a0, best.a + wob, e)); power = lerp(p0, best.pw, e); showDots(aimAngle, power);
-        if (u >= 1) { K.offFrame(fn); K.after(.25, fire); }
+  function makeSailBannerMesh(badgeNum, text, teamHex, imgUrl) {
+    var badgeColors = ['#ff5fa2', '#4f9dff', '#ffb320', '#2fc58a'];
+    var bc = badgeColors[(badgeNum - 1) % 4];
+    var cv = document.createElement('canvas');
+    cv.width = 512; cv.height = 360;
+    var g = cv.getContext('2d');
+
+    function drawCard(loadedImg) {
+      // Solid bright team-colour outer frame (zero black corners per ART_STYLE.md §3!)
+      g.fillStyle = bc;
+      g.fillRect(0, 0, 512, 360);
+      g.fillStyle = '#fff9ee';
+      K.roundRect(g, 16, 16, 480, 328, 30);
+      g.fill();
+
+      // Number badge pill top-left
+      g.fillStyle = bc;
+      K.roundRect(g, 28, 28, 76, 64, 22);
+      g.fill();
+      g.fillStyle = '#ffffff';
+      g.font = '900 44px Nunito, Trebuchet MS, sans-serif';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText(String(badgeNum), 66, 62);
+
+      // Text / image content readable from 4m away!
+      var words = String(text || '').trim();
+      if (loadedImg) {
+        g.drawImage(loadedImg, 186, 28, 140, 140);
+        g.fillStyle = '#2b1d40';
+        g.font = '900 ' + (words.length > 16 ? '40' : '48') + 'px Nunito, Trebuchet MS, sans-serif';
+        wrapCanvasText(g, words, 256, 245, 430, 48);
+      } else {
+        g.fillStyle = '#2b1d40';
+        var fs = words.length > 22 ? 40 : words.length > 12 ? 50 : 62;
+        g.font = '900 ' + fs + 'px Nunito, Trebuchet MS, sans-serif';
+        wrapCanvasText(g, words, 256, 198, 436, fs * 1.12);
+      }
+    }
+
+    drawCard(null);
+    var tex = new T3.CanvasTexture(cv);
+    tex.colorSpace = T3.SRGBColorSpace;
+    tex.anisotropy = 4;
+
+    if (imgUrl) {
+      var im = new Image();
+      im.crossOrigin = 'anonymous';
+      im.onload = function () { drawCard(im); tex.needsUpdate = true; };
+      im.src = K.ROOT + imgUrl;
+    }
+
+    // Slightly billowed 3D sail geometry
+    var geo = new T3.PlaneGeometry(4.3, 3.0, 8, 4);
+    var pos = geo.attributes.position;
+    for (var i = 0; i < pos.count; i++) {
+      var u = (pos.getX(i) / 4.3) + 0.5;
+      var v = (pos.getY(i) / 3.0) + 0.5;
+      pos.setZ(i, Math.sin(u * Math.PI) * Math.sin(v * Math.PI) * 0.28);
+    }
+    geo.computeVertexNormals();
+    var mat = new T3.MeshStandardMaterial({
+      map: tex,
+      roughness: 0.65,
+      metalness: 0.0,
+      side: T3.DoubleSide
+    });
+    var mesh = new T3.Mesh(geo, mat);
+    mesh.castShadow = true;
+    return mesh;
+  }
+
+  function wrapCanvasText(ctx, text, cx, cy, maxW, lineH) {
+    var parts = text.split(/\s+/);
+    var lines = [], cur = '';
+    parts.forEach(function (w) {
+      var test = cur ? (cur + ' ' + w) : w;
+      if (ctx.measureText(test).width > maxW && cur) {
+        lines.push(cur);
+        cur = w;
+      } else {
+        cur = test;
+      }
+    });
+    if (cur) lines.push(cur);
+    var startY = cy - ((lines.length - 1) * lineH) * 0.5;
+    lines.forEach(function (ln, idx) {
+      ctx.fillText(ln, cx, startY + idx * lineH);
+    });
+  }
+
+  function buildTargetShootStage(item, stageIdx) {
+    clearStage();
+    var meta = STAGE_META[(stageIdx - 1) % STAGE_META.length];
+    rollStageWind(meta);
+
+    physStage = new E3D.PhysicsStage({ onCollision: handlePhysicsCollision });
+    registerDestructibleBatches(physStage);
+
+    var choices = K.shuffle([item.a].concat((item.w || ['wrong 1', 'wrong 2']).slice(0, 2)));
+    var asp = (window.innerWidth || 1280) / Math.max(1, window.innerHeight || 720);
+    var spreadX = asp < 0.75 ? 6.1 : asp < 1.05 ? 7.6 : 9.2;
+    var laneX = [-spreadX, 0.0, spreadX];
+    var laneZ = [-13.8, -16.2, -13.8];
+
+    choices.forEach(function (ans, idx) {
+      var isRight = ans === item.a;
+      var x = laneX[idx], z = laneZ[idx];
+
+      var shipGrp = new T3.Group();
+      shipGrp.position.set(x, 0.05, z);
+      stageGroup.add(shipGrp);
+
+      var hullModel = (stageIdx === 4 && isRight && MODELS.flagship) ? MODELS.flagship : MODELS.sloop;
+      if (hullModel) {
+        var hull = hullModel.scene.clone(true);
+        if (hullModel === MODELS.flagship) hull.scale.setScalar(0.68);
+        // Face bow pleasantly across the bay
+        hull.rotation.y = idx === 0 ? Math.PI : 0;
+        shipGrp.add(hull);
+      }
+
+      // Mast + Giant Readable Answer Sail facing the player (+Z)!
+      var sail = makeSailBannerMesh(idx + 1, ans, K.TEAMS[idx % 4].hex, '');
+      sail.position.set(0, 3.25, 0.35);
+      shipGrp.add(sail);
+
+      // Kinematic collider for the ship + sail so hitting the sail or hull registers cleanly!
+      var kinRec = physStage.addKinematicBody(2.3, 2.35, 1.5, { x: x, y: 2.1, z: z }, isRight ? 'right_ship' : 'wrong_ship', {
+        isRight: isRight,
+        answer: ans,
+        shipGrp: shipGrp,
+        sail: sail,
+        laneIdx: idx
+      });
+
+      var attachments = [];
+      if (isRight) {
+        // Stack real dynamic TNT & Gold Chest + Crates on/behind the right ship so hitting it triggers a real collapse!
+        var deckY = addSandbarPlatform(physStage, x, z - 2.6, 0.65, 6 + idx);
+        spawnCratePyramid(physStage, x, deckY, z - 2.6, stageIdx >= 3 ? 3 : 2, true, true);
+      } else if (MODELS.buoy) {
+        // Cute rubbery Bumper Buoy guarding wrong ship
+        var buoyMesh = MODELS.buoy.scene.clone(true);
+        buoyMesh.position.set(x, 0.08, z + 2.2);
+        stageGroup.add(buoyMesh);
+        var buoyRec = physStage.addKinematicBody(0.85, 0.75, 0.85, { x: x, y: 0.55, z: z + 2.2 }, 'buoy', {
+          buoyMesh: buoyMesh,
+          answer: ans
+        });
+        attachments.push({ buoyMesh: buoyMesh, buoyRec: buoyRec, offsetZ: 2.2 });
+      }
+
+      E3D.Shaders.setFoamCollider(10 + idx, x, z, 2.7, 0.9);
+      movingShips.push({
+        group: shipGrp,
+        kinRec: kinRec,
+        baseX: x,
+        baseZ: z,
+        swayAmp: stageIdx >= 2 ? (1.35 + stageIdx * 0.35) : 0.25,
+        swayPhase: idx * 2.1,
+        foamIdx: 10 + idx,
+        attachments: attachments
       });
     });
   }
 
-  function launch(ch) {
-    setPhase('flight'); fusing = false; shotPoints = 0;
-    var mp = muzzlePos(aimAngle), dir = V(Math.cos(aimAngle), Math.sin(aimAngle), 0);
-    K.sfx('boom'); recoil = 1; K.cam.shake(.45);
-    K.fx.puff(mp, 14, { size: 1.6, dir: dir.clone().multiplyScalar(5), opacity: .9, life: 1.4, drag: 3 });
-    K.fx.puff(mp, 6, { color: 0xffb347, size: .9, dir: dir.clone().multiplyScalar(7), opacity: 1, life: .4 });
-    K.fx.ring(mp, 0xfff2c4, 5);
-    flier.ch = ch; flier.on = true; flier.spin = 0; flier.spinVel = ch.kind === 'kid' ? 0 : -9;
-    flier.t = 0; flier.trailT = 0; flier.hit = {}; flier.rolling = false; flier.netT = -1;
-    flier.pos.copy(mp); flier.vel.copy(dir).multiplyScalar(9 + power * 17);
-    ch.holder.visible = true; ch.holder.scale.setScalar(1); ch.holder.position.copy(mp);
-    ch.root.rotation.set(0, Math.PI / 2, 0);
-    ch.setState(ch.kind === 'kid' ? 'fly' : 'tumble');
-    shot('flight');
+  function buildSmashStage(stageIdx) {
+    clearStage();
+    var sNum = ((stageIdx - 1) % 4) + 1;
+    var meta = STAGE_META[sNum - 1];
+    rollStageWind(meta);
+
+    physStage = new E3D.PhysicsStage({ onCollision: handlePhysicsCollision });
+    registerDestructibleBatches(physStage);
+
+    if (sNum === 1) {
+      // STAGE 1: Sunny Sandbar Cove — Twin Wooden Crate & TNT Pyramids!
+      var yC = addSandbarPlatform(physStage, 0, -14.2, 1.05, 6);
+      spawnCratePyramid(physStage, 0, yC, -14.2, 3, true, true);
+
+      var yL = addSandbarPlatform(physStage, -7.2, -16.8, 0.82, 7);
+      spawnCratePyramid(physStage, -7.2, yL, -16.8, 2, true, false);
+
+      var yR = addSandbarPlatform(physStage, 7.2, -16.8, 0.82, 8);
+      spawnCratePyramid(physStage, 7.2, yR, -16.8, 2, true, false);
+    } else if (sNum === 2) {
+      // STAGE 2: Moving Pirate Fleet — Yuka-steered Sloops + Central Treasure Reef!
+      var yM = addSandbarPlatform(physStage, 0, -17.5, 0.92, 6);
+      spawnStoneGateTower(physStage, 0, yM, -17.5, 1);
+
+      [-1, 1].forEach(function (dir, idx) {
+        var grp = new T3.Group();
+        var bz = idx === 0 ? -12.6 : -21.2;
+        grp.position.set(dir * -8, 0.05, bz);
+        if (MODELS.sloop) {
+          var sl = MODELS.sloop.scene.clone(true);
+          sl.rotation.y = dir > 0 ? Math.PI : 0;
+          grp.add(sl);
+        }
+        // Decorative TNT + Gold Chest riding on the moving ship deck!
+        if (MODELS.tntKeg) {
+          var tk = MODELS.tntKeg.scene.clone(true);
+          tk.position.set(-0.5, 0.95, 0);
+          grp.add(tk);
+        }
+        if (MODELS.goldChest) {
+          var gc = MODELS.goldChest.scene.clone(true);
+          gc.position.set(0.55, 0.92, 0);
+          grp.add(gc);
+        }
+        stageGroup.add(grp);
+
+        var veh = E3D.AI.createPatrolVehicle([
+          [-9.5, 0, bz], [9.5, 0, bz]
+        ], 3.4 + idx * 0.6, true);
+        if (veh && aiManager) { veh._isShip = true; aiManager.add(veh); }
+
+        var kin = physStage.addKinematicBody(2.4, 1.3, 1.3, { x: grp.position.x, y: 1.0, z: bz }, 'bonus_ship', {
+          shipGrp: grp, points: 65, hit: false
+        });
+        movingShips.push({
+          group: grp, vehicle: veh, kinRec: kin, baseX: 0, baseZ: bz, foamIdx: 10 + idx, attachments: []
+        });
+      });
+    } else if (sNum === 3) {
+      // STAGE 3: Twin Stone Watchtowers & Bumper Buoys!
+      var y1 = addSandbarPlatform(physStage, -5.6, -15.6, 0.98, 6);
+      spawnStoneGateTower(physStage, -5.6, y1, -15.6, 2);
+
+      var y2 = addSandbarPlatform(physStage, 5.6, -15.6, 0.98, 7);
+      spawnStoneGateTower(physStage, 5.6, y2, -15.6, 2);
+
+      var y3 = addSandbarPlatform(physStage, 0, -19.8, 0.85, 8);
+      spawnCratePyramid(physStage, 0, y3, -19.8, 3, true, true);
+
+      // Challenging bumper buoy in front center
+      if (MODELS.buoy) {
+        var bm = MODELS.buoy.scene.clone(true);
+        bm.position.set(0, 0.08, -11.4);
+        stageGroup.add(bm);
+        var br = physStage.addKinematicBody(0.8, 0.7, 0.8, { x: 0, y: 0.55, z: -11.4 }, 'buoy', { buoyMesh: bm });
+        movingShips.push({ group: bm, kinRec: br, baseX: 0, baseZ: -11.4, swayAmp: 2.2, swayPhase: 0.5, foamIdx: 13, attachments: [] });
+      }
+    } else {
+      // STAGE 4 (2x GOLD BOSS!): Captain Flint's Armored Flagship + Twin Bastion Reefs!
+      var bossGrp = new T3.Group();
+      bossGrp.position.set(0, 0.1, -18.2);
+      if (MODELS.flagship) {
+        var fl = MODELS.flagship.scene.clone(true);
+        bossGrp.add(fl);
+      }
+      stageGroup.add(bossGrp);
+      var bossKin = physStage.addKinematicBody(4.1, 3.2, 2.0, { x: 0, y: 2.4, z: -18.2 }, 'boss_ship', {
+        shipGrp: bossGrp, points: 90, hp: 3
+      });
+      movingShips.push({
+        group: bossGrp, kinRec: bossKin, baseX: 0, baseZ: -18.2, swayAmp: 3.4, swayPhase: 0, foamIdx: 10, attachments: []
+      });
+
+      var yBL = addSandbarPlatform(physStage, -7.8, -14.8, 0.90, 6);
+      spawnStoneGateTower(physStage, -7.8, yBL, -14.8, 2);
+
+      var yBR = addSandbarPlatform(physStage, 7.8, -14.8, 0.90, 7);
+      spawnStoneGateTower(physStage, 7.8, yBR, -14.8, 2);
+    }
   }
 
-  K.onFrame(function (dt) {
-    if (!flier.on) return;
-    var ch = flier.ch, steps = 3, h = dt / steps;
-    for (var s = 0; s < steps && flier.on; s++) {
-      if (flier.netT >= 0) { netStep(h); continue; }
-      if (flier.rolling) { rollStep(h); continue; }
-      flier.vel.x += wind * h; flier.vel.y -= GRAV * h;
-      flier.vel.multiplyScalar(1 - .02 * h);
-      flier.pos.addScaledVector(flier.vel, h);
-      collide();
+  /* =========================================================================
+   * 5. COLLISION EVENTS, TNT CHAIN REACTIONS & SCORING JUICE
+   * ========================================================================= */
+  var _lastCrunchAt = 0;
+
+  function awardHitPoints(pts, worldPos, labelOverride, teamIdxOverride) {
+    var mult = STAGE_META[(STATE.round - 1) % 4].mult || 1;
+    var total = Math.round(pts * mult);
+    var tIdx = teamIdxOverride != null ? teamIdxOverride : STATE.turnIdx;
+    STATE.shotScore += total;
+    if (STATE.phase === 'duel') {
+      STATE.duelScores[tIdx % 2] = (STATE.duelScores[tIdx % 2] || 0) + total;
+    } else if (STATE.teams[tIdx]) {
+      STATE.teams[tIdx].score = (STATE.teams[tIdx].score || 0) + total;
+      if (hudBar) { hudBar.refresh(STATE.turnIdx); hudBar.bump(tIdx); }
     }
-    if (!flier.on) return;
-    flier.t += dt;
-    ch.holder.position.copy(flier.pos);
-    var ang = Math.atan2(flier.vel.y, flier.vel.x);
-    if (ch.kind === 'kid' && ch.state === 'fly') {
-      ch.holder.rotation.set(0, 0, ang);
-      ch.root.position.set(-ch.height * .5, -.12, 0);
-    } else {
-      flier.spin += flier.spinVel * dt;
-      ch.holder.rotation.set(0, 0, flier.spin);
-      ch.root.position.set(0, -ch.height / 2, 0);
+    var col = K.TEAMS[tIdx % 4].c;
+    K.fx.text(labelOverride || ('+' + total), worldPos.clone().add(new T3.Vector3(0, 0.9, 0)), col, total >= 50 ? 1.9 : 1.35);
+  }
+
+  function triggerTntExplosion(pos, teamIdx) {
+    E3D.Audio.tntBoom();
+    K.cam.shake(0.42);
+    K.fx.ring(pos, 0xffb320, 6.2);
+    K.fx.puff(pos, 16, { color: 0xffe4a0, size: 1.8, spread: 2.2, life: 1.25 });
+    K.fx.burst(pos, [0xff5fa2, 0xffb320, 0xff4757, 0xfff3b0], 22, 11);
+    if (physStage) {
+      physStage.radialExplosion(pos, 6.2, 26.0);
     }
-    if (!flier.rolling && flier.netT < 0) {
-      flier.trailT += dt;
-      if (flier.trailT >= 0.042) {
-        flier.trailT = 0;
-        spawnFlightRing(flier.pos, TEAMS[active] ? TEAMS[active].hex : 0xffd84a);
-        K.fx.puff(flier.pos.clone().addScaledVector(flier.vel, -.04), 1, { color: 0xffffff, size: .45, life: .55, opacity: .55 });
+    // Brief dramatic slow-mo hit-stop in Cinema mode!
+    if (STATE.boardMode !== 'duel' && STATE.phase === 'flight') {
+      K.timeScale = 0.34;
+      K.after(0.28, function () { K.timeScale = 1.0; });
+    }
+  }
+
+  function handlePhysicsCollision(a, b) {
+    var ammoRec = a.tag === 'ammo' ? a : (b.tag === 'ammo' ? b : null);
+    var other = ammoRec === a ? b : a;
+
+    // 1. Direct TNT Keg detonation (hit by cannonball OR crushed hard by falling stone!)
+    if ((a.tag === 'tnt' || b.tag === 'tnt')) {
+      var tnt = a.tag === 'tnt' ? a : b;
+      var hitter = tnt === a ? b : a;
+      if (!tnt.exploded && tnt.body && (hitter.tag === 'ammo' || (hitter.body && hitter.kind === 'dynamic' && hitter.body.linvel().y < -3.2))) {
+        tnt.exploded = true;
+        var tp = tnt.body.translation();
+        var vPos = new T3.Vector3(tp.x, tp.y, tp.z);
+        var ownerIdx = (ammoRec && ammoRec.data.teamIdx != null) ? ammoRec.data.teamIdx : STATE.turnIdx;
+        physStage.hideRecord(tnt);
+        awardHitPoints(tnt.points || 35, vPos, '💥 BOOM +35', ownerIdx);
+        triggerTntExplosion(vPos, ownerIdx);
+        return;
       }
+    }
+
+    if (!ammoRec || !ammoRec.body) return;
+    var ap = ammoRec.body.translation();
+    var hitPos = new T3.Vector3(ap.x, ap.y, ap.z);
+    var tIdx = ammoRec.data.teamIdx != null ? ammoRec.data.teamIdx : STATE.turnIdx;
+
+    // Star-Burst Bomb explodes on FIRST solid impact!
+    if (ammoRec.data.ammoType === 'bomb' && !ammoRec.data.detonated && other.tag !== 'ammo') {
+      ammoRec.data.detonated = true;
+      triggerTntExplosion(hitPos, tIdx);
+    }
+
+    // 2. Quick-Target-Shoot Ships (Right vs Wrong!)
+    if (other.tag === 'right_ship' && !other.data.scored) {
+      other.data.scored = true;
+      K.sfx('bullseye');
+      K.fx.confetti(hitPos, 42);
+      triggerTntExplosion(hitPos, tIdx);
+      awardHitPoints(60, hitPos, '🎯 RIGHT! +60', tIdx);
+      var sp = K.cls && K.cls.speaker && K.cls.speaker(STATE.teams[tIdx]);
+      if (sp) { sp.turns++; sp.right++; STATE.teams[tIdx].speakerIdx = (STATE.teams[tIdx].speakerIdx || 0) + 1; }
+      if (cannons[0].kidChar) cannons[0].kidChar.setState('cheer');
+      if (cannons[0].monChar) cannons[0].monChar.setState('cheer');
+      return;
+    }
+
+    if ((other.tag === 'wrong_ship' || other.tag === 'buoy') && !ammoRec.data.bouncedWrong) {
+      ammoRec.data.bouncedWrong = true;
+      E3D.Audio.buoyBoing();
+      K.fx.ring(hitPos, 0x4f9dff, 3.2);
+      K.fx.text('Boing! Try again!', hitPos, '#4f9dff', 1.35);
+      // Bounce cannonball upward & back playfully
+      ammoRec.body.setLinvel({ x: K.rnd(-4, 4), y: 11.5, z: 9.5 }, true);
+      if (other.data && other.data.buoyMesh) {
+        other.data.buoyMesh.scale.set(1.32, 0.72, 1.32);
+        K.after(0.18, function () { if (other.data.buoyMesh) other.data.buoyMesh.scale.set(1, 1, 1); });
+      }
+      if (STATE.currentItem && STATE.playLoop === 'target') {
+        K.say(STATE.currentItem.a);
+      }
+      return;
+    }
+
+    // 3. Moving Bonus Sloop or Boss Flagship Hit!
+    if ((other.tag === 'bonus_ship' || other.tag === 'boss_ship') && !ammoRec.data.hitShip) {
+      ammoRec.data.hitShip = true;
+      var isBoss = other.tag === 'boss_ship';
+      E3D.Audio.woodCrunch(1.1);
+      K.cam.shake(isBoss ? 0.36 : 0.24);
+      K.fx.confetti(hitPos, isBoss ? 48 : 28);
+      K.fx.burst(hitPos, [0xffc93c, 0xc98a4b, 0xff5fa2], 18, 9);
+      awardHitPoints(other.data.points || 65, hitPos, isBoss ? '🏴‍☠️ BOSS HIT!' : '⛵ SHIP HIT!', tIdx);
+      if (isBoss) triggerTntExplosion(hitPos, tIdx);
+      return;
+    }
+
+    // 4. Dynamic Crates, Wood Beams, Stone Blocks & Gold Chests!
+    if (other.kind === 'dynamic') {
+      if (K.now - _lastCrunchAt > 0.08) {
+        _lastCrunchAt = K.now;
+        E3D.Audio.woodCrunch(0.85);
+      }
+      if (!other.scored) {
+        other.scored = true;
+        K.fx.burst(hitPos, other.tag === 'chest' ? [0xffc93c, 0xfff3a8] : [0xc98a4b, 0xe3d6c0], other.tag === 'chest' ? 18 : 7, 6.5);
+        if (other.tag === 'chest') {
+          K.sfx('bullseye');
+          K.fx.confetti(hitPos, 35);
+          physStage.hideRecord(other);
+          awardHitPoints(50, hitPos, '👑 CHEST +50!', tIdx);
+        } else {
+          awardHitPoints(other.points || 15, hitPos, null, tIdx);
+        }
+        // Focus impact camera in Cinema mode on first big tower impact!
+        if (STATE.boardMode !== 'duel' && STATE.phase === 'flight' && !ammoRec.data.impactCamTriggered) {
+          ammoRec.data.impactCamTriggered = true;
+          K.cam.shake(0.26);
+          K.cam.follow = null;
+          K.cam.set(
+            new T3.Vector3(hitPos.x * 0.55 + 4.5, Math.max(3.6, hitPos.y + 2.8), hitPos.z + 9.5),
+            new T3.Vector3(hitPos.x, Math.max(1.2, hitPos.y), hitPos.z),
+            4.2
+          );
+          K.timeScale = 0.36;
+          K.after(0.24, function () { K.timeScale = 1.0; });
+        }
+      }
+    }
+  }
+
+  /* =========================================================================
+   * 6. FIRING CANNONBALLS & MID-AIR SPECIAL ABILITIES
+   * ========================================================================= */
+  function fireCannon(rig, ammoKey, teamIdx) {
+    var lp = computeLaunchParams(rig, ammoKey);
+    rig.recoil = 1.0;
+    updateTrajectoryArc(rig, false);
+    E3D.Audio.cannonFire(rig.power);
+
+    // Muzzle flash + smoke ring
+    K.fx.puff(lp.origin, 10, { dir: lp.dir, color: 0xfff6e5, size: 1.25, spread: 0.45 });
+    K.fx.ring(lp.origin, K.TEAMS[teamIdx % 4].hex, 2.2);
+    if (rig.kidChar) rig.kidChar.setState('cheer');
+    if (rig.monChar) rig.monChar.setState('hop');
+
+    var projMesh = buildAmmoMesh(ammoKey, K.TEAMS[teamIdx % 4].hex);
+    projMesh.position.copy(lp.origin);
+    stageGroup.add(projMesh);
+
+    var rec = physStage.addDynamicBlock({
+      mesh: projMesh,
+      shape: 'ball',
+      radius: lp.ammo.radius,
+      pos: lp.origin,
+      vel: lp.vel,
+      density: lp.ammo.mass * 3.2,
+      damping: 0.0,
+      restitution: 0.34,
+      ccd: true,
+      tag: 'ammo',
+      data: {
+        ammoType: ammoKey,
+        teamIdx: teamIdx,
+        trail: []
+      }
+    });
+
+    var pObj = { rec: rec, mesh: projMesh, trailTimer: 0, teamIdx: teamIdx, ammoKey: ammoKey, splashed: false };
+    activeProjectiles.push(pObj);
+    return pObj;
+  }
+
+  function buildAmmoMesh(ammoKey, teamHex) {
+    var grp = new T3.Group();
+    if (ammoKey === 'boulder' && MODELS.boulder) {
+      grp.add(MODELS.boulder.scene.clone(true));
+    } else if (ammoKey === 'bomb' && MODELS.tntAmmo) {
+      grp.add(MODELS.tntAmmo.scene.clone(true));
+    } else {
+      // Glossy stylized iron/star cannonball with glowing HDR team-colored rim band
+      var ball = new T3.Mesh(
+        new T3.SphereGeometry(ammoKey === 'triple' ? 0.30 : 0.34, 18, 14),
+        new T3.MeshStandardMaterial({
+          color: ammoKey === 'triple' ? teamHex : 0x3b3554,
+          emissive: new T3.Color(teamHex),
+          emissiveIntensity: ammoKey === 'triple' ? 1.35 : 0.35,
+          roughness: 0.32,
+          metalness: 0.25
+        })
+      );
+      ball.castShadow = true;
+      grp.add(ball);
+    }
+    return grp;
+  }
+
+  function triggerMidAirSpecial() {
+    if (STATE.midFlightUsed || !activeProjectiles.length) return;
+    var mainP = activeProjectiles[0];
+    if (!mainP || !mainP.rec || !mainP.rec.body) return;
+    STATE.midFlightUsed = true;
+    if (flightTapBtn) { flightTapBtn.remove(); flightTapBtn = null; }
+
+    var tr = mainP.rec.body.translation();
+    var lv = mainP.rec.body.linvel();
+    var pos = new T3.Vector3(tr.x, tr.y, tr.z);
+
+    if (mainP.ammoKey === 'bomb') {
+      mainP.rec.data.detonated = true;
+      triggerTntExplosion(pos, mainP.teamIdx);
+      physStage.hideRecord(mainP.rec);
+    } else if (mainP.ammoKey === 'triple') {
+      K.sfx('pop');
+      K.fx.ring(pos, 0x4f9dff, 3.0);
+      [-3.4, 3.4].forEach(function (vxOff) {
+        var m = buildAmmoMesh('triple', K.TEAMS[mainP.teamIdx % 4].hex);
+        m.position.copy(pos);
+        stageGroup.add(m);
+        var subRec = physStage.addDynamicBlock({
+          mesh: m, shape: 'ball', radius: 0.30,
+          pos: { x: pos.x + vxOff * 0.12, y: pos.y, z: pos.z },
+          vel: { x: lv.x + vxOff, y: lv.y + 1.2, z: lv.z },
+          density: 5.5, damping: 0.0, ccd: true, tag: 'ammo',
+          data: { ammoType: 'iron', teamIdx: mainP.teamIdx, trail: [] }
+        });
+        activeProjectiles.push({ rec: subRec, mesh: m, trailTimer: 0, teamIdx: mainP.teamIdx, ammoKey: 'triple', splashed: false });
+      });
+    }
+  }
+
+  /* =========================================================================
+   * 7. LOWER-45% ERGONOMIC SLINGSHOT TOUCH / MOUSE / KEYBOARD CONTROLLER
+   * ========================================================================= */
+  var slingRingEl = null, slingKnobEl = null;
+
+  function ensureSlingIndicators() {
+    if (!slingRingEl) {
+      slingRingEl = K.ui.add(K.el('div', 'cn-sling-ring'));
+      slingKnobEl = K.ui.add(K.el('div', 'cn-sling-knob', 'FIRE'));
+    }
+  }
+
+  function attachAimZone(rig, onFired) {
+    ensureSlingIndicators();
+    var zone = K.ui.add(K.el('div', 'cn-aim-zone'));
+    var dragging = false, pId = -1, startX = 0, startY = 0;
+    var baseYaw = rig.yaw, lastTickStep = 0;
+
+    updateTrajectoryArc(rig, true);
+
+    function applyDrag(cx, cy) {
+      var dx = cx - startX;
+      var dy = cy - startY;
+      // Pull-back slingshot: pulling DOWN increases power & pitch; dragging LEFT/RIGHT steers cannon!
+      var pull = K.clamp(dy / 145, -0.25, 1.0);
+      rig.yaw = K.clamp(baseYaw - (dx / 240) * 0.65, -0.56, 0.56);
+      rig.power = K.clamp(0.45 + pull * 0.55, 0.35, 1.0);
+      rig.pitch = K.clamp(0.20 + pull * 0.44, 0.14, 0.76);
+
+      var tickStep = Math.round((rig.yaw * 18) + (rig.power * 14));
+      if (tickStep !== lastTickStep) {
+        lastTickStep = tickStep;
+        E3D.Audio.ratchetTick(rig.power);
+      }
+
+      // Update visual slingshot indicator right under finger!
+      var clampR = Math.min(64, Math.hypot(dx, dy));
+      var ang = Math.atan2(dy, dx);
+      slingKnobEl.style.left = (startX + Math.cos(ang) * clampR) + 'px';
+      slingKnobEl.style.top = (startY + Math.sin(ang) * clampR) + 'px';
+      slingKnobEl.textContent = Math.round(rig.power * 100) + '%';
+
+      // Subtle camera aim framing following yaw
+      K.cam.set(
+        new T3.Vector3(Math.sin(rig.yaw) * -2.2, 5.15, 20.1),
+        new T3.Vector3(Math.sin(rig.yaw) * -12.5, 2.4 + rig.pitch * 3.5, -12.5),
+        5.5
+      );
+      updateTrajectoryArc(rig, true);
+    }
+
+    zone.addEventListener('pointerdown', function (ev) {
+      if (STATE.phase !== 'aim') return;
+      dragging = true;
+      pId = ev.pointerId;
+      startX = ev.clientX;
+      startY = ev.clientY;
+      baseYaw = rig.yaw;
+      try { zone.setPointerCapture(pId); } catch (e) {}
+      if (rig.kidChar) rig.kidChar.setState('ready');
+      slingRingEl.style.left = startX + 'px';
+      slingRingEl.style.top = startY + 'px';
+      slingRingEl.style.display = 'block';
+      slingKnobEl.style.left = startX + 'px';
+      slingKnobEl.style.top = startY + 'px';
+      slingKnobEl.style.display = 'flex';
+      E3D.Audio.ratchetTick(0.4);
+    });
+
+    zone.addEventListener('pointermove', function (ev) {
+      if (!dragging || ev.pointerId !== pId) return;
+      applyDrag(ev.clientX, ev.clientY);
+    });
+
+    function releaseShot(ev) {
+      if (!dragging || (ev && ev.pointerId !== pId)) return;
+      dragging = false;
+      slingRingEl.style.display = 'none';
+      slingKnobEl.style.display = 'none';
+      // Guard accidental tiny 3px tap: require at least 12px drag OR explicit tap-hold
+      var moved = ev ? Math.hypot(ev.clientX - startX, ev.clientY - startY) : 25;
+      if (moved < 10) {
+        updateTrajectoryArc(rig, true);
+        return;
+      }
+      cleanup();
+      onFired();
+    }
+
+    zone.addEventListener('pointerup', releaseShot);
+    zone.addEventListener('pointercancel', function () {
+      dragging = false;
+      slingRingEl.style.display = 'none';
+      slingKnobEl.style.display = 'none';
+    });
+
+    function onKey(ev) {
+      if (STATE.phase !== 'aim') return;
+      if (ev.key === 'ArrowLeft')  { rig.yaw = K.clamp(rig.yaw + 0.05, -0.56, 0.56); updateTrajectoryArc(rig, true); }
+      if (ev.key === 'ArrowRight') { rig.yaw = K.clamp(rig.yaw - 0.05, -0.56, 0.56); updateTrajectoryArc(rig, true); }
+      if (ev.key === 'ArrowUp')    { rig.pitch = K.clamp(rig.pitch + 0.04, 0.14, 0.76); rig.power = K.clamp(rig.power + 0.05, 0.35, 1.0); updateTrajectoryArc(rig, true); }
+      if (ev.key === 'ArrowDown')  { rig.pitch = K.clamp(rig.pitch - 0.04, 0.14, 0.76); rig.power = K.clamp(rig.power - 0.05, 0.35, 1.0); updateTrajectoryArc(rig, true); }
+      if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); cleanup(); onFired(); }
+    }
+    window.addEventListener('keydown', onKey);
+
+    function cleanup() {
+      window.removeEventListener('keydown', onKey);
+      slingRingEl.style.display = 'none';
+      slingKnobEl.style.display = 'none';
+      if (zone.parentNode) zone.remove();
+    }
+    return cleanup;
+  }
+
+  /* =========================================================================
+   * 8. TURN FLOW: CINEMA MODE, SOLO CAMPAIGN & 2-KID SIMULTANEOUS SPLIT DUEL
+   * ========================================================================= */
+  function showTitleScreen() {
+    STATE.phase = 'title';
+    clearStage();
+    K.ui.clear();
+    K.ui.topButtons();
+
+    cannons[0].root.visible = true;
+    cannons[0].root.position.set(0, 2.02, 13.4);
+    cannons[1].root.visible = false;
+    K.cam.follow = null;
+    K.cam.set(new T3.Vector3(5.6, 5.8, 21.8), new T3.Vector3(0, 2.3, -6), 2.2);
+
+    // Decorative background tower in the bay during title screen!
+    buildSmashStage(1);
+
+    var wrap = K.ui.add(K.el('div', 'cn-title-wrap'));
+    var card = K.el('div', 'cn-title-card');
+    wrap.appendChild(card);
+
+    card.innerHTML =
+      '<div class="cn-badge-top">🏴‍☠️ SUNNY COVE PHYSICS EDITION · 60 FPS</div>' +
+      '<h1 class="cn-title-h1">Pirate &amp; Monster Cannon 3D</h1>' +
+      '<p class="cn-title-sub">Pull back, read the wind, and smash 3D island fortresses &amp; pirate ships!</p>';
+
+    var grid = K.el('div', 'cn-setup-grid');
+    card.appendChild(grid);
+
+    function makePillGroup(label, options, curVal, colorCls, onSelect) {
+      var box = K.el('div', 'cn-setup-box');
+      box.appendChild(K.el('span', 'cn-setup-lbl', label));
+      var row = K.el('div', 'cn-pill-row');
+      options.forEach(function (opt) {
+        var b = K.el('button', 'cn-pill' + (opt.v === curVal ? ' on ' + (colorCls || '') : ''), opt.l);
+        b.type = 'button';
+        b.onclick = function () {
+          Array.prototype.forEach.call(row.children, function (c) { c.className = 'cn-pill'; });
+          b.className = 'cn-pill on ' + (colorCls || '');
+          onSelect(opt.v);
+        };
+        row.appendChild(b);
+      });
+      box.appendChild(row);
+      return box;
+    }
+
+    grid.appendChild(makePillGroup('1. Play Mode', [
+      { v: 'classroom', l: '🏫 Classroom Teams' },
+      { v: 'solo',      l: '📱 Solo Campaign (⭐⭐⭐)' }
+    ], STATE.context, '', function (v) { STATE.context = v; renderTitleDynamic(); }));
+
+    var boardBoxHolder = K.el('div', '');
+    grid.appendChild(boardBoxHolder);
+
+    grid.appendChild(makePillGroup('3. English + Action Loop', [
+      { v: 'smash',  l: '💥 Answer → Super Ammo' },
+      { v: 'target', l: '⛵ Shoot 3D Answer Sails' }
+    ], STATE.playLoop, 'pink', function (v) { STATE.playLoop = v; }));
+
+    grid.appendChild(makePillGroup('4. Aiming Guide & Wind', [
+      { v: 'pro',    l: '🌬️ Pro Wind (40% Arc)' },
+      { v: 'guided', l: '🎯 Guided Arc (Grade 3)' }
+    ], STATE.arcGuide, 'green', function (v) { STATE.arcGuide = v; }));
+
+    var clsHolder = K.el('div', '');
+    card.appendChild(clsHolder);
+
+    var actions = K.el('div', 'cn-title-actions');
+    var howBtn = K.el('button', 'cn-btn cream', '❓ How to Play');
+    howBtn.type = 'button';
+    howBtn.onclick = showHowToModal;
+    var goBtn = K.el('button', 'cn-btn green', '🚀 SET SAIL & FIRE!');
+    goBtn.type = 'button';
+    goBtn.onclick = startGame;
+    actions.appendChild(howBtn);
+    actions.appendChild(goBtn);
+    card.appendChild(actions);
+
+    function renderTitleDynamic() {
+      boardBoxHolder.innerHTML = '';
+      clsHolder.innerHTML = '';
+      var dummyTail = K.el('span', '');
+      clsHolder.appendChild(dummyTail);
+
+      if (STATE.context === 'solo') {
+        boardBoxHolder.appendChild(makePillGroup('2. Campaign Waves', [
+          { v: 4, l: '🗺️ All 4 Island Stages (⭐⭐⭐)' }
+        ], 4, '', function () {}));
+        K.ui.setPicker(clsHolder);
+      } else {
+        boardBoxHolder.appendChild(makePillGroup('2. Smartboard Style', [
+          { v: 'cinema', l: '🎬 Cinema Turns (2–4 Teams)' },
+          { v: 'duel',   l: '⚔️ 2-Kid Split Board Duel!' }
+        ], STATE.boardMode, '', function (v) { STATE.boardMode = v; }));
+        K.cls.setupRow(clsHolder, STATE.teamCount);
+      }
+    }
+    renderTitleDynamic();
+
+    if (K.DEMO) {
+      K.after(1.1, function () { if (STATE.phase === 'title') startGame(); });
+    }
+  }
+
+  function showHowToModal() {
+    var scrim = K.ui.add(K.el('div', 'cn-modal-scrim'));
+    var m = K.el('div', 'cn-modal-card');
+    m.innerHTML =
+      '<h2 style="margin:0 0 6px;font-size:1.6rem;font-weight:900;">🏴‍☠️ How to Play Cannon 3D</h2>' +
+      '<div class="cn-steps-row">' +
+      '  <div class="cn-step-box"><div class="cn-step-ico">🗣️</div><div class="cn-step-t">1. English Clue</div><p class="cn-step-p">Read or listen to unlock Super Cannonballs or spot the right pirate sail!</p></div>' +
+      '  <div class="cn-step-box"><div class="cn-step-ico">🎯</div><div class="cn-step-t">2. Pull &amp; Aim</div><p class="cn-step-p">Drag down &amp; sideways in the lower screen to aim. Watch the wind flag!</p></div>' +
+      '  <div class="cn-step-box"><div class="cn-step-ico">💥</div><div class="cn-step-t">3. Smash Towers!</div><p class="cn-step-p">Topple crates, detonate red star-kegs &amp; sink Captain Flint\u2019s Boss Ship!</p></div>' +
+      '</div>';
+    var row = K.el('div', 'cn-title-actions');
+    var listen = K.el('button', 'cn-btn yellow', '🔊 Listen');
+    listen.onclick = function () { K.say('Step one: answer or listen to the English clue. Step two: pull back at the bottom of the screen and watch the wind flag. Step three: smash the pirate towers and treasure chests!'); };
+    var ok = K.el('button', 'cn-btn green', 'Got It! ▶');
+    ok.onclick = function () { scrim.remove(); };
+    row.appendChild(listen); row.appendChild(ok);
+    m.appendChild(row);
+    scrim.appendChild(m);
+  }
+
+  function buildTopGameHud() {
+    K.ui.clear();
+    K.ui.topButtons();
+
+    if (STATE.context === 'solo') {
+      STATE.teams = [{ name: 'Explorer', c: '#4f9dff', hex: 0x4f9dff, kid: 'boy', mon: 'aquafind', score: 0, pupils: [] }];
+    } else {
+      var nT = STATE.boardMode === 'duel' ? 2 : STATE.teamCount;
+      STATE.teams = K.TEAMS.slice(0, nT).map(function (t) {
+        return Object.assign({}, t, { score: 0, pupils: [], speakerIdx: 0 });
+      });
+      K.cls.assign(STATE.teams);
+    }
+
+    hudBar = K.ui.teamBar(STATE.teams, function (t) { return t.score || 0; });
+    hudBar.refresh(0);
+
+    var cluster = K.ui.add(K.el('div', 'cn-top-cluster'));
+    windPillEl = K.el('div', 'cn-mini-pill', '🌬️ Calm');
+    var musBtn = K.el('button', 'cn-mini-pill', E3D.musicMuted ? '🎵 Music Off' : '🎵 Music On');
+    musBtn.title = 'Mute background music while keeping game sound effects & voice';
+    musBtn.onclick = function () {
+      E3D.Audio.setMusicMuted(!E3D.musicMuted);
+      musBtn.textContent = E3D.musicMuted ? '🎵 Music Off' : '🎵 Music On';
+    };
+    var helpBtn = K.el('button', 'cn-mini-pill', '❓');
+    helpBtn.title = 'How to Play';
+    helpBtn.onclick = showHowToModal;
+
+    cluster.appendChild(windPillEl);
+    cluster.appendChild(musBtn);
+    cluster.appendChild(helpBtn);
+
+    stageBannerEl = K.ui.add(K.el('div', 'cn-stage-banner', ''));
+    E3D.Audio.startIslandMarimbaLoop();
+  }
+
+  function refreshWindPill() {
+    if (!windPillEl) return;
+    var wx = E3D.wind.x;
+    if (Math.abs(wx) < 0.35) {
+      windPillEl.innerHTML = '🌬️ Calm Breeze';
+    } else {
+      var arrow = wx > 0 ? '➡️' : '⬅️';
+      var mph = Math.round(Math.abs(wx) * 5);
+      windPillEl.innerHTML = '🌬️ Wind ' + arrow + ' <b>' + mph + ' kt</b>';
+    }
+  }
+
+  function startGame() {
+    STATE.round = Math.min(4, Math.max(1, +(Q.get('stage') || 1)));
+    STATE.turnIdx = 0;
+    STATE.lastTrails = {};
+    buildTopGameHud();
+
+    if (STATE.context === 'classroom' && STATE.boardMode === 'duel') {
+      startSplitDuelMatch();
+    } else {
+      startNextCinemaRound(true);
+    }
+  }
+
+  /* ---------- CINEMA & SOLO CAMPAIGN LOOP ---------- */
+  function startNextCinemaRound(rebuildStage) {
+    if (STATE.round > STATE.totalRounds) {
+      showVictoryPodium();
+      return;
+    }
+    cannons[0].root.visible = true;
+    cannons[0].root.position.set(0, 2.02, 13.4);
+    cannons[1].root.visible = false;
+
+    var meta = STAGE_META[(STATE.round - 1) % 4];
+    if (stageBannerEl) stageBannerEl.textContent = meta.name + ' · Round ' + STATE.round + '/' + STATE.totalRounds;
+
+    var team = STATE.teams[STATE.turnIdx % STATE.teams.length];
+    hudBar.refresh(STATE.turnIdx);
+    syncRigCast(cannons[0], team, STATE.turnIdx);
+    if (windFlagMesh) windFlagMesh.material.color.setHex(team.hex);
+
+    STATE.currentItem = qsBank.next();
+    STATE.selectedAmmo = 'iron';
+    STATE.unlockedSuper = false;
+
+    if (STATE.playLoop === 'target') {
+      buildTargetShootStage(STATE.currentItem, STATE.round);
+      beginCinemaAimPhase(team, true);
+    } else {
+      if (rebuildStage) buildSmashStage(STATE.round);
+      presentSmashQuestion(STATE.currentItem, team);
+    }
+  }
+
+  function presentSmashQuestion(item, team) {
+    STATE.phase = 'question';
+    K.cam.follow = null;
+    K.cam.set(new T3.Vector3(2.8, 4.5, 18.8), new T3.Vector3(0, 2.4, -8), 3.0);
+
+    var judgeSuper = false;
+    var askPromise = K.ui.ask(item, team, {
+      prompt: 'Answer to unlock Super Cannonballs!'
+    });
+
+    // Inject Teacher 1-Tap Speaking Judge Boost bar into active .qcard (Classroom Mode only!)
+    if (STATE.context === 'classroom') {
+      setTimeout(function () {
+        var qcard = document.querySelector('.qcard');
+        if (!qcard) return;
+        var jbar = K.el('div', 'cn-judge-bar');
+        jbar.innerHTML = '<span style="font-size:.82rem;font-weight:800;color:#5f4f7a;">🗣️ Spoke a full English sentence?</span>';
+        var jbtn = K.el('button', 'cn-judge-btn', '🌟 Super Sentence! (Unlock All Ammo)');
+        jbtn.type = 'button';
+        jbtn.onclick = function () {
+          judgeSuper = true;
+          K.sfx('bullseye');
+          var rightBtn = Array.prototype.find.call(qcard.querySelectorAll('.opt'), function (b) { return b.dataset.ans === item.a; });
+          if (rightBtn) rightBtn.click();
+        };
+        jbar.appendChild(jbtn);
+        qcard.appendChild(jbar);
+      }, 40);
+    }
+
+    askPromise.then(function (ok) {
+      STATE.unlockedSuper = !!(ok || judgeSuper);
+      STATE.selectedAmmo = judgeSuper ? 'triple' : (ok ? 'bomb' : 'iron');
+      if (!ok) {
+        // Zero-shame encouragement: pupil STILL gets to fire an Iron Cannonball!
+        K.ui.toast('Nice try! Fire the Iron Cannonball! 💪', 1.6, team.c);
+      }
+      beginCinemaAimPhase(team, false);
+    });
+  }
+
+  function beginCinemaAimPhase(team, isTargetMode) {
+    STATE.phase = 'aim';
+    STATE.shotScore = 0;
+    STATE.midFlightUsed = false;
+
+    var rig = cannons[0];
+    rig.yaw = 0;
+    rig.pitch = 0.34;
+    rig.power = 0.66;
+
+    var asp = (window.innerWidth || 1280) / Math.max(1, window.innerHeight || 720);
+    K.cam.follow = null;
+    K.cam.set(new T3.Vector3(0, asp < 0.65 ? 5.65 : 5.15, asp < 0.65 ? 23.0 : 20.1), new T3.Vector3(0, 3.1, -12.5), 3.8);
+
+    // Show Top Clue Banner in Quick-Target-Shoot mode!
+    if (targetClueEl) { targetClueEl.remove(); targetClueEl = null; }
+    if (isTargetMode && STATE.currentItem) {
+      var it = STATE.currentItem;
+      targetClueEl = K.ui.add(K.el('div', 'cn-target-clue'));
+      targetClueEl.style.setProperty('--c', team.c);
+      var mediaHtml = it.img
+        ? '<img alt="" src="' + K.ROOT + it.img + '">'
+        : (it.pic ? '<span class="cn-clue-emo">' + it.pic + '</span>' : '<span class="cn-clue-emo">🏴‍☠️</span>');
+      targetClueEl.innerHTML = mediaHtml + '<div class="cn-clue-txt">Hit the Sail: ' + K.esc(it.q) + '</div>';
+      var sb = K.el('button', 'cn-say-btn', '🔊');
+      var sayStr = (it.speak || it.q || '').replace(/_+/g, 'blank');
+      sb.onclick = function () { K.say(sayStr); };
+      targetClueEl.appendChild(sb);
+      K.after(0.25, function () { K.say(sayStr); });
+    }
+
+    // Bottom Aim HUD + Ammo Selector Chips
+    var aimHud = K.ui.add(K.el('div', 'cn-aim-hud'));
+    aimHud.style.setProperty('--c', team.c);
+    var sp = K.cls && K.cls.speaker && K.cls.speaker(team);
+    var who = sp ? sp.name : (STATE.context === 'solo' ? 'Explorer' : ('Team ' + team.name));
+    aimHud.appendChild(K.el('span', 'cn-aim-prompt', '🎯 ' + K.esc(who) + ': Pull down & aim!'));
+
+    var availAmmo = STATE.unlockedSuper ? ['bomb', 'boulder', 'triple', 'iron'] : (isTargetMode ? ['iron', 'bomb'] : ['iron']);
+    availAmmo.forEach(function (ak) {
+      var chip = K.el('button', 'cn-ammo-chip' + (STATE.selectedAmmo === ak ? ' on' : ''), AMMO_TYPES[ak].label);
+      chip.type = 'button';
+      chip.title = AMMO_TYPES[ak].desc;
+      chip.onclick = function () {
+        STATE.selectedAmmo = ak;
+        Array.prototype.forEach.call(aimHud.querySelectorAll('.cn-ammo-chip'), function (c) { c.classList.remove('on'); });
+        chip.classList.add('on');
+        E3D.Audio.ratchetTick(0.8);
+        updateTrajectoryArc(rig, true);
+      };
+      aimHud.appendChild(chip);
+    });
+
+    var cleanupAim = attachAimZone(rig, function () {
+      aimHud.remove();
+      launchCinemaShot(rig, team);
+    });
+
+    if (K.DEMO) {
+      K.after(1.3, function () {
+        if (STATE.phase !== 'aim') return;
+        rig.yaw = K.rnd(-0.18, 0.18);
+        rig.pitch = K.rnd(0.32, 0.44);
+        rig.power = K.rnd(0.68, 0.84);
+        cleanupAim();
+        aimHud.remove();
+        launchCinemaShot(rig, team);
+      });
+    }
+  }
+
+  function launchCinemaShot(rig, team) {
+    STATE.phase = 'flight';
+    var pObj = fireCannon(rig, STATE.selectedAmmo, STATE.turnIdx);
+
+    // Mid-air tap button if Bomb or Triple Scatter!
+    if (STATE.selectedAmmo === 'bomb' || STATE.selectedAmmo === 'triple') {
+      var lbl = STATE.selectedAmmo === 'bomb' ? '💥 TAP TO DETONATE!' : '⚡ TAP TO SPLIT ×3!';
+      flightTapBtn = K.ui.add(K.el('button', 'cn-btn yellow cn-flight-tap', lbl));
+      flightTapBtn.onclick = triggerMidAirSpecial;
+      window.addEventListener('pointerdown', onMidAirWindowTap, { once: true });
+    }
+
+    // Smooth 3D Chase Camera trailing right behind & above the flying cannonball!
+    K.cam.follow = function () {
+      if (!pObj.rec || !pObj.rec.body || pObj.rec.hidden) return;
+      var tr = pObj.rec.body.translation();
+      var lv = pObj.rec.body.linvel();
+      var horiz = new T3.Vector3(lv.x, 0, lv.z);
+      if (horiz.lengthSq() < 0.1) horiz.set(0, 0, -1); else horiz.normalize();
+      K.cam.tPos.set(tr.x - horiz.x * 6.8, Math.max(2.6, tr.y + 2.7), tr.z - horiz.z * 6.8);
+      K.cam.tLook.set(tr.x + horiz.x * 4.5, Math.max(0.8, tr.y - 0.3), tr.z + horiz.z * 4.5);
+      K.cam.k = 6.2;
+    };
+
+    // Advance turn once physics settles (~3.4 seconds)
+    K.after(3.5, function () {
+      K.timeScale = 1.0;
+      K.cam.follow = null;
+      window.removeEventListener('pointerdown', onMidAirWindowTap);
+      if (flightTapBtn) { flightTapBtn.remove(); flightTapBtn = null; }
+      if (targetClueEl) { targetClueEl.remove(); targetClueEl = null; }
+
+      if (pObj.rec && pObj.rec.data && pObj.rec.data.trail && pObj.rec.data.trail.length > 3) {
+        STATE.lastTrails[STATE.turnIdx] = pObj.rec.data.trail.slice(0, 22);
+      }
+
+      var prevTurn = STATE.turnIdx;
+      STATE.turnIdx = (STATE.turnIdx + 1) % STATE.teams.length;
+      var wrappedRound = STATE.turnIdx === 0;
+      if (wrappedRound) STATE.round++;
+
+      startNextCinemaRound(wrappedRound || STATE.playLoop === 'target');
+    });
+  }
+
+  function onMidAirWindowTap(ev) {
+    if (ev.target && ev.target.closest && ev.target.closest('.topbtns, .cn-top-cluster')) return;
+    if (STATE.phase === 'flight') triggerMidAirSpecial();
+  }
+
+  /* ---------- 2-KID SIMULTANEOUS SPLIT-BOARD MULTI-TOUCH DUEL ---------- */
+  function startSplitDuelMatch() {
+    STATE.phase = 'duel';
+    STATE.duelTimeLeft = 35;
+
+    cannons[0].root.visible = true;
+    cannons[0].root.position.set(-4.2, 2.02, 13.4);
+    cannons[1].root.visible = true;
+    cannons[1].root.position.set(4.2, 2.02, 13.4);
+
+    syncRigCast(cannons[0], STATE.teams[0], 0);
+    syncRigCast(cannons[1], STATE.teams[1], 1);
+
+    // Build rich combined fortress bay for both kids to bombard simultaneously!
+    buildSmashStage(3);
+    spawnCratePyramid(physStage, 0, addSandbarPlatform(physStage, 0, -13.2, 0.95, 9), -13.2, 3, true, true);
+
+    var divider = K.ui.add(K.el('div', 'cn-split-divider'));
+    if (stageBannerEl) stageBannerEl.textContent = '⚔️ 2-KID DUEL · 35s!';
+
+    var cleanups = [0, 1].map(function (side) {
+      var rig = cannons[side];
+      rig.yaw = 0; rig.pitch = 0.35; rig.power = 0.70;
+      var zEl = K.ui.add(K.el('div', 'cn-duel-zone ' + (side === 0 ? 'left' : 'right')));
+      var tag = K.el('div', 'cn-duel-tag', '🎯 Team ' + STATE.teams[side].name + ' · Pull & Fire!');
+      tag.style.setProperty('--c', STATE.teams[side].c);
+      zEl.appendChild(tag);
+
+      var pId = -1, sx = 0, sy = 0, bYaw = 0, cooldown = false;
+      updateTrajectoryArc(rig, true);
+
+      zEl.addEventListener('pointerdown', function (ev) {
+        if (STATE.phase !== 'duel' || cooldown) return;
+        pId = ev.pointerId; sx = ev.clientX; sy = ev.clientY; bYaw = rig.yaw;
+        try { zEl.setPointerCapture(pId); } catch (e) {}
+      });
+      zEl.addEventListener('pointermove', function (ev) {
+        if (ev.pointerId !== pId) return;
+        var dx = ev.clientX - sx, dy = ev.clientY - sy;
+        var pull = K.clamp(dy / 130, -0.2, 1.0);
+        rig.yaw = K.clamp(bYaw - (dx / 200) * 0.65, -0.55, 0.55);
+        rig.power = K.clamp(0.45 + pull * 0.55, 0.35, 1.0);
+        rig.pitch = K.clamp(0.20 + pull * 0.44, 0.14, 0.76);
+        updateTrajectoryArc(rig, true);
+      });
+      zEl.addEventListener('pointerup', function (ev) {
+        if (ev.pointerId !== pId) return;
+        pId = -1;
+        if (Math.hypot(ev.clientX - sx, ev.clientY - sy) < 8) return;
+        cooldown = true;
+        fireCannon(rig, side === 0 ? 'iron' : 'iron', side);
+        K.after(1.15, function () {
+          cooldown = false;
+          if (STATE.phase === 'duel') updateTrajectoryArc(rig, true);
+        });
+      });
+      return function () { zEl.remove(); updateTrajectoryArc(rig, false); };
+    });
+
+    var timerIv = setInterval(function () {
+      if (STATE.phase !== 'duel') { clearInterval(timerIv); return; }
+      STATE.duelTimeLeft--;
+      if (stageBannerEl) stageBannerEl.textContent = '⚔️ 2-KID SIMULTANEOUS DUEL · ⏱ ' + STATE.duelTimeLeft + 's';
+      if (STATE.duelTimeLeft <= 12 && STATE.duelTimeLeft === 12) {
+        // Mid-duel bonus TNT crate drop!
+        spawnCratePyramid(physStage, 0, 2.2, -13.2, 2, true, true);
+        K.ui.big('💥 BONUS CHEST DROP!', 1.0, true);
+      }
+      if (STATE.duelTimeLeft <= 0) {
+        clearInterval(timerIv);
+        divider.remove();
+        cleanups.forEach(function (fn) { fn(); });
+        showVictoryPodium();
+      }
+    }, 1000);
+  }
+
+  /* =========================================================================
+   * 9. 3-STEP 3D VICTORY PODIUM + SOLO 3-STAR MEDALS + CLASS XP PANEL
+   * ========================================================================= */
+  function showVictoryPodium() {
+    STATE.phase = 'podium';
+    clearStage();
+    K.ui.clear();
+    K.ui.topButtons();
+
+    cannons[0].root.visible = false;
+    cannons[1].root.visible = false;
+
+    // Build festive 3D Podium right on the sunny headland cliff!
+    var podGroup = new T3.Group();
+    podGroup.position.set(0, 2.02, 12.6);
+    stageGroup.add(podGroup);
+
+    var ranked = STATE.teams.slice().sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+    var slotsX = ranked.length === 1 ? [0] : [0, -2.3, 2.3, -4.4];
+    var heights = [1.25, 0.85, 0.60, 0.45];
+
+    ranked.forEach(function (tm, rankIdx) {
+      var px = slotsX[rankIdx] || 0, ph = heights[rankIdx] || 0.5;
+      if (MODELS.stoneBlk) {
+        var blk = MODELS.stoneBlk.scene.clone(true);
+        blk.position.set(px, ph * 0.5, 0);
+        blk.scale.set(1.15, ph, 1.35);
+        podGroup.add(blk);
+      }
+      if (rankIdx === 0 && MODELS.trophy) {
+        var tr = MODELS.trophy.scene.clone(true);
+        K.fitModel(tr, 0.85);
+        tr.position.set(px + 0.55, ph, 0.35);
+        podGroup.add(tr);
+      }
+      var sp = K.cls && K.cls.speaker && K.cls.speaker(tm);
+      K.makeCharacter(tm, { kidsOnly: true, studentId: sp ? sp.id : '', kidHeight: 1.48 }).then(function (kid) {
+        kid.root.position.set(px - 0.25, ph, 0);
+        kid.setState(rankIdx === 0 ? 'cheer' : 'clap');
+        podGroup.add(kid.root);
+        K.onFrame(function (dt) { if (STATE.phase === 'podium') kid.update(dt); });
+      });
+      K.makeCharacter(tm, { monHeight: 1.05 }).then(function (mon) {
+        mon.root.position.set(px + 0.45, 0, 0.85);
+        mon.setState('cheer');
+        podGroup.add(mon.root);
+        K.onFrame(function (dt) { if (STATE.phase === 'podium') mon.update(dt); });
+      });
+    });
+
+    K.cam.follow = null;
+    K.cam.set(new T3.Vector3(0, 4.4, 20.4), new T3.Vector3(0, 3.2, 12.6), 3.0);
+    K.sfx('win');
+    K.fx.confetti(new T3.Vector3(0, 4.5, 12.6), 85);
+
+    var endCard = K.ui.add(K.el('div', 'cn-end-wrap'));
+    var winner = ranked[0];
+    if (STATE.context === 'solo') {
+      var sc = winner.score || 0;
+      var stars = sc >= 260 ? '⭐⭐⭐' : sc >= 140 ? '⭐⭐☆' : '⭐☆☆';
+      endCard.innerHTML =
+        '<div class="cn-stars-row">' + stars + '</div>' +
+        '<h2 style="margin:0 0 4px;font-size:1.75rem;font-weight:900;">Island Campaign Complete!</h2>' +
+        '<p style="margin:0 0 12px;font-weight:800;color:#5f4f7a;">Total Score: <b>' + sc + ' pts</b></p>';
+    } else {
+      endCard.innerHTML =
+        '<h2 style="margin:0 0 8px;font-size:1.75rem;font-weight:900;">🏆 Team ' + K.esc(winner.name) + ' Wins! (' + (winner.score || 0) + ' pts)</h2>';
+      K.cls.pointsPanel(endCard, STATE.teams, { game: 'cannon3d', title: 'Pirate & Monster Cannon 3D' });
+    }
+
+    var btns = K.el('div', 'cn-title-actions');
+    var again = K.el('button', 'cn-btn green', '🔄 Play Again');
+    again.onclick = showTitleScreen;
+    var allG = K.el('button', 'cn-btn cream', '🎮 All Games');
+    allG.onclick = function () { location.href = '../../game-maker/index.html'; };
+    btns.appendChild(again); btns.appendChild(allG);
+    endCard.appendChild(btns);
+  }
+
+  /* =========================================================================
+   * 10. FRAME LOOP: PHYSICS, SHIP BUOYANCY, FOAM WAKES & WATER SPLASHES
+   * ========================================================================= */
+  K.onFrame(function (dt, t) {
+    E3D.uTime.value = t;
+    if (aiManager) aiManager.update(dt);
+
+    // Update moving ships (Yuka patrol or gentle bay wave sway) + sync kinematic colliders & hull foam!
+    for (var s = 0; s < movingShips.length; s++) {
+      var sh = movingShips[s];
+      var sx = sh.baseX, sz = sh.baseZ;
+      if (sh.vehicle) {
+        sx = sh.vehicle.position.x;
+        sz = sh.vehicle.position.z;
+        if (sh.vehicle.velocity.squaredLength() > 0.02) {
+          // Models have bow along -X, so facing velocity (vx, vz) -> atan2(vz, -vx)
+          sh.group.rotation.y = Math.atan2(sh.vehicle.velocity.z, -sh.vehicle.velocity.x);
+        }
+      } else if (sh.swayAmp) {
+        sx = sh.baseX + Math.sin(t * 0.95 + (sh.swayPhase || 0)) * sh.swayAmp;
+      }
+      var wy = E3D.sampleWaveHeight(sx, sz, t);
+      sh.group.position.set(sx, wy + 0.06, sz);
+      sh.group.rotation.z = Math.sin(t * 1.6 + s) * 0.045;
+      sh.group.rotation.x = Math.cos(t * 1.3 + s) * 0.035;
+
+      if (sh.kinRec && sh.kinRec.body) {
+        sh.kinRec.body.setNextKinematicTranslation({ x: sx, y: wy + 1.9, z: sz });
+      }
+      if (sh.foamIdx) {
+        E3D.Shaders.setFoamCollider(sh.foamIdx, sx, sz, 2.6, 0.92);
+      }
+      if (sh.attachments && sh.attachments.length) {
+        sh.attachments.forEach(function (at) {
+          var bz2 = sz + (at.offsetZ || 2.2);
+          var by2 = E3D.sampleWaveHeight(sx, bz2, t);
+          if (at.buoyMesh) at.buoyMesh.position.set(sx, by2 + 0.06, bz2);
+          if (at.buoyRec && at.buoyRec.body) at.buoyRec.body.setNextKinematicTranslation({ x: sx, y: by2 + 0.55, z: bz2 });
+        });
+      }
+    }
+
+    // Step Rapier3D destruction world
+    if (physStage) {
+      physStage.step(dt);
+
+      // Splash blocks & chests that tumble off sandbars into the sea!
+      for (var bi = 0; bi < physStage.bodies.length; bi++) {
+        var br = physStage.bodies[bi];
+        if (!br.body || br.hidden || br.kind !== 'dynamic' || br.tag === 'ammo') continue;
+        var btr = br.body.translation();
+        if (btr.y < -0.15) {
+          var spPos = new T3.Vector3(btr.x, 0.1, btr.z);
+          K.fx.ring(spPos, 0xffffff, 2.4);
+          K.fx.puff(spPos, 5, { color: 0xffffff, size: 0.9 });
+          if (!br.scored) {
+            br.scored = true;
+            awardHitPoints(br.points || 15, spPos, br.tag === 'chest' ? '👑 +50!' : null);
+          }
+          physStage.hideRecord(br);
+        }
+      }
+    }
+
+    // Update flying projectiles (smoke rings, trail recording, water splash!)
+    for (var pi = activeProjectiles.length - 1; pi >= 0; pi--) {
+      var pr = activeProjectiles[pi];
+      if (!pr.rec || !pr.rec.body || pr.rec.hidden) {
+        activeProjectiles.splice(pi, 1);
+        continue;
+      }
+      var ptr = pr.rec.body.translation();
+      pr.trailTimer += dt;
+      if (pr.trailTimer >= 0.075) {
+        pr.trailTimer = 0;
+        var vPt = new T3.Vector3(ptr.x, ptr.y, ptr.z);
+        if (pr.rec.data.trail.length < 28) pr.rec.data.trail.push(vPt.clone());
+        K.fx.puff(vPt, 1, { color: 0xffffff, size: 0.55, opacity: 0.45, life: 0.55 });
+      }
+      var seaY = E3D.sampleWaveHeight(ptr.x, ptr.z, t);
+      if (!pr.splashed && ptr.y <= seaY + 0.1) {
+        pr.splashed = true;
+        E3D.Audio.waterSplash();
+        var wPos = new T3.Vector3(ptr.x, seaY + 0.12, ptr.z);
+        K.fx.ring(wPos, 0xffffff, 3.8);
+        K.fx.puff(wPos, 10, { color: 0xe6fbff, size: 1.25, spread: 1.1 });
+        physStage.hideRecord(pr.rec);
+        activeProjectiles.splice(pi, 1);
+      }
+    }
+
+    // Update Split-Screen Duel cameras smoothly
+    if (STATE.phase === 'duel' && camDuelLeft && camDuelRight) {
+      var rL = cannons[0], rR = cannons[1];
+      camDuelLeft.position.set(-4.2 - Math.sin(rL.yaw) * 2.0, 5.1, 20.0);
+      camDuelLeft.lookAt(-4.2 - Math.sin(rL.yaw) * 11.0, 2.4 + rL.pitch * 3.2, -13.0);
+      camDuelRight.position.set(4.2 - Math.sin(rR.yaw) * 2.0, 5.1, 20.0);
+      camDuelRight.lookAt(4.2 - Math.sin(rR.yaw) * 11.0, 2.4 + rR.pitch * 3.2, -13.0);
     }
   });
 
-  function collide() {
-    var p = flier.pos, ch = flier.ch, r = ch.height * .42;
-    balloons.forEach(function (b) {
-      if (!b.alive) return;
-      if (p.distanceTo(b.g.position) < r + .64) {
-        popBalloon(b, active); K.cam.shake(.15);
-        if (ch.kind === 'kid' && ch.state === 'fly') { ch.setState('tumble'); flier.spin = Math.atan2(flier.vel.y, flier.vel.x); }
-        flier.spinVel = flier.spinVel ? flier.spinVel * 1.15 : -8;
-      }
-    });
-    if (!flier.hit.board && p.x > TARGET.x - .45 && p.x < TARGET.x + .5) {
-      var dy = p.y - TARGET.y, dz = p.z, d = Math.hypot(dy, dz);
-      if (d < TARGET.r + r * .4) { flier.hit.board = true; hitTarget(d); return; }
-    }
-    if (p.y < HAY.top + r * .3 && Math.abs(p.x - HAY.x) < HAY.r && flier.vel.y < 0) { landHay(); return; }
-    if (!flier.hit.net && p.x > NET.x - r * .7 && p.x < NET.x + 1 && p.y < NET.h && Math.abs(p.z) < NET.w / 2) { catchNet(); return; }
-    var c = groundR(ch);
-    if (p.y < c && flier.vel.y < 0) {
-      p.y = c;
-      var impact = -flier.vel.y;
-      if (ch.state === 'fly') { ch.setState('tumble'); flier.spin = Math.atan2(flier.vel.y, flier.vel.x); }
-      if (impact > 2.4) {
-        flier.vel.y = impact * .42; flier.vel.x *= .7;
-        flier.spinVel = -flier.vel.x / (ch.height * .35) + rnd(-2, 2);
-        K.sfx('thud');
-        K.fx.puff(V(p.x, .1, p.z), 3 + Math.round(impact), { color: 0xe9f6d8, size: .5 + impact * .06, spread: 1.5 });
-        K.cam.shake(Math.min(.35, impact * .03));
-      } else { flier.vel.y = 0; flier.rolling = true; }
-    }
-  }
-  function groundR(ch) { return ch.height * .3; }
-
-  function catchNet() {
-    var ch = flier.ch; flier.hit.net = true; flier.netT = 0;
-    if (ch.state === 'fly') { ch.setState('tumble'); flier.spin = Math.atan2(flier.vel.y, flier.vel.x); }
-    net.y = flier.pos.y; net.z = flier.pos.z; net.V = Math.max(4, flier.vel.x) * 1.1;
-    flier.netVx = flier.vel.x; flier.spinVel *= .3;
-    addPoints(active, 10); K.fx.text('+10', flier.pos.clone().add(V(-1, 1.4, 0)), '#c3a6ff', 1.6);
-    K.sfx('boing'); K.cam.shake(.2); K.fx.puff(flier.pos.clone(), 6, { color: 0xffffff, size: .6 });
-  }
-  function netStep(h) {
-    flier.netT += h;
-    var p = flier.pos;
-    p.x = NET.x - groundR(flier.ch) * .6 + net.A;
-    flier.vel.y -= GRAV * .35 * h; flier.vel.y *= 1 - 3 * h;
-    p.y = Math.max(groundR(flier.ch), p.y + flier.vel.y * h);
-    flier.spinVel *= 1 - 2 * h;
-    if (flier.netT > .25 && net.V < 0 && net.A < .2) {
-      flier.netT = -1; flier.vel.set(-1.2 - Math.abs(flier.netVx) * .05, 2.0, 0); flier.spinVel = 6;
-      K.sfx('boing');
-    }
-  }
-  function rollStep(h) {
-    var p = flier.pos, ch = flier.ch;
-    flier.vel.x *= Math.exp(-3.4 * h); flier.vel.x += wind * .1 * h;
-    p.x += flier.vel.x * h; p.y = groundR(ch);
-    flier.spinVel = lerp(flier.spinVel, -flier.vel.x / (ch.height * .3), 1 - Math.exp(-8 * h));
-    if (Math.random() < Math.abs(flier.vel.x) * .08) K.fx.puff(V(p.x, .08, p.z), 1, { color: 0xe9f6d8, size: .5 });
-    if (Math.abs(flier.vel.x) < .35) settle();
-  }
-
-  function endFlight() {
-    flier.on = false; K.timeScale = 1;
-    flier.ch.root.position.set(0, -flier.ch.height / 2, 0);
-  }
-  function scoreSummary(extra) {
-    var t = TEAMS[active];
-    var txt = shotPoints > 0 ? '+' + shotPoints + ' for ' + t.name + '!' : 'Nice flight!';
-    K.ui.toast((extra ? extra + ' · ' : '') + txt, 2.0, t.c);
-  }
-
-  // Bullseye Slow-Mo Replay Camera!
-  function playBullseyeReplay(ch, hitPos, onDone) {
-    var badge = K.ui.add(K.el('div', 'cn-replay-badge'));
-    badge.innerHTML = '<span class="cn-replay-dot"></span><span>🎥 BULLSEYE SLOW-MO REPLAY</span>';
-    shot('replaycam');
-    K.timeScale = 0.34;
-    var startPos = hitPos.clone().add(V(-5.2, 1.4, 0));
-    var t0 = K.now, dur = .42;
-    var fn = K.onFrame(function () {
-      var u = clamp((K.now - t0) / dur, 0, 1);
-      ch.holder.position.lerpVectors(startPos, hitPos, u);
-      ch.holder.rotation.z = -u * Math.PI;
-      if (Math.random() < .5) spawnFlightRing(ch.holder.position, TEAMS[active].hex);
-      if (u >= 1) {
-        K.offFrame(fn);
-        ch.holder.rotation.set(0, 0, 0);
-        boardWobble = 1.1;
-        K.fx.ring(V(TARGET.x - .3, TARGET.y, 0), 0xffd84a, 5.2);
-        K.fx.confetti(V(TARGET.x, TARGET.y + 1, 0), 100);
-        setTimeout(function () {
-          K.timeScale = 1;
-          badge.remove();
-          if (onDone) onDone();
-        }, 420);
-      }
-    });
-  }
-
-  function hitTarget(d) {
-    var ch = flier.ch, bull = d < .75;
-    endFlight();
-    flier.pos.x = TARGET.x - .35 - ch.height * .25;
-    ch.holder.position.copy(flier.pos); ch.holder.rotation.set(0, 0, 0); ch.root.rotation.set(0, Math.PI / 2, 0);
-    ch.setState('fly'); boardWobble = 1;
-    if (ch.kind === 'kid') { ch.holder.rotation.set(0, 0, 0); ch.root.position.set(-ch.height * .5, -.12, 0); }
-    var pts = bull ? 50 : 25;
-    if (bull) TEAMS[active].bullseyes++;
-    addPoints(active, pts);
-    K.fx.text('🎯 +' + pts, flier.pos.clone().add(V(-1, 1.5, 0)), '#ffd84a', 2);
-    K.fx.ring(V(TARGET.x - .3, TARGET.y, 0), bull ? 0xffd84a : 0xffffff, 5);
-    if (bull) {
-      K.sfx('bullseye');
-      K.ui.big('🎯 BULLSEYE! +50', 1.5, true);
-      K.fx.confetti(V(TARGET.x, TARGET.y + 1, 0), 130);
-    } else {
-      K.sfx('thud');
-      K.ui.big('🎯 Target! +25', 1.2, true);
-    }
-    shot('land'); K.cam.shake(.3);
-
-    function slideDown() {
-      var t = 0, y0 = flier.pos.y;
-      var fn = K.onFrame(function (dt) {
-        t += dt; if (t < .4) return;
-        var u = clamp((t - .4) / .9, 0, 1);
-        flier.pos.y = lerp(y0, ch.height / 2, u * u); ch.holder.position.copy(flier.pos);
-        if (u >= 1) {
-          K.offFrame(fn);
-          ch.root.position.set(0, -ch.height / 2, 0);
-          ch.root.rotation.set(0, .3, 0);
-          ch.setState(bull ? 'cheer' : 'wave');
-          scoreSummary(bull ? '🎯 Bullseye' : '🎯 Target');
-          K.after(1.6, shotOver);
-        }
-      });
-    }
-
-    if (bull) {
-      K.after(.8, function () { playBullseyeReplay(ch, flier.pos.clone(), slideDown); });
-    } else {
-      slideDown();
-    }
-  }
-
-  function landHay() {
-    var ch = flier.ch; endFlight();
-    flier.pos.y = HAY.top - ch.height * .05; ch.holder.position.copy(flier.pos);
-    ch.holder.rotation.set(0, 0, .25); ch.root.rotation.set(0, .4, 0);
-    hayBounce = 1; K.sfx('hay'); K.cam.shake(.2);
-    K.fx.burst(V(flier.pos.x, HAY.top, 0), [0xffd36b, 0xf5c04a, 0xffe7a0], 30, 6, 'straw');
-    addPoints(active, 15); K.fx.text('🌾 +15', flier.pos.clone().add(V(0, 1.6, 0)), '#ffd84a', 1.7);
-    shot('land'); ch.setState('wave');
-    K.after(.8, function () { ch.setState('cheer'); scoreSummary('🌾 Haystack'); });
-    K.after(2.2, shotOver);
-  }
-
-  function settle() {
-    var ch = flier.ch; flier.on = false; K.timeScale = 1;
-    ch.root.position.set(0, -ch.height / 2, 0);
-    shot('land');
-    var a0 = flier.spin, lie = Math.round((a0 - Math.PI / 2) / Math.PI) * Math.PI + Math.PI / 2;
-    var up = Math.round(lie / (Math.PI * 2)) * Math.PI * 2;
-    var x = flier.pos.x, y0 = flier.pos.y, t = 0, lieY = ch.height * .17;
-    K.sfx('thud'); K.fx.puff(V(x, .08, 0), 5, { color: 0xe9f6d8, size: .6 });
-    var fn = K.onFrame(function (dt) {
-      t += dt;
-      if (t < .25) { var u = K.ease(t / .25); ch.holder.rotation.z = lerp(a0, lie, u); ch.holder.position.set(x, lerp(y0, lieY, u), 0); return; }
-      if (t < .85) { ch.holder.rotation.z = lie; ch.holder.position.y = lieY; if (t < .45) ch.setState('sad'); return; }
-      if (t < 1.4) {
-        var g = K.ease((t - .85) / .55);
-        ch.holder.rotation.z = lerp(lie, up, g); ch.holder.position.y = lerp(lieY, ch.height / 2, g) + Math.sin(g * Math.PI) * .35; ch.setState('hop'); return;
-      }
-      K.offFrame(fn);
-      ch.holder.rotation.set(0, 0, 0); ch.holder.position.set(x, ch.height / 2, 0); ch.root.rotation.set(0, .3, 0);
-      ch.setState('dizzy'); flier.stars = K.dizzyStars(ch.holder, ch.height / 2 + .15);
-      K.after(.6, function () { scoreSummary(flier.hit.net ? '🥅 Net' : shotPoints ? '🎈 Balloons' : '💫 Landing!'); if (shotPoints) ch.setState('cheer'); });
-      K.after(1.9, function () { if (flier.stars) { flier.stars.remove(); flier.stars = null; } shotOver(); });
-    });
-  }
-
-  function shotOver() {
-    TEAMS[active].shots.push(shotPoints);
-    updateLiveScoreUI(active);
-    var ch = flier.ch;
-    K.fx.puff(ch.holder.position.clone().setY(.3), 10, { size: 1.1, color: 0xffffff });
-    placeHome(ch);
-    K.fx.puff(ch.home.clone().setY(.3), 10, { size: 1.1, color: 0xffffff });
-    refillBalloons();
-    nextTurn(true);
-  }
-
-  /* wrong answer: hop in, fizzle, plop out */
-  function wrongShot(ch) {
-    setPhase('oops');
-    shotPoints = 0;
-    hopIntoCannon(ch, function () {
-      fusing = true; K.sfx('fuse');
-      K.after(.9, function () {
-        fusing = false; K.sfx('pfft');
-        var mp = muzzlePos(aimAngle);
-        K.fx.puff(mp, 6, { color: 0x9c9c9c, size: 1, dir: V(.5, .6, 0), opacity: .8, life: 1.2 });
-        ch.holder.visible = true; ch.holder.scale.setScalar(1); ch.setState('tumble');
-        var t = 0, from = mp.clone(), to = V(mp.x + 1.6, ch.height / 2, 1.2);
-        var fn = K.onFrame(function (dt) {
-          t += dt; var u = clamp(t / .65, 0, 1);
-          ch.holder.position.set(lerp(from.x, to.x, u), lerp(from.y, to.y, u) + Math.sin(u * Math.PI) * .8, lerp(from.z, to.z, u));
-          ch.holder.rotation.z = -u * Math.PI * 2;
-          if (u >= 1) {
-            K.offFrame(fn); ch.holder.rotation.set(0, 0, 0); ch.root.rotation.set(0, .6, 0);
-            K.sfx('thud'); K.fx.puff(V(to.x, .1, to.z), 6, { size: .7 });
-            ch.setState('shrug'); K.ui.big('Pfft! Nice try!', 1.0, true);
-            K.after(1.1, function () { ch.setState('sad'); });
-            K.after(1.8, function () { flier.ch = ch; shotOver(); });
-          }
-        });
-      });
-    });
-  }
-
-  /* ---------------- game flow ---------------- */
-  var demoTurn = 0, DEMO_WRONG = [3];
-  function title() {
-    setPhase('title');
-    podiumGroup.visible = false;
-    syncCharactersForTeamCount();
-    shot('title');
-    K.cam.snap();
-
-    K.ui.clear();
-    var box = K.ui.add(K.el('div', 'endbox'));
-    box.innerHTML =
-      '<img class="logo" src="art/logo.png" alt="Monster Cannon 3D" onerror="this.remove()">' +
-      '<div class="say" style="--c:#ff5fa2;font-size:1.42rem">💥 Monster Cannon — answer right, aim the cannon, and BOOM!</div>';
-
-    // Quick Setup Row: Teams (2..4) and Rounds (2 / 3 / 5)
-    var setup = K.el('div', 'cn-setup');
-    var teamGrp = K.el('div', 'cn-setup-grp', '<span>👥 Teams:</span>');
-    [2, 3, 4].forEach(function (cnt) {
-      var b = K.el('button', 'cn-pill' + (cnt === nTeams ? ' on' : ''), String(cnt));
-      b.onclick = function () {
-        nTeams = cnt;
-        syncCharactersForTeamCount();
-        teamGrp.querySelectorAll('.cn-pill').forEach(function (el) { el.classList.remove('on'); });
-        b.classList.add('on');
-        box.querySelectorAll('.setpick, .clsbox').forEach(function (el) { el.remove(); });
-        K.cls.setupRow(box, nTeams);
-      };
-      teamGrp.appendChild(b);
-    });
-
-    var roundGrp = K.el('div', 'cn-setup-grp', '<span>🎯 Rounds:</span>');
-    [2, 3, 5].forEach(function (rc) {
-      var b = K.el('button', 'cn-pill' + (rc === ROUNDS ? ' on' : ''), rc + ' rounds');
-      b.onclick = function () {
-        ROUNDS = rc;
-        roundGrp.querySelectorAll('.cn-pill').forEach(function (el) { el.classList.remove('on'); });
-        b.classList.add('on');
-      };
-      roundGrp.appendChild(b);
-    });
-    setup.appendChild(teamGrp);
-    setup.appendChild(roundGrp);
-    box.appendChild(setup);
-
-    var rows = K.el('div', 'rows');
-    var howBtn = K.el('button', 'btn soft', '❓ How to Play');
-    howBtn.onclick = function () { openHowTo(); };
-    var go = K.el('button', 'btn green', '▶ Start Cannon!');
-    go.onclick = function () {
-      K.audio();
-      K.loadSounds(['countdown', 'go', 'correct', 'wrong', 'boom', 'pop', 'fuse', 'pfft', 'thud', 'hay', 'bullseye', 'load', 'boing', 'whoosh', 'win', 'hello']);
-      K.cls.assign(TEAMS);
-      start();
-    };
-    rows.appendChild(howBtn);
-    rows.appendChild(go);
-    box.appendChild(rows);
-    K.cls.setupRow(box, nTeams);
-    K.ui.topButtons();
-    addHelpTopButton();
-
-    chars.slice(0, nTeams).forEach(function (c, i) {
-      K.after(.35 + i * .4, function () {
-        if (phase === 'title') {
-          c.setState('hello');
-          K.after(1.3, function () { if (phase === 'title') c.setState('idle'); });
-        }
-      });
-    });
-
-    var seenHowTo = false;
-    try { seenHowTo = localStorage.getItem('eaa_howto_cannon3d_v1') === '1'; } catch (e) {}
-    if (K.Q.has('howto') || (!seenHowTo && !K.DEMO && !K.CAPTURE)) {
-      K.after(.35, function () { if (phase === 'title') openHowTo(); });
-    }
-    if (K.DEMO) K.after(2.0, function () { if (phase === 'title') go.onclick(); });
-  }
-
-  function start() {
-    K.ui.clear();
-    K.ui.topButtons();
-    addHelpTopButton();
-    hud = K.ui.teamBar(TEAMS, function (t) { return t.score + ' 🎯'; });
-    hud.refresh(-1);
-    turnBannerEl = K.ui.add(K.el('div', 'cn-turn-banner'));
-    turnBannerEl.style.display = 'none';
-    liveBoardEl = K.ui.add(K.el('div', 'cn-live-board'));
-    updateLiveScoreUI(-1);
-
-    setPhase('intro');
-    shot('intro');
-    K.sfx('whoosh');
-    K.after(1.6, function () { active = 0; nextTurn(false); });
-  }
-
-  function nextTurn(advance) {
-    if (advance) {
-      active++;
-      if (active >= TEAMS.length) { active = 0; round++; }
-      if (round > ROUNDS) return finish();
-    }
-    setPhase('turn');
-    hud.refresh(active);
-    wind = round === 1 && active < 2 ? 0 : Math.round(rnd(-2.6, 2.6) * 10) / 10;
-    if (Math.abs(wind) < .4) wind = 0;
-    showWind();
-    updateTurnUI(active, 'Round ' + round + ' of ' + ROUNDS + ' · Answer to load cannon!');
-    updateLiveScoreUI(active);
-
-    var ch = chars[active], team = TEAMS[active];
-    shot('lineup');
-    ch.setState('hello');
-    K.sfx('hello');
-    K.after(.9, function () {
-      ch.setState('idle');
-      setPhase('question');
-      demoTurn++;
-      K.ui.ask(QS.next(), team, {
-        prompt: 'answer right to load the giant cannon!',
-        demoRight: DEMO_WRONG.indexOf(demoTurn) < 0,
-        onAnswer: function (ok) {
-          if (!ok) return wrongShot(ch);
-          K.sfx('correct');
-          hopIntoCannon(ch, function () { aimPhase(team, ch); });
-        }
-      });
-    });
-  }
-
-  /* ---------------- 3-step 3D victory podium & end screen ---------------- */
-  function buildPodium3D(order) {
-    while (podiumGroup.children.length) podiumGroup.remove(podiumGroup.children[0]);
-    podiumGroup.visible = true;
-    var stepSpecs = [
-      { rank: 1, x: -4.0, h: 1.25, w: 1.9, col: 0xffd84a },
-      { rank: 2, x: -6.1, h: 0.86, w: 1.7, col: 0xdce4f2 },
-      { rank: 3, x: -1.9, h: 0.62, w: 1.7, col: 0xf0a868 },
-      { rank: 4, x:  0.1, h: 0.40, w: 1.5, col: 0xe9e2f5 }
-    ];
-    var pz = 6.0;
-    order.forEach(function (ti, rk) {
-      var sp = stepSpecs[rk] || stepSpecs[3], t = TEAMS[ti], ch = chars[ti];
-      var g = new T3.Group();
-      g.position.set(sp.x, 0, pz);
-      podiumGroup.add(g);
-
-      var baseCyl = new T3.Mesh(
-        new T3.CylinderGeometry(sp.w * .52, sp.w * .58, sp.h, 28),
-        new T3.MeshStandardMaterial({ color: sp.col, roughness: .32, metalness: .08 })
-      );
-      baseCyl.position.y = sp.h / 2;
-      baseCyl.castShadow = true;
-      baseCyl.receiveShadow = true;
-      g.add(baseCyl);
-
-      var cap = new T3.Mesh(
-        new T3.CylinderGeometry(sp.w * .55, sp.w * .55, .1, 28),
-        new T3.MeshStandardMaterial({ color: t.hex, roughness: .3 })
-      );
-      cap.position.y = sp.h + .04;
-      g.add(cap);
-
-      var numLab = K.label('#' + sp.rank + ' ' + t.name, t.c);
-      numLab.scale.multiplyScalar(.66);
-      numLab.position.set(0, sp.h + 2.05, 0);
-      g.add(numLab);
-
-      if (rk === 0 && trophyModel) {
-        var tr = trophyModel.clone(true);
-        tr.scale.multiplyScalar(.52);
-        tr.position.set(.58, sp.h + .05, .34);
-        g.add(tr);
-      }
-
-      if (ch) {
-        ch.holder.position.set(sp.x - (rk === 0 ? .12 : 0), sp.h + ch.height / 2 + .06, pz);
-        ch.holder.rotation.set(0, 0, 0);
-        ch.root.rotation.set(0, 0, 0);
-        ch.ring.visible = false;
-        ch.setState(rk === 0 ? 'cheer' : 'clap');
-      }
-    });
-  }
-
-  function finish() {
-    setPhase('end');
-    updateTurnUI(-1);
-    if (turnBannerEl) turnBannerEl.remove();
-    if (liveBoardEl) liveBoardEl.remove();
-    if (windBox) { windBox.remove(); windBox = null; }
-    hud.refresh(-1);
-
-    var order = TEAMS.map(function (t, i) { return i; }).sort(function (a, b) {
-      return TEAMS[b].score - TEAMS[a].score;
-    });
-    buildPodium3D(order);
-    shot('podium');
-    K.sfx('win');
-    K.cam.shake(.2);
-    K.fx.confetti(V(-4, 4.4, 6), 220);
-    K.after(.7, function () { K.fx.confetti(V(-5, 4.8, 5), 140); });
-
-    var w = TEAMS[order[0]];
-    K.ui.big('🏆 Team ' + w.name + ' Wins!', 2.3, true);
-    K.say('Team ' + w.name + ' wins Monster Cannon!');
-
-    K.after(2.4, function () {
-      var box = K.ui.add(K.el('div', 'endbox'));
-      var rowsHtml = order.map(function (ti, k) {
-        var t = TEAMS[ti];
-        var shotsHtml = t.shots.map(function (v) {
-          return '<span class="cn-rcell' + (v >= 50 ? ' bull' : '') + '">' + v + '</span>';
-        }).join('');
-        return '<div class="cn-table-row" style="--c:' + t.c + '">' +
-          '<span class="cn-rank">' + (k + 1) + '</span>' +
-          '<b>' + t.name + '</b>' +
-          '<div class="cn-rshots">' + shotsHtml + '</div>' +
-          '<i>' + t.score + ' 🎯</i>' +
-        '</div>';
-      }).join('');
-
-      box.innerHTML =
-        '<div class="say" style="--c:' + w.c + ';font-size:1.42rem">🏆 Team ' + w.name + ' Wins Monster Cannon!</div>' +
-        '<div class="cn-table">' + rowsHtml + '</div>';
-
-      var rows = K.el('div', 'rows');
-      var again = K.el('button', 'btn green', '↻ Play again');
-      again.onclick = function () { location.reload(); };
-      var back = K.el('button', 'btn soft', '🏠 Back to games');
-      back.onclick = function () { location.href = '../index.html'; };
-      rows.appendChild(again);
-      rows.appendChild(back);
-      box.appendChild(rows);
-      K.cls.pointsPanel(box, TEAMS, { game: 'cannon3d', title: 'Monster Cannon 3D' });
-    });
-  }
-
-  /* ---------------- boot ---------------- */
-  var loading = K.ui.add(K.el('div', 'loading', '<span>Loading the giant cannon…</span>'));
-  spawnBalloons();
-  var worldP = IN_WORLD ? K.World.load({ zone: 'cannon' }).catch(function (e) { console.warn('world', e); K.world.ground(0x8fdc7a); }) : Promise.resolve();
-  var arP = K.tryGLB('models/games-arch.glb').then(function (g) { return g ? K.fitModel(g.scene, 5.8) : null; });
-  var fpP = K.tryGLB('models/team-flagpole.glb').then(function (g) { return g ? K.fitModel(g.scene, 4.0) : null; });
-  var trP = K.tryGLB('models/trophy.glb').then(function (g) { return g ? K.fitModel(g.scene, 1.35) : null; });
-
-  Promise.all([worldP, arP, fpP, trP].concat(ALL_TEAMS.map(function (t, i) {
-    return K.makeCharacter(t, { kidsOnly: true, kid: i % 2 === 0 ? 'boy' : 'girl', kidHeight: 1.45 });
-  }))).then(function (res) {
-    archModel = res[1];
-    flagpoleModel = res[2];
-    trophyModel = res[3];
-    placeDecorModels();
-
-    res.slice(4).forEach(function (ch, i) {
-      chars.push(ch);
-      makeHolder(ch, i);
-    });
-    syncCharactersForTeamCount();
-    loading.remove();
-    title();
+  /* =========================================================================
+   * 11. BOOTSTRAP
+   * ========================================================================= */
+  loadAllAssets().then(function () {
+    buildCoveWorld();
+    showTitleScreen();
     K.start();
-  }).catch(function (e) {
-    loading.innerHTML = '<span>Could not load 😢<br><small>' + e.message + '</small></span>';
-    console.error(e);
+  }).catch(function (err) {
+    console.error('[Cannon3D] Boot failed:', err);
   });
 })();
