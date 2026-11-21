@@ -760,7 +760,6 @@
     shot('team', active);
     ch.setState('bombhold');
     K.sfx('hello');
-    K.ui.toast('Team ' + team.name + ' · ' + (maxBoxesToOpen - opened()) + ' boxes left', 1.5, team.c);
 
     K.after(.9, function () {
       ch.setState('idle');

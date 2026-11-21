@@ -6,8 +6,24 @@
   'use strict';
   var KEY = 'eaa_lib_curate';
   var st = { hidden: {}, star: {}, restored: {} };
-  // Hidden for everyone from 17 Oct 2026 (teacher: focus on the new Tea Party work). Press "restore" on one to see it again; nothing is deleted.
-  var DEFAULT_HIDDEN = ['alice-cards-4a', 'alice-cards-4b', 'alice-quest', 'story-engine-alice', 'alice-homework', 'wonderland-lesson1', 'wonderland-lesson2', 'wonderland-lesson3', 'wonderland-quiz-briefing'];
+  // Curated smartboard roster: hides legacy Alice, copyrighted characters, dark-obsidian screens, and superseded 2D duplicates.
+  // Press "restore" on any item in Clean up to see it again; nothing is ever deleted from disk.
+  var DEFAULT_HIDDEN = [
+    'alice-cards-4a', 'alice-cards-4b', 'alice-quest', 'story-engine-alice', 'alice-homework',
+    'wonderland-lesson1', 'wonderland-lesson2', 'wonderland-lesson3', 'wonderland-quiz-briefing',
+    // Copyrighted character screens (Pokemon, Minecraft, Among Us, Sonic, Spider-Man/Bad Guys)
+    'pokemon', 'biome-crafter', 'unit3-money-mission', 'ninja-trials',
+    'watch-answer-spider-verse', 'watch-answer-bad-guys', 'watch-answer-bean-g3',
+    // Old dark-obsidian / SVG-blob / single-lesson games superseded by 3D Adventure Park & Game Maker 3.0
+    'cat-vs-dog', 'dino-arena', 'dino-dig', 'twin-gates', 'alley-fling', 'alley-fling-u3',
+    'shop-counter-g3-u3', 'talk-show', 'monster-day', 'firefighter', 'freeze-game', 'u1-rev',
+    // Duplicate Unit 1–4 2D boards/races/arcades now unified inside Game Maker 3.0 & 3D Park
+    'rev-u14-g3', 'rev-u14-g4', 'board-u3-g3-bear', 'board-u3-g4-money',
+    'bamboozle-g3-u1', 'bamboozle-g3-u2', 'bamboozle-g3-u3',
+    'bamboozle-g4-u1', 'bamboozle-g4-u2', 'bamboozle-g4-u3',
+    'arcade-g3-u2', 'arcade-g3-u3', 'arcade-g4-u2', 'arcade-g4-u3',
+    'race-g3-u2', 'race-g3-u3', 'race-g4-u2', 'race-g4-u3'
+  ];
   function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && typeof s === 'object') { st.hidden = s.hidden || {}; st.star = s.star || {}; st.restored = s.restored || {}; } } catch (e) { /* storage may be blocked */ } }
   function persist() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { /* storage may be blocked */ } }
   function known(id) { return (root.GAMES_DATA || []).some(function (g) { return g && g.id === id; }); }
@@ -20,7 +36,7 @@
   var ar = { back: {} };
   try { var a0 = JSON.parse(localStorage.getItem(AKEY) || 'null'); if (a0 && a0.back) ar.back = a0.back; } catch (e) { /* storage may be blocked */ }
   function persistAr() { try { localStorage.setItem(AKEY, JSON.stringify(ar)); } catch (e) { /* storage may be blocked */ } }
-  var KEEP = /^(karaoke-stage|alley-fling.*|watch-answer.*|simon-says.*|school-subjects-challenge|classroom-instructions-challenge|dino-.*|biome-crafter|gamemaker-.*|smart-board|magic-book|practice-island.*)$/;
+  var KEEP = /^(karaoke-stage|simon-says.*|telephone-pictionary|school-subjects-challenge|classroom-instructions-challenge|gamemaker-.*|games-collection|time-train|treasure-planet-3d|sprint-race-3d|monster-cannon-3d|penalty-shootout-3d|bomb-or-bonus-3d|keep-or-give-3d|tug-of-war-3d|bowling-3d|board-game-3d|smart-board|magic-book|practice-island.*)$/;
   var OLD_IDS = /^(week4-.*|city-mouse|wind-and-sun|forest-rangers-g4|swallow-gift-g4|first-harvest-g3|good-ideas-lab|inventor-lab|clara-inventor|inventor-forge|brain-quit|brain-explorers|u[1-4]-.*|rev-.*|lingo-g3-u3-review|board-u3-.*|revision-quest-.*|bamboozle-.*-u[1-4]|arcade-.*-u[1-4]|race-.*-u[1-4]|shop-counter-.*|print-g[34]-u[1-4]|worksheet-store-.*-u12|quiz-g[34]-u14|speak-g4-u4|unit[1-4].*|money-l\d-.*|changing-l\d-.*|bear-l\d-.*|ice-l\d-.*|poem-l\d-.*|cars-l\d-.*)$/;
   function isOld(g) {
     if (!g || KEEP.test(g.id)) return false;

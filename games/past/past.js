@@ -17,7 +17,7 @@
   ];
 
   var S = {
-    packId: Kit.param('pack') || Kit.pref('tt_pack') || 'g3-u5-time-train',
+    packId: Kit.param('pack') || Kit.param('set') || Kit.pref('tt_pack') || 'g3-u5-time-train',
     stationMode: Kit.pref('tt_station') || 'all', // 'all' | '1' | '2' | '3'
     perStation: Kit.pref('tt_per') || 5,
     timerSec: Kit.pref('tt_timer') == null ? 0 : +Kit.pref('tt_timer'),
@@ -100,7 +100,7 @@
     if (Kit.music) Kit.music.start('sunny');
 
     Kit.sentences.all().then(function (packs) {
-      var cur = packs.filter(function (p) { return p.id === S.packId; })[0] || packs[0];
+      var cur = (Kit.matchPack ? Kit.matchPack(packs, S.packId) : packs.filter(function (p) { return p.id === S.packId; })[0]) || packs[0];
       S.packId = cur.id;
       app.innerHTML = '';
       app.className = 'app setup-screen';

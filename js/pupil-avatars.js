@@ -467,6 +467,66 @@
       }).catch(function () { /* faces fall back to the built-in pictures */ });
     }));
   }
+  // Private 3D Pupil Heads (.glb): stored ONLY in teacher-only table "classes" (hidden System rows),
+  // cached strictly in memory (never written to localStorage/IndexedDB or public git).
+  var HEAD3D_ROW_PREFIX = 'class-pupil-avatar-head3d-';
+  var head3dMem = {}; // studentId -> Promise<ArrayBuffer|null>
+  function decodeDataUrlToArrayBuffer(dataUrl) {
+    try {
+      var s = String(dataUrl || '');
+      var idx = s.indexOf('base64,');
+      if (idx < 0) return null;
+      var bin = root.atob(s.slice(idx + 7));
+      var len = bin.length;
+      var bytes = new Uint8Array(len);
+      for (var i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+      return bytes.buffer;
+    } catch (e) { return null; }
+  }
+  function getHead3d(studentId) {
+    if (!studentId) return Promise.resolve(null);
+    var id = String(studentId).toLowerCase();
+    if (head3dMem[id]) return head3dMem[id];
+    var sb = client();
+    if (!sb) return Promise.resolve(null);
+    head3dMem[id] = sb.from('classes').select('description').eq('id', HEAD3D_ROW_PREFIX + id).maybeSingle().then(function (r) {
+      if (r.error || !r.data || !r.data.description) return null;
+      return decodeDataUrlToArrayBuffer(r.data.description);
+    }).catch(function () { return null; });
+    return head3dMem[id];
+  }
+  function preloadHeads3d(ids) {
+    var sb = client();
+    if (!sb || !Array.isArray(ids) || !ids.length) return Promise.resolve({});
+    var want = [];
+    ids.forEach(function (x) {
+      var id = String(x || '').toLowerCase();
+      if (id && !head3dMem[id]) want.push(id);
+    });
+    if (!want.length) return Promise.resolve({});
+    var parts = [];
+    for (var i = 0; i < want.length; i += 10) parts.push(want.slice(i, i + 10));
+    var resolvers = {};
+    want.forEach(function (id) {
+      head3dMem[id] = new Promise(function (res) { resolvers[id] = res; });
+    });
+    return Promise.all(parts.map(function (part) {
+      return sb.from('classes').select('id,description').in('id', part.map(function (id) { return HEAD3D_ROW_PREFIX + id; })).then(function (r) {
+        var found = {};
+        (r.data || []).forEach(function (row) {
+          if (row && row.id && row.description) {
+            var sid = row.id.slice(HEAD3D_ROW_PREFIX.length);
+            var buf = decodeDataUrlToArrayBuffer(row.description);
+            found[sid] = buf;
+            if (resolvers[sid]) resolvers[sid](buf);
+          }
+        });
+        part.forEach(function (sid) { if (!found[sid] && resolvers[sid]) resolvers[sid](null); });
+      }).catch(function () {
+        part.forEach(function (sid) { if (resolvers[sid]) resolvers[sid](null); });
+      });
+    }));
+  }
   function writeSyncRow() {
     saveLocal();
     var sb = client(); if (!sb) return Promise.resolve();
@@ -3036,6 +3096,7 @@
     return '<h2>Teacher check</h2><p class="s">Approve an avatar to put it on the Class Board. Add each pupil\'s cartoon face from Gemini with “Face”, or switch between Free Dress-Up and Earned Mode below.</p>' +
       '<div style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">' +
       '<label class="pa-go" style="display:inline-block;margin:0;cursor:pointer">📁 Upload all heads (select PNGs in heads\\)<input type="file" multiple accept="image/png,image/webp,image/jpeg" style="display:none" onchange="PupilAvatars._bulkHeads(this)"></label>' +
+      '<label class="pa-go" style="display:inline-block;margin:0;cursor:pointer;background:linear-gradient(135deg,#4f9dff,#2563eb);color:#fff" title="Upload private 3D .glb pupil heads (named student-*.glb) directly to teacher-only Supabase">🧊 Upload 3D Heads (.glb)<input type="file" multiple accept=".glb,model/gltf-binary" style="display:none" onchange="PupilAvatars._bulkHeads3d(this)"></label>' +
       '<button type="button" class="pa-go ' + (isEarned ? 'gold' : 'b') + '" style="margin:0" onclick="PupilAvatars._toggleLockMode()" title="Choose whether pupils can wear all 124 items freely or unlock special items by Monster Level &amp; Shop">' +
         (isEarned ? '🪙 Earned Mode (Level &amp; Shop Unlocks)' : '🔓 Free Dress-Up (All 124 Open)') +
       '</button>' +
@@ -3399,6 +3460,58 @@
         toast('Uploaded and activated ' + count + ' pupil heads!');
         draw();
         if (on()) rerender();
+      });
+    },
+    getHead3d: getHead3d,
+    preloadHeads3d: preloadHeads3d,
+    _bulkHeads3d: function (input) {
+      var files = input && input.files ? Array.prototype.slice.call(input.files) : [];
+      if (!files.length) return;
+      var sb = client();
+      if (!sb) { toast('Sign in as teacher first so 3D heads save privately to Supabase.'); return; }
+      var valid = files.filter(function (f) { return /^(student-[a-z0-9-]+)\.glb$/i.test(String(f.name || '')); });
+      if (!valid.length) { toast('Select student-*.glb files (from _tmp/pupil-heads-3d/glb/).'); return; }
+      toast('Uploading ' + valid.length + ' private 3D heads…');
+      var done = 0, failed = 0;
+      function fileToDataUrl(f) {
+        return new Promise(function (res, rej) {
+          var fr = new FileReader();
+          fr.onload = function () {
+            var r = String(fr.result || '');
+            var idx = r.indexOf('base64,');
+            res(idx >= 0 ? ('data:model/gltf-binary;base64,' + r.slice(idx + 7)) : r);
+          };
+          fr.onerror = rej;
+          fr.readAsDataURL(f);
+        });
+      }
+      var chain = Promise.resolve();
+      for (var i = 0; i < valid.length; i += 4) {
+        (function (batch) {
+          chain = chain.then(function () {
+            return Promise.all(batch.map(function (f) {
+              var m = String(f.name).match(/^(student-[a-z0-9-]+)\.glb$/i);
+              var sid = m[1].toLowerCase();
+              return Promise.all([fileToDataUrl(f), f.arrayBuffer()]).then(function (pair) {
+                head3dMem[sid] = Promise.resolve(pair[1]);
+                return hiddenRow(HEAD3D_ROW_PREFIX + sid, 'Pupil 3D Head', pair[0]);
+              });
+            })).then(function (rows) {
+              return sb.from('classes').upsert(rows, { onConflict: 'id' }).then(function (r) {
+                if (r.error) throw new Error(r.error.message || '3D head save failed');
+                done += rows.length;
+                toast('Uploaded ' + done + ' / ' + valid.length + ' private 3D heads…');
+              });
+            }).catch(function (err) {
+              failed += batch.length;
+              console.warn('3D head batch failed', err);
+            });
+          });
+        })(valid.slice(i, i + 4));
+      }
+      chain.then(function () {
+        if (failed > 0) toast('Uploaded ' + done + ' 3D heads (' + failed + ' failed — check teacher sign-in).');
+        else toast('✅ All ' + done + ' private 3D pupil heads uploaded to Supabase!');
       });
     },
     _compose: compose

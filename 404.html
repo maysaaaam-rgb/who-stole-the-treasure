@@ -15,8 +15,8 @@
       font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     }
     body {
-      background: radial-gradient(circle at top, #1e293b, #0f172a 75%);
-      color: #ffffff;
+      background: linear-gradient(180deg, #78c4ff 0%, #c8eaff 48%, #fff8ec 100%);
+      color: #2b1d40;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -25,14 +25,14 @@
       text-align: center;
     }
     .error-card {
-      background: rgba(30, 41, 59, 0.85);
-      border: 2px solid rgba(245, 158, 11, 0.4);
-      border-radius: 24px;
-      max-width: 620px;
+      background: #ffffff;
+      border: 4px solid #4f9dff;
+      border-bottom: 8px solid #2874d6;
+      border-radius: 28px;
+      max-width: 640px;
       width: 100%;
       padding: 40px 32px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 44px rgba(43, 29, 64, 0.14);
     }
     .badge-icon {
       font-size: 4rem;
@@ -45,24 +45,24 @@
       50% { transform: scale(1.08); }
     }
     h1 {
-      font-size: 1.8rem;
+      font-size: 1.85rem;
       font-weight: 900;
-      color: #f59e0b;
+      color: #2b1d40;
       margin-bottom: 10px;
     }
     p {
       font-size: 1.05rem;
-      color: #cbd5e1;
+      color: #6b5a84;
       line-height: 1.6;
       margin-bottom: 24px;
     }
     .redirect-status {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 12px;
+      background: #fff8ec;
+      border: 3px solid #ffb320;
+      border-radius: 16px;
       padding: 12px 18px;
       font-size: 0.95rem;
-      color: #38bdf8;
+      color: #2b1d40;
       font-weight: 800;
       margin-bottom: 24px;
     }
@@ -77,27 +77,32 @@
       justify-content: center;
       gap: 10px;
       padding: 14px 18px;
-      border-radius: 12px;
+      border-radius: 16px;
       font-size: 0.95rem;
       font-weight: 800;
       text-decoration: none;
-      transition: all 0.2s ease;
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .link-btn:active {
+      transform: translateY(4px);
     }
     .btn-primary {
-      background: #f59e0b;
-      color: #000000;
+      background: linear-gradient(180deg, #ff7eb6, #ff5fa2);
+      color: #ffffff;
+      border: 3px solid #ffffff;
+      border-bottom: 5px solid #d43879;
     }
     .btn-primary:hover {
-      background: #d97706;
       transform: translateY(-2px);
     }
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.1);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #fff8ec;
+      color: #2b1d40;
+      border: 2.5px solid #e7dbff;
+      border-bottom: 5px solid #c9b5f2;
     }
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: #f5eeff;
       transform: translateY(-2px);
     }
   </style>
@@ -148,7 +153,37 @@
       let targetUrl = null;
       let targetName = '';
 
-      if (pathname.includes('quiz-briefing') || pathname.includes('briefing') || pathname.includes('master-quest') || pathname.includes('pre-quiz')) {
+      if (pathname.includes('game-maker') || pathname.includes('gamemaker')) {
+        targetUrl = basePrefix + 'game-maker/index.html';
+        targetName = '🎮 Game Maker 3.0 · 39 Smartboard Games';
+      } else if (pathname.includes('treasure-planet') || pathname.includes('island/planet') || pathname.endsWith('/planet') || pathname.endsWith('/planet.html')) {
+        targetUrl = basePrefix + 'island/planet.html';
+        targetName = '🌍 Treasure Island · 3D Tiny-Planet Quest';
+      } else if (pathname.includes('race3d') || pathname.includes('sprint-race-3d')) {
+        targetUrl = basePrefix + 'games/race3d/index.html';
+        targetName = '🏁 3D Sprint Race · Adventure Park';
+      } else if (pathname.includes('cannon3d') || pathname.includes('monster-cannon-3d')) {
+        targetUrl = basePrefix + 'games/cannon3d/index.html';
+        targetName = '🎯 3D Monster Cannon · Adventure Park';
+      } else if (pathname.includes('penalty3d') || pathname.includes('penalty-shootout-3d')) {
+        targetUrl = basePrefix + 'games/penalty3d/index.html';
+        targetName = '⚽ 3D Penalty Shootout · Adventure Park';
+      } else if (pathname.includes('keep-or-give-3d') || pathname.includes('keepgive')) {
+        targetUrl = basePrefix + 'games/bomb3d/index.html?mode=keepgive';
+        targetName = '🎁 3D Keep or Give · Bluff Show';
+      } else if (pathname.includes('bomb3d') || pathname.includes('bomb-or-bonus-3d')) {
+        targetUrl = basePrefix + 'games/bomb3d/index.html';
+        targetName = '💣 3D Bomb or Bonus · Mystery Chests';
+      } else if (pathname.includes('tug3d') || pathname.includes('tug-of-war-3d')) {
+        targetUrl = basePrefix + 'games/tug3d/index.html';
+        targetName = '🪢 3D Tug of War · Class Pull';
+      } else if (pathname.includes('bowling3d') || pathname.includes('bowling-3d')) {
+        targetUrl = basePrefix + 'games/bowling3d/index.html';
+        targetName = '🎳 3D Monster Bowling · Park Alley';
+      } else if (pathname.includes('board3d') || pathname.includes('board-game-3d')) {
+        targetUrl = basePrefix + 'games/board3d/index.html';
+        targetName = '🎲 3D Park Board Game · 24-Tile Trail';
+      } else if (pathname.includes('quiz-briefing') || pathname.includes('briefing') || pathname.includes('master-quest') || pathname.includes('pre-quiz')) {
         targetUrl = basePrefix + 'quiz-briefing/index.html';
         targetName = 'Unit 1 Master Quest: Briefing & Timer HUD';
       } else if (pathname.includes('wonderland-story') || pathname.includes('we-are-the-story') || pathname.includes('lesson3') || pathname.includes('lesson-3')) {

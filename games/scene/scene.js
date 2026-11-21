@@ -52,10 +52,10 @@
 
   var S = {
     phase: 'setup',
-    packId: Kit.pref('sc_pack') || '',
+    packId: Kit.param('set') || Kit.param('pack') || Kit.pref('sc_pack') || '',
     pack: null,
     teams: +(Kit.pref('teams') || 2),
-    classId: Kit.pref('classId') || '',
+    classId: Kit.param('class') || (Kit.classroom ? Kit.classroom.defaultClassId() : '') || Kit.pref('classId') || '',
     rounds: +(Kit.pref('sc_rounds') || 8),
     teamsData: [],
     turn: 0,
@@ -100,7 +100,7 @@
     app.innerHTML = '';
 
     Kit.sets.all().then(function (sets) {
-      var cur = sets.filter(function (s) { return s.id === S.packId; })[0] || sets[0];
+      var cur = (Kit.matchPack ? Kit.matchPack(sets, S.packId) : sets.filter(function (s) { return s.id === S.packId; })[0]) || sets[0];
       S.packId = cur.id;
       S.pack = cur;
 

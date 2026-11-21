@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#78c4ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="icon" type="image/png" sizes="192x192" href="art/real/icon-192.png">
+  <title>Treasure Island · Chapter 1 (3D Planet)</title>
+  <!-- Offline local stylesheets only (zero CDN) -->
+  <link rel="stylesheet" href="css/games.css?v=rg-20261114d">
+  <link rel="stylesheet" href="css/chapter1.css?v=rg-20261114d">
+  <link rel="stylesheet" href="css/bright.css?v=bp-20261119e">
+  <link rel="stylesheet" href="planet/planet.css?v=20261121b">
+</head>
+<body>
+  <canvas id="pl-canvas" aria-label="Treasure Island 3D Planet"></canvas>
+
+  <!-- Loading Screen (Pirate Flag + Progress Bar) -->
+  <div id="pl-load" role="status" aria-live="polite">
+    <div class="pl-load-card">
+      <div class="pl-load-flag" aria-hidden="true">🏴‍☠️</div>
+      <h1 class="pl-load-title">Treasure Island · Chapter 1</h1>
+      <p class="pl-load-sub" id="pl-load-sub">Sailing to Admiral Benbow Planet…</p>
+      <div class="pl-load-track"><div class="pl-load-fill" id="pl-load-fill"></div></div>
+      <div class="pl-load-pct" id="pl-load-pct">Loading 3D world…</div>
+    </div>
+  </div>
+
+  <!-- Bright Adventure Park Top HUD -->
+  <div id="pl-hud-top">
+    <div class="pl-hud-left">
+      <button type="button" class="pl-btn" id="pl-back-btn" title="Back to Sea Chart">🗺️ Sea Chart</button>
+      <div class="pl-title-pill">
+        <span>🏴‍☠️ Treasure Island</span>
+        <small>· Chapter 1</small>
+      </div>
+    </div>
+    <div class="pl-hud-right">
+      <div class="pl-stamps-bar" id="pl-stamps" aria-label="5 Chapter 1 Stamps">
+        <button type="button" class="pl-stamp-slot next" id="ch1-stamp-slot-1" data-stop="1" aria-label="Stop 1"><span>1</span></button>
+        <button type="button" class="pl-stamp-slot" id="ch1-stamp-slot-2" data-stop="2" aria-label="Stop 2"><span>2</span></button>
+        <button type="button" class="pl-stamp-slot" id="ch1-stamp-slot-3" data-stop="3" aria-label="Stop 3"><span>3</span></button>
+        <button type="button" class="pl-stamp-slot" id="ch1-stamp-slot-4" data-stop="4" aria-label="Stop 4"><span>4</span></button>
+        <button type="button" class="pl-stamp-slot" id="ch1-stamp-slot-5" data-stop="5" aria-label="Stop 5"><span>5</span></button>
+        <span class="pl-stamp-count" id="pl-stamp-count">0/5</span>
+      </div>
+      <button type="button" class="pl-btn icon-only" id="pl-mute-btn" aria-label="Sound On or Off" title="Sound On/Off">🔊</button>
+      <button type="button" class="pl-btn icon-only" id="pl-fs-btn" aria-label="Full Screen" title="Full Screen">⛶</button>
+    </div>
+  </div>
+
+  <!-- Next-Stop Compass Pill & Off-Screen Edge Arrow -->
+  <button type="button" id="pl-goal-pill" title="Walk toward the next stop">
+    <span>🦜</span>
+    <span id="pl-goal-text">Next: Stop 1 · Benbow Inn</span>
+  </button>
+  <div id="pl-edge-arrow" aria-hidden="true"><div class="pl-arrow-tri"></div></div>
+
+  <!-- Emote Speech Toast -->
+  <div id="pl-emote-toast" aria-live="polite"></div>
+
+  <!-- In-World Character Speech Bubble (opens before Chapter 1 mini-game) -->
+  <div id="pl-bubble" role="dialog" aria-label="Character Message">
+    <div class="pl-bubble-head">
+      <span class="pl-bubble-speaker" id="pl-bubble-speaker">🐆 Benbow</span>
+      <span class="pl-bubble-stoptag" id="pl-bubble-stoptag">Stop 1 of 5</span>
+    </div>
+    <p class="pl-bubble-text" id="pl-bubble-text"></p>
+    <div class="pl-bubble-actions">
+      <button type="button" class="pl-btn" id="pl-bubble-hear">🔊 Listen</button>
+      <button type="button" class="pl-btn" id="pl-bubble-close">Later</button>
+      <button type="button" class="pl-btn green" id="pl-bubble-play">Play Clue! ▶</button>
+    </div>
+  </div>
+
+  <!-- Virtual Thumbstick (bottom-left) -->
+  <div id="pl-joy" aria-label="Move Joystick"><div id="pl-joy-knob"></div></div>
+
+  <!-- Bottom-Right Action Pad: Run + Emote Wheel -->
+  <div id="pl-right-pad">
+    <button type="button" class="pl-btn pink" id="pl-emote-btn" aria-label="Emotes" title="Emotes">😊</button>
+    <button type="button" class="pl-btn blue" id="pl-run-btn" aria-label="Run" title="Hold or tap to run">
+      <span class="pl-ico">🏃</span>
+      <span>Run</span>
+    </button>
+  </div>
+
+  <!-- Safe Emote Wheel (no typing, no names, English-only fixed bubbles) -->
+  <div id="pl-emote-menu" role="menu" aria-label="Emotes and Phrases">
+    <div class="pl-emote-row">
+      <button type="button" class="pl-emote-chip act" data-emote="wave">👋 Wave</button>
+      <button type="button" class="pl-emote-chip act" data-emote="cheer">🎉 Cheer</button>
+      <button type="button" class="pl-emote-chip act" data-emote="thumbs">👍 Nice!</button>
+    </div>
+    <div class="pl-emote-say-grid">
+      <button type="button" class="pl-emote-chip" data-say="Hello!">Hello!</button>
+      <button type="button" class="pl-emote-chip" data-say="Good job!">Good job!</button>
+      <button type="button" class="pl-emote-chip" data-say="Follow me!">Follow me!</button>
+      <button type="button" class="pl-emote-chip" data-say="Let's go!">Let's go!</button>
+      <button type="button" class="pl-emote-chip" data-say="Thank you!">Thank you!</button>
+    </div>
+  </div>
+
+  <!-- Low-FPS Friendly Fallback Banner -->
+  <div id="pl-lowfps" role="alert">
+    <span>🐢 Running slow?</span>
+    <a class="pl-btn yellow" id="pl-simple-link" href="world.html">Play the simple version →</a>
+    <button type="button" class="pl-btn" id="pl-lowfps-hide">✕</button>
+  </div>
+
+  <!-- Messenger-Style Rolling Credits Over Orbiting Planet -->
+  <div id="pl-credits" role="dialog" aria-label="Chapter 1 Credits">
+    <div class="pl-credits-roll" id="pl-credits-roll">
+      <h1>🏴‍☠️ Treasure Island · Chapter 1</h1>
+      <p>All 5 Harbour Clues Solved &amp; Map Piece #1 Found!</p>
+      <div class="pl-team-pills">
+        <span class="pl-team-pill pink">🔥 Team Pink</span>
+        <span class="pl-team-pill blue">💧 Team Blue</span>
+        <span class="pl-team-pill yellow">⚡ Team Yellow</span>
+        <span class="pl-team-pill green">🌿 Team Green</span>
+      </div>
+      <h2>English Adventure Academy</h2>
+      <p>Made by Mr Maysam's English Adventure Academy</p>
+      <p>Thank you for playing!</p>
+      <div class="pl-silver-quote">
+        ⚓ <b>Long John Silver:</b> "Ahoy, young Captain! You found Map Piece #1… see you aboard the Hispaniola for Chapter 2!"
+      </div>
+    </div>
+    <div class="pl-credits-actions">
+      <button type="button" class="pl-btn green" id="pl-credits-stay">🌍 Keep Exploring</button>
+      <button type="button" class="pl-btn yellow" id="pl-credits-chart">🗺️ Back to Sea Chart</button>
+    </div>
+  </div>
+
+  <!-- Hidden legacy container so Chapter1.ensureStampHud never clashes -->
+  <div id="isl-modal-root"></div>
+
+  <!-- Local Vendor Three.js (ZERO CDNs) -->
+  <script src="../game-maker/js/vendor/three.min.js"></script>
+  <script src="../game-maker/js/vendor/BufferGeometryUtils.js"></script>
+  <script src="../game-maker/js/vendor/GLTFLoader.js"></script>
+
+  <!-- Existing Chapter 1 Engine & Mini-Games (100% offline, zero edits to existing files) -->
+  <script src="../js/voice.js?v=ch1-20261107c"></script>
+  <script src="js/config.js?v=rg-20261114d"></script>
+  <script src="js/data.js?v=rg-20261114d"></script>
+  <script src="js/core/audio.js?v=rg-20261114d"></script>
+  <script src="js/core/progress.js?v=rg-20261114d"></script>
+  <script src="js/core/feedback.js?v=rg-20261114d"></script>
+  <script src="js/minigames/listenTap.js?v=ch1-20261107c"></script>
+  <script src="js/minigames/dragMatch.js?v=ch1-20261107fix"></script>
+  <script src="js/minigames/wordOrder.js?v=rg-20261114d"></script>
+  <script src="js/minigames/flintSays.js?v=ch1-20261107c"></script>
+  <script src="js/minigames/countTap.js?v=ch1-20261107c"></script>
+  <script src="js/minigames/dialLock.js?v=ch1-20261107fix"></script>
+  <script src="js/minigames/wheelOrder.js?v=ch1-20261107c"></script>
+  <script src="js/minigames/telescopeSpot.js?v=ch1-20261107c"></script>
+  <script src="js/chapter1/content-g3.js?v=rg-20261114d"></script>
+  <script src="js/chapter1/content-g4.js?v=rg-20261114d"></script>
+  <script src="js/chapter1/chapter1.js?v=ch1-20261107d"></script>
+
+  <!-- Treasure Planet 3D Engine -->
+  <script src="planet/planet.js?v=20261121b"></script>
+</body>
+</html>

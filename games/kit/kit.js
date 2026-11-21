@@ -421,9 +421,12 @@
     if (existing) existing.remove();
     var big = !!Kit.pref('big'); doc.body.classList.toggle('big', big);
     var bar = el('header', { class: 'topbar' });
-    bar.appendChild(el('a', { class: 'brand', href: o.home || 'index.html', title: 'All games' }, [
+    var fromGm = Kit.param && Kit.param('from') === 'gm';
+    var homeHref = fromGm ? ((root.KIT_ROOT || '../') + 'game-maker/index.html') : (o.home || 'index.html');
+    var homeLbl  = fromGm ? '🎮 Game Maker' : (o.homeLabel || 'Games');
+    bar.appendChild(el('a', { class: 'brand', href: homeHref, title: fromGm ? 'Back to Game Maker' : 'All games' }, [
       el('i', { text: '✦' }),
-      el('span', null, [el('small', { text: 'Adventure Academy' }), o.homeLabel || 'Games'])
+      el('span', null, [el('small', { text: 'Adventure Academy' }), homeLbl])
     ]));
     bar.appendChild(el('div', { class: 'grow' }, o.title ? el('div', { class: 'title', text: o.title }) : null));
     (o.extra || []).forEach(function (n) { if (n) bar.appendChild(n); });
@@ -655,9 +658,38 @@
     builtIn: function () { return (root.KIT_PACKS || []).map(function (p) { return Object.assign({ builtIn: true }, p); }); },
     mine: function () { return tx('readonly', function (s) { return s.getAll(); }).then(function (r) { return (r || []).sort(function (a, b) { return (b.updated || 0) - (a.updated || 0); }); }).catch(function () { return []; }); },
     all: function () { var b = Kit.sets.builtIn(); return Kit.sets.mine().then(function (m) { return m.concat(b); }); },
-    get: function (id) { return Kit.sets.all().then(function (all) { return all.filter(function (s) { return s.id === id; })[0] || all[0]; }); },
+    get: function (id) { return Kit.sets.all().then(function (all) { return Kit.matchPack(all, id); }); },
     save: function (set) { set.updated = Date.now(); delete set.builtIn; return tx('readwrite', function (s) { s.put(set); }); },
     remove: function (id) { return tx('readwrite', function (s) { s.delete(id); }); }
+  };
+
+  /* Match exact pack id first; if a Game Maker question-set id (e.g. g4-u5-mega, u3-g3-weather) is passed,
+     smartly pick the closest Grade + Unit picture/sentence pack so Step 1 -> Step 2 handoff always feels magical! */
+  Kit.matchPack = function (list, hintId) {
+    if (!Array.isArray(list) || !list.length) return null;
+    if (!hintId) return list[0];
+    var h = String(hintId).toLowerCase();
+    var exact = list.filter(function (s) { return s && String(s.id).toLowerCase() === h; })[0];
+    if (exact) return exact;
+    var g = /g4|-4\b|grade-?4/.test(h) ? '4' : (/g3|-3\b|grade-?3/.test(h) ? '3' : '');
+    var uMatch = /u([1-5])\b|unit-?([1-5])/.exec(h);
+    var u = uMatch ? (uMatch[1] || uMatch[2]) : '';
+    if (g && u) {
+      var gu = list.filter(function (s) {
+        var sid = String(s.id + ' ' + (s.sub || '') + ' ' + (s.name || '')).toLowerCase();
+        return (String(s.grade || '') === g || sid.indexOf('g' + g) >= 0 || sid.indexOf('grade ' + g) >= 0) &&
+               (String(s.unit || '') === u || sid.indexOf('u' + u) >= 0 || sid.indexOf('unit ' + u) >= 0);
+      })[0];
+      if (gu) return gu;
+    }
+    if (g) {
+      var gOnly = list.filter(function (s) {
+        var sid = String(s.id + ' ' + (s.sub || '') + ' ' + (s.name || '')).toLowerCase();
+        return String(s.grade || '') === g || sid.indexOf('g' + g) >= 0 || sid.indexOf('grade ' + g) >= 0;
+      })[0];
+      if (gOnly) return gOnly;
+    }
+    return list[0];
   };
 
   /* Smart corner flood-fill cutout (preserves inner colors!) */

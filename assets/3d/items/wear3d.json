@@ -1,1 +1,3302 @@
-{"hat-crown":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"cs-big-crown":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"cs-my-rainbow-crown":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"hat-wizard":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"cs-witch-hat":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"cs-pirate-hat":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"hat-explorer":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"cs-chef-hat":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.46,0],"fallbackOffset":[0,1.65,0],"scale":0.44,"rotation":[0,0,0]},"cs-beanie":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"cs-detective-cap":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"cs-knight-helm":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"cs-space-helmet":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"cs-ranger-hat":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0.0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"hat-flower":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.37,0],"fallbackOffset":[0,1.65,0],"scale":0.4,"rotation":[0,0,0]},"hat-bow":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0.1,0.4,0.06],"fallbackOffset":[0,1.65,0],"scale":0.28,"rotation":[0,0,0]},"cs-headband":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.33,0],"fallbackOffset":[0,1.65,0],"scale":0.4,"rotation":[0,0,0]},"cs-night-cap":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.43,0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"cs-robot-antenna":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.38,0],"fallbackOffset":[0,1.65,0],"scale":0.42,"rotation":[0,0,0]},"cs-pumpkin-cap":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.4,0],"fallbackOffset":[0,1.65,0],"scale":0.4,"rotation":[0,0,0]},"cs-gat":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.38,0],"fallbackOffset":[0,1.65,0],"scale":0.46,"rotation":[0,0,0]},"hat-scholar":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.42,0],"fallbackOffset":[0,1.65,0],"scale":0.4,"rotation":[0,0,0]},"hat-star-clip":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0.12,0.36,0.1],"fallbackOffset":[0,1.65,0],"scale":0.2,"rotation":[0,0,0]},"cs-ninja-band":{"slot":"headwear","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.33,0],"fallbackOffset":[0,1.65,0],"scale":0.4,"rotation":[0,0,0]},"glasses-round":{"slot":"glasses","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.12,0.12],"fallbackOffset":[0,1.34,0.12],"scale":0.27,"rotation":[0,0,0]},"glasses-goggles":{"slot":"glasses","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.12,0.12],"fallbackOffset":[0,1.34,0.12],"scale":0.27,"rotation":[0,0,0]},"cs-rock-shades":{"slot":"glasses","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.12,0.12],"fallbackOffset":[0,1.34,0.12],"scale":0.27,"rotation":[0,0,0]},"cs-diver-mask":{"slot":"glasses","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.12,0.12],"fallbackOffset":[0,1.34,0.12],"scale":0.27,"rotation":[0,0,0]},"cs-hero-mask":{"slot":"glasses","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.12,0.12],"fallbackOffset":[0,1.34,0.12],"scale":0.27,"rotation":[0,0,0]},"cs-pirate-patch":{"slot":"glasses","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.12,0.12],"fallbackOffset":[0,1.34,0.12],"scale":0.27,"rotation":[0,0,0]},"cs-robot-visor":{"slot":"glasses","boneCandidates":["mixamorigHead","Head","head","Bip01_Head"],"socketOffset":[0,0.13,0.12],"fallbackOffset":[0,1.34,0.12],"scale":0.27,"rotation":[0,0,0]},"bp-adv-bag":{"slot":"back","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,0.02,-0.2],"fallbackOffset":[0,1.05,-0.2],"scale":0.62,"rotation":[0,0,0]},"bp-book":{"slot":"back","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,-0.04,-0.2],"fallbackOffset":[0,1.05,-0.2],"scale":0.5,"rotation":[0,0,0]},"bp-explorer":{"slot":"back","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,0.02,-0.2],"fallbackOffset":[0,1.05,-0.2],"scale":0.62,"rotation":[0,0,0]},"bp-mini-wings":{"slot":"back","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,0.02,-0.2],"fallbackOffset":[0,1.05,-0.2],"scale":0.62,"rotation":[0,0,0]},"cs-fairy-wings":{"slot":"back","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,0.02,-0.2],"fallbackOffset":[0,1.05,-0.2],"scale":0.62,"rotation":[0,0,0]},"cs-my-phoenix-wings":{"slot":"back","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,0.02,-0.2],"fallbackOffset":[0,1.05,-0.2],"scale":0.62,"rotation":[0,0,0]},"cs-jetpack":{"slot":"back","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,0.02,-0.2],"fallbackOffset":[0,1.05,-0.2],"scale":0.62,"rotation":[0,0,0]},"cs-robot-pack":{"slot":"back","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,0.02,-0.2],"fallbackOffset":[0,1.05,-0.2],"scale":0.62,"rotation":[0,0,0]},"cs-scuba-tank":{"slot":"back","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,0.02,-0.2],"fallbackOffset":[0,1.05,-0.2],"scale":0.62,"rotation":[0,0,0]},"neck-badge":{"slot":"neck","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,0.0,0.13],"fallbackOffset":[0,1.0,0.13],"scale":0.24,"rotation":[0,0,0]},"neck-medal":{"slot":"neck","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,0.0,0.13],"fallbackOffset":[0,1.0,0.13],"scale":0.24,"rotation":[0,0,0]},"neck-star":{"slot":"neck","boneCandidates":["mixamorigSpine2","Spine2","Chest","spine_02","Spine1"],"socketOffset":[0,0.0,0.13],"fallbackOffset":[0,1.0,0.13],"scale":0.24,"rotation":[0,0,0]},"acc-book":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"acc-compass":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"acc-microphone":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"acc-trophy":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"acc-wand":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"cs-binoculars":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"cs-guitar":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"cs-knight-shield":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"cs-ladle":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"cs-magnifier":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"cs-witch-broom":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"cs-wiz-staff":{"slot":"hand_r","boneCandidates":["mixamorigRightHand","RightHand","hand_r","R_Hand"],"socketOffset":[0,-0.02,0.06],"fallbackOffset":[0.34,0.85,0.1],"scale":0.4,"rotation":[0,0,0]},"cs-parrot":{"slot":"pet","boneCandidates":[],"socketOffset":[0.5,0.2,0.2],"fallbackOffset":[0.5,0.2,0.2],"scale":0.38,"rotation":[0,0,0]},"cs-spider-friend":{"slot":"pet","boneCandidates":[],"socketOffset":[0.5,0.2,0.2],"fallbackOffset":[0.5,0.2,0.2],"scale":0.38,"rotation":[0,0,0]},"cs-teddy":{"slot":"pet","boneCandidates":[],"socketOffset":[0.5,0.2,0.2],"fallbackOffset":[0.5,0.2,0.2],"scale":0.38,"rotation":[0,0,0]},"cs-vamp-bat":{"slot":"pet","boneCandidates":[],"socketOffset":[0.5,0.2,0.2],"fallbackOffset":[0.5,0.2,0.2],"scale":0.38,"rotation":[0,0,0]},"pet-puppy":{"slot":"pet","boneCandidates":[],"socketOffset":[0.5,0.2,0.2],"fallbackOffset":[0.5,0.2,0.2],"scale":0.38,"rotation":[0,0,0]},"cs-my-comet":{"slot":"pet","boneCandidates":[],"socketOffset":[0.5,0.2,0.2],"fallbackOffset":[0.5,0.2,0.2],"scale":0.38,"rotation":[0,0,0]}}
+{
+  "hat-crown": {
+    "slot": "headwear",
+    "headMode": "crown",
+    "tuck": "none",
+    "scale": 0.27,
+    "anchor": [
+      0.5,
+      0.1,
+      0.5
+    ],
+    "preRot": [
+      -0.04,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.31,
+      0.006
+    ],
+    "fallbackOffset": [
+      0,
+      1.56,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-big-crown": {
+    "slot": "headwear",
+    "headMode": "crown",
+    "tuck": "none",
+    "scale": 0.3254,
+    "anchor": [
+      0.5,
+      0.1,
+      0.5
+    ],
+    "preRot": [
+      -0.04,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.31,
+      0.006
+    ],
+    "fallbackOffset": [
+      0,
+      1.56,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-my-rainbow-crown": {
+    "slot": "headwear",
+    "headMode": "crown",
+    "tuck": "none",
+    "scale": 0.2945,
+    "anchor": [
+      0.5,
+      0.1,
+      0.5
+    ],
+    "preRot": [
+      -0.04,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.31,
+      0.006
+    ],
+    "fallbackOffset": [
+      0,
+      1.56,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "hat-flower": {
+    "slot": "headwear",
+    "headMode": "band",
+    "tuck": "none",
+    "scale": 0.425,
+    "anchor": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "preRot": [
+      -0.04,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.23,
+      0
+    ],
+    "fallbackOffset": [
+      0,
+      1.48,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.026,
+      0
+    ],
+    "userScale": 1
+  },
+  "hat-wizard": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.53,
+    "anchor": [
+      0.5,
+      0.16,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.14,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-wiz-hat": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.53,
+    "anchor": [
+      0.5,
+      0.18,
+      0.5
+    ],
+    "preRot": [
+      0.05,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.12,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-witch-hat": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.54,
+    "anchor": [
+      0.5,
+      0.16,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.14,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-pirate-hat": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.56,
+    "anchor": [
+      0.5,
+      0.22,
+      0.48
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.08,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.004,
+      0.008
+    ],
+    "userScale": 1
+  },
+  "hat-explorer": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.49,
+    "anchor": [
+      0.5,
+      0.2,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.11,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.004,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-ranger-hat": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.5,
+    "anchor": [
+      0.5,
+      0.2,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.11,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.004,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-gat": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.52,
+    "anchor": [
+      0.5,
+      0.52,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.06,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.012,
+      0
+    ],
+    "userScale": 1
+  },
+  "hat-scholar": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.44,
+    "anchor": [
+      0.5,
+      0.28,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.08,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.004,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-chef-hat": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.44,
+    "anchor": [
+      0.5,
+      0.16,
+      0.48
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.12,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.004,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-beanie": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.42,
+    "anchor": [
+      0.5,
+      0.24,
+      0.48
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.14,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      -0.004,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-detective-cap": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.45,
+    "anchor": [
+      0.5,
+      0.22,
+      0.46
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.08,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.002,
+      0.008
+    ],
+    "userScale": 1
+  },
+  "cs-night-cap": {
+    "slot": "headwear",
+    "headMode": "hat",
+    "tuck": "hat",
+    "scale": 0.45,
+    "anchor": [
+      0.5,
+      0.24,
+      0.48
+    ],
+    "preRot": [
+      0.16,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.24,
+      -0.008
+    ],
+    "fallbackOffset": [
+      0,
+      1.5,
+      0
+    ],
+    "rotation": [
+      -0.1,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-robot-antenna": {
+    "slot": "headwear",
+    "headMode": "band",
+    "tuck": "none",
+    "scale": 0.44,
+    "anchor": [
+      0.5,
+      0.18,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.23,
+      0
+    ],
+    "fallbackOffset": [
+      0,
+      1.48,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.01,
+      0
+    ],
+    "userScale": 1
+  },
+  "hat-bow": {
+    "slot": "headwear",
+    "headMode": "clip",
+    "tuck": "none",
+    "scale": 0.1437,
+    "anchor": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "preRot": [
+      -0.16,
+      0.35,
+      -0.22
+    ],
+    "clipOffset": [
+      0.125,
+      0.8,
+      0.11
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0.125,
+      0.26,
+      0.11
+    ],
+    "fallbackOffset": [
+      0.12,
+      1.54,
+      0.11
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "hat-star-clip": {
+    "slot": "headwear",
+    "headMode": "clip",
+    "tuck": "none",
+    "scale": 0.1034,
+    "anchor": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "preRot": [
+      1.5,
+      -1,
+      0
+    ],
+    "clipOffset": [
+      0.135,
+      0.76,
+      0.145
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0.135,
+      0.25,
+      0.145
+    ],
+    "fallbackOffset": [
+      0.13,
+      1.49,
+      0.15
+    ],
+    "rotation": [
+      -0.15,
+      0.42,
+      -0.18
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-headband": {
+    "slot": "headwear",
+    "headMode": "band",
+    "tuck": "band",
+    "scale": 0.405,
+    "anchor": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.23,
+      0
+    ],
+    "fallbackOffset": [
+      0,
+      1.48,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.004,
+      0
+    ],
+    "userScale": 1
+  },
+  "hat-headband": {
+    "slot": "headwear",
+    "headMode": "band",
+    "tuck": "band",
+    "scale": 0.4262,
+    "anchor": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "preRot": [
+      -1.5707963267948966,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.23,
+      0
+    ],
+    "fallbackOffset": [
+      0,
+      1.48,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.014,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-ninja-band": {
+    "slot": "headwear",
+    "headMode": "band",
+    "tuck": "band",
+    "scale": 0.4956,
+    "anchor": [
+      0.5,
+      0.5,
+      0.58
+    ],
+    "preRot": [
+      0,
+      1.5707963267948966,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.23,
+      0
+    ],
+    "fallbackOffset": [
+      0,
+      1.48,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.004,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-rock-bandana": {
+    "slot": "headwear",
+    "headMode": "band",
+    "tuck": "band",
+    "scale": 0.409,
+    "anchor": [
+      0.5,
+      0.5,
+      0.54
+    ],
+    "preRot": [
+      0,
+      1.5707963267948966,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.23,
+      0
+    ],
+    "fallbackOffset": [
+      0,
+      1.48,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.006,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-knight-helm": {
+    "slot": "headwear",
+    "headMode": "helmet",
+    "tuck": "helmet",
+    "scale": 0.5381,
+    "anchor": [
+      0.5,
+      0.44,
+      0.42
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.16,
+      0.01
+    ],
+    "fallbackOffset": [
+      0,
+      1.41,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.01,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-space-helmet": {
+    "slot": "headwear",
+    "headMode": "helmet",
+    "tuck": "helmet",
+    "scale": 0.48,
+    "anchor": [
+      0.5,
+      0.48,
+      0.48
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.16,
+      0.01
+    ],
+    "fallbackOffset": [
+      0,
+      1.41,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-pumpkin-cap": {
+    "slot": "headwear",
+    "headMode": "helmet",
+    "tuck": "helmet",
+    "scale": 0.45,
+    "anchor": [
+      0.5,
+      0.46,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.16,
+      0.01
+    ],
+    "fallbackOffset": [
+      0,
+      1.41,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.01,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-vamp-hair": {
+    "slot": "headwear",
+    "headMode": "wig",
+    "tuck": "wig",
+    "isWig": true,
+    "scale": 0.4987,
+    "anchor": [
+      0.5,
+      0.5,
+      0.48
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.19,
+      -0.012
+    ],
+    "fallbackOffset": [
+      0,
+      1.44,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "av-wig-blue-spikes": {
+    "slot": "headwear",
+    "headMode": "wig",
+    "tuck": "wig",
+    "isWig": true,
+    "scale": 0.4809,
+    "anchor": [
+      0.5,
+      0.46,
+      0.48
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.19,
+      -0.012
+    ],
+    "fallbackOffset": [
+      0,
+      1.44,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "av-wig-pink-bob": {
+    "slot": "headwear",
+    "headMode": "wig",
+    "tuck": "wig",
+    "isWig": true,
+    "scale": 0.45,
+    "anchor": [
+      0.5,
+      0.54,
+      0.48
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.19,
+      -0.012
+    ],
+    "fallbackOffset": [
+      0,
+      1.44,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "av-wig-rainbow": {
+    "slot": "headwear",
+    "headMode": "wig",
+    "tuck": "wig",
+    "isWig": true,
+    "scale": 0.46,
+    "anchor": [
+      0.5,
+      0.52,
+      0.48
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.19,
+      -0.012
+    ],
+    "fallbackOffset": [
+      0,
+      1.44,
+      0
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "glasses-round": {
+    "slot": "glasses",
+    "scale": 0.31,
+    "anchor": [
+      0.5,
+      0.5,
+      0.82
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.118,
+      0.172
+    ],
+    "fallbackOffset": [
+      0,
+      1.36,
+      0.17
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "glasses-goggles": {
+    "slot": "glasses",
+    "scale": 0.32,
+    "anchor": [
+      0.5,
+      0.5,
+      0.78
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.118,
+      0.172
+    ],
+    "fallbackOffset": [
+      0,
+      1.36,
+      0.17
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-rock-shades": {
+    "slot": "glasses",
+    "scale": 0.32,
+    "anchor": [
+      0.5,
+      0.5,
+      0.82
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.118,
+      0.172
+    ],
+    "fallbackOffset": [
+      0,
+      1.36,
+      0.17
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-diver-mask": {
+    "slot": "glasses",
+    "scale": 0.34,
+    "anchor": [
+      0.5,
+      0.54,
+      0.78
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.118,
+      0.172
+    ],
+    "fallbackOffset": [
+      0,
+      1.36,
+      0.17
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.014,
+      -0.006
+    ],
+    "userScale": 1
+  },
+  "cs-hero-mask": {
+    "slot": "glasses",
+    "scale": 0.3,
+    "anchor": [
+      0.5,
+      0.5,
+      0.8
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.118,
+      0.172
+    ],
+    "fallbackOffset": [
+      0,
+      1.36,
+      0.17
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0.004
+    ],
+    "userScale": 1
+  },
+  "cs-pirate-patch": {
+    "slot": "glasses",
+    "scale": 0.4,
+    "anchor": [
+      0.5,
+      0.52,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.118,
+      0.172
+    ],
+    "fallbackOffset": [
+      0,
+      1.36,
+      0.17
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.006,
+      0
+    ],
+    "userScale": 1,
+    "headMode": "band"
+  },
+  "cs-robot-visor": {
+    "slot": "glasses",
+    "scale": 0.35,
+    "anchor": [
+      0.5,
+      0.5,
+      0.74
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.118,
+      0.172
+    ],
+    "fallbackOffset": [
+      0,
+      1.36,
+      0.17
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0.01,
+      -0.004
+    ],
+    "userScale": 1
+  },
+  "cs-ninja-mask": {
+    "slot": "glasses",
+    "scale": 0.3288,
+    "anchor": [
+      0.5,
+      0.58,
+      0.76
+    ],
+    "preRot": [
+      0,
+      1.5707963267948966,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Head",
+      "mixamorigHead",
+      "Head",
+      "head",
+      "Bip01_Head"
+    ],
+    "socketOffset": [
+      0,
+      0.118,
+      0.172
+    ],
+    "fallbackOffset": [
+      0,
+      1.36,
+      0.17
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "maskMode": "lower",
+    "offset": [
+      0,
+      -0.012,
+      -0.014
+    ],
+    "userScale": 1
+  },
+  "bp-adv-bag": {
+    "slot": "back",
+    "backMode": "pack",
+    "scale": 0.3332,
+    "anchor": [
+      0.5,
+      0.52,
+      0.9
+    ],
+    "preRot": [
+      -0.03,
+      3.141592653589793,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.01,
+      -0.076
+    ],
+    "fallbackOffset": [
+      0,
+      1.03,
+      -0.11
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "bp-book": {
+    "slot": "back",
+    "backMode": "pack",
+    "scale": 0.3522,
+    "anchor": [
+      0.5,
+      0.52,
+      0.9
+    ],
+    "preRot": [
+      -0.04,
+      3.141592653589793,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.01,
+      -0.056
+    ],
+    "fallbackOffset": [
+      0,
+      1.03,
+      -0.11
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "bp-explorer": {
+    "slot": "back",
+    "backMode": "pack",
+    "scale": 0.3704,
+    "anchor": [
+      0.5,
+      0.5,
+      0.9
+    ],
+    "preRot": [
+      -0.03,
+      3.141592653589793,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.01,
+      -0.064
+    ],
+    "fallbackOffset": [
+      0,
+      1.03,
+      -0.11
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-jetpack": {
+    "slot": "back",
+    "backMode": "pack",
+    "scale": 0.36,
+    "anchor": [
+      0.5,
+      0.52,
+      0.86
+    ],
+    "preRot": [
+      -0.03,
+      3.141592653589793,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.01,
+      -0.062
+    ],
+    "fallbackOffset": [
+      0,
+      1.03,
+      -0.11
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-robot-pack": {
+    "slot": "back",
+    "backMode": "pack",
+    "scale": 0.32,
+    "anchor": [
+      0.5,
+      0.5,
+      0.92
+    ],
+    "preRot": [
+      -0.03,
+      3.141592653589793,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.01,
+      -0.048
+    ],
+    "fallbackOffset": [
+      0,
+      1.03,
+      -0.11
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-scuba-tank": {
+    "slot": "back",
+    "backMode": "pack",
+    "scale": 0.34,
+    "anchor": [
+      0.5,
+      0.5,
+      0.9
+    ],
+    "preRot": [
+      -0.03,
+      3.141592653589793,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.01,
+      -0.058
+    ],
+    "fallbackOffset": [
+      0,
+      1.03,
+      -0.11
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "bp-mini-wings": {
+    "slot": "back",
+    "backMode": "wings",
+    "scale": 0.54,
+    "anchor": [
+      0.5,
+      0.48,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.05,
+      -0.105
+    ],
+    "fallbackOffset": [
+      0,
+      1.07,
+      -0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-fairy-wings": {
+    "slot": "back",
+    "backMode": "wings",
+    "scale": 0.68,
+    "anchor": [
+      0.5,
+      0.48,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.05,
+      -0.105
+    ],
+    "fallbackOffset": [
+      0,
+      1.07,
+      -0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-my-phoenix-wings": {
+    "slot": "back",
+    "backMode": "wings",
+    "scale": 0.66,
+    "anchor": [
+      0.5,
+      0.48,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.05,
+      -0.105
+    ],
+    "fallbackOffset": [
+      0,
+      1.07,
+      -0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-hero-cape": {
+    "slot": "back",
+    "backMode": "cape",
+    "scale": 0.52,
+    "anchor": null,
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.126,
+      -0.098
+    ],
+    "fallbackOffset": [
+      0,
+      1.15,
+      0.03
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-my-galaxy-cape": {
+    "slot": "back",
+    "backMode": "cape",
+    "scale": 0.53,
+    "anchor": null,
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.126,
+      -0.098
+    ],
+    "fallbackOffset": [
+      0,
+      1.15,
+      0.03
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-witch-cape": {
+    "slot": "back",
+    "backMode": "cape",
+    "scale": 0.52,
+    "anchor": null,
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.126,
+      -0.098
+    ],
+    "fallbackOffset": [
+      0,
+      1.15,
+      0.03
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-vamp-cape": {
+    "slot": "back",
+    "backMode": "cape",
+    "scale": 0.5,
+    "anchor": null,
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.122,
+      -0.102
+    ],
+    "fallbackOffset": [
+      0,
+      1.15,
+      0.03
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-leaf-cape": {
+    "slot": "back",
+    "backMode": "cape",
+    "scale": 0.52,
+    "anchor": null,
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.126,
+      -0.098
+    ],
+    "fallbackOffset": [
+      0,
+      1.15,
+      0.03
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "neck-badge": {
+    "slot": "neck",
+    "neckMode": "medal",
+    "scale": 0.1068,
+    "anchor": [
+      0.5,
+      0.5,
+      0.25
+    ],
+    "preRot": [
+      -0.08,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.052,
+      0.094
+    ],
+    "fallbackOffset": [
+      0,
+      1.12,
+      0.13
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "neck-medal": {
+    "slot": "neck",
+    "neckMode": "medal",
+    "scale": 0.1552,
+    "anchor": [
+      0.5,
+      0.88,
+      0.25
+    ],
+    "preRot": [
+      -0.1,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.098,
+      0.092
+    ],
+    "fallbackOffset": [
+      0,
+      1.12,
+      0.13
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "neck-star": {
+    "slot": "neck",
+    "neckMode": "medal",
+    "scale": 0.1574,
+    "anchor": [
+      0.5,
+      0.88,
+      0.25
+    ],
+    "preRot": [
+      -0.1,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.076,
+      0.094
+    ],
+    "fallbackOffset": [
+      0,
+      1.12,
+      0.13
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-medal": {
+    "slot": "neck",
+    "neckMode": "medal",
+    "scale": 0.175,
+    "anchor": [
+      0.5,
+      0.88,
+      0.25
+    ],
+    "preRot": [
+      -0.1,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.098,
+      0.092
+    ],
+    "fallbackOffset": [
+      0,
+      1.12,
+      0.13
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "neck-pendant": {
+    "slot": "neck",
+    "neckMode": "medal",
+    "scale": 0.1572,
+    "anchor": [
+      0.5,
+      0.88,
+      0.25
+    ],
+    "preRot": [
+      -0.1,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.076,
+      0.094
+    ],
+    "fallbackOffset": [
+      0,
+      1.12,
+      0.13
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-scarf": {
+    "slot": "neck",
+    "neckMode": "scarf",
+    "scale": 0.3216,
+    "anchor": [
+      0.5,
+      0.82,
+      0.36
+    ],
+    "preRot": [
+      -0.05,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0,
+      0.136,
+      0.012
+    ],
+    "fallbackOffset": [
+      0,
+      1.15,
+      0.02
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "acc-wand": {
+    "slot": "hand_r",
+    "scale": 0.2385,
+    "anchor": [
+      0.5,
+      0.18,
+      0.5
+    ],
+    "preRot": [
+      0.25,
+      0,
+      0.62
+    ],
+    "boneCandidates": [
+      "mixamorig:LeftHand",
+      "mixamorigLeftHand",
+      "LeftHand",
+      "mixamorig:RightHand",
+      "mixamorigRightHand",
+      "RightHand"
+    ],
+    "socketOffset": [
+      0,
+      0,
+      0
+    ],
+    "fallbackOffset": [
+      0.24,
+      0.78,
+      0.08
+    ],
+    "rotation": [
+      0.78,
+      0,
+      -0.1
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1,
+    "handMode": "hand"
+  },
+  "cs-wiz-staff": {
+    "slot": "hand_r",
+    "scale": 0.94,
+    "anchor": [
+      0.5,
+      0.48,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:LeftHand",
+      "mixamorigLeftHand",
+      "LeftHand",
+      "mixamorig:RightHand",
+      "mixamorigRightHand",
+      "RightHand"
+    ],
+    "socketOffset": [
+      0,
+      0,
+      0
+    ],
+    "fallbackOffset": [
+      0.24,
+      0.78,
+      0.08
+    ],
+    "rotation": [
+      0.16,
+      0,
+      -0.05
+    ],
+    "offset": [
+      0.008,
+      0,
+      0.012
+    ],
+    "userScale": 1,
+    "handMode": "hand"
+  },
+  "cs-witch-broom": {
+    "slot": "hand_r",
+    "scale": 0.8491,
+    "anchor": [
+      0.5,
+      0.6,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0.16
+    ],
+    "boneCandidates": [
+      "mixamorig:LeftHand",
+      "mixamorigLeftHand",
+      "LeftHand",
+      "mixamorig:RightHand",
+      "mixamorigRightHand",
+      "RightHand"
+    ],
+    "socketOffset": [
+      0,
+      0,
+      0
+    ],
+    "fallbackOffset": [
+      0.24,
+      0.78,
+      0.08
+    ],
+    "rotation": [
+      0.18,
+      0,
+      -0.05
+    ],
+    "offset": [
+      0.008,
+      0,
+      0.012
+    ],
+    "userScale": 1,
+    "handMode": "hand"
+  },
+  "acc-microphone": {
+    "slot": "hand_r",
+    "scale": 0.2078,
+    "anchor": [
+      0.5,
+      0.22,
+      0.5
+    ],
+    "preRot": [
+      0.25,
+      0,
+      -0.52
+    ],
+    "boneCandidates": [
+      "mixamorig:LeftHand",
+      "mixamorigLeftHand",
+      "LeftHand",
+      "mixamorig:RightHand",
+      "mixamorigRightHand",
+      "RightHand"
+    ],
+    "socketOffset": [
+      0,
+      0,
+      0
+    ],
+    "fallbackOffset": [
+      0.24,
+      0.78,
+      0.08
+    ],
+    "rotation": [
+      0.68,
+      0,
+      0.08
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1,
+    "handMode": "hand"
+  },
+  "acc-trophy": {
+    "slot": "hand_r",
+    "scale": 0.25,
+    "anchor": [
+      0.5,
+      0.2,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:LeftHand",
+      "mixamorigLeftHand",
+      "LeftHand",
+      "mixamorig:RightHand",
+      "mixamorigRightHand",
+      "RightHand"
+    ],
+    "socketOffset": [
+      0,
+      0,
+      0
+    ],
+    "fallbackOffset": [
+      0.24,
+      0.78,
+      0.08
+    ],
+    "rotation": [
+      0.22,
+      0,
+      -0.06
+    ],
+    "offset": [
+      0.01,
+      -0.01,
+      0.015
+    ],
+    "userScale": 1,
+    "handMode": "hand"
+  },
+  "acc-book": {
+    "slot": "hand_r",
+    "scale": 0.1856,
+    "anchor": [
+      0.5,
+      0.5,
+      0.35
+    ],
+    "preRot": [
+      -0.35,
+      0.25,
+      0.15
+    ],
+    "boneCandidates": [
+      "mixamorig:LeftHand",
+      "mixamorigLeftHand",
+      "LeftHand",
+      "mixamorig:RightHand",
+      "mixamorigRightHand",
+      "RightHand"
+    ],
+    "socketOffset": [
+      0,
+      0,
+      0
+    ],
+    "fallbackOffset": [
+      0.24,
+      0.78,
+      0.08
+    ],
+    "rotation": [
+      0.25,
+      0,
+      0
+    ],
+    "offset": [
+      0.012,
+      -0.01,
+      0.015
+    ],
+    "userScale": 1,
+    "handMode": "hand"
+  },
+  "acc-compass": {
+    "slot": "hand_r",
+    "scale": 0.1402,
+    "anchor": [
+      0.5,
+      0.38,
+      0.45
+    ],
+    "preRot": [
+      0.55,
+      -0.15,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:LeftHand",
+      "mixamorigLeftHand",
+      "LeftHand",
+      "mixamorig:RightHand",
+      "mixamorigRightHand",
+      "RightHand"
+    ],
+    "socketOffset": [
+      0,
+      0,
+      0
+    ],
+    "fallbackOffset": [
+      0.24,
+      0.78,
+      0.08
+    ],
+    "rotation": [
+      0.35,
+      0,
+      0
+    ],
+    "offset": [
+      0.008,
+      -0.005,
+      0.012
+    ],
+    "userScale": 1,
+    "handMode": "hand"
+  },
+  "cs-binoculars": {
+    "slot": "hand_r",
+    "scale": 0.2118,
+    "anchor": [
+      0.45,
+      0.5,
+      0.35
+    ],
+    "preRot": [
+      0.15,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:LeftHand",
+      "mixamorigLeftHand",
+      "LeftHand",
+      "mixamorig:RightHand",
+      "mixamorigRightHand",
+      "RightHand"
+    ],
+    "socketOffset": [
+      0,
+      0,
+      0
+    ],
+    "fallbackOffset": [
+      0.24,
+      0.78,
+      0.08
+    ],
+    "rotation": [
+      0.2,
+      0,
+      0
+    ],
+    "offset": [
+      0.01,
+      -0.008,
+      0.012
+    ],
+    "userScale": 1,
+    "handMode": "hand"
+  },
+  "cs-ladle": {
+    "slot": "hand_r",
+    "scale": 0.313,
+    "anchor": [
+      0.5,
+      0.2,
+      0.5
+    ],
+    "preRot": [
+      1.45,
+      0,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:LeftHand",
+      "mixamorigLeftHand",
+      "LeftHand",
+      "mixamorig:RightHand",
+      "mixamorigRightHand",
+      "RightHand"
+    ],
+    "socketOffset": [
+      0,
+      0,
+      0
+    ],
+    "fallbackOffset": [
+      0.24,
+      0.78,
+      0.08
+    ],
+    "rotation": [
+      0.62,
+      0,
+      -0.08
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1,
+    "handMode": "hand"
+  },
+  "cs-magnifier": {
+    "slot": "hand_r",
+    "scale": 0.2493,
+    "anchor": [
+      0.5,
+      0.18,
+      0.5
+    ],
+    "preRot": [
+      0,
+      0,
+      1.03
+    ],
+    "boneCandidates": [
+      "mixamorig:LeftHand",
+      "mixamorigLeftHand",
+      "LeftHand",
+      "mixamorig:RightHand",
+      "mixamorigRightHand",
+      "RightHand"
+    ],
+    "socketOffset": [
+      0,
+      0,
+      0
+    ],
+    "fallbackOffset": [
+      0.24,
+      0.78,
+      0.08
+    ],
+    "rotation": [
+      0.68,
+      0.35,
+      -0.08
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1,
+    "handMode": "hand"
+  },
+  "cs-knight-shield": {
+    "slot": "hand_r",
+    "handMode": "forearm",
+    "scale": 0.3091,
+    "anchor": [
+      0.5,
+      0.5,
+      0.22
+    ],
+    "preRot": [
+      0,
+      0.45,
+      0.15
+    ],
+    "boneCandidates": [
+      "mixamorig:LeftForeArm",
+      "mixamorigLeftForeArm",
+      "LeftForeArm"
+    ],
+    "socketOffset": [
+      0.048,
+      -0.02,
+      0.042
+    ],
+    "fallbackOffset": [
+      0.22,
+      0.88,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-guitar": {
+    "slot": "hand_r",
+    "handMode": "chest",
+    "scale": 0.4053,
+    "anchor": [
+      0.5,
+      0.44,
+      0.32
+    ],
+    "preRot": [
+      1,
+      0.22,
+      0
+    ],
+    "boneCandidates": [
+      "mixamorig:Spine2",
+      "mixamorigSpine2",
+      "Spine2",
+      "Chest",
+      "spine_02",
+      "mixamorig:Spine1",
+      "Spine1"
+    ],
+    "socketOffset": [
+      0.02,
+      -0.055,
+      0.064
+    ],
+    "fallbackOffset": [
+      0.02,
+      0.96,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      -0.85
+    ],
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-parrot": {
+    "slot": "pet",
+    "scale": 0.3,
+    "anchor": [
+      0.5,
+      0,
+      0.5
+    ],
+    "preRot": [
+      0,
+      -0.25,
+      0
+    ],
+    "boneCandidates": [],
+    "socketOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "fallbackOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "hoverY": 0.94,
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-vamp-bat": {
+    "slot": "pet",
+    "scale": 0.2533,
+    "anchor": [
+      0.5,
+      0,
+      0.5
+    ],
+    "preRot": [
+      0,
+      -0.25,
+      0
+    ],
+    "boneCandidates": [],
+    "socketOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "fallbackOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "hoverY": 0.98,
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-my-comet": {
+    "slot": "pet",
+    "scale": 0.2585,
+    "anchor": [
+      0.5,
+      0,
+      0.5
+    ],
+    "preRot": [
+      0,
+      -0.25,
+      0
+    ],
+    "boneCandidates": [],
+    "socketOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "fallbackOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "hoverY": 0.98,
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "pet-puppy": {
+    "slot": "pet",
+    "scale": 0.3605,
+    "anchor": [
+      0.5,
+      0,
+      0.5
+    ],
+    "preRot": [
+      0,
+      -0.25,
+      0
+    ],
+    "boneCandidates": [],
+    "socketOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "fallbackOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "hoverY": 0.015,
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-teddy": {
+    "slot": "pet",
+    "scale": 0.35,
+    "anchor": [
+      0.5,
+      0,
+      0.5
+    ],
+    "preRot": [
+      0,
+      -0.25,
+      0
+    ],
+    "boneCandidates": [],
+    "socketOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "fallbackOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "hoverY": 0.015,
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  },
+  "cs-spider-friend": {
+    "slot": "pet",
+    "scale": 0.2699,
+    "anchor": [
+      0.5,
+      0,
+      0.5
+    ],
+    "preRot": [
+      0,
+      -0.25,
+      0
+    ],
+    "boneCandidates": [],
+    "socketOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "fallbackOffset": [
+      0.42,
+      0.015,
+      0.18
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "hoverY": 0.015,
+    "offset": [
+      0,
+      0,
+      0
+    ],
+    "userScale": 1
+  }
+}

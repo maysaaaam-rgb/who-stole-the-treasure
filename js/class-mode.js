@@ -25,7 +25,7 @@
     try { cls = S().getActiveClass && S().getActiveClass(); } catch (e) { cls = null; }
     var cid = opts.classId || (cls && cls.id) || '';
     var g = opts.grade || activeGrade() || (/4/.test(cid) ? 4 : 3);
-    var setId = opts.setId || (g === 4 ? 'u14-g4' : 'u14-g3');
+    var setId = opts.setId || (g === 4 ? 'g4-u5-mega' : 'g3-u5-mega');
     try {
       var cur = JSON.parse(localStorage.getItem('eaa_gm_v2') || '{}') || {};
       if (cid) cur.classId = cid;
@@ -131,8 +131,23 @@
   var THUMBS = {
     'gamemaker-g3': ART + 'm_games.webp',
     'gamemaker-g4': ART + 'm_games.webp',
-    'rev-u14-g3': 'assets/shelf/bamboozle-g3-u2.webp',
-    'rev-u14-g4': 'assets/shelf/bamboozle-g4-u2.webp',
+    'games-collection': 'games/posters/doors.webp',
+    'time-train': 'games/posters/time-train.webp',
+    'treasure-planet-3d': 'games/posters/planet3d.webp',
+    'sprint-race-3d': 'games/posters/race3d.jpg',
+    'monster-cannon-3d': 'games/posters/cannon3d.jpg',
+    'penalty-shootout-3d': 'games/posters/penalty3d.jpg',
+    'bomb-or-bonus-3d': 'games/posters/bomb3d.jpg',
+    'keep-or-give-3d': 'games/posters/keepgive.webp',
+    'tug-of-war-3d': 'games/posters/tug3d.jpg',
+    'bowling-3d': 'games/posters/bowling3d.jpg',
+    'board-game-3d': 'games/posters/board3d.jpg',
+    'practice-island': 'island/art/bg_island.webp',
+    'practice-island-world': 'island/art/bg_plaza.webp',
+    'magic-book': 'magic-book/g3_cover.png',
+    'smart-board': ART + 'm_lesson.webp',
+    'rev-u14-g3': 'games/posters/cannon3d.jpg',
+    'rev-u14-g4': 'games/posters/cannon3d.jpg',
     'u1-rev': 'assets/shelf/bamboozle-g3-u1.webp',
     'alley-fling': 'unit2-throw/art/boss.webp',
     'chuseok-arcade-g3': 'unit2-g3-lessons/art/august_happy.webp',
@@ -285,7 +300,7 @@
     return SHELF_ART.indexOf(g.id) >= 0 ? 'assets/shelf/' + g.id + '.webp' : (g.thumbnailUrl || g.coverImage || '');
   }
   function isPureGame(g) { return g && g.type === 'game'; }
-  function colorFor(g, i) { return ['#6E56CF', '#f59e0b', '#10b981', '#f43f5e', '#0ea5e9', '#a855f7'][i % 6]; }
+  function colorFor(g, i) { return ['#ff5fa2', '#4f9dff', '#2fc58a', '#ffb320', '#9b7bff'][i % 5]; }
 
   var GAME_KIND_LABEL = {
     team: 'TEAM & BOARD',
@@ -321,19 +336,19 @@
   function spotlightHtml(gr) {
     if (shelf.q || shelf.curate) return '';
     var ids = gr === 4
-      ? ['gamemaker-g4', 'rev-u14-g4', 'board-u3-g4-money']
+      ? ['gamemaker-g4', 'treasure-planet-3d', 'bomb-or-bonus-3d']
       : gr === 3
-      ? ['gamemaker-g3', 'rev-u14-g3', 'board-u3-g3-bear']
-      : ['gamemaker-g3', 'gamemaker-g4', 'unit3-money-mission'];
+      ? ['gamemaker-g3', 'treasure-planet-3d', 'sprint-race-3d']
+      : ['gamemaker-g3', 'games-collection', 'treasure-planet-3d'];
     var all = root.GAMES_DATA || [], picks = [];
     ids.forEach(function (id) {
       var found = all.filter(function (g) { return g && g.id === id; })[0];
       if (found) picks.push(found);
     });
     if (!picks.length) return '';
-    var colors = ['#6E56CF', '#0ea5e9', '#10b981'];
+    var colors = ['#ff5fa2', '#4f9dff', '#2fc58a'];
     return '<div class="cm-spotlight">' +
-      '<div class="cm-spot-hd"><span>🎮 Featured Smartboard Games</span><small>Team Game Shows, Board Games &amp; Class Battles</small></div>' +
+      '<div class="cm-spot-hd"><span>🎮 Featured 3D Adventure Park &amp; Smartboard Games</span><small>Sunny 3D Worlds, EasyPeasy Shows &amp; Any Curriculum Pack</small></div>' +
       '<div class="cm-spot-grid">' + picks.map(function (g, i) {
         var raw = String(g.title || '').replace(/^[^\w(]+/u, '');
         if (gr) raw = raw.replace(/\s*\((grade|week)[^)]*\)\s*$/i, '');
@@ -363,7 +378,7 @@
       chip('🚀 Quests & RPG', shelf.kind === 'quest', "ClassMode.shelf('kind','quest')") + '<i></i>' +
       (embedded ? '' : chip('📖 All Lessons & Plans →', false, "if(window.switchView)window.switchView('library')")) +
       chip('✂ Clean up', shelf.curate, "ClassMode.curate()") + '</div>' + curateBar() +
-      '<div class="cm-search"><input id="cm-q" type="search" placeholder="Search games (Bamboozle, Board, Arcade, Simon Says, Race…)" value="' + esc(shelf.q) + '" oninput="ClassMode.shelf(\'q\',this.value)"></div>' +
+      '<div class="cm-search"><input id="cm-q" type="search" placeholder="Search games (3D Race, Bomb or Bonus, Treasure Planet, Time Train, Simon Says…)" value="' + esc(shelf.q) + '" oninput="ClassMode.shelf(\'q\',this.value)"></div>' +
       spotlightHtml(gr) +
       '<div class="cm-cards">' + (list.length ? list.map(function (g, i) {
         var c = colorFor(g, i);

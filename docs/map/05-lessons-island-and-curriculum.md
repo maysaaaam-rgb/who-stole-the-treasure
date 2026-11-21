@@ -25,9 +25,9 @@
 
 ---
 
-## 3. Registered `GAMES_DATA` Modules (122 total in [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js))
+## 3. Registered `GAMES_DATA` Modules (131 total in [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js))
 
-### Grade 3 Modules (75)
+### Grade 3 Modules (84)
 | ID | Title | URL | Worksheet | Local Disk | `404.html` |
 | :--- | :--- | :--- | :---: | :---: | :---: |
 | `pharaoh-living-book` | 👑 👑 The Pharaoh's Kingdom • 3D Living Pop-Up Book (Lessons 1–8) | `pharaoh-living-book.html` | — | ✅ Present | — |
@@ -64,10 +64,10 @@
 | `dino-expedition` | 🦖 🦖 Dino Expedition: Prehistoric Habitats | `dino-expedition/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `monster-evolution` | 🐉 🐉 Monster Evolution: Elemental Growth Cycles | `monster-evolution/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `karaoke-stage` | 🎤 🎤 Karaoke Stage: Read It One by One (Grades 3 and 4) | `karaoke-stage/index.html` | — | ✅ Present | — |
-| `games-collection` | ✦ ✦ Games Collection: Smart-Board Arcade | `games/index.html` | — | ✅ Present | ✅ |
+| `games-collection` | ✦ ✦ EasyPeasy & 3D Adventure Park Collection (30 Games) | `games/index.html` | — | ✅ Present | ✅ |
 | `time-train` | 🚂 🚂 Time Train: Past Simple Journey (Grade 3 Unit 5) | `games/past/index.html` | — | ✅ Present | ✅ |
-| `gamemaker-g3` | 📘 🎮 Game Maker: Units 1–3 (Grade 3) | `game-maker/index.html?grade=3` | — | ✅ Present | — |
-| `rev-u14-g3` | 📘 🏆 Units 1–4 Revision Game (Grade 3) | `game-maker/index.html?set=u14-g3&game=cannon` | — | ✅ Present | — |
+| `gamemaker-g3` | 📘 🎮 Game Maker 3.0 · 39 Smartboard Games (Grade 3) | `game-maker/index.html?class=class-3a&set=g3-u5-mega` | — | ✅ Present | ✅ |
+| `rev-u14-g3` | 📘 🏆 Units 1–4 Revision Game (Grade 3) | `games/cannon3d/index.html?set=u14-g3` | — | ✅ Present | ✅ |
 | `unit3-money-mission` | 🚀 🚀 Unit 3 Mission: How Much Is It? (Among Us + 2P Tug-of-War) | `unit3-money-mission/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `board-u3-g3-bear` | 🎲 Arctic Board Game (Unit 3, The Bear and I) | `unit3-board-game/index.html?grade=3` | — | ✅ Present | — |
 | `bamboozle-g4-u3` | 🧊 🎲 Bamboozle: Unit 3 Mystery Cards (Grade 3) | `bamboozle/index.html?grade=4&unit=3` | — | ✅ Present | ✅ |
@@ -105,6 +105,15 @@
 | `talk-show` | 🎤 🎤 Talk Show Studio: Speaking Battles (Grade 3 Time Show / Time Capsule TV · Grade 4 Make Some Noise / Concert Night) | `talk-show/index.html` | 🖨️ Yes | ✅ Present | — |
 | `rev-g3-time-book` | 📖 📖 The Time Book – Help Jannah! (Grade 3 Unit 5 Lesson 1) | `review-g3-time-book/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `rev-g3-time-capsule` | 🚀 🚀 Time Capsule Mission (Grade 3 Unit 5 Lesson 2) | `review-g3-time-capsule/index.html` | 🖨️ Yes | ✅ Present | ✅ |
+| `treasure-planet-3d` | 🌍 🌍 Treasure Island · 3D Tiny-Planet Quest | `island/planet.html?demo=1` | — | ✅ Present | ✅ |
+| `sprint-race-3d` | 🏁 🏁 3D Sprint Race · Adventure Park | `games/race3d/index.html` | — | ✅ Present | ✅ |
+| `monster-cannon-3d` | 🎯 🎯 3D Monster Cannon · Adventure Park | `games/cannon3d/index.html` | — | ✅ Present | ✅ |
+| `penalty-shootout-3d` | ⚽ ⚽ 3D Penalty Shootout · Adventure Park | `games/penalty3d/index.html` | — | ✅ Present | ✅ |
+| `bomb-or-bonus-3d` | 💣 💣 3D Bomb or Bonus · Mystery Chests | `games/bomb3d/index.html` | — | ✅ Present | ✅ |
+| `keep-or-give-3d` | 🎁 🎁 3D Keep or Give · Bluff Show | `games/bomb3d/index.html?mode=keepgive` | — | ✅ Present | ✅ |
+| `tug-of-war-3d` | 🪢 🪢 3D Tug of War · Class Pull | `games/tug3d/index.html` | — | ✅ Present | ✅ |
+| `bowling-3d` | 🎳 🎳 3D Monster Bowling · Park Alley | `games/bowling3d/index.html` | — | ✅ Present | ✅ |
+| `board-game-3d` | 🎲 🎲 3D Park Board Game · 24-Tile Trail | `games/board3d/index.html` | — | ✅ Present | ✅ |
 
 ### Grade 4 Modules (47)
 | ID | Title | URL | Worksheet | Local Disk | `404.html` |
@@ -126,8 +135,8 @@
 | `week-song-g4` | 🎵 🎵 Week Song: Learn, Move, Sing (Grade 4) | `week-song-g4/index.html` | — | ✅ Present | — |
 | `brain-quit` | 🧠 🧠 The Day Your Brain Quit! — Can You Save Your Brain? | `brain/index.html` | 🖨️ Yes | ✅ Present | — |
 | `class-reset` | 📘 🤝 Class Reset & Promise Lesson (Grade 4) | `class-reset/index.html` | — | ✅ Present | — |
-| `gamemaker-g4` | 📘 🎮 Game Maker: Units 1–3 (Grade 4) | `game-maker/index.html?grade=4` | — | ✅ Present | — |
-| `rev-u14-g4` | 📘 🏆 Units 1–4 Revision Game (Grade 4) | `game-maker/index.html?set=smart-g4&game=cannon` | — | ✅ Present | — |
+| `gamemaker-g4` | 📘 🎮 Game Maker 3.0 · 39 Smartboard Games (Grade 4) | `game-maker/index.html?class=class-4a&set=g4-u5-mega` | — | ✅ Present | ✅ |
+| `rev-u14-g4` | 📘 🏆 Units 1–4 Revision Game (Grade 4) | `games/cannon3d/index.html?set=u14-g4` | — | ✅ Present | ✅ |
 | `board-u3-g4-money` | 🎲 Money Board Game (Unit 3, How Much Is It?) | `unit3-board-game/index.html?grade=4` | — | ✅ Present | — |
 | `bamboozle-g3-u3` | 💰 🎲 Bamboozle: Unit 3 Mystery Cards (Grade 4) | `bamboozle/index.html?grade=3&unit=3` | — | ✅ Present | ✅ |
 | `bamboozle-g4-u2` | 🌲 🎲 Bamboozle: Unit 2 Mystery Cards (Grade 4) | `bamboozle/index.html?grade=4&unit=2` | — | ✅ Present | ✅ |
