@@ -437,7 +437,8 @@
       "wave": "assets/monsters/buddies/sonic_wave.webp",
       "jump": "assets/monsters/buddies/sonic_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-shadow",
@@ -462,7 +463,8 @@
       "wave": "assets/monsters/buddies/shadow_wave.webp",
       "jump": "assets/monsters/buddies/shadow_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-mario",
@@ -487,7 +489,8 @@
       "wave": "assets/monsters/buddies/mario_wave.webp",
       "jump": "assets/monsters/buddies/mario_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-yoshi",
@@ -512,7 +515,8 @@
       "wave": "assets/monsters/buddies/yoshi_wave.webp",
       "jump": "assets/monsters/buddies/yoshi_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-rumi",
@@ -537,7 +541,8 @@
       "wave": "assets/monsters/buddies/rumi_wave.webp",
       "jump": "assets/monsters/buddies/rumi_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-mira",
@@ -562,7 +567,8 @@
       "wave": "assets/monsters/buddies/mira_wave.webp",
       "jump": "assets/monsters/buddies/mira_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-zoey",
@@ -587,7 +593,8 @@
       "wave": "assets/monsters/buddies/zoey_wave.webp",
       "jump": "assets/monsters/buddies/zoey_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-stitch",
@@ -612,7 +619,8 @@
       "wave": "assets/monsters/buddies/stitch_wave.webp",
       "jump": "assets/monsters/buddies/stitch_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-cinnamoroll",
@@ -637,7 +645,8 @@
       "wave": "assets/monsters/buddies/cinnamoroll_wave.webp",
       "jump": "assets/monsters/buddies/cinnamoroll_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-kuromi",
@@ -662,7 +671,8 @@
       "wave": "assets/monsters/buddies/kuromi_wave.webp",
       "jump": "assets/monsters/buddies/kuromi_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-dogman",
@@ -687,7 +697,8 @@
       "wave": "assets/monsters/buddies/dogman_wave.webp",
       "jump": "assets/monsters/buddies/dogman_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-creeper",
@@ -712,7 +723,8 @@
       "wave": "assets/monsters/buddies/creeper_wave.webp",
       "jump": "assets/monsters/buddies/creeper_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-pikachu",
@@ -737,7 +749,8 @@
       "wave": "assets/monsters/buddies/pikachu_wave.webp",
       "jump": "assets/monsters/buddies/pikachu_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-charizard",
@@ -762,7 +775,8 @@
       "wave": "assets/monsters/buddies/charizard_wave.webp",
       "jump": "assets/monsters/buddies/charizard_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-miles",
@@ -787,7 +801,8 @@
       "wave": "assets/monsters/buddies/miles_wave.webp",
       "jump": "assets/monsters/buddies/miles_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-peter",
@@ -812,7 +827,8 @@
       "wave": "assets/monsters/buddies/peter_wave.webp",
       "jump": "assets/monsters/buddies/peter_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-spongebob",
@@ -837,7 +853,8 @@
       "wave": "assets/monsters/buddies/spongebob_wave.webp",
       "jump": "assets/monsters/buddies/spongebob_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-pomni",
@@ -862,7 +879,8 @@
       "wave": "assets/monsters/buddies/pomni_wave.webp",
       "jump": "assets/monsters/buddies/pomni_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hero-golden-freddy",
@@ -887,7 +905,8 @@
       "wave": "assets/monsters/buddies/golden_freddy_wave.webp",
       "jump": "assets/monsters/buddies/golden_freddy_jump.webp"
     },
-    "status": "active"
+    "status": "active",
+    "notForSale": true
   },
   {
     "id": "pet-hal-ghost",
