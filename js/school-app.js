@@ -12510,7 +12510,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (menuIcon) menuIcon.textContent = drawerOpen ? '✕' : '☰';
     if (menuLabel) menuLabel.textContent = drawerOpen ? 'Close' : 'More';
     const place = window.PlatformNav ? window.PlatformNav.placeOf(v) : v;
-    const activeTab = drawerOpen ? 'menu' : (['today', 'board', 'library', 'calendar'].includes(place) ? place : 'menu');
+    const activeTab = drawerOpen ? 'menu' : (['home', 'today', 'games', 'board'].includes(place) ? place : 'menu');
     bar.querySelectorAll('.eaa-mob-tab').forEach(btn => {
       btn.classList.toggle('is-active', btn.getAttribute('data-mob-tab') === activeTab);
     });
@@ -12522,6 +12522,12 @@ window.switchClassroomSubTab = function(subTab) {
       return;
     }
     window.closeMobileSidebar();
+    if (tab === 'games') {
+      if (window.PlatformNav && window.PlatformNav.go) window.PlatformNav.go('games');
+      else if (window.openGameMaker) window.openGameMaker();
+      else window.location.href = 'game-maker/index.html';
+      return;
+    }
     window.switchView(tab);
   };
 

@@ -351,7 +351,13 @@
   function stageSize() { var r = ui.stage.getBoundingClientRect(); return { w: Math.max(240, r.width), h: Math.max(160, r.height) }; }
   function fit() {
     if (!ui.box) return;
-    var r = ui.box.getBoundingClientRect(), ar = 16 / 10;
+    var r = ui.box.getBoundingClientRect();
+    if (root.innerWidth <= 860 || r.width < r.height) {
+      ui.stage.style.width = Math.max(240, Math.floor(r.width)) + 'px';
+      ui.stage.style.height = Math.max(240, Math.floor(r.height)) + 'px';
+      return;
+    }
+    var ar = 16 / 10;
     var w = r.width, h = w / ar;
     if (h > r.height) { h = r.height; w = h * ar; }
     ui.stage.style.width = Math.floor(w) + 'px';

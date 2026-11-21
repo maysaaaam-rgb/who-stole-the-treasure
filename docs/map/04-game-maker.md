@@ -38,7 +38,7 @@
 
 | File | Size | Lines | Cache `?v=` |
 | :--- | :---: | :---: | :---: |
-| [app.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/app.js) | 66.5 KB | 899 | `20261121b` |
+| [app.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/app.js) | 74.5 KB | 963 | `20261121c` |
 | [audio.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/audio.js) | 15.8 KB | 185 | `20261121b` |
 | [bank.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/bank.js) | 8.8 KB | 253 | `2` |
 | [core.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/core.js) | 36.2 KB | 607 | `17` |

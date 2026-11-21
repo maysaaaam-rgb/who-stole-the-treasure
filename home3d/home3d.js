@@ -1033,14 +1033,15 @@
   }
   var curLook = V();
   function home() {
-    K.cam.k = 4.2; K.cam.drift = false;
+    K.cam.k = 4.2; K.cam.drift = false; K.cam.noPortraitPull = true;
     K.cam.follow = function () {
       parallax.x += (parallax.tx - parallax.x) * 0.045;
       parallax.y += (parallax.ty - parallax.y) * 0.045;
       var pAmt = view.zoom > .65 ? 1 : 0.25;
       var yaw = view.yaw + parallax.x * 0.055 * pAmt;
       var pit = clamp(view.pitch + parallax.y * 0.032 * pAmt, .24, 1.18);
-      var baseD = fitDistance(Math.round(clamp(view.yaw, -.6, .6) * 20) / 20) * 1.03;
+      var isPortrait = (K.camera.aspect || 1.6) < 0.85;
+      var baseD = fitDistance(Math.round(clamp(view.yaw, -.6, .6) * 20) / 20) * (isPortrait ? 0.76 : 1.03);
       var maxD = Math.max(240, baseD * 1.25);
       var d = clamp(baseD * view.zoom, 11, maxD);
       if (scene.fog) {
@@ -1095,10 +1096,10 @@
     zOut.onclick = function () { setZoom(view.zoom * 1.35); };
     zReset.onclick = function () { resetView(); };
     zBar.appendChild(zIn); zBar.appendChild(zoomBadge); zBar.appendChild(zOut); zBar.appendChild(zReset);
-    // Bottom quick bar removed: the 3D buildings are the buttons (add ?bar=1 to bring it back).
+    // Always show 1-tap Quick Bar (docs/STYLE_GUIDE.md: "Every 3D place can also be opened in one tap from a quick bar")
     var quick = K.el('div', 'h3-quick');
-    if (/[?&]bar=1/.test(location.search)) K.ui.add(quick);
-    [['🏰', 'Today', 'today', '#9b7bff'], ['🏛️', 'Class Board', 'board', '#ff5fa2'], ['🛍️', 'Shop', 'shop', '#ffb320'], ['🎮', 'Games', 'games', '#2fc58a'], ['📚', 'Library', 'library', '#4f9dff']].forEach(function (q) {
+    if (!/[?&]bar=0/.test(location.search)) K.ui.add(quick);
+    [['🏰', 'Today', 'today', '#9b7bff'], ['🏛️', 'Board', 'board', '#ff5fa2'], ['🎮', 'Games', 'games', '#2fc58a'], ['🛍️', 'Shop', 'shop', '#ffb320'], ['📚', 'Library', 'library', '#4f9dff']].forEach(function (q) {
       var b = K.el('button', 'h3-q', '<i>' + q[0] + '</i><span>' + q[1] + '</span>'); b.style.setProperty('--c', q[3]);
       b.onclick = function () { var p = places.filter(function (x) { return x.id === q[2]; })[0]; if (p) go(p, true); };
       quick.appendChild(b);
@@ -1147,7 +1148,7 @@
   var loading = K.ui.add(K.el('div', 'loading', '<span>Sailing to Adventure Island…</span>'));
   function glb(path, h, opts) { return K.tryGLB(ROOT + 'assets/3d/' + path).then(function (g) { return g ? K.fitModel(g.scene, h, opts) : null; }); }
   function getJSON(url) { return fetch(url).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
-  Promise.all([getJSON('layout.json?v=15'), getJSON(ROOT + 'assets/3d/home/models.json')]).then(function (cfg) {
+  Promise.all([getJSON('layout.json?v=20261121c'), getJSON(ROOT + 'assets/3d/home/models.json')]).then(function (cfg) {
     LAYOUT = cfg[0]; if (!LAYOUT) throw new Error('layout.json is missing');
     MODELS = Array.isArray(cfg[1]) ? cfg[1].reduce(function (o, n) { o[n] = {}; return o; }, {}) : (cfg[1] || {});
     function real(name) { return MODELS[name] ? K.tryGLB(ROOT + 'assets/3d/home/' + name + '.glb') : Promise.resolve(null); }

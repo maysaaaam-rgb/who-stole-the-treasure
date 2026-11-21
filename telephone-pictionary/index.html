@@ -7,8 +7,9 @@
 <style>
   :root { --ink:#26215c; --spring:cubic-bezier(.175,.885,.32,1.275); }
   * { box-sizing:border-box; margin:0; }
-  html, body { height:100%; }
-  body { font-family:"Fredoka","Baloo 2","Comic Sans MS","Chalkboard SE","Trebuchet MS",system-ui,sans-serif; color:var(--ink); background:linear-gradient(180deg,#fde68a 0%,#fbcfe8 50%,#bae6fd 100%); display:flex; flex-direction:column; padding:2vh 3vw; gap:1.6vh; overflow:hidden; }
+  html, body { min-height:100%; }
+  body { font-family:"Fredoka","Baloo 2","Comic Sans MS","Chalkboard SE","Trebuchet MS",system-ui,sans-serif; color:var(--ink); background:linear-gradient(180deg,#fde68a 0%,#fbcfe8 50%,#bae6fd 100%); display:flex; flex-direction:column; padding:54px 3vw 2.4vh; gap:1.6vh; overflow-x:hidden; overflow-y:auto; }
+  .tp-back { position:fixed; top:10px; left:12px; z-index:40; text-decoration:none; font-weight:800; font-size:clamp(13px,2vh,18px); color:#fff; background:#ff5fa2; border:3px solid #fff; border-bottom:5px solid #c93d7d; border-radius:999px; padding:6px 14px; box-shadow:0 4px 10px rgba(38,33,92,.2); }
   h1 { font-size:clamp(24px,5vh,54px); text-align:center; }
   .sub { text-align:center; font-weight:600; color:#6d5fd1; font-size:clamp(14px,2.4vh,26px); }
   .screen { flex:1; min-height:0; display:none; flex-direction:column; gap:1.6vh; align-items:center; justify-content:center; }
@@ -44,6 +45,7 @@
 </style>
 </head>
 <body>
+<a class="tp-back" href="../game-maker/index.html" title="Back to All Games">🎮 ← All Games</a>
 <h1>📞 Telephone Pictionary: Draw &amp; Pass</h1>
 <div class="sub" id="sub">Write, draw, fold, pass. See how the sentence changes!</div>
 

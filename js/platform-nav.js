@@ -11,9 +11,10 @@
   var PLACES = [
     { id: 'home', icon: '🏝️', label: 'Island', tip: '3D Adventure Island front door: tap the castle, theatre, market, stadium or library tower', views: ['home'] },
     { id: 'today', icon: '🏰', label: 'Today', tip: 'Your lessons today with one-tap buttons', views: ['today', 'dashboard'] },
+    { id: 'games', icon: '🎮', label: 'Games', tip: 'All 47 smartboard & phone games in one unified hub', views: ['shelf'] },
     { id: 'board', icon: '📺', label: 'Class Board', tip: 'Points, timer and picker', views: ['board', 'classview', 'rewards'] },
     { id: 'shop', icon: '🛍️', label: 'Shop', tip: 'Avatar items with try-on, mystery boxes and real prizes', views: ['store-pupil', 'closet', 'monster'] },
-    { id: 'library', icon: '📖', label: 'Library', tip: 'Lessons, games, Game Maker and lesson plans', views: ['library', 'curriculum', 'shelf'] },
+    { id: 'library', icon: '📖', label: 'Library', tip: 'Lessons, unit reviews and printable lesson plans', views: ['library', 'curriculum'] },
     { id: 'tools', icon: '🪄', label: 'Board & Book', tip: 'Smart Board, Magic Book and classroom tools', views: ['tools'] },
     { id: 'calendar', icon: '📅', label: 'Plan', tip: 'Timetable and school calendar', views: ['calendar'] },
     { id: 'more', icon: '⚙️', label: 'More', tip: 'Teacher Hub, store settings, Practice Island, settings and the archive', views: ['more'] }
@@ -43,9 +44,12 @@
     switch (act) {
       case 'home': sw('home'); return;
       case 'shop': sw('store-pupil'); return;
-      case 'games': openUrl('games/index.html'); return;
+      case 'games':
+      case 'gm':
+        if (root.openGameMaker) root.openGameMaker(arg ? { setId: arg } : {});
+        else openUrl('game-maker/index.html');
+        return;
       case 'island': openUrl('island/index.html?demo=1'); return;
-      case 'gm': if (root.openGameMaker) root.openGameMaker(arg ? { setId: arg } : {}); else openUrl('game-maker/index.html'); return;
       case 'plans': sw('library'); setTimeout(function () { if (root.LibraryShelf && root.LibraryShelf.openTab) root.LibraryShelf.openTab('plans'); }, 60); return;
       case 'smartboard': openUrl('smart-board/index.html', 'smartboard'); return;
       case 'book': openUrl('magic-book/index.html?grade=' + (arg || activeGrade()), 'magicbook'); return;
@@ -73,7 +77,7 @@
       '<ul class="sidebar-nav-list pn-places">';
     PLACES.forEach(function (p) {
       html += b(cur === p.id && (p.id !== 'more' || view === 'more'), "PlatformNav.go('" + p.id + "')", p.icon, p.label, p.tip);
-      if (p.id === 'library') html += b(false, "PlatformNav.go('gm')", '🎮', 'Game Maker', 'Make a game with the active class', true) + b(false, "PlatformNav.go('plans')", '📋', 'Lesson Plans', 'Word and PDF lesson plans', true);
+      if (p.id === 'library') html += b(false, "PlatformNav.go('plans')", '📋', 'Lesson Plans', 'Word and PDF lesson plans', true);
       if (p.id === 'more') MORE.forEach(function (m) { html += b(view === m.v || (m.v === 'store-teacher' && view === 'store'), "PlatformNav.go('" + m.v + "')", m.icon, m.label, m.tip, true); });
     });
     html += '</ul>' +
@@ -83,8 +87,8 @@
     return html;
   }
   /* the picture rail used in Class Mode */
-  var RAIL_ART = { home: 'm_home', today: 'h_calendar', board: 'm_scoreboard', shop: 'r_chest', library: 'm_lesson', tools: 'm_pick', calendar: 'h_week_path', more: 'm_teacher_key' };
-  var RAIL_C = { home: '#2fc58a', today: '#9b7bff', board: '#ff5fa2', shop: '#ffb320', library: '#4f9dff', tools: '#ec4899', calendar: '#f59e0b', more: '#64748b' };
+  var RAIL_ART = { home: 'm_home', today: 'h_calendar', games: 'm_games', board: 'm_scoreboard', shop: 'r_chest', library: 'm_lesson', tools: 'm_pick', calendar: 'h_week_path', more: 'm_teacher_key' };
+  var RAIL_C = { home: '#2fc58a', today: '#9b7bff', games: '#ff5fa2', board: '#ff5fa2', shop: '#ffb320', library: '#4f9dff', tools: '#ec4899', calendar: '#f59e0b', more: '#64748b' };
   function railHtml(view) {
     var cur = placeOf(view);
     return '<nav class="cm-rail" aria-label="Class menu">' + PLACES.map(function (p) {
@@ -226,9 +230,9 @@
     var hello = now.getHours() < 12 ? 'Good morning' : now.getHours() < 17 ? 'Good afternoon' : 'Good evening';
     var sub = finished ? 'Today’s lessons are done. Here is ' + dayName(day) + '.' : tries ? 'No lessons today. Here is ' + dayName(day) + '.' : dayName(now) + ', ' + timed.length + (timed.length === 1 ? ' lesson' : ' lessons');
     var html = CSS + '<div class="pn"><div class="pn-top"><div><h1>' + esc(hello) + '</h1><div class="sub">' + esc(sub) + '</div></div>' +
-      '<button type="button" class="pn-a s p" onclick="PlatformNav.go(\'home\')">🏝️ 3D Island</button>' +
+      '<button type="button" class="pn-a s p" onclick="PlatformNav.go(\'games\')">🎮 All 47 Games</button>' +
+      '<button type="button" class="pn-a s v" onclick="PlatformNav.go(\'home\')">🏝️ 3D Island</button>' +
       '<button type="button" class="pn-a s" onclick="PlatformNav.search()">🔍 Search</button>' +
-      '<button type="button" class="pn-a s" onclick="PlatformNav.go(\'url\',\'lesson-plans/Week-9-13-November-Order.html\')">📋 Week 9 K12 Sheet</button>' +
       '<button type="button" class="pn-a s" onclick="PlatformNav.go(\'calendar\')">📅 Whole week</button></div>';
     if (timed.length > 1) {
       html += '<div class="pn-rib" aria-label="Lessons in order">' + timed.map(function (e, k) {
@@ -280,7 +284,7 @@
     }
     c.innerHTML =
       '<div class="pn-home3d-wrap" style="position:fixed;inset:0;width:100%;height:100%;height:100dvh;z-index:2000;background:#78c4ff">' +
-        '<iframe id="pn-home3d-frame" class="pn-home3d-frame" src="home3d/index.html?v=16" title="Adventure Island · English Adventure Academy 3D Front Door" allow="autoplay; fullscreen; microphone" style="width:100%;height:100%;border:0;display:block"></iframe>' +
+        '<iframe id="pn-home3d-frame" class="pn-home3d-frame" src="home3d/index.html?v=20261121c" title="Adventure Island · English Adventure Academy 3D Front Door" allow="autoplay; fullscreen; microphone" style="width:100%;height:100%;border:0;display:block"></iframe>' +
         '<div class="sr-only" aria-hidden="false" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">' +
           'English Adventure Academy 3D Island Front Door — Tap the Castle for Today, the Theatre for Class Board, the Market for Shop, the Stadium for Games, or the Library Tower for Library.' +
         '</div>' +
@@ -318,7 +322,7 @@
     var LC = root.LibraryCurate, list = LC && LC.archivedList ? LC.archivedList() : [];
     var q = arQ.toLowerCase(), shown = list.filter(function (g) { return !q || (g.title + ' ' + g.id).toLowerCase().indexOf(q) >= 0; });
     c.innerHTML = CSS + '<div class="pn"><h1>Old lessons</h1><div class="sub">Units 1–4, Halloween, Alice and Wonderland. They are kept out of the Library so it stays short. Nothing is deleted, and Search still finds them.</div>' +
-      '<input type="search" placeholder="Find an old lesson" value="' + esc(arQ) + '" oninput="PlatformNav.arFilter(this.value)" style="margin-top:12px;width:min(420px,100%);padding:10px 12px;border-radius:12px;border:1.5px solid #334155;background:#0f172a;color:#e5edff;font-weight:700">' +
+      '<input type="search" placeholder="Find an old lesson" value="' + esc(arQ) + '" oninput="PlatformNav.arFilter(this.value)" style="margin-top:12px;width:min(420px,100%);padding:10px 14px;border-radius:14px;border:2.5px solid #b7d8ff;background:#ffffff;color:#2b1d40;font-weight:700">' +
       card(shown.map(function (g) {
         var back = LC.isArchived && !LC.isArchived(g.id);
         return '<div class="pn-row" style="grid-template-columns:1fr auto"><span class="tx">' + esc(g.title) + '</span><span style="display:flex;gap:6px;flex-wrap:wrap">' +
@@ -377,11 +381,11 @@
   function openSearch(q) {
     closeSearch(); srch.idx = index();
     var o = document.createElement('div'); o.id = 'pn-search';
-    o.style.cssText = 'position:fixed;inset:0;z-index:100050;background:rgba(8,10,30,.62);backdrop-filter:blur(4px);display:flex;justify-content:center;align-items:flex-start;padding:8vh 12px 12px';
-    o.innerHTML = '<div style="width:min(720px,100%);background:#0f172a;border:1.5px solid #4C389E;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:hidden;color:#e5edff;font-family:inherit">' +
-      '<div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid #26324a"><span style="font-size:1.4rem">🔍</span>' +
-      '<input id="pn-q" type="search" autocomplete="off" placeholder="Find a lesson, game, plan, book page, pupil or tool…" style="flex:1;background:transparent;border:0;outline:0;color:#e5edff;font:700 1.15rem inherit">' +
-      '<button type="button" data-x style="background:#1e293b;border:1px solid #334155;border-bottom:3px solid #020617;color:#cbd5e1;border-radius:9px;padding:4px 9px;cursor:pointer;font-weight:800">Esc</button></div>' +
+    o.style.cssText = 'position:fixed;inset:0;z-index:100050;background:rgba(43,29,64,.42);backdrop-filter:blur(5px);display:flex;justify-content:center;align-items:flex-start;padding:8vh 12px 12px';
+    o.innerHTML = '<div style="width:min(720px,100%);background:#ffffff;border:4px solid #4f9dff;border-radius:24px;box-shadow:0 28px 70px rgba(43,29,64,.35);overflow:hidden;color:#2b1d40;font-family:inherit">' +
+      '<div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:2px solid #e6f0ff;background:#fffdf8"><span style="font-size:1.4rem">🔍</span>' +
+      '<input id="pn-q" type="search" autocomplete="off" placeholder="Find a lesson, game, plan, book page, pupil or tool…" style="flex:1;background:transparent;border:0;outline:0;color:#2b1d40;font:800 1.08rem inherit">' +
+      '<button type="button" data-x style="background:#fff8ec;border:2px solid #ead9bf;border-bottom:4px solid #d1b68e;color:#2b1d40;border-radius:10px;padding:4px 10px;cursor:pointer;font-weight:800">✕</button></div>' +
       '<div id="pn-res" style="max-height:62vh;overflow:auto;padding:6px 8px 10px"></div></div>';
     document.body.appendChild(o); srch.el = o;
     o.addEventListener('click', function (e) { if (e.target === o || e.target.hasAttribute('data-x')) closeSearch(); });
@@ -406,12 +410,12 @@
     var groups = {}, order = [];
     res.forEach(function (r, i) { r._i = i; if (!groups[r.k]) { groups[r.k] = []; order.push(r.k); } groups[r.k].push(r); });
     box.innerHTML = res.length ? order.map(function (k) {
-      return '<div style="font-size:.82rem;font-weight:800;color:#94a3b8;padding:12px 10px 4px">' + esc(k) + '</div>' + groups[k].map(function (r) {
-        return '<button type="button" class="pn-r" data-i="' + r._i + '" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 10px;border-radius:12px;border:0;background:transparent;color:#e5edff;cursor:pointer;font:inherit">' +
+      return '<div style="font-size:.82rem;font-weight:800;color:#68537d;padding:12px 10px 4px">' + esc(k) + '</div>' + groups[k].map(function (r) {
+        return '<button type="button" class="pn-r" data-i="' + r._i + '" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 10px;border-radius:12px;border:0;background:transparent;color:#2b1d40;cursor:pointer;font:inherit">' +
           '<span style="font-size:1.25rem;width:28px;text-align:center">' + r.icon + '</span><span style="flex:1;min-width:0"><b style="display:block;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(r.t) + '</b>' +
-          (r.s ? '<small style="color:#94a3b8">' + esc(r.s) + '</small>' : '') + '</span></button>';
+          (r.s ? '<small style="color:#68537d">' + esc(r.s) + '</small>' : '') + '</span></button>';
       }).join('');
-    }).join('') : '<div style="padding:24px;text-align:center;color:#94a3b8">Nothing found. Try one word, for example <b>time</b>, <b>noise</b> or a pupil’s name.</div>';
+    }).join('') : '<div style="padding:24px;text-align:center;color:#68537d">Nothing found. Try one word, for example <b>time</b>, <b>noise</b> or a pupil’s name.</div>';
     [].forEach.call(box.querySelectorAll('.pn-r'), function (b) {
       b.addEventListener('click', function () { pickResult(+b.getAttribute('data-i')); });
       b.addEventListener('mousemove', function () { if (srch.sel !== +b.getAttribute('data-i')) { srch.sel = +b.getAttribute('data-i'); paintSel(); } });
@@ -421,7 +425,7 @@
   function paintSel() {
     if (!srch.el) return;
     [].forEach.call(srch.el.querySelectorAll('.pn-r'), function (b) {
-      var on = +b.getAttribute('data-i') === srch.sel; b.style.background = on ? '#312e81' : 'transparent';
+      var on = +b.getAttribute('data-i') === srch.sel; b.style.background = on ? '#eef6ff' : 'transparent';
       if (on && b.scrollIntoView) b.scrollIntoView({ block: 'nearest' });
     });
   }

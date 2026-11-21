@@ -7,7 +7,7 @@
   var MODES = {
     island: { id: 'island', icon: '🏝️', title: 'Island Hop Live', stageClass: 'mode-island' },
     scan: { id: 'scan', icon: '🪪', title: 'Card Scan Quiz', stageClass: 'mode-scan' },
-    slice: { id: 'slice', icon: '📷', title: 'Webcam Slice', stageClass: 'mode-slice' }
+    slice: { id: 'slice', icon: '🍉', title: 'Fruit & Word Slice', stageClass: 'mode-slice' }
   };
 
   var gameId = Kit.param('game') || 'island';
@@ -438,20 +438,20 @@
   function renderSliceStage() {
     var q = currentQ();
     var qbar = el('div', { class: 'lv-qbar' }, [
-      el('div', { class: 'lv-qtext', text: '✋ Slice the answer: ' + q.q }),
-      el('div', { style: { display: 'flex', gap: '8px' } }, [
-        el('button', { type: 'button', class: 'btn', text: '🔊 Read', onclick: function () { Kit.say(q.q); } }),
+      el('div', { class: 'lv-qtext', text: '🍉 Swipe or tap the right fruit: ' + q.q }),
+      el('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } }, [
+        el('button', { type: 'button', class: 'btn sm', text: '🔊 Read', onclick: function () { Kit.say(q.q); } }),
         el('button', {
           type: 'button',
-          class: state.camActive ? 'btn pink' : 'btn mint',
-          text: state.camActive ? '⏹ Stop Motion Cam' : '📷 Hand-Motion Cam',
+          class: (state.camActive ? 'btn pink' : 'btn mint') + ' sm',
+          text: state.camActive ? '⏹ Stop Cam' : '📷 Motion Cam',
           onclick: function () {
             if (state.camActive) {
               stopCamera();
               renderStage();
             } else {
               if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                Kit.toast('No webcam detected — swipe or tap targets to slice!');
+                Kit.toast('Swipe or tap the fruit directly!');
                 return;
               }
               navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
@@ -459,7 +459,7 @@
                 state.camActive = true;
                 renderStage();
               }).catch(function () {
-                Kit.toast('Camera blocked — swipe or tap targets to slice!');
+                Kit.toast('Swipe or tap the fruit directly!');
               });
             }
           }
@@ -475,12 +475,22 @@
       arena.appendChild(vid);
     }
 
+    var trailCv = el('canvas', { class: 'lv-slice-trail' });
+    arena.appendChild(trailCv);
+    var trailPts = [], swiping = false;
+
+    var FRUITS = [
+      { ic: '🍉', cls: 'f-pink' },
+      { ic: '🍊', cls: 'f-gold' },
+      { ic: '🍓', cls: 'f-sky' },
+      { ic: '🍍', cls: 'f-mint' }
+    ];
     var targets = [];
     var positions = [
-      { x: 10, y: 16, vx: 0.22, vy: 0.14 },
-      { x: 56, y: 18, vx: -0.20, vy: 0.16 },
-      { x: 14, y: 58, vx: 0.18, vy: -0.15 },
-      { x: 58, y: 56, vx: -0.24, vy: -0.13 }
+      { x: 6,  y: 12, vx: 0.14,  vy: 0.10,  minX: 3,  maxX: 38, minY: 6,  maxY: 38 },
+      { x: 52, y: 14, vx: -0.13, vy: 0.11,  minX: 48, maxX: 72, minY: 6,  maxY: 38 },
+      { x: 8,  y: 56, vx: 0.12,  vy: -0.10, minX: 3,  maxX: 38, minY: 48, maxY: 74 },
+      { x: 52, y: 58, vx: -0.14, vy: -0.09, minX: 48, maxX: 72, minY: 48, maxY: 74 }
     ];
 
     function hitTarget(idx, btn) {
@@ -505,20 +515,44 @@
     }
 
     q.a.forEach(function (ans, idx) {
-      var pos = positions[idx % positions.length];
+      var pos = Object.assign({}, positions[idx % positions.length]);
+      var fr = FRUITS[idx % FRUITS.length];
       var btn = el('button', {
         type: 'button',
-        class: 'lv-slice-target',
-        text: '🍉 ' + ans,
+        class: 'lv-slice-target ' + fr.cls,
         style: { left: pos.x + '%', top: pos.y + '%' },
-        onpointerenter: function (ev) {
-          if (ev.buttons > 0) hitTarget(idx, btn);
-        },
         onclick: function () { hitTarget(idx, btn); }
-      });
+      }, [
+        el('span', { class: 'lv-fruit-ic', text: fr.ic }),
+        el('span', { class: 'lv-fruit-txt', text: ans })
+      ]);
       arena.appendChild(btn);
       targets.push({ el: btn, idx: idx, pos: pos });
     });
+
+    function checkFingerHit(clientX, clientY) {
+      for (var i = 0; i < targets.length; i++) {
+        var r = targets[i].el.getBoundingClientRect();
+        if (clientX >= r.left - 8 && clientX <= r.right + 8 && clientY >= r.top - 8 && clientY <= r.bottom + 8) {
+          hitTarget(targets[i].idx, targets[i].el);
+          break;
+        }
+      }
+    }
+    arena.addEventListener('pointerdown', function (e) {
+      swiping = true;
+      var ar = arena.getBoundingClientRect();
+      trailPts.push({ x: e.clientX - ar.left, y: e.clientY - ar.top, life: 1 });
+      checkFingerHit(e.clientX, e.clientY);
+    });
+    arena.addEventListener('pointermove', function (e) {
+      if (!swiping && e.buttons === 0) return;
+      var ar = arena.getBoundingClientRect();
+      trailPts.push({ x: e.clientX - ar.left, y: e.clientY - ar.top, life: 1 });
+      if (trailPts.length > 26) trailPts.shift();
+      checkFingerHit(e.clientX, e.clientY);
+    });
+    window.addEventListener('pointerup', function () { swiping = false; }, { passive: true });
 
     var prevFrame = null;
     var cvs = document.createElement('canvas');
@@ -528,11 +562,38 @@
 
     function tick() {
       if (state.locked) return;
+      var ar = arena.getBoundingClientRect();
+      if (ar.width > 10 && (trailCv.width !== Math.round(ar.width) || trailCv.height !== Math.round(ar.height))) {
+        trailCv.width = Math.round(ar.width);
+        trailCv.height = Math.round(ar.height);
+      }
+      var tctx = trailCv.getContext('2d');
+      if (tctx) {
+        tctx.clearRect(0, 0, trailCv.width, trailCv.height);
+        for (var p = trailPts.length - 1; p >= 0; p--) {
+          trailPts[p].life -= 0.06;
+          if (trailPts[p].life <= 0) trailPts.splice(p, 1);
+        }
+        if (trailPts.length > 1) {
+          tctx.lineCap = 'round';
+          tctx.lineJoin = 'round';
+          for (var s = 1; s < trailPts.length; s++) {
+            var a = trailPts[s - 1], b = trailPts[s];
+            tctx.beginPath();
+            tctx.moveTo(a.x, a.y);
+            tctx.lineTo(b.x, b.y);
+            tctx.strokeStyle = 'rgba(255, 95, 162, ' + (b.life * 0.85).toFixed(2) + ')';
+            tctx.lineWidth = Math.max(3, b.life * 14);
+            tctx.stroke();
+          }
+        }
+      }
+
       targets.forEach(function (t) {
         t.pos.x += t.pos.vx;
         t.pos.y += t.pos.vy;
-        if (t.pos.x < 4 || t.pos.x > 68) t.pos.vx *= -1;
-        if (t.pos.y < 6 || t.pos.y > 70) t.pos.vy *= -1;
+        if (t.pos.x < t.pos.minX || t.pos.x > t.pos.maxX) t.pos.vx *= -1;
+        if (t.pos.y < t.pos.minY || t.pos.y > t.pos.maxY) t.pos.vy *= -1;
         t.el.style.left = t.pos.x.toFixed(1) + '%';
         t.el.style.top = t.pos.y.toFixed(1) + '%';
       });

@@ -60,9 +60,9 @@
     var oldSl = document.getElementById('cm-sleepy-btn'); if (oldSl) oldSl.remove();
     if (!document.getElementById('cm-gm-btn')) {
       var gm = document.createElement('button'); gm.type = 'button'; gm.id = 'cm-gm-btn'; gm.className = 'cm-toggle cm-gm-btn';
-      gm.innerHTML = '<span>🎮</span> <span class="cm-hdr-lbl">Game Maker</span>';
-      gm.title = 'Open Game Maker with the active class and monsters';
-      gm.style.cssText = 'background:linear-gradient(180deg,#6E56CF,#4C389E);color:#fff;border:1.5px solid #8D75E6;border-bottom:4px solid #37267A;border-radius:12px;padding:7px 14px;font-weight:800;font-size:.86rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 3px 10px rgba(110,86,207,.28);transition:transform .12s cubic-bezier(.175,.885,.32,1.275)';
+      gm.innerHTML = '<span>🎮</span> <span class="cm-hdr-lbl">All Games</span>';
+      gm.title = 'Open All 47 Games & Game Maker with the active class';
+      gm.style.cssText = 'background:linear-gradient(180deg,#ff6fae,#ff5fa2);color:#fff;border:2px solid #ffc2df;border-bottom:4px solid #c93d7d;border-radius:12px;padding:7px 14px;font-weight:800;font-size:.86rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 3px 10px rgba(255,95,162,.28);transition:transform .12s cubic-bezier(.175,.885,.32,1.275)';
       gm.addEventListener('click', function () { openGameMaker(); });
       right.insertBefore(gm, right.firstChild);
     }
