@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="css/chapter2.css?v=rg-20261114d">
   <link rel="stylesheet" href="css/unity-feel.css?v=rg-20261114d">
   <link rel="stylesheet" href="css/realgame.css?v=w1-20261114b">
-  <link rel="stylesheet" href="css/bright.css?v=bp-20261119e">
+  <link rel="stylesheet" href="css/bright.css?v=20261121c">
 </head>
 <body class="w-page">
   <!-- Practice Island 2D Adventure World (unified entry point). -->
@@ -82,7 +82,16 @@
   <div id="w-fade"></div>
   <div id="w-load">⛵ Sailing to Treasure Island...<small id="w-load-small"></small></div>
   <div id="isl-modal-root"></div>
-  <div id="bp-turn" aria-live="polite"><img src="art/c_benbow_happy.webp" alt=""><span class="bp-phone">📱</span>Turn your phone sideways!<small>Treasure Island plays best this way.</small></div>
+  <div id="bp-turn" aria-live="polite">
+    <img src="art/c_benbow_happy.webp" alt="">
+    <span class="bp-phone">📱</span>
+    <b>Turn your phone sideways — or play right here!</b>
+    <small>Landscape gives the widest view of Admiral Benbow Harbour.</small>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px">
+      <button type="button" class="uf-btn emerald" style="padding:11px 22px;border-radius:999px;font:800 1rem inherit;cursor:pointer" onclick="document.body.classList.add('bp-allow-portrait')">▶ Play on Phone Now</button>
+      <a class="uf-btn cyan" href="../game-maker/index.html" style="padding:11px 18px;border-radius:999px;font:800 .95rem inherit;text-decoration:none">🎮 All Games</a>
+    </div>
+  </div>
 
 
   <!-- Lightweight core boot scripts (heavy engine & content scripts lazy-load on Play!) -->

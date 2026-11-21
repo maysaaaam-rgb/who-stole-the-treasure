@@ -8,9 +8,9 @@
 
 | File | Size | Lines | Loaded in `index.html`? |
 | :--- | :---: | :---: | :---: |
-| [bright-platform.css](file:///C:/Users/maysa/Desktop/DV/css/bright-platform.css) | 40.9 KB | 377 | Yes (#9, `?v=12`) |
+| [bright-platform.css](file:///C:/Users/maysa/Desktop/DV/css/bright-platform.css) | 41.6 KB | 380 | Yes (#9, `?v=20261121c`) |
 | [class-mode-pages.css](file:///C:/Users/maysa/Desktop/DV/css/class-mode-pages.css) | 16.8 KB | 119 | Yes (#7, `?v=7`) |
-| [class-mode.css](file:///C:/Users/maysa/Desktop/DV/css/class-mode.css) | 30.3 KB | 401 | Yes (#6, `?v=15`) |
+| [class-mode.css](file:///C:/Users/maysa/Desktop/DV/css/class-mode.css) | 30.5 KB | 407 | Yes (#6, `?v=20261121c`) |
 | [clil-styles.css](file:///C:/Users/maysa/Desktop/DV/css/clil-styles.css) | 7.8 KB | 330 | Module / Legacy |
 | [eaa-theme.css](file:///C:/Users/maysa/Desktop/DV/css/eaa-theme.css) | 5.2 KB | 104 | Yes (#2, `?v=3`) |
 | [expedition-styles.css](file:///C:/Users/maysa/Desktop/DV/css/expedition-styles.css) | 6.5 KB | 298 | Module / Legacy |
@@ -74,7 +74,7 @@
 | [board-scenes.js](file:///C:/Users/maysa/Desktop/DV/js/board-scenes.js) | 8.6 KB | 71 | #30 (`v=9`) | `BoardScenes` | Class Board scenes: the roster becomes a place where the monsters live. The scene changes with the class and the date |
 | [class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js) | 96.5 KB | 1056 | #32 (`v=47`) | `ClassBoard`, `renderClassBoardView` | Class Board: a full-screen projector view. Every monster with its points and quick +1/+5/+10, |
 | [class-journey.js](file:///C:/Users/maysa/Desktop/DV/js/class-journey.js) | 23.3 KB | 250 | #25 (`v=2`) | `ClassJourney` | Where we are (teacher only): for each class the last lesson (done or not), what the class still finds hard, the next lesson with what to print, |
-| [class-mode.js](file:///C:/Users/maysa/Desktop/DV/js/class-mode.js) | 27.3 KB | 457 | #37 (`v=20261121b`) | `openGameMaker`, `switchView`, `ClassMode`, `renderGameShelf` | Class Mode: a bright, picture-first skin for the whole platform, used on the smartboard. |
+| [class-mode.js](file:///C:/Users/maysa/Desktop/DV/js/class-mode.js) | 27.3 KB | 457 | #37 (`v=20261121c`) | `openGameMaker`, `switchView`, `ClassMode`, `renderGameShelf` | Class Mode: a bright, picture-first skin for the whole platform, used on the smartboard. |
 | [class-rewards.js](file:///C:/Users/maysa/Desktop/DV/js/class-rewards.js) | 14.8 KB | 119 | #35 (`v=11`) | `EAA_ILLUSTRATED_MONSTERS`, `ClassRewards`, `renderRewardsHall` | Rewards Hall: the smartboard Podium & Badges view inside the unified Store & Podium Hub. |
 | [class-view.js](file:///C:/Users/maysa/Desktop/DV/js/class-view.js) | 20.1 KB | 203 | #34 (`v=14`) | `ClassView`, `renderClassView` | Class view: one simple smartboard screen for the classroom. Big 3D picture buttons only. |
 | [classroom-sounds.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-sounds.js) | 31 KB | 451 | #68 (`v=2`) | `ClassroomSoundboard`, `ClassroomSoundList`, `classSoundboard` | English Adventure Academy - Classroom Soundboard Engine v2 |
@@ -85,12 +85,12 @@
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
 | [calendar-view.js](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js) | 94.1 KB | 826 | #23 (`v=20261116`) | `renderCalendarView`, `CalendarView` | Teacher calendar (sidebar: 📅 Calendar). Month and Week views of: the lessons of every class (from the weekly timetable, or the k12 timetable until it is set), |
-| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 416.8 KB | 10882 | #1 (`v=20261121b`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
+| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 427.5 KB | 10882 | #1 (`v=20261121b`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
 | [homework-data.js](file:///C:/Users/maysa/Desktop/DV/js/homework-data.js) | 15.3 KB | 392 | #8 (`v=3.1`) | `ALICE_HOMEWORK_ASSIGNMENTS`, `ALICE_WONDERLAND_XP_QUEST`, `AdventureAcademy`, `openMonsterLevelUpModal` | ADVENTURE ACADEMY — DISCRETE HOMEWORK XP TASKS DATA |
 | [island-apply.js](file:///C:/Users/maysa/Desktop/DV/js/island-apply.js) | 13.3 KB | 319 | #11 (`v=2`) | `IslandApply` | Practice Island — Platform XP & Monster Look Auto-Applier (js/island-apply.js) |
 | [island-curriculum-data.js](file:///C:/Users/maysa/Desktop/DV/js/island-curriculum-data.js) | 202.6 KB | 3813 | Standalone | `ISLAND_CURRICULUM_DATA` | ISLAND HOMEWORK REVISION PROJECT — MASTER CURRICULUM DATASET |
 | [library-curate.js](file:///C:/Users/maysa/Desktop/DV/js/library-curate.js) | 9.7 KB | 103 | #29 (`v=20261121b`) | `LibraryCurate` | Library clean-up: hide the lessons and games you do not want, star the best ones. |
-| [library-shelf.js](file:///C:/Users/maysa/Desktop/DV/js/library-shelf.js) | 18.4 KB | 304 | #50 (`v=7`) | `LibraryShelf` | Library shelf: Unified Hub 2 ("Lessons & Games"). |
+| [library-shelf.js](file:///C:/Users/maysa/Desktop/DV/js/library-shelf.js) | 18.6 KB | 310 | #50 (`v=20261121c`) | `LibraryShelf` | Library shelf: Unified Hub 2 ("Lessons & Games"). |
 | [library.js](file:///C:/Users/maysa/Desktop/DV/js/library.js) | 26.4 KB | 657 | #49 (`v=3.1.3`) | `getFilteredLibraryLessons`, `launchGame`, `LibraryController`, `CurriculumLibraryController` | ENGLISH ADVENTURE ACADEMY — LESSON LIBRARY ARCHITECTURE (V3.0) |
 | [retired-themes.js](file:///C:/Users/maysa/Desktop/DV/js/retired-themes.js) | 1.6 KB | 32 | #20 (`v=3`) | `RetiredThemes` | Retired themes (2 Nov 2026): Alice in Wonderland and the Chuseok / Korean festival are gone from the platform. |
 | [revision-board.js](file:///C:/Users/maysa/Desktop/DV/js/revision-board.js) | 10.5 KB | 107 | #24 (`v=1`) | `RevisionBoard` | Revision board (teacher only): what the class missed, each pupil's level, suggested groups and pairs, and the cloud copy. |
@@ -129,8 +129,8 @@
 | [command-center.js](file:///C:/Users/maysa/Desktop/DV/js/command-center.js) | 126 KB | 1123 | #26 (`v=62`) | `CommandCenter`, `renderCommandCenterView` | Command Center: a dense, calm teacher overview (class stats, the XP each pupil earned day by day, homework of the last two weeks from the Google Sheets, activit |
 | [daily-backup.js](file:///C:/Users/maysa/Desktop/DV/js/daily-backup.js) | 11.9 KB | 171 | #63 (`v=1`) | `DailyBackup` | Daily backup of the classroom data (XP, coins, shop, attendance) on this device. |
 | [daily-report.js](file:///C:/Users/maysa/Desktop/DV/js/daily-report.js) | 4.2 KB | 38 | #59 (`v=1`) | `DailyReport` | Daily report page. The 18:00 school-day check (a scheduled task that reads the school's k12 site and the platform in the teacher's own Chrome) writes its summar |
-| [platform-nav.js](file:///C:/Users/maysa/Desktop/DV/js/platform-nav.js) | 43.1 KB | 461 | #62 (`v=13`) | `EAAShortTitle`, `PlatformNav`, `PlatformViews` | Platform layout (9 Nov 2026): six places instead of a long menu. |
-| [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) | 1047.9 KB | 17221 | #64 (`v=ti112`) | `showNotification`, `updateClassroomTheme`, `prevTextbookPage`, `nextTextbookPage` | ENGLISH ADVENTURE ACADEMY — MASTER APPLICATION CONTROLLER & ROUTER |
+| [platform-nav.js](file:///C:/Users/maysa/Desktop/DV/js/platform-nav.js) | 43.1 KB | 465 | #62 (`v=20261121c`) | `EAAShortTitle`, `PlatformNav`, `PlatformViews` | Platform layout (9 Nov 2026): six places instead of a long menu. |
+| [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) | 1048.2 KB | 17227 | #64 (`v=20261121c`) | `showNotification`, `updateClassroomTheme`, `prevTextbookPage`, `nextTextbookPage` | ENGLISH ADVENTURE ACADEMY — MASTER APPLICATION CONTROLLER & ROUTER |
 | [school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js) | 762.3 KB | 17601 | #10 (`v=20261119sp1`) | `renderStudentRoster`, `renderCurrentView`, `safeBackgroundSupabaseSync`, `AdventureAcademy` | ENGLISH ADVENTURE ACADEMY — RELATIONAL PERSISTENT SCHOOL DATA ENGINE |
 | [ui.js](file:///C:/Users/maysa/Desktop/DV/js/ui.js) | 125.4 KB | 2815 | Standalone | `uiController` | UI Controller for "Who Stole the Treasure?" & "Detective Preparation" |
 
@@ -254,7 +254,7 @@
 
 ---
 
-### 📦 [js/school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) — 17221 lines (1047.9 KB)
+### 📦 [js/school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) — 17227 lines (1048.2 KB)
 
 #### Section Banners (52)
 | Lines | Section Title |
@@ -302,15 +302,15 @@
 | [L12414–L12443](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12414-L12443) | MOVE STUDENT HANDLERS |
 | [L12444–L12456](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12444-L12456) | REAL AVATAR CUSTOMIZER HANDLER |
 | [L12457–L12480](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12457-L12480) | MESSAGE THREAD HANDLERS |
-| [L12481–L12537](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12481-L12537) | MOBILE NAVIGATION DRAWER TOGGLE |
-| [L12538–L12924](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12538-L12924) | CLASSROOM STUDENT MANAGEMENT & ADVANCED TEACHER TOOLKIT ENGINE |
-| [L12925–L15671](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12925-L15671) | DEDICATED "EDIT STUDENT XP" MODAL CONTROLLER (INTERACTIVE 3D ARTIFACT) |
-| [L15672–L15856](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15672-L15856) | ORIGINAL TEXTBOOK VIEWER CONTROLLER (GLOBAL READINGS 2) |
-| [L15857–L16505](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15857-L16505) | MONSTER EVOLUTION & COMPANION SYSTEM CONTROLLERS |
-| [L16506–L16557](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16506-L16557) | FULLSCREEN MONSTER SHOWCASE CONTROLLER |
-| [L16558–L16652](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16558-L16652) | SCOPE & SEQUENCE MODAL CONTROLLER |
-| [L16653–L16813](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16653-L16813) | LESSON ATTACHMENT MODALS (Games, Worksheets, Assignments) |
-| [L16814–L17221](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16814-L17221) | CURRICULUM AI TEACHER ASSISTANT |
+| [L12481–L12543](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12481-L12543) | MOBILE NAVIGATION DRAWER TOGGLE |
+| [L12544–L12930](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12544-L12930) | CLASSROOM STUDENT MANAGEMENT & ADVANCED TEACHER TOOLKIT ENGINE |
+| [L12931–L15677](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12931-L15677) | DEDICATED "EDIT STUDENT XP" MODAL CONTROLLER (INTERACTIVE 3D ARTIFACT) |
+| [L15678–L15862](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15678-L15862) | ORIGINAL TEXTBOOK VIEWER CONTROLLER (GLOBAL READINGS 2) |
+| [L15863–L16511](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15863-L16511) | MONSTER EVOLUTION & COMPANION SYSTEM CONTROLLERS |
+| [L16512–L16563](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16512-L16563) | FULLSCREEN MONSTER SHOWCASE CONTROLLER |
+| [L16564–L16658](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16564-L16658) | SCOPE & SEQUENCE MODAL CONTROLLER |
+| [L16659–L16819](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16659-L16819) | LESSON ATTACHMENT MODALS (Games, Worksheets, Assignments) |
+| [L16820–L17227](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16820-L17227) | CURRICULUM AI TEACHER ASSISTANT |
 
 
 #### Key Functions & Methods (showing 60 of 548)
@@ -379,7 +379,7 @@
 
 ---
 
-### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10882 lines (416.8 KB)
+### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10882 lines (427.5 KB)
 
 
 

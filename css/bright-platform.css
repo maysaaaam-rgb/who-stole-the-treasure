@@ -230,10 +230,12 @@ html:not(#_b) body .thematic-companion-card .thematic-tag { color: var(--bp-ink)
 html:not(#_b) body .thematic-companion-card .thematic-quote { color: var(--bp-ink) !important; }
 html:not(#_b) body .thematic-companion-card .thematic-char-role { color: var(--bp-ink) !important; }
 html:not(#_b) body ::selection { color: var(--bp-ink) !important; }
-@media (max-width: 768px) { html:not(#_b) body .eaa-mobile-drawer-scrim { background: #ffffff !important; } }
-@media (max-width: 768px) { html:not(#_b) body .eaa-mobile-tabbar { border-top: 1px solid #ead9bf !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; } }
+@media (max-width: 768px) { html:not(#_b) body .eaa-mobile-drawer-scrim { background: rgba(43, 29, 64, 0.42) !important; } }
+@media (max-width: 768px) { html:not(#_b) body .eaa-mobile-tabbar { border-top: 2px solid #dcecff !important; box-shadow: 0 -8px 22px rgba(43,29,64,.14) !important; } }
 @media (max-width: 768px) { html:not(#_b) body .eaa-mob-tab { color: var(--bp-muted) !important; } }
-@media (max-width: 768px) { html:not(#_b) body .eaa-mob-tab.is-active { color: var(--bp-ink) !important; } }
+@media (max-width: 768px) { html:not(#_b) body .eaa-mob-tab.is-active { background: #eef6ff !important; border-color: #96c8ff !important; border-bottom-color: #4f9dff !important; color: var(--bp-ink) !important; } }
+@media (max-width: 768px) { html:not(#_b) body .eaa-mob-tab[data-mob-tab="games"] { background: linear-gradient(180deg, #ff76b0, #ff5fa2) !important; color: #ffffff !important; border-color: #ffd0e5 !important; border-bottom: 4px solid #c93d7d !important; box-shadow: 0 4px 10px rgba(255,95,162,.28) !important; } }
+@media (max-width: 768px) { html:not(#_b) body .eaa-mob-tab[data-mob-tab="games"] * { color: #ffffff !important; } }
 
 /* ===== Avatar Studio / Shop / Podium (classroom-store.js, class-rewards.js) ===== */
 html:not(#_b) body .cs-studio-top, html:not(#_b) body .cs-studio, html:not(#_b) body .cs-avwrap, html:not(#_b) body .cs-shelf-top, html:not(#_b) body .cr-hd, html:not(#_b) body .cr-fund, html:not(#_b) body .cr-legend { background: #ffffff !important; border: 3px solid #cfe6ff !important; color: var(--bp-ink) !important; box-shadow: 0 10px 22px -14px rgba(43,29,64,.35) !important; }
@@ -339,8 +341,9 @@ body:has(#app-view-container[data-view="home"]) .classroom-unified-dock {
 /* Phones (<= 768px): clean single-row header, sleek single-row scrollable Class Board dock, zero horizontal overflow */
 @media (max-width: 768px) {
   html:not(#_b) body .app-header .header-inner { padding: 0 8px !important; gap: 5px !important; }
-  html:not(#_b) body .app-header #cm-sb-btn,
-  html:not(#_b) body .app-header #cm-gm-btn { display: none !important; }
+  html:not(#_b) body .app-header #cm-sb-btn { display: none !important; }
+  html:not(#_b) body .app-header #cm-gm-btn { padding: 5px 8px !important; min-height: 32px !important; font-size: 0.78rem !important; }
+  html:not(#_b) body .app-header #cm-gm-btn .cm-hdr-lbl { display: none !important; }
   html:not(#_b) body .app-header #cm-toggle { padding: 5px 8px !important; min-height: 34px !important; font-size: 0.76rem !important; }
   html:not(#_b) body .app-header .cm-classes { padding: 2px !important; gap: 3px !important; }
   html:not(#_b) body .app-header .cm-classes .cm-cls { padding: 4px 7px !important; min-height: 30px !important; min-width: 32px !important; font-size: 0.74rem !important; }

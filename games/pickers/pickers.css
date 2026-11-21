@@ -65,18 +65,18 @@
   box-shadow: 0 14px 36px rgba(60, 40, 80, 0.12);
 }
 
-/* Themes per mode */
+/* Themes per mode (Sunny Adventure-Park Daylight — docs/STYLE_GUIDE.md) */
 .pk-stage.mode-ufo {
-  background: radial-gradient(circle at 50% 15%, #3b2d66 0%, #241b47 55%, #19293f 100%);
-  border-color: #8b77d8;
-  color: #fff;
+  background: linear-gradient(180deg, #8fd3ff 0%, #c8ecff 52%, #fff8ec 78%);
+  border-color: #6bc1ff;
+  color: #2b1d40;
 }
 .pk-stage.mode-ufo::after {
   content: "";
   position: absolute;
   left: 0; right: 0; bottom: 0; height: 24%;
-  background: linear-gradient(180deg, #5cc796 0%, #3ca677 100%);
-  border-top: 4px solid #8be6bc;
+  background: linear-gradient(180deg, #74da99 0%, #46bd78 100%);
+  border-top: 4px solid #a8f0c2;
   z-index: 0;
 }
 

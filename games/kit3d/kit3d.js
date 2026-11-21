@@ -553,6 +553,10 @@
       this.pos.lerp(this.tPos, f); this.look.lerp(this.tLook, f);
       var t = K.now, c = K.camera;
       c.position.copy(this.pos);
+      if (!this.noPortraitPull && c.aspect > 0 && c.aspect < 1.15) {
+        var pull = K.clamp(1.12 / Math.max(0.45, Math.pow(c.aspect, 0.72)), 1, 1.92);
+        c.position.sub(this.look).multiplyScalar(pull).add(this.look);
+      }
       if (this.drift) { c.position.x += Math.sin(t * .9) * .05; c.position.y += Math.sin(t * 1.3) * .04; }
       if (this.shakeT > 0) { this.shakeT -= dt; var a = this.shakeT * 1.2; c.position.x += K.rnd(-a, a); c.position.y += K.rnd(-a, a); }
       c.lookAt(this.look);
@@ -1536,13 +1540,14 @@
         }
       } catch (e) {}
     };
-    var backHref = back || (Q.get('from') === 'gm' ? '../../game-maker/index.html' : '../index.html');
-    var bk = K.el('button', 'ibtn', '✕'); bk.title = Q.get('from') === 'gm' ? 'Back to Game Maker' : 'Back to Games'; bk.onclick = function () { location.href = backHref; };
+    var is3dGame = /\/games\/[^/]+3d\//i.test(location.pathname);
+    var backHref = back || (is3dGame || Q.get('from') === 'gm' ? '../../game-maker/index.html' : '../index.html');
+    var bk = K.el('button', 'ibtn', '✕'); bk.title = 'Back to All Games'; bk.onclick = function () { location.href = backHref; };
     tb.appendChild(mu); tb.appendChild(fs); tb.appendChild(bk);
-    if (Q.get('from') === 'gm') {
-      var gmPill = K.ui.add(K.el('a', 'gm-back-pill', '🎮 ← Game Maker'));
+    if ((is3dGame || Q.get('from') === 'gm') && !Q.has('preview')) {
+      var gmPill = K.ui.add(K.el('a', 'gm-back-pill', '🎮 ← Games'));
       gmPill.href = backHref;
-      gmPill.title = 'Back to Game Maker';
+      gmPill.title = 'Back to All Games';
     }
     addEventListener('keydown', function (ev) {
       if (ev.target && /input|textarea|select/i.test(ev.target.tagName)) return;

@@ -8,54 +8,66 @@
   var GM = root.GM = root.GM || {}, U = GM.u, h = U.h, btn = U.btn, A = GM.audio, KEY = 'eaa_gm_v2', CKEY = 'eaa_gm_sets_v1';
   var SOON = [];
   var TIMERS = [[0, 'Off'], [10, '10 s'], [20, '20 s'], [30, '30 s'], [45, '45 s']];
-  /* Curated Smartboard Shelf: unites all 9 Flagship 3D Park/Planet games, all 17 EasyPeasy Smartboard games,
-     and the 9 best tactile Game Maker skill modes. Old duplicate 2D modes (board, race, cannon, bowling, penalty,
-     snakes) and plain-grid/weak modes (ttt, connect4, guesseroo, storydice, hunt, balloon, bingo) stay loadable by URL
-     but are hidden from the shelf in favor of their 3D & EasyPeasy upgrades! */
+  /* Unified Platform Games Hub (47 Vetted Games in ONE Place — Smartboard, Tablet & Mobile Phone Ready!):
+     Unites all 9 Flagship 3D Park/Planet games, all 29 EasyPeasy & Classroom games, and the 9 best tactile
+     Game Maker skill modes. Duplicate 2D legacy modes stay loadable by URL (?game=...) for old links. */
   var EXT_GAMES = [
-    { id: 'ext-planet3d',  cat: 'park3d', badge: '🌍 3D TINY PLANET', k3d: true, mins: '10–20 min', teams: 'Mobile & Board', sub3: 'Curved 3D Globe · 5 Harbour Stages · Treasure Chest', name: 'Treasure Island · 3D Planet', desc: 'Walk or tap around the sunlit 3D Treasure Island globe, follow the flying parrot, and solve 5 English clues!', poster: '../games/posters/planet3d.webp', url: '../island/planet.html?demo=1', previewUrl: '../island/planet.html?demo=1', steps: ['1. Walk or tap anywhere on the curved 3D island globe', '2. Follow the flying parrot to all 5 harbour clue stops', '3. Solve each mini-game & open Billy\'s Treasure Chest!'] },
-    { id: 'ext-race3d',    cat: 'park3d', badge: '🏃 3D STADIUM',     k3d: true, mins: '8–12 min',  teams: '2–4 Teams', sub3: '3D Running Track · Sprint Boost · Photo Finish', name: 'Sprint Race 3D', desc: '3-2-1-GO! Answer right so your 3D runner sprints down the Adventure Park track and snaps the finish ribbon!', poster: '../games/posters/race3d.jpg', url: '../games/race3d/', previewUrl: '../games/race3d/?demo=1&preview=1', steps: ['1. Answer the curriculum question', '2. Your 3D runner sprints forward with dust puffs', '3. First team to snap the finish ribbon wins!'] },
-    { id: 'ext-cannon3d',  cat: 'park3d', badge: '💥 3D PHYSICS',     k3d: true, mins: '8–12 min',  teams: '2–4 Teams', sub3: '3D Meadow · Drag Aim · Pop Balloons & Bullseye', name: 'Monster Cannon 3D', desc: 'Answer right to hop into the 3D cannon! Aim against the wind, pop floating balloons, and hit the +50 Bullseye!', poster: '../games/posters/cannon3d.jpg', url: '../games/cannon3d/', previewUrl: '../games/cannon3d/?demo=1&preview=1', steps: ['1. Answer right to load your team monster', '2. Drag back to aim angle & power', '3. BOOM — pop balloons & hit the Bullseye!'] },
-    { id: 'ext-penalty3d', cat: 'park3d', badge: '⚽ 3D STADIUM',     k3d: true, mins: '8–12 min',  teams: '2–4 Teams', sub3: '3D Football Pitch · Curve Shot · Beat the Keeper', name: 'Penalty Shootout 3D', desc: 'Step onto the 3D Park football pitch! Answer right, pick your corner or swipe to curve past the goalkeeper!', poster: '../games/posters/penalty3d.jpg', url: '../games/penalty3d/', previewUrl: '../games/penalty3d/?demo=1&preview=1', steps: ['1. Answer right to earn your penalty kick', '2. Pick a corner or swipe to curve the ball', '3. Beat the keeper & celebrate on the pitch!'] },
-    { id: 'ext-bomb3d',    cat: 'park3d', badge: '🎁 3D FUNFAIR',     k3d: true, mins: '10–15 min', teams: '2–4 Teams', sub3: '12 3D Gift Boxes · Stars, Swap, Double or BOOM', name: 'Bomb or Bonus 3D', desc: 'Answer right on the 3D Funfair stage and pick one of 12 numbered gift boxes: bonus stars, power swaps, or silly boom!', poster: '../games/posters/bomb3d.jpg', url: '../games/bomb3d/', previewUrl: '../games/bomb3d/?demo=1&preview=1', steps: ['1. Answer a question for your team', '2. Pick any of the 12 3D gift boxes', '3. Win +Stars, Swap, Steal, Double… or BOOM!'] },
-    { id: 'ext-keepgive3d',cat: 'park3d', badge: '🎀 3D STRATEGY',    k3d: true, mins: '10–15 min', teams: '2–4 Teams', sub3: '3D Gift Stage · Keep It or Give It to Rivals', name: 'Keep It or Give It 3D', desc: 'Pick a 3D mystery gift box and choose BEFORE it bursts open: KEEP IT for your team or GIVE IT to a rival!', poster: '../games/posters/keepgive.webp', url: '../games/bomb3d/?mode=keepgive', previewUrl: '../games/bomb3d/?mode=keepgive&demo=1&preview=1', steps: ['1. Answer right & choose a 3D gift box', '2. Decide: KEEP IT or GIVE IT to another team!', '3. Watch the box burst open on the 3D stage!'] },
-    { id: 'ext-tug3d',     cat: 'park3d', badge: '🪢 3D MEADOW',      k3d: true, mins: '10–15 min', teams: '2–4 Teams', sub3: '3D Rope Pull · Mud Puddle · Knockout Showdown', name: 'Tug of War 3D', desc: 'Two teams pull opposite ends of the rope over a bubbling 3D mud puddle! Right answers yank rivals into the mud!', poster: '../games/posters/tug3d.jpg', url: '../games/tug3d/', previewUrl: '../games/tug3d/?demo=1&preview=1', steps: ['1. Teams answer in turns on opposite ends', '2. Every right answer gives a big rope pull', '3. Pull the ribbon over your line to win!'] },
-    { id: 'ext-bowling3d', cat: 'park3d', badge: '🎳 3D LANES',       k3d: true, mins: '10–15 min', teams: '2–4 Teams', sub3: 'One 3D Lane per Team · Aim & Power · Strikes', name: 'Bowling 3D', desc: 'Side-by-side glossy 3D maple lanes! Answer right, tap to lock your aim arrow & power, and scatter all 10 pins!', poster: '../games/posters/bowling3d.jpg', url: '../games/bowling3d/', previewUrl: '../games/bowling3d/?demo=1&preview=1', steps: ['1. Answer the question on your lane', '2. Tap to stop the aim arrow & lock power', '3. Knock down 3D pins — STRIKE = +5 bonus!'] },
-    { id: 'ext-board3d',   cat: 'park3d', badge: '🎲 3D BOARD',       k3d: true, mins: '15–20 min', teams: '2–4 Teams', sub3: '30 Squares · Giant 3D Die · Ladders & Slides', name: 'Board Game 3D', desc: 'Roll the Giant 3D Die across 30 pastel squares! Climb ladders, zoom down slides, and open the erupting Treasure Chest!', poster: '../games/posters/board3d.jpg', url: '../games/board3d/', previewUrl: '../games/board3d/?demo=1&preview=1', steps: ['1. Answer right to roll the Giant 3D Die', '2. Climb ladders, ride slides & collect stars', '3. First monster to the Treasure Chest wins!'] },
+    { id: 'ext-planet3d',  cat: 'park3d', phone: true, badge: '🌍 3D TINY PLANET', k3d: true, mins: '10–20 min', teams: 'Phone & Board', sub3: 'Curved 3D Globe · 5 Harbour Stages · Treasure Chest', name: 'Treasure Island · 3D Planet', desc: 'Walk or tap around the sunlit 3D Treasure Island globe, follow the flying parrot, and solve 5 English clues!', poster: '../games/posters/planet3d.webp', url: '../island/planet.html?demo=1', previewUrl: '../island/planet.html?demo=1', steps: ['1. Walk or tap anywhere on the curved 3D island globe', '2. Follow the flying parrot to all 5 harbour clue stops', '3. Solve each mini-game & open Billy\'s Treasure Chest!'] },
+    { id: 'ext-race3d',    cat: 'park3d', phone: true, badge: '🏃 3D STADIUM',     k3d: true, mins: '8–12 min',  teams: '2–4 Teams', sub3: '3D Running Track · Sprint Boost · Photo Finish', name: 'Sprint Race 3D', desc: '3-2-1-GO! Answer right so your 3D runner sprints down the Adventure Park track and snaps the finish ribbon!', poster: '../games/posters/race3d.jpg', url: '../games/race3d/', previewUrl: '../games/race3d/?demo=1&preview=1', steps: ['1. Answer the curriculum question', '2. Your 3D runner sprints forward with dust puffs', '3. First team to snap the finish ribbon wins!'] },
+    { id: 'ext-cannon3d',  cat: 'park3d', phone: true, badge: '💥 3D PHYSICS',     k3d: true, mins: '8–12 min',  teams: '2–4 Teams', sub3: '3D Meadow · Drag Aim · Pop Balloons & Bullseye', name: 'Monster Cannon 3D', desc: 'Answer right to hop into the 3D cannon! Aim against the wind, pop floating balloons, and hit the +50 Bullseye!', poster: '../games/posters/cannon3d.jpg', url: '../games/cannon3d/', previewUrl: '../games/cannon3d/?demo=1&preview=1', steps: ['1. Answer right to load your team monster', '2. Drag back to aim angle & power', '3. BOOM — pop balloons & hit the Bullseye!'] },
+    { id: 'ext-penalty3d', cat: 'park3d', phone: true, badge: '⚽ 3D STADIUM',     k3d: true, mins: '8–12 min',  teams: '2–4 Teams', sub3: '3D Football Pitch · Curve Shot · Beat the Keeper', name: 'Penalty Shootout 3D', desc: 'Step onto the 3D Park football pitch! Answer right, pick your corner or swipe to curve past the goalkeeper!', poster: '../games/posters/penalty3d.jpg', url: '../games/penalty3d/', previewUrl: '../games/penalty3d/?demo=1&preview=1', steps: ['1. Answer right to earn your penalty kick', '2. Pick a corner or swipe to curve the ball', '3. Beat the keeper & celebrate on the pitch!'] },
+    { id: 'ext-bomb3d',    cat: 'park3d', phone: true, badge: '🎁 3D FUNFAIR',     k3d: true, mins: '10–15 min', teams: '2–4 Teams', sub3: '12 3D Gift Boxes · Stars, Swap, Double or BOOM', name: 'Bomb or Bonus 3D', desc: 'Answer right on the 3D Funfair stage and pick one of 12 numbered gift boxes: bonus stars, power swaps, or silly boom!', poster: '../games/posters/bomb3d.jpg', url: '../games/bomb3d/', previewUrl: '../games/bomb3d/?demo=1&preview=1', steps: ['1. Answer a question for your team', '2. Pick any of the 12 3D gift boxes', '3. Win +Stars, Swap, Steal, Double… or BOOM!'] },
+    { id: 'ext-keepgive3d',cat: 'park3d', phone: true, badge: '🎀 3D STRATEGY',    k3d: true, mins: '10–15 min', teams: '2–4 Teams', sub3: '3D Gift Stage · Keep It or Give It to Rivals', name: 'Keep It or Give It 3D', desc: 'Pick a 3D mystery gift box and choose BEFORE it bursts open: KEEP IT for your team or GIVE IT to a rival!', poster: '../games/posters/keepgive.webp', url: '../games/bomb3d/?mode=keepgive', previewUrl: '../games/bomb3d/?mode=keepgive&demo=1&preview=1', steps: ['1. Answer right & choose a 3D gift box', '2. Decide: KEEP IT or GIVE IT to another team!', '3. Watch the box burst open on the 3D stage!'] },
+    { id: 'ext-tug3d',     cat: 'park3d', phone: true, badge: '🪢 3D MEADOW',      k3d: true, mins: '10–15 min', teams: '2–4 Teams', sub3: '3D Rope Pull · Mud Puddle · Knockout Showdown', name: 'Tug of War 3D', desc: 'Two teams pull opposite ends of the rope over a bubbling 3D mud puddle! Right answers yank rivals into the mud!', poster: '../games/posters/tug3d.jpg', url: '../games/tug3d/', previewUrl: '../games/tug3d/?demo=1&preview=1', steps: ['1. Teams answer in turns on opposite ends', '2. Every right answer gives a big rope pull', '3. Pull the ribbon over your line to win!'] },
+    { id: 'ext-bowling3d', cat: 'park3d', phone: true, badge: '🎳 3D LANES',       k3d: true, mins: '10–15 min', teams: '2–4 Teams', sub3: 'One 3D Lane per Team · Aim & Power · Strikes', name: 'Bowling 3D', desc: 'Side-by-side glossy 3D maple lanes! Answer right, tap to lock your aim arrow & power, and scatter all 10 pins!', poster: '../games/posters/bowling3d.jpg', url: '../games/bowling3d/', previewUrl: '../games/bowling3d/?demo=1&preview=1', steps: ['1. Answer the question on your lane', '2. Tap to stop the aim arrow & lock power', '3. Knock down 3D pins — STRIKE = +5 bonus!'] },
+    { id: 'ext-board3d',   cat: 'park3d', phone: true, badge: '🎲 3D BOARD',       k3d: true, mins: '15–20 min', teams: '2–4 Teams', sub3: '30 Squares · Giant 3D Die · Ladders & Slides', name: 'Board Game 3D', desc: 'Roll the Giant 3D Die across 30 pastel squares! Climb ladders, zoom down slides, and open the erupting Treasure Chest!', poster: '../games/posters/board3d.jpg', url: '../games/board3d/', previewUrl: '../games/board3d/?demo=1&preview=1', steps: ['1. Answer right to roll the Giant 3D Die', '2. Climb ladders, ride slides & collect stars', '3. First monster to the Treasure Chest wins!'] },
 
-    { id: 'ext-flashlight',cat: 'reveal', badge: '🔦 HIDDEN PIC',     k3d: false, mins: '5–10 min', teams: 'Class or Teams', sub3: 'Golden Beam · Spoken Clue · Uncover & Tap', name: 'Flashlight Finder', desc: 'Sweep the glowing flashlight circle to spot and tap the hidden picture matching the spoken clue!', poster: '../games/posters/flashlight.webp', url: '../games/reveal/index.html?game=flashlight', previewUrl: '../games/reveal/index.html?game=flashlight&preview=1', steps: ['1. Listen to or read the clue word', '2. Sweep the golden flashlight beam', '3. Tap the matching hidden picture!'] },
-    { id: 'ext-doors',     cat: 'reveal', badge: '🚪 HIDDEN PIC',     k3d: false, mins: '8–12 min', teams: '2–6 Teams', sub3: '8 Candy Doors · Spotlight Peek · Guess Early', name: 'Sneaky Doors', desc: 'Pick one of 8 candy double-doors, sneak a spotlight peek through the gap, and shout the word for max points!', poster: '../games/posters/doors.webp', url: '../games/reveal/index.html?game=doors', previewUrl: '../games/reveal/index.html?game=doors&preview=1', steps: ['1. Pick one of 8 numbered candy doors', '2. Sneak a spotlight peek inside', '3. Open wide & award the guessing team!'] },
-    { id: 'ext-camera',    cat: 'reveal', badge: '📸 HIDDEN PIC',     k3d: false, mins: '8–12 min', teams: '2–6 Teams', sub3: '4 Animal Cameras · Polaroid Clues · Audio Quiz', name: 'Snap Cameras', desc: 'Tap Bunny, Frog, Bear, or Duck instant cameras to flash Polaroid corner clues and guess the mystery picture!', poster: '../games/posters/camera.webp', url: '../games/reveal/index.html?game=camera', previewUrl: '../games/reveal/index.html?game=camera&preview=1', steps: ['1. Tap any of the 4 animal cameras', '2. Study the flashed Polaroid clue', '3. Guess early for up to +10 points!'] },
-    { id: 'ext-orbit',     cat: 'reveal', badge: '🧩 HIDDEN PIC',     k3d: false, mins: '8–15 min', teams: '2–6 Teams', sub3: 'Orbiting Jigsaw · 8 Motion Modes · Snap Pieces', name: 'Orbit Puzzle', desc: '12 puzzle pieces orbit in a 3D ring and fly into place one by one — guess before the picture finishes!', poster: '../games/posters/orbit.webp', url: '../games/reveal/index.html?game=orbit', previewUrl: '../games/reveal/index.html?game=orbit&preview=1', steps: ['1. Watch puzzle pieces orbit on screen', '2. Press Space to fly pieces into place', '3. Guess early for maximum stars!'] },
-    { id: 'ext-bricks',    cat: 'reveal', badge: '🧱 HIDDEN PIC',     k3d: false, mins: '8–12 min', teams: '2–6 Teams', sub3: 'Star Mallet · Candy Brick Wall · Pop & Guess', name: 'Brick Blast', desc: 'Swing the Star Mallet to pop holes in the pastel brick wall and uncover the hidden vocabulary picture!', poster: '../games/posters/bricks.webp', url: '../games/reveal/index.html?game=bricks', previewUrl: '../games/reveal/index.html?game=bricks&preview=1', steps: ['1. Tap bricks with the Star Mallet', '2. Peek through the holes in the wall', '3. Shout the hidden word to score!'] },
-    { id: 'ext-tiles',     cat: 'reveal', badge: '🔤 HIDDEN PIC',     k3d: false, mins: '8–12 min', teams: '2–6 Teams', sub3: 'Letters A–X · Call a Letter · Uncover Picture', name: 'Letter Tiles', desc: 'Pupils call out letters A–X aloud to pop matching candy tiles off the mystery picture!', poster: '../games/posters/tiles.webp', url: '../games/reveal/index.html?game=tiles', previewUrl: '../games/reveal/index.html?game=tiles&preview=1', steps: ['1. Pupil calls out an English letter A–X', '2. Tap or press that letter to pop the tile', '3. Guess the mystery picture underneath!'] },
-    { id: 'ext-pixels',    cat: 'reveal', badge: '🟪 HIDDEN PIC',     k3d: false, mins: '5–10 min', teams: '2–6 Teams', sub3: 'Sharpening Mosaic · 4 Word Choices · Fast Bonus', name: 'Pixel Quiz', desc: 'A blocky mosaic sharpens second by second — tap the right word choice early for maximum points!', poster: '../games/posters/pixels.webp', url: '../games/reveal/index.html?game=pixels', previewUrl: '../games/reveal/index.html?game=pixels&preview=1', steps: ['1. Watch the mosaic sharpen over time', '2. Read the 4 word choices', '3. Tap the matching word before rivals!'] },
+    { id: 'ext-flashlight',cat: 'reveal', phone: true, badge: '🔦 HIDDEN PIC',     k3d: false, mins: '5–10 min', teams: 'Phone & Board', sub3: 'Golden Beam · Spoken Clue · Uncover & Tap', name: 'Flashlight Finder', desc: 'Sweep the glowing flashlight circle with your finger to spot and tap the hidden picture matching the clue!', poster: '../games/posters/flashlight.webp', url: '../games/reveal/index.html?game=flashlight', previewUrl: '../games/reveal/index.html?game=flashlight&preview=1', steps: ['1. Listen to or read the clue word', '2. Sweep the golden flashlight beam', '3. Tap the matching hidden picture!'] },
+    { id: 'ext-doors',     cat: 'reveal', phone: true, badge: '🚪 HIDDEN PIC',     k3d: false, mins: '8–12 min', teams: '2–6 Teams', sub3: '8 Candy Doors · Spotlight Peek · Guess Early', name: 'Sneaky Doors', desc: 'Pick one of 8 candy double-doors, sneak a spotlight peek through the gap, and shout the word for max points!', poster: '../games/posters/doors.webp', url: '../games/reveal/index.html?game=doors', previewUrl: '../games/reveal/index.html?game=doors&preview=1', steps: ['1. Pick one of 8 numbered candy doors', '2. Sneak a spotlight peek inside', '3. Open wide & award the guessing team!'] },
+    { id: 'ext-camera',    cat: 'reveal', phone: true, badge: '📸 HIDDEN PIC',     k3d: false, mins: '8–12 min', teams: 'Phone & Board', sub3: '4 Animal Cameras · Polaroid Clues · Audio Quiz', name: 'Snap Cameras', desc: 'Tap Bunny, Frog, Bear, or Duck instant cameras to flash Polaroid corner clues and tap A, B, C, or D!', poster: '../games/posters/camera.webp', url: '../games/reveal/index.html?game=camera', previewUrl: '../games/reveal/index.html?game=camera&preview=1', steps: ['1. Tap any of the 4 animal cameras', '2. Study the flashed Polaroid clue', '3. Tap A/B/C/D or guess early for +10!'] },
+    { id: 'ext-orbit',     cat: 'reveal', phone: true, badge: '🧩 HIDDEN PIC',     k3d: false, mins: '8–15 min', teams: '2–6 Teams', sub3: 'Orbiting Jigsaw · 8 Motion Modes · Snap Pieces', name: 'Orbit Puzzle', desc: '12 puzzle pieces orbit in a sunny sky ring and fly into place one by one — guess before it finishes!', poster: '../games/posters/orbit.webp', url: '../games/reveal/index.html?game=orbit', previewUrl: '../games/reveal/index.html?game=orbit&preview=1', steps: ['1. Watch puzzle pieces orbit on screen', '2. Tap Place Piece to snap pieces in', '3. Guess early for maximum stars!'] },
+    { id: 'ext-bricks',    cat: 'reveal', phone: true, badge: '🧱 HIDDEN PIC',     k3d: false, mins: '8–12 min', teams: 'Phone & Board', sub3: 'Star Mallet · Candy Brick Wall · Pop & Guess', name: 'Brick Blast', desc: 'Tap bricks with the Star Mallet to pop holes in the pastel brick wall and uncover the hidden picture!', poster: '../games/posters/bricks.webp', url: '../games/reveal/index.html?game=bricks', previewUrl: '../games/reveal/index.html?game=bricks&preview=1', steps: ['1. Tap bricks with the Star Mallet', '2. Peek through the holes in the wall', '3. Shout or tap the hidden word!'] },
+    { id: 'ext-tiles',     cat: 'reveal', phone: true, badge: '🔤 HIDDEN PIC',     k3d: false, mins: '8–12 min', teams: 'Phone & Board', sub3: 'Letters A–X · Call a Letter · Uncover Picture', name: 'Letter Tiles', desc: 'Tap or call out letters A–X to pop matching candy tiles off the mystery picture!', poster: '../games/posters/tiles.webp', url: '../games/reveal/index.html?game=tiles', previewUrl: '../games/reveal/index.html?game=tiles&preview=1', steps: ['1. Choose an English letter A–X', '2. Tap that letter to pop the tile', '3. Guess the mystery picture underneath!'] },
+    { id: 'ext-pixels',    cat: 'reveal', phone: true, badge: '🟪 HIDDEN PIC',     k3d: false, mins: '5–10 min', teams: 'Phone & Board', sub3: 'Sharpening Mosaic · 4 Word Choices · Fast Bonus', name: 'Pixel Quiz', desc: 'A blocky mosaic sharpens second by second — tap the right word choice early on phone or smartboard!', poster: '../games/posters/pixels.webp', url: '../games/reveal/index.html?game=pixels', previewUrl: '../games/reveal/index.html?game=pixels&preview=1', steps: ['1. Watch the mosaic sharpen over time', '2. Read the 4 word choices', '3. Tap the matching word before rivals!'] },
 
-    { id: 'ext-claw',      cat: 'board',  badge: '🧸 TEAM PRIZE',     k3d: false, mins: '8–12 min', teams: '2–6 Teams', sub3: 'Arcade Claw · Grab Plushies · +10 to +40 Stars', name: 'Claw Prize', desc: 'Answer right to power the arcade claw, aim over your favorite plushie, and drop to grab bonus stars!', poster: '../games/posters/claw.webp', url: '../games/prize/index.html?game=claw', previewUrl: '../games/prize/index.html?game=claw&preview=1', steps: ['1. Answer a question for your team', '2. Aim the arcade claw over a plushie', '3. Drop & grab +10 to +40 Stars!'] },
-    { id: 'ext-croc',      cat: 'board',  badge: '🐊 TEAM PRIZE',     k3d: false, mins: '6–10 min', teams: '2–6 Teams', sub3: 'Press a Tooth · +10 Safe Stars · Dodge the Snap', name: 'Crocodile Snap', desc: 'Answer right and press any shiny white crocodile tooth for +10 Stars — just avoid the 1 secret sore tooth!', poster: '../games/posters/croc.webp', url: '../games/prize/index.html?game=croc', previewUrl: '../games/prize/index.html?game=croc&preview=1', steps: ['1. Answer right to earn a tooth press', '2. Tap any shiny white tooth (+10 ⭐)', '3. Watch out for the silly SNAP!'] },
-    { id: 'ext-cups',      cat: 'board',  badge: '🏠 TEAM PRIZE',     k3d: false, mins: '8–12 min', teams: '2–6 Teams', sub3: '3 Shuffling Cottages · Track the Golden Trophy', name: '3-House Cup Shuffle', desc: 'Keep your eyes on the cottage hiding the Golden Trophy as all 3 shuffle across the board!', poster: '../games/posters/cups.webp', url: '../games/prize/index.html?game=cups', previewUrl: '../games/prize/index.html?game=cups&preview=1', steps: ['1. See where the Golden Trophy hides', '2. Follow the 3 cottages as they shuffle', '3. Answer right & tap the winning cottage!'] },
-    { id: 'ext-island',    cat: 'board',  badge: '🏝️ BOARD & HW',     k3d: false, mins: '8–12 min', teams: 'Class & Homework', sub3: '5 Islands · 6-Digit Homework Link · Treasure Bay', name: 'Island Hop Live', desc: 'Sail across 5 sunny islands by answering questions on the board — or copy a 1-click homework link!', poster: '../games/posters/island.webp', url: '../games/live/index.html?game=island', previewUrl: '../games/live/index.html?game=island&preview=1', steps: ['1. Answer curriculum questions on the board', '2. Sail boat from Palm Cove to Treasure Bay', '3. Optional: copy homework link for pupils!'] },
+    { id: 'ext-claw',      cat: 'board',  phone: true, badge: '🧸 TEAM PRIZE',     k3d: false, mins: '8–12 min', teams: 'Phone & Board', sub3: 'Arcade Claw · Grab Plushies · +10 to +40 Stars', name: 'Claw Prize', desc: 'Answer right to power the arcade claw, aim over your favorite plushie, and drop to grab bonus stars!', poster: '../games/posters/claw.webp', url: '../games/prize/index.html?game=claw', previewUrl: '../games/prize/index.html?game=claw&preview=1', steps: ['1. Answer a question for your team', '2. Tap any plushie slot to aim the claw', '3. Drop & grab +10 to +40 Stars!'] },
+    { id: 'ext-croc',      cat: 'board',  phone: true, badge: '🐊 TEAM PRIZE',     k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Press a Tooth · +10 Safe Stars · Dodge the Snap', name: 'Crocodile Snap', desc: 'Answer right and press any shiny white crocodile tooth for +10 Stars — just avoid the 1 secret sore tooth!', poster: '../games/posters/croc.webp', url: '../games/prize/index.html?game=croc', previewUrl: '../games/prize/index.html?game=croc&preview=1', steps: ['1. Answer right to earn a tooth press', '2. Tap any shiny white tooth (+10 ⭐)', '3. Watch out for the silly SNAP!'] },
+    { id: 'ext-cups',      cat: 'board',  phone: true, badge: '🏠 TEAM PRIZE',     k3d: false, mins: '8–12 min', teams: 'Phone & Board', sub3: '3 Shuffling Cottages · Track the Golden Trophy', name: '3-House Cup Shuffle', desc: 'Keep your eyes on the cottage hiding the Golden Trophy as all 3 shuffle across the screen!', poster: '../games/posters/cups.webp', url: '../games/prize/index.html?game=cups', previewUrl: '../games/prize/index.html?game=cups&preview=1', steps: ['1. See where the Golden Trophy hides', '2. Follow the 3 cottages as they shuffle', '3. Answer right & tap the winning cottage!'] },
+    { id: 'ext-island',    cat: 'board',  phone: true, badge: '🏝️ PHONE & HW',    k3d: false, mins: '8–12 min', teams: 'Phone & Board', sub3: '5 Islands · 6-Digit Homework Link · Treasure Bay', name: 'Island Hop Live', desc: 'Sail across 5 sunny islands by answering questions on phone, tablet, or smartboard — or share as homework!', poster: '../games/posters/island.webp', url: '../games/live/index.html?game=island', previewUrl: '../games/live/index.html?game=island&preview=1', steps: ['1. Answer curriculum questions to sail ahead', '2. Hop from Palm Cove to Treasure Bay', '3. Optional: copy homework link for pupils!'] },
 
-    { id: 'ext-timetrain', cat: 'word',   badge: '🚂 GRAMMAR',        k3d: false, mins: '8–15 min', teams: '2–6 Teams', sub3: 'Past Gate · Didn\'t Bridge · Did Tower', name: 'Time Train', desc: 'Ride through 3 magical railway stations mastering Past Simple positives, didn\'t verb-rewind, and Did…? questions!', poster: '../games/posters/time-train.webp', url: '../games/past/index.html', previewUrl: '../games/past/index.html?preview=1', steps: ['1. Past Gate: pick the past-tense ticket', '2. Didn\'t Bridge: watch the verb rewind to base', '3. Did Tower: build the Did…? question!'] },
-    { id: 'ext-shadows',   cat: 'word',   badge: '🐸 SCENE',          k3d: false, mins: '6–10 min', teams: '2–6 Teams', sub3: 'Listen · Tap Shadow Silhouette · Colour In!', name: 'Peekaboo Shadows', desc: 'Listen to the target word, tap the matching dark silhouette in the sunny courtyard, and pop it into full colour!', poster: '../games/posters/shadows.webp', url: '../games/scene/index.html?game=shadows', previewUrl: '../games/scene/index.html?game=shadows&preview=1', steps: ['1. Listen to the spoken word clue', '2. Find the matching shadow silhouette', '3. Tap to pop it into bright 3D colour!'] },
-    { id: 'ext-prep',      cat: 'word',   badge: '🐱 PREPOSITIONS',   k3d: false, mins: '6–10 min', teams: '2–6 Teams', sub3: 'Move Kitty · ON / IN / UNDER / NEXT TO', name: 'Preposition Room', desc: 'Listen to the instruction and tap the cozy bedroom spot so Kitty jumps ON, IN, UNDER, or NEXT TO it!', poster: '../games/posters/prep.webp', url: '../games/scene/index.html?game=prep', previewUrl: '../games/scene/index.html?game=prep&preview=1', steps: ['1. Hear where Kitty wants to go', '2. Tap ON, IN, UNDER or NEXT TO the furniture', '3. Watch Kitty leap there & say the sentence!'] },
-    { id: 'ext-meteor',    cat: 'word',   badge: '☄️ SPELLING',       k3d: false, mins: '6–10 min', teams: '2–6 Teams', sub3: 'Missing Letters · Rocket Blasts Meteors', name: 'Meteor Spelling', desc: 'Tap the missing letters in order so your rocket blasts incoming meteors and spells the target word!', poster: '../games/posters/meteor.webp', url: '../games/words/index.html?game=meteor', previewUrl: '../games/words/index.html?game=meteor&preview=1', steps: ['1. Look at the picture & word gap', '2. Tap missing letter meteors in order', '3. Blast meteors & spell the whole word!'] },
-    { id: 'ext-bubbles',   cat: 'word',   badge: '🫧 SPELLING',       k3d: false, mins: '6–10 min', teams: '2–6 Teams', sub3: 'Floating Letter Bubbles · Pop in Order', name: 'Bubble Word Garden', desc: 'See the picture, hear the word, and pop floating pastel letter bubbles in exact spelling order!', poster: '../games/posters/bubbles.webp', url: '../games/words/index.html?game=bubbles', previewUrl: '../games/words/index.html?game=bubbles&preview=1', steps: ['1. Hear & see the vocabulary picture', '2. Pop floating letters in spelling order', '3. Bloom the garden flower for +10 Stars!'] },
-    { id: 'ext-builder',   cat: 'word',   badge: '🧱 SENTENCES',      k3d: false, mins: '8–12 min', teams: '2–6 Teams', sub3: 'Scrambled Word Blocks · Snap Full Sentence', name: 'Sentence Builder', desc: 'Tap scrambled word blocks in order to snap together a complete English sentence and hear it read aloud!', poster: '../games/posters/builder.webp', url: '../games/words/index.html?game=builder', previewUrl: '../games/words/index.html?game=builder&preview=1', steps: ['1. Look at the story picture clue', '2. Tap word blocks in grammar order', '3. Read the finished sentence aloud together!'] },
-    { id: 'ext-bingo',     cat: 'word',   badge: '🔢 LISTENING',      k3d: false, mins: '6–10 min', teams: '2–6 Teams', sub3: 'Spoken Caller · 3×3 Picture Grid · BINGO!', name: 'Picture Bingo', desc: 'Listen to the spoken word clue, stamp the matching picture on your 3×3 board, and make a line of 3!', poster: '../games/posters/bingo.webp', url: '../games/words/index.html?game=bingo', previewUrl: '../games/words/index.html?game=bingo&preview=1', steps: ['1. Listen to the spoken caller word', '2. Tap the matching picture on the 3×3 grid', '3. Complete 3 in a row for +25 BINGO!'] },
-    { id: 'ext-slice',     cat: 'action', badge: '🍉 TOUCH / CAM',    k3d: false, mins: '6–10 min', teams: 'Active Play', sub3: 'Swipe Smartboard or Wave Hands · Slice Answers', name: 'Fruit & Word Slice', desc: 'Swipe your finger on the smartboard (or wave hands on webcam) to slice the watermelon carrying the right answer!', poster: '../games/posters/slice.webp', url: '../games/live/index.html?game=slice', previewUrl: '../games/live/index.html?game=slice&preview=1', steps: ['1. Read the question at the top', '2. Swipe or wave to slice the right fruit', '3. Score +15 Stars per clean slice!'] },
-    { id: 'ext-ufo',       cat: 'word',   badge: '🛸 PICKER',         k3d: false, mins: 'Any Time',  teams: 'Whole Class', sub3: 'Fair No-Repeat Speaker Picker · UFO Beam', name: 'UFO Beam Picker', desc: 'Need a fair volunteer? Watch the friendly UFO scan the class crowd and beam up the next speaker with zero repeats!', poster: '../games/posters/ufo.webp', url: '../games/pickers/index.html?game=ufo', previewUrl: '../games/pickers/index.html?game=ufo&preview=1', steps: ['1. Tap Beam Up Speaker!', '2. UFO scans everyone who hasn\'t spoken yet', '3. Beams up the lucky pupil + prompt!'] },
-    { id: 'ext-slime',     cat: 'word',   badge: '🟢 PAIR PICKER',    k3d: false, mins: 'Any Time',  teams: 'Pair Work', sub3: 'Calls Two Pupils Together · Roleplay & Dialogues', name: 'Slime Name Clash', desc: 'Bouncing pastel slimes pick TWO speakers at once — ideal for question-and-answer pair speaking at the board!', poster: '../games/posters/slime.webp', url: '../games/pickers/index.html?game=slime', previewUrl: '../games/pickers/index.html?game=slime&preview=1', steps: ['1. Tap Clash Two Speakers!', '2. Two bouncing slimes pick a fair pair', '3. Pupils act out the speaking prompt!'] }
+    { id: 'ext-slice',     cat: 'action', phone: true, badge: '🍉 SWIPE / CAM',    k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Swipe Finger on Phone/Board or Wave Hands!', name: 'Fruit & Word Slice', desc: 'Swipe your finger across the screen (or turn on Motion Cam) to slice the juicy fruit carrying the right word!', poster: '../games/posters/slice.webp', url: '../games/live/index.html?game=slice', previewUrl: '../games/live/index.html?game=slice&preview=1', steps: ['1. Read or listen to the question at the top', '2. Swipe across or tap the right fruit', '3. Score +15 Stars per clean slice!'] },
+
+    { id: 'ext-timetrain', cat: 'word',   phone: true, badge: '🚂 GRAMMAR',        k3d: false, mins: '8–15 min', teams: 'Phone & Board', sub3: 'Past Gate · Didn\'t Bridge · Did Tower', name: 'Time Train', desc: 'Ride through 3 magical railway stations mastering Past Simple positives, didn\'t verb-rewind, and Did…? questions!', poster: '../games/posters/time-train.webp', url: '../games/past/index.html', previewUrl: '../games/past/index.html?preview=1', steps: ['1. Past Gate: pick the past-tense ticket', '2. Didn\'t Bridge: watch the verb rewind to base', '3. Did Tower: build the Did…? question!'] },
+    { id: 'ext-shadows',   cat: 'word',   phone: true, badge: '🐸 SCENE',          k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Listen · Tap Shadow Silhouette · Colour In!', name: 'Peekaboo Shadows', desc: 'Listen to the target word, tap the matching dark silhouette in the sunny courtyard, and pop it into full colour!', poster: '../games/posters/shadows.webp', url: '../games/scene/index.html?game=shadows', previewUrl: '../games/scene/index.html?game=shadows&preview=1', steps: ['1. Listen to the spoken word clue', '2. Find the matching shadow silhouette', '3. Tap to pop it into bright 3D colour!'] },
+    { id: 'ext-prep',      cat: 'word',   phone: true, badge: '🐱 PREPOSITIONS',   k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Move Kitty · ON / IN / UNDER / NEXT TO', name: 'Preposition Room', desc: 'Listen to the instruction and tap the cozy bedroom spot so Kitty jumps ON, IN, UNDER, or NEXT TO it!', poster: '../games/posters/prep.webp', url: '../games/scene/index.html?game=prep', previewUrl: '../games/scene/index.html?game=prep&preview=1', steps: ['1. Hear where Kitty wants to go', '2. Tap ON, IN, UNDER or NEXT TO the furniture', '3. Watch Kitty leap there & say the sentence!'] },
+    { id: 'ext-looktap',   cat: 'word',   phone: true, badge: '🔎 SCENE',          k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Illustrated Room · Find & Tap Objects · Audio', name: 'Look & Tap Scene', desc: 'Scan the illustrated bedroom, listen to the spoken target word, and tap the matching object for +10 Stars!', poster: '../games/posters/looktap.webp', url: '../games/scene/index.html?game=looktap', previewUrl: '../games/scene/index.html?game=looktap&preview=1', steps: ['1. Scan the objects around the cozy room', '2. Hear or read the target word', '3. Tap the matching object for +10 Stars!'] },
+    { id: 'ext-meteor',    cat: 'word',   phone: true, badge: '☄️ SPELLING',       k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Missing Letters · Rocket Blasts Meteors', name: 'Meteor Spelling', desc: 'Tap the missing letters in order so your rocket blasts incoming meteors and spells the target word!', poster: '../games/posters/meteor.webp', url: '../games/words/index.html?game=meteor', previewUrl: '../games/words/index.html?game=meteor&preview=1', steps: ['1. Look at the picture & word gap', '2. Tap missing letter meteors in order', '3. Blast meteors & spell the whole word!'] },
+    { id: 'ext-mochi',     cat: 'word',   phone: true, badge: '🍡 VOCABULARY',     k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Match Picture + Word Mochi · Merge Sweets', name: 'Mochi Word Merge', desc: 'Tap a picture mochi tile and match it with its partner English word tile to merge all sweet pairs!', poster: '../games/posters/mochi.webp', url: '../games/words/index.html?game=mochi', previewUrl: '../games/words/index.html?game=mochi&preview=1', steps: ['1. Tap a kawaii picture mochi tile', '2. Tap its matching English word tile', '3. Merge all pairs to clear the tray!'] },
+    { id: 'ext-bubbles',   cat: 'word',   phone: true, badge: '🫧 SPELLING',       k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Floating Letter Bubbles · Pop in Order', name: 'Bubble Word Garden', desc: 'See the picture, hear the word, and pop floating pastel letter bubbles in exact spelling order!', poster: '../games/posters/bubbles.webp', url: '../games/words/index.html?game=bubbles', previewUrl: '../games/words/index.html?game=bubbles&preview=1', steps: ['1. Hear & see the vocabulary picture', '2. Pop floating letters in spelling order', '3. Bloom the garden flower for +10 Stars!'] },
+    { id: 'ext-builder',   cat: 'word',   phone: true, badge: '🧱 SENTENCES',      k3d: false, mins: '8–12 min', teams: 'Phone & Board', sub3: 'Scrambled Word Blocks · Snap Full Sentence', name: 'Sentence Builder', desc: 'Tap scrambled word blocks in order to snap together a complete English sentence and hear it read aloud!', poster: '../games/posters/builder.webp', url: '../games/words/index.html?game=builder', previewUrl: '../games/words/index.html?game=builder&preview=1', steps: ['1. Look at the story picture clue', '2. Tap word blocks in grammar order', '3. Read the finished sentence aloud together!'] },
+    { id: 'ext-pairs',     cat: 'word',   phone: true, badge: '🃏 MEMORY',         k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Flip Cards · Match Pictures, Words & Audio', name: 'Matching Pairs', desc: 'Flip pastel cards on phone or smartboard to match every vocabulary picture with its spoken word!', poster: '../games/posters/pairs.webp', url: '../games/words/index.html?game=pairs', previewUrl: '../games/words/index.html?game=pairs&preview=1', steps: ['1. Flip any two pastel cards', '2. Match picture with its English word', '3. Clear all pairs to win!'] },
+    { id: 'ext-bingo',     cat: 'word',   phone: true, badge: '🔢 LISTENING',      k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Spoken Caller · 3×3 Picture Grid · BINGO!', name: 'Picture Bingo', desc: 'Listen to the spoken word clue, stamp the matching picture on your 3×3 board, and make a line of 3!', poster: '../games/posters/bingo.webp', url: '../games/words/index.html?game=bingo', previewUrl: '../games/words/index.html?game=bingo&preview=1', steps: ['1. Listen to the spoken caller word', '2. Tap the matching picture on the 3×3 grid', '3. Complete 3 in a row for +25 BINGO!'] },
+
+    { id: 'ext-ufo',       cat: 'speak',  phone: true, badge: '🛸 PICKER',         k3d: false, mins: 'Any Time',  teams: 'Whole Class', sub3: 'Fair No-Repeat Speaker Picker · UFO Beam', name: 'UFO Beam Picker', desc: 'Need a fair volunteer? Watch the friendly UFO scan the class crowd and beam up the next speaker with zero repeats!', poster: '../games/posters/ufo.webp', url: '../games/pickers/index.html?game=ufo', previewUrl: '../games/pickers/index.html?game=ufo&preview=1', steps: ['1. Tap Beam Up Speaker!', '2. UFO scans everyone who hasn\'t spoken yet', '3. Beams up the lucky pupil + prompt!'] },
+    { id: 'ext-wash',      cat: 'speak',  phone: true, badge: '🫧 PICKER',         k3d: false, mins: 'Any Time',  teams: 'Whole Class', sub3: 'Spin Soap Bubbles · Pop Next Speaker', name: 'Bubble Wash Picker', desc: 'Tumble everyone\'s names in bubbly soap suds and pop out the next speaker with a speaking prompt!', poster: '../games/posters/wash.webp', url: '../games/pickers/index.html?game=wash', previewUrl: '../games/pickers/index.html?game=wash&preview=1', steps: ['1. Tap Spin & Pop!', '2. Watch names tumble in soap bubbles', '3. Pop out the next speaker for +10 Stars!'] },
+    { id: 'ext-slime',     cat: 'speak',  phone: true, badge: '🟢 PAIR PICKER',    k3d: false, mins: 'Any Time',  teams: 'Pair Work', sub3: 'Calls Two Pupils Together · Dialogues', name: 'Slime Name Clash', desc: 'Bouncing pastel slimes pick TWO speakers at once — ideal for question-and-answer pair speaking!', poster: '../games/posters/slime.webp', url: '../games/pickers/index.html?game=slime', previewUrl: '../games/pickers/index.html?game=slime&preview=1', steps: ['1. Tap Clash Two Speakers!', '2. Two bouncing slimes pick a fair pair', '3. Pupils act out the speaking prompt!'] },
+    { id: 'ext-dragon',    cat: 'speak',  phone: true, badge: '🐉 PICKER',         k3d: false, mins: 'Any Time',  teams: 'Whole Class', sub3: 'Friendly Sea Dragon · Golden Seashell Call', name: 'Sea Dragon Call', desc: 'Our friendly sea dragon dives into turquoise waves and surfaces with a golden seashell naming the speaker!', poster: '../games/posters/dragon.webp', url: '../games/pickers/index.html?game=dragon', previewUrl: '../games/pickers/index.html?game=dragon&preview=1', steps: ['1. Tap Call from the Waves!', '2. Sea Dragon dives into the sunny sea', '3. Golden seashell reveals the speaker!'] },
+    { id: 'ext-simonsays', cat: 'speak',  phone: true, badge: '🦉 TPR LIVE',       k3d: false, mins: '5–10 min',  teams: 'Whole Class', sub3: 'Spoken Voice Commands · Do It Only If Simon Says!', name: 'Simon Says Live', desc: 'Active TPR listening & movement game for Grade 3 and Grade 4 — listen closely and only move when Simon says!', poster: '../assets/shelf/simon-says-grade3.webp', url: '../simon-says/index.html', previewUrl: '../simon-says/index.html', steps: ['1. Pick Grade 3 or Grade 4 & tap Start', '2. Listen to Simon\'s spoken action command', '3. Move ONLY when it starts with "Simon says…"!'] },
+    { id: 'ext-telpic',    cat: 'speak',  phone: true, badge: '📞 DRAW & PASS',    k3d: false, mins: '10–15 min', teams: 'Groups of 4–6', sub3: 'Write a Sentence · Draw It · Fold & Pass!', name: 'Telephone Pictionary', desc: 'Hilarious group writing & drawing relay with built-in timer, sentence starters, and reveal prompts!', poster: '../platform-art/h_pencil.webp', url: '../telephone-pictionary/index.html', previewUrl: '../telephone-pictionary/index.html', steps: ['1. Pupil 1 secretly writes a starter sentence', '2. Next pupil draws it, folds, and passes', '3. Unfold at the end & read the funny chain aloud!'] },
+    { id: 'ext-island2d',  cat: 'speak',  phone: true, badge: '⛵ STORY QUEST',    k3d: false, mins: '10–20 min', teams: 'Solo & Home', sub3: 'Admiral Benbow Harbour · Story & Quests', name: 'Practice Island · Harbour Quest', desc: 'Explore the 2D illustrated Admiral Benbow Harbour, talk to characters, and complete home English quests!', poster: '../island/art/bg_island.webp', url: '../island/index.html?demo=1', previewUrl: '../island/index.html?demo=1', steps: ['1. Enter Admiral Benbow Harbour on phone or tablet', '2. Meet characters & collect story stamps', '3. Earn coins & XP for your classroom avatar!'] }
   ];
   var ORDER = ['boardgame', 'fling', 'whack', 'tower', 'baseball', 'plinko', 'memory', 'jigsaw', 'pass'];
+  var GM_PHONE = { boardgame: true, fling: true, whack: true, tower: true, baseball: true, plinko: true, memory: true, jigsaw: true, pass: true };
   var GM_MINS = { boardgame: '15–20 min', fling: '8–12 min', whack: '6–10 min', tower: '6–10 min', baseball: '8–12 min', plinko: '6–10 min', memory: '6–10 min', jigsaw: '8–12 min', pass: '5–8 min' };
   var GAME_CATS = [
-    ['all',    '⭐ All Smartboard Games', null],
-    ['park3d', '🌍 3D Adventure Park (9)', ['ext-planet3d', 'ext-race3d', 'ext-cannon3d', 'ext-penalty3d', 'ext-bomb3d', 'ext-keepgive3d', 'ext-tug3d', 'ext-bowling3d', 'ext-board3d']],
-    ['reveal', '🔍 Hidden Pictures (7)',   ['ext-flashlight', 'ext-doors', 'ext-camera', 'ext-orbit', 'ext-bricks', 'ext-tiles', 'ext-pixels']],
-    ['board',  '🏆 Team Prize & Board (8)',['ext-claw', 'ext-croc', 'ext-cups', 'ext-island', 'boardgame', 'plinko', 'pass']],
-    ['action', '🎯 Aim, Skill & Memory (7)',['fling', 'whack', 'tower', 'baseball', 'memory', 'jigsaw', 'ext-slice']],
-    ['word',   '🗺️ Scene, Words & Pickers (9)', ['ext-timetrain', 'ext-shadows', 'ext-prep', 'ext-meteor', 'ext-bubbles', 'ext-builder', 'ext-bingo', 'ext-ufo', 'ext-slime']]
+    ['all',    '⭐ All Games (47)', null],
+    ['phone',  '📱 Phone Ready', 'PHONE'],
+    ['park3d', '🌍 3D Worlds (9)', ['ext-planet3d', 'ext-race3d', 'ext-cannon3d', 'ext-penalty3d', 'ext-bomb3d', 'ext-keepgive3d', 'ext-tug3d', 'ext-bowling3d', 'ext-board3d']],
+    ['reveal', '🔍 Hidden Pictures (7)', ['ext-flashlight', 'ext-doors', 'ext-camera', 'ext-orbit', 'ext-bricks', 'ext-tiles', 'ext-pixels']],
+    ['board',  '🏆 Team & Board (7)', ['boardgame', 'ext-claw', 'ext-croc', 'ext-cups', 'plinko', 'pass', 'ext-island']],
+    ['action', '🎯 Action & Skill (7)', ['fling', 'whack', 'tower', 'baseball', 'memory', 'jigsaw', 'ext-slice']],
+    ['word',   '🔤 Words & Scene (10)', ['ext-timetrain', 'ext-shadows', 'ext-prep', 'ext-looktap', 'ext-meteor', 'ext-mochi', 'ext-bubbles', 'ext-builder', 'ext-pairs', 'ext-bingo']],
+    ['speak',  '🎤 Speaking & Quests (7)', ['ext-ufo', 'ext-wash', 'ext-slime', 'ext-dragon', 'ext-simonsays', 'ext-telpic', 'ext-island2d']]
   ];
   var HOW = {
     race: ['3-2-1-GO! Monsters line up on the pastel racetrack.', 'Answer right to spin a Turbo Boost, fly past rivals with dust puffs, and shake the camera!', 'First to snap the finish ribbon wins +50 bonus points on the podium!'],
@@ -91,6 +103,8 @@
     qUnit: 'all',
     qSkill: 'all',
     gameCat: 'all',
+    packOpen: false,
+    searchQ: '',
     cfg: { teams: 2, timer: 0, rem: 0, pu: {} },
     teams: [],
     groups: {},
@@ -216,26 +230,24 @@
     var activeSet = curSet();
     var wrap = h('div', { class: 'gm-home' });
 
-    /* Compact Hero Banner */
-    var hero = h('div', { class: 'gm-hero' }, [
-      h('div', { class: 'gm-hero-txt' }, [
-        h('h1', { class: 'gm-logo', text: 'Game Maker Studio' }),
-        h('p', { text: '1️⃣ Pick your class & question pack  ·  2️⃣ Launch any smartboard game!' })
-      ]),
-      U.art('ui_host', '🎤', 'gm-host')
-    ]);
-    wrap.appendChild(hero);
+    var classes = (GM.mon && GM.mon.classes) ? GM.mon.classes() : [];
+    var pk = !activeSet.smart && (S.picks || {})[activeSet.id];
+    var totalQ = activeSet.items ? activeSet.items.length : 20;
+    var activeQText = (pk && pk.length) ? (pk.length + '/' + totalQ + ' Qs') : (totalQ + ' Qs');
 
     /* =========================================================================
-       STEP 1: ORGANIZED CURRICULUM & QUESTION LIBRARY PANEL
+       COMPACT UNIFIED CONTROL BAR (Games First — Visible Above the Fold on Phone/Tablet/Board!)
        ========================================================================= */
-    var libPanel = h('div', { class: 'gm-lib-panel' });
+    var topCtrl = h('div', { class: 'gm-unified-bar' });
 
-    /* Top Header of Library Panel: Step Title + Class Quick-Switch + Teacher Tools */
-    var classes = (GM.mon && GM.mon.classes) ? GM.mon.classes() : [];
-    var classRow = h('div', { class: 'gm-lib-classes' });
+    var barLeft = h('div', { class: 'gm-ubar-left' });
+    barLeft.appendChild(h('div', { class: 'gm-ubar-brand' }, [
+      h('b', { text: '🎮 All Games' }),
+      h('small', { text: '47 Ready · Phone, Tablet & Smartboard' })
+    ]));
+
     if (classes.length) {
-      classRow.appendChild(h('span', { class: 'gm-lib-mini-lab', text: '🏫 Class:' }));
+      var clsBox = h('div', { class: 'gm-lib-classes gm-ubar-classes' });
       [['', 'All']].concat(classes.map(function (c) { return [c.id, c.label]; })).forEach(function (c) {
         var b = h('button', { type: 'button', class: 'gm-class-pill' + (S.classId === c[0] ? ' sel' : ''), text: c[1] });
         b.addEventListener('click', function () {
@@ -252,200 +264,230 @@
           save();
           render();
         });
-        classRow.appendChild(b);
+        clsBox.appendChild(b);
       });
+      barLeft.appendChild(clsBox);
     }
 
-    var toolsRow = h('div', { class: 'gm-lib-tools' });
-    var pk = !activeSet.smart && (S.picks || {})[activeSet.id];
-    var totalQ = activeSet.items ? activeSet.items.length : 20;
-    if (!activeSet.smart && GM.tools && totalQ > 1) {
-      var filterBtn = h('button', {
-        type: 'button',
-        class: 'gm-tool-pill cyan',
-        text: '🔍 ' + ((pk && pk.length) ? (pk.length + '/' + totalQ + ' Qs Chosen') : ('Preview / Filter (' + totalQ + ' Qs)'))
+    var packToggleBtn = h('button', {
+      type: 'button',
+      class: 'gm-pack-toggle' + (S.packOpen ? ' open' : ''),
+      title: 'Choose curriculum question pack, speaking set, or custom questions'
+    }, [
+      h('span', { class: 'gm-pt-ic', text: activeSet.e || '📚' }),
+      h('span', { class: 'gm-pt-txt' }, [
+        h('b', { text: activeSet.title }),
+        h('small', { text: activeQText + (S.packOpen ? ' · Hide Packs ▲' : ' · Change Pack ▼') })
+      ])
+    ]);
+    packToggleBtn.addEventListener('click', function () {
+      A.play('tap');
+      S.packOpen = !S.packOpen;
+      render();
+    });
+
+    var searchInput = h('input', {
+      type: 'search',
+      class: 'gm-game-search',
+      placeholder: '🔍 Search 47 games…',
+      value: S.searchQ || '',
+      'aria-label': 'Search all games'
+    });
+
+    var barRight = h('div', { class: 'gm-ubar-right' }, [packToggleBtn, searchInput]);
+    topCtrl.appendChild(barLeft);
+    topCtrl.appendChild(barRight);
+    wrap.appendChild(topCtrl);
+
+    /* =========================================================================
+       COLLAPSIBLE CURRICULUM & QUESTION PACK DRAWER (Opens on Tap!)
+       ========================================================================= */
+    var libPanel = h('div', { class: 'gm-lib-panel' + (S.packOpen ? ' is-open' : ' is-collapsed') });
+    if (S.packOpen) {
+      var toolsRow = h('div', { class: 'gm-lib-tools' });
+      if (!activeSet.smart && GM.tools && totalQ > 1) {
+        var filterBtn = h('button', {
+          type: 'button',
+          class: 'gm-tool-pill cyan',
+          text: '🔍 ' + ((pk && pk.length) ? (pk.length + '/' + totalQ + ' Qs Chosen') : ('Preview / Filter (' + totalQ + ' Qs)'))
+        });
+        filterBtn.addEventListener('click', function () {
+          A.play('tap');
+          GM.tools.chooseQuestions(activeSet, pk, function (arr) {
+            S.picks = S.picks || {};
+            if (arr.length) S.picks[activeSet.id] = arr;
+            else delete S.picks[activeSet.id];
+            save();
+            render();
+          });
+        });
+        toolsRow.appendChild(filterBtn);
+      }
+      if (GM.rev) {
+        var warmBtn = h('button', { type: 'button', class: 'gm-tool-pill amber', text: '🔁 Warm-up' });
+        warmBtn.addEventListener('click', function () {
+          A.play('tap');
+          GM.rev.remember(activeSet.items, { points: 6, check: 3 }, function () {});
+        });
+        toolsRow.appendChild(warmBtn);
+
+        var dailyBtn = h('button', { type: 'button', class: 'gm-tool-pill amber', text: '🧠 Daily 5' });
+        dailyBtn.addEventListener('click', function () { A.play('tap'); GM.rev.daily(); });
+        toolsRow.appendChild(dailyBtn);
+
+        var exitBtn = h('button', { type: 'button', class: 'gm-tool-pill ghost', text: '📝 Exit Ticket' });
+        exitBtn.addEventListener('click', function () { A.play('tap'); GM.rev.exitTicket(activeSet.items); });
+        toolsRow.appendChild(exitBtn);
+      }
+
+      var builder;
+      var newSetBtn = h('button', { type: 'button', class: 'gm-tool-pill ghost', text: '➕ Custom Set' });
+      newSetBtn.addEventListener('click', function () { A.play('tap'); if (builder) builder.classList.toggle('open'); });
+      toolsRow.appendChild(newSetBtn);
+
+      var donePackBtn = h('button', { type: 'button', class: 'gm-tool-pill green', text: '✓ Done' });
+      donePackBtn.addEventListener('click', function () { A.play('tap'); S.packOpen = false; render(); });
+      toolsRow.appendChild(donePackBtn);
+
+      var libHead = h('div', { class: 'gm-lib-head' }, [
+        h('div', { class: 'gm-lib-title' }, [
+          h('span', { class: 'gm-step-badge', text: 'PACKS' }),
+          h('b', { text: '📚 Choose Question or Speaking Pack' })
+        ]),
+        toolsRow
+      ]);
+      libPanel.appendChild(libHead);
+
+      /* Filter Row 1: Grade + Unit */
+      var fRow1 = h('div', { class: 'gm-filter-bar' });
+      fRow1.appendChild(h('span', { class: 'gm-filter-lab', text: '🎓 Grade' }));
+      [['all', 'All Grades'], ['3', 'Grade 3'], ['4', 'Grade 4']].forEach(function (g) {
+        var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qGrade === g[0] ? ' sel' : ''), text: g[1] });
+        b.addEventListener('click', function () { A.play('tap'); S.qGrade = g[0]; ensureValidSet(); save(); render(); });
+        fRow1.appendChild(b);
       });
-      filterBtn.addEventListener('click', function () {
-        A.play('tap');
-        GM.tools.chooseQuestions(activeSet, pk, function (arr) {
-          S.picks = S.picks || {};
-          if (arr.length) S.picks[activeSet.id] = arr;
-          else delete S.picks[activeSet.id];
+      fRow1.appendChild(h('span', { class: 'gm-filter-sep' }));
+      fRow1.appendChild(h('span', { class: 'gm-filter-lab', text: '📘 Unit' }));
+      [
+        ['all', 'All Units'],
+        ['5', '⭐ Unit 5 (Current)'],
+        ['4', 'Unit 4'],
+        ['3', 'Unit 3'],
+        ['2', 'Unit 2'],
+        ['1', 'Unit 1'],
+        ['mix', '🔁 Units 1–4 Mix & Smart']
+      ].forEach(function (u) {
+        var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qUnit === u[0] ? ' sel' : ''), text: u[1] });
+        b.addEventListener('click', function () { A.play('tap'); S.qUnit = u[0]; ensureValidSet(); save(); render(); });
+        fRow1.appendChild(b);
+      });
+      libPanel.appendChild(fRow1);
+
+      /* Filter Row 2: Skill */
+      var fRow2 = h('div', { class: 'gm-filter-bar' });
+      fRow2.appendChild(h('span', { class: 'gm-filter-lab', text: '🎯 Skill' }));
+      [
+        ['all', '📚 Full Units & Reviews'],
+        ['speaking', '🎤 Easy Speaking & Acting'],
+        ['words', '📝 Words'],
+        ['sentences', '💬 Sentences'],
+        ['reading', '📖 Reading'],
+        ['sounds', '🔤 Sounds'],
+        ['listen', '🎧 Listening']
+      ].forEach(function (sk) {
+        var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qSkill === sk[0] ? ' sel' : ''), text: sk[1] });
+        b.addEventListener('click', function () { A.play('tap'); S.qSkill = sk[0]; ensureValidSet(); save(); render(); });
+        fRow2.appendChild(b);
+      });
+      libPanel.appendChild(fRow2);
+
+      /* Organized Question Pack Cards Grid */
+      var packGrid = h('div', { class: 'gm-pack-grid' });
+      if (!matchingSets.length) {
+        matchingSets = sortFilteredSets(allSets());
+      }
+      matchingSets.forEach(function (s) {
+        var isSel = s.id === S.setId;
+        var g = getSetGrade(s);
+        var u = getSetUnit(s);
+        var sk = getSetSkill(s);
+        var sPicks = !s.smart && (S.picks || {})[s.id];
+        var qCount = s.smart ? 20 : (s.items ? s.items.length : 0);
+        var countLabel = (sPicks && sPicks.length) ? (sPicks.length + '/' + qCount + ' Qs') : (qCount + ' Qs');
+
+        var badges = h('div', { class: 'gm-pack-badges' });
+        if (g === 3 || g === 4) badges.appendChild(h('span', { class: 'gm-pbadge g' + g, text: 'Grade ' + g }));
+        if (u >= 1 && u <= 5) badges.appendChild(h('span', { class: 'gm-pbadge u', text: 'Unit ' + u }));
+        else if (s.smart) badges.appendChild(h('span', { class: 'gm-pbadge mix', text: 'Adaptive' }));
+        else badges.appendChild(h('span', { class: 'gm-pbadge mix', text: 'Units 1–4' }));
+        if (sk === 'speaking') badges.appendChild(h('span', { class: 'gm-pbadge spk', text: '🎤 Speaking' }));
+        badges.appendChild(h('span', { class: 'gm-pbadge cnt', text: countLabel }));
+
+        var card = h('button', {
+          type: 'button',
+          class: 'gm-pack-card' + (isSel ? ' sel' : '')
+        }, [
+          h('div', { class: 'gm-pack-ic', text: s.e || '📚' }),
+          h('div', { class: 'gm-pack-body' }, [
+            badges,
+            h('b', { class: 'gm-pack-title', text: s.title }),
+            s.sub ? h('small', { class: 'gm-pack-sub', text: s.sub }) : null
+          ]),
+          isSel ? h('span', { class: 'gm-pack-check', text: '✓ Active' }) : null
+        ]);
+
+        card.addEventListener('click', function () {
+          A.play('tap');
+          S.setId = s.id;
+          S.packOpen = false;
           save();
           render();
         });
+
+        if (s.custom) {
+          var d = h('span', { class: 'gm-del', title: 'Delete this set', text: '✕' });
+          d.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (d.dataset.sure) {
+              customSets = customSets.filter(function (x) { return x.id !== s.id; });
+              saveSets();
+              if (S.setId === s.id) S.setId = GM.sets[0].id;
+              render();
+            } else {
+              d.dataset.sure = 1;
+              d.textContent = 'Delete?';
+            }
+          });
+          card.appendChild(d);
+        }
+        packGrid.appendChild(card);
       });
-      toolsRow.appendChild(filterBtn);
-    }
-    if (GM.rev) {
-      var warmBtn = h('button', { type: 'button', class: 'gm-tool-pill amber', text: '🔁 Warm-up Set' });
-      warmBtn.addEventListener('click', function () {
-        A.play('tap');
-        GM.rev.remember(activeSet.items, { points: 6, check: 3 }, function () {});
-      });
-      toolsRow.appendChild(warmBtn);
+      libPanel.appendChild(packGrid);
 
-      var dailyBtn = h('button', { type: 'button', class: 'gm-tool-pill amber', text: '🧠 Daily 5' });
-      dailyBtn.addEventListener('click', function () { A.play('tap'); GM.rev.daily(); });
-      toolsRow.appendChild(dailyBtn);
-
-      var exitBtn = h('button', { type: 'button', class: 'gm-tool-pill ghost', text: '📝 Exit Ticket' });
-      exitBtn.addEventListener('click', function () { A.play('tap'); GM.rev.exitTicket(activeSet.items); });
-      toolsRow.appendChild(exitBtn);
-    }
-
-    var builder;
-    var newSetBtn = h('button', { type: 'button', class: 'gm-tool-pill ghost', text: '➕ Custom Set' });
-    newSetBtn.addEventListener('click', function () { A.play('tap'); if (builder) builder.classList.toggle('open'); });
-    toolsRow.appendChild(newSetBtn);
-
-    var libHead = h('div', { class: 'gm-lib-head' }, [
-      h('div', { class: 'gm-lib-title' }, [
-        h('span', { class: 'gm-step-badge', text: 'STEP 1' }),
-        h('b', { text: '📚 Pick Your Question Pack' })
-      ]),
-      classRow,
-      toolsRow
-    ]);
-    libPanel.appendChild(libHead);
-
-    /* Filter Row 1: Grade + Unit */
-    var fRow1 = h('div', { class: 'gm-filter-bar' });
-    fRow1.appendChild(h('span', { class: 'gm-filter-lab', text: '🎓 Grade' }));
-    [['all', 'All Grades'], ['3', 'Grade 3'], ['4', 'Grade 4']].forEach(function (g) {
-      var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qGrade === g[0] ? ' sel' : ''), text: g[1] });
-      b.addEventListener('click', function () { A.play('tap'); S.qGrade = g[0]; ensureValidSet(); save(); render(); });
-      fRow1.appendChild(b);
-    });
-    fRow1.appendChild(h('span', { class: 'gm-filter-sep' }));
-    fRow1.appendChild(h('span', { class: 'gm-filter-lab', text: '📘 Unit' }));
-    [
-      ['all', 'All Units'],
-      ['5', '⭐ Unit 5 (Current)'],
-      ['4', 'Unit 4'],
-      ['3', 'Unit 3'],
-      ['2', 'Unit 2'],
-      ['1', 'Unit 1'],
-      ['mix', '🔁 Units 1–4 Mix & Smart']
-    ].forEach(function (u) {
-      var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qUnit === u[0] ? ' sel' : ''), text: u[1] });
-      b.addEventListener('click', function () { A.play('tap'); S.qUnit = u[0]; ensureValidSet(); save(); render(); });
-      fRow1.appendChild(b);
-    });
-    libPanel.appendChild(fRow1);
-
-    /* Filter Row 2: Skill */
-    var fRow2 = h('div', { class: 'gm-filter-bar' });
-    fRow2.appendChild(h('span', { class: 'gm-filter-lab', text: '🎯 Skill' }));
-    [
-      ['all', '📚 Full Units & Reviews'],
-      ['speaking', '🎤 Easy Speaking & Acting'],
-      ['words', '📝 Words'],
-      ['sentences', '💬 Sentences'],
-      ['reading', '📖 Reading'],
-      ['sounds', '🔤 Sounds'],
-      ['listen', '🎧 Listening']
-    ].forEach(function (sk) {
-      var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qSkill === sk[0] ? ' sel' : ''), text: sk[1] });
-      b.addEventListener('click', function () { A.play('tap'); S.qSkill = sk[0]; ensureValidSet(); save(); render(); });
-      fRow2.appendChild(b);
-    });
-    libPanel.appendChild(fRow2);
-
-    /* Organized Question Pack Cards Grid */
-    var packGrid = h('div', { class: 'gm-pack-grid' });
-    if (!matchingSets.length) {
-      /* Fallback if a combination has no sets: reset unit filter to 'all' */
-      matchingSets = sortFilteredSets(allSets());
-    }
-    matchingSets.forEach(function (s) {
-      var isSel = s.id === S.setId;
-      var g = getSetGrade(s);
-      var u = getSetUnit(s);
-      var sk = getSetSkill(s);
-      var sPicks = !s.smart && (S.picks || {})[s.id];
-      var qCount = s.smart ? 20 : (s.items ? s.items.length : 0);
-      var countLabel = (sPicks && sPicks.length) ? (sPicks.length + '/' + qCount + ' Qs') : (qCount + ' Qs');
-
-      var badges = h('div', { class: 'gm-pack-badges' });
-      if (g === 3 || g === 4) {
-        badges.appendChild(h('span', { class: 'gm-pbadge g' + g, text: 'Grade ' + g }));
-      }
-      if (u >= 1 && u <= 5) {
-        badges.appendChild(h('span', { class: 'gm-pbadge u', text: 'Unit ' + u }));
-      } else if (s.smart) {
-        badges.appendChild(h('span', { class: 'gm-pbadge mix', text: 'Adaptive' }));
-      } else {
-        badges.appendChild(h('span', { class: 'gm-pbadge mix', text: 'Units 1–4' }));
-      }
-      if (sk === 'speaking') {
-        badges.appendChild(h('span', { class: 'gm-pbadge spk', text: '🎤 Speaking' }));
-      }
-      badges.appendChild(h('span', { class: 'gm-pbadge cnt', text: countLabel }));
-
-      var card = h('button', {
-        type: 'button',
-        class: 'gm-pack-card' + (isSel ? ' sel' : '')
-      }, [
-        h('div', { class: 'gm-pack-ic', text: s.e || '📚' }),
-        h('div', { class: 'gm-pack-body' }, [
-          badges,
-          h('b', { class: 'gm-pack-title', text: s.title }),
-          s.sub ? h('small', { class: 'gm-pack-sub', text: s.sub }) : null
-        ]),
-        isSel ? h('span', { class: 'gm-pack-check', text: '✓ Active' }) : null
-      ]);
-
-      card.addEventListener('click', function () {
-        A.play('tap');
-        S.setId = s.id;
+      var title = h('input', { class: 'gm-input', placeholder: 'Name of the set (for example: Unit 5 Extra Words)', maxlength: '60' });
+      var ta = h('textarea', { class: 'gm-input', rows: '5', placeholder: 'One question on each line:\nShe ____ a new hobby. | began | will | could\nWhat is a baby cat? | kitten | puppy | duck' });
+      var msg = h('div', { class: 'gm-hint', text: 'Write:  question | right answer | wrong answer | wrong answer   (use ____ for the gap).' });
+      builder = h('div', { class: 'gm-builder' }, [title, ta, msg, btn('💾 Save this set', 'green', function () {
+        var items = parseSet(ta.value);
+        if (!title.value.trim() || items.length < 3) {
+          msg.textContent = 'Please write a name and at least 3 lines like:  question | right | wrong | wrong';
+          U.wobble(msg);
+          return;
+        }
+        var id = 'my-' + Date.now();
+        customSets.push({ id: id, title: title.value.trim(), sub: 'Custom Teacher Set', e: '📝', custom: true, unit: 0, items: items });
+        saveSets();
+        S.setId = id;
+        S.packOpen = false;
         save();
         render();
-      });
-
-      if (s.custom) {
-        var d = h('span', { class: 'gm-del', title: 'Delete this set', text: '✕' });
-        d.addEventListener('click', function (e) {
-          e.stopPropagation();
-          if (d.dataset.sure) {
-            customSets = customSets.filter(function (x) { return x.id !== s.id; });
-            saveSets();
-            if (S.setId === s.id) S.setId = GM.sets[0].id;
-            render();
-          } else {
-            d.dataset.sure = 1;
-            d.textContent = 'Delete?';
-          }
-        });
-        card.appendChild(d);
-      }
-      packGrid.appendChild(card);
-    });
-    libPanel.appendChild(packGrid);
-
-    /* Custom Set Builder Drawer */
-    var title = h('input', { class: 'gm-input', placeholder: 'Name of the set (for example: Unit 4 Extra Words)', maxlength: '60' });
-    var ta = h('textarea', { class: 'gm-input', rows: '5', placeholder: 'One question on each line:\nShe ____ a new hobby. | began | will | could\nWhat is a baby cat? | kitten | puppy | duck' });
-    var msg = h('div', { class: 'gm-hint', text: 'Write:  question | right answer | wrong answer | wrong answer   (use ____ for the gap).' });
-    builder = h('div', { class: 'gm-builder' }, [title, ta, msg, btn('💾 Save this set', 'green', function () {
-      var items = parseSet(ta.value);
-      if (!title.value.trim() || items.length < 3) {
-        msg.textContent = 'Please write a name and at least 3 lines like:  question | right | wrong | wrong';
-        U.wobble(msg);
-        return;
-      }
-      var id = 'my-' + Date.now();
-      customSets.push({ id: id, title: title.value.trim(), sub: 'Custom Teacher Set', e: '📝', custom: true, unit: 0, items: items });
-      saveSets();
-      S.setId = id;
-      save();
-      render();
-    })]);
-    libPanel.appendChild(builder);
-    wrap.appendChild(libPanel);
+      })]);
+      libPanel.appendChild(builder);
+      wrap.appendChild(libPanel);
+    }
 
     /* =========================================================================
-       STEP 2: SMARTBOARD ARCADE GAME SHELF
+       UNIFIED 47-GAME ARCADE SHELF (Phone, Tablet & Smartboard)
        ========================================================================= */
     var gPanel = h('div', { class: 'gm-games-panel' });
     var activeCat = GAME_CATS.filter(function (c) { return c[0] === S.gameCat; })[0] || GAME_CATS[0];
@@ -456,16 +498,7 @@
       b.addEventListener('click', function () { A.play('tap'); S.gameCat = cat[0]; save(); render(); });
       catTabs.appendChild(b);
     });
-
-    var gHead = h('div', { class: 'gm-lib-head gm-games-head' }, [
-      h('div', { class: 'gm-lib-title' }, [
-        h('span', { class: 'gm-step-badge amber', text: 'STEP 2' }),
-        h('b', { text: '🕹️ Pick a Smartboard Game' }),
-        h('span', { class: 'gm-active-pack-pill', text: (activeSet.e || '📚') + ' ' + activeSet.title })
-      ]),
-      catTabs
-    ]);
-    gPanel.appendChild(gHead);
+    gPanel.appendChild(catTabs);
 
     function buildExtLaunchUrl(ext) {
       var base = ext.url;
@@ -503,7 +536,7 @@
           h('button', {
             type: 'button',
             class: 'gm-btn green',
-            text: '▶ Launch with ' + activeSet.title,
+            text: '▶ Play Now',
             onclick: function () { A.play('start'); location.href = buildExtLaunchUrl(ext); }
           })
         ])
@@ -515,125 +548,154 @@
 
     var grid = h('div', { class: 'gm-games' });
 
-    /* 1. Render Curated 3D Adventure Park & EasyPeasy Smartboard Games */
-    EXT_GAMES.forEach(function (ext) {
-      if (activeCat[2] && activeCat[2].indexOf(ext.id) < 0) return;
+    function matchesSearch(hay) {
+      var q = String(S.searchQ || '').trim().toLowerCase();
+      if (!q) return true;
+      return hay.toLowerCase().indexOf(q) >= 0;
+    }
 
-      var launchBtn = h('button', {
-        type: 'button',
-        class: 'gm-gcard-btn play' + (ext.k3d ? ' park3d' : ''),
-        title: 'Launch with active class & question pack!',
-        text: ext.k3d ? '🌍 Play 3D' : '⚡ Quick Play'
-      });
-      launchBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        A.play('start');
-        save();
-        location.href = buildExtLaunchUrl(ext);
+    function paintGrid() {
+      grid.innerHTML = '';
+      var countShown = 0;
+
+      /* 1. Render Curated 3D Adventure Park, EasyPeasy & Classroom Games */
+      EXT_GAMES.forEach(function (ext) {
+        if (activeCat[2] === 'PHONE') {
+          if (!ext.phone) return;
+        } else if (Array.isArray(activeCat[2]) && activeCat[2].indexOf(ext.id) < 0) {
+          return;
+        }
+        if (!matchesSearch(ext.name + ' ' + ext.badge + ' ' + ext.sub3 + ' ' + ext.desc + ' ' + ext.id)) return;
+        countShown++;
+
+        var launchBtn = h('button', {
+          type: 'button',
+          class: 'gm-gcard-btn play' + (ext.k3d ? ' park3d' : ''),
+          title: 'Launch game now!',
+          text: ext.k3d ? '🌍 Play 3D' : '▶ Play'
+        });
+        launchBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          A.play('start');
+          save();
+          location.href = buildExtLaunchUrl(ext);
+        });
+
+        var prevBtn = h('button', {
+          type: 'button',
+          class: 'gm-gcard-btn setup',
+          title: 'Watch 3-step live gameplay preview',
+          text: '🎬 Preview'
+        });
+        prevBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          openExtPreviewModal(ext);
+        });
+
+        var picBox = h('div', { class: 'gm-game-pic' }, [
+          h('img', { class: 'gm-cardimg', src: ext.poster, alt: ext.name, loading: 'lazy', decoding: 'async' }),
+          h('span', { class: 'gm-game-kbadge' + (ext.k3d ? ' k3d' : ''), text: ext.badge }),
+          h('span', { class: 'gm-game-tbadge', text: '👥 ' + ext.teams }),
+          h('span', { class: 'gm-game-time', text: '⏱ ' + ext.mins })
+        ]);
+
+        var c = h('div', { class: 'gm-game', tabindex: '0', role: 'button' }, [
+          picBox,
+          h('div', { class: 'gm-game-cap' }, [
+            h('span', { class: 'gm-game-sub3', text: ext.sub3 }),
+            h('b', { text: ext.name }),
+            h('small', { class: 'gm-game-desc', text: ext.desc }),
+            h('div', { class: 'gm-game-actions' }, [launchBtn, prevBtn])
+          ])
+        ]);
+        c.addEventListener('click', function () {
+          A.play('start');
+          save();
+          location.href = buildExtLaunchUrl(ext);
+        });
+        grid.appendChild(c);
       });
 
-      var prevBtn = h('button', {
-        type: 'button',
-        class: 'gm-gcard-btn setup',
-        title: 'Watch 3-step live gameplay preview',
-        text: '🎬 Preview'
-      });
-      prevBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        openExtPreviewModal(ext);
+      /* 2. Render Kept Tactile Game Maker Skill & Board Modes */
+      ORDER.forEach(function (id) {
+        var m = GM.modes[id];
+        if (!m) return;
+        if (activeCat[2] === 'PHONE') {
+          if (!GM_PHONE[id]) return;
+        } else if (Array.isArray(activeCat[2]) && activeCat[2].indexOf(id) < 0) {
+          return;
+        }
+        var nm = modeName(m), ds = modeDesc(m);
+        if (!matchesSearch(nm + ' ' + ds + ' ' + id + ' arcade skill')) return;
+        countShown++;
+
+        var teamTag = m.teams ? ('⚔️ ' + m.teams + ' Teams') : '👥 2–8 Teams';
+        var minsTag = '⏱ ' + (GM_MINS[id] || '8–12 min');
+        var playBtn = h('button', {
+          type: 'button',
+          class: 'gm-gcard-btn play',
+          title: 'Start playing immediately with this question pack!',
+          text: '▶ Play'
+        });
+        playBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          A.play('start');
+          S.modeId = id;
+          if (m.teams && S.cfg.teams !== m.teams) { S.cfg.teams = m.teams; S.teams = []; }
+          save();
+          startGame(true);
+        });
+
+        var setupBtn = h('button', {
+          type: 'button',
+          class: 'gm-gcard-btn setup',
+          title: 'Customize teams, avatars, timer & rules',
+          text: '⚙️ Setup'
+        });
+        setupBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          A.play('flip');
+          S.modeId = id;
+          save();
+          S.screen = 'setup';
+          render();
+        });
+
+        var c = h('div', { class: 'gm-game', tabindex: '0', role: 'button' }, [
+          h('div', { class: 'gm-game-pic' }, [
+            cardArt(id, m.e),
+            h('span', { class: 'gm-game-kbadge', text: '🎯 ARCADE SKILL' }),
+            h('span', { class: 'gm-game-tbadge' + (m.teams === 2 ? ' vs' : ''), text: teamTag }),
+            h('span', { class: 'gm-game-time', text: minsTag })
+          ]),
+          h('div', { class: 'gm-game-cap' }, [
+            h('span', { class: 'gm-game-sub3', text: 'Phone & Smartboard · Live Teams · Speaking' }),
+            h('b', { text: nm }),
+            h('small', { class: 'gm-game-desc', text: ds }),
+            h('div', { class: 'gm-game-actions' }, [playBtn, setupBtn])
+          ])
+        ]);
+        c.addEventListener('click', function () {
+          A.play('flip');
+          S.modeId = id;
+          save();
+          S.screen = 'setup';
+          render();
+        });
+        grid.appendChild(c);
       });
 
-      var picBox = h('div', { class: 'gm-game-pic' }, [
-        h('img', { class: 'gm-cardimg', src: ext.poster, alt: ext.name, loading: 'lazy', decoding: 'async' }),
-        h('span', { class: 'gm-game-kbadge' + (ext.k3d ? ' k3d' : ''), text: ext.badge }),
-        h('span', { class: 'gm-game-tbadge', text: '👥 ' + ext.teams }),
-        h('span', { class: 'gm-game-time', text: '⏱ ' + ext.mins })
-      ]);
+      if (!countShown) {
+        grid.appendChild(h('div', { class: 'gm-empty-search', text: 'No games match "' + S.searchQ + '". Tap All Games or clear search!' }));
+      }
+    }
 
-      var c = h('div', { class: 'gm-game', tabindex: '0', role: 'button' }, [
-        picBox,
-        h('div', { class: 'gm-game-cap' }, [
-          h('span', { class: 'gm-game-sub3', text: ext.sub3 }),
-          h('b', { text: ext.name }),
-          h('small', { class: 'gm-game-desc', text: ext.desc }),
-          h('div', { class: 'gm-game-actions' }, [launchBtn, prevBtn])
-        ])
-      ]);
-      c.addEventListener('click', function () {
-        A.play('start');
-        save();
-        location.href = buildExtLaunchUrl(ext);
-      });
-      grid.appendChild(c);
+    searchInput.addEventListener('input', function () {
+      S.searchQ = searchInput.value || '';
+      paintGrid();
     });
 
-    /* 2. Render Kept Tactile Game Maker Skill & Board Modes */
-    ORDER.forEach(function (id) {
-      var m = GM.modes[id];
-      if (!m) return;
-      if (activeCat[2] && activeCat[2].indexOf(id) < 0) return;
-
-      var teamTag = m.teams ? ('⚔️ ' + m.teams + ' Teams') : '👥 2–8 Teams';
-      var minsTag = '⏱ ' + (GM_MINS[id] || '8–12 min');
-      var playBtn = h('button', {
-        type: 'button',
-        class: 'gm-gcard-btn play',
-        title: 'Start playing immediately with this question pack!',
-        text: '⚡ Quick Play'
-      });
-      playBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        A.play('start');
-        S.modeId = id;
-        if (m.teams && S.cfg.teams !== m.teams) { S.cfg.teams = m.teams; S.teams = []; }
-        save();
-        startGame(true);
-      });
-
-      var setupBtn = h('button', {
-        type: 'button',
-        class: 'gm-gcard-btn setup',
-        title: 'Customize teams, avatars, timer & rules',
-        text: '⚙️ Setup'
-      });
-      setupBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        A.play('flip');
-        S.modeId = id;
-        save();
-        S.screen = 'setup';
-        render();
-      });
-
-      var c = h('div', { class: 'gm-game', tabindex: '0', role: 'button' }, [
-        h('div', { class: 'gm-game-pic' }, [
-          cardArt(id, m.e),
-          h('span', { class: 'gm-game-kbadge', text: '🎯 ARCADE SKILL' }),
-          h('span', { class: 'gm-game-tbadge' + (m.teams === 2 ? ' vs' : ''), text: teamTag }),
-          h('span', { class: 'gm-game-time', text: minsTag })
-        ]),
-        h('div', { class: 'gm-game-cap' }, [
-          h('span', { class: 'gm-game-sub3', text: 'Monster Studio · Live Class Teams · Speaking' }),
-          h('b', { text: modeName(m) }),
-          h('small', { class: 'gm-game-desc', text: modeDesc(m) }),
-          h('div', { class: 'gm-game-actions' }, [playBtn, setupBtn])
-        ])
-      ]);
-      c.addEventListener('click', function () {
-        A.play('flip');
-        S.modeId = id;
-        save();
-        S.screen = 'setup';
-        render();
-      });
-      grid.appendChild(c);
-    });
-    SOON.forEach(function (s) {
-      grid.appendChild(h('div', { class: 'gm-game locked' }, [
-        h('div', { class: 'gm-game-pic' }, [U.art(s[2], s[0], 'gm-cardimg')]),
-        h('div', { class: 'gm-game-cap' }, [h('b', { text: s[1] }), h('small', { text: '🔒 Coming soon' })])
-      ]));
-    });
+    paintGrid();
     gPanel.appendChild(grid);
     wrap.appendChild(gPanel);
     return wrap;
@@ -861,7 +923,9 @@
     stage = document.getElementById('gm-stage'); load(); if (!GM.modes[S.modeId]) S.modeId = 'board';
     /* links from the platform & lessons: ?class=<classId>&set=<setId>&game=<gameId> */
     try {
-      var qs = location.search, mc = /[?&]class=([\w-]+)/.exec(qs), ms = /[?&]set=([\w-]+)/.exec(qs), mg = /[?&]game=([\w-]+)/.exec(qs);
+      var qs = location.search, mc = /[?&]class=([\w-]+)/.exec(qs), ms = /[?&](?:set|pack)=([\w-]+)/.exec(qs), mg = /[?&]game=([\w-]+)/.exec(qs), mcat = /[?&]cat=([\w-]+)/.exec(qs), mq = /[?&]q=([^&]+)/.exec(qs);
+      if (mcat && GAME_CATS.some(function (c) { return c[0] === mcat[1]; })) S.gameCat = mcat[1];
+      if (mq && mq[1]) { try { S.searchQ = decodeURIComponent(mq[1]); } catch (e0) {} }
       if (mc && mc[1]) {
         S.classId = mc[1]; S.teams = [];
         if (!ms) {

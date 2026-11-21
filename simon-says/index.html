@@ -32,8 +32,8 @@
   .title { font-size:clamp(28px,7vh,84px); font-weight:800; line-height:1.05; }
   .title span:nth-child(1){color:#ef4444} .title span:nth-child(2){color:#f97316} .title span:nth-child(3){color:#eab308} .title span:nth-child(4){color:#22c55e} .title span:nth-child(5){color:#3b82f6}
   .sub { font-size:clamp(14px,2.4vh,26px); color:#6d5fd1; font-weight:600; }
-  .gcards { display:flex; gap:1.4vw; justify-content:center; }
-  .gcard { flex:1; max-width:34vw; font:inherit; color:var(--ink); background:#f8fafc; border:5px solid #cbd5e1; border-bottom-width:10px; border-radius:3vh; padding:1.2vh 1vw; cursor:pointer; transition:transform .15s var(--spring); }
+  .gcards { display:flex; gap:1.4vw; justify-content:center; flex-wrap:wrap; }
+  .gcard { flex:1 1 220px; max-width:460px; font:inherit; color:var(--ink); background:#f8fafc; border:5px solid #cbd5e1; border-bottom-width:10px; border-radius:3vh; padding:1.2vh 1vw; cursor:pointer; transition:transform .15s var(--spring); }
   .gcard:active { transform:translateY(5px); } .gcard.sel { background:#fef9c3; border-color:var(--ink); transform:scale(1.03); }
   .gcard b { display:block; font-size:clamp(20px,3.8vh,44px); } .gcard span { font-size:clamp(13px,2.2vh,24px); color:#6b5fb5; font-weight:600; }
   select.chip { padding-right:.6vw; }
@@ -138,7 +138,7 @@
   <div class="row"><button class="btn gold" id="xpBtn" hidden>⭐ Give +25 XP</button><button class="btn" id="replay">↺ Play again</button><button class="btn blue" id="home">⌂ Start</button></div>
 </div>
 
-<div id="tools"><button class="btn purple" id="mus" title="Music">🎵</button><button class="btn blue" id="snd" title="Sound">🔊</button><button class="btn blue" id="full" title="Full screen">⛶</button></div>
+<div id="tools"><a class="btn pink" href="../game-maker/index.html" style="text-decoration:none" title="Back to All Games">🎮 Games</a><button class="btn purple" id="mus" title="Music">🎵</button><button class="btn blue" id="snd" title="Sound">🔊</button><button class="btn blue" id="full" title="Full screen">⛶</button></div>
 <div id="count"><span id="cnum">3</span></div>
 <div class="pop" id="pop"><div class="popbox card"><div id="popbig" style="font-size:clamp(60px,16vh,180px)">🎤</div><div id="poptext" style="font-size:clamp(24px,5.2vh,64px);font-weight:800"></div><button class="btn" id="popok" style="margin-top:2vh">OK!</button></div></div>
 

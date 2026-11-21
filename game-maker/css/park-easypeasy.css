@@ -336,13 +336,276 @@ body.gm-on-setup .gm-bg::before {
   flex-wrap: wrap;
 }
 
+/* ==========================================================================
+   Unified 47-Game Bar (Games-First Above the Fold on Phone, Tablet & Board)
+   ========================================================================== */
+.gm-unified-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 3.5px solid #ffffff;
+  box-shadow: var(--shadow);
+}
+.gm-ubar-left,
+.gm-ubar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.gm-ubar-brand b {
+  display: block;
+  font-size: 1.28rem;
+  color: var(--eaa-ink);
+  line-height: 1.05;
+}
+.gm-ubar-brand small {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--eaa-ink-soft);
+}
+.gm-pack-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 10px;
+  border-radius: 18px;
+  border: 2.5px solid #b8dcff;
+  border-bottom: 5px solid #82bcf7;
+  background: linear-gradient(180deg, #ffffff 0%, #eef7ff 100%);
+  color: var(--eaa-ink);
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.12s cubic-bezier(.175, .885, .32, 1.275);
+}
+.gm-pack-toggle.open {
+  border-color: var(--eaa-pink);
+  border-bottom-color: var(--eaa-pink-d);
+  background: #fff0f7;
+}
+.gm-pack-toggle:active {
+  transform: translateY(3px);
+  border-bottom-width: 2px;
+}
+.gm-pt-ic {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+.gm-pt-txt b {
+  display: block;
+  font-size: 0.86rem;
+  color: var(--eaa-ink);
+  max-width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gm-pt-txt small {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--eaa-blue-d);
+}
+.gm-game-search {
+  min-height: 42px;
+  width: 215px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 2.5px solid #e4d2f0;
+  background: #fffdf9;
+  color: var(--eaa-ink);
+  font: 700 0.88rem inherit;
+  box-shadow: inset 0 2px 4px rgba(43, 29, 64, 0.05);
+}
+.gm-game-search:focus {
+  outline: none;
+  border-color: var(--eaa-pink);
+  box-shadow: 0 0 0 3px rgba(255, 95, 162, 0.2);
+}
+.gm-tool-pill.green {
+  background: var(--eaa-green) !important;
+  color: #fff !important;
+  border-color: var(--eaa-green-d) !important;
+}
+.gm-empty-search {
+  grid-column: 1 / -1;
+  padding: 36px 20px;
+  text-align: center;
+  font-weight: 800;
+  color: var(--eaa-ink-soft);
+  background: #fff8ec;
+  border-radius: 22px;
+  border: 2.5px dashed #e6d2f0;
+}
+
+/* Sticky Setup Footer so ▶ PLAY is always visible without scrolling! */
+.gm-setup-go {
+  position: sticky !important;
+  bottom: max(8px, env(safe-area-inset-bottom)) !important;
+  z-index: 40;
+  background: rgba(255, 253, 248, 0.96);
+  padding: 8px 16px !important;
+  border-radius: 999px;
+  border: 3px solid #ffffff;
+  box-shadow: 0 12px 28px rgba(43, 29, 64, 0.22);
+}
+
+/* ==========================================================================
+   Bright Sunny Adventure-Park Overrides for All 9 Game Maker Modes
+   (Eliminates leftover #0f172a / #1e293b dark banners, card backs & panels!)
+   ========================================================================== */
+body.gm-on-play .gm-head,
+body.gm-on-play.gm-mode-bowling .gm-head,
+body.gm-on-play.gm-mode-fling .gm-head,
+body.gm-on-play.gm-mode-memory .gm-head,
+body.gm-on-play.gm-mode-pass .gm-head {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 8px 20px -10px rgba(43, 29, 64, 0.22), 0 3px 0 #eadbf2 !important;
+}
+body.gm-on-play.gm-mode-bowling .gm-teams,
+body.gm-on-play.gm-mode-fling .gm-teams,
+body.gm-on-play.gm-mode-memory .gm-teams,
+body.gm-on-play.gm-mode-pass .gm-teams {
+  background: transparent !important;
+}
+
+.gm-b3-topbar,
+.gm-real3-banner,
+.gm-whk-topbar,
+.gm-tow-badge,
+.gm-bas-pill,
+.gm-bas-meter-box,
+.gm-tov-card,
+.gm-mem-aloud-card,
+.gm-mem-aloud-box {
+  background: rgba(255, 253, 248, 0.96) !important;
+  color: var(--eaa-ink) !important;
+  border-color: #96c8ff !important;
+  box-shadow: 0 8px 20px -8px rgba(43, 29, 64, 0.22), 0 4px 0 rgba(150, 200, 255, 0.55) !important;
+  text-shadow: none !important;
+}
+.gm-b3-topbar *,
+.gm-real3-banner *,
+.gm-whk-topbar *,
+.gm-tow-badge *,
+.gm-bas-pill *,
+.gm-tov-card * {
+  color: var(--eaa-ink) !important;
+  text-shadow: none !important;
+}
+.gm-b3-topbar [style*="background"],
+.gm-tlist-h,
+.gm-tchip.now {
+  color: #ffffff !important;
+}
+.gm-jig-lane {
+  background: rgba(255, 253, 248, 0.95) !important;
+  color: var(--eaa-ink) !important;
+  border: 4px solid var(--tc, var(--eaa-blue)) !important;
+  box-shadow: 0 10px 24px -10px rgba(43, 29, 64, 0.22) !important;
+}
+.gm-jig-lane h3,
+.gm-jig-lane b,
+.gm-jig-lane p,
+.gm-jig-lane div:not(.gm-jig-opt) {
+  color: var(--eaa-ink) !important;
+  text-shadow: none !important;
+}
+.gm-mem-face-back {
+  background: linear-gradient(155deg, #6bb5ff 0%, #9b7bff 100%) !important;
+  border: 3px solid #ffffff !important;
+}
+.gm-mem-num-badge {
+  background: #fff8ec !important;
+  color: var(--eaa-ink) !important;
+  border: 2.5px solid var(--eaa-yellow) !important;
+}
+
+/* ==========================================================================
+   Phone & Tablet Responsive Excellence (390x844 Portrait & 844x390 Landscape)
+   ========================================================================== */
 @media (max-width: 760px) {
-  .gm-head { margin: 6px 8px 0; padding: 6px 10px; }
-  .gm-stage { padding: 6px 10px max(18px, env(safe-area-inset-bottom)) !important; }
-  .gm-hero { flex-direction: column; text-align: center; padding: 14px 16px !important; gap: 10px; }
-  .gm-hero-txt { text-align: center !important; }
-  .gm-host { display: none; }
-  .gm-games { grid-template-columns: 1fr !important; gap: 14px !important; }
+  .gm-head {
+    margin: 4px 6px 2px !important;
+    padding: 4px 8px !important;
+    min-height: 44px !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+  }
+  .gm-brand {
+    padding: 3px 10px 3px 4px !important;
+    font-size: 0.86rem !important;
+    flex-shrink: 0;
+  }
+  body.gm-on-play .gm-brand b { display: none !important; }
+  body.gm-on-play .gm-brand { padding: 3px !important; }
+  .gm-brand-ic { width: 30px !important; height: 30px !important; font-size: 0.95rem !important; }
+  .gm-tools { display: flex !important; flex-wrap: nowrap !important; gap: 4px !important; align-items: center !important; overflow-x: auto; scrollbar-width: none; }
+  .gm-tools::-webkit-scrollbar { display: none; }
+  .gm-tools .gm-btn { padding: 4px 8px !important; min-height: 34px !important; font-size: 0.78rem !important; border-bottom-width: 4px !important; white-space: nowrap; }
+  .gm-tools .gm-btn.round { width: 34px !important; height: 34px !important; padding: 0 !important; }
+
+  .gm-stage { padding: 4px 8px max(16px, env(safe-area-inset-bottom)) !important; }
+  .gm-unified-bar { padding: 8px 10px; gap: 6px; border-radius: 18px; margin-bottom: 8px; }
+  .gm-ubar-left { width: 100%; justify-content: space-between; gap: 6px; }
+  .gm-ubar-brand b { font-size: 1.05rem; }
+  .gm-ubar-brand small { display: none; }
+  .gm-ubar-classes .gm-class-pill { padding: 4px 8px !important; font-size: 0.75rem !important; min-height: 30px !important; }
+  .gm-ubar-right { width: 100%; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 6px; }
+  .gm-pack-toggle { width: 100%; padding: 5px 8px; border-radius: 14px; min-width: 0; }
+  .gm-pt-txt { min-width: 0; flex: 1; }
+  .gm-pt-txt b { font-size: 0.76rem; max-width: 100%; }
+  .gm-pt-txt small { font-size: 0.66rem; }
+  .gm-game-search { width: 100%; min-height: 38px; padding: 5px 10px; font-size: 0.8rem; }
+
+  .gm-games-panel { padding: 8px !important; border-radius: 20px !important; }
+  .gm-cat-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px !important;
+    margin-bottom: 8px !important;
+    gap: 6px !important;
+  }
+  .gm-cat-tabs::-webkit-scrollbar { display: none; }
+  .gm-cat-tabs .gm-ftab { flex: 0 0 auto; white-space: nowrap; padding: 6px 11px !important; font-size: 0.78rem !important; }
+
+  /* 2-Column Compact Game Grid on Phones so 4-6 Games Show Immediately Above the Fold! */
+  .gm-games { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+  .gm-game { border-radius: 18px !important; }
+  .gm-game-kbadge { top: 6px; left: 6px; padding: 2px 7px; font-size: 0.56rem; }
+  .gm-game-tbadge { display: none !important; }
+  .gm-game-time { bottom: 6px; left: 6px; padding: 2px 7px; font-size: 0.6rem; }
+  .gm-game-cap { padding: 8px 9px 10px !important; gap: 4px !important; }
+  .gm-game-sub3 { display: none; }
+  .gm-game-cap b { font-size: 0.92rem !important; line-height: 1.18; }
+  .gm-game-desc {
+    font-size: 0.72rem !important;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .gm-game-actions { gap: 5px; padding-top: 4px; }
+  .gm-gcard-btn { min-height: 36px !important; font-size: 0.76rem !important; padding: 4px 6px !important; }
+  .gm-gcard-btn.setup { flex: 0 0 auto; padding: 4px 8px !important; }
+
   .gm-setup { grid-template-columns: 1fr !important; }
-  .gm-setup-l { border-right: 0 !important; border-bottom: 3px solid #e9d9f2 !important; }
+  .gm-setup-l { border-right: 0 !important; border-bottom: 3px solid #e9d9f2 !important; padding: 12px !important; }
+  .gm-setup-pic { max-height: 140px !important; }
+
+  /* Compact Jigsaw & Memory & Boardgame on Portrait Phones */
+  .gm-b3-topbar { padding: 4px 8px !important; font-size: 0.78rem !important; }
+  .gm-real3-banner { padding: 5px 12px !important; font-size: 0.82rem !important; }
 }

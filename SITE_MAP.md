@@ -25,7 +25,7 @@
 ## 📂 2. Modular Deep-Dive Map Index (`docs/map/`)
 
 1. **[01-platform-screens-and-dom.md](file:///C:/Users/maysa/Desktop/DV/docs/map/01-platform-screens-and-dom.md)** — Entry HTML pages, 7-place sidebar/rail, all 42 `switchView` routes, all 69 modals, toolkit tabs, and exact CSS/JS load order.
-2. **[02-core-js-and-monoliths.md](file:///C:/Users/maysa/Desktop/DV/docs/map/02-core-js-and-monoliths.md)** — All 90 `js/*.js` & 13 `css/*.css` files, plus full line-range chapters inside `school-app.js` (17221 lines) and `school-store.js` (17601 lines).
+2. **[02-core-js-and-monoliths.md](file:///C:/Users/maysa/Desktop/DV/docs/map/02-core-js-and-monoliths.md)** — All 90 `js/*.js` & 13 `css/*.css` files, plus full line-range chapters inside `school-app.js` (17227 lines) and `school-store.js` (17601 lines).
 3. **[03-avatars-monsters-and-store.md](file:///C:/Users/maysa/Desktop/DV/docs/map/03-avatars-monsters-and-store.md)** — `PupilAvatars` (2D + 3D extruded rig), Unified `ClassroomStore`, `MonsterRenderer` 8-layer stage, Mystery Boxes, and `assets/avatars/` layout.
 4. **[04-game-maker.md](file:///C:/Users/maysa/Desktop/DV/docs/map/04-game-maker.md)** — All 22 Game Maker arcade modes (including 3D Penalty Shootout), 75 question sets, engine & audio architecture.
 5. **[05-lessons-island-and-curriculum.md](file:///C:/Users/maysa/Desktop/DV/docs/map/05-lessons-island-and-curriculum.md)** — All Grade 3 & Grade 4 lessons, `GAMES_DATA`, `Timetable` catalog, `lesson-plans/`, `island/`, `passport/`, `home-view/`, and `404.html` routes.
@@ -89,7 +89,7 @@ flowchart TB
 
 ## 🏛️ 5. Giant Monolith Quick-Jump (`school-app.js` & `school-store.js`)
 
-### A. [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) (17221 lines · 1047.9 KB)
+### A. [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) (17227 lines · 1048.2 KB)
 | Line Range | Chapter / Section |
 | :---: | :--- |
 | [L117–L391](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L117-L391) | 1. INITIALIZATION & GLOBAL EVENT LISTENERS |
@@ -135,15 +135,15 @@ flowchart TB
 | [L12414–L12443](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12414-L12443) | MOVE STUDENT HANDLERS |
 | [L12444–L12456](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12444-L12456) | REAL AVATAR CUSTOMIZER HANDLER |
 | [L12457–L12480](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12457-L12480) | MESSAGE THREAD HANDLERS |
-| [L12481–L12537](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12481-L12537) | MOBILE NAVIGATION DRAWER TOGGLE |
-| [L12538–L12924](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12538-L12924) | CLASSROOM STUDENT MANAGEMENT & ADVANCED TEACHER TOOLKIT ENGINE |
-| [L12925–L15671](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12925-L15671) | DEDICATED "EDIT STUDENT XP" MODAL CONTROLLER (INTERACTIVE 3D ARTIFACT) |
-| [L15672–L15856](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15672-L15856) | ORIGINAL TEXTBOOK VIEWER CONTROLLER (GLOBAL READINGS 2) |
-| [L15857–L16505](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15857-L16505) | MONSTER EVOLUTION & COMPANION SYSTEM CONTROLLERS |
-| [L16506–L16557](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16506-L16557) | FULLSCREEN MONSTER SHOWCASE CONTROLLER |
-| [L16558–L16652](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16558-L16652) | SCOPE & SEQUENCE MODAL CONTROLLER |
-| [L16653–L16813](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16653-L16813) | LESSON ATTACHMENT MODALS (Games, Worksheets, Assignments) |
-| [L16814–L17221](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16814-L17221) | CURRICULUM AI TEACHER ASSISTANT |
+| [L12481–L12543](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12481-L12543) | MOBILE NAVIGATION DRAWER TOGGLE |
+| [L12544–L12930](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12544-L12930) | CLASSROOM STUDENT MANAGEMENT & ADVANCED TEACHER TOOLKIT ENGINE |
+| [L12931–L15677](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L12931-L15677) | DEDICATED "EDIT STUDENT XP" MODAL CONTROLLER (INTERACTIVE 3D ARTIFACT) |
+| [L15678–L15862](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15678-L15862) | ORIGINAL TEXTBOOK VIEWER CONTROLLER (GLOBAL READINGS 2) |
+| [L15863–L16511](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L15863-L16511) | MONSTER EVOLUTION & COMPANION SYSTEM CONTROLLERS |
+| [L16512–L16563](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16512-L16563) | FULLSCREEN MONSTER SHOWCASE CONTROLLER |
+| [L16564–L16658](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16564-L16658) | SCOPE & SEQUENCE MODAL CONTROLLER |
+| [L16659–L16819](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16659-L16819) | LESSON ATTACHMENT MODALS (Games, Worksheets, Assignments) |
+| [L16820–L17227](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16820-L17227) | CURRICULUM AI TEACHER ASSISTANT |
 
 ### B. [school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js) (17601 lines · 762.3 KB)
 | Line Range | Chapter / Section |

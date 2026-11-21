@@ -6,8 +6,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#060911",
-  "theme_color": "#0f172a",
+  "background_color": "#fff8ec",
+  "theme_color": "#78c4ff",
   "icons": [
     {
       "src": "assets/icons/app-icon-192.png",
@@ -24,9 +24,15 @@
   ],
   "shortcuts": [
     {
-      "name": "Command Center",
-      "short_name": "Command",
-      "url": "./index.html#command",
+      "name": "All 47 Games",
+      "short_name": "Games",
+      "url": "./game-maker/index.html",
+      "icons": [{ "src": "assets/icons/app-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Today's Lesson",
+      "short_name": "Today",
+      "url": "./index.html#today",
       "icons": [{ "src": "assets/icons/app-icon-192.png", "sizes": "192x192" }]
     },
     {
@@ -36,15 +42,9 @@
       "icons": [{ "src": "assets/icons/app-icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Lessons Library",
-      "short_name": "Lessons",
-      "url": "./index.html#library",
-      "icons": [{ "src": "assets/icons/app-icon-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Game Maker",
-      "short_name": "Game Maker",
-      "url": "./game-maker/index.html",
+      "name": "Treasure Island 3D",
+      "short_name": "Planet 3D",
+      "url": "./island/planet.html?demo=1",
       "icons": [{ "src": "assets/icons/app-icon-192.png", "sizes": "192x192" }]
     }
   ]

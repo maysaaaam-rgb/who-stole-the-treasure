@@ -251,10 +251,19 @@
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; }
   .setup-cols { grid-template-columns: 1fr; }
-  .play-screen { padding: 56px 8px 10px; }
-  .play-head { flex-wrap: wrap; justify-content: center; }
+  .play-screen { padding: 54px 8px 10px; }
+  .play-head { flex-wrap: wrap; justify-content: center; gap: 6px; }
   .stage { width: 100% !important; height: 100% !important; }
   .pz-qchoices { grid-template-columns: 1fr; }
   .bomb-grid { grid-template-columns: repeat(3, 1fr); }
   .finale-card { grid-template-columns: 1fr; inset: 4%; }
+}
+@media (max-width: 640px) {
+  .claw-plushies { gap: 4px; padding: 10px 6px; }
+  .plush-slot { padding: 4px 2px; border-radius: 14px; min-width: 0; }
+  .plush-slot img { width: 46px; height: 46px; }
+  .plush-slot span { font-size: .72em; padding: 1px 6px; }
+  .cup-slot { width: 104px; }
+  .cup-slot img.house { width: 92px; height: 92px; }
+  .croc-teeth { gap: 6px; padding: 0 4px; }
 }

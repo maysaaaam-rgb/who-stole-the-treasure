@@ -421,11 +421,11 @@
     if (existing) existing.remove();
     var big = !!Kit.pref('big'); doc.body.classList.toggle('big', big);
     var bar = el('header', { class: 'topbar' });
-    var fromGm = Kit.param && Kit.param('from') === 'gm';
-    var homeHref = fromGm ? ((root.KIT_ROOT || '../') + 'game-maker/index.html') : (o.home || 'index.html');
-    var homeLbl  = fromGm ? '🎮 Game Maker' : (o.homeLabel || 'Games');
-    bar.appendChild(el('a', { class: 'brand', href: homeHref, title: fromGm ? 'Back to Game Maker' : 'All games' }, [
-      el('i', { text: '✦' }),
+    var isSubGame = !o.home || o.home === '../index.html' || o.home === 'index.html';
+    var homeHref = isSubGame ? ((root.KIT_ROOT || '../../') + 'game-maker/index.html') : o.home;
+    var homeLbl  = isSubGame ? '🎮 All Games' : (o.homeLabel || 'Games');
+    bar.appendChild(el('a', { class: 'brand', href: homeHref, title: 'Back to All Games' }, [
+      el('i', { text: '🎮' }),
       el('span', null, [el('small', { text: 'Adventure Academy' }), homeLbl])
     ]));
     bar.appendChild(el('div', { class: 'grow' }, o.title ? el('div', { class: 'title', text: o.title }) : null));
