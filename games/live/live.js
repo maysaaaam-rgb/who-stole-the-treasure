@@ -24,7 +24,7 @@
 
   var state = {
     packs: [],
-    packId: Kit.param('pack') || '',
+    packId: Kit.param('set') || Kit.param('pack') || '',
     roomCode: Kit.param('code') || String(Math.floor(100000 + Math.random() * 900000)),
     questions: [],
     qIdx: 0,
@@ -51,9 +51,16 @@
   function normalizeQuestion(raw) {
     if (!raw) return null;
     var q = raw.q || raw.prompt || raw.question || raw.text || '';
-    var choices = raw.a || raw.choices || raw.options || [];
+    if (!q) return null;
+    // Standard EAA / Game Maker format: { q, a: "correct", w: ["wrong1", "wrong2", "wrong3"] }
+    if (typeof raw.a === 'string' && Array.isArray(raw.w) && raw.w.length >= 1) {
+      var right = String(raw.a);
+      var pool = Kit.shuffle([right].concat(raw.w.slice(0, 3).map(String)));
+      return { q: String(q), a: pool, ok: Math.max(0, pool.indexOf(right)) };
+    }
+    var choices = Array.isArray(raw.a) ? raw.a : (raw.choices || raw.options || []);
     var ok = typeof raw.ok === 'number' ? raw.ok : (typeof raw.correct === 'number' ? raw.correct : 0);
-    if (!q || !Array.isArray(choices) || choices.length < 2) return null;
+    if (!Array.isArray(choices) || choices.length < 2) return null;
     return { q: String(q), a: choices.slice(0, 4).map(String), ok: Math.max(0, Math.min(choices.length - 1, ok)) };
   }
 
@@ -228,7 +235,7 @@
             state.locked = true;
             btn.classList.add('ok');
             state.score += 10;
-            Kit.sound('win');
+            Kit.sound('fanfare');
             var c = Kit.centerOf(btn);
             Kit.confetti(c.x, c.y, 45);
             if (state.islandStep < ISLANDS.length - 1) {
@@ -242,7 +249,7 @@
             setTimeout(nextQuestion, 1000);
           } else {
             btn.classList.add('bad');
-            Kit.sound('nope');
+            Kit.sound('soft');
             setTimeout(function () { btn.classList.remove('bad'); }, 450);
           }
         }
@@ -482,7 +489,7 @@
         state.locked = true;
         btn.classList.add('sliced-ok');
         state.score += 15;
-        Kit.sound('win');
+        Kit.sound('fanfare');
         var c = Kit.centerOf(btn);
         Kit.confetti(c.x, c.y, 55);
         drawHud();
@@ -492,7 +499,7 @@
         }, 700);
       } else {
         btn.classList.add('sliced-bad');
-        Kit.sound('nope');
+        Kit.sound('soft');
         setTimeout(function () { btn.classList.remove('sliced-bad'); }, 400);
       }
     }

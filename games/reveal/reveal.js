@@ -118,7 +118,7 @@
 
     Kit.sets.all().then(function (sets) {
       S.allSets = sets;
-      var cur = sets.filter(function (s) { return s.id === S.setId; })[0] || sets[0];
+      var cur = (Kit.matchPack ? Kit.matchPack(sets, S.setId) : sets.filter(function (s) { return s.id === S.setId; })[0]) || sets[0];
       S.setId = cur.id;
       app.innerHTML = '';
       app.className = 'app setup-screen';

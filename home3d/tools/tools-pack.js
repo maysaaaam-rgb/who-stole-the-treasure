@@ -1148,7 +1148,10 @@
         lab.position.set(px, baseY + 4.3, pz);
         grp.add(lab);
 
-        K.makeCharacter(team, { kidsOnly: true, kidHeight: 2.55 }).then(function (ch) {
+        var PA1 = window.PupilAvatars || (window.parent && window.parent !== window && window.parent.PupilAvatars) || null;
+        var sid1 = st && st.id && /^student-/.test(String(st.id)) ? st.id : null;
+        var kidKind1 = (sid1 && PA1 && typeof PA1.genderOf === 'function') ? (PA1.genderOf(sid1) === 'girl' ? 'girl' : 'boy') : team.kid;
+        K.makeCharacter(team, { kidsOnly: true, kidHeight: 2.55, kid: kidKind1, studentId: sid1 }).then(function (ch) {
           if (!open) return;
           if (ch.attachClips && HOST.animClips) ch.attachClips(HOST.animClips);
           ch.root.position.set(px, baseY + 0.08, pz);
@@ -1254,7 +1257,10 @@
 
       // Birthday pupil standing beside the cake with real Blender 65-bone skeletal celebration
       var team = K.TEAMS[(chosen.team || 0) % 4] || K.TEAMS[0];
-      K.makeCharacter(team, { kidsOnly: true, kidHeight: 2.55 }).then(function (ch) {
+      var PA2 = window.PupilAvatars || (window.parent && window.parent !== window && window.parent.PupilAvatars) || null;
+      var sid2 = chosen && chosen.id && /^student-/.test(String(chosen.id)) ? chosen.id : null;
+      var kidKind2 = (sid2 && PA2 && typeof PA2.genderOf === 'function') ? (PA2.genderOf(sid2) === 'girl' ? 'girl' : 'boy') : team.kid;
+      K.makeCharacter(team, { kidsOnly: true, kidHeight: 2.55, kid: kidKind2, studentId: sid2 }).then(function (ch) {
         if (!open) return;
         if (ch.attachClips && HOST.animClips) ch.attachClips(HOST.animClips);
         ch.root.position.set(amp.x + 2.8, stageY, amp.z + 1.2);

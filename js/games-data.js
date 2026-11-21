@@ -2883,7 +2883,7 @@ const GAMES_REGISTRY = [
     "featured": true,
     "categoryGroup": "Unit 2 Lessons (Grade 3)",
     "thumbnailIcon": "🎬",
-    "status": "active",
+    "status": "archived",
     "gradient": "linear-gradient(135deg, #060911 0%, #134e4a 55%, #38bdf8 100%)",
     "unit": 2,
     "track": "English",
@@ -2902,19 +2902,42 @@ const GAMES_REGISTRY = [
     "age": "Ages 8–10",
     "ageGroup": "8-10",
     "grade": "Grades 3 & 4",
-    "grades": ["Grade 3", "Grade 4", "Class 3A", "Class 3B", "Class 4A", "Class 4B"],
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Class 3A",
+      "Class 3B",
+      "Class 4A",
+      "Class 4B"
+    ],
     "duration": 35,
     "durationText": "35 min",
     "estimatedMinutes": 35,
     "xp": 50,
-    "skills": ["Listening", "Speaking", "Vocabulary"],
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary"
+    ],
     "topic": "Holiday actions, feelings (sad/happy), presents and snow",
-    "topics": ["Movies", "Holiday", "Feelings", "Present Continuous"],
+    "topics": [
+      "Movies",
+      "Holiday",
+      "Feelings",
+      "Present Continuous"
+    ],
     "languageFocus": "Piranha loves stinky cheese. They are giving presents. They are making white snow.",
     "activityMode": "Whole class smartboard + individual Circle & Say worksheet",
     "interactionType": "Auto-pausing movie cinema",
     "difficulty": "Easy",
-    "tags": ["movie", "video", "bad guys", "holiday", "Lesson", "Featured"],
+    "tags": [
+      "movie",
+      "video",
+      "bad guys",
+      "holiday",
+      "Lesson",
+      "Featured"
+    ],
     "learningObjectives": [
       "Answer 10 picture-choice questions as the movie pauses",
       "Say what the Bad Guys are doing in simple sentences",
@@ -2928,7 +2951,7 @@ const GAMES_REGISTRY = [
     "teacherGuide": true,
     "featured": true,
     "thumbnailIcon": "🦊",
-    "status": "active",
+    "status": "archived",
     "gradient": "linear-gradient(135deg, #060911 0%, #9a3412 55%, #f59e0b 100%)",
     "unit": 2,
     "track": "English",
@@ -2947,19 +2970,42 @@ const GAMES_REGISTRY = [
     "age": "Ages 8–10",
     "ageGroup": "8-10",
     "grade": "Grades 3 & 4",
-    "grades": ["Grade 3", "Grade 4", "Class 3A", "Class 3B", "Class 4A", "Class 4B"],
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Class 3A",
+      "Class 3B",
+      "Class 4A",
+      "Class 4B"
+    ],
     "duration": 35,
     "durationText": "35 min",
     "estimatedMinutes": 35,
     "xp": 50,
-    "skills": ["Listening", "Speaking", "Vocabulary"],
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary"
+    ],
     "topic": "Daily routines, jobs, city places, and super powers (can/can't)",
-    "topics": ["Movies", "Superheroes", "Jobs & Places", "Can for ability"],
+    "topics": [
+      "Movies",
+      "Superheroes",
+      "Jobs & Places",
+      "Can for ability"
+    ],
     "languageFocus": "Miles is drawing on stickers. His dad is a police officer. A glowing spider is on his shoe. He can walk on the wall!",
     "activityMode": "Whole class smartboard + individual Circle & Say worksheet",
     "interactionType": "Auto-pausing movie cinema",
     "difficulty": "Easy",
-    "tags": ["movie", "video", "spider-man", "miles morales", "Lesson", "Featured"],
+    "tags": [
+      "movie",
+      "video",
+      "spider-man",
+      "miles morales",
+      "Lesson",
+      "Featured"
+    ],
     "learningObjectives": [
       "Answer 10 picture-choice questions about Miles Morales",
       "Describe actions and abilities (He is wearing headphones / He can walk on the wall)",
@@ -2973,7 +3019,7 @@ const GAMES_REGISTRY = [
     "teacherGuide": true,
     "featured": true,
     "thumbnailIcon": "🕷️",
-    "status": "active",
+    "status": "archived",
     "gradient": "linear-gradient(135deg, #060911 0%, #7f1d1d 55%, #3b82f6 100%)",
     "unit": 2,
     "track": "English",
@@ -4371,16 +4417,24 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "games-collection",
-    "aliases": ["games", "hidden-pictures", "reveal-games", "games-collection"],
-    "title": "✦ Games Collection: Smart-Board Arcade",
-    "subtitle": "8 smartboard games · Time Train, Flashlight, Doors, Orbit Puzzle, Cameras, Bricks, Letter Tiles, Pixel Quiz",
+    "aliases": [
+      "games",
+      "hidden-pictures",
+      "reveal-games",
+      "games-collection"
+    ],
+    "title": "✦ EasyPeasy & 3D Adventure Park Collection (30 Games)",
+    "subtitle": "3D Park Stadiums, Hidden Pictures, Time Train & Live Shows",
     "type": "game",
     "track": "English",
-    "unit": 0,
+    "unit": 5,
     "gameKind": "team",
-    "gameOrder": 0,
+    "gameOrder": 3,
     "grade": "Grade 3 & 4",
-    "grades": [3, 4],
+    "grades": [
+      3,
+      4
+    ],
     "cefr": "A1",
     "duration": "5-15 min",
     "PlayableURL": "games/index.html",
@@ -4388,24 +4442,39 @@ const GAMES_REGISTRY = [
     "description": "Pastel kawaii smartboard games collection! Play 7 Hidden Picture games plus Time Train (Past Simple), choose curriculum packs or build your own in the Studio, and send team points straight to the Class Board.",
     "grammarTarget": "Vocabulary review, Past Simple & speaking",
     "clilTopic": "Classroom Picture & Grammar Games",
-    "tags": ["Grade 3", "Grade 4", "Game", "Games Collection", "Featured"],
+    "tags": [
+      "Grade 3",
+      "Grade 4",
+      "Game",
+      "Games Collection",
+      "Featured"
+    ],
     "featured": true,
     "thumbnailIcon": "✦",
     "status": "active",
-    "sectionOrder": 50
+    "sectionOrder": 50,
+    "thumbnail": "games/posters/doors.webp",
+    "thumbnailUrl": "games/posters/doors.webp"
   },
   {
     "id": "time-train",
-    "aliases": ["past-train", "past-simple-train", "time-train"],
+    "aliases": [
+      "past-train",
+      "past-simple-train",
+      "time-train"
+    ],
     "title": "🚂 Time Train: Past Simple Journey (Grade 3 Unit 5)",
     "subtitle": "3 Stations · Past Gate, Didn't Bridge (⏪ Rewind), Did Tower + Ancient Egypt Finale",
     "type": "game",
     "track": "English",
     "unit": 5,
     "gameKind": "team",
-    "gameOrder": 0,
+    "gameOrder": 13,
     "grade": "Grade 3 & 4",
-    "grades": [3, 4],
+    "grades": [
+      3,
+      4
+    ],
     "cefr": "A1",
     "duration": "8-15 min",
     "PlayableURL": "games/past/index.html",
@@ -4415,7 +4484,14 @@ const GAMES_REGISTRY = [
     "description": "Board the friendly Time Train with the Owl Conductor! Station 1 (Past Gate): pick the golden past-tense ticket. Station 2 (Didn't Bridge): snap didn't in and watch the verb rewind to base form. Station 3 (Did Tower): build Did…? questions and ride through the time tunnel to Ancient Egypt!",
     "grammarTarget": "Past Simple: regular +ed, irregular (saw/went/was/ran/said/put), didn't + base verb, Did … + base verb?",
     "clilTopic": "History & Time Travel (Unit 5 Let's Go Back!)",
-    "tags": ["Grade 3", "Unit 5", "Game", "Past Simple", "Games Collection", "Featured"],
+    "tags": [
+      "Grade 3",
+      "Unit 5",
+      "Game",
+      "Past Simple",
+      "Games Collection",
+      "Featured"
+    ],
     "featured": true,
     "thumbnailIcon": "🚂",
     "status": "active",
@@ -4423,11 +4499,11 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "gamemaker-g3",
-    "title": "🎮 Game Maker: Units 1–3 (Grade 3)",
-    "subtitle": "2, 3, or 4 Teams · 9 Modes: Board, Bamboozle, Jeopardy, Wheel, Millionaire, Bingo",
+    "title": "🎮 Game Maker 3.0 · 39 Smartboard Games (Grade 3)",
+    "subtitle": "3D Adventure Park, EasyPeasy Shows & Unit 1–5 Packs",
     "type": "game",
     "track": "English",
-    "unit": 0,
+    "unit": 5,
     "gameKind": "team",
     "gameOrder": 1,
     "grade": "Grade 3",
@@ -4437,7 +4513,7 @@ const GAMES_REGISTRY = [
     "cefr": "A1",
     "duration": "15-30 min",
     "PlayableURL": "game-maker/index.html?grade=3",
-    "route": "game-maker/index.html?grade=3",
+    "route": "game-maker/index.html?class=class-3a&set=g3-u5-mega",
     "description": "Pick any unit and play 9 smartboard team game modes (Board, Bamboozle, Jeopardy, Wheel, Millionaire, Word Guess, Memory, Odd One Out, Bingo).",
     "grammarTarget": "Units 1–3 Vocabulary & Grammar Review",
     "clilTopic": "Classroom Team Game Show",
@@ -4449,15 +4525,19 @@ const GAMES_REGISTRY = [
       "Board Game",
       "Featured"
     ],
-    "sectionOrder": 51
+    "sectionOrder": 51,
+    "url": "game-maker/index.html?class=class-3a&set=g3-u5-mega",
+    "status": "active",
+    "thumbnail": "platform-art/m_games.webp",
+    "thumbnailUrl": "platform-art/m_games.webp"
   },
   {
     "id": "gamemaker-g4",
-    "title": "🎮 Game Maker: Units 1–3 (Grade 4)",
-    "subtitle": "2, 3, or 4 Teams · 9 Modes: Board, Bamboozle, Jeopardy, Wheel, Millionaire, Bingo",
+    "title": "🎮 Game Maker 3.0 · 39 Smartboard Games (Grade 4)",
+    "subtitle": "3D Adventure Park, EasyPeasy Shows & Unit 1–5 Packs",
     "type": "game",
     "track": "English",
-    "unit": 0,
+    "unit": 5,
     "gameKind": "team",
     "gameOrder": 2,
     "grade": "Grade 4",
@@ -4467,7 +4547,7 @@ const GAMES_REGISTRY = [
     "cefr": "A1+",
     "duration": "15-30 min",
     "PlayableURL": "game-maker/index.html?grade=4",
-    "route": "game-maker/index.html?grade=4",
+    "route": "game-maker/index.html?class=class-4a&set=g4-u5-mega",
     "description": "Pick any unit and play 9 smartboard team game modes (Board, Bamboozle, Jeopardy, Wheel, Millionaire, Word Guess, Memory, Odd One Out, Bingo).",
     "grammarTarget": "Units 1–3 Vocabulary & Grammar Review",
     "clilTopic": "Classroom Team Game Show",
@@ -4479,7 +4559,11 @@ const GAMES_REGISTRY = [
       "Board Game",
       "Featured"
     ],
-    "sectionOrder": 52
+    "sectionOrder": 52,
+    "url": "game-maker/index.html?class=class-4a&set=g4-u5-mega",
+    "status": "active",
+    "thumbnail": "platform-art/m_games.webp",
+    "thumbnailUrl": "platform-art/m_games.webp"
   },
   {
     "id": "rev-u14-g3",
@@ -4497,7 +4581,7 @@ const GAMES_REGISTRY = [
     "cefr": "A1",
     "duration": "20-30 min",
     "PlayableURL": "game-maker/index.html?set=u14-g3&game=cannon",
-    "route": "game-maker/index.html?set=u14-g3&game=cannon",
+    "route": "games/cannon3d/index.html?set=u14-g3",
     "description": "Full Units 1–4 team revision game show for Grade 3 with 6 playable smartboard modes.",
     "grammarTarget": "Units 1–4 Full Review",
     "clilTopic": "Cumulative Smartboard Game Show",
@@ -4509,7 +4593,9 @@ const GAMES_REGISTRY = [
       "Bamboozle",
       "Featured"
     ],
-    "sectionOrder": 53
+    "sectionOrder": 53,
+    "status": "archived",
+    "url": "games/cannon3d/index.html?set=u14-g3"
   },
   {
     "id": "rev-u14-g4",
@@ -4527,7 +4613,7 @@ const GAMES_REGISTRY = [
     "cefr": "A1+",
     "duration": "20-30 min",
     "PlayableURL": "game-maker/index.html?set=smart-g4&game=cannon",
-    "route": "game-maker/index.html?set=smart-g4&game=cannon",
+    "route": "games/cannon3d/index.html?set=u14-g4",
     "description": "Full Units 1–4 team revision game show for Grade 4 with 6 playable smartboard modes.",
     "grammarTarget": "Units 1–4 Full Review",
     "clilTopic": "Cumulative Smartboard Game Show",
@@ -4539,7 +4625,9 @@ const GAMES_REGISTRY = [
       "Bamboozle",
       "Featured"
     ],
-    "sectionOrder": 54
+    "sectionOrder": 54,
+    "status": "archived",
+    "url": "games/cannon3d/index.html?set=u14-g4"
   },
   {
     "id": "unit3-money-mission",
@@ -4645,7 +4733,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "History & Financial Literacy",
     "clilTheme": "Unit 3: How Much Is It?",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🚀",
@@ -4744,7 +4832,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 3: The Bear and I",
     "clilTheme": "Unit 3: The Bear and I",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🎲",
@@ -4844,7 +4932,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 3: How Much Is It?",
     "clilTheme": "Unit 3: How Much Is It?",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🎲",
@@ -4956,7 +5044,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 3: It Keeps Changing (climate change and clean cars)",
     "clilTheme": "Unit 3: It Keeps Changing (climate change and clean cars)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🧊",
@@ -5067,7 +5155,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 3: How Much Is It? (money)",
     "clilTheme": "Unit 3: How Much Is It? (money)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "💰",
@@ -5173,7 +5261,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
     "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🌾",
@@ -5279,7 +5367,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 2: What Lives Here? (forests, animal adaptations, A New Friend)",
     "clilTheme": "Unit 2: What Lives Here? (forests, animal adaptations, A New Friend)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🌲",
@@ -5384,7 +5472,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 1: What Does It Do? (inventions, sequence words, phonics review)",
     "clilTheme": "Unit 1: What Does It Do? (inventions, sequence words, phonics review)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🔧",
@@ -5490,7 +5578,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 1: I Love Reading (Alice in Wonderland, the brain, skimming)",
     "clilTheme": "Unit 1: I Love Reading (Alice in Wonderland, the brain, skimming)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "📖",
@@ -5531,7 +5619,8 @@ const GAMES_REGISTRY = [
       "Game",
       "Review Game"
     ],
-    "sectionOrder": 64
+    "sectionOrder": 64,
+    "status": "archived"
   },
   {
     "id": "arcade-g4-u3",
@@ -5629,7 +5718,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 3: It Keeps Changing (climate change and clean cars)",
     "clilTheme": "Unit 3: It Keeps Changing (climate change and clean cars)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🧊",
@@ -5738,7 +5827,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 3: How Much Is It? (money)",
     "clilTheme": "Unit 3: How Much Is It? (money)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "💰",
@@ -5847,7 +5936,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 3: It Keeps Changing (climate change and clean cars)",
     "clilTheme": "Unit 3: It Keeps Changing (climate change and clean cars)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🧊",
@@ -5956,7 +6045,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 3: How Much Is It? (money)",
     "clilTheme": "Unit 3: How Much Is It? (money)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "💰",
@@ -6070,7 +6159,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 3 (money; climate change and clean cars)",
     "clilTheme": "Unit 3 (money; climate change and clean cars)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🕹️",
@@ -6173,7 +6262,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
     "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🕹️",
@@ -6276,7 +6365,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
     "clilTheme": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🕹️",
@@ -6379,7 +6468,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
     "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🏔️",
@@ -6482,7 +6571,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
     "clilTheme": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🏔️",
@@ -6590,7 +6679,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
     "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🕹️",
@@ -6686,7 +6775,7 @@ const GAMES_REGISTRY = [
     "icon": "🐱",
     "thumbnailIcon": "🐱",
     "gradient": "linear-gradient(135deg, #070b14 0%, #1e1b4b 50%, #0284c7 100%)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "trackOrder": 1,
@@ -6793,7 +6882,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Unit 3: How Much Is It? (money)",
     "clilTheme": "Unit 3: How Much Is It? (money)",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🛒",
@@ -6906,8 +6995,10 @@ const GAMES_REGISTRY = [
     "unit": 0,
     "track": "English",
     "gameKind": "speaking",
-    "gameOrder": 41,
-    "sectionOrder": 78
+    "gameOrder": 18,
+    "sectionOrder": 78,
+    "thumbnail": "platform-art/h_pencil.webp",
+    "thumbnailUrl": "platform-art/h_pencil.webp"
   },
   {
     "id": "simon-says-grade3",
@@ -7028,8 +7119,10 @@ const GAMES_REGISTRY = [
     "unit": 0,
     "track": "English",
     "gameKind": "speaking",
-    "gameOrder": 42,
-    "sectionOrder": 79
+    "gameOrder": 19,
+    "sectionOrder": 79,
+    "thumbnail": "assets/shelf/simon-says-grade3.webp",
+    "thumbnailUrl": "assets/shelf/simon-says-grade3.webp"
   },
   {
     "id": "simon-says-grade3-cooking",
@@ -7147,8 +7240,10 @@ const GAMES_REGISTRY = [
     "unit": 2,
     "track": "English",
     "gameKind": "speaking",
-    "gameOrder": 43,
-    "sectionOrder": 80
+    "gameOrder": 20,
+    "sectionOrder": 80,
+    "thumbnail": "assets/shelf/simon-says-grade3.webp",
+    "thumbnailUrl": "assets/shelf/simon-says-grade3.webp"
   },
   {
     "id": "simon-says-grade4",
@@ -7265,8 +7360,10 @@ const GAMES_REGISTRY = [
     "unit": 0,
     "track": "English",
     "gameKind": "speaking",
-    "gameOrder": 44,
-    "sectionOrder": 81
+    "gameOrder": 21,
+    "sectionOrder": 81,
+    "thumbnail": "assets/shelf/simon-says-grade4.webp",
+    "thumbnailUrl": "assets/shelf/simon-says-grade4.webp"
   },
   {
     "id": "freeze-game",
@@ -7371,7 +7468,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Muscle Kinetic Energy vs Cerebral Metabolism",
     "clilTheme": "Muscle Kinetic Energy vs Cerebral Metabolism",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-1",
     "trackTitle": "🚀 Science & Space Exploration",
     "formula": "While the body is frozen at 0% muscle energy, the brain uses 20% of resting fuel.",
@@ -7480,7 +7577,7 @@ const GAMES_REGISTRY = [
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "trackOrder": 4,
     "formula": "Can you [Verb]? / I can [Verb]!",
-    "status": "active",
+    "status": "archived",
     "worksheetUrl": "ninja-trials/worksheet.html",
     "url": "ninja-trials/index.html",
     "unit": 0,
@@ -7607,7 +7704,7 @@ const GAMES_REGISTRY = [
     "trackTitle": "🚀 Science & Space Exploration",
     "trackOrder": 2,
     "formula": "[Dino A] is [bigger / faster / heavier] than [Dino B] / It has [feature] to [action]",
-    "status": "active",
+    "status": "archived",
     "worksheetUrl": "dino-arena/worksheet.html",
     "url": "dino-arena/index.html",
     "unit": 4,
@@ -7731,7 +7828,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Paleontology & Earth History",
     "clilTheme": "Prehistoric Life & Fossil Evidence",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-1",
     "trackTitle": "🚀 Science & Space Exploration",
     "formula": "Regular: Base + -ed (discover ➔ discovered). Irregular: Vowel / Form Change (dig ➔ dug, find ➔ found).",
@@ -7849,7 +7946,7 @@ const GAMES_REGISTRY = [
     "trackTitle": "🌍 Earth, Space & Natural Science",
     "trackOrder": 5,
     "formula": "I need [materials] to make / We use [item] to [verb]",
-    "status": "active",
+    "status": "archived",
     "worksheetUrl": "biome-crafter/worksheet.html",
     "url": "biome-crafter/index.html",
     "unit": 3,
@@ -7962,7 +8059,7 @@ const GAMES_REGISTRY = [
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "trackOrder": 4,
     "formula": "Go through the [direction] door / I need [tool] to [verb]",
-    "status": "active",
+    "status": "archived",
     "worksheetUrl": "twin-gates/worksheet.html",
     "url": "twin-gates/index.html",
     "unit": 0,
@@ -8066,7 +8163,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Comparative Mathematics & Game Theory",
     "clilTheme": "Comparative Mathematics & Game Theory",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "⚡",
@@ -8173,7 +8270,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Fire Safety & Municipal Emergency Services",
     "clilTheme": "Fire Safety & Municipal Emergency Services",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-1",
     "trackTitle": "🚀 Science & Space Exploration",
     "thumbnailIcon": "🚒",
@@ -8287,7 +8384,7 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Anatomy Description & Attribute Formulas",
     "clilTheme": "Anatomy Description & Attribute Formulas",
-    "status": "active",
+    "status": "archived",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "👾",
@@ -9696,47 +9793,52 @@ const GAMES_REGISTRY = [
     "lessonOrder": 99,
     "sectionOrder": 115
   },
-      {
-      "id": "practice-island-world",
-      "aliases": [
-        "island-world",
-        "island/world",
-        "world.html"
-      ],
-      "title": "🏝️ Practice Island: 2D Walking World",
-      "description": "Walk with your monster across the 4 island zones in real time: explore the beach, forest, meadow, and volcano, push crates, gather materials, and discover secrets.",
-      "type": "game",
-      "category": "Practice Island & Home Learning",
-      "categoryLabel": "🏝️ Practice Island",
-      "level": "A1",
-      "cefrLevel": "A1",
-      "age": "Ages 8–10",
-      "ageGroup": "8-10",
-      "grade": "Grades 3 & 4",
-      "grades": [
-        "Grade 3",
-        "Grade 4"
-      ],
-      "difficulty": "Grades 3–4 (A1)",
-      "tags": [
-        "island",
-        "world",
-        "rpg",
-        "practice",
-        "exploration"
-      ],
-      "status": "active",
-      "trackId": "track-island",
-      "trackTitle": "🏝️ Practice Island",
-      "thumbnailIcon": "🌍",
-      "url": "island/world.html?demo=1",
-      "worksheetUrl": null,
-      "unit": 0,
-      "track": "Practice Island",
-      "lessonOrder": 2,
-      "sectionOrder": 117
-    },
-{
+  {
+    "id": "practice-island-world",
+    "aliases": [
+      "island-world",
+      "island/world",
+      "world.html"
+    ],
+    "title": "🏝️ Practice Island: 2D Walking World",
+    "description": "Walk with your monster across the 4 island zones in real time: explore the beach, forest, meadow, and volcano, push crates, gather materials, and discover secrets.",
+    "type": "game",
+    "category": "Practice Island & Home Learning",
+    "categoryLabel": "🏝️ Practice Island",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–10",
+    "ageGroup": "8-10",
+    "grade": "Grades 3 & 4",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "difficulty": "Grades 3–4 (A1)",
+    "tags": [
+      "island",
+      "world",
+      "rpg",
+      "practice",
+      "exploration"
+    ],
+    "status": "active",
+    "trackId": "track-island",
+    "trackTitle": "🏝️ Practice Island",
+    "thumbnailIcon": "🌍",
+    "url": "island/world.html?demo=1",
+    "worksheetUrl": null,
+    "unit": 0,
+    "track": "Practice Island",
+    "lessonOrder": 2,
+    "sectionOrder": 117,
+    "route": "island/world.html?demo=1",
+    "gameKind": "quest",
+    "gameOrder": 15,
+    "thumbnail": "island/art/bg_plaza.webp",
+    "thumbnailUrl": "island/art/bg_plaza.webp"
+  },
+  {
     "id": "practice-island",
     "aliases": [
       "island",
@@ -9794,7 +9896,12 @@ const GAMES_REGISTRY = [
     "unit": 0,
     "track": "Games",
     "lessonOrder": 90,
-    "sectionOrder": 90
+    "sectionOrder": 90,
+    "route": "island/index.html?demo=1",
+    "gameKind": "quest",
+    "gameOrder": 14,
+    "thumbnail": "island/art/bg_island.webp",
+    "thumbnailUrl": "island/art/bg_island.webp"
   },
   {
     "id": "print-all-about-me",
@@ -9808,19 +9915,35 @@ const GAMES_REGISTRY = [
     "age": "Ages 8–10",
     "ageGroup": "8-10",
     "grade": "Grade 3",
-    "grades": ["Grade 3", "Grade 4"],
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
     "duration": 20,
     "durationText": "15–25 min",
     "estimatedMinutes": 20,
     "xp": 0,
-    "skills": ["Writing", "Vocabulary", "Speaking"],
+    "skills": [
+      "Writing",
+      "Vocabulary",
+      "Speaking"
+    ],
     "topic": "All about me (likes, hobbies, home, my English class)",
-    "topics": ["All about me (likes, hobbies, home, my English class)"],
+    "topics": [
+      "All about me (likes, hobbies, home, my English class)"
+    ],
     "languageFocus": "I like / I don't like; My favourite … is …; At home I …; I want …",
     "activityMode": "Individual, on paper",
     "interactionType": "Printable survey",
     "difficulty": "Easy",
-    "tags": ["printable", "worksheet", "survey", "all about me", "get to know you", "Worksheet"],
+    "tags": [
+      "printable",
+      "worksheet",
+      "survey",
+      "all about me",
+      "get to know you",
+      "Worksheet"
+    ],
     "learningObjectives": [
       "Tell the teacher about likes, dislikes, favourites, hobbies and home life with simple sentences",
       "Say how English is for me and what would help me learn",
@@ -9836,8 +9959,31 @@ const GAMES_REGISTRY = [
     "supportsProgress": false,
     "featured": true,
     "categoryGroup": "Review Games",
-    "vocabulary": { "core": ["like", "favourite", "hobby", "at home", "partner"], "supporting": ["character", "movie", "game", "hard", "easy"], "phonics": [] },
-    "grammar": { "focusPattern": "I like … / My favourite … is …", "formula": "I like football. My favourite game is Minecraft.", "formulas": ["I like … / I don't like …", "My favourite … is …"] },
+    "vocabulary": {
+      "core": [
+        "like",
+        "favourite",
+        "hobby",
+        "at home",
+        "partner"
+      ],
+      "supporting": [
+        "character",
+        "movie",
+        "game",
+        "hard",
+        "easy"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "I like … / My favourite … is …",
+      "formula": "I like football. My favourite game is Minecraft.",
+      "formulas": [
+        "I like … / I don't like …",
+        "My favourite … is …"
+      ]
+    },
     "clilDomain": "Social skills and getting to know each other",
     "clilTheme": "All about me",
     "status": "active",
@@ -10138,7 +10284,11 @@ const GAMES_REGISTRY = [
     "worksheetUrl": "smart-board/worksheet.html",
     "gradient": "linear-gradient(135deg, #060911 0%, #312e81 55%, #a855f7 100%)",
     "track": "English",
-    "sectionOrder": 1
+    "sectionOrder": 1,
+    "gameKind": "speaking",
+    "gameOrder": 17,
+    "thumbnail": "platform-art/m_lesson.webp",
+    "thumbnailUrl": "platform-art/m_lesson.webp"
   },
   {
     "id": "magic-book",
@@ -10152,14 +10302,29 @@ const GAMES_REGISTRY = [
     "age": "Ages 8–10",
     "ageGroup": "8-10",
     "grade": "Grade 3–4",
-    "grades": [3, 4],
+    "grades": [
+      3,
+      4
+    ],
     "duration": 35,
     "durationText": "35 min",
     "estimatedMinutes": 35,
     "xp": 150,
-    "skills": ["Reading", "Listening", "Vocabulary", "Speaking", "Comprehension"],
+    "skills": [
+      "Reading",
+      "Listening",
+      "Vocabulary",
+      "Speaking",
+      "Comprehension"
+    ],
     "topic": "Unit 5: Let's Go Back (G3) & Make Some Noise (G4)",
-    "topics": ["Ancient Egypt", "The Time Book", "Time Capsules", "Foley Sound Studio", "Beethoven's 9th Symphony"],
+    "topics": [
+      "Ancient Egypt",
+      "The Time Book",
+      "Time Capsules",
+      "Foley Sound Studio",
+      "Beethoven's 9th Symphony"
+    ],
     "languageFocus": "Past Simple · Present Simple · Main Idea & Details · Making Inferences",
     "route": "magic-book/index.html",
     "url": "magic-book/index.html",
@@ -10178,57 +10343,59 @@ const GAMES_REGISTRY = [
     "unit": 5,
     "track": "English",
     "lessonOrder": 1,
-    "sectionOrder": 1
+    "sectionOrder": 1,
+    "gameKind": "quest",
+    "gameOrder": 16
   },
   {
-      "id": "talk-show",
-      "title": "🎤 Talk Show Studio: Speaking Battles (Grade 3 Time Show / Time Capsule TV · Grade 4 Make Some Noise / Concert Night)",
-      "description": "A 35-minute speaking lesson. The smartboard becomes a TV studio with an ON AIR light and Applause and Quiet signs. Four teams battle in Quick Questions, Picture Talk, the Guest Chair interview and Fast Talk 30. The teacher judges with one tap; no microphone. Two episodes per grade on Unit 5.",
-      "type": "game",
-      "category": "Speaking",
-      "categoryLabel": "🎤 Speaking",
-      "level": "A1–A1+",
-      "cefrLevel": "A1+",
-      "age": "Ages 8–10",
-      "ageGroup": "8-10",
-      "grade": "Grade 3–4",
-      "grades": [
-          3,
-          4
-      ],
-      "duration": 35,
-      "durationText": "35 min",
-      "estimatedMinutes": 35,
-      "xp": 150,
-      "skills": [
-          "Speaking",
-          "Listening",
-          "Vocabulary"
-      ],
-      "topic": "Unit 5 speaking: Let's Go Back (G3) & Make Some Noise (G4)",
-      "topics": [
-          "Speaking",
-          "Past simple",
-          "Sounds and music",
-          "Interviews"
-      ],
-      "languageFocus": "Full-sentence answers · Asking and answering questions · Describing pictures",
-      "route": "talk-show/index.html",
-      "url": "talk-show/index.html",
-      "worksheet": "talk-show/worksheet.html",
-      "worksheetRoute": "talk-show/worksheet.html",
-      "worksheetUrl": "talk-show/worksheet.html",
-      "teacherGuide": true,
-      "featured": true,
-      "status": "active",
-      "trackId": "track-4",
-      "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
-      "thumbnailIcon": "🎤",
-      "gradient": "linear-gradient(135deg, #060911 0%, #b91c1c 50%, #f59e0b 100%)",
-      "unit": 5,
-      "track": "English",
-      "lessonOrder": 2,
-      "sectionOrder": 1
+    "id": "talk-show",
+    "title": "🎤 Talk Show Studio: Speaking Battles (Grade 3 Time Show / Time Capsule TV · Grade 4 Make Some Noise / Concert Night)",
+    "description": "A 35-minute speaking lesson. The smartboard becomes a TV studio with an ON AIR light and Applause and Quiet signs. Four teams battle in Quick Questions, Picture Talk, the Guest Chair interview and Fast Talk 30. The teacher judges with one tap; no microphone. Two episodes per grade on Unit 5.",
+    "type": "game",
+    "category": "Speaking",
+    "categoryLabel": "🎤 Speaking",
+    "level": "A1–A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 8–10",
+    "ageGroup": "8-10",
+    "grade": "Grade 3–4",
+    "grades": [
+      3,
+      4
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 150,
+    "skills": [
+      "Speaking",
+      "Listening",
+      "Vocabulary"
+    ],
+    "topic": "Unit 5 speaking: Let's Go Back (G3) & Make Some Noise (G4)",
+    "topics": [
+      "Speaking",
+      "Past simple",
+      "Sounds and music",
+      "Interviews"
+    ],
+    "languageFocus": "Full-sentence answers · Asking and answering questions · Describing pictures",
+    "route": "talk-show/index.html",
+    "url": "talk-show/index.html",
+    "worksheet": "talk-show/worksheet.html",
+    "worksheetRoute": "talk-show/worksheet.html",
+    "worksheetUrl": "talk-show/worksheet.html",
+    "teacherGuide": true,
+    "featured": true,
+    "status": "archived",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "🎤",
+    "gradient": "linear-gradient(135deg, #060911 0%, #b91c1c 50%, #f59e0b 100%)",
+    "unit": 5,
+    "track": "English",
+    "lessonOrder": 2,
+    "sectionOrder": 1
   },
   {
     "id": "rev-g4-sound-detectives",
@@ -10244,14 +10411,28 @@ const GAMES_REGISTRY = [
     "age": "Ages 9–10",
     "ageGroup": "9-10",
     "grade": "Grade 4",
-    "grades": [4],
+    "grades": [
+      4
+    ],
     "duration": 35,
     "durationText": "35 min",
     "estimatedMinutes": 35,
     "xp": 150,
-    "skills": ["Listening", "Reading", "Vocabulary", "Speaking", "Sequencing"],
+    "skills": [
+      "Listening",
+      "Reading",
+      "Vocabulary",
+      "Speaking",
+      "Sequencing"
+    ],
     "topic": "Unit 5: Make Some Noise — The Art of Sound & Beethoven's 9th",
-    "topics": ["Foley Sound Studio", "Beethoven's 9th Symphony", "Loud and Quiet Sounds", "Concert Hall Vocabulary", "Story Sequencing"],
+    "topics": [
+      "Foley Sound Studio",
+      "Beethoven's 9th Symphony",
+      "Loud and Quiet Sounds",
+      "Concert Hall Vocabulary",
+      "Story Sequencing"
+    ],
     "grammarTarget": "Present Simple for Facts & Past Simple Story Sequence",
     "clilTopic": "Film Sound Engineering (Foley) & Classical Music History (Beethoven)",
     "PlayableURL": "review-g4-sound-detectives/index.html",
@@ -10269,7 +10450,13 @@ const GAMES_REGISTRY = [
     "thumbnail": "review-g4-sound-detectives/img/fox-detective.webp",
     "thumbnailUrl": "review-g4-sound-detectives/img/fox-detective.webp",
     "gradient": "linear-gradient(135deg, #060911 0%, #0284c7 50%, #f59e0b 100%)",
-    "tags": ["Grade 4", "Unit 5", "Lesson", "Review", "Featured"],
+    "tags": [
+      "Grade 4",
+      "Unit 5",
+      "Lesson",
+      "Review",
+      "Featured"
+    ],
     "unit": 5,
     "track": "English",
     "lessonOrder": 3,
@@ -10289,14 +10476,27 @@ const GAMES_REGISTRY = [
     "age": "Ages 8–9",
     "ageGroup": "8-9",
     "grade": "Grade 3",
-    "grades": [3],
+    "grades": [
+      3
+    ],
     "duration": 35,
     "durationText": "35 min",
     "estimatedMinutes": 35,
     "xp": 150,
-    "skills": ["Reading", "Listening", "Vocabulary", "Spelling", "Sequencing"],
+    "skills": [
+      "Reading",
+      "Listening",
+      "Vocabulary",
+      "Spelling",
+      "Sequencing"
+    ],
     "topic": "Unit 5: Let's Go Back — The Time Book (Ancient Egypt)",
-    "topics": ["Ancient Egypt", "The Time Book", "Main Idea & Details", "Past Simple Story Sequence"],
+    "topics": [
+      "Ancient Egypt",
+      "The Time Book",
+      "Main Idea & Details",
+      "Past Simple Story Sequence"
+    ],
     "grammarTarget": "Past Simple Narrative Verbs & Main Idea vs. Detail",
     "clilTopic": "Ancient Egyptian History & Daily Life (Cairo Past & Present)",
     "PlayableURL": "review-g3-time-book/index.html",
@@ -10314,7 +10514,13 @@ const GAMES_REGISTRY = [
     "thumbnail": "review-g3-time-book/img/jannah.webp",
     "thumbnailUrl": "review-g3-time-book/img/jannah.webp",
     "gradient": "linear-gradient(135deg, #060911 0%, #b45309 50%, #f59e0b 100%)",
-    "tags": ["Grade 3", "Unit 5", "Lesson", "Review", "Featured"],
+    "tags": [
+      "Grade 3",
+      "Unit 5",
+      "Lesson",
+      "Review",
+      "Featured"
+    ],
     "unit": 5,
     "track": "English",
     "lessonOrder": 3,
@@ -10334,14 +10540,28 @@ const GAMES_REGISTRY = [
     "age": "Ages 8–9",
     "ageGroup": "8-9",
     "grade": "Grade 3",
-    "grades": [3],
+    "grades": [
+      3
+    ],
     "duration": 35,
     "durationText": "35 min",
     "estimatedMinutes": 35,
     "xp": 150,
-    "skills": ["Reading", "Writing", "Vocabulary", "Phonics", "Grammar"],
+    "skills": [
+      "Reading",
+      "Writing",
+      "Vocabulary",
+      "Phonics",
+      "Grammar"
+    ],
     "topic": "Unit 5: Let's Go Back — Time Capsules & Voyager Spacecraft",
-    "topics": ["Time Capsules", "1795 Massachusetts Capsule", "Voyager 1 & 2 Gold Disc", "Places, Sounds & Objects", "Opposites"],
+    "topics": [
+      "Time Capsules",
+      "1795 Massachusetts Capsule",
+      "Voyager 1 & 2 Gold Disc",
+      "Places, Sounds & Objects",
+      "Opposites"
+    ],
     "grammarTarget": "Present & Past Simple · Opposites · Word Categories",
     "clilTopic": "History & Space Exploration (Time Capsules & Voyager Golden Record)",
     "PlayableURL": "review-g3-time-capsule/index.html",
@@ -10359,11 +10579,300 @@ const GAMES_REGISTRY = [
     "thumbnail": "review-g3-time-capsule/img/capsule.webp",
     "thumbnailUrl": "review-g3-time-capsule/img/capsule.webp",
     "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #38bdf8 100%)",
-    "tags": ["Grade 3", "Unit 5", "Lesson", "Review", "Featured"],
+    "tags": [
+      "Grade 3",
+      "Unit 5",
+      "Lesson",
+      "Review",
+      "Featured"
+    ],
     "unit": 5,
     "track": "English",
     "lessonOrder": 4,
     "sectionOrder": 1
+  },
+  {
+    "id": "treasure-planet-3d",
+    "type": "game",
+    "gameKind": "quest",
+    "gameOrder": 4,
+    "title": "🌍 Treasure Island · 3D Tiny-Planet Quest",
+    "subtitle": "Cozy 3D Spherical Island · 8 Stages · Quests & Chests",
+    "description": "Walk around a living 3D spherical Treasure Island with swaying palms, animated shore-foam waves, NPC quests, and 8 curriculum stages.",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "island/planet.html?demo=1",
+    "url": "island/planet.html?demo=1",
+    "thumbnailIcon": "🌍",
+    "thumbnail": "games/posters/planet3d.webp",
+    "thumbnailUrl": "games/posters/planet3d.webp",
+    "categoryLabel": "3D Tiny-Planet Quest",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "3D",
+      "Treasure Island",
+      "Quest",
+      "Grade 3",
+      "Grade 4",
+      "Unit 5"
+    ]
+  },
+  {
+    "id": "sprint-race-3d",
+    "type": "game",
+    "gameKind": "arcade",
+    "gameOrder": 5,
+    "title": "🏁 3D Sprint Race · Adventure Park",
+    "subtitle": "4-Lane 3D Track · Jump Hurdles · Any Question Pack",
+    "description": "Four team avatars sprint down the sunny 3D Adventure Park track, leap hurdles on right answers, and burst through the finish tape!",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "games/race3d/index.html",
+    "url": "games/race3d/index.html",
+    "thumbnailIcon": "🏁",
+    "thumbnail": "games/posters/race3d.jpg",
+    "thumbnailUrl": "games/posters/race3d.jpg",
+    "categoryLabel": "3D Team Arcade",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "3D",
+      "Race",
+      "Arcade",
+      "Smartboard",
+      "Grade 3",
+      "Grade 4",
+      "Unit 5"
+    ]
+  },
+  {
+    "id": "monster-cannon-3d",
+    "type": "game",
+    "gameKind": "arcade",
+    "gameOrder": 6,
+    "title": "🎯 3D Monster Cannon · Adventure Park",
+    "subtitle": "3D Brass Cannon · Launch Into Bullseyes · Any Pack",
+    "description": "Answer a curriculum question to load the 3D brass cannon, aim at the spinning bullseye rings in the park, and blast for bonus stars!",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "games/cannon3d/index.html",
+    "url": "games/cannon3d/index.html",
+    "thumbnailIcon": "🎯",
+    "thumbnail": "games/posters/cannon3d.jpg",
+    "thumbnailUrl": "games/posters/cannon3d.jpg",
+    "categoryLabel": "3D Team Arcade",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "3D",
+      "Cannon",
+      "Arcade",
+      "Smartboard",
+      "Grade 3",
+      "Grade 4",
+      "Unit 5"
+    ]
+  },
+  {
+    "id": "penalty-shootout-3d",
+    "type": "game",
+    "gameKind": "arcade",
+    "gameOrder": 7,
+    "title": "⚽ 3D Penalty Shootout · Adventure Park",
+    "subtitle": "3D Stadium Goal · Pick a Corner · Beat the Keeper!",
+    "description": "Answer right to step up to the 3D penalty spot, pick one of 5 goal corners on the smartboard, and curve the ball past the diving keeper!",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "games/penalty3d/index.html",
+    "url": "games/penalty3d/index.html",
+    "thumbnailIcon": "⚽",
+    "thumbnail": "games/posters/penalty3d.jpg",
+    "thumbnailUrl": "games/posters/penalty3d.jpg",
+    "categoryLabel": "3D Team Sports",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "3D",
+      "Football",
+      "Soccer",
+      "Penalty",
+      "Grade 3",
+      "Grade 4",
+      "Unit 5"
+    ]
+  },
+  {
+    "id": "bomb-or-bonus-3d",
+    "type": "game",
+    "gameKind": "team",
+    "gameOrder": 8,
+    "title": "💣 3D Bomb or Bonus · Mystery Chests",
+    "subtitle": "16 3D Treasure Chests · Gold, Stars, Swaps & Cartoon Bombs!",
+    "description": "The ultimate smartboard crowd-pleaser in full 3D: pick a numbered chest, answer the question, and reveal coins, shields, swaps, or a silly cartoon bomb!",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "games/bomb3d/index.html",
+    "url": "games/bomb3d/index.html",
+    "thumbnailIcon": "💣",
+    "thumbnail": "games/posters/bomb3d.jpg",
+    "thumbnailUrl": "games/posters/bomb3d.jpg",
+    "categoryLabel": "3D Game Show",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "3D",
+      "Bamboozle",
+      "Chests",
+      "Team Show",
+      "Grade 3",
+      "Grade 4",
+      "Unit 5"
+    ]
+  },
+  {
+    "id": "keep-or-give-3d",
+    "type": "game",
+    "gameKind": "team",
+    "gameOrder": 9,
+    "title": "🎁 3D Keep or Give · Bluff Show",
+    "subtitle": "Secret 3D Mystery Box · KEEP It or GIVE It Away!",
+    "description": "Peek at the mystery reward value—is it +300 gold or a −150 cartoon bomb? Decide whether to KEEP the 3D chest or GIVE it to another team!",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "games/bomb3d/index.html?mode=keepgive",
+    "url": "games/bomb3d/index.html?mode=keepgive",
+    "thumbnailIcon": "🎁",
+    "thumbnail": "games/posters/keepgive.webp",
+    "thumbnailUrl": "games/posters/keepgive.webp",
+    "categoryLabel": "3D Bluff Show",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "3D",
+      "Keep or Give",
+      "Team Show",
+      "Grade 3",
+      "Grade 4",
+      "Unit 5"
+    ]
+  },
+  {
+    "id": "tug-of-war-3d",
+    "type": "game",
+    "gameKind": "team",
+    "gameOrder": 10,
+    "title": "🪢 3D Tug of War · Class Pull",
+    "subtitle": "Two 3D Teams on the Rope · Pull Across the Splash Pit!",
+    "description": "Pink vs Blue 3D avatars heave on the thick braided rope with every right answer until the ribbon crosses the line!",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "games/tug3d/index.html",
+    "url": "games/tug3d/index.html",
+    "thumbnailIcon": "🪢",
+    "thumbnail": "games/posters/tug3d.jpg",
+    "thumbnailUrl": "games/posters/tug3d.jpg",
+    "categoryLabel": "3D Team Battle",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "3D",
+      "Tug of War",
+      "Team Battle",
+      "Grade 3",
+      "Grade 4",
+      "Unit 5"
+    ]
+  },
+  {
+    "id": "bowling-3d",
+    "type": "game",
+    "gameKind": "arcade",
+    "gameOrder": 11,
+    "title": "🎳 3D Monster Bowling · Park Alley",
+    "subtitle": "Sunny 3D Wooden Lane · Pick Aim & Spin · Smash 10 Pins!",
+    "description": "Answer a curriculum question to step onto the sunny 3D park lane, choose straight or curve spin, and send 10 glossy pins flying!",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "games/bowling3d/index.html",
+    "url": "games/bowling3d/index.html",
+    "thumbnailIcon": "🎳",
+    "thumbnail": "games/posters/bowling3d.jpg",
+    "thumbnailUrl": "games/posters/bowling3d.jpg",
+    "categoryLabel": "3D Team Sports",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "3D",
+      "Bowling",
+      "Arcade",
+      "Grade 3",
+      "Grade 4",
+      "Unit 5"
+    ]
+  },
+  {
+    "id": "board-game-3d",
+    "type": "game",
+    "gameKind": "team",
+    "gameOrder": 12,
+    "title": "🎲 3D Park Board Game · 24-Tile Trail",
+    "subtitle": "Roll the 3D Die · Hop Around the Park · Bridges & Chests!",
+    "description": "Four 3D team avatars hop tile-by-tile around the 24-tile Adventure Park island board with shortcut bridges, star tiles, and mystery chests!",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "games/board3d/index.html",
+    "url": "games/board3d/index.html",
+    "thumbnailIcon": "🎲",
+    "thumbnail": "games/posters/board3d.jpg",
+    "thumbnailUrl": "games/posters/board3d.jpg",
+    "categoryLabel": "3D Board Game",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "3D",
+      "Board Game",
+      "Dice",
+      "Grade 3",
+      "Grade 4",
+      "Unit 5"
+    ]
   }
 ];
 

@@ -45,7 +45,7 @@
     fanfare: function () { var t = ctx.currentTime + 0.01; [N.C5, N.E5, N.G5].forEach(function (f, i) { tone(f, t + i * 0.18, 0.5, { v: 0.2 }); }); [N.C5, N.E5, N.G5, N.C6].forEach(function (f) { tone(f, t + 0.6, 1.6, { v: 0.14 }); }); burst(t + 0.6, 1.2, { f: 7000, type: 'highpass', v: 0.05 }); },
     pu_good: function () { arp([N.E5, N.G5, N.C6, N.E6], 0.07, 0.45); },
     pu_star: function () { arp([N.C6, N.G5, N.E6], 0.1, 0.55, { v: 0.16 }); },
-    pu_rocket: function () { var t = ctx.currentTime; burst(t, 0.8, { f: 700, type: 'bandpass', v: 0.25, q: 0.5 }); tone(300, t, 0.8, { glide: 1500, v: 0.15, type: 'sawtooth', type2: 'sine' }); tone(N.E6, t + 0.7, 0.4, { v: 0.1 }); },
+    pu_rocket: function () { var t = ctx.currentTime; burst(t, 0.8, { f: 700, type: 'bandpass', v: 0.25, q: 0.5 }); tone(300, t, 0.8, { glide: 1500, v: 0.15, type: 'triangle', type2: 'sine' }); tone(N.E6, t + 0.7, 0.4, { v: 0.1 }); },
     pu_banana: function () { var t = ctx.currentTime; tone(900, t, 0.5, { glide: 160, v: 0.2 }); tone(140, t + 0.5, 0.3, { glide: 90, v: 0.25 }); },
     pu_gold: function () { var t = ctx.currentTime; for (var i = 0; i < 9; i++) tone(1400 + (i % 3) * 330 + Math.random() * 90, t + i * 0.07, 0.25, { v: 0.1, type2: 'sine' }); },
     pu_boom: function () { var t = ctx.currentTime; tone(110, t, 0.5, { glide: 45, v: 0.35, type2: 'sine' }); burst(t, 0.3, { f: 500, v: 0.25 }); },

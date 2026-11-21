@@ -33,7 +33,7 @@
     lamp: function () { var g = new T3.Group(); g.add(at(cyl(.07, .1, 3.2, 0x5a4fcf), 0, 1.6, 0)); var b = at(sph(.28, 0xfff3b0), 0, 3.35, 0); b.material = new T3.MeshBasicMaterial({ color: 0xfff3b0 }); g.add(b); g.add(at(new T3.Mesh(new T3.ConeGeometry(.35, .25, 12), m(0x5a4fcf)), 0, 3.65, 0)); return g; },
     signpost: function () { var g = new T3.Group(); g.add(at(cyl(.07, .07, 2.4, 0xc98d63), 0, 1.2, 0)); g.add(at(box(1.3, .35, .08, 0xffd166), .3, 2.1, 0)); g.add(at(box(1.1, .3, .08, 0x8fc3ff), -.25, 1.6, 0)); return g; },
     picnic: function () { var g = new T3.Group(); g.add(at(box(2.1, .1, .9, 0xe0a878), 0, .75, 0)); [-.75, .75].forEach(function (z) { g.add(at(box(2.1, .08, .3, 0xe0a878), 0, .45, z)); }); [-.8, .8].forEach(function (x) { g.add(at(box(.1, .75, 1.6, 0xc98d63), x, .37, 0)); }); return g; },
-    fountain: function () { var g = new T3.Group(); g.add(at(cyl(3.4, 3.5, .6, 0xe7e2ff, 32), 0, .3, 0)); var w = at(cyl(3.1, 3.1, .1, 0x7fd3ff, 32), 0, .58, 0); w.material = new T3.MeshLambertMaterial({ color: 0x7fd3ff, emissive: 0x2a8fd0, emissiveIntensity: .25 }); g.add(w); g.add(at(cyl(.4, .5, 2, 0xe7e2ff), 0, 1.2, 0)); g.add(at(cyl(1.3, .9, .3, 0xe7e2ff, 24), 0, 2.2, 0)); g.add(at(sph(.35, 0x9fe0ff), 0, 2.7, 0)); return g; },
+    fountain: function () { var g = new T3.Group(); g.add(at(cyl(3.4, 3.5, .6, 0xe7e2ff, 32), 0, .3, 0)); var w = at(cyl(3.1, 3.1, .1, 0x7fd3ff, 32), 0, .58, 0); w.material = K.waterMat ? K.waterMat({ deep: 0x35b6eb, shallow: 0x89e4fb }) : new T3.MeshLambertMaterial({ color: 0x7fd3ff, emissive: 0x2a8fd0, emissiveIntensity: .25 }); g.add(w); g.add(at(cyl(.4, .5, 2, 0xe7e2ff), 0, 1.2, 0)); g.add(at(cyl(1.3, .9, .3, 0xe7e2ff, 24), 0, 2.2, 0)); g.add(at(sph(.35, 0x9fe0ff), 0, 2.7, 0)); return g; },
     stall: function () { var g = new T3.Group(); g.add(at(box(2.6, 1.1, 1.4, 0xffffff), 0, .8, 0)); [-1, 1].forEach(function (x) { g.add(at(cyl(.3, .3, .1, 0x5a4fcf, 16), x, .3, .75)); }); g.add(at(cyl(.05, .05, 1.4, 0xffffff), 0, 2, 0)); var u = at(new T3.Mesh(new T3.ConeGeometry(1.6, .7, 12), m(0xff8fb8)), 0, 2.75, 0); g.add(u); g.add(at(new T3.Mesh(new T3.ConeGeometry(.35, .6, 10), m(0xffd9a0)), 1.1, 1.6, 0)); g.add(at(sph(.3, 0xff9fc8), 1.1, 2.0, 0)); return g; },
     bleachers: function () { var g = new T3.Group(); for (var r = 0; r < 4; r++) g.add(at(box(8, .55 * (r + 1), 1, r % 2 ? 0xbfe0ff : 0xd8ecff), 0, .275 * (r + 1), 1.5 - r)); return g; },
     goal: function () { var g = new T3.Group(); var w = 0xffffff; g.add(at(cyl(.07, .07, 2.44, w), -3.66, 1.22, 0)); g.add(at(cyl(.07, .07, 2.44, w), 3.66, 1.22, 0)); var bar = at(cyl(.07, .07, 7.32, w), 0, 2.44, 0); bar.rotation.z = Math.PI / 2; g.add(bar); var net = at(box(7.3, 2.4, .05, 0xffffff), 0, 1.2, -1.8); net.material = new T3.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: .35 }); g.add(net); return g; },
@@ -146,6 +146,15 @@
             proto = (FB[def.fallback] || FB.rock)(); report.standIn.push(id);
             if (def.fallback === 'house') proto.scale.set(def.w, def.h / 1.2, def.d);
             fitTo(proto, def.w, def.d);
+          }
+          if (K.windify && /^(tree|pine|blossom|bush|flowers|hedge|flag)/.test(id + '_' + (def.fallback || ''))) {
+            var isTall = /tree|pine|blossom|flag/.test(id + '_' + (def.fallback || ''));
+            proto.traverse(function (o) {
+              if (o.isMesh && o.material) {
+                o.material = o.material.clone();
+                K.windify(o.material, isTall ? 0.095 : 0.045, def.h || (isTall ? 3.8 : 1.0));
+              }
+            });
           }
           var wrap = new T3.Group(); wrap.add(proto);
           if (def.spin || def.turn || def.float) {   // animated pieces: real copies, not instances

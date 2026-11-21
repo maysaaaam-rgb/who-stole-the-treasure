@@ -58,7 +58,7 @@
 
   var S = {
     phase: 'setup',
-    packId: (Kit.questions && Kit.questions.current && Kit.questions.current()) || Kit.pref('pz_pack') || '',
+    packId: Kit.param('set') || Kit.param('pack') || (Kit.questions && Kit.questions.current && Kit.questions.current()) || Kit.pref('pz_pack') || '',
     pack: null,
     mode: Kit.pref('pz_mode') || 'choice', // 'choice' | 'speak'
     teams: GAME_ID === 'tug' ? 2 : (+Kit.pref('teams') || 2),

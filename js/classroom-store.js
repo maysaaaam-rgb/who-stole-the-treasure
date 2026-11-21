@@ -1099,8 +1099,9 @@
   ];
   var AV_STATE_ORDER = { have: 0, level: 1, shop: 2 };
   var av3DMode = false;
-  var av3DCrownDemo = true;
+  var av3DCrownDemo = false;
   var av3DStageInst = null;
+  var av3DStageKey = '';
   var av3DScriptsPromise = null;
 
   function loadScriptSeq(urls) {
@@ -1126,7 +1127,7 @@
       'game-maker/js/vendor/BufferGeometryUtils.js?v=160',
       'game-maker/js/vendor/GLTFLoader.js?v=160',
       'game-maker/js/vendor/OrbitControls.js?v=160',
-      'js/avatar-3d-engine.js?v=2'
+      'js/avatar-3d-engine.js?v=19'
     );
     av3DScriptsPromise = loadScriptSeq(chain).then(function () { return root.Avatar3DEngine; });
     av3DScriptsPromise.catch(function () { av3DScriptsPromise = null; });
@@ -1138,29 +1139,87 @@
     return m[toneId] || '#f4c29f';
   }
 
+  function teeHexToTeamTex(teeHex) {
+    var h = String(teeHex || '').toLowerCase();
+    if (h === '#ffffff' || h === '#fff' || h === '#f8fafc') return 'white';
+    if (h === '#ec4899' || h === '#ef4444' || h === '#ff5fa2' || h === '#f472b6') return 'pink';
+    if (h === '#f59e0b' || h === '#facc15' || h === '#ffb320') return 'yellow';
+    if (h === '#22c55e' || h === '#14b8a6' || h === '#2fc58a') return 'green';
+    return 'blue';
+  }
+
   var wear3dPromise = null;
   function loadWear3d() {
     if (!wear3dPromise) {
-      wear3dPromise = fetch('assets/3d/items/wear3d.json?v=1').then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
+      wear3dPromise = fetch('assets/3d/items/wear3d.json?v=19').then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
     }
     return wear3dPromise;
+  }
+
+  function avSync3DItemsAndPose(stg, st, wearing) {
+    var stc = String((st && st.stance) || 'stand');
+    if (stc === 'wave') stg.playAnimation('Wave');
+    else if (stc === 'cheer' || stc === 'jump') stg.playAnimation('Cheer');
+    else stg.playAnimation('Idle');
+
+    return loadWear3d().then(function (W3) {
+      if (av3DStageInst !== stg) return;
+      var bySlot = {};
+      var slotOrder = ['clothing', 'legs', 'shoes', 'backpack', 'neck', 'glasses', 'accessory', 'pet', 'hat', 'wig'];
+      slotOrder.forEach(function (k) {
+        var id = wearing && wearing[k];
+        if (id && id !== 'none' && W3[id]) bySlot[W3[id].slot] = id;
+      });
+      Object.keys(wearing || {}).forEach(function (k) {
+        var id = wearing[k];
+        if (id && id !== 'none' && W3[id] && !bySlot[W3[id].slot]) bySlot[W3[id].slot] = id;
+      });
+      if (avTryId && W3[avTryId]) bySlot[W3[avTryId].slot] = avTryId;
+      if (av3DCrownDemo && !bySlot.headwear && !avTryId && W3['hat-crown']) bySlot.headwear = 'hat-crown';
+
+      var wantIds = {};
+      Object.keys(bySlot).forEach(function (sl) { wantIds[bySlot[sl]] = sl; });
+
+      Array.from(stg.equippedItems.keys()).forEach(function (existingId) {
+        if (!wantIds[existingId]) stg.unequipItem(existingId);
+      });
+      Object.keys(bySlot).forEach(function (slot) {
+        var id = bySlot[slot];
+        if (stg.equippedItems.has(id)) return;
+        var c = Object.assign({ id: id, name: id }, W3[id]);
+        stg.equipItemFromSource(c, 'assets/3d/items/' + id + '.glb').catch(function () {});
+      });
+    });
   }
 
   function avMount3DStage(sid) {
     var host = root.document && document.getElementById('cs-av-3d-host');
     if (!host) {
-      if (av3DStageInst) { try { av3DStageInst.dispose(); } catch (e) {} av3DStageInst = null; }
+      if (av3DStageInst) { try { av3DStageInst.dispose(); } catch (e) {} av3DStageInst = null; av3DStageKey = ''; }
       return;
     }
     var P = PA();
     var st = (P && P.styleOf) ? P.styleOf(sid) : { skin: 'auto', tee: '#22c55e', stance: 'stand' };
     var wearing = (P && P.wearingOf) ? P.wearingOf(sid) : {};
-    var wantCrown = av3DCrownDemo || /crown/i.test(String(wearing.hat || '')) || /crown/i.test(String(avTryId || ''));
+    var isGirl = (P && P.genderOf) ? (P.genderOf(sid) === 'girl') : false;
+    var kind = isGirl ? 'girl' : 'boy';
+    var teamTex = teeHexToTeamTex(st.tee);
+    var wantKey = sid + '|' + kind + '|' + teamTex;
+
+    // Zero-flicker fast path: keep WebGL canvas & camera angle alive when trying on items or changing stance!
+    if (av3DStageInst && av3DStageKey === wantKey && av3DStageInst._readyBody && av3DStageInst.renderer) {
+      av3DStageInst.container = host;
+      host.innerHTML = '';
+      host.appendChild(av3DStageInst.renderer.domElement);
+      av3DStageInst.resize();
+      avSync3DItemsAndPose(av3DStageInst, st, wearing);
+      return;
+    }
 
     ensureShop3DEngine().then(function (Eng) {
       var curHost = document.getElementById('cs-av-3d-host');
       if (!curHost || !Eng) return;
-      if (av3DStageInst) { try { av3DStageInst.dispose(); } catch (e) {} av3DStageInst = null; }
+      if (av3DStageInst) { try { av3DStageInst.dispose(); } catch (e) {} av3DStageInst = null; av3DStageKey = ''; }
       var pal = {
         teeHex: st.tee || '#22c55e',
         skinHex: skinHexOf(st.skin),
@@ -1169,34 +1228,25 @@
       };
       var stg = new Eng.Stage(curHost, { autoRotate: true, targetHeight: 1.65, palette: pal });
       av3DStageInst = stg;
-      stg.setCharacterFromSource('assets/3d/characters/kid-base.glb', pal).then(function () {
+      av3DStageKey = wantKey;
+      stg.setCharacterFromSource('assets/3d/characters/kid-' + kind + '.glb?v=2', pal).then(function () {
         if (av3DStageInst !== stg) return;
-        var stc = String(st.stance || 'stand');
-        if (stc === 'wave') stg.playAnimation('Wave');
-        else if (stc === 'cheer' || stc === 'jump') stg.playAnimation('Cheer');
-        else stg.playAnimation('Idle');
-
-        // Real 3D shop items (Tripo models): worn items + the one being tried on.
-        loadWear3d().then(function (W3) {
+        var texP = stg.setTeamTexture ? stg.setTeamTexture('assets/3d/characters/tex/kid-' + kind + '-' + teamTex + '.jpg?v=2') : Promise.resolve();
+        texP.then(function () {
           if (av3DStageInst !== stg) return;
-          var bySlot = {}, anyHat = false;
-          Object.keys(wearing || {}).forEach(function (k) {
-            var id = wearing[k];
-            if (id && W3[id]) bySlot[W3[id].slot] = id;
+          // Mount private 3D pupil head if teacher is signed in and head is in private Supabase
+          var headP = (P && typeof P.getHead3d === 'function' && stg.mountHeadFromSource)
+            ? P.getHead3d(sid).then(function (buf) {
+                if (av3DStageInst !== stg || !buf) return;
+                return stg.mountHeadFromSource(buf).catch(function () {});
+              }).catch(function () {})
+            : Promise.resolve();
+
+          return headP.then(function () {
+            if (av3DStageInst !== stg) return;
+            stg._readyBody = true;
+            return avSync3DItemsAndPose(stg, st, wearing);
           });
-          if (avTryId && W3[avTryId]) bySlot[W3[avTryId].slot] = avTryId;
-          Object.keys(bySlot).forEach(function (slot) {
-            var id = bySlot[slot], c = Object.assign({ id: id, name: id }, W3[id]);
-            if (slot === 'headwear') anyHat = true;
-            stg.equipItemFromSource(c, 'assets/3d/items/' + id + '.glb').catch(function () {});
-          });
-          if (wantCrown && !anyHat && !avTryId) {
-            stg.equipItemFromSource({
-              id: 'crown', name: 'Royal Gold Crown', slot: 'headwear',
-              boneCandidates: ['mixamorigHead', 'Head'], socketOffset: [0, 0.46, 0],
-              fallbackOffset: [0, 1.68, 0], scale: 0.28, rotation: [0, 0, 0]
-            }, 'assets/3d/items/crown.glb').catch(function () {});
-          }
         });
       }).catch(function () {});
     }).catch(function () {});
@@ -1207,7 +1257,7 @@
       avMount3DStage(sid);
       return;
     }
-    if (av3DStageInst) { try { av3DStageInst.dispose(); } catch (e) {} av3DStageInst = null; }
+    if (av3DStageInst) { try { av3DStageInst.dispose(); } catch (e) {} av3DStageInst = null; av3DStageKey = ''; }
     var P = PA(), el = root.document && document.getElementById('cs-av-preview');
     if (!P || !el || !sid) return;
     var want = sid + '|' + avTryId + '|' + avEmotion;
@@ -1973,6 +2023,7 @@
     var controls = '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">' +
       btn(lockM === 'earned' ? '🪙 Earned Mode ON (Switch to Free Dress-Up)' : '🔓 Free Dress-Up ON (Switch to Earned Mode)', 'ClassroomStore.ui.avLockToggle()', lockM === 'earned' ? '' : 'gold') +
       '<label class="cs-3d-btn ghost" style="cursor:pointer;">📁 Bulk Upload Head Photos<input type="file" accept="image/*" multiple style="display:none;" onchange="if(window.PupilAvatars&&PupilAvatars._bulkHeads)PupilAvatars._bulkHeads(this)"></label>' +
+      '<label class="cs-3d-btn" style="cursor:pointer;" title="Upload all 70 private student-*.glb 3D heads to teacher-only Supabase">🧊 Upload 3D Heads (.glb)<input type="file" accept=".glb,model/gltf-binary" multiple style="display:none;" onchange="if(window.PupilAvatars&&PupilAvatars._bulkHeads3d)PupilAvatars._bulkHeads3d(this)"></label>' +
       '</div>';
 
     var rosterFaces = '<details class="cs-fold" style="margin-top:6px;"><summary><span>🙂 Pupil 3D Face Photos (' + students.filter(function (s) { return P.hasHead && P.hasHead(s.id); }).length + ' / ' + students.length + ' ready in this class)</span></summary>' +

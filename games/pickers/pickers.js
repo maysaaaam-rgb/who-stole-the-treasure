@@ -57,7 +57,7 @@
 
   var CUSTOM_KEY = 'eaa_picker_custom_roster_v1';
   var state = {
-    classId: Kit.classroom ? Kit.classroom.defaultClassId() : '',
+    classId: Kit.param('class') || (Kit.classroom ? Kit.classroom.defaultClassId() : ''),
     pupils: [],
     usedIds: {},
     fairMode: true,

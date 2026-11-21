@@ -91,6 +91,13 @@
   function defaultClassId() {
     var list = classes();
     if (!list.length) return '';
+    try {
+      var urlCls = new URLSearchParams(root.location.search || '').get('class') || '';
+      if (urlCls && list.some(function (c) { return c.id === urlCls; })) {
+        Kit.pref('classId', urlCls);
+        return urlCls;
+      }
+    } catch (e0) {}
     var saved = Kit.pref('classId');
     if (saved === 'none') return '';
     if (saved && list.some(function (c) { return c.id === saved; })) return saved;

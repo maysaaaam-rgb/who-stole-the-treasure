@@ -2,18 +2,18 @@
    Handcrafted classroom arcade feel: soft pastel gingham & candy cards, bubbly headings with
    sticker strokes, tactile 3D push buttons, mascot team cards, and 4-meter smartboard clarity. */
 :root {
-  --cream: #fff8f3;
+  --cream: #fff8ec;
   --paper: #ffffff;
-  --plum: #341d4a;
-  --plum-soft: #6d5882;
-  --line: #f1dff0;
-  --pink: #ff74a6;   --pink-d: #de4882;
-  --lilac: #9d7bff;  --lilac-d: #7450e0;
-  --mint: #2fd0a2;   --mint-d: #17a37b;
-  --sky: #4db5ff;    --sky-d: #2587d6;
-  --butter: #ffd059; --butter-d: #dfa01b;
-  --peach: #ff9a6e;  --peach-d: #e06d42;
-  --night: #15102e;
+  --plum: #2b1d40;
+  --plum-soft: #68537d;
+  --line: #eedcf2;
+  --pink: #ff5fa2;   --pink-d: #d43879;
+  --lilac: #9b7bff;  --lilac-d: #7150db;
+  --mint: #2fc58a;   --mint-d: #199665;
+  --sky: #4f9dff;    --sky-d: #2974d4;
+  --butter: #ffb320; --butter-d: #cf8805;
+  --peach: #ff9466;  --peach-d: #d96438;
+  --night: #2b1d40;
   --spring: cubic-bezier(.34, 1.56, .64, 1);
   --snap: cubic-bezier(.175, .885, .32, 1.275);
   --ease-out: cubic-bezier(.22, 1, .36, 1);

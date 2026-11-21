@@ -68,18 +68,67 @@
   function easeOutCubic(t) { t = clamp(t, 0, 1); return 1 - Math.pow(1 - t, 3); }
 
   // =========================================================================
-  // 1. DEFAULT FAKE ROSTER (Claude replaces window.IslandTools.getRoster)
+  // 1. LIVE CLASS ROSTER HOOK (Teacher-Session Guarded · AGENTS.md §8 Safe)
   // =========================================================================
-  function defaultGetRoster() {
+  function isTeacherUnlocked() {
+    if (TEST_MODE || (HOST && HOST.K && HOST.K.DEMO)) return false;
+    try {
+      if (sessionStorage.getItem('eaa_auth_unlocked') === 'true') return true;
+      if (localStorage.getItem('eaa_device_trust_v2') === 'trusted' && localStorage.getItem('eaa_explicit_locked_v2') !== '1') return true;
+    } catch (e) {}
+    return false;
+  }
+
+  function fakeRoster() {
     var list = [];
     for (var i = 1; i <= 18; i++) {
-      list.push({
-        id: 'test-pupil-' + i,
-        name: 'Pupil ' + i,
-        team: (i - 1) % 4
-      });
+      list.push({ id: 'test-pupil-' + i, name: 'Pupil ' + i, team: (i - 1) % 4, xp: (19 - i) * 10 });
     }
     return list;
+  }
+
+  function defaultGetRoster() {
+    if (!isTeacherUnlocked()) return fakeRoster();
+    try {
+      var st = JSON.parse(localStorage.getItem('eaa_master_school_v6') || 'null');
+      if (!st || !Array.isArray(st.students) || !Array.isArray(st.classes)) return fakeRoster();
+      var realClasses = st.classes.filter(function (c) {
+        return c && !c.archived && !/store-sync|sync/i.test(c.id) && c.grade !== 'System' && c.grade !== 'Sync';
+      });
+      if (!realClasses.length) return fakeRoster();
+      var actId = localStorage.getItem('adventure_active_class') || '';
+      if (!realClasses.some(function (c) { return c.id === actId; })) actId = realClasses[0].id;
+
+      var d = new Date();
+      var tKey = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+      var absent = {};
+      try {
+        var rawAbs = JSON.parse(localStorage.getItem('eaa_board_absent_' + actId + '_' + tKey) || '[]');
+        if (Array.isArray(rawAbs)) rawAbs.forEach(function (id) { absent[id] = 1; });
+      } catch (e2) {}
+
+      var teamByStu = {};
+      if (Array.isArray(st.groups)) {
+        st.groups.filter(function (g) { return g && g.classId === actId && Array.isArray(g.studentIds); }).forEach(function (g, gi) {
+          g.studentIds.forEach(function (sid) { teamByStu[sid] = gi % 4; });
+        });
+      }
+
+      var out = st.students
+        .filter(function (s) { return s && !s.archived && s.classId === actId && !absent[s.id]; })
+        .map(function (s, idx) {
+          var fn = String(s.firstName || String(s.name || '').trim().split(/\s+/)[0] || ('Pupil ' + (idx + 1))).trim().split(/\s+/)[0];
+          return {
+            id: s.id,
+            name: fn,
+            team: teamByStu[s.id] != null ? teamByStu[s.id] : (idx % 4),
+            xp: Number(s.totalXP != null ? s.totalXP : (s.xp || 0)) || 0
+          };
+        });
+      return out.length ? out : fakeRoster();
+    } catch (e) {
+      return fakeRoster();
+    }
   }
 
   // =========================================================================
@@ -392,10 +441,19 @@
       return fallbackY;
     }
 
+    // Preload private 3D pupil heads in one batch if teacher is signed in
+    var PA = window.PupilAvatars || (window.parent && window.parent !== window && window.parent.PupilAvatars) || null;
+    if (PA && typeof PA.preloadHeads3d === 'function') {
+      var realIds = roster.map(function (e) { return e && e.id; }).filter(function (id) { return /^student-/.test(String(id || '')); });
+      if (realIds.length) PA.preloadHeads3d(realIds);
+    }
+
     var jobs = roster.map(function (entry, idx) {
       var tIdx = (entry.team != null ? entry.team : idx) % 4;
       var team = K.TEAMS[tIdx] || K.TEAMS[0];
-      return K.makeCharacter(team, { kidsOnly: true, kidHeight: 2.15 }).then(function (ch) {
+      var sid = entry && entry.id && /^student-/.test(String(entry.id)) ? entry.id : null;
+      var kidKind = (sid && PA && typeof PA.genderOf === 'function') ? (PA.genderOf(sid) === 'girl' ? 'girl' : 'boy') : team.kid;
+      return K.makeCharacter(team, { kidsOnly: true, kidHeight: 2.15, kid: kidKind, studentId: sid }).then(function (ch) {
         var row = idx < 9 ? 0 : 1;
         var countInRow = row === 0 ? Math.min(9, roster.length) : Math.max(1, roster.length - 9);
         var posInRow = row === 0 ? idx : (idx - 9);
@@ -983,7 +1041,8 @@
   window.IslandTools = {
     getRoster: defaultGetRoster,
     getStars: function () {
-      var r = window.IslandTools.getRoster() || defaultGetRoster();
+      var r = (window.IslandTools.getRoster() || defaultGetRoster()).slice();
+      r.sort(function (a, b) { return (b.xp || 0) - (a.xp || 0); });
       return [r[0], r[1] || r[0]];
     },
     openTray: openTray,
@@ -1047,6 +1106,9 @@
   function init() {
     HOST = window.__home3dQuietHost;
     if (!HOST) return;
+    if (isTeacherUnlocked() && HOST.K && HOST.K.cls && typeof HOST.K.cls.boot === 'function') {
+      HOST.K.cls.boot().catch(function () {});
+    }
 
     // Resolve Amphitheatre ('board') and Pirate Ship deck positions from the live scene
     var board = HOST.places.filter(function (p) { return p.id === 'board'; })[0];

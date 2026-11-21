@@ -1,0 +1,348 @@
+/* ==========================================================================
+   Game Maker 3.0 · Sunny Adventure-Park × EasyPeasy Pastel Design System
+   Enforces docs/STYLE_GUIDE.md & games/EASYPEASY_STUDY.md:
+   - Bright sunny sky-to-cream daylight (#78c4ff -> #d6f0ff -> #fff8ec), zero dark obsidian
+   - Deep plum-ink text (#2b1d40), white/cream rounded cards, 4 team accent colours
+     (Pink #ff5fa2, Blue #4f9dff, Yellow #ffb320, Green #2fc58a + Lilac #9b7bff)
+   - Tactile 3D push-buttons (5-6px bottom lip, 4px spring travel)
+   - 16:10 EasyPeasy poster cards with estimated lesson minutes & live ?preview=1 modal
+   ========================================================================== */
+
+:root {
+  --eaa-pink: #ff5fa2;   --eaa-pink-d: #d43879;
+  --eaa-blue: #4f9dff;   --eaa-blue-d: #2974d4;
+  --eaa-yellow: #ffb320; --eaa-yellow-d: #cf8805;
+  --eaa-green: #2fc58a;  --eaa-green-d: #199665;
+  --eaa-lilac: #9b7bff;  --eaa-lilac-d: #7150db;
+  --eaa-cream: #fff8ec;
+  --eaa-ink: #2b1d40;
+  --eaa-ink-soft: #68537d;
+  --eaa-line: #e9d9f2;
+  --navy: #2b1d40;
+}
+
+body.th-classic,
+body.th-space,
+body.th-halloween {
+  --ink: #2b1d40;
+  --ink2: #68537d;
+  --card: #ffffff;
+  --card2: #fff8ec;
+  --line: #2b1d40;
+  --accent: #ffb320;
+  --accentLip: #cf8805;
+  --tile1: #ff5fa2;
+  --tile2: #4f9dff;
+  --tile3: #ffb320;
+  --tile4: #2fc58a;
+  --bgsky: linear-gradient(180deg, #78c4ff 0%, #c8eaff 46%, #fff8ec 100%);
+  --panel: rgba(255, 255, 255, 0.95);
+  --shadow: 0 12px 30px -12px rgba(43, 29, 64, 0.22), 0 5px 0 rgba(215, 196, 232, 0.85);
+  background: #c8eaff;
+  color: #2b1d40;
+}
+
+/* Soft pastel Adventure-Park gingham & sunny clouds behind Home & Setup */
+body.gm-on-home .gm-bg,
+body.gm-on-setup .gm-bg {
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255, 95, 162, 0.14) 0 240px, transparent 242px),
+    radial-gradient(circle at 90% 10%, rgba(79, 157, 255, 0.16) 0 260px, transparent 262px),
+    radial-gradient(circle at 84% 88%, rgba(47, 197, 138, 0.14) 0 240px, transparent 242px),
+    repeating-linear-gradient(0deg, rgba(255, 190, 218, 0.11) 0 22px, transparent 22px 44px),
+    repeating-linear-gradient(90deg, rgba(190, 224, 255, 0.11) 0 22px, transparent 22px 44px),
+    linear-gradient(180deg, #dff2ff 0%, #fffaf2 56%, #fff8ec 100%) !important;
+}
+body.gm-on-home .gm-bg::before,
+body.gm-on-setup .gm-bg::before {
+  opacity: 0.18;
+}
+
+/* Bright Sunny Floating Top Bar (No Dark Navy Bar!) */
+.gm-head {
+  margin: 10px 16px 2px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 3px solid #ffffff;
+  box-shadow: 0 10px 26px -12px rgba(43, 29, 64, 0.22), 0 4px 0 #eadbf2;
+}
+.gm-brand {
+  background: linear-gradient(135deg, var(--eaa-pink), var(--eaa-lilac)) !important;
+  color: #ffffff !important;
+  border: 2.5px solid #ffffff !important;
+  box-shadow: 0 4px 0 var(--eaa-lilac-d) !important;
+  padding: 4px 18px 4px 6px !important;
+}
+.gm-brand-ic {
+  background: #ffffff !important;
+  width: 36px;
+  height: 36px;
+}
+
+/* Sunny Park Hero Banner */
+.gm-hero {
+  background: linear-gradient(135deg, #ffe6f2 0%, #ede4ff 50%, #dcf2ff 100%);
+  border: 4px solid #ffffff;
+  outline: 2.5px dashed rgba(255, 95, 162, 0.34);
+  outline-offset: -10px;
+  border-radius: 30px;
+  padding: 18px 28px !important;
+  box-shadow: var(--shadow);
+  justify-content: space-between !important;
+}
+.gm-hero-txt {
+  text-align: left !important;
+}
+.gm-logo {
+  font-size: clamp(2.1rem, 4.4vw, 3.2rem) !important;
+  color: var(--eaa-ink) !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: 0 3px 0 #ffffff !important;
+  transform: none !important;
+}
+.gm-hero-txt p {
+  color: var(--eaa-ink-soft) !important;
+  text-shadow: none !important;
+  font-weight: 700 !important;
+  font-size: 1.04rem !important;
+  margin-top: 6px !important;
+}
+.gm-host {
+  height: clamp(86px, 12vh, 124px) !important;
+}
+
+/* Step 1 & Step 2 White/Cream Adventure-Park Panels */
+.gm-lib-panel,
+.gm-games-panel {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 4px solid #ffffff !important;
+  outline: 2px dashed #f0d9ef;
+  outline-offset: -8px;
+  border-radius: 28px !important;
+  box-shadow: var(--shadow) !important;
+}
+
+/* Bright Daylight Question Overlay (Replaces Dark Obsidian Overlay!) */
+.gm-over {
+  background: radial-gradient(circle at 50% 42%, rgba(120, 196, 255, 0.34), rgba(43, 29, 64, 0.42)) !important;
+  backdrop-filter: blur(6px);
+}
+.gm-qcard {
+  border: 6px solid var(--c, var(--eaa-blue)) !important;
+  background: #fffdf9 !important;
+}
+
+/* Unified EasyPeasy + 3D Park Game Card Grid */
+.gm-pack-card.sel .gm-pack-badges {
+  padding-right: 74px !important;
+}
+@keyframes gmCardPop {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.gm-games {
+  grid-template-columns: repeat(auto-fill, minmax(276px, 1fr)) !important;
+  gap: 18px !important;
+}
+.gm-game {
+  animation: gmCardPop 0.16s cubic-bezier(.175, .885, .32, 1.275) both !important;
+  animation-delay: 0s !important;
+  background: #ffffff !important;
+  border: 3.5px solid #ffffff !important;
+  border-radius: 26px !important;
+  box-shadow: 0 14px 30px -14px rgba(43, 29, 64, 0.28), 0 5px 0 #ead8f0 !important;
+  transition: transform 0.16s cubic-bezier(.175, .885, .32, 1.275), box-shadow 0.16s ease !important;
+  text-align: left;
+}
+.gm-game:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 22px 38px -14px rgba(43, 29, 64, 0.38), 0 7px 0 #dec3ea !important;
+}
+.gm-game-pic {
+  position: relative;
+  aspect-ratio: 16 / 10 !important;
+  border-bottom: 3px solid #f4e8f8 !important;
+  background: linear-gradient(135deg, #ffe4f1, #e1f1ff) !important;
+}
+.gm-game-pic img.gm-cardimg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.gm-game-kbadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--eaa-ink);
+  border: 2px solid var(--eaa-blue);
+  box-shadow: 0 3px 0 rgba(43, 29, 64, 0.12);
+}
+.gm-game-kbadge.k3d {
+  background: linear-gradient(135deg, #ff5fa2, #9b7bff);
+  color: #ffffff;
+  border-color: #ffffff;
+}
+.gm-game-time {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 2;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: rgba(255, 248, 236, 0.95);
+  color: var(--eaa-ink);
+  border: 1.5px solid #edd9b8;
+}
+.gm-game-cap {
+  align-items: stretch !important;
+  padding: 13px 15px 15px !important;
+  gap: 6px !important;
+  flex: 1;
+}
+.gm-game-cap b {
+  font-size: 1.22rem !important;
+  color: var(--eaa-ink);
+  line-height: 1.15;
+}
+.gm-game-sub3 {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--eaa-pink-d);
+  letter-spacing: 0.02em;
+}
+.gm-game-desc {
+  font-size: 0.84rem !important;
+  color: var(--eaa-ink-soft) !important;
+  line-height: 1.35;
+}
+.gm-game-actions {
+  margin-top: auto;
+  padding-top: 6px;
+  display: flex;
+  gap: 8px;
+}
+.gm-gcard-btn {
+  min-height: 44px;
+  border-radius: 999px !important;
+  font-weight: 800 !important;
+  font-size: 0.9rem !important;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.12s cubic-bezier(.175, .885, .32, 1.275) !important;
+}
+.gm-gcard-btn.play {
+  flex: 1.35;
+  background: linear-gradient(180deg, #ff76b0, #ff5fa2) !important;
+  color: #ffffff !important;
+  border: 2px solid rgba(255, 255, 255, 0.75) !important;
+  box-shadow: 0 5px 0 var(--eaa-pink-d) !important;
+}
+.gm-gcard-btn.play.park3d {
+  background: linear-gradient(180deg, #42d49c, #2fc58a) !important;
+  box-shadow: 0 5px 0 var(--eaa-green-d) !important;
+}
+.gm-gcard-btn.setup {
+  flex: 0.95;
+  background: #fff8ec !important;
+  color: var(--eaa-ink) !important;
+  border: 2px solid #e6d5ee !important;
+  box-shadow: 0 4px 0 #d9c5e4 !important;
+}
+.gm-gcard-btn:active {
+  transform: translateY(3px) scale(0.97) !important;
+}
+
+/* Live 3-Step Self-Playing Preview Modal inside Game Maker */
+.gm-prev-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(43, 29, 64, 0.48);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+.gm-prev-card {
+  width: min(760px, 96vw);
+  max-height: 92dvh;
+  overflow: auto;
+  background: #ffffff;
+  border: 5px solid var(--eaa-blue);
+  border-radius: 30px;
+  padding: 18px 20px 20px;
+  box-shadow: 0 28px 60px -18px rgba(43, 29, 64, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.gm-prev-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.gm-prev-head h3 {
+  font-size: 1.35rem;
+  color: var(--eaa-ink);
+}
+.gm-prev-stage {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 3px solid #e9d9f2;
+  background: #dff2ff;
+  position: relative;
+}
+.gm-prev-stage iframe,
+.gm-prev-stage img {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+  display: block;
+}
+.gm-prev-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+.gm-prev-step {
+  background: #fff8ec;
+  border: 2px solid #f0dfc0;
+  border-radius: 16px;
+  padding: 8px 12px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--eaa-ink);
+}
+.gm-prev-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 760px) {
+  .gm-head { margin: 6px 8px 0; padding: 6px 10px; }
+  .gm-stage { padding: 6px 10px max(18px, env(safe-area-inset-bottom)) !important; }
+  .gm-hero { flex-direction: column; text-align: center; padding: 14px 16px !important; gap: 10px; }
+  .gm-hero-txt { text-align: center !important; }
+  .gm-host { display: none; }
+  .gm-games { grid-template-columns: 1fr !important; gap: 14px !important; }
+  .gm-setup { grid-template-columns: 1fr !important; }
+  .gm-setup-l { border-right: 0 !important; border-bottom: 3px solid #e9d9f2 !important; }
+}

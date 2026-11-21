@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#fff8f3">
   <title>Games Collection · English Adventure Academy</title>
   <link rel="icon" href="../favicon.ico">
-  <link rel="stylesheet" href="kit/kit.css?v=4">
+  <link rel="stylesheet" href="kit/kit.css?v=20261121b">
   <style>
     .hub { max-width: 1260px; margin: 0 auto; padding: 84px 18px 48px; }
     .hub-hero {
@@ -180,8 +180,8 @@
   </main>
 
   <script src="kit/packs.js?v=3"></script>
-  <script src="kit/kit.js?v=4"></script>
-  <script src="kit/classroom.js?v=3"></script>
+  <script src="kit/kit.js?v=20261121b"></script>
+  <script src="kit/classroom.js?v=20261121b"></script>
   <script src="kit/questions.js?v=3"></script>
   <script>
   (function () {
@@ -190,37 +190,38 @@
     var Kit = window.Kit, el = Kit.el;
 
     var FAMS = [
+      { id: 'park3d', name: '3D Adventure Park', e: '🌍', note: 'Live 3D stadium, funfair, meadow & tiny-planet games' },
       { id: 'reveal', name: 'Hidden Pictures', e: '🔍', note: 'Uncover a mystery picture, shout or tap the word' },
       { id: 'team', name: 'Team Prize Games', e: '🏆', note: 'Answer curriculum questions, win surprise bonuses' },
       { id: 'scene', name: 'Tap the Scene', e: '🗺️', note: 'Colour shadows, prepositions & interactive rooms' },
       { id: 'words', name: 'Word Arcade', e: '🔤', note: 'Phonics, spelling & sentence builders' },
       { id: 'pickers', name: 'Student Pickers', e: '🎲', note: 'Playful ways to choose the next speaker' },
-      { id: 'live', name: 'Live & Special', e: '📡', note: 'Homework links, QR card scan & webcam slice' }
+      { id: 'live', name: 'Live & Homework', e: '📡', note: 'Homework links & active motion slice' }
     ];
 
     var R = 'reveal/index.html?game=';
     var GAMES = [
-      { id: 'flashlight', fam: 'reveal', icon: '🔦', name: 'Flashlight Finder', sub: 'Golden Beam · Word or Sentence Clue · Dark Room', meta: ['Listening', 'Arrangeable', '5–10 min'], steps: ['Hear or read the clue banner', 'Sweep the golden flashlight beam', 'Tap the hidden picture!'] },
-      { id: 'doors', fam: 'reveal', icon: '🚪', name: 'Sneaky Doors', sub: '8 Candy Double-Doors · Spotlight Peek · Rooftop Mystery', meta: ['Speaking', '2–6 Teams', '8–12 min'], steps: ['Pick one of 8 moonlit rooftop doors', 'Sneak a spotlight peek through the gap', 'Swing both doors open & guess!'] },
+      { id: 'planet3d', url: '../island/planet.html?demo=1', poster: 'posters/planet3d.webp?v=4', fam: 'park3d', icon: '🌍', name: 'Treasure Island · 3D Planet', sub: 'Cozy Tiny-Planet Adventure · 5 Harbour Clue Stages · Walk & Sail!', meta: ['3D Tiny Planet', 'Mobile & Board', '10–20 min'], steps: ['1. Walk or tap around the curved 3D Treasure Island globe', '2. Follow the flying parrot to all 5 harbour clue characters', '3. Solve each English mini-game & open Billy\'s Treasure Chest!'] },
+      { id: 'race3d', url: 'race3d/', poster: 'posters/race3d.jpg?v=4', studioTab: 'questions', fam: 'park3d', icon: '🏃', name: 'Sprint Race 3D', sub: '3D Running Track · Answer Right to Sprint · First to Finish Wins!', meta: ['3D Stadium', '2–4 Teams', '8–12 min'], steps: ['1. Answer the question', '2. Your runner sprints ahead with dust puffs', '3. First to snap the finish ribbon wins!'] },
+      { id: 'cannon3d', url: 'cannon3d/', poster: 'posters/cannon3d.jpg?v=4', studioTab: 'questions', fam: 'park3d', icon: '💥', name: 'Monster Cannon 3D', sub: '3D Meadow · Answer Right · Aim the Cannon & Pop Balloons!', meta: ['3D Physics', '2–4 Teams', '8–12 min'], steps: ['1. Answer right to load the cannon', '2. Drag back to aim against the wind', '3. BOOM — pop balloons & hit the Bullseye!'] },
+      { id: 'penalty3d', url: 'penalty3d/', poster: 'posters/penalty3d.jpg?v=4', studioTab: 'questions', fam: 'park3d', icon: '⚽', name: 'Penalty Shootout 3D', sub: '3D Football Pitch · Answer Right · Aim & Beat the Keeper!', meta: ['3D Stadium', '2–4 Teams', '8–12 min'], steps: ['1. Answer right to step up to the spot', '2. Swipe or pick your corner target', '3. Curve past the keeper & score!'] },
+      { id: 'bomb3d', url: 'bomb3d/', poster: 'posters/bomb3d.jpg?v=4', studioTab: 'questions', fam: 'park3d', icon: '🎁', name: 'Bomb or Bonus 3D', sub: '3D Funfair Stage · Answer Right · Pick a Gift Box — Bonus or BOOM?', meta: ['3D Funfair', '2–4 Teams', '10–15 min'], steps: ['1. Answer right for your team', '2. Pick any of the 12 3D gift boxes', '3. Stars, Swap, Steal, Double… or silly BOOM!'] },
+      { id: 'keepgive3d', url: 'bomb3d/?mode=keepgive', poster: 'posters/keepgive.webp?v=4', studioTab: 'questions', fam: 'park3d', icon: '🎀', name: 'Keep It or Give It 3D', sub: '3D Funfair Stage · Peek Inside · Keep the Gift or Give to Rivals!', meta: ['3D Strategy', '2–4 Teams', '10–15 min'], steps: ['1. Answer right & pick a 3D gift box', '2. Decide: KEEP IT or GIVE IT to another team!', '3. Watch the box burst open on the 3D stage!'] },
+      { id: 'tug3d', url: 'tug3d/', poster: 'posters/tug3d.jpg?v=4', studioTab: 'questions', fam: 'park3d', icon: '🪢', name: 'Tug of War 3D', sub: '3D Tug Meadow · Knockout · Answer Right to PULL the Rope', meta: ['3D Meadow', '2–4 Teams', '10–15 min'], steps: ['1. Two teams pull opposite ends over the mud pit', '2. Right = big pull, wrong = small pull for rivals', '3. Pull the ribbon across your line — losers splash in the mud!'] },
+      { id: 'bowling3d', url: 'bowling3d/', poster: 'posters/bowling3d.jpg?v=4', studioTab: 'questions', fam: 'park3d', icon: '🎳', name: 'Bowling 3D', sub: '3D Bowling Green · One Lane per Team · Answer Right, then Tap to Aim', meta: ['3D Lanes', '2–4 Teams', '10–15 min'], steps: ['1. Answer the question', '2. Tap to lock aim arrow & power', '3. Scatter the 3D pins — STRIKE = +5 bonus!'] },
+      { id: 'board3d', url: 'board3d/', poster: 'posters/board3d.jpg?v=4', studioTab: 'questions', fam: 'park3d', icon: '🎲', name: 'Board Game 3D', sub: '3D Board Game Meadow · Ladders & Slides · Race to the Treasure Chest', meta: ['3D Board', '2–4 Teams', '15–20 min'], steps: ['1. Answer right to roll the Giant 3D Die', '2. Climb ladders, ride slides & collect stars', '3. First monster to open the Treasure Chest wins!'] },
+
+      { id: 'flashlight', fam: 'reveal', icon: '🔦', name: 'Flashlight Finder', sub: 'Golden Beam · Word or Sentence Clue · Cozy Room', meta: ['Listening', 'Arrangeable', '5–10 min'], steps: ['Hear or read the clue banner', 'Sweep the golden flashlight beam', 'Tap the hidden picture!'] },
+      { id: 'doors', fam: 'reveal', icon: '🚪', name: 'Sneaky Doors', sub: '8 Candy Double-Doors · Spotlight Peek · Rooftop Mystery', meta: ['Speaking', '2–6 Teams', '8–12 min'], steps: ['Pick one of 8 rooftop doors', 'Sneak a spotlight peek through the gap', 'Swing both doors open & guess!'] },
       { id: 'camera', fam: 'reveal', icon: '📸', name: 'Snap Cameras', sub: '4 Animal Instant Cameras · Polaroid Clues · Candy Quiz', meta: ['Memory & Reading', 'Audio Choices', '8–12 min'], steps: ['Tap Bunny, Frog, Bear or Duck camera', 'Inspect the ejected Polaroid clue', 'Tap A, B, C, D or shout it out!'] },
-      { id: 'orbit', fam: 'reveal', icon: '🧩', name: 'Orbit Puzzle', sub: '3D Interlocking Jigsaw · 8 Space Motion Modes · Guess Early', meta: ['Speaking', '8 Motion Modes', '8–15 min'], steps: ['Jigsaw pieces orbit in cosmic 3D space', 'Snap pieces into the frame one by one', 'Guess before the puzzle finishes!'] },
+      { id: 'orbit', fam: 'reveal', icon: '🧩', name: 'Orbit Puzzle', sub: '3D Interlocking Jigsaw · 8 Motion Modes · Guess Early', meta: ['Speaking', '8 Motion Modes', '8–15 min'], steps: ['Jigsaw pieces orbit in 3D space', 'Snap pieces into the frame one by one', 'Guess before the puzzle finishes!'] },
       { id: 'bricks', fam: 'reveal', icon: '🧱', name: 'Brick Blast', sub: 'Toy Star Mallet · 3D Candy Brick Wall · Pop & Reveal', meta: ['Speaking', 'Teams or Class', '8–12 min'], steps: ['Swing the Star Mallet at any brick', 'Pop holes in the pastel brick wall', 'Guess what is hiding behind!'] },
       { id: 'tiles', fam: 'reveal', icon: '🔤', name: 'Letter Tiles', sub: 'Alphabet A–X · Candy Tiles Pop · Uncover the Picture', meta: ['Alphabet & Phonics', 'Teams or Class', '8–12 min'], steps: ['Students call out a letter A–X', 'That candy letter tile pops away', 'Guess the hidden picture!'] },
       { id: 'pixels', fam: 'reveal', icon: '🟪', name: 'Pixel Quiz', sub: 'Sharpening Mosaic · 4 Candy Choices · Early Points Bonus', meta: ['Reading', '50/50 Hint', '5–10 min'], steps: ['A blocky candy mosaic appears', 'Tiles sharpen second by second', 'Tap the right word early for max points!'] },
 
-      { id: 'bomb', url: 'prize/index.html?game=bomb', studioTab: 'questions', fam: 'team', icon: '🎁', name: 'Bomb or Bonus', sub: 'Pick a Mystery Box · Safe Points or Silly Boom?', meta: ['4-Choice or Speak', '2–6 Teams', '8–12 min'], steps: ['Answer a question for your team', 'Pick any bobbing mystery gift box', 'Watch it burst into +Stars, 2×, Swap or a Silly Bomb!'] },
       { id: 'claw', url: 'prize/index.html?game=claw', studioTab: 'questions', fam: 'team', icon: '🧸', name: 'Claw Prize', sub: 'Drop the Arcade Claw · Grab a Plush Toy', meta: ['4-Choice or Speak', '2–6 Teams', '8–12 min'], steps: ['Answer a question to power the claw', 'Tap any plushie slot to aim', 'Drop the claw & win +10 to +40 Stars!'] },
-      { id: 'keepgive', url: 'prize/index.html?game=keepgive', studioTab: 'questions', fam: 'team', icon: '🎀', name: 'Keep It or Give It', sub: 'Keep the Mystery Gift or Give It to Rivals', meta: ['4-Choice or Speak', '2–6 Teams', '8–12 min'], steps: ['Answer a question to unlock a gift box', 'Peek inside at the secret prize or bomb', 'Decide: KEEP IT or GIVE IT to a rival team!'] },
       { id: 'croc', url: 'prize/index.html?game=croc', studioTab: 'questions', fam: 'team', icon: '🐊', name: 'Crocodile Snap', sub: "Press a Tooth · Don't Wake the Croc!", meta: ['4-Choice or Speak', '2–6 Teams', '6–10 min'], steps: ['Answer a question to earn a tooth press', 'Tap any shiny white crocodile tooth (+10 ⭐)', 'Avoid the 1 secret tooth that makes Croc SNAP!'] },
       { id: 'cups', url: 'prize/index.html?game=cups', studioTab: 'questions', fam: 'team', icon: '🏠', name: '3-House Cup Shuffle', sub: 'Follow the Shuffling Houses · Spot the Trophy', meta: ['Focus & Quiz', '2–6 Teams', '8–12 min'], steps: ['Watch the Golden Trophy hide under a cottage', 'Follow the 3 cottages as they shuffle', 'Answer & tap the cottage hiding the trophy!'] },
-      { id: 'tug', url: 'prize/index.html?game=tug', studioTab: 'questions', fam: 'team', icon: '🪢', name: 'Tug of War', sub: 'Team Showdown · Correct Answers Pull the Rope', meta: ['2 Teams', 'Showdown', '6–10 min'], steps: ['Two teams pull opposite ends of the rope', 'Answer right to yank the rope (+10 ⭐)', 'Pull the flag over your line for +30 ⭐!'] },
-      { id: 'race3d', url: 'race3d/', poster: 'posters/race3d.jpg?v=3', studioTab: 'questions', fam: 'team', icon: '🏃', name: 'Sprint Race 3D', sub: '3D Running Track · Answer Right to Sprint · First to Finish Wins!', meta: ['3D Stadium', '2–4 Teams', '8–12 min'], steps: ['1. Answer the question', '2. Your runner sprints', '3. First to the finish wins!'] },
-      { id: 'cannon3d', url: 'cannon3d/', poster: 'posters/cannon3d.jpg?v=3', studioTab: 'questions', fam: 'team', icon: '💥', name: 'Monster Cannon 3D', sub: '3D Meadow · Answer Right · Aim the Cannon & Pop Balloons!', meta: ['3D Physics', '2–4 Teams', '8–12 min'], steps: ['1. Answer right', '2. Aim the cannon', '3. BOOM — pop balloons!'] },
-      { id: 'penalty3d', url: 'penalty3d/', poster: 'posters/penalty3d.jpg?v=3', studioTab: 'questions', fam: 'team', icon: '⚽', name: 'Penalty Shootout 3D', sub: '3D Football Pitch · Answer Right · Aim & Beat the Keeper!', meta: ['3D Stadium', '2–4 Teams', '8–12 min'], steps: ['1. Answer right', '2. Pick your spot', '3. Shoot and score!'] },
-      { id: 'bomb3d', url: 'bomb3d/', poster: 'posters/bomb3d.jpg?v=1', studioTab: 'questions', fam: 'team', icon: '🎁', name: 'Bomb or Bonus 3D', sub: '3D Funfair Stage · Answer Right · Pick a Gift Box — Bonus or BOOM?', meta: ['3D Funfair', '2–4 Teams', '10–15 min'], steps: ['1. Answer right', '2. Pick a gift box (or Keep it / Give it!)', '3. Points, Swap, Steal, Double… or BOOM!'] },
-      { id: 'tug3d', url: 'tug3d/', poster: 'posters/tug3d.jpg?v=1', studioTab: 'questions', fam: 'team', icon: '🪢', name: 'Tug of War 3D', sub: '3D Tug Meadow · Knockout · Answer Right to PULL the Rope', meta: ['3D Meadow', '2–4 Teams', '10–15 min'], steps: ['1. Two teams pull, answering in turns', '2. Right = big pull, wrong = small pull for the others', '3. Pull the red ribbon over your line — loser slides into the mud!'] },
-      { id: 'bowling3d', url: 'bowling3d/', poster: 'posters/bowling3d.jpg?v=1', studioTab: 'questions', fam: 'team', icon: '🎳', name: 'Bowling 3D', sub: '3D Bowling Green · One Lane per Team · Answer Right, then Tap to Aim', meta: ['3D Lanes', '2–4 Teams', '10–15 min'], steps: ['1. Answer the question', '2. Right: tap to stop the arrow and aim · Wrong: a wobbly ball', '3. Every pin = 1 point, STRIKE = +5 · 3 rounds'] },
-      { id: 'board3d', url: 'board3d/', poster: 'posters/board3d.jpg?v=1', studioTab: 'questions', fam: 'team', icon: '🎲', name: 'Board Game 3D', sub: '3D Board Game Meadow · Ladders & Slides · Race to the Treasure Chest', meta: ['3D Board', '2–4 Teams', '15–20 min'], steps: ['1. Answer right to roll the big die (wrong = 1 small step)', '2. Ladders go up, slides go down, stars give +2', '3. First monster to the treasure chest wins'] },
 
       { id: 'shadows', url: 'scene/index.html?game=shadows', studioTab: 'pictures', fam: 'scene', icon: '🐸', name: 'Peekaboo Shadows', sub: 'Listen · Tap the Matching Silhouette · Watch It Colour In!', meta: ['Listening', 'Teams or Class', '6–10 min'], steps: ['Hear or read the mystery word clue', 'Tap the matching dark shadow silhouette', 'Watch it pop into full 3D colour!'] },
       { id: 'prep', url: 'scene/index.html?game=prep', studioTab: 'pictures', fam: 'scene', icon: '🐱', name: 'Preposition Room', sub: 'Read & Listen · Move Kitty ON / IN / UNDER / NEXT TO!', meta: ['Prepositions', 'Teams or Class', '6–10 min'], steps: ['Listen to where Kitty wants to go', 'Tap the matching spot in the cozy room', 'Watch Kitty jump ON / IN / UNDER / NEXT TO it!'] },
@@ -240,8 +241,7 @@
       { id: 'dragon', url: 'pickers/index.html?game=dragon', fam: 'pickers', icon: '🐉', name: 'Sea Dragon Call', sub: 'Friendly Dragon Calls a Name from the Waves', meta: ['Speaking', 'No Repeats', 'Any Time'], steps: ['Tap Call from the Waves!', 'Sea Dragon dives into the turquoise sea', 'Golden seashell reveals the speaker!'] },
 
       { id: 'island', url: 'live/index.html?game=island', studioTab: 'questions', fam: 'live', icon: '🏝️', name: 'Island Hop Live', sub: '6-Digit Room Code & Homework Links · Hop Across Islands', meta: ['Homework & Board', '5 Islands', '8–12 min'], steps: ['Copy the 6-digit Room Code homework link', 'Answer curriculum questions to sail ahead', 'Reach Treasure Bay for +30 Bonus Stars!'] },
-      { id: 'scan', url: 'live/index.html?game=scan', studioTab: 'questions', fam: 'live', icon: '🪪', name: 'Card Scan Quiz', sub: 'Pupils Hold Printed Cards · Phone Camera Scans Answers', meta: ['Whole Class', 'Printable Cards', '8–12 min'], steps: ['Print or hold up colour A/B/C/D cards', 'Start the camera scanner or tap votes', 'Reveal the answer & celebrate!'] },
-      { id: 'slice', url: 'live/index.html?game=slice', studioTab: 'questions', fam: 'live', icon: '📷', name: 'Webcam Slice', sub: 'Move Hands in Front of the Board Camera to Slice Answers', meta: ['Motion / Touch', 'Active Play', '6–10 min'], steps: ['Turn on Hand-Motion Cam or use touch', 'Wave or swipe to slice the right floating card', 'Score +15 Stars per clean slice!'] }
+      { id: 'slice', url: 'live/index.html?game=slice', studioTab: 'questions', fam: 'live', icon: '🍉', name: 'Fruit & Word Slice', sub: 'Swipe on the Smartboard or Wave Hands on Webcam to Slice!', meta: ['Touch or Motion', 'Active Play', '6–10 min'], steps: ['Swipe across the smartboard (or turn on Webcam Motion)', 'Slice the floating watermelon carrying the right answer', 'Score +15 Stars per clean slice!'] }
     ];
 
     var ready = GAMES.filter(function (g) { return !g.soon; }).length;

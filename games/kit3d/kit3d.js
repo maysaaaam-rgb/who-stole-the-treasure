@@ -62,8 +62,15 @@
     r.setPixelRatio(pr);
     r.shadowMap.enabled = true;
     r.shadowMap.type = T3.PCFSoftShadowMap;
+    if (T3.ACESFilmicToneMapping !== undefined) {
+      r.toneMapping = T3.ACESFilmicToneMapping;
+      r.toneMappingExposure = 1.06;
+    }
+    if (T3.SRGBColorSpace) r.outputColorSpace = T3.SRGBColorSpace;
     K.scene = new T3.Scene();
-    K.scene.fog = new T3.Fog(opts.fog || 0xcdeaff, opts.fogNear || 45, opts.fogFar || 120);
+    K.scene.fog = new T3.Fog(opts.fog || 0xc8ebff, opts.fogNear || 48, opts.fogFar || 135);
+    K._initPMREM(r);
+    K._initPostFX(r, opts);
     K._baseFov = opts.fov || 42;
     K._autoPortraitFov = opts.autoPortraitFov !== false;
     K.camera = new T3.PerspectiveCamera(K._baseFov, 16 / 9, .1, opts.far || 400);
@@ -72,6 +79,7 @@
       var w = Math.max(2, Math.round((vv && vv.width) || innerWidth || 1280));
       var h = Math.max(2, Math.round((vv && vv.height) || innerHeight || 720));
       r.setSize(w, h, false);
+      if (K._resizePostFX) K._resizePostFX(w, h);
       var aspect = w / h;
       K.camera.aspect = aspect;
       if (K._autoPortraitFov) {
@@ -92,13 +100,169 @@
     return K;
   };
 
+  /* ---------- Stylized PMREM Environment, Selective Soft Bloom Post-FX, GPU Wind & Perf Governor ---------- */
+  K.uTime = { value: 0 };
+  K.perf = { fps: 60, drawCalls: 0, triangles: 0, bloomOn: false };
+  var _fpsAcc = 0, _fpsFrames = 0, _lowFpsStrikes = 0;
+
+  K._initPMREM = function (renderer) {
+    try {
+      if (!T3.PMREMGenerator) return;
+      var pmrem = new T3.PMREMGenerator(renderer);
+      pmrem.compileEquirectangularShader();
+      var envScene = new T3.Scene();
+      var domeGeo = new T3.SphereGeometry(20, 24, 16);
+      var pos = domeGeo.attributes.position, cols = new Float32Array(pos.count * 3);
+      var cTop = new T3.Color(0x5eb8ff), cHor = new T3.Color(0xdcf2ff), cGnd = new T3.Color(0xf6dfb2), cSun = new T3.Color(0xfff5d6), tmp = new T3.Color();
+      var sunDir = new T3.Vector3(-0.45, 0.72, 0.52).normalize(), vd = new T3.Vector3();
+      for (var i = 0; i < pos.count; i++) {
+        vd.fromBufferAttribute(pos, i).normalize();
+        if (vd.y >= 0) tmp.copy(cHor).lerp(cTop, Math.pow(vd.y, 0.65));
+        else tmp.copy(cHor).lerp(cGnd, Math.min(1, Math.pow(-vd.y, 0.55) * 1.1));
+        var sd = Math.max(0, vd.dot(sunDir));
+        if (sd > 0.75) tmp.lerp(cSun, Math.pow((sd - 0.75) / 0.25, 2.0) * 0.85);
+        cols[i * 3] = tmp.r; cols[i * 3 + 1] = tmp.g; cols[i * 3 + 2] = tmp.b;
+      }
+      domeGeo.setAttribute('color', new T3.BufferAttribute(cols, 3));
+      envScene.add(new T3.Mesh(domeGeo, new T3.MeshBasicMaterial({ vertexColors: true, side: T3.BackSide })));
+      var rt = pmrem.fromScene(envScene, 0.04);
+      K.scene.environment = rt.texture;
+      if ('environmentIntensity' in K.scene) K.scene.environmentIntensity = 0.55;
+      domeGeo.dispose();
+      pmrem.dispose();
+    } catch (e) {}
+  };
+
+  K._initPostFX = function (renderer, opts) {
+    K._post = null;
+    if (K.MOBILE || K.quality === 'low' || K.Q.get('bloom') === '0' || opts.bloom === false) return;
+    try {
+      var rtType = T3.HalfFloatType || T3.UnsignedByteType;
+      var sceneRT = new T3.WebGLRenderTarget(512, 512, { type: rtType, depthBuffer: true, stencilBuffer: false });
+      var bloomRT1 = new T3.WebGLRenderTarget(256, 256, { type: rtType, depthBuffer: false });
+      var bloomRT2 = new T3.WebGLRenderTarget(256, 256, { type: rtType, depthBuffer: false });
+      var orthoCam = new T3.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      var quadGeo = new T3.PlaneGeometry(2, 2);
+      var vShader = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }';
+      var threshMat = new T3.ShaderMaterial({
+        uniforms: { tDiffuse: { value: null }, uThresh: { value: 0.86 } },
+        vertexShader: vShader,
+        fragmentShader: 'uniform sampler2D tDiffuse; uniform float uThresh; varying vec2 vUv; void main(){ vec4 c = texture2D(tDiffuse, vUv); float lum = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722)); float k = smoothstep(uThresh, uThresh + 0.38, lum); gl_FragColor = vec4(c.rgb * k, 1.0); }',
+        depthTest: false, depthWrite: false
+      });
+      var blurMat = new T3.ShaderMaterial({
+        uniforms: { tDiffuse: { value: null }, uStep: { value: new T3.Vector2(1 / 256, 1 / 256) } },
+        vertexShader: vShader,
+        fragmentShader: 'uniform sampler2D tDiffuse; uniform vec2 uStep; varying vec2 vUv; void main(){ vec3 s = texture2D(tDiffuse, vUv).rgb * 0.28; s += texture2D(tDiffuse, vUv + vec2(uStep.x, uStep.y)).rgb * 0.18; s += texture2D(tDiffuse, vUv + vec2(-uStep.x, uStep.y)).rgb * 0.18; s += texture2D(tDiffuse, vUv + vec2(uStep.x, -uStep.y)).rgb * 0.18; s += texture2D(tDiffuse, vUv + vec2(-uStep.x, -uStep.y)).rgb * 0.18; gl_FragColor = vec4(s, 1.0); }',
+        depthTest: false, depthWrite: false
+      });
+      var compMat = new T3.ShaderMaterial({
+        uniforms: { tScene: { value: sceneRT.texture }, tBloom: { value: bloomRT1.texture }, uStrength: { value: 0.24 } },
+        vertexShader: vShader,
+        fragmentShader: 'uniform sampler2D tScene; uniform sampler2D tBloom; uniform float uStrength; varying vec2 vUv; vec3 aces(vec3 x){ return clamp((x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14), 0.0, 1.0); } void main(){ vec3 base = texture2D(tScene, vUv).rgb; vec3 glow = texture2D(tBloom, vUv).rgb * uStrength; vec3 col = aces((base + glow) * 1.04); gl_FragColor = vec4(pow(col, vec3(1.0/2.2)), 1.0); }',
+        depthTest: false, depthWrite: false
+      });
+      var quad = new T3.Mesh(quadGeo, threshMat);
+      var postScene = new T3.Scene(); postScene.add(quad);
+      K._post = { sceneRT: sceneRT, b1: bloomRT1, b2: bloomRT2, cam: orthoCam, scene: postScene, quad: quad, thresh: threshMat, blur: blurMat, comp: compMat, enabled: true };
+      K.perf.bloomOn = true;
+      K._resizePostFX = function (w, h) {
+        if (!K._post) return;
+        var pr = renderer.getPixelRatio();
+        var rw = Math.max(4, Math.round(w * pr)), rh = Math.max(4, Math.round(h * pr));
+        sceneRT.setSize(rw, rh);
+        var bw = Math.max(4, Math.round(rw * 0.35)), bh = Math.max(4, Math.round(rh * 0.35));
+        bloomRT1.setSize(bw, bh); bloomRT2.setSize(bw, bh);
+        blurMat.uniforms.uStep.value.set(1.35 / bw, 1.35 / bh);
+      };
+    } catch (e) { K._post = null; }
+  };
+
+  K.windify = function (mat, strength, refH) {
+    if (!mat || mat.userData._windified) return mat;
+    mat.userData._windified = true;
+    var amp = strength != null ? strength : 0.085;
+    var h0 = refH || 3.0;
+    mat.onBeforeCompile = function (shader) {
+      shader.uniforms.uK3Time = K.uTime;
+      shader.vertexShader = 'uniform float uK3Time;\n' + shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        '#include <begin_vertex>\n' +
+        'float _wy = clamp(transformed.y / ' + h0.toFixed(2) + ', 0.0, 1.25);\n' +
+        'float _wMask = _wy * _wy;\n' +
+        '#ifdef USE_INSTANCING\n' +
+        '  vec3 _wOrigin = instanceMatrix[3].xyz;\n' +
+        '#else\n' +
+        '  vec3 _wOrigin = modelMatrix[3].xyz;\n' +
+        '#endif\n' +
+        'float _wPhase = uK3Time * 1.85 + _wOrigin.x * 0.37 + _wOrigin.z * 0.29;\n' +
+        'transformed.x += sin(_wPhase) * ' + amp.toFixed(4) + ' * _wMask;\n' +
+        'transformed.z += cos(_wPhase * 0.82) * ' + (amp * 0.65).toFixed(4) + ' * _wMask;'
+      );
+    };
+    mat.customProgramCacheKey = function () { return 'k3wind_' + amp.toFixed(3) + '_' + h0.toFixed(1); };
+    return mat;
+  };
+
+  K.waterMat = function (opts) {
+    opts = opts || {};
+    return new T3.ShaderMaterial({
+      transparent: true,
+      uniforms: {
+        uTime: K.uTime,
+        uDeep: { value: new T3.Color(opts.deep || 0x2eb4e8) },
+        uShallow: { value: new T3.Color(opts.shallow || 0x7fe0f7) },
+        uFoam: { value: new T3.Color(0xffffff) }
+      },
+      vertexShader: 'varying vec2 vUv; varying vec3 vWPos; void main(){ vUv = uv; vec4 wp = modelMatrix * vec4(position, 1.0); vWPos = wp.xyz; gl_Position = projectionMatrix * viewMatrix * wp; }',
+      fragmentShader: 'uniform float uTime; uniform vec3 uDeep; uniform vec3 uShallow; uniform vec3 uFoam; varying vec2 vUv; varying vec3 vWPos; void main(){ float w1 = sin(vWPos.x * 2.4 + uTime * 2.1) * cos(vWPos.z * 2.2 - uTime * 1.7); float w2 = sin((vWPos.x + vWPos.z) * 3.6 - uTime * 2.8); vec3 col = mix(uDeep, uShallow, 0.5 + 0.35 * w1); float edge = length(vUv - vec2(0.5)) * 2.0; float foam = smoothstep(0.82, 0.96, edge + 0.06 * sin(uTime * 3.2 + edge * 14.0)) + smoothstep(0.86, 0.98, 0.5 * (w1 + w2)); col = mix(col, uFoam, clamp(foam * 0.65, 0.0, 0.85)); gl_FragColor = vec4(col, 0.90); }'
+    });
+  };
+
   function frame(dt) {
+    var rawDt = dt;
     dt = Math.min(dt, 1 / 20) * K.timeScale;
     K.now += dt;
+    K.uTime.value = K.now;
+    if (rawDt > 0 && rawDt < 0.5) {
+      _fpsAcc += rawDt; _fpsFrames++;
+      if (_fpsAcc >= 0.75) {
+        K.perf.fps = Math.round(_fpsFrames / _fpsAcc);
+        _fpsAcc = 0; _fpsFrames = 0;
+        if (K._post && K._post.enabled && !K.CAPTURE && K.perf.fps < 46) {
+          _lowFpsStrikes++;
+          if (_lowFpsStrikes >= 3) { K._post.enabled = false; K.perf.bloomOn = false; }
+        } else { _lowFpsStrikes = 0; }
+      }
+    }
     runJobs();
     for (var i = 0; i < frameFns.length; i++) frameFns[i](dt, K.now);
     K.cam.update(dt);
-    K.renderer.render(K.scene, K.camera);
+    var p = K._post;
+    if (p && p.enabled && !K.CAPTURE) {
+      var prevTM = K.renderer.toneMapping, prevCS = K.renderer.outputColorSpace;
+      K.renderer.toneMapping = T3.NoToneMapping;
+      if (T3.LinearSRGBColorSpace) K.renderer.outputColorSpace = T3.LinearSRGBColorSpace;
+      K.renderer.setRenderTarget(p.sceneRT);
+      K.renderer.render(K.scene, K.camera);
+      K.perf.drawCalls = K.renderer.info.render.calls;
+      K.perf.triangles = K.renderer.info.render.triangles;
+      p.quad.material = p.thresh; p.thresh.uniforms.tDiffuse.value = p.sceneRT.texture;
+      K.renderer.setRenderTarget(p.b1); K.renderer.render(p.scene, p.cam);
+      p.quad.material = p.blur; p.blur.uniforms.tDiffuse.value = p.b1.texture;
+      K.renderer.setRenderTarget(p.b2); K.renderer.render(p.scene, p.cam);
+      p.blur.uniforms.tDiffuse.value = p.b2.texture;
+      K.renderer.setRenderTarget(p.b1); K.renderer.render(p.scene, p.cam);
+      K.renderer.setRenderTarget(null);
+      p.quad.material = p.comp;
+      K.renderer.render(p.scene, p.cam);
+      K.renderer.toneMapping = prevTM;
+      if (prevCS) K.renderer.outputColorSpace = prevCS;
+    } else {
+      K.renderer.render(K.scene, K.camera);
+      K.perf.drawCalls = K.renderer.info.render.calls;
+      K.perf.triangles = K.renderer.info.render.triangles;
+    }
     if (K.CAPTURE && document.getAnimations) document.getAnimations().forEach(function (a) { a.pause(); a.__t = (a.__t || 0) + dt * 1000; a.currentTime = a.__t; });
   }
   K.start = function () {
@@ -155,33 +319,47 @@
     s.buffer = b; s.connect(f); f.connect(g); g.connect(a.destination); s.start();
   }
   K.tone = tone; K.noise = noise;
+  /* Polyphonic dual-oscillator ADSR chord helper (AGENTS.md §1.3: zero raw square/sawtooth beeps!) */
+  function polyChord(freqs, dur, vol, stagger) {
+    var a = K.audio(); if (!a || K.CAPTURE || K.muted) return;
+    freqs.forEach(function (f, i) {
+      var t0 = a.currentTime + i * (stagger || 0);
+      var o1 = a.createOscillator(), o2 = a.createOscillator(), g = a.createGain();
+      o1.type = 'triangle'; o2.type = 'sine';
+      o1.frequency.setValueAtTime(f, t0); o2.frequency.setValueAtTime(f * 2, t0);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.linearRampToValueAtTime((vol || 0.16) / Math.sqrt(freqs.length), t0 + 0.018);
+      g.gain.exponentialRampToValueAtTime(0.0008, t0 + (dur || 0.34));
+      o1.connect(g); o2.connect(g); g.connect(a.destination);
+      o1.start(t0); o2.start(t0); o1.stop(t0 + (dur || 0.34) + 0.02); o2.stop(t0 + (dur || 0.34) + 0.02);
+    });
+  }
   var SYN = {
-    countdown: function () { tone(660, .18, 'square', .12); },
-    go: function () { tone(990, .45, 'square', .14); noise(1.2, .35, 900); },
-    correct: function () { tone(880, .12, 'triangle', .25); setTimeout(function () { tone(1320, .3, 'triangle', .25); }, 110); },
-    wrong: function () { tone(180, .4, 'sawtooth', .12, 90); },
-    step: function () { noise(.05, .25, 500); },
-    stumble: function () { tone(300, .35, 'sine', .25, 700); },
-    hello: function () { tone(520, .12, 'sine', .15, 780); },
+    countdown: function () { polyChord([523.25, 659.25], .22, .18, 0); },
+    go: function () { polyChord([523.25, 659.25, 783.99, 1046.5], .48, .26, .03); noise(.9, .28, 1100); },
+    correct: function () { polyChord([523.25, 659.25, 783.99, 1046.5], .34, .26, .075); },
+    wrong: function () { polyChord([246.94, 220.00], .36, .18, .12); },
+    step: function () { tone(520, .08, 'sine', .14, 620); },
+    stumble: function () { polyChord([330, 293.66], .32, .2, .08); },
+    hello: function () { polyChord([523.25, 783.99], .18, .16, .05); },
     whoosh: function () { noise(.5, .3, 2200); },
-    win: function () { noise(2.2, .45, 1100); [523, 659, 784, 1046].forEach(function (f, i) { setTimeout(function () { tone(f, .3, 'triangle', .2); }, i * 120); }); },
-    pop: function () { noise(.12, .6, 2500, 'highpass'); tone(900, .08, 'square', .1, 300); },
-    boom: function () { noise(.9, .9, 160, 'lowpass'); tone(90, .6, 'sine', .5, 40); },
+    win: function () { noise(2.0, .38, 1100); polyChord([523.25, 659.25, 783.99, 1046.5], .45, .28, .11); },
+    pop: function () { noise(.10, .48, 2500, 'highpass'); polyChord([783.99, 1046.5], .12, .16, .02); },
+    boom: function () { noise(.85, .75, 160, 'lowpass'); tone(95, .55, 'sine', .42, 42); },
     fuse: function () { noise(1.2, .12, 5000, 'highpass'); },
-    pfft: function () { noise(.6, .35, 400); tone(140, .5, 'sine', .15, 70); },
-    thud: function () { tone(110, .25, 'sine', .45, 50); noise(.15, .3, 300); },
-    hay: function () { noise(.5, .4, 1800); },
-    bullseye: function () { [784, 988, 1175, 1568].forEach(function (f, i) { setTimeout(function () { tone(f, .25, 'triangle', .22); }, i * 80); }); noise(1.5, .35, 1200); },
-    load: function () { tone(220, .2, 'sine', .25, 440); },
-    boing: function () { tone(250, .4, 'sine', .3, 600); },
-    pull: function () { noise(.3, .45, 700); tone(160, .25, 'sine', .3, 110); },
-    splash: function () { noise(.9, .7, 650, 'lowpass'); tone(220, .45, 'sine', .3, 70); },
-    whistle: function () { tone(2200, .55, 'sine', .12, 2350); },
-    dice: function () { for (var i = 0; i < 5; i++) (function (i) { setTimeout(function () { noise(.06, .3, 2600); }, i * 90); })(i); },
-    step: function () { tone(520, .08, 'sine', .15, 620); },
-    ladder: function () { [523, 659, 784, 1046].forEach(function (f, i) { setTimeout(function () { tone(f, .14, 'triangle', .2); }, i * 90); }); },
-    slide: function () { tone(1200, .7, 'sine', .2, 300); },
-    star: function () { [1318, 1568, 2093].forEach(function (f, i) { setTimeout(function () { tone(f, .2, 'sine', .15); }, i * 70); }); }
+    pfft: function () { noise(.55, .32, 420); polyChord([246.94, 220], .38, .15, .09); },
+    thud: function () { tone(115, .24, 'sine', .4, 52); noise(.14, .28, 320); },
+    hay: function () { noise(.5, .38, 1800); },
+    bullseye: function () { polyChord([783.99, 987.77, 1174.66, 1567.98], .32, .26, .075); noise(1.3, .3, 1200); },
+    load: function () { polyChord([261.63, 392.00], .22, .22, .05); },
+    boing: function () { tone(260, .38, 'sine', .26, 580); },
+    pull: function () { noise(.28, .4, 700); tone(165, .24, 'sine', .26, 115); },
+    splash: function () { noise(.85, .62, 650, 'lowpass'); tone(220, .42, 'sine', .26, 75); },
+    whistle: function () { polyChord([1567.98, 2093.0], .42, .14, .04); },
+    dice: function () { for (var i = 0; i < 5; i++) (function (i) { setTimeout(function () { noise(.06, .28, 2600); }, i * 85); })(i); },
+    ladder: function () { polyChord([523.25, 659.25, 783.99, 1046.5], .22, .22, .085); },
+    slide: function () { tone(987.77, .62, 'sine', .18, 329.63); },
+    star: function () { polyChord([1318.5, 1567.98, 2093.0], .26, .18, .065); }
   };
   K.sfx = function (name, vol) {
     if (K.muted || K.CAPTURE) return;
@@ -236,11 +414,15 @@
     K.scene.add(sky); return sky;
   };
   K.world.lights = function () {
-    K.scene.add(new T3.HemisphereLight(0xffffff, 0x9ad08a, 1.15));
-    var sun = K.sun = new T3.DirectionalLight(0xfff4e0, 1.6);
+    // Warm sunny sky + soft lilac-blue shadow bounce (ART_STYLE.md §3: shadows are blue-lilac, never cold black!)
+    K.scene.add(new T3.HemisphereLight(0xf8fcff, 0x9aa6e8, 1.08));
+    var sun = K.sun = new T3.DirectionalLight(0xfff4dc, 1.55);
     sun.castShadow = true; var sm = (K.quality === 'low' || K.MOBILE) ? 1024 : 2048; sun.shadow.mapSize.set(sm, sm); sun.shadow.bias = -.0004; sun.shadow.normalBias = .02;
     var sc = sun.shadow.camera; sc.left = -16; sc.right = 16; sc.top = 12; sc.bottom = -12; sc.near = 1; sc.far = 80;
     K.scene.add(sun); K.scene.add(sun.target);
+    var rim = new T3.DirectionalLight(0xbde8ff, 0.36);
+    rim.position.set(16, 12, -18);
+    K.scene.add(rim);
     K.onFrame(function () {   // shadows follow what the camera looks at
       var l = K.cam.look; sun.position.set(l.x - 12, 24, l.z + 14); sun.target.position.set(l.x, 0, l.z); sun.target.updateMatrixWorld();
     });
@@ -417,10 +599,10 @@
   function Kid(gltf, height) {
     var self = this; this.base(height || 1.6); this.kind = 'kid';
     var model = gltf.scene; this.inner.add(model);
-    this.bones = {}; this.rest = {};
+    this.bones = {}; this.allBones = {}; this.rest = {};
     model.traverse(function (o) {
       if (o.isMesh) { o.castShadow = true; o.frustumCulled = false; if (o.material) { o.material.metalness = 0; o.material.roughness = .75; } }
-      if (o.isBone) { var k = o.name.replace(/^mixamorig:?/, ''); if (BONES.indexOf(k) >= 0) { self.bones[k] = o; self.rest[k] = o.quaternion.clone(); } }
+      if (o.isBone) { var k = o.name.replace(/^mixamorig:?/, ''); self.allBones[k] = o; if (BONES.indexOf(k) >= 0) { self.bones[k] = o; self.rest[k] = o.quaternion.clone(); } }
     });
     this.root.updateMatrixWorld(true);
     var box = new T3.Box3().setFromObject(model), h = box.max.y - box.min.y, s = this.height / h;
@@ -432,6 +614,13 @@
     var fwd = new T3.Vector3().crossVectors(left, AX.U).normalize();
     this.inner.rotation.y = -Math.atan2(fwd.x, fwd.z);   // model front -> +Z of root
     this.root.updateMatrixWorld(true);
+    model.traverse(function (o) {
+      if (o.isMesh && o.geometry && o.geometry.attributes && o.geometry.attributes.position) {
+        o.geometry = o.geometry.clone();
+        _ensureStandaloneFloatPos(o.geometry);
+        o.userData._restToRoot = o.matrixWorld.clone();
+      }
+    });
     function armOut(a, f, sg) { var p1 = new T3.Vector3(), p2 = new T3.Vector3(); self.bones[a].getWorldPosition(p1); self.bones[f].getWorldPosition(p2); var d = p2.sub(p1); return Math.atan2(sg * d.x, -d.y); }
     this.outL = armOut('LeftArm', 'LeftForeArm', 1); this.outR = armOut('RightArm', 'RightForeArm', -1);
     this.P = this.pose('idle', 0);
@@ -599,6 +788,11 @@
     this.stateT += dt;
     if (this.useMixer && this.mixer) {
       this.mixer.update(dt);
+      if (this._syncHead) this._syncHead(K.now, this.state);
+      if (this._itemSyncs && this._itemSyncs.length) {
+        this.root.updateMatrixWorld(true);
+        for (var mi = 0; mi < this._itemSyncs.length; mi++) this._itemSyncs[mi](K.now);
+      }
       return;
     }
     if (this.state === 'run') this.phase += dt * (5 + this.speed * 1.55);
@@ -622,6 +816,568 @@
     this.rot('LeftLeg', L, P.kneeL); this.rot('RightLeg', L, P.kneeR);
     this.rot('LeftFoot', L, P.footL - (P.kneeL - .05) * .35 - P.thighL * .3);
     this.rot('RightFoot', L, P.footR - (P.kneeR - .05) * .35 - P.thighR * .3);
+    if (this._syncHead) this._syncHead(K.now, this.state);
+    if (this._itemSyncs && this._itemSyncs.length) {
+      this.root.updateMatrixWorld(true);
+      for (var si = 0; si < this._itemSyncs.length; si++) this._itemSyncs[si](K.now);
+    }
+  };
+
+  /* --- Seamless 3D Pupil Head Mounting & 3D Shop Items for Rigged Kids (v8 Precision Engine) --- */
+  function _smoothstep(e0, e1, x) { var t = K.clamp((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); }
+  function _ensureStandaloneFloatPos(geom) {
+    if (!geom || !geom.attributes || !geom.attributes.position) return null;
+    var pos = geom.attributes.position;
+    if (!pos.isInterleavedBufferAttribute && !pos.normalized && (pos.array instanceof Float32Array)) {
+      if (!geom.userData._origPos) geom.userData._origPos = new Float32Array(pos.array);
+      return geom.userData._origPos;
+    }
+    var f32 = new Float32Array(pos.count * 3);
+    for (var i = 0; i < pos.count; i++) {
+      f32[i * 3]     = pos.getX(i);
+      f32[i * 3 + 1] = pos.getY(i);
+      f32[i * 3 + 2] = pos.getZ(i);
+    }
+    geom.setAttribute('position', new T3.BufferAttribute(f32, 3));
+    geom.userData._origPos = new Float32Array(f32);
+    return geom.userData._origPos;
+  }
+  function _sampleHeadSkinRGB(tex) {
+    try {
+      var img = tex && tex.image; if (!img || !img.width) return [214, 152, 118];
+      var cv = document.createElement('canvas'), S = 160; cv.width = S; cv.height = S;
+      var ctx = cv.getContext('2d'); ctx.drawImage(img, 0, 0, S, S);
+      var d = ctx.getImageData(0, 0, S, S).data, rs = [], gs = [], bs = [];
+      for (var i = 0; i < d.length; i += 4) {
+        var r = d[i], g = d[i + 1], b = d[i + 2];
+        if (r > 135 && r < 248 && g > 92 && g < 218 && b > 58 && b < 185 &&
+            r > g + 16 && g > b + 10 && (r - b) > 36 && (r - b) < 145) { rs.push(r); gs.push(g); bs.push(b); }
+      }
+      if (rs.length < 25) return [214, 152, 118];
+      rs.sort(function (a, b) { return a - b; }); gs.sort(function (a, b) { return a - b; }); bs.sort(function (a, b) { return a - b; });
+      var m = Math.floor(rs.length * 0.48); return [rs[m], gs[m], bs[m]];
+    } catch (e) { return [214, 152, 118]; }
+  }
+  function _syncBodySkinToHead(kid, targetRGB) {
+    var done = false;
+    (kid.inner || kid.root).traverse(function (o) {
+      if (done || !o.isMesh || !o.material || !o.material.map || !o.material.map.image) return;
+      if (!o.userData._origShirtImg) o.userData._origShirtImg = o.material.map.image;
+      var img = o.userData._origShirtImg; if (!img.width) return;
+      done = true;
+      var cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height;
+      var ctx = cv.getContext('2d'); ctx.drawImage(img, 0, 0);
+      var id = ctx.getImageData(0, 0, cv.width, cv.height), d = id.data;
+      function sw(r, g, b) {
+        if (r < 118 || g < 78 || b < 55 || b >= g - 2) return 0;
+        var rg = r - g, gb = g - b, rb = r - b;
+        return _smoothstep(10, 24, rg) * (1 - _smoothstep(66, 90, rg)) *
+               _smoothstep(6, 16, gb) * (1 - _smoothstep(46, 65, gb)) *
+               _smoothstep(20, 38, rb) * (1 - _smoothstep(105, 130, rb)) *
+               _smoothstep(118, 148, r) * _smoothstep(78, 108, g);
+      }
+      var rs = [], gs = [], bs = [];
+      for (var j = 0; j < d.length; j += 16) if (sw(d[j], d[j + 1], d[j + 2]) > 0.6) { rs.push(d[j]); gs.push(d[j + 1]); bs.push(d[j + 2]); }
+      var br = 222, bg = 160, bb = 132;
+      if (rs.length > 20) {
+        rs.sort(function (a, b) { return a - b; }); gs.sort(function (a, b) { return a - b; }); bs.sort(function (a, b) { return a - b; });
+        var m = Math.floor(rs.length * 0.5); br = rs[m]; bg = gs[m]; bb = bs[m];
+      }
+      var kR = (br * 0.08 + targetRGB[0] * 0.92) / br, kG = (bg * 0.08 + targetRGB[1] * 0.92) / bg, kB = (bb * 0.08 + targetRGB[2] * 0.92) / bb;
+      for (var i = 0; i < d.length; i += 4) {
+        var r = d[i], g = d[i + 1], b = d[i + 2], w = sw(r, g, b);
+        if (w > 0.01) {
+          d[i]     = Math.round(r + (K.clamp(r * kR, 0, 255) - r) * w);
+          d[i + 1] = Math.round(g + (K.clamp(g * kG, 0, 255) - g) * w);
+          d[i + 2] = Math.round(b + (K.clamp(b * kB, 0, 255) - b) * w);
+        }
+      }
+      ctx.putImageData(id, 0, 0);
+      var nt = new T3.CanvasTexture(cv); nt.flipY = false;
+      if (T3.SRGBColorSpace) nt.colorSpace = T3.SRGBColorSpace;
+      nt.anisotropy = 4;
+      o.material = o.material.clone(); o.material.map = nt; o.material.roughness = 0.74; o.material.metalness = 0; o.material.needsUpdate = true;
+    });
+  }
+  function _analyzeHeadGeom(headModel) {
+    headModel.updateMatrixWorld(true);
+    var box = new T3.Box3().setFromObject(headModel), sz = box.getSize(new T3.Vector3()), ctr = box.getCenter(new T3.Vector3());
+    var chinY = Infinity, rawNoseY = -Infinity, rawNoseZ = -Infinity, v = new T3.Vector3(), allPts = [];
+    headModel.traverse(function (o) {
+      if (!o.isMesh || !o.geometry || !o.geometry.attributes.position) return;
+      var pos = o.geometry.attributes.position;
+      for (var i = 0; i < pos.count; i++) {
+        v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld);
+        allPts.push(v.x, v.y, v.z);
+        if (Math.abs(v.x - ctr.x) < sz.x * 0.08 && v.z > ctr.z + sz.z * 0.08 && v.y < chinY) chinY = v.y;
+      }
+    });
+    if (!isFinite(chinY)) chinY = box.min.y + sz.y * 0.05;
+    for (var pi = 0; pi < allPts.length; pi += 3) {
+      var px = allPts[pi], py = allPts[pi + 1], pz = allPts[pi + 2];
+      if (Math.abs(px - ctr.x) < sz.x * 0.055 && py >= chinY + sz.y * 0.12 && py <= chinY + sz.y * 0.48) {
+        if (pz > rawNoseZ) { rawNoseZ = pz; rawNoseY = py; }
+      }
+    }
+    if (!isFinite(rawNoseY)) { rawNoseY = chinY + sz.y * 0.25; rawNoseZ = box.max.z; }
+    var nb = 12, yLo = rawNoseY + sz.y * 0.025, yHi = rawNoseY + sz.y * 0.22, bStep = (yHi - yLo) / nb;
+    var bestBridgeZ = Infinity, bestEyeY = NaN;
+    for (var bi = 0; bi < nb; bi++) {
+      var b0 = yLo + bi * bStep, b1 = b0 + bStep * 1.35, bzs = [];
+      for (var qi = 0; qi < allPts.length; qi += 3) {
+        if (Math.abs(allPts[qi] - ctr.x) < sz.x * 0.045 && allPts[qi + 1] >= b0 && allPts[qi + 1] <= b1 && allPts[qi + 2] > ctr.z) bzs.push(allPts[qi + 2]);
+      }
+      if (bzs.length >= 3) {
+        bzs.sort(function (a, b) { return a - b; });
+        var mz = bzs[Math.floor(bzs.length * 0.85)];
+        if (mz < bestBridgeZ) { bestBridgeZ = mz; bestEyeY = 0.5 * (b0 + b1); }
+      }
+    }
+    var dn = Math.max(rawNoseY - chinY, sz.y * 0.08);
+    if (!isFinite(bestEyeY) || (bestEyeY - chinY) < 1.28 * dn || (bestEyeY - chinY) > 1.82 * dn) {
+      bestEyeY = chinY + dn * 1.48;
+      var ezs = [];
+      for (var ei = 0; ei < allPts.length; ei += 3) {
+        if (Math.abs(allPts[ei] - ctr.x) < sz.x * 0.05 && Math.abs(allPts[ei + 1] - bestEyeY) < sz.y * 0.02 && allPts[ei + 2] > ctr.z) ezs.push(allPts[ei + 2]);
+      }
+      bestBridgeZ = ezs.length ? Math.max.apply(null, ezs) : (rawNoseZ - 0.12 * dn);
+    }
+    var rawEyeH = Math.max(0.05, bestEyeY - chinY), cheekXs = [];
+    for (var ci = 0; ci < allPts.length; ci += 6) {
+      var cy = allPts[ci + 1] - chinY;
+      if (cy >= rawEyeH * 0.30 && cy <= rawEyeH * 1.15 && allPts[ci + 2] > ctr.z + sz.z * 0.14) cheekXs.push(Math.abs(allPts[ci] - ctr.x));
+    }
+    cheekXs.sort(function (a, b) { return a - b; });
+    var rawCheekW = cheekXs.length > 16 ? cheekXs[Math.floor(cheekXs.length * 0.90)] * 2 : sz.x * 0.72;
+    return { ctr: ctr, sz: sz, chinY: chinY, rawNoseY: rawNoseY, rawNoseZ: rawNoseZ, bestEyeY: bestEyeY, bestBridgeZ: bestBridgeZ, rawEyeH: rawEyeH, rawCheekW: rawCheekW };
+  }
+  Kid.prototype._refreshHairTuck = function () {
+    var self = this, mode = 'none';
+    (self._wornCfgs || []).forEach(function (c) {
+      var tk = c && c.tuck;
+      if (tk === 'wig' || tk === 'helmet') mode = tk;
+      else if (tk === 'hat' && mode !== 'wig' && mode !== 'helmet') mode = 'hat';
+      else if (tk === 'band' && mode === 'none') mode = 'band';
+    });
+    var H = self.height || 1.65, kS = H / 1.65;
+    if (self._pupilHeadModel && self._pupilPivot && self._headFit) {
+      if (self.inner) {
+        self.inner.traverse(function (bo) {
+          if (!bo.isMesh || !bo.geometry || !bo.geometry.userData._origPos || !bo.userData._restToRoot) return;
+          var bOrig = bo.geometry.userData._origPos, bAttr = bo.geometry.attributes.position, bArr = bAttr.array;
+          var toR = bo.userData._restToRoot, toBL = new T3.Matrix4().copy(toR).invert();
+          var bv = new T3.Vector3(), sink = new T3.Vector3(0, 1.15 * kS, -0.01 * kS);
+          for (var bi = 0; bi < bAttr.count; bi++) {
+            var bix = bi * 3;
+            bv.set(bOrig[bix], bOrig[bix + 1], bOrig[bix + 2]).applyMatrix4(toR);
+            if (bv.y > 1.232 * kS) {
+              bv.copy(sink).applyMatrix4(toBL);
+              bArr[bix] = bv.x; bArr[bix + 1] = bv.y; bArr[bix + 2] = bv.z;
+            } else {
+              bArr[bix] = bOrig[bix]; bArr[bix + 1] = bOrig[bix + 1]; bArr[bix + 2] = bOrig[bix + 2];
+            }
+          }
+          bAttr.needsUpdate = true;
+        });
+      }
+      var hf = self._headFit, invP = new T3.Matrix4().copy(self._pupilPivot.matrixWorld).invert();
+      self._pupilHeadModel.traverse(function (o) {
+        if (!o.isMesh || !o.geometry || !o.geometry.userData._origPos) return;
+        var orig = o.geometry.userData._origPos, attr = o.geometry.attributes.position, arr = attr.array;
+        if (mode === 'none') { arr.set(orig); attr.needsUpdate = true; return; }
+        var toPiv = new T3.Matrix4().multiplyMatrices(invP, o.matrixWorld), toLoc = new T3.Matrix4().copy(toPiv).invert();
+        var v = new T3.Vector3(), dv = new T3.Vector3(), domeCenter = new T3.Vector3(0, 0.174 * kS, -0.012 * kS), domeR = 0.140 * kS;
+        for (var i = 0; i < attr.count; i++) {
+          var ix = i * 3;
+          v.set(orig[ix], orig[ix + 1], orig[ix + 2]).applyMatrix4(toPiv);
+          var wy = 1 - _smoothstep(0.180 * kS, 0.214 * kS, v.y);
+          var wz = _smoothstep(0.042 * kS, 0.105 * kS, v.z);
+          var wx = 1 - _smoothstep(0.136 * kS, 0.174 * kS, Math.abs(v.x));
+          var faceKeep = (v.y >= -0.072 * kS) ? (wy * wz * wx) : 0;
+          var neckKeep = (v.y < 0.012 * kS && Math.abs(v.x) < 0.068 * kS && v.z > -0.082 * kS && v.z < 0.068 * kS) ? 1 : 0;
+          var tuckScale = 1 - Math.max(faceKeep, neckKeep);
+          if (tuckScale > 0.001) {
+            if (mode === 'wig' || mode === 'helmet') {
+              dv.copy(v).sub(domeCenter); var lenW = dv.length();
+              if (lenW > 0.001) { dv.multiplyScalar(Math.min(lenW, domeR * 0.90) / lenW).add(domeCenter); v.lerp(dv, 0.88 * tuckScale); }
+            } else if (mode === 'hat') {
+              var yRim = 0.194 * kS + 0.14 * (v.z + 0.010 * kS);
+              var wRim = _smoothstep(0, 0.042 * kS, v.y - yRim);
+              var wBack = _smoothstep(0.142 * kS, 0.178 * kS, v.y) * (1 - _smoothstep(-0.135 * kS, -0.085 * kS, v.z)) * 0.78;
+              var wHat = Math.max(wRim, wBack) * tuckScale;
+              if (wHat > 0.001) {
+                dv.copy(v).sub(domeCenter); var lenH = dv.length();
+                if (lenH > domeR) { dv.multiplyScalar(domeR / lenH).add(domeCenter); v.lerp(dv, 0.88 * wHat); }
+                else v.lerp(domeCenter, 0.22 * wHat);
+              }
+            } else if (mode === 'band') {
+              var dyB = Math.abs(v.y - 0.228 * kS);
+              if (dyB < 0.044 * kS) {
+                var wb = (1 - _smoothstep(0.014 * kS, 0.044 * kS, dyB)) * tuckScale;
+                v.x *= (1 - 0.26 * wb); v.z = -0.010 * kS + (v.z + 0.010 * kS) * (1 - 0.22 * wb);
+              }
+            }
+            v.applyMatrix4(toLoc);
+            arr[ix] = v.x; arr[ix + 1] = v.y; arr[ix + 2] = v.z;
+          } else { arr[ix] = orig[ix]; arr[ix + 1] = orig[ix + 1]; arr[ix + 2] = orig[ix + 2]; }
+        }
+        attr.needsUpdate = true;
+      });
+    } else if (self.inner) {
+      self.inner.traverse(function (o) {
+        if (!o.isMesh || !o.geometry || !o.geometry.userData._origPos || !o.userData._restToRoot) return;
+        var orig = o.geometry.userData._origPos, attr = o.geometry.attributes.position, arr = attr.array;
+        if (mode === 'none') { arr.set(orig); attr.needsUpdate = true; return; }
+        var toRoot = o.userData._restToRoot, toLoc = new T3.Matrix4().copy(toRoot).invert();
+        var v = new T3.Vector3(), core = new T3.Vector3(0, 1.38 * kS, 0.02 * kS);
+        for (var i = 0; i < attr.count; i++) {
+          var ix = i * 3;
+          v.set(orig[ix], orig[ix + 1], orig[ix + 2]).applyMatrix4(toRoot);
+          if (v.y > 1.245 * kS) {
+            var inNeck = v.y < 1.31 * kS && Math.abs(v.x) < 0.095 * kS && v.z > -0.055 * kS;
+            var inFace = v.y < 1.455 * kS && v.z > 0.055 * kS && Math.abs(v.x) < 0.145 * kS;
+            if (!inNeck && !inFace) {
+              if (mode === 'wig' || mode === 'helmet') v.lerp(core, 0.78);
+              else if (mode === 'hat') {
+                if (v.y > 1.42 * kS) {
+                  var wh = K.clamp((v.y - 1.42 * kS) / (0.08 * kS), 0, 1);
+                  v.x *= (1 - 0.42 * wh); v.z *= (1 - 0.40 * wh); v.y -= (v.y - 1.42 * kS) * 0.58 * wh;
+                } else if (v.z < -0.065 * kS && v.y > 1.32 * kS) v.lerp(core, 0.72);
+              } else if (mode === 'band') {
+                var dyNB = Math.abs(v.y - 1.475 * kS);
+                if (dyNB < 0.036 * kS) {
+                  var wnb = 1 - _smoothstep(0.012 * kS, 0.036 * kS, dyNB);
+                  v.x *= (1 - 0.20 * wnb); v.z *= (1 - 0.18 * wnb);
+                }
+              }
+              v.applyMatrix4(toLoc);
+              arr[ix] = v.x; arr[ix + 1] = v.y; arr[ix + 2] = v.z;
+              continue;
+            }
+          }
+          arr[ix] = orig[ix]; arr[ix + 1] = orig[ix + 1]; arr[ix + 2] = orig[ix + 2];
+        }
+        attr.needsUpdate = true;
+      });
+    }
+  };
+  Kid.prototype.mountHead = function (srcOrBuf, opts) {
+    var self = this; opts = opts || {};
+    if (!srcOrBuf) return Promise.resolve(self);
+    var waitShirt = self._shirtDone || Promise.resolve(self);
+    var parseP = (typeof srcOrBuf === 'string')
+      ? K.loadGLB(srcOrBuf)
+      : new Promise(function (res, rej) { new T3.GLTFLoader().parse(srcOrBuf.slice(0), '', res, rej); });
+    return Promise.all([waitShirt, parseP]).then(function (pair) {
+      var g = pair[1]; if (!g || !g.scene) return self;
+      if (self._pupilHead && self._pupilHead.parent) self._pupilHead.parent.remove(self._pupilHead);
+      var H = self.height || 1.65, kS = H / 1.65, headModel = g.scene;
+      headModel.updateMatrixWorld(true);
+      var hb0 = new T3.Box3().setFromObject(headModel), hsz0 = hb0.getSize(new T3.Vector3());
+      var isLegacyV18 = Math.max(hsz0.x, hsz0.y, hsz0.z) < 0.50 && hb0.max.y < 0.321;
+      var isMasterCalibrated = Math.max(hsz0.x, hsz0.y, hsz0.z) < 0.72;
+      var m = isMasterCalibrated ? null : _analyzeHeadGeom(headModel);
+      var s = isMasterCalibrated ? (isLegacyV18 ? 1.25 * kS : kS) : ((0.160 * kS) / Math.max(0.05, m.rawEyeH));
+      headModel.scale.setScalar(s); headModel.updateMatrixWorld(true);
+      var skinRGB = [214, 152, 118];
+      headModel.traverse(function (o) {
+        if (!o.isMesh) return;
+        o.castShadow = true; o.receiveShadow = false;
+        if (o.geometry && o.geometry.attributes && o.geometry.attributes.position && !o.geometry.userData._origPos) {
+          o.geometry = o.geometry.clone();
+          _ensureStandaloneFloatPos(o.geometry);
+        }
+        if (o.material) {
+          o.material = o.material.clone(); o.material.metalness = 0; o.material.roughness = 0.76;
+          if (o.material.map) {
+            skinRGB = _sampleHeadSkinRGB(o.material.map);
+            o.material.emissive = new T3.Color(0xfff4ea); o.material.emissiveMap = o.material.map; o.material.emissiveIntensity = 0.15;
+          }
+          o.material.needsUpdate = true;
+        }
+      });
+      _syncBodySkinToHead(self, skinRGB);
+      var pivot = new T3.Group();
+      if (isMasterCalibrated) {
+        headModel.position.set(0, 0, isLegacyV18 ? (0.005 * kS) : 0);
+      } else {
+        headModel.position.set(-m.ctr.x * s, -m.bestEyeY * s + 0.122 * kS, -m.bestBridgeZ * s + 0.170 * kS);
+      }
+      pivot.add(headModel);
+      pivot.updateMatrixWorld(true);
+
+      var invPivNeck = new T3.Matrix4().copy(pivot.matrixWorld).invert();
+      headModel.traverse(function (o) {
+        if (!o.isMesh || !o.geometry || !o.geometry.attributes.position) return;
+        var attr = o.geometry.attributes.position, arr = attr.array;
+        var toP = new T3.Matrix4().multiplyMatrices(invPivNeck, o.matrixWorld), toL = new T3.Matrix4().copy(toP).invert();
+        var vn = new T3.Vector3();
+        for (var i = 0; i < attr.count; i++) {
+          var ix = i * 3;
+          vn.set(arr[ix], arr[ix + 1], arr[ix + 2]).applyMatrix4(toP);
+          if (vn.y < -0.052 * kS && Math.abs(vn.x) < 0.068 * kS && vn.z > -0.068 * kS && vn.z < 0.068 * kS) {
+            var wn = _smoothstep(-0.052 * kS, -0.075 * kS, vn.y);
+            vn.x *= (1 - 0.35 * wn); vn.z *= (1 - 0.35 * wn); vn.y = Math.max(vn.y, -0.068 * kS);
+            vn.applyMatrix4(toL);
+            arr[ix] = vn.x; arr[ix + 1] = vn.y; arr[ix + 2] = vn.z;
+          }
+        }
+        attr.needsUpdate = true;
+        o.geometry.userData._origPos = new Float32Array(arr);
+      });
+
+      var chScaled = H * 0.252;
+      var topHairY = 0.340 * kS, pv = new T3.Vector3();
+      var invPiv = new T3.Matrix4().copy(pivot.matrixWorld).invert();
+      headModel.traverse(function (o) {
+        if (!o.isMesh || !o.geometry || !o.geometry.attributes.position) return;
+        var pos = o.geometry.attributes.position, mLoc = new T3.Matrix4().multiplyMatrices(invPiv, o.matrixWorld);
+        for (var i = 0; i < pos.count; i += 2) {
+          pv.fromBufferAttribute(pos, i).applyMatrix4(mLoc);
+          if (Math.abs(pv.x) < 0.085 * kS && pv.z > -0.085 * kS && pv.z < 0.065 * kS && pv.y > topHairY) topHairY = pv.y;
+        }
+      });
+      self._headFit = {
+        ch: chScaled,
+        noseZ: 0.212 * kS,
+        bridgeZ: 0.170 * kS,
+        skullZ: -0.010 * kS,
+        eyeY: 0.122 * kS,
+        noseY: 0.068 * kS,
+        browY: 0.185 * kS,
+        crownY: K.clamp(topHairY - 0.014 * kS, 0.298 * kS, 0.365 * kS),
+        width: 0.36 * kS
+      };
+
+      var nc = new T3.Color();
+      if (nc.setRGB && T3.SRGBColorSpace) nc.setRGB(skinRGB[0] / 255, skinRGB[1] / 255, skinRGB[2] / 255, T3.SRGBColorSpace);
+      else nc.setRGB(skinRGB[0] / 255, skinRGB[1] / 255, skinRGB[2] / 255).convertSRGBToLinear();
+      var nr = H * 0.035, nh = H * 0.080;
+      var nGeo = new T3.CylinderGeometry(nr * 1.05, nr * 0.98, nh, 20, 4);
+      var nPos = nGeo.attributes.position, nCols = new Float32Array(nPos.count * 3);
+      for (var i = 0; i < nPos.count; i++) {
+        var tTop = (nPos.getY(i) + nh * 0.5) / nh, sh = 0.92 - Math.pow(tTop, 1.8) * 0.20;
+        nCols[i * 3] = nc.r * sh; nCols[i * 3 + 1] = nc.g * sh; nCols[i * 3 + 2] = nc.b * sh;
+      }
+      nGeo.setAttribute('color', new T3.BufferAttribute(nCols, 3));
+      var nb = new T3.Mesh(nGeo, new T3.MeshStandardMaterial({ vertexColors: true, roughness: 0.78, metalness: 0 }));
+      nb.position.set(0, -0.048 * kS, -0.004 * kS);
+      pivot.add(nb);
+      var holder = new T3.Group();
+      pivot.position.set(0, 0, 0);
+      holder.add(pivot); self.root.add(holder);
+      self._pupilHead = holder; self._pupilPivot = pivot; self._pupilHeadModel = headModel; self._craniumH = chScaled;
+      var headBone = self.bones.Head, neckBone = self.bones.Neck;
+      var saved = {};
+      for (var k in self.rest) { saved[k] = self.bones[k].quaternion.clone(); self.bones[k].quaternion.copy(self.rest[k]); }
+      var sbP = self.body.position.clone(), sbR = self.body.rotation.clone();
+      self.body.position.set(0, 0, 0); self.body.rotation.set(0, 0, 0);
+      if (headBone) headBone.scale.set(1, 1, 1);
+      self.root.updateMatrixWorld(true);
+      var rInv = new T3.Quaternion(); self.root.getWorldQuaternion(rInv).invert();
+      var rtQ = new T3.Quaternion(); if (headBone) headBone.getWorldQuaternion(rtQ);
+      rtQ.premultiply(rInv); var restHeadInv = rtQ.clone().invert();
+      self.body.position.copy(sbP); self.body.rotation.copy(sbR);
+      for (var k2 in saved) self.bones[k2].quaternion.copy(saved[k2]);
+      self.root.updateMatrixWorld(true);
+      var _p = new T3.Vector3(), _q2 = new T3.Quaternion(), _ri = new T3.Quaternion();
+      self._syncHead = function () {
+        if (!headBone) return;
+        headBone.scale.set(1, 1, 1);
+        if (neckBone) neckBone.scale.set(1, 1, 1);
+        self.root.updateMatrixWorld(true);
+        headBone.getWorldPosition(_p);
+        headBone.getWorldQuaternion(_q2);
+        headBone.scale.setScalar(0.001);
+        self.root.updateMatrixWorld(true);
+        self.root.worldToLocal(_p);
+        self.root.getWorldQuaternion(_ri).invert();
+        _q2.premultiply(_ri).multiply(restHeadInv);
+        holder.position.copy(_p); holder.quaternion.copy(_q2);
+      };
+      self._syncHead();
+      self._refreshHairTuck();
+      return self;
+    }).catch(function () { return self; });
+  };
+
+  var _wear3dP = null;
+  function _getWear3d() {
+    if (!_wear3dP) _wear3dP = fetch(K.ROOT + 'assets/3d/items/wear3d.json?v=19').then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
+    return _wear3dP;
+  }
+  function _makeBoneTracker(kid, bone, localOff, relaxedArms) {
+    if (!bone) return function () {};
+    var saved = {};
+    for (var k in kid.rest) { saved[k] = kid.bones[k].quaternion.clone(); kid.bones[k].quaternion.copy(kid.rest[k]); }
+    var sbP = kid.body.position.clone(), sbR = kid.body.rotation.clone();
+    kid.body.position.set(0, 0, 0); kid.body.rotation.set(0, 0, 0);
+    if (relaxedArms) {
+      kid.root.updateMatrixWorld(true);
+      kid.rot('LeftArm', AX.F, -(kid.outL - 0.09));
+      kid.rot('RightArm', AX.F, (kid.outR - 0.09));
+      kid.rot('LeftForeArm', AX.L, -0.24);
+      kid.rot('RightForeArm', AX.L, -0.24);
+    }
+    kid.root.updateMatrixWorld(true);
+    var rInv = new T3.Quaternion(); kid.root.getWorldQuaternion(rInv).invert();
+    var bR = new T3.Quaternion(); bone.getWorldQuaternion(bR); bR.premultiply(rInv);
+    var bRInv = bR.clone().invert();
+    kid.body.position.copy(sbP); kid.body.rotation.copy(sbR);
+    for (var k2 in saved) kid.bones[k2].quaternion.copy(saved[k2]);
+    kid.root.updateMatrixWorld(true);
+    var p = new T3.Vector3(), q = new T3.Quaternion(), ri = new T3.Quaternion(), o = new T3.Vector3();
+    return function (wrap) {
+      bone.getWorldPosition(p); kid.root.worldToLocal(p);
+      bone.getWorldQuaternion(q); kid.root.getWorldQuaternion(ri).invert();
+      q.premultiply(ri).multiply(bRInv);
+      o.copy(localOff).applyQuaternion(q);
+      wrap.position.copy(p).add(o); wrap.quaternion.copy(q);
+    };
+  }
+  function _makePalmGripTracker(kid, localOff, kS) {
+    var ab = kid.allBones || kid.bones || {};
+    var handBone = ab.LeftHand || ab.RightHand;
+    if (!handBone) return function () {};
+    var mid2 = ab.LeftHandMiddle2 || ab.LeftHandMiddle1 || null;
+    var thb2 = ab.LeftHandThumb2  || ab.LeftHandThumb1  || null;
+    var baseTrack = _makeBoneTracker(kid, handBone, new T3.Vector3(0, 0, 0), true);
+    var pm = new T3.Vector3(), pt = new T3.Vector3(), o = new T3.Vector3();
+    if (!mid2 || !thb2) return _makeBoneTracker(kid, handBone, new T3.Vector3(0.028 * kS, -0.052 * kS, 0.032 * kS).add(localOff), true);
+    return function (wrap) {
+      baseTrack(wrap);
+      mid2.getWorldPosition(pm); thb2.getWorldPosition(pt);
+      pm.add(pt).multiplyScalar(0.5);
+      kid.root.worldToLocal(pm);
+      o.copy(localOff).applyQuaternion(wrap.quaternion);
+      wrap.position.copy(pm).add(o);
+    };
+  }
+  function _buildKidItemWrapper(kid, cfg, rawScene, kS) {
+    var mesh = rawScene.clone(true);
+    mesh.traverse(function (o) {
+      if (o.isMesh) { o.castShadow = true; o.receiveShadow = false; if (o.material) o.material.metalness = Math.min(o.material.metalness || 0, 0.42); }
+    });
+    mesh.updateMatrixWorld(true);
+    var rawBox = new T3.Box3().setFromObject(mesh), rawSz = rawBox.getSize(new T3.Vector3());
+    var maxRawDim = Math.max(rawSz.x, rawSz.y, rawSz.z, 0.001);
+    var orientG = new T3.Group(); orientG.add(mesh);
+    var pr = cfg.preRot || [0, 0, 0];
+    orientG.rotation.set(pr[0] || 0, pr[1] || 0, pr[2] || 0);
+    var targetScale = (cfg.scale || 0.30) * kS;
+    if ((cfg.slot === 'headwear' || cfg.slot === 'glasses') && cfg.headMode !== 'clip' && (kid._pupilPivot || kid._kind === 'girl')) {
+      targetScale *= 0.95;
+    }
+    orientG.scale.setScalar(targetScale / maxRawDim);
+    orientG.updateMatrixWorld(true);
+    if (cfg.anchor !== null) {
+      var box2 = new T3.Box3().setFromObject(orientG), anc = cfg.anchor || [0.5, 0.5, 0.5];
+      orientG.position.set(
+        -(box2.min.x + (box2.max.x - box2.min.x) * anc[0]),
+        -(box2.min.y + (box2.max.y - box2.min.y) * anc[1]),
+        -(box2.min.z + (box2.max.z - box2.min.z) * anc[2])
+      );
+    }
+    var itemNode = new T3.Group(); itemNode.add(orientG);
+    var off = cfg.offset || [0, 0, 0];
+    itemNode.position.set((off[0] || 0) * kS, (off[1] || 0) * kS, (off[2] || 0) * kS);
+    var rot = cfg.rotation || [0, 0, 0];
+    itemNode.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+    itemNode.scale.setScalar(cfg.userScale != null ? cfg.userScale : 1);
+    var wrap = new T3.Group(); wrap.add(itemNode);
+    return wrap;
+  }
+  Kid.prototype.wearItems = function (itemIds) {
+    var self = this;
+    if (!Array.isArray(itemIds) || !itemIds.length) return Promise.resolve(self);
+    self._itemSyncs = self._itemSyncs || [];
+    self._wornCfgs = [];
+    var H = self.height || 1.65, kS = H / 1.65, isGirl = self._kind === 'girl';
+    return _getWear3d().then(function (W3) {
+      var bySlot = {};
+      itemIds.forEach(function (id) {
+        var c = W3[id]; if (!c) return;
+        if (bySlot[c.slot] && W3[bySlot[c.slot]] && W3[bySlot[c.slot]].isWig && !c.isWig) return;
+        bySlot[c.slot] = id;
+      });
+      var uniqueIds = Object.keys(bySlot).map(function (sl) { return bySlot[sl]; });
+      var jobs = uniqueIds.map(function (id) {
+        var cfg = W3[id]; if (!cfg) return null;
+        return K.tryGLB(K.ROOT + 'assets/3d/items/' + id + '.glb').then(function (g) {
+          if (!g || !g.scene) return;
+          self._wornCfgs.push(cfg);
+          var slot = cfg.slot, hm = cfg.headMode || 'hat';
+          var wrap = _buildKidItemWrapper(self, cfg, g.scene, kS);
+          if (slot === 'headwear' || slot === 'glasses') {
+            var isPupil = !!(self._pupilPivot && self._headFit);
+            var useGirlSkull = isPupil || isGirl;
+            var bx = 0, by = 0.208, bz = -0.010;
+            if (slot === 'headwear') {
+              if (hm === 'clip') { var nco = cfg.clipOffset || [0.125, 0.78, 0.11]; bx = nco[0]; by = useGirlSkull ? 0.245 : 0.260; bz = nco[2]; }
+              else if (hm === 'crown') { by = isPupil ? (self._headFit.crownY / kS) : (useGirlSkull ? 0.302 : 0.322); bz = 0.006; }
+              else if (hm === 'band') { by = useGirlSkull ? 0.228 : 0.232; bz = 0; }
+              else if (hm === 'helmet') { by = useGirlSkull ? 0.155 : 0.165; bz = 0.010; }
+              else if (hm === 'wig') { by = useGirlSkull ? 0.182 : 0.192; bz = -0.012; }
+              else { by = useGirlSkull ? 0.208 : 0.215; bz = -0.010; }
+            } else {
+              if (hm === 'band') { by = 0.118; bz = -0.004; }
+              else {
+                by = cfg.maskMode === 'lower' ? 0.056 : 0.118;
+                bz = isPupil ? 0.154 : 0.158;
+              }
+            }
+            if (isPupil) {
+              wrap.position.set(bx * kS, by * kS, bz * kS);
+              self._pupilPivot.add(wrap);
+            } else {
+              self.root.add(wrap);
+              var fnH = _makeBoneTracker(self, self.bones.Head, new T3.Vector3(bx * kS, by * kS, bz * kS), false);
+              self._itemSyncs.push(function () { fnH(wrap); });
+              fnH(wrap);
+            }
+          } else if (slot === 'back' || slot === 'neck') {
+            self.root.add(wrap);
+            var off = cfg.socketOffset || (slot === 'back' ? [0, 0.01, -0.088] : [0, 0.098, 0.092]);
+            var zGirl = (slot === 'neck' && cfg.neckMode === 'medal' && isGirl) ? 0.014 : 0;
+            var fnB = _makeBoneTracker(self, self.bones.Spine2 || self.bones.Spine1, new T3.Vector3(off[0] * kS, off[1] * kS, (off[2] + zGirl) * kS), false);
+            self._itemSyncs.push(function () { fnB(wrap); });
+            fnB(wrap);
+          } else if (slot === 'hand_r' || slot === 'hand_l') {
+            self.root.add(wrap);
+            var hMode = cfg.handMode || 'hand';
+            if (hMode === 'hand') {
+              var hOff0 = cfg.socketOffset || [0, 0, 0];
+              var fnP = _makePalmGripTracker(self, new T3.Vector3(hOff0[0] * kS, hOff0[1] * kS, hOff0[2] * kS), kS);
+              self._itemSyncs.push(function () { fnP(wrap); });
+              fnP(wrap);
+            } else {
+              var hBone = hMode === 'chest'
+                ? (self.bones.Spine2 || self.bones.Spine1)
+                : (self.bones.LeftForeArm || self.bones.LeftHand);
+              var hOff = cfg.socketOffset || [0.048, -0.02, 0.042];
+              var zChestGirl = (hMode === 'chest' && isGirl) ? 0.014 : 0;
+              var fnR = _makeBoneTracker(self, hBone, new T3.Vector3(hOff[0] * kS, hOff[1] * kS, (hOff[2] + zChestGirl) * kS), hMode !== 'chest');
+              self._itemSyncs.push(function () { fnR(wrap); });
+              fnR(wrap);
+            }
+          } else if (slot === 'pet') {
+            var pOff = cfg.socketOffset || [0.42, 0.015, 0.18];
+            var baseY = (cfg.hoverY != null ? cfg.hoverY : pOff[1]) * kS;
+            var isFlying = (cfg.hoverY || 0) > 0.3;
+            wrap.position.set(pOff[0] * kS, baseY, pOff[2] * kS);
+            self.root.add(wrap);
+            self._itemSyncs.push(function (t) {
+              wrap.position.y = baseY + (isFlying ? Math.sin(t * 3.6) * 0.045 * kS : Math.abs(Math.sin(t * 2.6)) * 0.015 * kS);
+              wrap.rotation.y = Math.sin(t * 1.4) * 0.18;
+            });
+          }
+        });
+      });
+      return Promise.all(jobs).then(function () {
+        self._refreshHairTuck();
+        return self;
+      });
+    });
   };
 
   /* --- monster (one solid model, animated as a whole: squash, stretch, hop, spin) --- */
@@ -670,24 +1426,47 @@
   K.makeCharacter = function (team, opts) {
     opts = opts || {};
     var monUrl = K.ROOT + 'assets/3d/monsters/' + team.mon + '.glb';
-    var kind = opts.kid || team.kid, kidUrl2 = K.ROOT + 'assets/3d/characters/kid-' + kind + '.glb';
+    var kind = opts.kid || team.kid, kidUrl2 = K.ROOT + 'assets/3d/characters/kid-' + kind + '.glb?v=2';
     return (opts.kidsOnly || K.Q.has('kids') ? Promise.resolve(null) : K.tryGLB(monUrl)).then(function (g) {
       if (g) return new Mon(g, opts.monHeight);
-      return K.loadGLB(kidUrl2).then(function (g2) { var kid = new Kid(g2, opts.kidHeight); if (opts.teamShirt !== false) K.teamShirt(kid, kind, team); return kid; });
+      return K.loadGLB(kidUrl2).then(function (g2) {
+        var kid = new Kid(g2, opts.kidHeight);
+        kid._kind = kind;
+        kid._team = team;
+        kid._shirtDone = (opts.teamShirt !== false) ? K.teamShirt(kid, kind, team) : Promise.resolve(kid);
+        // Optional private 3D pupil head + worn 3D shop items (only when teacher is signed in & studentId given)
+        var PA = root.PupilAvatars || null;
+        if (!PA) { try { if (root.parent && root.parent !== root && root.parent.PupilAvatars) PA = root.parent.PupilAvatars; } catch (e) {} }
+        if (opts.studentId && PA) {
+          var headP = (typeof PA.getHead3d === 'function')
+            ? PA.getHead3d(opts.studentId).then(function (buf) { return buf ? kid.mountHead(buf) : kid; })
+            : Promise.resolve(kid);
+          headP.then(function () {
+            if (opts.wear === false) return;
+            var w = (typeof PA.wearingOf === 'function') ? PA.wearingOf(opts.studentId) : null;
+            var ids = opts.items || (w ? Object.keys(w).map(function (k) { return w[k]; }).filter(Boolean) : []);
+            if (ids.length) kid.wearItems(ids);
+          }).catch(function () {});
+        } else if (Array.isArray(opts.items) && opts.items.length) {
+          kid._shirtDone.then(function () { kid.wearItems(opts.items); });
+        }
+        return kid;
+      });
     });
   };
   /* children wear their team's colour: the same model, with the shirt picture swapped (assets/3d/characters/tex/kid-<girl|boy>-<team>.jpg).
-     If the picture is missing the child just keeps the normal shirt. */
+     If the picture is missing the child just keeps the normal shirt. Traverses kid.inner ONLY so mounted 3D heads stay untouched. */
   var SHIRTS = {};
   K.teamShirt = function (kid, kind, team) {
-    var url = K.ROOT + 'assets/3d/characters/tex/kid-' + kind + '-' + team.name.toLowerCase() + '.jpg';
+    var url = K.ROOT + 'assets/3d/characters/tex/kid-' + kind + '-' + team.name.toLowerCase() + '.jpg?v=2';
     var p = SHIRTS[url] || (SHIRTS[url] = new Promise(function (res) {
       new T3.TextureLoader().load(url, function (t) { t.flipY = false; t.colorSpace = T3.SRGBColorSpace; t.anisotropy = 4; res(t); }, undefined, function () { res(null); });
     }));
     return p.then(function (t) {
       if (!t) return kid;
-      kid.root.traverse(function (o) {
+      (kid.inner || kid.root).traverse(function (o) {
         if (!o.isMesh || !o.material || !o.material.map) return;
+        if (t.image) o.userData._origShirtImg = t.image;
         o.material = o.material.clone(); o.material.map = t; o.material.needsUpdate = true;
       });
       return kid;
@@ -757,8 +1536,20 @@
         }
       } catch (e) {}
     };
-    var bk = K.el('button', 'ibtn', '✕'); bk.title = 'Back to games'; bk.onclick = function () { location.href = back || '../index.html'; };
+    var backHref = back || (Q.get('from') === 'gm' ? '../../game-maker/index.html' : '../index.html');
+    var bk = K.el('button', 'ibtn', '✕'); bk.title = Q.get('from') === 'gm' ? 'Back to Game Maker' : 'Back to Games'; bk.onclick = function () { location.href = backHref; };
     tb.appendChild(mu); tb.appendChild(fs); tb.appendChild(bk);
+    if (Q.get('from') === 'gm') {
+      var gmPill = K.ui.add(K.el('a', 'gm-back-pill', '🎮 ← Game Maker'));
+      gmPill.href = backHref;
+      gmPill.title = 'Back to Game Maker';
+    }
+    addEventListener('keydown', function (ev) {
+      if (ev.target && /input|textarea|select/i.test(ev.target.tagName)) return;
+      var k = (ev.key || '').toLowerCase();
+      if (k === 'm') mu.click();
+      else if (k === 'f' && canFs) fs.click();
+    });
   };
   var keyFn = null;
   addEventListener('keydown', function (e) { if (keyFn) keyFn(e); });
@@ -770,17 +1561,26 @@
       var wrap = K.ui.add(K.el('div', 'qwrap')), card = K.el('div', 'qcard');
       card.style.setProperty('--c', team.c);
       var sp = K.cls && K.cls.speaker(team);
-      card.innerHTML = '<div class="qhead"><span>●</span> ' + (sp ? '<i class="qface" data-k3-face="' + sp.id + '">' + sp.initial + '</i>' + K.esc(sp.name) + '\u2019s turn · Team ' + team.name : 'Team ' + team.name) + (opts.prompt ? ' — ' + opts.prompt : '') + '</div>' +
+      var sayPrompt = (typeof item.speak === 'string' && item.speak) ? item.speak : String(item.q || '').replace(/_+/g, 'blank');
+      card.innerHTML = '<div class="qhead"><span>●</span> ' + (sp ? '<i class="qface" data-k3-face="' + sp.id + '">' + sp.initial + '</i>' + K.esc(sp.name) + '\u2019s turn · Team ' + team.name : 'Team ' + team.name) + (opts.prompt ? ' — ' + opts.prompt : '') + '<small class="qkhint">Keys: 1 · 2 · 3</small></div>' +
         '<div class="qtext">' + (item.img ? '<img class="qimg" alt="" src="' + K.ROOT + item.img + '">' : (item.pic ? '<span class="pic">' + item.pic + '</span>' : '')) + '<span>' + item.q + '</span>' +
-        (typeof item.speak === 'string' && item.speak ? '<button class="qsay" title="Listen again">🔊</button>' : '') + '</div>';
+        '<button type="button" class="qsay" title="Listen to question">🔊</button></div>';
       var grid = K.el('div', 'opts'), done = false;
-      choices.forEach(function (o) {
-        var b = K.el('button', 'opt'); b.textContent = o;
+      choices.forEach(function (o, idx) {
+        var b = K.el('button', 'opt');
+        b.type = 'button';
+        b.dataset.ans = o;
+        var kbd = K.el('kbd', 'okbd', String(idx + 1));
+        var lbl = K.el('span', 'otxt', K.esc(o));
+        var spk = K.el('span', 'osay', '🔊');
+        spk.title = 'Hear this answer';
+        spk.onclick = function (ev) { ev.stopPropagation(); K.say(o); };
+        b.appendChild(kbd); b.appendChild(lbl); b.appendChild(spk);
         b.onclick = function () {
           if (done) return; done = true; keyFn = null;
           var ok = o === item.a;
           if (sp) { sp.turns++; if (ok) sp.right++; team.speakerIdx = (team.speakerIdx || 0) + 1; }
-          Array.prototype.forEach.call(grid.children, function (x) { if (x.textContent === item.a) x.classList.add('right'); else if (x === b) x.classList.add('wrong'); });
+          Array.prototype.forEach.call(grid.children, function (x) { if (x.dataset.ans === item.a) x.classList.add('right'); else if (x === b) x.classList.add('wrong'); });
           K.sfx(ok ? 'correct' : 'wrong');
           K.after(ok ? .7 : 1.3, function () { wrap.remove(); if (opts.onAnswer) opts.onAnswer(ok); resolve(ok); });
         };
@@ -788,15 +1588,14 @@
       });
       card.appendChild(grid); wrap.appendChild(card);
       if (sp) K.cls.paintFaces(card);
-      if (typeof item.speak === 'string' && item.speak) {   // listening questions: read the sentence aloud (and again on 🔊)
-        var say = function () { K.say(item.speak); };
-        var sb = card.querySelector('.qsay'); if (sb) sb.onclick = say;
-        K.after(.35, say);
-      }
+      var say = function () { K.say(sayPrompt); };
+      var sb = card.querySelector('.qsay'); if (sb) sb.onclick = say;
+      if (typeof item.speak === 'string' && item.speak) K.after(.35, say);
       keyFn = function (e) { var n = +e.key; if (n >= 1 && n <= 3 && grid.children[n - 1]) grid.children[n - 1].click(); };
       if (K.DEMO) K.after(1.7 + Math.random() * .6, function () {
         var right = opts.demoRight !== undefined ? opts.demoRight : Math.random() < .8;
-        Array.prototype.find.call(grid.children, function (b) { return (b.textContent === item.a) === right; }).click();
+        var targetBtn = Array.prototype.find.call(grid.children, function (b) { return (b.dataset.ans === item.a) === right; });
+        if (targetBtn) targetBtn.click();
       });
     });
   };
@@ -804,9 +1603,12 @@
   /* ---------- questions from the Game Maker sets ---------- */
   // Questions come from the ONE shared library (games/kit/questions.js): every Game Maker set for Units 1-5,
   // unit packs, the teacher's own sets, mixes, and one remembered choice shared with the 2D games.
-  // Until the library has loaded, the Game Maker sets already on the page are used.
+  // Explicit URL ?set=<id> or ?pack=<id> ALWAYS wins over saved preferences so Game Maker Quick Play works 1:1!
   K.questions = function (fallbackId) {
     var GM = root.GM || { sets: [] };
+    var customSets = [];
+    try { customSets = JSON.parse(localStorage.getItem('eaa_gm_sets_v1') || '[]') || []; } catch (e) { customSets = []; }
+    var allLocalSets = (GM.sets || []).concat(customSets);
     function usable(arr) { return (arr || []).filter(function (q) { return q && q.q && q.a && q.w && q.w.length; }); }
     var qs = [], i = 0, api = { title: '', id: '' };
     function take(items, id, title) {
@@ -814,14 +1616,17 @@
       if (!qs.length) qs = [{ q: 'A king of Ancient Egypt is a…', a: 'pharaoh', w: ['chariot', 'camel'], pic: '👑' }];
       i = 0; api.id = id || ''; api.title = title || '';
     }
-    api.usePack = function (p) { if (p) take(p.items, p.id, p.name); return api; };
+    api.usePack = function (p) { if (p) take(p.items, p.id, p.name || p.title); return api; };
     api.next = function () { return qs[i++ % qs.length]; };
-    var first = Q.get('set') || Q.get('pack') || fallbackId || 'g3-u5-vocab';
-    var gs = (GM.sets || []).find(function (x) { return x.id === first && usable(x.questions || x.items).length; }) || (GM.sets || []).find(function (x) { return usable(x.questions || x.items).length; });
+    var urlSet = Q.get('set') || Q.get('pack') || '';
+    var first = urlSet || fallbackId || 'g3-u5-vocab';
+    var gs = allLocalSets.find(function (x) { return x.id === first && usable(x.questions || x.items).length; }) || allLocalSets.find(function (x) { return usable(x.questions || x.items).length; });
+    var matchedUrlDirectly = !!(urlSet && gs && gs.id === urlSet);
     if (gs) take(gs.questions || gs.items, gs.id, gs.title); else take([], '', '');
     api.ready = K.qlib().then(function (QL) {
       if (!QL) return api;
-      var want = QL.current();
+      if (matchedUrlDirectly) return api;
+      var want = urlSet || QL.current();
       return QL.get(want || ('unit:3:5')).then(function (p) { if (p && usable(p.items).length) api.usePack(p); return api; });
     });
     K._qs = api;
@@ -906,8 +1711,10 @@
       var list = R().classes();
       if (!list.length) { wrap.remove(); return; }
       var Kit = root.Kit;
-      var saved = Kit.pref('classId');
+      var urlCls = Q.get('class') || '';
+      var saved = urlCls || Kit.pref('classId');
       C.classId = saved === 'none' ? '' : (list.some(function (c) { return c.id === saved; }) ? saved : R().defaultClassId());
+      if (urlCls && C.classId === urlCls) Kit.pref('classId', urlCls);
       function draw(remix) {
         wrap.innerHTML = '';
         var pick = K.el('div', 'clspick');
