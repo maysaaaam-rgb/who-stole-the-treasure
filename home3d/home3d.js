@@ -1817,7 +1817,8 @@
           ['🪢', 'Tug', 'tug3d', '#ffb320'],
           ['💣', 'Bomb', 'bomb3d', '#ff5fa2'],
           ['🎲', 'Board', 'board3d', '#ffb320'],
-          ['🎮', 'All 22', 'games', '#4f9dff']
+          ['🐱', 'Cat vs Dog', 'fling3d', '#2fc58a'],
+          ['🎮', 'All 26', 'games', '#4f9dff']
         ]
       : [
           ['🏰', 'Today', 'today', '#9b7bff'],
@@ -2242,9 +2243,12 @@
   function getJSON(url) { return fetch(url).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   var shapeParam = K.Q.get('shape') || '1';
   var layoutUrl = (shapeParam === '2' || shapeParam === '3')
-    ? ('layout-shape' + shapeParam + '.json?v=20261122p1b')
-    : 'layout-shape1.json?v=20261122p1b';
-  Promise.all([getJSON(layoutUrl), getJSON(ROOT + 'assets/3d/home/models.json')]).then(function (cfg) {
+    ? ('layout-shape' + shapeParam + '.json?v=20261123a')
+    : 'layout-shape1.json?v=20261123a';
+  var layoutFetchP = getJSON(layoutUrl).then(function (d) {
+    return d || getJSON('layout.json?v=20261123a');
+  });
+  Promise.all([layoutFetchP, getJSON(ROOT + 'assets/3d/home/models.json')]).then(function (cfg) {
     LAYOUT = cfg[0]; if (!LAYOUT) throw new Error('layout.json is missing');
     MODELS = Array.isArray(cfg[1]) ? cfg[1].reduce(function (o, n) { o[n] = {}; return o; }, {}) : (cfg[1] || {});
     function real(name) { return MODELS[name] ? K.tryGLB(ROOT + 'assets/3d/home/' + name + '.glb') : Promise.resolve(null); }
@@ -2370,6 +2374,19 @@
         cloneInto(arcM[13], -0.55, 0.22, -0.25, 0.3);
         var dice = cloneInto(arcM[12], 0.48, 1.15, 0.22, 0.4);
         if (dice) K.onFrame(function (dt, t) { dice.position.y = 1.15 + Math.sin(t * 2.2) * 0.18; dice.rotation.y += dt * 0.85; dice.rotation.x = Math.sin(t * 1.4) * 0.25; });
+      } else if (ag.id === 'fling3d') {
+        add(new T3.Mesh(new T3.BoxGeometry(3.8, 0.16, 2.8), mat(0x6eb84c)), 0, 0.08, 0, g);
+        for (var fi = -4; fi <= 4; fi++) {
+          add(new T3.Mesh(new T3.BoxGeometry(0.12, 1.15, 0.26), mat(fi % 2 === 0 ? 0xd99b52 : 0xc68642)), 0, 0.68, fi * 0.28, g);
+        }
+        add(new T3.Mesh(new T3.SphereGeometry(0.42, 14, 12), mat(0xff8c2b)), -1.15, 0.56, 0, g);
+        add(new T3.Mesh(new T3.SphereGeometry(0.42, 14, 12), mat(0xd99b52)),  1.15, 0.56, 0, g);
+        var yarn = add(new T3.Mesh(new T3.SphereGeometry(0.28, 14, 12), mat(0xff5fa2)), 0, 1.65, 0, g);
+        K.onFrame(function (dt, t) {
+          var u = (Math.sin(t * 2.1) + 1) * 0.5;
+          yarn.position.x = -1.05 + u * 2.1;
+          yarn.position.y = 0.85 + Math.sin(u * Math.PI) * 1.15;
+        });
       }
       g.scale.setScalar(1.08);
       scene.add(g);

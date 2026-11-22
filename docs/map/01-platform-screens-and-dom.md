@@ -21,7 +21,7 @@
 | [magic-book/index.html](file:///C:/Users/maysa/Desktop/DV/magic-book/index.html) | 4.3 KB (95L) | The Magic Book Interactive Unit 5 Textbook Reader |
 | [monster-studio/index.html](file:///C:/Users/maysa/Desktop/DV/monster-studio/index.html) | 0.7 KB (15L) | Standalone Monster Studio Preview Host |
 | [pharaoh-living-book.html](file:///C:/Users/maysa/Desktop/DV/pharaoh-living-book.html) | 116.8 KB (2680L) | The Pharaoh's Kingdom 3D Living Pop-Up Book (Grade 3 Egypt) |
-| [404.html](file:///C:/Users/maysa/Desktop/DV/404.html) | 25.1 KB (423L) | GitHub Pages Deep-Link Router & Detective Navigation Hub |
+| [404.html](file:///C:/Users/maysa/Desktop/DV/404.html) | 25.4 KB (426L) | GitHub Pages Deep-Link Router & Detective Navigation Hub |
 
 ---
 
@@ -265,7 +265,7 @@
 | 59 | [js/daily-report.js](file:///C:/Users/maysa/Desktop/DV/js/daily-report.js) | `1` | [L2999](file:///C:/Users/maysa/Desktop/DV/index.html#L2999) |
 | 60 | [js/pupil-profile.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-profile.js) | `10` | [L3000](file:///C:/Users/maysa/Desktop/DV/index.html#L3000) |
 | 61 | [js/pupil-card.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-card.js) | `7` | [L3001](file:///C:/Users/maysa/Desktop/DV/index.html#L3001) |
-| 62 | [js/platform-nav.js](file:///C:/Users/maysa/Desktop/DV/js/platform-nav.js) | `20261122p` | [L3002](file:///C:/Users/maysa/Desktop/DV/index.html#L3002) |
+| 62 | [js/platform-nav.js](file:///C:/Users/maysa/Desktop/DV/js/platform-nav.js) | `20261123a` | [L3002](file:///C:/Users/maysa/Desktop/DV/index.html#L3002) |
 | 63 | [js/daily-backup.js](file:///C:/Users/maysa/Desktop/DV/js/daily-backup.js) | `1` | [L3003](file:///C:/Users/maysa/Desktop/DV/index.html#L3003) |
 | 64 | [js/school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) | `20261121c` | [L3004](file:///C:/Users/maysa/Desktop/DV/index.html#L3004) |
 | 65 | [js/games-points-bridge.js](file:///C:/Users/maysa/Desktop/DV/js/games-points-bridge.js) | `1` | [L3005](file:///C:/Users/maysa/Desktop/DV/index.html#L3005) |
