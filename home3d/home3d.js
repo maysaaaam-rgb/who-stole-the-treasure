@@ -2165,6 +2165,7 @@
     }
     var tb = document.querySelector('.topbtns');
     if (tb) {
+      Array.prototype.slice.call(tb.querySelectorAll('.k3-gm-topbtn')).forEach(function (b) { b.remove(); });
       var btns = tb.querySelectorAll('button');
       if (btns[0]) {
         btns[0].onclick = function () { setMuted(!K.muted); };
