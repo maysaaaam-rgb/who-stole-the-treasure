@@ -8,9 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=8">
+  <link rel="stylesheet" href="css/style.css?v=9">
 </head>
-<body class="bg-dark ui-small">
+<body class="bg-white ui-small">
 
   <!-- The writing surface -->
   <main id="board" class="board" aria-label="Smart board. Write with the pen.">
@@ -22,7 +22,7 @@
 
   <!-- Top bar -->
   <header class="topbar">
-    <a class="tb-btn" href="../index.html" title="Back to the platform" aria-label="Back to the platform">🏠</a>
+    <a class="tb-btn" href="../index.html#home" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'eaa:closeOverlay'},'*');return false;}}catch(e){}" title="Back to 3D Adventure Island" aria-label="Back to 3D Adventure Island">🏝️</a>
     <div class="brand"><span class="brand-icon">🪄</span> Smart Board</div>
     <div class="page-strip" aria-label="Pages">
       <button type="button" id="pgPrev" title="Previous page (Page Up)">◀</button>

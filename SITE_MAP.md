@@ -15,8 +15,8 @@
 | **Reusable Modals in `index.html`** | **69** | [index.html](file:///C:/Users/maysa/Desktop/DV/index.html#L480-L4390) |
 | **Platform JS Modules (`js/*.js`)** | **90** (69 in `index.html`) | [02-core-js-and-monoliths.md](file:///C:/Users/maysa/Desktop/DV/docs/map/02-core-js-and-monoliths.md) |
 | **Platform Stylesheets (`css/*.css`)** | **13** (9 in `index.html`) | [01-platform-screens-and-dom.md](file:///C:/Users/maysa/Desktop/DV/docs/map/01-platform-screens-and-dom.md) |
-| **Game Maker 2.0 Arcade Modes** | **22 modes** + **89 question sets** | [04-game-maker.md](file:///C:/Users/maysa/Desktop/DV/docs/map/04-game-maker.md) |
-| **Registered `GAMES_DATA` Modules** | **133** | [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) |
+| **Game Maker 2.0 Arcade Modes** | **4 modes** + **89 question sets** | [04-game-maker.md](file:///C:/Users/maysa/Desktop/DV/docs/map/04-game-maker.md) |
+| **Registered `GAMES_DATA` Modules** | **128** | [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) |
 | **Printable Lesson Plans (Word/PDF)** | **56 lessons** | [05-lessons-island-and-curriculum.md](file:///C:/Users/maysa/Desktop/DV/docs/map/05-lessons-island-and-curriculum.md) |
 | **Supabase Cloud Tables / Storage Keys** | **16 tables** / **25 keys** | [06-cloud-storage-and-privacy.md](file:///C:/Users/maysa/Desktop/DV/docs/map/06-cloud-storage-and-privacy.md) |
 
@@ -27,7 +27,7 @@
 1. **[01-platform-screens-and-dom.md](file:///C:/Users/maysa/Desktop/DV/docs/map/01-platform-screens-and-dom.md)** — Entry HTML pages, 7-place sidebar/rail, all 42 `switchView` routes, all 69 modals, toolkit tabs, and exact CSS/JS load order.
 2. **[02-core-js-and-monoliths.md](file:///C:/Users/maysa/Desktop/DV/docs/map/02-core-js-and-monoliths.md)** — All 90 `js/*.js` & 13 `css/*.css` files, plus full line-range chapters inside `school-app.js` (17227 lines) and `school-store.js` (17601 lines).
 3. **[03-avatars-monsters-and-store.md](file:///C:/Users/maysa/Desktop/DV/docs/map/03-avatars-monsters-and-store.md)** — `PupilAvatars` (2D + 3D extruded rig), Unified `ClassroomStore`, `MonsterRenderer` 8-layer stage, Mystery Boxes, and `assets/avatars/` layout.
-4. **[04-game-maker.md](file:///C:/Users/maysa/Desktop/DV/docs/map/04-game-maker.md)** — All 22 Game Maker arcade modes (including 3D Penalty Shootout), 89 question sets, engine & audio architecture.
+4. **[04-game-maker.md](file:///C:/Users/maysa/Desktop/DV/docs/map/04-game-maker.md)** — All 4 Game Maker arcade modes (including 3D Penalty Shootout), 89 question sets, engine & audio architecture.
 5. **[05-lessons-island-and-curriculum.md](file:///C:/Users/maysa/Desktop/DV/docs/map/05-lessons-island-and-curriculum.md)** — All Grade 3 & Grade 4 lessons, `GAMES_DATA`, `Timetable` catalog, `lesson-plans/`, `island/`, `passport/`, `home-view/`, and `404.html` routes.
 6. **[06-cloud-storage-and-privacy.md](file:///C:/Users/maysa/Desktop/DV/docs/map/06-cloud-storage-and-privacy.md)** — Supabase tables & SQL schemas, `localStorage` keys, `EAAPrivate` encrypted pupil data, `eaa:*` events, and full **120+ Root Folder Git & Privacy Audit**.
 
@@ -186,6 +186,6 @@ flowchart TB
 ## 🛡️ 6. Non-Negotiable Safety & Operating Rules
 
 1. **Mirror Every Edit (`AGENTS.md` §2.1):** Copy every modified/created file to `monster day/story/mouse/pokemon/firefighter/NH/<same-path>` and run `node --check` on both copies.
-2. **Never Use `git add -A` or `git add .` (`AGENTS.md` §2.3):** **0 published folders** are intentionally absent on local disk (see [06-cloud-storage-and-privacy.md](file:///C:/Users/maysa/Desktop/DV/docs/map/06-cloud-storage-and-privacy.md)). Stage ONLY the exact files you changed, and push to `main` + `gh-pages` ONLY when the teacher explicitly says **"push"**.
+2. **Never Use `git add -A` or `git add .` (`AGENTS.md` §2.3):** **1 published folders** are intentionally absent on local disk (see [06-cloud-storage-and-privacy.md](file:///C:/Users/maysa/Desktop/DV/docs/map/06-cloud-storage-and-privacy.md)). Stage ONLY the exact files you changed, and push to `main` + `gh-pages` ONLY when the teacher explicitly says **"push"**.
 3. **Pupil Privacy (`AGENTS.md` §8):** Never commit real pupil names, photos, survey answers, or non-`student-*` files in `assets/avatars/` (0 local untracked file(s) currently flagged & redacted by privacy guard).
 4. **Safe Local Testing:** Always test `index.html` via `_tmp/safe-cdp.js` (blocks live Supabase writes). `site-map/index.html` is 100% standalone & cloud-free.

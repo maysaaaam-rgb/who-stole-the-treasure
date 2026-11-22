@@ -50,7 +50,12 @@
   };
 
   var qMatch = /[?&]game=([^&]+)/.exec(root.location.search);
-  var GAME_ID = (qMatch && GAMES[qMatch[1]]) ? qMatch[1] : 'bomb';
+  var rawG = qMatch ? qMatch[1] : '';
+  if (rawG === 'bomb') { root.location.replace('../bomb3d/' + (root.location.search || '')); return; }
+  if (rawG === 'keepgive') { root.location.replace('../bomb3d/?mode=keepgive'); return; }
+  if (rawG === 'tug') { root.location.replace('../tug3d/' + (root.location.search || '')); return; }
+  var ALLOWED_PRIZE = { croc: 1, cups: 1 };
+  var GAME_ID = (rawG && ALLOWED_PRIZE[rawG] && GAMES[rawG]) ? rawG : 'croc';
   var META = GAMES[GAME_ID];
 
   var ART = 'assets/games/prize/';

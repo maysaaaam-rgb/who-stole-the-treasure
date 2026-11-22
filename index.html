@@ -80,7 +80,7 @@
   <style>
     html.platform-locked body {
       overflow: hidden !important;
-      background: #090d16 !important;
+      background: linear-gradient(180deg, #78c4ff 0%, #c8eaff 60%, #fff8ec 100%) !important;
     }
     html.platform-locked .app-header,
     html.platform-locked .app-layout,
@@ -93,7 +93,7 @@
       position: fixed;
       inset: 0;
       z-index: 9999999;
-      background: radial-gradient(circle at 50% 25%, #1e1b4b 0%, #0f172a 55%, #020617 100%);
+      background: radial-gradient(circle at 50% 20%, #fff8ec 0%, #c8eaff 48%, #78c4ff 100%);
       align-items: center;
       justify-content: center;
       padding: 24px 16px;
@@ -390,7 +390,7 @@
       <!-- Content Area: Image Viewport + Collapsible Lesson Guide -->
       <div style="display: flex; flex: 1; min-height: 0; position: relative; background: #0f172a; overflow: hidden;">
         <div id="tb-image-wrapper" style="flex: 1; min-width: 0; height: 100%; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; text-align: center;">
-          <img id="tb-page-image" alt="Textbook Page Scan" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); transition: max-width 0.2s ease;" />
+          <img id="tb-page-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Textbook Page Scan" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); transition: max-width 0.2s ease;" />
         </div>
 
         <!-- Lesson Guide Drawer -->
@@ -2529,9 +2529,9 @@
           <div id="avatar-category-nav" class="class-subnav-tabs" style="display:flex; gap:6px; margin:0; overflow-x:auto;">
             <!-- Populated dynamically -->
           </div>
-          <a href="monster-studio/index.html" target="_blank" rel="noopener" title="Opens the full-screen Monster Studio in a new tab" class="btn-sm-secondary" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:800; font-size:0.8rem; padding:6px 12px; border-radius:8px; background:linear-gradient(135deg, rgba(56,189,248,0.15), rgba(168,85,247,0.15)); border:1px solid #38bdf8; color:var(--text-main);" title="Launch Fullscreen Monster Studio in new tab">
-            <span>✨</span> Open full Studio ↗
-          </a>
+          <button type="button" onclick="if(window.switchView)switchView('store-pupil')" title="Open Pupil Avatar Shop" class="btn-sm-secondary" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:800; font-size:0.8rem; padding:6px 12px; border-radius:12px; background:#fff8ec; border:2px solid #ffb320; border-bottom:4px solid #c98200; color:#2b1d40; cursor:pointer;">
+            <span>🛍️</span> Open Pupil Shop
+          </button>
         </div>
       </div>
 

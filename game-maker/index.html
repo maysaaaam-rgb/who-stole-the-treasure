@@ -19,7 +19,6 @@
   <link rel="stylesheet" href="css/tools.css?v=2">
   <link rel="stylesheet" href="css/modes4.css?v=2">
   <link rel="stylesheet" href="css/themes.css?v=1">
-  <link rel="stylesheet" href="css/penalty3d.css?v=4">
   <link rel="stylesheet" href="css/modes5.css?v=5">
   <link rel="stylesheet" href="css/park-easypeasy.css?v=20261121c">
 </head>
@@ -32,7 +31,7 @@
       <button type="button" class="gm-btn round ghost" id="gm-snd" title="Sound on / off">🔊</button>
       <button type="button" class="gm-btn round ghost" id="gm-fs" title="Full screen">⛶</button>
       <button type="button" class="gm-btn sm amber" id="gm-home" title="Back to the games">☰ Games</button>
-      <a class="gm-btn round ghost" href="../index.html" title="Back to the platform">🏠</a>
+      <a class="gm-btn round ghost" id="gm-platform-home" href="../index.html#home" title="Back to 3D Adventure Island" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'eaa:closeOverlay'},'*');return false;}}catch(e){}">🏝️</a>
     </div>
   </header>
   <main class="gm-stage" id="gm-stage"></main>
@@ -62,31 +61,12 @@
   <script src="js/monsters.js?v=9"></script>
   <script src="js/core.js?v=17"></script>
   <script src="js/juice.js?v=5"></script>
-  <script src="js/mode-board.js?v=13"></script>
-  <script src="js/mode-plinko.js?v=10"></script>
-  <script src="js/mode-hunt.js?v=9"></script>
-  <script src="js/mode-extra.js?v=16"></script>
-  <script src="js/mode-race.js?v=5"></script>
-  <script src="js/mode-cannon.js?v=11"></script>
-  <script src="js/vendor/three.min.js?v=160"></script>
-  <script src="js/vendor/BufferGeometryUtils.js?v=160"></script>
-  <script src="js/vendor/GLTFLoader.js?v=160"></script>
-  <script src="../js/avatar-3d-engine.js?v=18"></script>
-  <script src="js/mode-penalty.js?v=31"></script>
-  <script src="js/mode-whack.js?v=8"></script>
-  <script src="js/mode-tower.js?v=7"></script>
-  <script src="js/mode-balloon.js?v=8"></script>
-  <script src="js/mode-baseball.js?v=7"></script>
-  <script src="js/mode-jigsaw.js?v=7"></script>
-  <script src="js/mode-snakes.js?v=6"></script>
-  <script src="js/mode-memory.js?v=8"></script>
-  <script src="js/mode-fling.js?v=10"></script>
-  <script src="js/mode-board3.js?v=6"></script>
-  <script src="js/mode-storydice.js?v=4"></script>
-  <script src="js/mode-bingo.js?v=2"></script>
-  <script src="js/mode-guesseroo.js?v=2"></script>
+  <script src="js/mode-tower.js?v=8"></script>
+  <script src="js/mode-baseball.js?v=8"></script>
+  <script src="js/mode-jigsaw.js?v=8"></script>
+  <script src="js/mode-fling.js?v=20261122a"></script>
   <script src="js/revision.js?v=5"></script>
   <script src="js/teacher-tools.js?v=2"></script>
-  <script src="js/app.js?v=20261121c"></script>
+  <script src="js/app.js?v=20261122a"></script>
 </body>
 </html>

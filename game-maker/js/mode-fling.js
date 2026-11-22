@@ -135,7 +135,7 @@
     g.textBaseline = 'middle';
     g.lineJoin = 'round';
     g.lineWidth = Math.max(4, size * 0.18);
-    g.strokeStyle = stroke || '#090d16';
+    g.strokeStyle = stroke || '#2b1d40';
     g.strokeText(text, x, y);
     g.fillStyle = fill || '#ffffff';
     g.fillText(text, x, y);
@@ -898,18 +898,12 @@
           g.fillRect(0, 0, W, H);
         }
 
-        /* Subtle top & bottom vignette */
-        var topVig = g.createLinearGradient(0, 0, 0, 145);
-        topVig.addColorStop(0, 'rgba(6, 9, 17, 0.38)');
-        topVig.addColorStop(1, 'rgba(6, 9, 17, 0)');
-        g.fillStyle = topVig;
-        g.fillRect(0, 0, W, 145);
-
-        var botVig = g.createLinearGradient(0, H - 130, 0, H);
-        botVig.addColorStop(0, 'rgba(6, 9, 17, 0)');
-        botVig.addColorStop(1, 'rgba(6, 9, 17, 0.44)');
-        g.fillStyle = botVig;
-        g.fillRect(0, H - 130, W, 130);
+        /* Gentle sunlit atmospheric polish (Bright Sunny Adventure Park — zero dark vignettes) */
+        var topSun = g.createLinearGradient(0, 0, 0, 120);
+        topSun.addColorStop(0, 'rgba(120, 196, 255, 0.22)');
+        topSun.addColorStop(1, 'rgba(120, 196, 255, 0)');
+        g.fillStyle = topSun;
+        g.fillRect(0, 0, W, 120);
 
         /* Animated Wind Streamer Lines across the sky */
         if (Math.abs(wind) >= 15) {
@@ -978,7 +972,7 @@
           g.fillStyle = can.col;
           g.fill();
           g.lineWidth = 2.5;
-          g.strokeStyle = '#0f172a';
+          g.strokeStyle = '#2b1d40';
           g.stroke();
           g.fillStyle = 'rgba(255,255,255,0.85)';
           g.fillRect(-13, -6, 26, 12);
@@ -1019,12 +1013,12 @@
         g.fillStyle = '#facc15';
         g.fill();
         g.lineWidth = 3;
-        g.strokeStyle = '#0f172a';
+        g.strokeStyle = '#2b1d40';
         g.stroke();
-        g.fillStyle = '#0f172a';
+        g.fillStyle = '#2b1d40';
         g.fillRect(-8, -13, 6, 26);
         g.fillRect(4, -12, 6, 24);
-        drawOutlinedText(g, '🐝 HAZARD', 0, 32, 15, '#fca5a5', '#090d16');
+        drawOutlinedText(g, '🐝 HAZARD', 0, 32, 15, '#ff5fa2', '#2b1d40');
         g.restore();
 
         /* High-Altitude Bonus Star Coin above the Wasp */
@@ -1048,7 +1042,7 @@
             g.arc(0, 0, 28, 0, Math.PI * 2);
             g.fill();
           }
-          drawOutlinedText(g, '+15', 0, 42, 20, '#fde047', '#0f172a');
+          drawOutlinedText(g, '+15', 0, 42, 20, '#ffb320', '#2b1d40');
           g.restore();
         }
       }
@@ -1143,7 +1137,7 @@
               var sa = (now / 180) + (s * Math.PI * 2 / 3);
               var sxStar = Math.cos(sa) * 48;
               var syStar = Math.sin(sa) * 14;
-              drawOutlinedText(g, '⭐', sxStar, syStar, 24, '#fde047', '#0f172a');
+              drawOutlinedText(g, '⭐', sxStar, syStar, 24, '#ffb320', '#2b1d40');
             }
             g.restore();
           }
@@ -1161,78 +1155,85 @@
             g.lineWidth = 3.5;
             g.strokeStyle = T[idx] ? T[idx].color : (isCat ? '#fb923c' : '#38bdf8');
             g.stroke();
-            g.fillStyle = '#0f172a';
+            g.fillStyle = '#2b1d40';
             g.textAlign = 'center';
             g.textBaseline = 'middle';
             g.fillText(st.bubble, bx, by - 1);
             g.restore();
           }
 
-          /* Clean Team Plate + HP Bar + Distance Marker under Character */
-          var plateW = 220, plateH = 54;
+          /* Bright Sunny Adventure Park Team Plate + HP Bar + Distance Marker */
+          var plateW = 224, plateH = 56;
           var px = baseX - plateW / 2;
           var py = baseY + 14;
           g.save();
-          roundRect(g, px, py, plateW, plateH, 16);
-          g.fillStyle = 'rgba(15, 23, 42, 0.92)';
+          roundRect(g, px, py, plateW, plateH, 18);
+          g.fillStyle = 'rgba(255, 248, 236, 0.96)';
           g.fill();
-          g.lineWidth = 3.5;
-          g.strokeStyle = T[idx] ? T[idx].color : (isCat ? '#fb923c' : '#38bdf8');
+          g.lineWidth = 4;
+          g.strokeStyle = T[idx] ? T[idx].color : (isCat ? '#ff5fa2' : '#4f9dff');
           g.stroke();
 
           var distFromFence = Math.round(Math.abs(baseX - FENCE_X) / 10);
           var teamLabel = (isCat ? '🐱 ' : '🐶 ') + (T[idx] ? T[idx].name : ('Team ' + (idx + 1))) + ' (' + distFromFence + 'm)';
-          drawOutlinedText(g, teamLabel, baseX, py + 19, 18, '#ffffff', '#090d16');
+          g.font = '900 17px "Fredoka", "Nunito", sans-serif';
+          g.fillStyle = '#2b1d40';
+          g.textAlign = 'center';
+          g.textBaseline = 'middle';
+          g.fillText(teamLabel, baseX, py + 20);
 
-          var barW = plateW - 36, barH = 9;
+          var barW = plateW - 36, barH = 10;
           var bxBar = baseX - barW / 2, byBar = py + 37;
           roundRect(g, bxBar, byBar, barW, barH, 5);
-          g.fillStyle = 'rgba(255,255,255,0.18)';
+          g.fillStyle = '#e5dccb';
           g.fill();
           var hpFrac = clamp(st.hp / 100, 0.05, 1);
           roundRect(g, bxBar, byBar, barW * hpFrac, barH, 5);
-          g.fillStyle = hpFrac > 0.5 ? '#22c55e' : (hpFrac > 0.25 ? '#f59e0b' : '#ef4444');
+          g.fillStyle = hpFrac > 0.5 ? '#2fc58a' : (hpFrac > 0.25 ? '#ffb320' : '#ff5fa2');
           g.fill();
           g.restore();
         });
       }
 
-      /* Draw Classic "Cat vs Dog" Top-Center Wind Meter Bar */
+      /* Draw Sunny Adventure Park Top-Center Wind Meter Bar */
       function drawClassicWindMeter(now) {
         var cx = FENCE_X;
         var cy = 176;
-        var boxW = 365, boxH = 58;
+        var boxW = 374, boxH = 62;
 
         g.save();
-        roundRect(g, cx - boxW / 2, cy - boxH / 2, boxW, boxH, 29);
-        g.fillStyle = 'rgba(15, 23, 42, 0.92)';
+        roundRect(g, cx - boxW / 2, cy - boxH / 2, boxW, boxH, 30);
+        g.fillStyle = 'rgba(255, 248, 236, 0.97)';
         g.fill();
-        g.lineWidth = 3;
-        g.strokeStyle = Math.abs(wind) > 180 ? '#f43f5e' : 'rgba(148, 163, 184, 0.65)';
+        g.lineWidth = 4;
+        g.strokeStyle = Math.abs(wind) > 180 ? '#ff5fa2' : '#4f9dff';
         g.stroke();
 
         var windLvl = Math.max(1, Math.min(10, Math.round(Math.abs(wind) / 26)));
         var windDesc = wind < 0
-          ? ('◄◄ STRONG WIND ' + windLvl + ' (LEFT)')
-          : ('STRONG WIND ' + windLvl + ' (RIGHT) ►►');
-        var labelCol = wind < 0 ? '#38bdf8' : '#fbbf24';
-        drawOutlinedText(g, '💨 ' + windDesc, cx, cy - 10, 17, labelCol, '#090d16');
+          ? ('◄◄ WIND ' + windLvl + ' (LEFT)')
+          : ('WIND ' + windLvl + ' (RIGHT) ►►');
+        g.font = '900 18px "Fredoka", "Nunito", sans-serif';
+        g.fillStyle = '#2b1d40';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.fillText('💨 ' + windDesc, cx, cy - 10);
 
         /* Bidirectional Center-Zero Gauge Track */
-        var trackW = 280, trackH = 12;
+        var trackW = 280, trackH = 13;
         var tx = cx - trackW / 2, ty = cy + 10;
-        roundRect(g, tx, ty, trackW, trackH, 6);
-        g.fillStyle = 'rgba(255, 255, 255, 0.16)';
+        roundRect(g, tx, ty, trackW, trackH, 7);
+        g.fillStyle = '#dcebfa';
         g.fill();
 
         var frac = clamp(wind / 260, -1, 1);
         var fillW = Math.abs(frac) * (trackW / 2);
         var fillX = frac > 0 ? cx : cx - fillW;
-        roundRect(g, fillX, ty, fillW, trackH, 5);
-        g.fillStyle = frac > 0 ? '#f59e0b' : '#38bdf8';
+        roundRect(g, fillX, ty, fillW, trackH, 6);
+        g.fillStyle = frac > 0 ? '#ffb320' : '#4f9dff';
         g.fill();
 
-        g.fillStyle = '#ffffff';
+        g.fillStyle = '#2b1d40';
         g.fillRect(cx - 1.5, ty - 2, 3, trackH + 4);
         g.restore();
       }
@@ -1243,7 +1244,7 @@
         var orig = throwOrigin(turn);
         var dir = turn === 0 ? 1 : -1;
         var rad = clamp(aimState.angleDeg, 18, 80) * Math.PI / 180;
-        var teamCol = T[turn] ? T[turn].color : '#f59e0b';
+        var teamCol = T[turn] ? T[turn].color : '#ffb320';
 
         g.save();
 
@@ -1254,7 +1255,7 @@
         var aEnd = turn === 0 ? -18 * Math.PI / 180 : (Math.PI + 80 * Math.PI / 180);
         g.arc(orig.x, orig.y, ringR, aStart, aEnd, false);
         g.lineWidth = 6;
-        g.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+        g.strokeStyle = 'rgba(255, 255, 255, 0.55)';
         g.stroke();
 
         /* Active angle ray & 4 short muzzle dots (MAX 112px — never crosses the fence!) */
@@ -1265,7 +1266,7 @@
           var rDot = 10 - i * 1.4;
           g.beginPath();
           g.arc(px, py, rDot, 0, Math.PI * 2);
-          g.fillStyle = i === 4 ? '#fde047' : teamCol;
+          g.fillStyle = i === 4 ? '#ffb320' : teamCol;
           g.fill();
           g.lineWidth = 2.5;
           g.strokeStyle = '#ffffff';
@@ -1277,22 +1278,22 @@
           g.beginPath();
           g.moveTo(orig.x, orig.y);
           g.lineTo(aimState.curX, aimState.curY);
-          g.lineWidth = 5;
-          g.strokeStyle = 'rgba(253, 224, 71, 0.85)';
+          g.lineWidth = 6;
+          g.strokeStyle = '#ffb320';
           g.setLineDash([8, 6]);
           g.stroke();
           g.setLineDash([]);
         }
 
-        /* 2. Classic Vertical "Cat vs Dog" Power Charge Bar in front of the Character */
-        var barW = 26, barH = 148;
-        var barX = orig.x + (turn === 0 ? 112 : -138);
+        /* 2. Bright Park Vertical Power Charge Bar in front of the Character */
+        var barW = 28, barH = 148;
+        var barX = orig.x + (turn === 0 ? 112 : -140);
         var barY = orig.y - 82;
-        roundRect(g, barX, barY, barW, barH, 13);
-        g.fillStyle = 'rgba(15, 23, 42, 0.92)';
+        roundRect(g, barX, barY, barW, barH, 14);
+        g.fillStyle = '#fff8ec';
         g.fill();
-        g.lineWidth = 3;
-        g.strokeStyle = '#ffffff';
+        g.lineWidth = 4;
+        g.strokeStyle = '#2b1d40';
         g.stroke();
 
         /* Power fill from bottom of bar */
@@ -1300,36 +1301,40 @@
         var fillH = Math.round((barH - 8) * pFrac);
         var fillY = barY + barH - 4 - fillH;
         var pGr = g.createLinearGradient(0, barY + barH, 0, barY);
-        pGr.addColorStop(0, '#22c55e');
-        pGr.addColorStop(0.65, '#f59e0b');
-        pGr.addColorStop(0.92, '#ef4444');
-        pGr.addColorStop(1, '#dc2626');
+        pGr.addColorStop(0, '#2fc58a');
+        pGr.addColorStop(0.65, '#ffb320');
+        pGr.addColorStop(0.92, '#ff5fa2');
+        pGr.addColorStop(1, '#e11d48');
         roundRect(g, barX + 4, fillY, barW - 8, fillH, 9);
         g.fillStyle = pGr;
         g.fill();
 
         /* Overcharge danger line at 94% */
         var dangerY = barY + Math.round(barH * 0.08);
-        g.strokeStyle = '#ef4444';
-        g.lineWidth = 2;
+        g.strokeStyle = '#ff5fa2';
+        g.lineWidth = 2.5;
         g.beginPath();
         g.moveTo(barX - 4, dangerY);
         g.lineTo(barX + barW + 4, dangerY);
         g.stroke();
 
-        drawOutlinedText(g, 'PWR', barX + barW / 2, barY + barH + 16, 15, '#fde047', '#090d16');
+        drawOutlinedText(g, 'PWR', barX + barW / 2, barY + barH + 17, 15, '#ffb320', '#2b1d40');
 
-        /* 3. Live Angle & Power Readout Pill above the Power Bar */
+        /* 3. Bright Park Live Angle & Power Readout Pill above the Power Bar */
         var badgeX = orig.x + (turn === 0 ? 125 : -125);
         var badgeY = barY - 28;
-        roundRect(g, badgeX - 102, badgeY - 20, 204, 40, 20);
-        g.fillStyle = 'rgba(15, 23, 42, 0.94)';
+        roundRect(g, badgeX - 106, badgeY - 21, 212, 42, 21);
+        g.fillStyle = '#fff8ec';
         g.fill();
-        g.lineWidth = 3;
-        g.strokeStyle = aimSubPhase === 'angle' ? '#38bdf8' : '#f59e0b';
+        g.lineWidth = 4;
+        g.strokeStyle = aimSubPhase === 'angle' ? '#4f9dff' : '#ffb320';
         g.stroke();
         var readout = Math.round(aimState.angleDeg) + '° ANGLE · ' + Math.round(aimState.power * 100) + '% PWR';
-        drawOutlinedText(g, readout, badgeX, badgeY, 17, '#ffffff', '#090d16');
+        g.font = '900 16px "Fredoka", "Nunito", sans-serif';
+        g.fillStyle = '#2b1d40';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.fillText(readout, badgeX, badgeY);
 
         g.restore();
       }
@@ -1455,7 +1460,7 @@
           g.globalAlpha = alpha;
           g.translate(pop.x, pop.y - pop.t * 42);
           g.scale(sc, sc);
-          drawOutlinedText(g, pop.text, 0, 0, pop.size, pop.col, '#090d16');
+          drawOutlinedText(g, pop.text, 0, 0, pop.size, pop.col, '#2b1d40');
           g.restore();
         });
 

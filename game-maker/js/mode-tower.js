@@ -10,7 +10,8 @@
 (function () {
   'use strict';
 
-  var GM = window.GM;
+  var GM = window.GM = window.GM || {};
+  GM.modes = GM.modes || {};
   var U = function () { return GM.u; };
   var A = function () { return GM.audio; };
   var J = function () { return GM.juice; };

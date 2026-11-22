@@ -58,7 +58,8 @@
     }
   };
 
-  var gid = Kit.param('game'); if (!GAMES[gid]) gid = 'doors';
+  var ALLOWED_REVEAL = { flashlight: 1, doors: 1, pixels: 1 };
+  var gid = Kit.param('game'); if (!ALLOWED_REVEAL[gid] || !GAMES[gid]) gid = 'doors';
   var G = GAMES[gid];
   doc.title = G.title + ' · Games · English Adventure Academy';
   var PKEY = 'reveal_' + gid;

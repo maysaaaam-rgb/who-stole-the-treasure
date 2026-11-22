@@ -25,9 +25,9 @@
 
 ---
 
-## 3. Registered `GAMES_DATA` Modules (133 total in [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js))
+## 3. Registered `GAMES_DATA` Modules (128 total in [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js))
 
-### Grade 3 Modules (86)
+### Grade 3 Modules (81)
 | ID | Title | URL | Worksheet | Local Disk | `404.html` |
 | :--- | :--- | :--- | :---: | :---: | :---: |
 | `pharaoh-living-book` | 👑 👑 The Pharaoh's Kingdom • 3D Living Pop-Up Book (Lessons 1–8) | `pharaoh-living-book.html` | — | ✅ Present | — |
@@ -51,9 +51,7 @@
 | `first-harvest-g3` | 🚀 🚀 First Harvest: Unit 2 Lesson 2 (Grade 3) | `unit2-g3-lessons/index.html?lesson=2` | — | ✅ Present | — |
 | `chuseok-arcade-g3` | 🎮 🎮 Chuseok Games Arcade Day: Unit 2 Lesson (Grade 3) | `unit2-g3-lessons/index.html?lesson=3` | — | ✅ Present | — |
 | `chuseok-cooking-g3` | 🎮 🍡 Chuseok Cooking and Treats: Week 2 Lessons (Grade 3) | `unit2-g3-lessons/index.html?lesson=3` | — | ✅ Present | — |
-| `watch-answer-bean-g3` | 🎬 🎬 Watch and Answer: Classroom Movie Cinema (Bad Guys • Spider-Man • Mr Bean) | `watch-answer/index.html` | 🖨️ Yes | ✅ Present | — |
 | `watch-answer-bad-guys` | 🦊 🦊 Movie Lesson: The Bad Guys — A Very Bad Holiday | `watch-answer/index.html?lesson=bad-guys-holiday` | 🖨️ Yes | ✅ Present | — |
-| `watch-answer-spider-verse` | 🕷️ 🕷️ Movie Lesson: Spider-Man — Into the Spider-Verse | `watch-answer/index.html?lesson=spider-verse` | 🖨️ Yes | ✅ Present | — |
 | `good-ideas-lab` | 💡 💡 The Inventor’s Odyssey: My Good Ideas Lab | `good-ideas-lab/index.html` | — | ✅ Present | ✅ |
 | `inventor-lab` | ⚙️ Inventor Lab: What Does It Take to Be an Inventor? | `inventor-lab/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `clara-inventor` | 💡 Clara's Inventor Mystery & The Inventor Challenge | `clara-inventor/index.html` | 🖨️ Yes | ✅ Present | — |
@@ -68,7 +66,6 @@
 | `time-train` | 🚂 🚂 Time Train: Past Simple Journey (Grade 3 Unit 5) | `games/past/index.html` | — | ✅ Present | ✅ |
 | `gamemaker-g3` | 📘 🎮 Game Maker 3.0 · 39 Smartboard Games (Grade 3) | `game-maker/index.html?class=class-3a&set=g3-u5-mega` | — | ✅ Present | ✅ |
 | `rev-u14-g3` | 📘 🏆 Units 1–4 Revision Game (Grade 3) | `games/cannon3d/index.html?set=u14-g3` | — | ✅ Present | ✅ |
-| `unit3-money-mission` | 🚀 🚀 Unit 3 Mission: How Much Is It? (Among Us + 2P Tug-of-War) | `unit3-money-mission/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `board-u3-g3-bear` | 🎲 Arctic Board Game (Unit 3, The Bear and I) | `unit3-board-game/index.html?grade=3` | — | ✅ Present | — |
 | `bamboozle-g4-u3` | 🧊 🎲 Bamboozle: Unit 3 Mystery Cards (Grade 3) | `bamboozle/index.html?grade=4&unit=3` | — | ✅ Present | ✅ |
 | `bamboozle-g3-u2` | 🌾 🎲 Bamboozle: Unit 2 Mystery Cards (Grade 3) | `bamboozle/index.html?grade=3&unit=2` | — | ✅ Present | ✅ |
@@ -82,11 +79,9 @@
 | `telephone-pictionary` | 🕹️ 📞 Telephone Pictionary: Draw & Pass (Grades 3 and 4) | `telephone-pictionary/index.html` | 🖨️ Yes | ✅ Present | — |
 | `simon-says-grade3` | 👑 🦉 Simon Says: Inventors, Monsters & Harvest (Grade 3) | `simon-says/index.html?grade=3` | — | ✅ Present | — |
 | `simon-says-grade3-cooking` | 👩‍🍳 👩‍🍳 Simon Says: Chuseok Kitchen (Grade 3) | `simon-says/index.html?grade=3&cat=cook` | — | ✅ Present | — |
-| `ninja-trials` | 🥋 🥋 Ninja Trials: Body, Brain & Sonic Challenges (Hard Mode) | `ninja-trials/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `dino-arena` | 🦕 🦖 Dino Arena: Cretaceous Adaptations & Clash | `dino-arena/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `dino-dig` | 🦕 🦕 Dino Dig: Prehistoric Past Tense Lab | `dino-dig/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `biome-crafter` | ⛏️ ⛏️ Biome Crafter: The Night Survival (70-Min Master Arc) | `biome-crafter/index.html` | 🖨️ Yes | ✅ Present | ✅ |
-| `pokemon` | ⚡ Pokémon Trainer Battle | `pokemon/index.html` | — | ✅ Present | ✅ |
 | `quiz-g3-u14` | 📝 📝 Units 1–4 Diagnostic Quiz (Grade 3, Forms A/B): Listening, Words, Reading & Writing | `quiz-g3-units1-4/index.html` | — | ✅ Present | — |
 | `rev-g3-1` | ✍️ ✍️ Unit 4 Printable Revision 1 (Grade 3): Words, Star-Level Writing, Exit Tickets & Key | `revision-pack/g3-revision-1.html` | 🖨️ Yes | ✅ Present | — |
 | `rev-g3-2` | 📖 📖 Unit 4 Printable Revision 2 (Grade 3): Reading Texts, Fact Cards, Writing & Key | `revision-pack/g3-revision-2.html` | 🖨️ Yes | ✅ Present | — |

@@ -10,8 +10,7 @@
     slice: { id: 'slice', icon: '🍉', title: 'Fruit & Word Slice', stageClass: 'mode-slice' }
   };
 
-  var gameId = Kit.param('game') || 'island';
-  if (!MODES[gameId]) gameId = 'island';
+  var gameId = 'slice';
   var M = MODES[gameId];
 
   var ISLANDS = [

@@ -728,6 +728,14 @@
         });
       });
       queueXpAwards(entries);
+      try {
+        var bKey = 'eaa_home3d_bridge_xp_v1';
+        var bObj = JSON.parse(localStorage.getItem(bKey) || '{}') || {};
+        var td = todayKey();
+        if (bObj.date !== td) bObj = { date: td, xp: 0 };
+        bObj.xp = (Number(bObj.xp) || 0) + Math.min(40, Math.max(10, rowsData.length * 10));
+        localStorage.setItem(bKey, JSON.stringify(bObj));
+      } catch (eB) {}
       sent = true;
       sendBtn.disabled = true;
       drawRows();

@@ -11,39 +11,39 @@ html,
 body,
 html.class-mode,
 html:not(.class-mode) {
-  --tines-linen: #060911;
-  --tines-linen-alt: #0d1527;
-  --tines-card: rgba(15, 23, 42, 0.86);
-  --tines-border: #1e293b;
-  --tines-border-strong: #334155;
-  --tines-ink: #e5edff;
-  --tines-ink-secondary: #cbd5e1;
-  --tines-ink-muted: #94a3b8;
-  --tines-purple: #6E56CF;
-  --tines-purple-dark: #4C389E;
-  --tines-purple-light: #8D75E6;
-  --tines-lavender: rgba(168, 85, 247, 0.18);
-  --tines-lavender-border: #6d28d9;
-  --tines-emerald: #10B981;
-  --tines-emerald-dark: #059669;
-  --tines-amber: #F59E0B;
-  --tines-amber-dark: #B45309;
-  --tines-coral: #E5484D;
-  --tines-sky: #0EA5E9;
+  --tines-linen: #eef7ff;
+  --tines-linen-alt: #fff8ec;
+  --tines-card: #ffffff;
+  --tines-border: #cfe6ff;
+  --tines-border-strong: #96c5f7;
+  --tines-ink: #2b1d40;
+  --tines-ink-secondary: #43325c;
+  --tines-ink-muted: #5b4a75;
+  --tines-purple: #9b7bff;
+  --tines-purple-dark: #6f4fe0;
+  --tines-purple-light: #b89fff;
+  --tines-lavender: #f3eeff;
+  --tines-lavender-border: #c5b3ff;
+  --tines-emerald: #2fc58a;
+  --tines-emerald-dark: #1e9666;
+  --tines-amber: #ffb320;
+  --tines-amber-dark: #c98200;
+  --tines-coral: #ff5fa2;
+  --tines-sky: #4f9dff;
 
-  /* Override platform variables so inline styles resolve to high-contrast dark-on-light */
-  --bg-canvas: #060911 !important;
-  --bg-surface: rgba(15, 23, 42, 0.86) !important;
-  --bg-muted: #111a2e !important;
-  --bg-card-secondary: #0d1527 !important;
-  --text-main: #e5edff !important;
-  --text-secondary: #cbd5e1 !important;
-  --text-muted: #94a3b8 !important;
-  --border-light: #1e293b !important;
-  --border-subtle: #18223a !important;
-  --color-primary: #6E56CF !important;
-  --color-primary-hover: #5B43BC !important;
-  --color-primary-soft: rgba(168, 85, 247, 0.18) !important;
+  /* Bright Sunny Adventure Park (docs/STYLE_GUIDE.md): crisp white/cream cards & deep ink */
+  --bg-canvas: #eef7ff !important;
+  --bg-surface: #ffffff !important;
+  --bg-muted: #fff8ec !important;
+  --bg-card-secondary: #f4f9ff !important;
+  --text-main: #2b1d40 !important;
+  --text-secondary: #43325c !important;
+  --text-muted: #5b4a75 !important;
+  --border-light: #cfe6ff !important;
+  --border-subtle: #e2efff !important;
+  --color-primary: #4f9dff !important;
+  --color-primary-hover: #2d76d4 !important;
+  --color-primary-soft: #eef6ff !important;
 }
 
 /* ==========================================================================
@@ -1203,45 +1203,45 @@ html.class-mode body #app-view-container:is([data-view="command"], [data-view="c
   background: transparent !important;
   color: var(--tines-ink) !important;
   padding-top: 4px !important;
-  --bg-card: #FFFFFF !important;
-  --bg-surface: rgba(15, 23, 42, 0.86) !important;
-  --bg-card-secondary: #0d1527 !important;
-  --bg-card-hover: #F4EFE6 !important;
-  --bg-muted: #111a2e !important;
-  --bg-canvas: #060911 !important;
-  --border-subtle: #18223a !important;
-  --border-light: #1e293b !important;
-  --border-strong: #D5CFC2 !important;
-  --text-main: #e5edff !important;
-  --text-primary: #25242B !important;
-  --text-secondary: #cbd5e1 !important;
-  --text-muted: #94a3b8 !important;
-  --text-subtle: #787586 !important;
+  --bg-card: #ffffff !important;
+  --bg-surface: #ffffff !important;
+  --bg-card-secondary: #f4f9ff !important;
+  --bg-card-hover: #fff8ec !important;
+  --bg-muted: #fff8ec !important;
+  --bg-canvas: #eef7ff !important;
+  --border-subtle: #e2efff !important;
+  --border-light: #cfe6ff !important;
+  --border-strong: #96c5f7 !important;
+  --text-main: #2b1d40 !important;
+  --text-primary: #2b1d40 !important;
+  --text-secondary: #43325c !important;
+  --text-muted: #5b4a75 !important;
+  --text-subtle: #786794 !important;
 }
 
 html body #app-view-container *,
 html.class-mode body #app-view-container * {
-  --text-main: #e5edff;
-  --text-primary: #25242B;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --text-subtle: #787586;
+  --text-main: #2b1d40;
+  --text-primary: #2b1d40;
+  --text-secondary: #43325c;
+  --text-muted: #5b4a75;
+  --text-subtle: #786794;
 }
 
-/* Override glass-theme dark panels on Store, Worksheets, Homework, Reports, Settings, Curriculum */
+/* Bright Adventure Park cards on Store, Worksheets, Homework, Reports, Settings, Curriculum */
 html body #app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is(
   [style*="--bg-card"], [style*="--bg-surface"], [style*="background:#fff;"], [style*="background: #fff;"], [style*="background:#ffffff"], [style*="background: #ffffff"],
   [style*="background:white"], [style*="background: white"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"],
   .curriculum-book-card, .unit-accordion-card, .week-lesson-group, .curriculum-toolbar, .hw-quest-card, .worksheet-card, .assignment-card) {
-  background: rgba(15, 23, 42, 0.86) !important;
+  background: #ffffff !important;
   border-color: var(--tines-border) !important;
   color: var(--tines-ink) !important;
-  box-shadow: 0 3px 12px rgba(37, 36, 43, 0.05) !important;
+  box-shadow: 0 6px 18px rgba(43, 29, 64, 0.08) !important;
   backdrop-filter: none !important;
 }
 
 html body #app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is([style*="--bg-card"], .unit-accordion-card, .curriculum-book-card, .hw-quest-card) :is([style*="--bg-card-secondary"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"], [style*="background:#fff;"], [style*="background:#ffffff"], .week-lesson-group) {
-  background: rgba(148, 163, 184, 0.10) !important;
+  background: #fff8ec !important;
   border-color: var(--tines-border) !important;
   color: var(--tines-ink) !important;
   box-shadow: none !important;
@@ -1399,34 +1399,34 @@ html.class-mode body .lp-card small {
 
 
 /* ==========================================================================
-   ONE DARK PLATFORM (27 Oct 2026): the same obsidian glass as the Class Board, Game Maker and the lessons
+   BRIGHT SUNNY ADVENTURE PARK PLATFORM (22 Nov 2026 — docs/STYLE_GUIDE.md)
    ========================================================================== */
 html:not(.platform-locked) body,
 html.class-mode:not(.platform-locked) body {
-  background: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%) fixed !important;
-  color: #e5edff !important;
+  background: linear-gradient(180deg, #78c4ff 0%, #c8eaff 42%, #fff8ec 100%) fixed !important;
+  color: #2b1d40 !important;
 }
-.app-header { backdrop-filter: blur(14px); box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2) !important; }
-input, select, textarea { color-scheme: dark; }
-html.class-mode body .app-header .brand-logo-btn span, html:not(.class-mode) body .app-header .brand-logo-btn span, html body .brand-logo-btn span { color: #e5edff !important; }
-html body .cal-t { color: #c4b5fd !important; }
-/* Class Board dock and discipline switch: dark glass like the rest, centered in content pane without overlapping rail */
+.app-header { background: rgba(255, 255, 255, 0.94) !important; border-bottom: 3px solid #cfe6ff !important; backdrop-filter: blur(12px); box-shadow: 0 6px 18px -6px rgba(43, 29, 64, 0.16) !important; }
+input, select, textarea { color-scheme: light; }
+html.class-mode body .app-header .brand-logo-btn span, html:not(.class-mode) body .app-header .brand-logo-btn span, html body .brand-logo-btn span { color: #2b1d40 !important; }
+html body .cal-t { color: #6f4fe0 !important; }
+/* Class Board dock and discipline switch: bright Adventure Park white/cream cards, centered in content pane */
 html:not(.class-mode) body .cb-dock { left: calc(50% + 130px) !important; right: auto !important; transform: translateX(-50%) !important; max-width: calc(100vw - 276px) !important; flex-wrap: wrap !important; justify-content: center !important; }
 html:not(.class-mode) body:has(.app-sidebar.is-collapsed) .cb-dock { left: calc(50% + 36px) !important; right: auto !important; transform: translateX(-50%) !important; max-width: calc(100vw - 92px) !important; }
-html.class-mode body .cb-dock { background: rgba(15, 23, 42, 0.9) !important; border-color: rgba(148, 163, 184, 0.28) !important; left: calc(50% + 66px) !important; right: auto !important; transform: translateX(-50%) !important; max-width: calc(100vw - 148px) !important; flex-wrap: wrap !important; justify-content: center !important; }
+html.class-mode body .cb-dock { background: rgba(255, 255, 255, 0.96) !important; border: 3px solid #cfe6ff !important; left: calc(50% + 66px) !important; right: auto !important; transform: translateX(-50%) !important; max-width: calc(100vw - 148px) !important; flex-wrap: wrap !important; justify-content: center !important; }
 @media (max-width: 900px) {
   html:not(.class-mode) body .cb-dock,
   html.class-mode body .cb-dock { left: 50% !important; right: auto !important; transform: translateX(-50%) !important; max-width: 96vw !important; }
 }
-html.class-mode body .cb-dock button { background: rgba(255, 255, 255, 0.1) !important; color: #e5edff !important; border-bottom-color: rgba(0, 0, 0, 0.45) !important; }
-html.class-mode body .cb-dock button:hover { background: rgba(255, 255, 255, 0.18) !important; }
-html.class-mode body .cb-dock button.p { background: #10b981 !important; color: #fff !important; border-bottom-color: #047857 !important; }
-html.class-mode body .cb-dock .cb-more-menu button { background: rgba(255, 255, 255, 0.1) !important; color: #e5edff !important; }
-html body .cb-dsc { background: rgba(255, 255, 255, 0.12) !important; color: #e5edff !important; }
-html body .cb-dsc.on { background: #fecaca !important; color: #7f1d1d !important; }
-html body .cb-hat { color: #cbd5e1 !important; }
-/* the cloud sync pill in the header (its state shows in the icon: ⏳ syncing, ☁️ saved, ⚠️ error) */
-html body #global-cloud-sync-btn { background: rgba(15, 23, 42, 0.86) !important; color: #e5edff !important; border: 1px solid rgba(148, 163, 184, 0.35) !important; border-bottom: 3px solid rgba(2, 6, 23, 0.7) !important; box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.3) !important; }
+html.class-mode body .cb-dock button { background: #fff8ec !important; color: #2b1d40 !important; border: 2px solid #ead9bf !important; border-bottom: 4px solid #d1b68e !important; }
+html.class-mode body .cb-dock button:hover { background: #eef6ff !important; }
+html.class-mode body .cb-dock button.p { background: #2fc58a !important; color: #fff !important; border-color: #1e9666 !important; border-bottom-color: #15734e !important; }
+html.class-mode body .cb-dock .cb-more-menu button { background: #fff8ec !important; color: #2b1d40 !important; }
+html body .cb-dsc { background: #fff8ec !important; color: #2b1d40 !important; border: 2px solid #cfe6ff !important; }
+html body .cb-dsc.on { background: #ffe4ef !important; color: #9d174d !important; border-color: #ff5fa2 !important; }
+html body .cb-hat { color: #5b4a75 !important; }
+/* the cloud sync pill in the header */
+html body #global-cloud-sync-btn { background: #ffffff !important; color: #2b1d40 !important; border: 2px solid #cfe6ff !important; border-bottom: 4px solid #96c5f7 !important; box-shadow: 0 4px 10px -4px rgba(43, 29, 64, 0.16) !important; }
 html body #global-cloud-sync-btn * { color: inherit !important; }
 
 /* Zero-overflow responsive top header for 1366x768 laptops & 1024x768 smartboards */

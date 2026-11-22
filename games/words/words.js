@@ -54,7 +54,11 @@
   };
 
   var qMatch = /[?&]game=([^&]+)/.exec(root.location.search);
-  var GAME_ID = (qMatch && GAMES[qMatch[1]]) ? qMatch[1] : 'meteor';
+  var rawW = qMatch ? qMatch[1] : '';
+  if (rawW === 'meteor') rawW = 'bubbles';
+  if (rawW === 'mochi') rawW = 'pairs';
+  var ALLOWED_WORDS = { bubbles: 1, builder: 1, pairs: 1, bingo: 1 };
+  var GAME_ID = (rawW && ALLOWED_WORDS[rawW] && GAMES[rawW]) ? rawW : 'builder';
   var META = GAMES[GAME_ID];
 
   var S = {

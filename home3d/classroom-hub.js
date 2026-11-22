@@ -805,12 +805,13 @@
     var g = cls.grade || 3;
     // Never load ../index.html inside an iframe — platform routes use window.parent.switchView()!
     var tabs = [
-      { k: 'today', lbl: '🏰 Today (' + cls.short + ')', act: function () { openOverlay('', '🏰 Today\'s Lesson · ' + cls.name, { todayHub: true, activeTab: 'today' }); } },
+      { k: 'today', lbl: '🏰 Today (' + cls.short + ')', act: function () { goPlatformView('today'); } },
+      { k: 'games', lbl: '🎮 Games', act: function () { openOverlay('../game-maker/index.html', '🎮 All Games · English Adventure Academy', { activeTab: 'games' }); } },
       { k: 'magic', lbl: '📖 Magic Book G' + g, act: function () { openOverlay('../magic-book/index.html?grade=' + g, '📖 Unit 5 Magic Book · Grade ' + g, { activeTab: 'magic' }); } },
       { k: 'smart', lbl: '🎨 Smart Board', act: function () { openOverlay('../smart-board/index.html', '🎨 AI Smart Board Studio', { activeTab: 'smart' }); } },
       { k: 'board', lbl: '📺 Class Board', act: function () { goPlatformView('board'); } },
       { k: 'shop',  lbl: '🛍️ Shop', act: function () { goPlatformView('store-pupil'); } },
-      { k: 'lib',   lbl: '📚 All Lessons', act: function () { goPlatformView('library'); } }
+      { k: 'lib',   lbl: '📚 Library', act: function () { goPlatformView('library'); } }
     ];
     overlayTabs.innerHTML = '';
     tabs.forEach(function (tb) {
@@ -902,7 +903,7 @@
     var cls = getActiveClass();
     var g = cls.grade || 3;
     if (p.id === 'today') {
-      openOverlay('', '🏰 Today\'s Lesson · ' + cls.name, { todayHub: true, activeTab: 'today' });
+      goPlatformView('today');
       return;
     }
     if (p.id === 'smartboard') {
@@ -928,9 +929,20 @@
       return;
     }
     if (href) {
-      openOverlay(href, (p.signTitle || p.title || 'Adventure'));
+      openOverlay(href, (p.signTitle || p.title || 'Adventure'), { activeTab: p.id === 'games' ? 'games' : '' });
     }
   }
+
+  /* ── Anti-Nesting Bridge: child pages inside #h3-live-overlay post eaa:closeOverlay / eaa:goPlace ── */
+  root.addEventListener('message', function (ev) {
+    var d = ev && ev.data;
+    if (!d || typeof d !== 'object') return;
+    if (d.type === 'eaa:closeOverlay') {
+      closeOverlay();
+    } else if (d.type === 'eaa:goPlace' && d.view) {
+      goPlatformView(String(d.view));
+    }
+  });
 
   /* ── Global 1–7 Classroom Soundboard Hotkeys on Home Island ── */
   function installSoundboardHotkeys() {
