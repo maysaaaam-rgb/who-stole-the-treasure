@@ -1,0 +1,625 @@
+/* ============================================================================
+   PHASE 3: CORE CLASSROOM MECHANICS & BALANCED ECONOMY (docs/STYLE_GUIDE.md)
+   Bright sunny Adventure Park look, >= 7:1 ink contrast, >= 80x80px child targets,
+   tactile 3D 5px bottom-lip push buttons, zero shaming leaderboards.
+   ============================================================================ */
+
+/* Contextual Landmark Action Pill (sits cleanly right above bottom 5-preset camera dock) */
+.h3-p3-ctx-bar {
+  position: fixed;
+  left: 50%;
+  bottom: max(112px, calc(108px + env(safe-area-inset-bottom)));
+  transform: translateX(-50%);
+  z-index: 47;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.h3-p3-ctx-bar.empty { opacity: 0; transform: translateX(-50%) translateY(10px); }
+body.h3-focus-mode .h3-p3-ctx-bar,
+body.h3-focus-mode .h3-p3-award-fab { opacity: 0 !important; pointer-events: none !important; }
+
+.h3-p3-pill {
+  pointer-events: auto;
+  appearance: none;
+  min-height: 54px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 3.5px solid #ffffff;
+  border-bottom: 6px solid var(--pd, #1b8f61);
+  background: var(--pc, #2fc58a);
+  color: #ffffff;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 10px 24px rgba(31, 20, 48, 0.24);
+  transition: transform 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.h3-p3-pill.dark-txt { color: #1f1430; }
+.h3-p3-pill:hover { transform: translateY(-3px); }
+.h3-p3-pill:active { transform: translateY(3px); border-bottom-width: 2px; }
+
+/* Teacher-Only <=2.5s Quick-Award Floating Action Button (bottom-right, visible ONLY when teacher unlocked!) */
+.h3-p3-award-fab {
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 48;
+  appearance: none;
+  min-width: 96px;
+  min-height: 80px;
+  padding: 10px 18px;
+  border-radius: 24px;
+  border: 4px solid #ffffff;
+  border-bottom: 7px solid #c98200;
+  background: linear-gradient(180deg, #ffcf4d 0%, #ffb320 100%);
+  color: #1f1430;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  font-size: 0.96rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  box-shadow: 0 12px 26px rgba(31, 20, 48, 0.26);
+  transition: transform 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.h3-p3-award-fab.hidden { display: none !important; }
+.h3-p3-award-fab span { font-size: 1.7rem; line-height: 1; }
+.h3-p3-award-fab:active { transform: translateY(4px); border-bottom-width: 3px; }
+
+/* Shared Modal / Bottom-Edge Drawer Shell */
+.h3-p3-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  background: rgba(31, 20, 48, 0.44);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px;
+}
+.h3-p3-backdrop.center { align-items: center; }
+.h3-p3-backdrop.hidden { display: none !important; }
+
+.h3-p3-sheet {
+  width: min(1060px, 96vw);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 30px;
+  background: #fffaf0;
+  border: 5px solid var(--sc, #4f9dff);
+  box-shadow: 0 24px 56px rgba(24, 14, 42, 0.36), 0 8px 0 var(--sd, #2b6ec2);
+  color: #1f1430;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  overflow: hidden;
+  animation: p3SlideUp 0.26s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes p3SlideUp {
+  from { transform: translateY(36px) scale(0.97); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.h3-p3-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #e8f5ff 0%, #fff8ec 100%);
+  border-bottom: 3px solid #e6d8be;
+  flex-wrap: wrap;
+}
+.h3-p3-head h2 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+  font-weight: 900;
+  color: #1f1430;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.h3-p3-sub {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #513e6e;
+  margin-top: 2px;
+}
+.h3-p3-close {
+  appearance: none;
+  min-width: 52px;
+  min-height: 48px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 3px solid #1f1430;
+  border-bottom: 5px solid #1f1430;
+  background: #ffffff;
+  color: #1f1430;
+  font-family: inherit;
+  font-size: 0.96rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+.h3-p3-close:active { transform: translateY(3px); border-bottom-width: 2px; }
+
+.h3-p3-body {
+  padding: 16px 20px 20px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── 1. <=2.5s QUICK-AWARD DRAWER (4 Big Pedagogical Reason Buttons + 60/40 Split) ── */
+.h3-qa-split-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #fff1cc;
+  border: 2.5px solid #ffb320;
+  font-size: 0.86rem;
+  font-weight: 900;
+  color: #1f1430;
+}
+.h3-qa-reasons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.h3-qa-reason {
+  appearance: none;
+  min-height: 88px;
+  padding: 10px 12px;
+  border-radius: 22px;
+  border: 3.5px solid var(--rc, #4f9dff);
+  border-bottom: 6px solid var(--rd, #286ec2);
+  background: #ffffff;
+  color: #1f1430;
+  font-family: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: transform 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.h3-qa-reason i { font-style: normal; font-size: 2rem; line-height: 1; }
+.h3-qa-reason b { font-size: 1rem; }
+.h3-qa-reason small { font-size: 0.78rem; color: #5b4975; }
+.h3-qa-reason.active {
+  background: var(--rc, #4f9dff);
+  color: #ffffff;
+  border-color: #1f1430;
+  border-bottom-color: #1f1430;
+  transform: translateY(-3px) scale(1.02);
+}
+.h3-qa-reason.active small { color: rgba(255, 255, 255, 0.92); }
+.h3-qa-reason.active.dark-txt,
+.h3-qa-reason.active.dark-txt small { color: #1f1430; }
+.h3-qa-reason:active { transform: translateY(3px); border-bottom-width: 2px; }
+
+.h3-qa-pupils {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(156px, 1fr));
+  gap: 10px;
+}
+.h3-qa-chip {
+  appearance: none;
+  min-height: 60px;
+  padding: 8px 12px;
+  border-radius: 18px;
+  border: 3px solid var(--tc, #4f9dff);
+  border-bottom: 5px solid var(--td, #286ec2);
+  background: #ffffff;
+  color: #1f1430;
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 0.94rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: transform 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.h3-qa-chip:hover { transform: translateY(-2px); background: #fffdf7; }
+.h3-qa-chip:active { transform: translateY(3px); border-bottom-width: 2px; }
+.h3-qa-chip.resting { opacity: 0.55; border-style: dashed; background: #f3eff8; }
+.h3-qa-dot {
+  width: 14px; height: 14px; border-radius: 50%; background: var(--tc, #4f9dff); flex: 0 0 auto;
+  border: 2px solid #1f1430;
+}
+
+/* ── 2. AMPHITHEATER FAIR RANDOM PICKER + REST TENT ── */
+.h3-pick-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #fffdf8 0%, #fff0d1 100%);
+  border: 4px solid #ff5fa2;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.h3-pick-spotlight {
+  font-size: clamp(1.8rem, 3.6vw, 2.7rem);
+  font-weight: 900;
+  color: #1f1430;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.h3-pick-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.h3-p3-bigbtn {
+  appearance: none;
+  min-width: 160px;
+  min-height: 80px;
+  padding: 12px 26px;
+  border-radius: 24px;
+  border: 3.5px solid #1f1430;
+  border-bottom: 6px solid #1f1430;
+  background: var(--bc, #ff5fa2);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 1.15rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.h3-p3-bigbtn.dark-txt { color: #1f1430; }
+.h3-p3-bigbtn:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+.h3-pick-roster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 8px;
+}
+.h3-pick-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 2.5px solid #dfd3ee;
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+.h3-pick-card.picked { background: #e8fbf3; border-color: #2fc58a; }
+.h3-pick-card.absent { background: #f3eff8; border-style: dashed; opacity: 0.68; }
+.h3-tent-btn {
+  appearance: none;
+  border: 2px solid #9b7bff;
+  border-bottom: 3px solid #6b4ce0;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f1430;
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 900;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.h3-tent-btn.on { background: #9b7bff; color: #fff; }
+
+/* ── 3. WINDMILL & VOLCANO 3-MODE MIC METER (Whisper / Group Work / Festival) ── */
+.h3-mic-modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.h3-mic-mode {
+  appearance: none;
+  min-height: 92px;
+  padding: 12px 14px;
+  border-radius: 22px;
+  border: 3.5px solid var(--mc, #4f9dff);
+  border-bottom: 6px solid var(--md, #286ec2);
+  background: #ffffff;
+  color: #1f1430;
+  font-family: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+.h3-mic-mode i { font-style: normal; font-size: 2rem; }
+.h3-mic-mode b { font-size: 1.05rem; }
+.h3-mic-mode small { font-size: 0.8rem; color: #5b4975; font-weight: 800; }
+.h3-mic-mode.active {
+  background: var(--mc, #4f9dff);
+  color: #ffffff;
+  border-color: #1f1430;
+  border-bottom-color: #1f1430;
+}
+.h3-mic-mode.active small { color: rgba(255, 255, 255, 0.92); }
+.h3-mic-mode.active.dark-txt,
+.h3-mic-mode.active.dark-txt small { color: #1f1430; }
+
+.h3-mic-gauge {
+  padding: 16px 20px;
+  border-radius: 22px;
+  background: #ffffff;
+  border: 3.5px solid #2b1d40;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.h3-mic-track {
+  width: 100%;
+  height: 30px;
+  border-radius: 999px;
+  background: #ece6f5;
+  border: 3px solid #1f1430;
+  overflow: hidden;
+}
+.h3-mic-fill {
+  height: 100%;
+  width: 15%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2fc58a 0%, #ffb320 60%, #ff5fa2 100%);
+  transition: width 0.12s ease;
+}
+
+/* ── 4. RUNNING TRACK 4-WAY BOTTOM-SCREEN MULTI-TOUCH SPLIT (90-SECOND SPRINT) ── */
+.h3-sprint-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 98;
+  background: linear-gradient(180deg, #78c4ff 0%, #c8eaff 42%, #fff8ec 42%, #fff8ec 100%);
+  display: flex;
+  flex-direction: column;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  color: #1f1430;
+  touch-action: none;
+  user-select: none;
+}
+.h3-sprint-overlay.hidden { display: none !important; }
+.h3-sprint-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: rgba(255, 250, 240, 0.94);
+  border-bottom: 4px solid #1f1430;
+}
+.h3-sprint-timer {
+  font-size: 1.6rem;
+  font-weight: 900;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: #ffb320;
+  border: 3px solid #1f1430;
+}
+.h3-sprint-lanes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 12px 24px;
+  gap: 10px;
+}
+.h3-lane {
+  position: relative;
+  height: 54px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 4px solid var(--lc, #ff5fa2);
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  overflow: hidden;
+  box-shadow: 0 5px 0 rgba(31, 20, 48, 0.12);
+}
+.h3-lane-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 6%;
+  background: color-mix(in srgb, var(--lc, #ff5fa2) 28%, #ffffff);
+  transition: width 0.08s linear;
+}
+.h3-lane-runner {
+  position: absolute;
+  left: 4%;
+  font-size: 2rem;
+  transition: left 0.08s linear;
+  z-index: 2;
+}
+.h3-lane-lbl {
+  position: relative;
+  z-index: 3;
+  font-weight: 900;
+  font-size: 1.05rem;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 2px solid var(--lc, #ff5fa2);
+}
+.h3-lane-finish {
+  position: absolute;
+  right: 16px;
+  font-size: 1.5rem;
+  z-index: 2;
+}
+
+/* Bottom 45% 4-Way Multi-Touch Split Pads (simultaneous 4-child smartboard tapping!) */
+.h3-sprint-pads {
+  height: 44vh;
+  min-height: 220px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 12px 16px max(16px, env(safe-area-inset-bottom));
+  background: #fff8ec;
+  border-top: 5px solid #1f1430;
+}
+.h3-sprint-pad {
+  appearance: none;
+  border-radius: 26px;
+  border: 4px solid #1f1430;
+  border-bottom: 10px solid #1f1430;
+  background: var(--lc, #ff5fa2);
+  color: #ffffff;
+  font-family: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  touch-action: manipulation;
+  transition: transform 0.07s ease;
+}
+.h3-sprint-pad.dark-txt { color: #1f1430; }
+.h3-sprint-pad.pressed,
+.h3-sprint-pad:active { transform: translateY(6px) scale(0.98); border-bottom-width: 4px; }
+.h3-sprint-pad i { font-style: normal; font-size: 2.8rem; line-height: 1; }
+.h3-sprint-pad b { font-size: 1.35rem; }
+.h3-sprint-pad span { font-size: 0.96rem; opacity: 0.95; }
+
+/* ── 5. PUPIL SHOP, THURSDAY VISITING SHIP, BUILD PADS & GRATITUDE HEART ── */
+.h3-p3-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.h3-p3-tab {
+  appearance: none;
+  min-height: 52px;
+  padding: 8px 16px;
+  border-radius: 18px;
+  border: 3px solid #d5c5ea;
+  border-bottom: 5px solid #a893c9;
+  background: #ffffff;
+  color: #1f1430;
+  font-family: inherit;
+  font-size: 0.94rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+.h3-p3-tab.active {
+  background: #ffb320;
+  border-color: #1f1430;
+  border-bottom-color: #1f1430;
+}
+
+.h3-shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.h3-shop-card {
+  background: #ffffff;
+  border: 3.5px solid var(--cc, #4f9dff);
+  border-bottom: 6px solid var(--cd, #286ec2);
+  border-radius: 22px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+.h3-shop-ico { font-size: 2.6rem; line-height: 1; }
+.h3-shop-card b { font-size: 1.05rem; }
+.h3-shop-card p { margin: 0; font-size: 0.84rem; color: #5b4975; font-weight: 700; }
+.h3-shop-act {
+  margin-top: auto;
+  width: 100%;
+  min-height: 52px;
+  border-radius: 16px;
+  border: 3px solid #1f1430;
+  border-bottom: 5px solid #1f1430;
+  background: var(--cc, #2fc58a);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.96rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+.h3-shop-act.dark-txt { color: #1f1430; }
+.h3-shop-act:active { transform: translateY(3px); border-bottom-width: 2px; }
+
+.h3-pad-bar {
+  width: 100%;
+  height: 16px;
+  border-radius: 999px;
+  background: #ece6f5;
+  border: 2.5px solid #1f1430;
+  overflow: hidden;
+}
+.h3-pad-bar > i {
+  display: block;
+  height: 100%;
+  background: #2fc58a;
+  transition: width 0.25s ease;
+}
+
+.h3-grat-box {
+  background: #fff5f9;
+  border: 4px solid #ff5fa2;
+  border-radius: 24px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.h3-grat-note-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.h3-grat-note {
+  appearance: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 3px solid #ff5fa2;
+  border-bottom: 5px solid #c93776;
+  background: #ffffff;
+  color: #1f1430;
+  font-family: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+.h3-grat-note.active { background: #ff5fa2; color: #ffffff; border-color: #1f1430; }
+
+@media (max-width: 820px) {
+  .h3-qa-reasons { grid-template-columns: repeat(2, 1fr); }
+  .h3-mic-modes { grid-template-columns: 1fr; }
+  .h3-sprint-pads { grid-template-columns: repeat(2, 1fr); height: 48vh; }
+}

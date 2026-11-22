@@ -8,8 +8,67 @@
   var K = window.K3, T3 = window.THREE;
   var rnd = K.rnd, clamp = K.clamp, lerp = K.lerp, V = function (x, y, z) { return new T3.Vector3(x, y, z); };
   var IN_WORLD = !!K.World && !K.Q.has('noworld');
-  K.init({ fov: 44, fogNear: 90, fogFar: 260 });
+  K.init({ fov: 36, fogNear: 90, fogFar: 260 });
   var scene = K.scene;
+
+  /* ---------------- rich procedural stadium audio layer ---------------- */
+  function playPenaltySfx(kind) {
+    var a = K.audio ? K.audio() : null;
+    if (!a || K.CAPTURE || K.muted) return;
+    var now = a.currentTime;
+    try {
+      if (kind === 'boot') {
+        // Deep leather ball thump + turf brush
+        var osc = a.createOscillator(), g = a.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(148, now);
+        osc.frequency.exponentialRampToValueAtTime(44, now + 0.14);
+        g.gain.setValueAtTime(0.36, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+        osc.connect(g); g.connect(a.destination);
+        osc.start(now); osc.stop(now + 0.17);
+      } else if (kind === 'net') {
+        // Nylon net ripple swish + bright C-major stadium chord swell
+        var len = Math.floor(a.sampleRate * 0.28);
+        var buf = a.createBuffer(1, len, a.sampleRate), ch0 = buf.getChannelData(0);
+        for (var i = 0; i < len; i++) ch0[i] = (Math.random() * 2 - 1) * Math.exp(-i / (len * 0.35));
+        var src = a.createBufferSource(); src.buffer = buf;
+        var flt = a.createBiquadFilter(); flt.type = 'bandpass'; flt.frequency.value = 1850; flt.Q.value = 1.4;
+        var ng = a.createGain(); ng.gain.setValueAtTime(0.22, now); ng.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        src.connect(flt); flt.connect(ng); ng.connect(a.destination);
+        src.start(now);
+        [523.25, 659.25, 783.99, 1046.5].forEach(function (f, idx) {
+          var o = a.createOscillator(), og = a.createGain();
+          o.type = 'triangle'; o.frequency.value = f;
+          og.gain.setValueAtTime(0.001, now + idx * 0.045);
+          og.gain.linearRampToValueAtTime(0.08, now + idx * 0.045 + 0.03);
+          og.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.045 + 0.42);
+          o.connect(og); og.connect(a.destination);
+          o.start(now + idx * 0.045); o.stop(now + idx * 0.045 + 0.44);
+        });
+      } else if (kind === 'glove') {
+        // Padded leather catch thud
+        var o2 = a.createOscillator(), g2 = a.createGain();
+        o2.type = 'triangle';
+        o2.frequency.setValueAtTime(195, now);
+        o2.frequency.exponentialRampToValueAtTime(72, now + 0.11);
+        g2.gain.setValueAtTime(0.26, now);
+        g2.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        o2.connect(g2); g2.connect(a.destination);
+        o2.start(now); o2.stop(now + 0.13);
+      } else if (kind === 'ping') {
+        // Metallic crossbar / goalpost double-harmonic ring
+        [680, 1185].forEach(function (f) {
+          var o3 = a.createOscillator(), g3 = a.createGain();
+          o3.type = 'sine'; o3.frequency.value = f;
+          g3.gain.setValueAtTime(0.14, now);
+          g3.gain.exponentialRampToValueAtTime(0.001, now + 0.36);
+          o3.connect(g3); g3.connect(a.destination);
+          o3.start(now); o3.stop(now + 0.38);
+        });
+      }
+    } catch (e) {}
+  }
 
   var nTeams = clamp(+K.Q.get('teams') || 4, 2, 4);
   var KICKS = clamp(+K.Q.get('kicks') || 3, 1, 6);
@@ -31,11 +90,13 @@
     [2.6,  .55,  '↘ Low Right']
   ]; // [z, y, label]
 
-  /* ---------------- world & Tripo props ---------------- */
-  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0);
+  /* ---------------- world & Tripo props (GameQualityCore Calibrated Stadium) ---------------- */
+  var GQC = window.GameQualityCore || null;
+  K._gqcTheme = 'stadium';
+  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0, 'stadium');
   K.world.lights();
-  K.world.clouds(14, -80, 80);
-  if (!IN_WORLD) K.world.ground(0x6fd07a);
+  if (!GQC) K.world.clouds(14, -80, 80);
+  if (!IN_WORLD) K.world.ground(0x6eb84c);
 
   var propGroup = new T3.Group();
   scene.add(propGroup);
@@ -64,14 +125,31 @@
     arc.position.set(SPOT, .03, 0);
     scene.add(arc);
     line(5, 0, .12, 30);                                                                                        // halfway line
-    if (!IN_WORLD) {
-      [-15, -5, 5].forEach(function (x) {
-        var s = new T3.Mesh(new T3.PlaneGeometry(5, 30), K.mat(0x67c672));
-        s.rotation.x = -Math.PI / 2;
-        s.position.set(x, .01, 0);
-        scene.add(s);
-      });
+    // Crisp mown olive-emerald stadium turf stripes (#6EB84C / #5DA441)
+    [-17.5, -7.5, 2.5].forEach(function (x) {
+      var s = new T3.Mesh(new T3.PlaneGeometry(5, 30), K.mat(0x5da441));
+      s.rotation.x = -Math.PI / 2;
+      s.position.set(x, .015, 0);
+      s.receiveShadow = true;
+      scene.add(s);
+    });
+    // Perimeter stadium advertising hoardings & corner flags (framing the pitch without blocking sightlines)
+    var boardCols = [0xff5fa2, 0x4f9dff, 0xffb320, 0x2fc58a];
+    for (var hi = 0; hi < 6; hi++) {
+      var hb = new T3.Mesh(new T3.BoxGeometry(.22, .72, 3.6), new T3.MeshStandardMaterial({ color: boardCols[hi % 4], roughness: .48 }));
+      hb.position.set(GX - 3.4, .36, -10.5 + hi * 4.2);
+      hb.castShadow = true; hb.receiveShadow = true;
+      scene.add(hb);
+      if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(hb, 1.4, { y: -0.34, opacity: 0.24 });
     }
+    [[-15, 1], [15, -1]].forEach(function (cf, ci) {
+      var pole = new T3.Mesh(new T3.CylinderGeometry(.04, .04, 1.45, 8), new T3.MeshStandardMaterial({ color: 0xffffff, roughness: .3 }));
+      pole.position.set(GX, .72, cf[0]); pole.castShadow = true; scene.add(pole);
+      var fl = new T3.Mesh(new T3.PlaneGeometry(.55, .36), new T3.MeshStandardMaterial({ color: ci ? 0xff5fa2 : 0xffb320, side: T3.DoubleSide }));
+      fl.position.set(GX, 1.24, cf[0] + cf[1] * .28); fl.rotation.y = Math.PI / 2;
+      if (K.windify) K.windify(fl.material, 0.06, 0.5);
+      scene.add(fl);
+    });
   })();
 
   function placeDecorModels() {
@@ -81,6 +159,17 @@
       gb.position.set(GX - 4.5, 0, -7.2);
       gb.rotation.y = Math.PI * .38;
       propGroup.add(gb);
+      // Paint live scoreboard directly onto the wooden goal-board frame so it's never blank!
+      if (!board) {
+        var cv = document.createElement('canvas');
+        cv.width = 512; cv.height = 232;
+        board = { ctx: cv.getContext('2d'), tex: new T3.CanvasTexture(cv) };
+        board.tex.colorSpace = T3.SRGBColorSpace;
+      }
+      var scr = new T3.Mesh(new T3.PlaneGeometry(2.85, 1.85), new T3.MeshBasicMaterial({ map: board.tex }));
+      scr.position.set(0, 2.38, 0.42);
+      gb.add(scr);
+      boardDraw();
     }
     if (flagpoleModel) {
       [-1, 1].forEach(function (s) {
@@ -369,11 +458,21 @@
     ball.rotation.set(0, 0, 0);
     ballFly = null;
     ballPhys = null;
+    ballHeldByKeeper = false;
     clearBallTrail();
   }
 
-  var ballFly = null, ballPhys = null, trailTimer = 0;
+  var ballFly = null, ballPhys = null, ballHeldByKeeper = false, trailTimer = 0;
+  var _handLPos = new T3.Vector3(), _handRPos = new T3.Vector3();
   K.onFrame(function (dt) {
+    if (ballHeldByKeeper && keeper && keeper.hands && keeper.hands.length === 2) {
+      keeper.root.updateMatrixWorld(true);
+      keeper.hands[0].getWorldPosition(_handLPos);
+      keeper.hands[1].getWorldPosition(_handRPos);
+      ball.position.lerpVectors(_handLPos, _handRPos, 0.5);
+      ball.position.x += 0.08;
+      ball.position.y = Math.max(0.13, ball.position.y);
+    }
     for (var i = ballTrailRings.length - 1; i >= 0; i--) {
       var tr = ballTrailRings[i];
       tr.life += dt;
@@ -454,6 +553,8 @@
     K.onFrame(function (dt, t) {
       if (!g.visible) return;
       ring.scale.setScalar(1 + Math.sin(t * 6) * .08);
+      // Hide floating overhead cone during close broadcast shots so it never photobombs the top edge!
+      cone.visible = !/question|aim|kick|walk/.test(phase);
       cone.position.y = 2.35 + Math.sin(t * 5.5) * .16;
       cone.rotation.y = t * 2.8;
     });
@@ -469,7 +570,8 @@
 
   /* ---------------- characters ---------------- */
   var chars = [], teamRings = [], keeper = null;
-  function lineupSpot(i) { return V(-2 + i * 1.7, 0, 8.5); }
+  function lineupSpot(i) { return V(-3.4 + i * 1.55, 0, 8.2); }
+  function kickerReadySpot() { return V(SPOT + 2.45, 0, 1.05); }
   function holderize(ch, pos) {
     var h = new T3.Group();
     h.add(ch.root);
@@ -488,21 +590,35 @@
         var sp = lineupSpot(i);
         ch.holder.position.copy(sp);
         ch.holder.rotation.set(0, 0, 0);
-        ch.root.rotation.set(0, -.3, 0);
+        ch.root.rotation.set(0, Math.atan2(SPOT - sp.x, -sp.z), 0);
         if (teamRings[i]) teamRings[i].position.copy(sp).setY(.035);
       }
     });
     boardDraw();
   }
-  K.onFrame(function (dt) {
-    var showLabels = /title|turn|question/.test(phase);
+  K.onFrame(function (dt, t) {
+    var showLabels = /title|turn/.test(phase);
     chars.forEach(function (c, i) {
-      c.update(dt);
+      var pace = c._pace || 1;
+      c.update(dt * pace);
       if (c.label) c.label.visible = showLabels && i < nTeams;
+      // Subtle grounded weight-shift bounce for waiting sideline kids (no robotic stillness)
+      if (i < nTeams && (phase === 'question' || phase === 'aim') && i !== active) {
+        c.holder.position.y = Math.max(0, Math.sin(t * 2.2 * pace + (c._phase || i)) * 0.03);
+      }
     });
     if (keeper) {
-      keeper.update(dt);
-      if (keeper.label) keeper.label.visible = showLabels;
+      keeper.update(dt * (keeper._pace || 1));
+      if (keeper.label) keeper.label.visible = /title|turn|question|aim/.test(phase);
+      // Keeper stays alert on the goal line shifting lightly side-to-side during question & aim
+      if (phase === 'question' || phase === 'aim') {
+        var sway = Math.sin(t * 2.15 + 0.4) * (phase === 'aim' ? 0.52 : 0.34);
+        keeper.holder.position.x = GX + 0.72;
+        keeper.holder.position.z = lerp(keeper.holder.position.z, sway, Math.min(1, dt * 6));
+        keeper.holder.position.y = Math.abs(Math.sin(t * 4.3)) * 0.025;
+        keeper.holder.rotation.set(0, 0, 0);
+        keeper.root.rotation.y = Math.PI / 2 + Math.atan2(ball.position.z - keeper.holder.position.z, ball.position.x - keeper.holder.position.x) * 0.35;
+      }
     }
   });
 
@@ -515,54 +631,73 @@
   }
   function shot(name, extra) {
     K.cam.follow = null;
-    fov(/aim|ball|run|replaycam/.test(name) ? 32 : 44);
+    fov(/question|aim|ball|run|goalcam|replaycam|celebrate/.test(name) ? 34 : 38);
     if (name === 'title') {
       K.cam.follow = function () {
-        var a = K.now * .1;
-        K.cam.tPos.set(SPOT + 10 + Math.sin(a) * 3, 3.5, 9 + Math.cos(a) * 2);
-        K.cam.tLook.set(GX + 3, 1.2, 0);
+        var a = K.now * .12;
+        K.cam.tPos.set(SPOT + 8.2 + Math.sin(a) * 2.2, 2.75, 6.2 + Math.cos(a) * 1.6);
+        K.cam.tLook.set(GX + 5.2, 1.05, 0.2);
       };
-      K.cam.k = 1.5;
+      K.cam.k = 1.8;
     }
-    if (name === 'lineup') K.cam.set(V(1.5, 2.6, 15.5), V(.5, .4, 7), 2.5);
-    if (name === 'aim') { fov(34); K.cam.set(V(SPOT + 6.5, 2.5, -.6), V(GX, .25, 0), 2.5); }
-    if (name === 'run') K.cam.set(V(SPOT + 5.5, 1.8, 2.2), V(GX, 1.0, 0), 3);
+    if (name === 'lineup') K.cam.set(V(SPOT + 6.4, 2.1, 4.8), V(SPOT - 1.4, 0.95, 0.6), 2.8);
+    if (name === 'question') {
+      // Broadcast over-the-shoulder duel: active kicker full-body in right foreground, ball on spot, keeper & goal clearly above bottom-30% .qcard
+      fov(34);
+      K.cam.set(V(SPOT + 6.75, 1.98, 3.65), V(GX + 4.8, 0.58, 0.10), 2.8);
+    }
+    if (name === 'aim') {
+      // Classic behind-the-kicker penalty broadcast angle showing full kicker, ball, keeper & all 6 goal targets
+      fov(34);
+      K.cam.set(V(SPOT + 6.55, 2.02, 0.42), V(GX + 1.5, 0.72, 0), 2.8);
+    }
+    if (name === 'run') {
+      fov(33);
+      K.cam.set(V(SPOT + 4.85, 1.48, 2.35), V(GX + 3.2, 0.92, 0), 3.4);
+    }
     if (name === 'ball') {
-      K.cam.k = 4;
+      fov(33);
+      K.cam.k = 4.4;
       K.cam.follow = function () {
         var p = ball.position;
-        K.cam.tPos.set(Math.max(GX + 6, p.x + 5), 1.7, p.z * .4 + 1.2);
-        K.cam.tLook.set(GX, 1.1, p.z * .5);
+        K.cam.tPos.set(Math.max(GX + 5.6, p.x + 4.6), 1.58, p.z * .38 + 1.15);
+        K.cam.tLook.set(GX, 1.05, p.z * .52);
       };
     }
-    if (name === 'goalcam') K.cam.set(V(GX + 6, 1.6, 5.5), V(GX - .6, 1.1, extra || 0), 3);
+    if (name === 'goalcam') {
+      fov(32);
+      K.cam.set(V(GX + 5.2, 1.42, 4.5), V(GX - .45, 1.05, (extra || 0) * 0.65), 3.4);
+    }
     if (name === 'replaycam') {
+      fov(32);
       // Dramatic second-camera angle from the opposite front corner of the six-yard box
-      var sideZ = (extra || 0) >= 0 ? -6.2 : 6.2;
-      K.cam.set(V(GX + 4.4, 1.45, sideZ), V(GX - .3, 1.15, (extra || 0) * .5), 4.2);
+      var sideZ = (extra || 0) >= 0 ? -5.4 : 5.4;
+      K.cam.set(V(GX + 4.1, 1.38, sideZ), V(GX - .3, 1.08, (extra || 0) * .5), 4.4);
     }
     if (name === 'celebrate') {
+      fov(34);
       K.cam.follow = function () {
         var c = extra.holder.position;
-        K.cam.tPos.set(c.x + 3, 1.8, c.z + 3);
-        K.cam.tLook.set(c.x, 1, c.z);
+        K.cam.tPos.set(c.x + 2.6, 1.52, c.z + 2.6);
+        K.cam.tLook.set(c.x, 0.96, c.z);
       };
-      K.cam.k = 2.5;
+      K.cam.k = 2.8;
     }
     if (name === 'podium') {
+      fov(36);
       K.cam.follow = function () {
-        var a = Math.sin(K.now * .3) * .5;
-        K.cam.tPos.set(SPOT + 6.8, 3.6, a * 1.6);
-        K.cam.tLook.set(SPOT - 1.2, .35, 0);
+        var a = Math.sin(K.now * .3) * .45;
+        K.cam.tPos.set(SPOT + 6.4, 3.2, a * 1.5);
+        K.cam.tLook.set(SPOT - 1.2, .45, 0);
       };
-      K.cam.k = 2;
+      K.cam.k = 2.2;
     }
   }
 
   /* ---------------- 3-step How to Play Modal ---------------- */
   var HOWTO_STEPS = [
     { ico: '🎤', c: '#ff5fa2', t: '1. Answer the Question', s: 'Listen and tap the right answer to earn your penalty kick!' },
-    { ico: '🎯', c: '#4f9dff', t: '2. Aim at the Goal!', s: 'Pull back to aim or tap one of the 6 target zones in the goal!' },
+    { ico: '🎯', c: '#4f9dff', t: '2. Pull Back & Release!', s: 'Hold the slingshot ball stick, pull back to aim into the green zone, then LET GO to shoot!' },
     { ico: '⚽', c: '#2fc58a', t: '3. Shoot Past the Keeper!', s: 'Score into the rippling net and watch the slow-mo goal replay!' }
   ];
   function openHowTo(onClose) {
@@ -616,7 +751,72 @@
   });
   window.__penalty3d = {
     openHowTo: openHowTo,
-    getFps: function () { return Math.round(fpsAvg); }
+    getFps: function () { return Math.round(fpsAvg); },
+    startNow: function () {
+      if (phase === 'title') {
+        K.cls.assign(TEAMS);
+        start();
+      }
+    },
+    captureShot: function (mode) {
+      if (phase === 'title') { K.cls.assign(TEAMS); start(); }
+      var ch = chars[active] || chars[0], team = TEAMS[active] || TEAMS[0];
+      if (!ch || !team) return;
+      hideAim();
+      K.ui.clear(); K.ui.topButtons(); addHelpTopButton();
+      hud = K.ui.teamBar(TEAMS, function (t) { return t.score + ' ⚽'; });
+      hud.refresh(active);
+      turnBannerEl = K.ui.add(K.el('div', 'pn-turn-banner'));
+      liveBoardEl = K.ui.add(K.el('div', 'pn-live-board'));
+      updateLiveScoreUI(active);
+      resetBall();
+      keeperHome();
+      ch.holder.position.copy(kickerReadySpot());
+      ch.holder.rotation.set(0, 0, 0);
+      ch.root.rotation.set(0, -Math.PI / 2 - 0.18, 0);
+      if (ch.playClip) ch.playClip('SoccerReady', { fade: 0.05 });
+      if (mode === 'question') {
+        phase = 'question'; window.__k3phase = 'question';
+        updateTurnUI(active, 'Kick 1 of ' + KICKS + ' · Answer right to shoot!');
+        shot('question'); K.cam.snap();
+        K.ui.ask(QS.next(), team, { prompt: 'answer right to take the penalty kick!', onAnswer: function () {} });
+      } else if (mode === 'aim') {
+        phase = 'aim'; window.__k3phase = 'aim';
+        aim(ch, team);
+        showAim(-0.42, 0.72);
+        K.cam.snap();
+      } else if (mode === 'kick') {
+        phase = 'kick'; window.__k3phase = 'kick';
+        updateTurnUI(active, 'SHOOT!');
+        ch.holder.position.set(SPOT + 0.48, 0, 0.22);
+        ch.root.rotation.set(0, -Math.PI / 2 - 0.14, 0);
+        if (ch.playClip) ch.playClip('SoccerKick', { once: true, speed: 1.35, fade: 0, restart: true });
+        if (K._step) K._step(0.21);
+        shot('run'); K.cam.snap();
+      } else if (mode === 'goal') {
+        phase = 'kick'; window.__k3phase = 'kick';
+        var s = { z: -2.4, y: 1.72, power: 0.76 };
+        var d = { outcome: 'goal', target: V(GX - 0.2, 1.72, -2.4), keeperZ: 1.8 };
+        ch.holder.position.set(SPOT + 0.48, 0, 0.22);
+        ch.root.rotation.set(0, -Math.PI / 2 - 0.14, 0);
+        keeperDive(1.8, 1.0, 0.55, true);
+        if (K._step) K._step(0.45);
+        ball.position.copy(d.target);
+        net.y = d.target.y; net.z = d.target.z; net.A = 0.78; net.V = 6;
+        shot('goalcam', d.target.z); K.cam.snap();
+        K.ui.big('🌟 TOP CORNER GOAL!', 5, true);
+      } else if (mode === 'save') {
+        phase = 'kick'; window.__k3phase = 'kick';
+        var d2 = { outcome: 'save', soft: false, target: V(GX - 0.1, 1.15, -2.1), keeperZ: -2.1 };
+        ch.holder.position.set(SPOT + 0.48, 0, 0.22);
+        keeperDive(-2.1, 1.15, 0.55, true);
+        if (K._step) K._step(0.48);
+        ballHeldByKeeper = true;
+        if (K._step) K._step(0.04);
+        shot('goalcam', d2.target.z); K.cam.snap();
+        K.ui.big('🧤 GREAT SAVE!', 5, true);
+      }
+    }
   };
 
   function updateTurnUI(ti, msg) {
@@ -765,27 +965,45 @@
     updateLiveScoreUI(active);
 
     var ch = chars[active], team = TEAMS[active];
-    keeper.setState('keeper');
-    shot('lineup');
-    ch.setState('hello');
+    keeperHome();
+    if (keeper.playClip) keeper.playClip('KeeperReady', { fade: 0.14 });
+    else keeper.setState('keeper');
+
+    // Step active kicker up to the penalty arc so both kicker + ball + keeper share the broadcast frame!
+    var from = ch.holder.position.clone(), to = kickerReadySpot(), stepT = 0, stepDur = 0.72;
+    if (ch.playClip) ch.playClip('SprintRun', { speed: 1.05, fade: 0.12 });
+    else ch.setState('run');
+    shot('question');
     K.sfx('hello');
     K.ui.toast('Round ' + round + ' of ' + KICKS + ' · Team ' + team.name, 1.5, team.c);
 
-    K.after(.9, function () {
-      ch.setState('idle');
-      phase = 'question';
-      window.__k3phase = 'question';
-      demoTurn++;
-      K.ui.ask(QS.next(), team, {
-        prompt: 'answer right to take the penalty kick!',
-        demoRight: DEMO_WRONG.indexOf(demoTurn) < 0,
-        onAnswer: function (ok) {
-          if (!ok) return noKick(ch, team);
-          K.sfx('correct');
-          K.fx.burst(ch.holder.position.clone().add(V(0, 1.2, 0)), 18, { color: [team.hex, 0xffd84a], speed: 4, size: .14, life: .55 });
-          walkToBall(ch, function () { aim(ch, team); });
-        }
-      });
+    var stepFn = K.onFrame(function (dt) {
+      stepT += dt;
+      var u = clamp(stepT / stepDur, 0, 1);
+      ch.holder.position.lerpVectors(from, to, K.ease(u));
+      turnMarker.set(active);
+      var dir = to.clone().sub(from);
+      if (dir.lengthSq() > 0.01) ch.root.rotation.y = Math.atan2(dir.x, dir.z);
+      if (u >= 1) {
+        K.offFrame(stepFn);
+        ch.root.rotation.y = -Math.PI / 2 - 0.26;
+        if (ch.playClip) ch.playClip('SoccerReady', { fade: 0.16 });
+        else ch.setState('idle');
+        phase = 'question';
+        window.__k3phase = 'question';
+        shot('question');
+        demoTurn++;
+        K.ui.ask(QS.next(), team, {
+          prompt: 'answer right to take the penalty kick!',
+          demoRight: DEMO_WRONG.indexOf(demoTurn) < 0,
+          onAnswer: function (ok) {
+            if (!ok) return noKick(ch, team);
+            K.sfx('correct');
+            K.fx.burst(ch.holder.position.clone().add(V(0, 1.2, 0)), 18, { color: [team.hex, 0xffd84a], speed: 4, size: .14, life: .55 });
+            walkToBall(ch, function () { aim(ch, team); });
+          }
+        });
+      }
     });
   }
 
@@ -808,26 +1026,23 @@
   function walkToBall(ch, done) {
     phase = 'walk';
     window.__k3phase = 'walk';
-    var from = ch.holder.position.clone(), to = V(SPOT + 2.6, 0, .9), t = 0, dur = .95;
-    if (ch.playClip) ch.playClip('SprintRun', { speed: 1.15, fade: 0.15 });
-    else ch.setState('run');
-    ch.speed = 3;
+    // Short confident settle into aiming stance behind the penalty spot
+    var from = ch.holder.position.clone(), to = V(SPOT + 2.25, 0, .88), t = 0, dur = .36;
     var fn = K.onFrame(function (dt) {
       t += dt;
       var u = clamp(t / dur, 0, 1);
       ch.holder.position.lerpVectors(from, to, K.ease(u));
       turnMarker.set(active);
-      var d = to.clone().sub(from);
-      ch.root.rotation.y = Math.atan2(d.x, d.z);
+      ch.root.rotation.y = lerp(ch.root.rotation.y, -Math.PI / 2 - .28, Math.min(1, dt * 10));
       if (u >= 1) {
         K.offFrame(fn);
-        if (ch.playClip) ch.playClip('SoccerReady', { fade: 0.18 });
+        if (ch.playClip) ch.playClip('SoccerReady', { fade: 0.15 });
         else ch.setState('idle');
-        ch.root.rotation.y = -Math.PI / 2 - .3;
+        ch.root.rotation.y = -Math.PI / 2 - .28;
         done();
       }
     });
-    shot('run');
+    shot('aim');
   }
 
   /* ---- aiming: pull back and let go, OR tap one of the 6 target zones ---- */
@@ -861,24 +1076,29 @@
     return g;
   })();
 
-  var SOFT = .35, STRONG = .86;
+  var SOFT = .38, STRONG = .82;
   function shotFrom(angle, power) {
-    var z = -(angle / (Math.PI / 4)) * 4.4;
-    var y = .25 + power * 1.75 + Math.max(0, power - STRONG) * 14;
+    var z = -(angle / (Math.PI / 4)) * 4.55;
+    var y = .22 + power * 1.82 + Math.max(0, power - STRONG) * 15.5;
     return { z: z, y: y, power: power };
   }
   function zoneColor(p) { return p < SOFT ? 0x8fc3ff : p <= STRONG ? 0x34c991 : 0xff5f5f; }
-  function zoneText(p) { return p < SOFT ? 'Too soft' : p <= STRONG ? '⚡ Sweet Power!' : 'Too strong!'; }
+  function zoneText(p) { return p < SOFT ? 'Too soft' : p <= STRONG ? '⚡ Sweet Power!' : '🔥 Over the bar!'; }
+  var WARMUP_RETICLE = K.Q.get('warmup') === '1';
   function showAim(angle, power) {
     var s = shotFrom(angle, power), col = zoneColor(power);
     aimArrow.visible = true;
-    aimArrow.position.set(SPOT - .2, .06, 0);
+    aimArrow.position.set(SPOT - .18, .06, 0);
     aimArrow.rotation.y = Math.atan2(-s.z, GX - SPOT);
-    aimArrow.scale.set(.6 + power * 3.2, 1, 1);
+    // Single short honest muzzle/kick pointer (0.65m..1.60m — never a full-pitch cheat line!)
+    aimArrow.scale.set(.65 + power * .95, 1, 1);
     aimArrow.userData.m.color.setHex(col);
-    reticle.visible = true;
-    reticle.position.set(GX + .06, Math.min(s.y, GH + .9), s.z);
-    reticle.userData.ring.material.color.setHex(col);
+    if (GQC && GQC.Juice) GQC.Juice.setPullTension(ball, power * 0.9);
+    reticle.visible = WARMUP_RETICLE;
+    if (WARMUP_RETICLE) {
+      reticle.position.set(GX + .06, Math.min(s.y, GH + .9), s.z);
+      reticle.userData.ring.material.color.setHex(col);
+    }
     if (meter) {
       meter.fill.style.height = (power * 100) + '%';
       meter.fill.style.background = '#' + col.toString(16).padStart(6, '0');
@@ -894,9 +1114,22 @@
   var meter = null;
   function makeMeter(team) {
     var el = K.ui.add(K.el('div', 'powermeter'));
-    el.innerHTML = '<div class="pm-bar"><div class="pm-zone"></div><div class="pm-fill"></div></div><div class="pm-lab">Power</div>';
+    el.innerHTML = '<div class="pm-bar"><div class="pm-zone"></div><div class="pm-fill"></div></div><div class="pm-lab">Pull!</div>';
     el.style.setProperty('--c', team.c);
     meter = { el: el, fill: el.querySelector('.pm-fill'), lab: el.querySelector('.pm-lab') };
+  }
+
+  function playPullTick(power) {
+    try {
+      var ctx = K.sfxCtx && K.sfxCtx();
+      if (!ctx) return;
+      var t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(220 + power * 340, t);
+      g.gain.setValueAtTime(0.055, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+      o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.05);
+    } catch (e) {}
   }
 
   function aim(ch, team) {
@@ -904,86 +1137,200 @@
     window.__k3phase = 'aim';
     shot('aim');
     makeMeter(team);
-    updateTurnUI(active, 'Pull back to aim OR tap a Target Zone (1–6)!');
+    updateTurnUI(active, 'Hold & pull back the stick, then LET GO to shoot!');
     targets.forEach(function (tg) { tg.visible = true; tg.userData.hot = false; });
 
+    // Full-pitch touch/drag fallback so kids can also pull anywhere on screen
     var pad = K.ui.add(K.el('div', 'aimpad'));
     pad.style.cssText = 'position:fixed;inset:0;touch-action:none;cursor:grab;z-index:20';
 
-    // Smartboard Quick-Shot Target Bar at bottom
-    var aimBar = K.ui.add(K.el('div', 'pn-aim-bar'));
-    aimBar.style.setProperty('--c', team.c);
-    aimBar.innerHTML = '<div>🎯 Pull back anywhere on screen OR tap a Goal Target Zone!</div>';
-    var tGrid = K.el('div', 'pn-target-btns');
-    var start = null, angle = 0, power = 0, done = false;
+    // Tactile Slingshot Stick Dock (Hold -> Pull Back to Aim & Charge -> Release to Kick!)
+    var slingDock = K.ui.add(K.el('div', 'pn-sling-dock'));
+    slingDock.style.setProperty('--c', team.c);
+    slingDock.innerHTML =
+      '<div class="pn-sling-head"><span class="pn-sling-badge">🎯 SLINGSHOT KICK</span><span class="pn-sling-hint">Hold &amp; pull back, aim into green, then <b>LET GO</b>!</span></div>' +
+      '<div class="pn-sling-stage">' +
+        '<div class="pn-sling-arc"></div>' +
+        '<div class="pn-sling-band" id="pn-sling-band"></div>' +
+        '<div class="pn-sling-anchor"></div>' +
+        '<button type="button" class="pn-sling-knob" id="pn-sling-knob" aria-label="Hold and pull back to shoot">⚽</button>' +
+        '<div class="pn-sling-meter-readout" id="pn-sling-readout">Pull back to aim!</div>' +
+      '</div>';
 
-    TARGETS.forEach(function (tz, idx) {
-      var tb = K.el('button', 'pn-tbtn', (idx + 1) + ' · ' + tz[2]);
-      tb.onmouseenter = function () {
-        targets[idx].userData.hot = true;
-        var a = -(tz[0] / 4.4) * (Math.PI / 4);
-        var p = clamp((tz[1] - .25) / 1.75, .48, .82);
-        showAim(a, p);
-      };
-      tb.onmouseleave = function () { targets[idx].userData.hot = false; };
-      tb.onclick = function () {
-        angle = -(tz[0] / 4.4) * (Math.PI / 4);
-        power = clamp((tz[1] - .25) / 1.75, .52, .80);
-        showAim(angle, power);
-        fire();
-      };
-      tGrid.appendChild(tb);
-    });
-    aimBar.appendChild(tGrid);
+    var stageEl = slingDock.querySelector('.pn-sling-stage');
+    var knobEl = slingDock.querySelector('#pn-sling-knob');
+    var bandEl = slingDock.querySelector('#pn-sling-band');
+    var readoutEl = slingDock.querySelector('#pn-sling-readout');
 
-    function upd(e) {
-      var px = start.x - e.clientX, py = start.y - e.clientY, s = Math.min(innerWidth, innerHeight);
-      var len = Math.hypot(px, py);
-      if (len < 6) return;
-      angle = clamp(Math.atan2(px, -py), -Math.PI / 3, Math.PI / 3);
-      power = clamp(len / (s * .42), 0, 1);
-      showAim(angle, power);
+    var start = null, dragMode = null, angle = 0, power = 0, done = false;
+    var holdTime = 0, lastTickBin = -1, spaceCharging = false, spaceDir = 1;
+    var MAX_PULL = 86; // px max travel inside slingshot dock
+
+    function highlightNearestTarget(s) {
+      var bestIdx = -1, bestD = 999;
+      TARGETS.forEach(function (tz, i) {
+        var d = Math.hypot(tz[0] - s.z, tz[1] - s.y);
+        if (d < bestD) { bestD = d; bestIdx = i; }
+      });
+      targets.forEach(function (tg, i) { tg.userData.hot = (power >= SOFT && power <= STRONG && i === bestIdx && bestD < 1.5); });
     }
-    pad.addEventListener('pointerdown', function (e) {
-      start = { x: e.clientX, y: e.clientY };
-      pad.setPointerCapture(e.pointerId);
+
+    function paintStick(dx, dy, ang, pwr) {
+      knobEl.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(' + (1 + pwr * 0.14).toFixed(2) + ')';
+      var dist = Math.hypot(dx, dy);
+      var rot = Math.atan2(dy, dx) * (180 / Math.PI);
+      bandEl.style.width = Math.max(0, dist) + 'px';
+      bandEl.style.transform = 'rotate(' + rot.toFixed(1) + 'deg)';
+      var colHex = '#' + zoneColor(pwr).toString(16).padStart(6, '0');
+      bandEl.style.background = colHex;
+      knobEl.style.borderColor = colHex;
+      readoutEl.textContent = pwr < 0.08 ? 'Pull back to aim!' : (zoneText(pwr) + ' (' + Math.round(pwr * 100) + '%)');
+      readoutEl.style.color = pwr > STRONG ? '#d92626' : (pwr >= SOFT ? '#138a5e' : '#2b1d40');
+      var bin = Math.floor(pwr * 10);
+      if (bin !== lastTickBin && pwr > 0.12) { lastTickBin = bin; playPullTick(pwr); }
+      showAim(ang, pwr);
+      highlightNearestTarget(shotFrom(ang, pwr));
+    }
+
+    // Subtle natural tension tremble if player holds at high power > 1.1s (adds genuine skill!)
+    var swayFn = K.onFrame(function (dt) {
+      if (done) return;
+      if (spaceCharging) {
+        holdTime += dt;
+        power = clamp(power + spaceDir * dt * 0.88, 0.06, 1.0);
+        if (power >= 1.0) spaceDir = -1;
+        else if (power <= 0.08) spaceDir = 1;
+        var kdx = Math.sin(angle) * power * MAX_PULL;
+        var kdy = Math.cos(angle) * power * MAX_PULL * 0.85;
+        paintStick(kdx, kdy, angle, power);
+      } else if (start && power > 0.14) {
+        holdTime += dt;
+        if (holdTime > 1.1) {
+          var wobble = Math.sin(holdTime * 9.5) * 0.032 * Math.min(1, (holdTime - 1.1) / 1.4) * (0.5 + power * 0.8);
+          showAim(clamp(angle + wobble, -Math.PI / 3, Math.PI / 3), power);
+        }
+      }
     });
-    pad.addEventListener('pointermove', function (e) { if (start) upd(e); });
-    pad.addEventListener('pointerup', function (e) {
+
+    function applyDrag(clientX, clientY) {
+      var dx = clientX - start.x;
+      var dy = clientY - start.y;
+      // Pulling DOWNWARD (dy > 0) pulls the slingshot back to kick FORWARD toward the goal!
+      var pullY = Math.max(8, dy);
+      var len = Math.hypot(dx, pullY);
+      if (dy < 8 && Math.hypot(dx, dy) < 12) return;
+      var scaleMax = dragMode === 'stick' ? MAX_PULL : Math.min(innerWidth, innerHeight) * 0.34;
+      power = clamp(len / scaleMax, 0, 1);
+      // Pull left (dx < 0) shoots right (angle < 0), pull right (dx > 0) shoots left (angle > 0) — true slingshot physics!
+      angle = clamp(Math.atan2(dx, pullY), -Math.PI / 3, Math.PI / 3);
+      var clampedLen = Math.min(MAX_PULL, (len / scaleMax) * MAX_PULL);
+      var visDx = Math.sin(angle) * clampedLen;
+      var visDy = Math.cos(angle) * clampedLen * 0.82;
+      paintStick(visDx, visDy, angle, power);
+    }
+
+    function beginDrag(e, mode) {
+      if (done) return;
+      e.preventDefault();
+      e.stopPropagation();
+      dragMode = mode;
+      holdTime = 0;
+      if (mode === 'stick') {
+        var r = stageEl.getBoundingClientRect();
+        start = { x: r.left + r.width / 2, y: r.top + 34 };
+        knobEl.classList.add('pulling');
+        try { stageEl.setPointerCapture(e.pointerId); } catch (_) {}
+      } else {
+        start = { x: e.clientX, y: e.clientY };
+        pad.style.cursor = 'grabbing';
+        try { pad.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+      applyDrag(e.clientX, e.clientY);
+    }
+    function moveDrag(e) { if (start) applyDrag(e.clientX, e.clientY); }
+    function endDrag(e) {
       if (!start) return;
-      upd(e);
+      applyDrag(e.clientX, e.clientY);
+      // Apply any live hold wobble at release moment
+      if (holdTime > 1.1) {
+        var wobble = Math.sin(holdTime * 9.5) * 0.032 * Math.min(1, (holdTime - 1.1) / 1.4) * (0.5 + power * 0.8);
+        angle = clamp(angle + wobble, -Math.PI / 3, Math.PI / 3);
+      }
       start = null;
-      if (power > .1) fire();
-    });
-    function key(e) {
-      if (e.key === 'ArrowLeft') angle = clamp(angle + .05, -Math.PI / 3, Math.PI / 3);
-      if (e.key === 'ArrowRight') angle = clamp(angle - .05, -Math.PI / 3, Math.PI / 3);
-      if (e.key === 'ArrowUp') power = clamp(power + .04, 0, 1);
-      if (e.key === 'ArrowDown') power = clamp(power - .04, 0, 1);
-      showAim(angle, power);
-      if ((e.key === ' ' || e.key === 'Enter') && power > .1) { e.preventDefault(); fire(); }
+      dragMode = null;
+      knobEl.classList.remove('pulling');
+      pad.style.cursor = 'grab';
+      if (power >= 0.16) {
+        fire();
+      } else {
+        power = 0; angle = 0;
+        paintStick(0, 0, 0, 0);
+        aimArrow.visible = false;
+        readoutEl.textContent = 'Pull back further & let go!';
+      }
     }
-    addEventListener('keydown', key);
+
+    stageEl.addEventListener('pointerdown', function (e) { beginDrag(e, 'stick'); });
+    stageEl.addEventListener('pointermove', moveDrag);
+    stageEl.addEventListener('pointerup', endDrag);
+    stageEl.addEventListener('pointercancel', endDrag);
+
+    pad.addEventListener('pointerdown', function (e) { beginDrag(e, 'pad'); });
+    pad.addEventListener('pointermove', moveDrag);
+    pad.addEventListener('pointerup', endDrag);
+    pad.addEventListener('pointercancel', endDrag);
+
+    function keyDown(e) {
+      if (done) return;
+      if (e.key === 'ArrowLeft') { e.preventDefault(); angle = clamp(angle + .06, -Math.PI / 3, Math.PI / 3); paintStick(Math.sin(angle) * Math.max(24, power * MAX_PULL), Math.cos(angle) * Math.max(24, power * MAX_PULL) * 0.82, angle, Math.max(power, 0.2)); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); angle = clamp(angle - .06, -Math.PI / 3, Math.PI / 3); paintStick(Math.sin(angle) * Math.max(24, power * MAX_PULL), Math.cos(angle) * Math.max(24, power * MAX_PULL) * 0.82, angle, Math.max(power, 0.2)); }
+      if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) {
+        e.preventDefault();
+        spaceCharging = true;
+        spaceDir = 1;
+        power = Math.max(power, 0.12);
+        knobEl.classList.add('pulling');
+      }
+    }
+    function keyUp(e) {
+      if (done) return;
+      if ((e.key === ' ' || e.key === 'Enter') && spaceCharging) {
+        e.preventDefault();
+        spaceCharging = false;
+        knobEl.classList.remove('pulling');
+        if (power >= 0.16) fire();
+      }
+    }
+    addEventListener('keydown', keyDown);
+    addEventListener('keyup', keyUp);
 
     function fire() {
       if (done) return;
       done = true;
-      removeEventListener('keydown', key);
-      pad.remove();
-      aimBar.remove();
+      K.offFrame(swayFn);
+      removeEventListener('keydown', keyDown);
+      removeEventListener('keyup', keyUp);
+      knobEl.style.transform = 'translate(0px, -14px) scale(0.92)';
+      bandEl.style.width = '0px';
+      K.sfx('whoosh');
       var s = shotFrom(angle, power);
-      K.after(.22, function () { hideAim(); kick(ch, team, s); });
+      K.after(.18, function () {
+        pad.remove();
+        slingDock.remove();
+        hideAim();
+        kick(ch, team, s);
+      });
     }
-    if (K.DEMO) {
-      var ta = rnd(-.68, .68), tp = rnd(.55, .82), t = 0;
-      K.after(.65, function () {
+    if (K.DEMO || (K.isAI && K.isAI(team))) {
+      var ta = rnd(-.66, .66), tp = rnd(.52, .79), t = 0;
+      K.after(.55, function () {
         var fn = K.onFrame(function (dt) {
           t += dt;
-          var u = clamp(t / 1.0, 0, 1), e = K.ease(u);
+          var u = clamp(t / .95, 0, 1), e = K.ease(u);
           angle = ta * e;
           power = tp * e;
-          showAim(angle, power);
-          if (u >= 1) { K.offFrame(fn); K.after(.25, fire); }
+          paintStick(Math.sin(angle) * power * MAX_PULL, Math.cos(angle) * power * MAX_PULL * 0.82, angle, power);
+          if (u >= 1) { K.offFrame(fn); K.after(.2, fire); }
         });
       });
     }
@@ -992,14 +1339,16 @@
   /* decide what happens: skill first, then a fair duel with the keeper */
   function decide(s) {
     var az = Math.abs(s.z);
-    if (s.y > GH + .12) return { outcome: 'over', target: V(GX - .6, s.y + .4, s.z) };
-    if (az > GW / 2 + .12) return { outcome: 'wide', target: V(GX - .6, Math.max(.4, s.y), s.z) };
-    if (az > GW / 2 - .16 || s.y > GH - .14) return { outcome: 'post', target: V(GX, Math.min(s.y, GH), clamp(s.z, -GW / 2, GW / 2)) };
+    if (s.y > GH + .10) return { outcome: 'over', target: V(GX - .6, s.y + .4, s.z) };
+    if (az > GW / 2 + .10) return { outcome: 'wide', target: V(GX - .6, Math.max(.4, s.y), s.z) };
+    if (az > GW / 2 - .18 || s.y > GH - .15) return { outcome: 'post', target: V(GX, Math.min(s.y, GH), clamp(s.z, -GW / 2, GW / 2)) };
     var target = V(GX - .2, s.y, s.z);
     if (s.power < SOFT) return { outcome: 'save', soft: true, target: target, keeperZ: s.z };
     var zone = s.z < -1.25 ? -1 : s.z > 1.25 ? 1 : 0;
-    var r = Math.random(), guess = r < .36 ? -1 : r < .72 ? 1 : 0;
-    var corner = az > 2.65;
+    // Keeper guards center shots more often, rewarding brave corner placement!
+    var r = Math.random();
+    var guess = zone === 0 ? (r < .52 ? 0 : (r < .76 ? -1 : 1)) : (r < .38 ? -1 : r < .76 ? 1 : 0);
+    var corner = az > 2.72 && s.power >= 0.56 && s.power <= STRONG;
     var saved = guess === zone && !corner;
     return { outcome: saved ? 'save' : 'goal', target: target, keeperZ: saved ? s.z : guess * 2.4 };
   }
@@ -1008,28 +1357,50 @@
     phase = 'kick';
     window.__k3phase = 'kick';
     var d = decide(s);
-    var from = ch.holder.position.clone(), to = V(SPOT + .55, 0, .28), t = 0;
-    if (ch.playClip) ch.playClip('SprintRun', { speed: 1.55, fade: 0.12 });
+    // Plant foot firmly right beside the penalty spot so right boot sweeps cleanly through the ball!
+    var from = ch.holder.position.clone(), to = V(SPOT + .48, 0, .22), t = 0;
+    if (ch.playClip) ch.playClip('SprintRun', { speed: 1.48, fade: 0.10 });
     else ch.setState('run');
     ch.speed = 5;
     shot('run');
     var fn = K.onFrame(function (dt) {
       t += dt;
-      var u = clamp(t / .68, 0, 1);
-      ch.holder.position.lerpVectors(from, to, u);
+      var u = clamp(t / .56, 0, 1);
+      ch.holder.position.lerpVectors(from, to, K.ease(u));
+      ch.holder.position.y = 0;
+      ch.root.rotation.y = lerp(ch.root.rotation.y, -Math.PI / 2 - .14, Math.min(1, dt * 12));
+      ch.holder.rotation.z = Math.sin(u * Math.PI) * 0.11; // authentic athletic forward run lean
       if (u >= 1) {
         K.offFrame(fn);
-        if (ch.playClip) ch.playClip('SoccerKick', { once: true, speed: 1.35, fade: 0.08, restart: true });
+        ch.holder.rotation.z = 0;
+        if (ch.playClip) ch.playClip('SoccerKick', { once: true, speed: 1.35, fade: 0.06, restart: true });
         else ch.setState('kick');
-        K.after(.24, function () { strike(ch, team, s, d); });
+        // Exact foot-to-ball strike timing + follow-through step
+        K.after(.21, function () {
+          strike(ch, team, s, d);
+          var ft = 0, fFrom = ch.holder.position.clone(), fTo = V(SPOT + .14, 0, .14);
+          var ffn = K.onFrame(function (fdt) {
+            ft += fdt;
+            var fu = clamp(ft / .34, 0, 1);
+            ch.holder.position.lerpVectors(fFrom, fTo, K.ease(fu));
+            if (fu >= 1) K.offFrame(ffn);
+          });
+        });
       }
     });
   }
 
   function strike(ch, team, s, d) {
     K.sfx('kick');
-    K.cam.shake(.08 + s.power * .12);
-    K.fx.puff(V(SPOT, .1, 0), 5 + Math.round(s.power * 6), { color: 0xe9f6d8, size: .52 });
+    playPenaltySfx('boot');
+    if (GQC && GQC.Juice) {
+      GQC.Juice.squashStretch(ball, 1.32, 0.74, 1.32, 0.28);
+      GQC.Juice.shakeCamera(0.14 + s.power * 0.12, 0.22);
+      GQC.Juice.spawnBurst(scene, V(SPOT, .14, 0), 'dust', 12);
+    } else {
+      K.cam.shake(.08 + s.power * .12);
+    }
+    K.fx.puff(V(SPOT, .08, 0), 6 + Math.round(s.power * 6), { color: 0xe9f6d8, size: .48 });
     var dur = lerp(1.05, .48, s.power);
     var diveDur = d.soft ? Math.max(.52, dur * .82) : Math.max(.52, dur * .88);
     K.after(d.soft ? .18 : .05, function () {
@@ -1047,34 +1418,40 @@
     };
     shot('ball');
     if (d.outcome === 'goal' || (d.outcome === 'save' && !d.soft)) {
-      K.timeScale = .55;
-      K.after(.42, function () { K.timeScale = 1; });
+      K.timeScale = .65;
+      setTimeout(function () { if (phase === 'kick') K.timeScale = 1; }, 420);
     }
   }
 
   function keeperDive(z, y, dur, forceDive) {
     var h = keeper.holder, z0 = h.position.z, t = 0, side = Math.sign(z - z0) || 1;
     var reach = Math.min(3.3, Math.abs(z - z0)), walk = !forceDive && dur > .75 && reach < 1.0;
+    keeper.root.rotation.y = Math.PI / 2;
     if (keeper.playClip) {
-      keeper.playClip(walk ? 'KeeperReady' : (side > 0 ? 'KeeperDiveL' : 'KeeperDiveR'), { once: !walk, speed: 1.25, fade: 0.1, restart: true });
+      keeper.playClip(walk ? 'KeeperReady' : (side > 0 ? 'KeeperDiveL' : 'KeeperDiveR'), { once: !walk, speed: 1.25, fade: 0.08, restart: true });
     } else {
       keeper.setState(walk ? 'keeper' : 'dive');
     }
+    var targetTilt = reach < .6 ? .36 : (y > 1.35 ? .94 : 1.18);
+    var apex = Math.min(.88, Math.max(.42, y * .54));
+    var landY = targetTilt > 0.85 ? 0.24 : 0.06; // hip rests ON grass rather than clipping through turf
     var fn = K.onFrame(function (dt) {
       t += dt;
       var u = clamp(t / dur, 0, 1);
       if (walk) {
         h.position.z = z0 + side * reach * K.ease(u);
-        h.position.y = Math.sin(u * Math.PI) * .25;
-        if (u >= 1) K.offFrame(fn);
+        h.position.y = Math.sin(u * Math.PI) * .18;
+        h.rotation.x = 0;
+        if (u >= 1) { h.position.y = 0; K.offFrame(fn); }
         return;
       }
-      h.position.z = z0 + side * reach * K.ease(u);
-      h.position.y = Math.sin(u * Math.PI) * Math.min(.9, Math.max(.48, y * .58)) + u * .2;
-      h.rotation.x = side * u * (reach < .6 ? .38 : (y > 1.3 ? .98 : 1.28));
+      var eu = K.ease(u);
+      h.position.z = z0 + side * reach * eu;
+      h.position.y = Math.sin(u * Math.PI) * apex + eu * landY;
+      h.rotation.x = side * Math.pow(u, 0.72) * targetTilt;
       if (u >= 1) {
         K.offFrame(fn);
-        K.fx.puff(h.position.clone().setY(.15), 5, { color: 0xe9f6d8, size: .45 });
+        K.fx.puff(h.position.clone().setY(.12), 7, { color: 0xe9f6d8, size: .45 });
       }
     });
   }
@@ -1135,6 +1512,7 @@
     updateLiveScoreUI(active);
 
     if (o === 'goal') {
+      K.timeScale = 1;
       net.y = target.y;
       net.z = target.z;
       net.V = 11.5;
@@ -1143,8 +1521,16 @@
       boardDraw();
       updateLiveScoreUI(active);
       K.sfx('goal');
+      playPenaltySfx('net');
       crowdHype = 1;
-      K.cam.shake(.32);
+      if (GQC && GQC.Juice) {
+        GQC.Juice.hitstop(42);
+        GQC.Juice.shakeCamera(0.28, 0.34);
+        GQC.Juice.spawnBurst(scene, target.clone(), 'stars', 18);
+        GQC.Juice.popupScore(Math.abs(target.z) > 2.65 ? 'TOP CORNER! ⚽' : '+1 GOAL! ⚽', target.clone(), K.camera, team.c);
+      } else {
+        K.cam.shake(.32);
+      }
       K.fx.confetti(V(GX - 1, 3, 0), 160);
       K.fx.ring(target.clone(), team.hex, 4.2);
       K.ui.big(Math.abs(target.z) > 2.65 ? '🌟 TOP CORNER GOAL!' : '⚽ GOAL!', 1.5, true);
@@ -1159,17 +1545,33 @@
         });
       });
     } else if (o === 'save') {
+      K.timeScale = 1;
       ballPhys = null;
+      ballHeldByKeeper = true;
       K.sfx('save');
-      K.cam.shake(.2);
-      ball.position.copy(keeper.holder.position).add(V(.3, d.soft ? .9 : .5, 0));
+      playPenaltySfx('glove');
+      if (GQC && GQC.Juice) {
+        GQC.Juice.hitstop(36);
+        GQC.Juice.shakeCamera(0.18, 0.24);
+        GQC.Juice.spawnBurst(scene, target.clone(), 'dust', 10);
+      } else {
+        K.cam.shake(.2);
+      }
       K.ui.big(d.soft ? '🧤 Too soft — easy catch!' : '🧤 GREAT SAVE!', 1.4, true);
       shot('goalcam', target.z);
-      K.after(.8, function () { ballPhys = { v: V(4, 3, rnd(-1, 1)) }; });
+      K.after(.8, function () { ballHeldByKeeper = false; ballPhys = { v: V(4, 3, rnd(-1, 1)) }; });
       reaction(ch, false, 2.4);
     } else if (o === 'post') {
+      K.timeScale = 1;
       K.sfx('post');
-      K.cam.shake(.25);
+      playPenaltySfx('ping');
+      if (GQC && GQC.Juice) {
+        GQC.Juice.hitstop(42);
+        GQC.Juice.shakeCamera(0.24, 0.28);
+        GQC.Juice.spawnBurst(scene, target.clone(), 'splinters', 12);
+      } else {
+        K.cam.shake(.25);
+      }
       K.fx.ring(target.clone(), 0xffffff, 3);
       ballPhys = { v: V(5, 2, -Math.sign(target.z || 1) * 2.5) };
       K.ui.big(target.y >= GH - .02 ? '💥 Off the crossbar!' : '💥 Off the post!', 1.35, true);
@@ -1338,12 +1740,15 @@
     placeDecorModels();
 
     res.slice(5).forEach(function (ch, i) {
+      ch._pace = 0.91 + (i % 4) * 0.055;
+      ch._phase = i * 1.37;
       chars.push(ch);
       holderize(ch, lineupSpot(i));
-      ch.root.rotation.y = -.3;
+      var sp0 = lineupSpot(i);
+      ch.root.rotation.y = Math.atan2(SPOT - sp0.x, -sp0.z);
       var ring = new T3.Mesh(new T3.RingGeometry(.45, .62, 32), new T3.MeshBasicMaterial({ color: ALL_TEAMS[i].hex }));
       ring.rotation.x = -Math.PI / 2;
-      ring.position.copy(lineupSpot(i)).setY(.035);
+      ring.position.copy(sp0).setY(.035);
       scene.add(ring);
       teamRings.push(ring);
 
@@ -1353,16 +1758,30 @@
       ch.label = lab;
     });
 
+    keeper._pace = 1.02;
+    keeper.hands = [];
     holderize(keeper, V(GX + .7, 0, 0));
     keeper.root.rotation.y = Math.PI / 2;
-    ['LeftHand', 'RightHand'].forEach(function (n) {
+    ['LeftHand', 'RightHand'].forEach(function (n, hi) {
       var b = null;
       keeper.root.traverse(function (o) { if (o.isBone && o.name.replace(/^mixamorig:?/, '') === n) b = o; });
       if (b) {
-        var glove = new T3.Mesh(new T3.SphereGeometry(.09, 12, 8), K.mat(0xffd84a));
-        var s = 1 / b.getWorldScale(V(0, 0, 0)).x;
-        glove.scale.setScalar(s);
-        b.add(glove);
+        keeper.hands.push(b);
+        // Sculpted padded goalkeeper glove (gold shell + white latex palm + dark cuff)
+        var gloveGrp = new T3.Group();
+        var palm = new T3.Mesh(new T3.BoxGeometry(.095, .135, .055), new T3.MeshStandardMaterial({ color: 0xffd84a, roughness: .42 }));
+        palm.position.set(0, .055, 0);
+        var grip = new T3.Mesh(new T3.BoxGeometry(.085, .12, .022), new T3.MeshStandardMaterial({ color: 0xfffdf8, roughness: .65 }));
+        grip.position.set(0, .055, .025);
+        var thumb = new T3.Mesh(new T3.BoxGeometry(.042, .062, .038), new T3.MeshStandardMaterial({ color: 0xffb320, roughness: .42 }));
+        thumb.position.set(hi === 0 ? .058 : -.058, .035, .01);
+        thumb.rotation.z = hi === 0 ? -.38 : .38;
+        var cuff = new T3.Mesh(new T3.CylinderGeometry(.044, .048, .05, 10), new T3.MeshStandardMaterial({ color: 0x2b1d40, roughness: .5 }));
+        cuff.position.set(0, -.025, 0);
+        gloveGrp.add(palm, grip, thumb, cuff);
+        var s = 1 / Math.max(0.001, b.getWorldScale(V(0, 0, 0)).x);
+        gloveGrp.scale.setScalar(s);
+        b.add(gloveGrp);
       }
     });
     var kl = K.label('Keeper', '#9b7bff', 200);
@@ -1392,6 +1811,11 @@
     }
     syncCharactersForTeamCount();
     resetBall();
+    if (GQC && GQC.Atmosphere) {
+      GQC.Atmosphere.addBlobShadow(ball, 0.42, { y: -0.095, opacity: 0.34 });
+      if (keeper && keeper.holder) GQC.Atmosphere.addBlobShadow(keeper.holder, 0.92, { y: 0.015, opacity: 0.28 });
+      chars.forEach(function (ch) { if (ch && ch.holder) GQC.Atmosphere.addBlobShadow(ch.holder, 0.85, { y: 0.015, opacity: 0.26 }); });
+    }
     loading.remove();
     title();
     K.start();

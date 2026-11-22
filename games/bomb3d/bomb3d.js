@@ -8,8 +8,37 @@
   var K = window.K3, T3 = window.THREE;
   var rnd = K.rnd, clamp = K.clamp, V = function (x, y, z) { return new T3.Vector3(x, y, z); };
   var IN_WORLD = !!K.World && !K.Q.has('noworld');
-  K.init({ fov: 42, fogNear: 80, fogFar: 240 });
+  K.init({ fov: 36, fogNear: 80, fogFar: 240 });
   var scene = K.scene;
+
+  /* ---------------- rich procedural game-show audio layer ---------------- */
+  function playBombSfx(kind) {
+    var a = K.audio ? K.audio() : null;
+    if (!a || K.CAPTURE || K.muted) return;
+    var now = a.currentTime;
+    try {
+      if (kind === 'pop') {
+        var o = a.createOscillator(), g = a.createGain();
+        o.type = 'sine'; o.frequency.setValueAtTime(240, now); o.frequency.exponentialRampToValueAtTime(680, now + 0.08);
+        g.gain.setValueAtTime(0.18, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+        o.connect(g); g.connect(a.destination); o.start(now); o.stop(now + 0.12);
+      } else if (kind === 'bonus') {
+        [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) {
+          var o2 = a.createOscillator(), g2 = a.createGain();
+          o2.type = 'triangle'; o2.frequency.value = f;
+          g2.gain.setValueAtTime(0.10, now + i * 0.05);
+          g2.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.35);
+          o2.connect(g2); g2.connect(a.destination); o2.start(now + i * 0.05); o2.stop(now + i * 0.05 + 0.37);
+        });
+      } else if (kind === 'boom') {
+        // Silly cartoon boing-boom (deep bass thump + warm descending slide — never harsh)
+        var ob = a.createOscillator(), gb = a.createGain();
+        ob.type = 'sine'; ob.frequency.setValueAtTime(160, now); ob.frequency.exponentialRampToValueAtTime(38, now + 0.32);
+        gb.gain.setValueAtTime(0.32, now); gb.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        ob.connect(gb); gb.connect(a.destination); ob.start(now); ob.stop(now + 0.36);
+      }
+    } catch (e) {}
+  }
 
   var nTeams = clamp(+K.Q.get('teams') || 4, 2, 4);
   var maxBoxesToOpen = clamp(+K.Q.get('boxes') || 12, 2, 12);
@@ -33,11 +62,13 @@
   };
   var CONTENTS = K.shuffle(['bomb', 'bomb', 'bomb', 'bomb', 'p5', 'p5', 'p10', 'p10', 'p20', 'swap', 'steal', 'double']);
 
-  /* ---------------- world + stage ---------------- */
-  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0);
+  /* ---------------- world + stage (GameQualityCore Sunlit Carnival Stage) ---------------- */
+  var GQC = window.GameQualityCore || null;
+  K._gqcTheme = 'festival';
+  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0, 'festival');
   K.world.lights();
-  K.world.clouds(14, -80, 80);
-  if (!IN_WORLD) K.world.ground(0xf3e2b8);
+  if (!GQC) K.world.clouds(14, -80, 80);
+  if (!IN_WORLD) K.world.ground(0x6eb84c);
 
   var STAGE_Z = -2.6, STAGE_R = 7.2, STAGE_H = .45;
   var SLOTS = [];   // 3 rising rows of 4 boxes: 1-4 at the back (highest), 9-12 at the front
@@ -325,6 +356,7 @@
     K.onFrame(function (dt, t) {
       if (!g.visible) return;
       ring.scale.setScalar(1 + Math.sin(t * 6) * .08);
+      cone.visible = !/question|pick|open|keepgive/.test(phase);
       cone.position.y = 2.4 + Math.sin(t * 5.5) * .18;
       cone.rotation.y = t * 2.8;
     });
@@ -406,10 +438,12 @@
     if (!proto) proto = giftProtos.gift;
     if (proto) {
       var m = proto.clone(true);
-      K.fitModel(m, 1.05);
+      K.fitModel(m, 1.28);
       return m;
     }
-    return fallbackGift(i);
+    var fb = fallbackGift(i);
+    fb.scale.setScalar(1.22);
+    return fb;
   }
 
   function buildBoxes() {
@@ -441,9 +475,10 @@
       spin.add(model);
 
       var numBadge = numberBadgeSprite(i + 1, colHex);
-      numBadge.position.set(0, 1.38, .15);
+      numBadge.position.set(0, 1.56, .18);
       spin.add(numBadge);
       holder.add(spin);
+      if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(holder, 0.85, { y: 0.01, opacity: 0.28 });
 
       // Big invisible touch volume so small fingers never miss
       var hit = new T3.Mesh(
@@ -518,34 +553,46 @@
       }
     });
   }
-  K.onFrame(function (dt) { chars.forEach(function (c) { c.update(dt); }); });
+  K.onFrame(function (dt) {
+    chars.forEach(function (c) { c.update(dt * (c._pace || 1)); });
+  });
 
-  /* ---------------- camera ---------------- */
+  /* ---------------- camera (closer game-show broadcast framing) ---------------- */
+  function setFov(f) {
+    if (K.camera.fov !== f) { K.camera.fov = f; K.camera.updateProjectionMatrix(); }
+  }
   function shot(name, extra) {
     K.cam.follow = null;
+    setFov(/question|pick|team|box/.test(name) ? 34 : 38);
     if (name === 'title') {
       K.cam.follow = function () {
         var a = K.now * .12;
-        K.cam.tPos.set(Math.sin(a) * 4, 6.2, 15.5 + Math.cos(a) * 1.2);
-        K.cam.tLook.set(0, 1.6, -2);
+        K.cam.tPos.set(Math.sin(a) * 3.8, 5.2, 13.8 + Math.cos(a) * 1.1);
+        K.cam.tLook.set(0, 1.7, -2);
       };
       K.cam.k = 1.5;
     }
-    if (name === 'stage') K.cam.set(V(0, 6.9, 15.6), V(0, 1.8, -2.5), 2.5);
-    if (name === 'pick') K.cam.set(V(0, 5.1, 10.2), V(0, 1.45, -2.6), 2.5);
+    if (name === 'stage') K.cam.set(V(0, 5.6, 13.8), V(0, 1.8, -2.5), 2.5);
+    if (name === 'question') {
+      // Closer broadcast stage angle: 4 kids + all 12 boxes + BOMB or BONUS sign clearly above bottom-30% .qcard!
+      K.cam.set(V(0, 4.45, 13.2), V(0, 1.05, -1.8), 2.6);
+    }
+    if (name === 'pick') {
+      K.cam.set(V(0, 4.65, 9.8), V(0, 1.25, -2.5), 2.6);
+    }
     if (name === 'team') {
       var p = chars[extra].holder.position;
-      K.cam.set(V(p.x * .7, 2.6, p.z + 6.2), V(p.x, 1.1, p.z - 1), 2.8);
+      K.cam.set(V(p.x * .72, 2.0, p.z + 4.8), V(p.x, 1.05, p.z - .6), 3.0);
     }
     if (name === 'box') {
       var h = extra.holder.position;
-      K.cam.set(V(h.x * .8, h.y + 2.3, h.z + 4.8), V(h.x, h.y + .7, h.z), 3);
+      K.cam.set(V(h.x * .84, h.y + 2.25, h.z + 4.1), V(h.x, h.y + .72, h.z), 3.2);
     }
     if (name === 'podium') {
       K.cam.follow = function () {
-        var a = Math.sin(K.now * .3) * .55;
-        K.cam.tPos.set(a * 2, 3.8, 12.8);
-        K.cam.tLook.set(0, .35, 3.8);
+        var a = Math.sin(K.now * .3) * .48;
+        K.cam.tPos.set(a * 1.8, 3.3, 11.8);
+        K.cam.tLook.set(0, .5, 3.8);
       };
       K.cam.k = 2;
     }
@@ -608,7 +655,38 @@
   });
   window.__bomb3d = {
     openHowTo: openHowTo,
-    getFps: function () { return Math.round(fpsAvg); }
+    getFps: function () { return Math.round(fpsAvg); },
+    captureShot: function (mode) {
+      K.ui.clear(); K.ui.topButtons(); addHelpTopButton();
+      hud = K.ui.teamBar(TEAMS, function (t) { return t.score + ' ⭐'; });
+      turnBannerEl = K.ui.add(K.el('div', 'bm-turn-banner'));
+      liveBoardEl = K.ui.add(K.el('div', 'bm-live-board'));
+      active = 0;
+      hud.refresh(0);
+      updateLiveBoxesUI();
+      chars.slice(0, nTeams).forEach(function (c, idx) {
+        c.setState(idx === 0 ? 'bombhold' : 'clap');
+      });
+      if (mode === 'question') {
+        phase = 'question'; window.__k3phase = 'question';
+        pickMode = false;
+        updateTurnUI(0, 'Answer right to pick a Mystery Box!');
+        shot('question'); K.cam.snap();
+        K.ui.ask(QS.next(), TEAMS[0], { prompt: 'answer right to pick a mystery box!', onAnswer: function () {} });
+      } else if (mode === 'pick') {
+        phase = 'pick'; window.__k3phase = 'pick';
+        pick(TEAMS[0]);
+        K.cam.snap();
+      } else if (mode === 'bomb') {
+        phase = 'open'; window.__k3phase = 'open';
+        pickMode = false;
+        var b = boxes[5];
+        shot('box', b); K.cam.snap();
+        b.spin.visible = false;
+        spawnPoofCloud(b.holder.position.clone().add(V(0, .85, 0)));
+        K.ui.big('💥 BOOM! −5', 5, true);
+      }
+    }
   };
 
   function opened() { return boxes.filter(function (b) { return b.open; }).length; }
@@ -765,6 +843,7 @@
       ch.setState('idle');
       phase = 'question';
       window.__k3phase = 'question';
+      shot('question');
       demoTurn++;
       K.ui.ask(QS.next(), team, {
         prompt: 'answer right to pick a mystery box!',
@@ -859,8 +938,8 @@
         decideOwner(team, b);
       });
     }
-    if (K.DEMO) {
-      K.after(.9, function () {
+    if (K.DEMO || (K.isAI && K.isAI(team))) {
+      K.after(.85, function () {
         var left = boxes.filter(function (b) { return !b.open; });
         if (left.length) choose(left[(Math.random() * left.length) | 0]);
       });
@@ -882,12 +961,20 @@
         return { label: '➡️ GIVE TO ' + t.name.toUpperCase() + '!', value: TEAMS.indexOf(t), color: t.c };
       })
     );
-    K.ui.choose('Box #' + b.n + ' is shaking! Keep it or give it away?', choices, {
-      color: team.c,
-      demo: function () {
-        return Math.random() < .5 ? -1 : TEAMS.indexOf(TEAMS.filter(function (t) { return t !== team; })[0]);
-      }
-    }).then(function (v) {
+    var isAiDecide = K.isAI && K.isAI(team);
+    var decideP = isAiDecide
+      ? new Promise(function (res) {
+          K.after(.75, function () {
+            res(Math.random() < .55 ? -1 : TEAMS.indexOf(TEAMS.filter(function (t) { return t !== team; })[0]));
+          });
+        })
+      : K.ui.choose('Box #' + b.n + ' is shaking! Keep it or give it away?', choices, {
+          color: team.c,
+          demo: function () {
+            return Math.random() < .5 ? -1 : TEAMS.indexOf(TEAMS.filter(function (t) { return t !== team; })[0]);
+          }
+        });
+    decideP.then(function (v) {
       b.shake = 0;
       var owner = v < 0 ? team : TEAMS[v];
       if (v >= 0) {
@@ -913,6 +1000,7 @@
       b.open = true;
       updateLiveBoxesUI();
       K.sfx('pop');
+      playBombSfx('pop');
       spawnFlyingLid(top.clone(), b.colHex);
       K.fx.confetti(top.clone(), b.kind === 'bomb' ? 24 : 95);
       K.fx.puff(top.clone(), 7, { color: 0xffffff, size: .85 });
@@ -973,18 +1061,26 @@
       K.offFrame(fn);
       scene.remove(g);
       // Hit-stop / slow-motion on cartoon bomb explosion!
-      K.timeScale = 0.28;
-      setTimeout(function () { K.timeScale = 1; }, 360);
+      var p = b.holder.position.clone().add(V(0, .75, 0));
+      var lost = Math.min(5, owner.score);
+      if (GQC && GQC.Juice) {
+        GQC.Juice.hitstop(45);
+        GQC.Juice.shakeCamera(0.36, 0.38);
+        GQC.Juice.spawnBurst(scene, p.clone(), 'splinters', 18);
+        GQC.Juice.popupScore(lost ? '💥 BOOM! -' + lost : '💥 BOOM!', p.clone().add(V(0, .6, 0)), K.camera, '#ff5f5f');
+      } else {
+        K.timeScale = 0.28;
+        setTimeout(function () { K.timeScale = 1; }, 360);
+        K.cam.shake(.52);
+      }
 
       K.sfx('boom');
-      K.cam.shake(.52);
-      var p = b.holder.position.clone().add(V(0, .75, 0));
+      playBombSfx('boom');
       spawnPoofCloud(p);
       K.fx.puff(p.clone(), 18, { color: 0x6b6b78, size: 1.65, life: 1.35, opacity: .78 });
       K.fx.ring(p.clone(), 0xff9f38, 6.5);
       K.fx.burst(p.clone(), 24, { color: [0x3a3a48, 0xffd84a, 0xff6f3c], speed: 7, size: .18, life: .75 });
 
-      var lost = Math.min(5, owner.score);
       owner.score -= lost;
       if (lost) K.fx.text('💥 −' + lost, p.clone().add(V(0, 1.1, 0)), '#ff5f5f', 1.8);
       K.ui.big(lost ? '💥 BOOM! −' + lost : '💥 BOOM! (0 pts lost)', 1.5, true);
@@ -1008,6 +1104,13 @@
     var p = b.holder.position.clone().add(V(0, 1.1, 0));
     var teamTargetPos = ch.holder.position.clone().add(V(0, 1.2, 0));
     K.sfx('correct');
+    playBombSfx('bonus');
+    if (GQC && GQC.Juice) {
+      GQC.Juice.hitstop(36);
+      GQC.Juice.squashStretch(b.holder, 1.24, 0.80, 1.24, 0.28);
+      GQC.Juice.spawnBurst(scene, p.clone(), 'stars', 18);
+      GQC.Juice.popupScore('🌟 ' + k.text, p.clone().add(V(0, .5, 0)), K.camera, k.color);
+    }
     K.fx.ring(p.clone(), new T3.Color(k.color).getHex(), 4.5);
     K.say(k.say);
     leaveIcon(b);
@@ -1034,16 +1137,25 @@
     K.ui.big(k.icon + ' ' + k.text, 1.25, true);
 
     var others = TEAMS.filter(function (t) { return t !== owner; });
-    var target = given ? Promise.resolve(giver) : K.ui.choose(
-      b.kind === 'swap' ? '🔄 Swap scores with which team?' : '🦊 Steal 5 points from which team?',
-      others.map(function (t) { return { label: t.name + ' (' + t.score + ' ⭐)', value: TEAMS.indexOf(t), color: t.c }; }),
-      {
-        color: owner.c,
-        demo: function () {
-          return TEAMS.indexOf(others.slice().sort(function (a, c) { return c.score - a.score; })[0]);
-        }
-      }
-    ).then(function (v) { return TEAMS[v]; });
+    var isAiTarget = K.isAI && K.isAI(owner);
+    var target = given
+      ? Promise.resolve(giver)
+      : isAiTarget
+        ? new Promise(function (res) {
+            K.after(.65, function () {
+              res(others.slice().sort(function (a, c) { return c.score - a.score; })[0]);
+            });
+          })
+        : K.ui.choose(
+            b.kind === 'swap' ? '🔄 Swap scores with which team?' : '🦊 Steal 5 points from which team?',
+            others.map(function (t) { return { label: t.name + ' (' + t.score + ' ⭐)', value: TEAMS.indexOf(t), color: t.c }; }),
+            {
+              color: owner.c,
+              demo: function () {
+                return TEAMS.indexOf(others.slice().sort(function (a, c) { return c.score - a.score; })[0]);
+              }
+            }
+          ).then(function (v) { return TEAMS[v]; });
 
     target.then(function (t) {
       var ti = TEAMS.indexOf(t);
@@ -1214,9 +1326,11 @@
   )).then(function (res) {
     buildBoxes();
     res.slice(9).forEach(function (ch, i) {
+      ch._pace = 0.91 + (i % 4) * 0.055;
       var h = new T3.Group();
       h.add(ch.root);
       scene.add(h);
+      if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(h, 0.82, { y: 0.015, opacity: 0.28 });
       ch.holder = h;
       chars.push(ch);
 

@@ -10,8 +10,38 @@
   var K = window.K3, T3 = window.THREE;
   var rnd = K.rnd, clamp = K.clamp, V = function (x, y, z) { return new T3.Vector3(x, y, z); };
   var IN_WORLD = !!K.World && !K.Q.has('noworld');
-  K.init({ fov: 42, fogNear: 80, fogFar: 240 });
+  K.init({ fov: 36, fogNear: 80, fogFar: 240 });
   var scene = K.scene;
+
+  /* ---------------- rich procedural bowling alley audio layer ---------------- */
+  function playBowlSfx(kind) {
+    var a = K.audio ? K.audio() : null;
+    if (!a || K.CAPTURE || K.muted) return;
+    var now = a.currentTime;
+    try {
+      if (kind === 'pins') {
+        // Crisply staggered wooden pin knock clatter
+        [720, 940, 1180, 860, 1340].forEach(function (f, i) {
+          var o = a.createOscillator(), g = a.createGain();
+          o.type = 'triangle'; o.frequency.setValueAtTime(f, now + i * 0.032);
+          o.frequency.exponentialRampToValueAtTime(f * 0.58, now + i * 0.032 + 0.09);
+          g.gain.setValueAtTime(0.11, now + i * 0.032);
+          g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.032 + 0.10);
+          o.connect(g); g.connect(a.destination);
+          o.start(now + i * 0.032); o.stop(now + i * 0.032 + 0.11);
+        });
+      } else if (kind === 'strike') {
+        [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) {
+          var o2 = a.createOscillator(), g2 = a.createGain();
+          o2.type = 'triangle'; o2.frequency.value = f;
+          g2.gain.setValueAtTime(0.11, now + i * 0.05);
+          g2.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.42);
+          o2.connect(g2); g2.connect(a.destination);
+          o2.start(now + i * 0.05); o2.stop(now + i * 0.05 + 0.44);
+        });
+      }
+    } catch (e) {}
+  }
 
   var nTeams = clamp(+K.Q.get('teams') || 4, 2, 4), ROUNDS = clamp(+K.Q.get('rounds') || 3, 1, 5);
   var TEAMS = [];
@@ -23,14 +53,16 @@
   initTeams();
   var QS = K.questions('g3-u5-vocab');
 
-  /* ---------------- sky, lights & environment ---------------- */
-  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0);
+  /* ---------------- sky, lights & environment (GameQualityCore Warm Boardwalk Alley) ---------------- */
+  var GQC = window.GameQualityCore || null;
+  K._gqcTheme = 'alley';
+  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0, 'alley');
   K.world.lights();
-  K.world.clouds(14, -80, 80);
-  if (!IN_WORLD) K.world.ground(0x8fdc7a);
+  if (!GQC) K.world.clouds(14, -80, 80);
+  if (!IN_WORLD) K.world.ground(0x6eb84c);
 
   var LANE_W = 2.10, HALF = LANE_W / 2, GAP = 1.38, FOUL_Z = 7.5, HEAD_Z = -6.2, PIT_Z = -9.4;
-  var BALL_R = .3, PIN_R = .16, PIN_H = .95;
+  var BALL_R = .32, PIN_R = .20, PIN_H = 1.24;
   function laneX(i) { return (i - (nTeams - 1) / 2) * (LANE_W + GAP); }
 
   var woodTex = K.canvasTex(256, 1024, function (c, W, H) {   // glossy maple boards along the lane
@@ -231,7 +263,28 @@
       var bh = alleyModel.clone(true);
       bh.position.set(0, 0, PIT_Z - 6.8);
       arenaGroup.add(bh);
+      if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(bh, 4.6, { y: 0.02, opacity: 0.25 });
     }
+
+    // Perimeter festive boardwalk lantern posts & fluttering pennants framing the deck
+    [-1, 1].forEach(function (side) {
+      var pxEdge = side * (totalW * 0.5 + 0.85);
+      [-5.5, 0.5, 6.5].forEach(function (pz, li) {
+        var post = new T3.Mesh(new T3.CylinderGeometry(.09, .12, 3.3, 10), new T3.MeshStandardMaterial({ color: 0x5c3d28, roughness: .75 }));
+        post.position.set(pxEdge, 1.65, pz);
+        post.castShadow = true;
+        arenaGroup.add(post);
+        var bulb = new T3.Mesh(new T3.SphereGeometry(.24, 12, 10), new T3.MeshBasicMaterial({ color: 0xfff3b8 }));
+        bulb.position.set(pxEdge, 3.4, pz);
+        arenaGroup.add(bulb);
+        var pen = new T3.Mesh(new T3.ConeGeometry(.24, .58, 4), new T3.MeshStandardMaterial({ color: K.TEAMS[(li + (side > 0 ? 2 : 0)) % 4].hex, roughness: .5 }));
+        pen.rotation.z = side * Math.PI * 0.5;
+        pen.position.set(pxEdge - side * .32, 2.85, pz);
+        if (K.windify) K.windify(pen.material, 0.05, 0.6);
+        arenaGroup.add(pen);
+        if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(post, 0.65, { y: -1.62, opacity: 0.24 });
+      });
+    });
 
     lanes.forEach(rackPins);
   }
@@ -239,9 +292,10 @@
   /* ---------------- shiny pins & bowling ball ---------------- */
   var pinProfile = [[0, 0], [.09, 0], [.12, .08], [.165, .24], [.15, .38], [.09, .56], [.065, .66], [.088, .76], [.092, .84], [.065, .92], [0, .95]].map(function (p) { return new T3.Vector2(p[0], p[1]); });
   var pinGeo = new T3.LatheGeometry(pinProfile, 22);
-  var pinWhite = new T3.MeshStandardMaterial({ color: 0xffffff, roughness: .18, metalness: .04 });
+  var pinWhite = new T3.MeshStandardMaterial({ color: 0xfffdf9, roughness: .18, metalness: .04 });
+  var pinCrimson = new T3.MeshStandardMaterial({ color: 0xe63946, roughness: .22 });
   var PIN_SPOTS = (function () {
-    var s = [], d = .44;
+    var s = [], d = .52;
     for (var r = 0; r < 4; r++) for (var k = 0; k <= r; k++) s.push([(k - r / 2) * d * 1.15, HEAD_Z - r * d * 1.0]);
     return s;
   })();
@@ -251,11 +305,14 @@
     body.receiveShadow = true;
     g.add(body);
     var bandMat = new T3.MeshStandardMaterial({ color: t.hex, roughness: .25 });
-    [.65, .74].forEach(function (y) {
-      var band = new T3.Mesh(new T3.CylinderGeometry(.073, .077, .038, 18), bandMat);
+    [.64, .74].forEach(function (y, bi) {
+      var band = new T3.Mesh(new T3.CylinderGeometry(.075, .079, .045, 18), bi === 0 ? pinCrimson : bandMat);
       band.position.y = y;
       g.add(band);
     });
+    // 1.35x Target Readability Scale + warm AO contact ring!
+    g.scale.setScalar(1.34);
+    if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(g, 0.28, { y: 0.008, opacity: 0.28 });
     return g;
   }
   function rackPins(lane) {
@@ -307,13 +364,19 @@
   var roll = null, slowMoTimer = null;
   function triggerImpactSlowMo(pos, color) {
     if (slowMoTimer) clearTimeout(slowMoTimer);
-    K.timeScale = 0.28;
-    K.cam.shake(.22);
+    if (GQC && GQC.Juice) {
+      GQC.Juice.hitstop(42);
+      GQC.Juice.shakeCamera(0.24, 0.30);
+      GQC.Juice.spawnBurst(scene, pos, 'stars', 18);
+    } else {
+      K.timeScale = 0.28;
+      K.cam.shake(.22);
+      slowMoTimer = setTimeout(function () {
+        K.timeScale = 1.0;
+        slowMoTimer = null;
+      }, 360);
+    }
     K.fx.burst(pos, 26, { color: [0xffd84a, 0xffffff, color], speed: 5, size: .16, life: .65 });
-    slowMoTimer = setTimeout(function () {
-      K.timeScale = 1.0;
-      slowMoTimer = null;
-    }, 360);
   }
 
   function stepPhysics(h) {
@@ -339,6 +402,7 @@
             p.hitByBall = true;
             if (!b.hitFirstPin) {
               b.hitFirstPin = true;
+              playBowlSfx('pins');
               triggerImpactSlowMo(V(L.x + p.x, .8, p.z), L.team.hex);
             }
             var nx = dx / (d || 1), nz = dz / (d || 1);
@@ -460,26 +524,18 @@
     }
   });
 
-  /* ---------------- 2-step aiming: Aim Arrow + Trajectory Dots + Power Meter ---------------- */
+  /* ---------------- 2-step aiming: Single Short Honest Aim Pointer + Power Meter ---------------- */
   var aimArrow = (function () {
     var g = new T3.Group();
     var m = new T3.MeshBasicMaterial({ color: 0xff3b5c, transparent: true, opacity: .94 });
-    var shaft = new T3.Mesh(new T3.BoxGeometry(.14, .03, 1.7), m);
-    shaft.position.z = -.85;
+    var shaft = new T3.Mesh(new T3.BoxGeometry(.14, .03, 1.45), m);
+    shaft.position.z = -.72;
     g.add(shaft);
-    var head = new T3.Mesh(new T3.ConeGeometry(.28, .55, 4), m);
+    var head = new T3.Mesh(new T3.ConeGeometry(.26, .48, 4), m);
     head.rotation.x = -Math.PI / 2;
     head.rotation.y = Math.PI / 4;
-    head.position.z = -1.85;
+    head.position.z = -1.62;
     g.add(head);
-    // 6 dotted trajectory guide spheres extending down the lane
-    var dotGeo = new T3.SphereGeometry(.075, 10, 8);
-    var dotMat = new T3.MeshBasicMaterial({ color: 0xffd84a, transparent: true, opacity: .88 });
-    for (var i = 0; i < 6; i++) {
-      var d = new T3.Mesh(dotGeo, dotMat);
-      d.position.z = -2.6 - i * 1.25;
-      g.add(d);
-    }
     g.visible = false;
     g.position.y = .42;
     scene.add(g);
@@ -523,6 +579,7 @@
       }
     });
 
+    var autoRoll = K.DEMO || (K.isAI && K.isAI(lane.team));
     function onTap(ev) {
       if (ev && ev.type === 'pointerdown' && ev.target !== K.renderer.domElement) return;
       if (step === 'aim') {
@@ -532,7 +589,7 @@
         track.style.display = 'block';
         btn.textContent = '🎳 ROLL!';
         btn.className = 'btn pink';
-        if (K.DEMO) K.after(.48 + Math.random() * .25, function () { if (step === 'power') onTap(); });
+        if (autoRoll) K.after(.42 + Math.random() * .25, function () { if (step === 'power') onTap(); });
       } else if (step === 'power') {
         step = 'done';
         K.offFrame(fn);
@@ -547,76 +604,107 @@
 
     btn.onclick = function () { onTap(); };
     K.renderer.domElement.addEventListener('pointerdown', onTap);
-    if (K.DEMO) K.after(.65 + Math.random() * .4, function () { if (step === 'aim') onTap(); });
+    if (autoRoll) K.after(.55 + Math.random() * .35, function () { if (step === 'aim') onTap(); });
   }
 
-  /* ---------------- characters ---------------- */
+  /* ---------------- characters & live hand-held bowling ball ---------------- */
+  var heldBall = null, heldBallOwner = -1, _handPos = new T3.Vector3();
+  function showHeldBall(ti) {
+    hideHeldBall();
+    if (ti < 0 || ti >= nTeams || !TEAMS[ti]) return;
+    heldBall = makeBall(TEAMS[ti]);
+    heldBall.scale.setScalar(0.68);
+    scene.add(heldBall);
+    heldBallOwner = ti;
+  }
+  function hideHeldBall() {
+    if (heldBall) { scene.remove(heldBall); heldBall = null; }
+    heldBallOwner = -1;
+  }
   K.onFrame(function (dt) {
-    mons.forEach(function (m) { if (m) m.update(dt); });
-    // Hide bowler & turn arrow whenever camera is close (< 3.5 units) or during roll so nothing blocks the lane
+    mons.forEach(function (m) { if (m) m.update(dt * (m._pace || 1)); });
+    if (heldBall && heldBallOwner >= 0 && mons[heldBallOwner]) {
+      var m0 = mons[heldBallOwner];
+      var rb = m0.bones && m0.bones.RightHand;
+      if (rb && charHolders[heldBallOwner] && charHolders[heldBallOwner].visible) {
+        m0.root.updateMatrixWorld(true);
+        rb.getWorldPosition(_handPos);
+        heldBall.position.copy(_handPos).add(V(0, -0.06, -0.10));
+        heldBall.visible = true;
+      } else {
+        heldBall.visible = false;
+      }
+    }
+    // Hide bowler & turn arrow whenever camera is close (< 3.2 units) or during roll so nothing blocks the lane
     var camPos = K.camera ? K.camera.position : null;
     charHolders.forEach(function (h, i) {
       if (!h) return;
       if (i >= nTeams) { h.visible = false; return; }
       if (phase === 'end' || phase === 'title') { h.visible = true; return; }
-      var tooClose = camPos ? (camPos.distanceTo(h.position) < 3.6) : false;
+      var tooClose = camPos ? (camPos.distanceTo(h.position) < 3.1) : false;
       var hideForRoll = (phase === 'roll' && i === turnI && camPos && camPos.z > FOUL_Z - 1.5);
       h.visible = !(tooClose || hideForRoll);
     });
     if (phase === 'roll') {
       turnMarker.visible = false;
     } else if (phase === 'ask' || phase === 'aim') {
-      var mTooClose = camPos ? (camPos.distanceTo(turnMarker.position) < 3.6) : false;
+      var mTooClose = camPos ? (camPos.distanceTo(turnMarker.position) < 3.1) : false;
       turnMarker.visible = !mTooClose && turnI >= 0 && turnI < nTeams;
+      if (turnMarker.userData.arrow) turnMarker.userData.arrow.visible = false;
     }
   });
   // Place each bowler on the left side of the start of its OWN lane (feet on approach, centered inside own lane)
-  function monSpot(i) { return V(laneX(i) - HALF * 0.56, .26, FOUL_Z + 1.55); }
+  function monSpot(i) { return V(laneX(i) - HALF * 0.58, .26, FOUL_Z + 1.45); }
   function placeCharacters() {
     charHolders.forEach(function (h, i) {
       if (!h) return;
       h.visible = i < nTeams;
       if (i < nTeams) {
         h.position.copy(monSpot(i));
-        h.rotation.y = 0;
+        h.rotation.y = Math.PI; // face down the lane toward the pins!
       }
     });
   }
 
-  /* ---------------- camera ---------------- */
+  /* ---------------- camera (closer boardwalk alley broadcast framing) ---------------- */
+  function setFov(f) {
+    if (K.camera.fov !== f) { K.camera.fov = f; K.camera.updateProjectionMatrix(); }
+  }
   function shot(name, lane) {
     K.cam.follow = null;
+    setFov(/ask|aim|roll|pins/.test(name) ? 34 : 38);
     if (name === 'title') {
       K.cam.follow = function () {
-        var sway = nTeams >= 4 ? 1.0 : 2.0;
+        var sway = nTeams >= 4 ? 1.0 : 1.8;
         var a = Math.sin(K.now * .18) * sway;
-        var zBack = nTeams >= 4 ? FOUL_Z + 14.8 : (nTeams === 3 ? FOUL_Z + 12.2 : FOUL_Z + 9.6);
-        var yCam = nTeams >= 4 ? 7.4 : (nTeams === 3 ? 6.4 : 5.6);
+        var zBack = nTeams >= 4 ? FOUL_Z + 12.8 : (nTeams === 3 ? FOUL_Z + 10.8 : FOUL_Z + 8.8);
+        var yCam = nTeams >= 4 ? 6.2 : (nTeams === 3 ? 5.4 : 4.8);
         K.cam.tPos.set(a, yCam, zBack);
-        K.cam.tLook.set(0, .7, -1.6);
+        K.cam.tLook.set(0, .85, -1.6);
       };
       K.cam.k = 1.5;
     }
     if (name === 'ask') {
-      var zAsk = nTeams >= 4 ? FOUL_Z + 10.6 : FOUL_Z + 7.2;
-      var yAsk = nTeams >= 4 ? 5.8 : 4.8;
-      var xFocus = nTeams >= 4 ? lane.x * 0.35 : lane.x * 0.6;
-      K.cam.set(V(xFocus, yAsk, zAsk), V(xFocus, -1.2, -4.5), 2.4);
+      // Closer broadcast alley view: active bowler, maple lanes & sparkling pins clearly above bottom-30% .qcard!
+      var zAsk = nTeams >= 4 ? FOUL_Z + 8.4 : FOUL_Z + 6.4;
+      var yAsk = nTeams >= 4 ? 4.4 : 3.9;
+      var xFocus = nTeams >= 4 ? lane.x * 0.42 : lane.x * 0.65;
+      K.cam.set(V(xFocus, yAsk, zAsk), V(xFocus, -0.35, -3.5), 2.5);
     }
-    if (name === 'aim') K.cam.set(V(lane.x, 2.55, FOUL_Z + 4.0), V(lane.x, .4, -2.5), 2.6);
+    if (name === 'aim') K.cam.set(V(lane.x, 2.35, FOUL_Z + 4.85), V(lane.x, .38, -3.0), 2.8);
     if (name === 'roll') {
       K.cam.follow = function () {
         var z = roll ? Math.max(roll.z, HEAD_Z + 1) : 0;
-        K.cam.tPos.set(lane.x + (roll ? roll.x * .35 : 0), 2.15, z + 3.5);
-        K.cam.tLook.set(lane.x, .42, z - 3.6);
+        K.cam.tPos.set(lane.x + (roll ? roll.x * .35 : 0), 1.82, z + 3.2);
+        K.cam.tLook.set(lane.x, .45, z - 3.6);
       };
-      K.cam.k = 3.6;
+      K.cam.k = 3.8;
     }
-    if (name === 'pins') K.cam.set(V(lane.x + 1.15, 2.05, HEAD_Z + 3.2), V(lane.x, .45, HEAD_Z - .65), 3.6);
+    if (name === 'pins') K.cam.set(V(lane.x + 1.25, 1.58, HEAD_Z + 2.85), V(lane.x, .52, HEAD_Z - .65), 3.8);
     if (name === 'end') {
       K.cam.follow = function () {
-        var a = Math.sin(K.now * .28) * 1.6;
-        K.cam.tPos.set(a, 3.8, FOUL_Z + 7.6);
+        var a = Math.sin(K.now * .28) * 1.4;
+        K.cam.tPos.set(a, 3.4, FOUL_Z + 7.2);
         K.cam.tLook.set(0, 1.35, FOUL_Z + .8);
       };
       K.cam.k = 2;
@@ -827,9 +915,11 @@
             if (m) m.setState('cheer');
             K.fx.burst(monSpot(turnI).add(V(0, 1.2, 0)), 18, { color: [t.hex, 0xffd84a], speed: 4, size: .14, life: .55 });
             shot('aim', lane);
+            showHeldBall(turnI);
             K.after(.45, function () {
               if (m) m.setState('ready');
               aim(lane, function (x, speedMult, isSweet) {
+                hideHeldBall();
                 bowl(lane, x, false, speedMult, isSweet);
               });
             });
@@ -851,6 +941,8 @@
     phase = 'roll';
     window.__k3phase = 'roll';
     var t = lane.team, m = mons[lane.i], ball = makeBall(t);
+    if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(ball, 0.42, { y: -BALL_R + 0.015, opacity: 0.34 });
+    if (GQC && GQC.Juice) GQC.Juice.squashStretch(ball, 1.24, 0.80, 1.24, 0.26);
     lane.group.add(ball);
     var pwr = speedMult || 1;
     roll = {
@@ -906,8 +998,12 @@
     updateLiveScoreUI(lane.i);
 
     var head = V(lane.x, 1.85, HEAD_Z);
+    if (GQC && GQC.Juice && pts > 0) {
+      GQC.Juice.popupScore(strike ? '⚡ STRIKE! +15' : ('+' + pts + ' PINS!'), head.clone(), K.camera, t.c);
+    }
     if (strike) {
       K.sfx('strike');
+      playBowlSfx('strike');
       K.ui.big('⚡ STRIKE! +15', 1.65);
       K.fx.confetti(head.clone().add(V(0, 1.1, 0)), 160);
       K.fx.text('+15 ⭐', head.clone().add(V(0, .5, 0)), '#ffb320', 1.5);
@@ -1054,13 +1150,15 @@
   var alleyP = K.tryGLB('models/bowling-alley.glb').then(function (g) { return g ? K.fitModel(g.scene, 8.5) : null; });
   var trophyP = K.tryGLB('models/trophy.glb').then(function (g) { return g ? K.fitModel(g.scene, 1.35) : null; });
 
-  Promise.all([worldP, alleyP, trophyP].concat(K.TEAMS.map(function (t, i) { return K.makeCharacter(t, { kidsOnly: true, kid: i % 2 === 0 ? 'boy' : 'girl', kidHeight: 1.05 }); }))).then(function (res) {
+  Promise.all([worldP, alleyP, trophyP].concat(K.TEAMS.map(function (t, i) { return K.makeCharacter(t, { kidsOnly: true, kid: i % 2 === 0 ? 'boy' : 'girl', kidHeight: 1.38 }); }))).then(function (res) {
     alleyModel = res[1];
     trophyModel = res[2];
     res.slice(3).forEach(function (ch, i) {
+      ch._pace = 0.91 + (i % 4) * 0.055;
       var h = new T3.Group();
       h.add(ch.root);
       scene.add(h);
+      if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(h, 0.72, { y: 0.015, opacity: 0.28 });
       charHolders[i] = h;
       mons[i] = ch;
     });
@@ -1076,7 +1174,36 @@
         return Math.round(sum / fpsSamples.length);
       },
       getTeams: function () { return TEAMS; },
-      openHowTo: openHowTo
+      openHowTo: openHowTo,
+      captureShot: function (mode) {
+        K.ui.clear(); K.ui.topButtons(); addHelpTopButton();
+        hud = K.ui.teamBar(TEAMS, function (t) { return t.score + ' 🎳'; });
+        turnBannerEl = K.ui.add(K.el('div', 'bw-turn-banner'));
+        liveBoardEl = K.ui.add(K.el('div', 'bw-live-board'));
+        aimArrow.visible = false;
+        hideHeldBall();
+        turnI = 0; round = 0;
+        var lane = lanes[0];
+        rackPins(lane);
+        hud.refresh(0); setTurnMarker(0); updateLiveScoreUI(0);
+        if (mode === 'question') {
+          phase = 'ask'; window.__k3phase = 'ask';
+          shot('ask', lane); K.cam.snap();
+          K.ui.ask(QS.next(), lane.team, { prompt: 'answer right to aim your ball!', onAnswer: function () {} });
+        } else if (mode === 'aim') {
+          phase = 'aim'; window.__k3phase = 'aim';
+          showHeldBall(0);
+          shot('aim', lane); K.cam.snap();
+          aim(lane, function () {});
+        } else if (mode === 'pins') {
+          phase = 'roll'; window.__k3phase = 'roll';
+          lane.pins.forEach(function (p, pi) {
+            if (pi < 8) { p.down = true; p.fall = 1.15; p.x += (pi % 2 ? 0.25 : -0.25); p.z -= 0.4; }
+          });
+          shot('pins', lane); K.cam.snap();
+          K.ui.big('⚡ STRIKE! +15', 5, true);
+        }
+      }
     };
     K.start();
   }).catch(function (e) {

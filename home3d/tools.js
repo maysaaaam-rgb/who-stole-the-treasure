@@ -474,7 +474,7 @@
           if (o.isMesh && o.material) [].concat(o.material).forEach(function (m) { m.envMapIntensity = 0.25; });
         });
         if (ch.attachClips && HOST.animClips) ch.attachClips(HOST.animClips);
-        ch.setState('idle');
+        ch.setState('sit');
         holder.add(ch.root);
 
         // Team-coloured highlight ring beneath each pupil
@@ -568,7 +568,7 @@
     if (instant) {
       p.root.position.copy(p.seatPos);
       p.root.rotation.set(0, p.seatRotY, 0);
-      p.ch.setState('idle');
+      p.ch.setState('sit');
       if (activePupil === p) activePupil = null;
       return;
     }
@@ -621,7 +621,7 @@
       if (rk >= 1) {
         rp.root.position.copy(rp.seatPos);
         rp.root.rotation.set(0, rp.seatRotY, 0);
-        rp.ch.setState('idle');
+        rp.ch.setState('sit');
         returningPupil = null;
       }
     }

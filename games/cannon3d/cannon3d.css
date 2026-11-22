@@ -105,21 +105,20 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 64px 16px 16px;
+  padding: 58px 16px 12px;
   box-sizing: border-box;
   pointer-events: auto;
-  overflow-y: auto;
 }
 .cn-title-card {
-  width: min(880px, 96vw);
-  max-height: calc(100dvh - 78px);
+  width: min(900px, 96vw);
+  max-height: calc(100dvh - 70px);
   overflow-y: auto;
   background: rgba(255, 255, 255, 0.95);
   border: 5px solid var(--cn-blue);
-  border-bottom: 9px solid #2c7be5;
-  border-radius: 30px;
+  border-bottom: 8px solid #2c7be5;
+  border-radius: 28px;
   box-shadow: 0 22px 48px rgba(43, 29, 64, 0.24);
-  padding: 20px 24px 22px;
+  padding: 14px 20px 16px;
   box-sizing: border-box;
   text-align: center;
 }
@@ -129,21 +128,21 @@ html, body {
   border: 2.5px solid var(--cn-yellow);
   color: var(--cn-ink);
   font-weight: 900;
-  font-size: 0.85rem;
-  padding: 4px 14px;
+  font-size: 0.8rem;
+  padding: 3px 12px;
   border-radius: 999px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .cn-title-h1 {
-  margin: 0 0 4px;
-  font-size: clamp(1.65rem, 3.6vw, 2.55rem);
+  margin: 0 0 2px;
+  font-size: clamp(1.45rem, 3.1vw, 2.2rem);
   font-weight: 900;
   color: var(--cn-ink);
   letter-spacing: -0.01em;
 }
 .cn-title-sub {
-  margin: 0 0 14px;
-  font-size: 1rem;
+  margin: 0 0 10px;
+  font-size: 0.94rem;
   font-weight: 700;
   color: var(--cn-muted);
 }
@@ -151,34 +150,34 @@ html, body {
 .cn-setup-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px 14px;
+  gap: 8px 12px;
   text-align: left;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 .cn-setup-box {
   background: var(--cn-cream);
   border: 2.5px solid #ead8bc;
-  border-radius: 18px;
-  padding: 9px 12px;
+  border-radius: 16px;
+  padding: 7px 11px;
 }
 .cn-setup-lbl {
   display: block;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--cn-muted);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .cn-pill-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
 }
 .cn-pill {
   flex: 1 1 auto;
-  min-height: 44px;
-  padding: 6px 11px;
+  min-height: 38px;
+  padding: 4px 10px;
   border-radius: 13px;
   font-family: inherit;
   font-size: 0.88rem;
@@ -261,6 +260,27 @@ button.cn-mini-pill:active { transform: translateY(3px); border-bottom-width: 2p
   color: var(--cn-ink);
   box-shadow: 0 8px 18px rgba(43, 29, 64, 0.15);
   z-index: 14;
+  white-space: nowrap;
+}
+
+.cn-boss-bar {
+  position: fixed;
+  top: 108px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 3.5px solid var(--cn-pink);
+  border-bottom: 6px solid #be2c6c;
+  border-radius: 999px;
+  padding: 5px 18px;
+  font-weight: 900;
+  font-size: 1rem;
+  color: var(--cn-ink);
+  box-shadow: 0 8px 18px rgba(43, 29, 64, 0.18);
+  z-index: 15;
   white-space: nowrap;
 }
 
@@ -619,28 +639,40 @@ button.cn-mini-pill:active { transform: translateY(3px); border-bottom-width: 2p
   .cn-steps-row { grid-template-columns: 1fr; }
 }
 
+/* Keep feedback/steal toasts cleanly below top banners & English clue cards! */
+#ui .toast {
+  top: 206px !important;
+  z-index: 22;
+}
+
 @media (max-height: 520px) {
+  #ui .toast {
+    top: 102px !important;
+  }
   .hud {
-    left: 33% !important;
-    transform: translateX(-50%) scale(0.84) !important;
+    left: 31% !important;
+    transform: translateX(-50%) scale(0.80) !important;
     transform-origin: top center !important;
   }
   .cn-top-cluster {
     top: 8px;
-    right: 138px;
+    right: 162px;
     left: auto;
     transform: none;
     gap: 5px;
   }
+  .cn-top-cluster button:last-child {
+    display: none;
+  }
   .cn-mini-pill {
     min-height: 32px;
     padding: 2px 9px;
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     border-bottom-width: 3px;
   }
   .cn-stage-banner { display: none; }
   .cn-target-clue {
-    top: 48px;
+    top: 52px;
     padding: 4px 12px;
     gap: 8px;
     border-radius: 16px;
@@ -661,4 +693,49 @@ button.cn-mini-pill:active { transform: translateY(3px); border-bottom-width: 2p
   }
   .cn-aim-prompt { font-size: 0.84rem; width: auto; }
   .cn-ammo-chip { min-height: 34px; padding: 3px 10px; font-size: 0.78rem; border-bottom-width: 3px; }
+}
+
+/* Broadcast Question Card: sits strictly in bottom 30%, translucent top so cannon & cove stay crystal clear */
+.qwrap {
+  padding-bottom: 1.4vh !important;
+  background: linear-gradient(to bottom, transparent 64%, rgba(43, 29, 64, 0.22) 100%) !important;
+  pointer-events: none;
+}
+.qcard {
+  width: min(880px, 92vw) !important;
+  max-height: 31vh !important;
+  padding: 11px 18px 12px !important;
+  border-radius: 26px !important;
+  border-width: 5px !important;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 252, 245, 0.72) 0%,
+    rgba(255, 250, 240, 0.90) 38%,
+    rgba(255, 255, 255, 0.96) 100%
+  ) !important;
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  box-shadow: 0 18px 36px -14px rgba(43, 29, 64, 0.36) !important;
+  pointer-events: auto;
+}
+.qhead { margin-bottom: 3px !important; font-size: 0.92rem !important; }
+.qtext { font-size: clamp(1.08rem, 1.9vw, 1.5rem) !important; margin: 2px 0 8px !important; gap: 10px !important; }
+.qtext .pic { font-size: 1.9rem !important; }
+.qtext .qimg { width: 58px !important; height: 58px !important; }
+.qtext .qsay { width: 38px !important; height: 38px !important; font-size: 1.15rem !important; }
+.opts { gap: 10px !important; }
+.opt {
+  min-height: 48px !important;
+  padding: 8px 12px !important;
+  border-radius: 16px !important;
+  font-size: clamp(0.98rem, 1.7vw, 1.3rem) !important;
+}
+.cn-judge-bar {
+  margin-top: 7px !important;
+  padding-top: 7px !important;
+}
+.cn-judge-btn {
+  min-height: 38px !important;
+  padding: 4px 14px !important;
+  font-size: 0.84rem !important;
 }

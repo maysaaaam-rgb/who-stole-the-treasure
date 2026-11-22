@@ -81,19 +81,24 @@
     opts = opts || {};
     var root = new T3.Group(); K.scene.add(root);
     var report = { real: [], standIn: [] };
-    return Promise.all([getJSON(DATA_DIR + 'pieces.json?v=2'), getJSON(DATA_DIR + 'map.json')]).then(function (res) {
+    return Promise.all([getJSON(DATA_DIR + 'pieces.json?v=3'), getJSON(DATA_DIR + 'map.json')]).then(function (res) {
       var defs = res[0].pieces, grounds = res[0].grounds, map = res[1];
       var zone = map.zones[opts.zone || 'plaza'] || { x: 0, z: 0 };
       root.position.set(-zone.x, 0, -zone.z);
       W.map = map; W.zone = zone; W.root = root; W.report = report;
 
-      /* ground: big grass + areas */
+      /* ground: warm olive-meadow grass (#6EB84C) + areas */
       function groundMat(kind) {
-        var g = grounds[kind] || { color: '#8fdc7a', tile: 8 };
-        var mt = new T3.MeshLambertMaterial({ color: g.color });
+        var g = grounds[kind] || { color: '#6eb84c', tile: 8 };
+        var baseCol = kind === 'grass' ? '#6eb84c' : (kind === 'sand' ? '#f3cf8a' : g.color);
+        var mt = new T3.MeshStandardMaterial({ color: baseCol, roughness: 0.86, metalness: 0.02 });
         new T3.TextureLoader().load(DATA_DIR + 'art/' + g.texture, function (t) {
-          t.colorSpace = T3.SRGBColorSpace; t.wrapS = t.wrapT = T3.RepeatWrapping; t.anisotropy = 8;
-          mt.map = t; mt.color.set(0xffffff); mt.needsUpdate = true; mt.userData.tile = g.tile;
+          if (T3.SRGBColorSpace) t.colorSpace = T3.SRGBColorSpace;
+          else if (T3.sRGBEncoding) t.encoding = T3.sRGBEncoding;
+          t.wrapS = t.wrapT = T3.RepeatWrapping; t.anisotropy = 8;
+          mt.map = t;
+          mt.color.set(kind === 'grass' ? 0xcfe8be : 0xffffff);
+          mt.needsUpdate = true; mt.userData.tile = g.tile;
           if (mt.userData.onTex) mt.userData.onTex(t);
         }, undefined, function () {});
         return mt;
@@ -113,8 +118,8 @@
         mesh.renderOrder = -1; root.add(mesh);
       });
 
-      /* distant hills ring */
-      var hc = [0x7fcf6e, 0x9ae08a, 0x6fc46a];
+      /* distant warm olive-meadow hills ring (#6EB84C / #4B8B3B) */
+      var hc = [0x6eb84c, 0x5da441, 0x4b8b3b];
       for (var h = 0; h < 22; h++) {
         var a = h / 22 * Math.PI * 2, r = 165 + (h % 3) * 12;
         var hill = new T3.Mesh(new T3.SphereGeometry(28 + (h % 4) * 6, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2), m(hc[h % 3]));
@@ -127,10 +132,12 @@
         if (clear && p.x >= clear[0] && p.x <= clear[2] && p.z >= clear[1] && p.z <= clear[3]) return;
         (byType[p.p] = byType[p.p] || []).push(p);
       });
+      var MISSING_GLBS = /^(signpost|gate-arch|carousel|picnic-table|hot-air-balloon|windmill|windmill-blades|cottage|school|bridge|castle)\.glb$/i;
       var jobs = Object.keys(byType).map(function (id) {
         var def = defs[id]; if (!def) return Promise.resolve();
         if (opts.skip && opts.skip.indexOf(id) >= 0) return Promise.resolve();
-        return (def.file ? K.tryGLB(MODEL_DIR + def.file) : Promise.resolve(null)).then(function (gltf) {
+        var canFetch = !!(def.file && !MISSING_GLBS.test(def.file));
+        return (canFetch ? K.tryGLB(MODEL_DIR + def.file) : Promise.resolve(null)).then(function (gltf) {
           var proto;
           if (gltf) {
             proto = gltf.scene; report.real.push(id);
@@ -155,6 +162,9 @@
                 K.windify(o.material, isTall ? 0.095 : 0.045, def.h || (isTall ? 3.8 : 1.0));
               }
             });
+          }
+          if (window.GameQualityCore && window.GameQualityCore.Atmosphere) {
+            window.GameQualityCore.Atmosphere.gradeEnvironment(proto, { wetSand: false, castShadow: true, receiveShadow: true });
           }
           var wrap = new T3.Group(); wrap.add(proto);
           if (def.spin || def.turn || def.float) {   // animated pieces: real copies, not instances
