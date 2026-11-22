@@ -609,3 +609,16 @@ body.gm-on-play.gm-mode-pass .gm-teams {
   .gm-b3-topbar { padding: 4px 8px !important; font-size: 0.78rem !important; }
   .gm-real3-banner { padding: 5px 12px !important; font-size: 0.82rem !important; }
 }
+
+/* ── Alley Fling (Cat vs Dog) Zero-Overlap Commercial Polish (22 Nov 2026) ── */
+body.gm-on-play.gm-mode-fling .gm-teams {
+  overflow: visible !important;
+  padding-top: 22px !important;
+  padding-bottom: 6px !important;
+}
+body.gm-on-play.gm-mode-fling .gm-real3-banner {
+  top: 66px !important;
+}
+body.gm-on-play.gm-mode-fling .gm-real3-dock {
+  bottom: 92px !important;
+}

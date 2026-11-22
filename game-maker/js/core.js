@@ -432,6 +432,14 @@
     actions.push(btn('☰  Other games', 'big ghost', onHome));
     wrap.appendChild(h('div', { class: 'gm-row' }, actions));
     stage.appendChild(wrap);
+    try {
+      var bKey = 'eaa_home3d_bridge_xp_v1';
+      var bObj = JSON.parse(localStorage.getItem(bKey) || '{}') || {};
+      var td = new Date().toISOString().slice(0, 10);
+      if (bObj.date !== td) bObj = { date: td, xp: 0 };
+      bObj.xp = (Number(bObj.xp) || 0) + Math.min(40, Math.max(15, teams.length * 12));
+      localStorage.setItem(bKey, JSON.stringify(bObj));
+    } catch (eB) {}
     A().play('fanfare'); confetti(40); setTimeout(function () { confetti(30); }, 900); setTimeout(function () { fx('sparkle_burst', pod, 2); }, 300);
   }
 

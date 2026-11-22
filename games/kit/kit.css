@@ -439,3 +439,6 @@ input[type=range] { accent-color: var(--pink); cursor: pointer; }
 .kit-exit-body { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .kit-exit-ans { color: #15734e; font-weight: 900; font-size: 1.05rem; }
 .kit-exit-ans.hidden { display: none; }
+.kit-spk-btn { background: #ff5fa2 !important; color: #fff !important; border: 2.5px solid #c93d7d !important; border-bottom: 5px solid #9d174d !important; border-radius: 16px !important; font-weight: 800 !important; }
+.kit-rev-img.is-blur { filter: blur(14px); cursor: pointer; transition: filter 0.3s ease; }
+.kit-rev-img.is-zoom { transform: scale(2.1); cursor: pointer; transition: transform 0.3s ease; }
