@@ -1,0 +1,327 @@
+/* Cat vs Dog: Alley Fling 3D — Bright Sunny Adventure Park Smartboard UI (docs/STYLE_GUIDE.md) */
+.fl-hud-top {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  max-width: min(760px, 86vw);
+}
+
+.fl-banner {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  border-radius: 999px;
+  background: rgba(255, 248, 236, 0.96);
+  color: #2b1d40;
+  border: 4px solid var(--c, #ff5fa2);
+  border-bottom: 7px solid var(--cd, #c93d7d);
+  box-shadow: 0 10px 24px rgba(43, 29, 64, 0.22);
+  font: 800 clamp(0.95rem, 1.55vw, 1.24rem)/1.15 'Fredoka', system-ui, sans-serif;
+  text-align: center;
+}
+.fl-banner small {
+  font-weight: 700;
+  color: #5b4a75;
+  font-size: 0.86em;
+  margin-left: 4px;
+}
+
+.fl-wind-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 3px solid #4f9dff;
+  border-bottom: 5px solid #2d76d4;
+  color: #2b1d40;
+  font: 800 0.95rem/1 'Fredoka', system-ui, sans-serif;
+  box-shadow: 0 6px 16px rgba(43, 29, 64, 0.16);
+}
+.fl-wind-track {
+  position: relative;
+  width: 132px;
+  height: 12px;
+  border-radius: 999px;
+  background: #dcebfa;
+  overflow: hidden;
+  border: 2px solid #96c5f7;
+}
+.fl-wind-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  transition: left 0.2s, width 0.2s;
+}
+.fl-wind-mid {
+  position: absolute;
+  left: 50%;
+  top: -1px;
+  bottom: -1px;
+  width: 3px;
+  background: #2b1d40;
+  transform: translateX(-50%);
+}
+
+/* Scoreboard + HP Bar Strip (Top Left & Right corners clear of center arena) */
+.fl-scores {
+  position: fixed;
+  top: 64px;
+  left: 14px;
+  right: 14px;
+  z-index: 22;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  gap: 12px;
+}
+.fl-card {
+  pointer-events: auto;
+  min-width: 185px;
+  max-width: 245px;
+  background: rgba(255, 248, 236, 0.96);
+  border: 4px solid var(--c, #ff5fa2);
+  border-bottom: 7px solid var(--cd, #c93d7d);
+  border-radius: 22px;
+  padding: 9px 14px;
+  color: #2b1d40;
+  box-shadow: 0 10px 22px rgba(43, 29, 64, 0.2);
+  transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.fl-card.active {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 4px rgba(255, 179, 32, 0.55), 0 12px 24px rgba(43, 29, 64, 0.25);
+}
+.fl-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font: 800 1.05rem 'Fredoka', system-ui, sans-serif;
+}
+.fl-pts {
+  background: var(--c, #ff5fa2);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 1.05rem;
+}
+.fl-hp-track {
+  margin-top: 6px;
+  height: 10px;
+  border-radius: 999px;
+  background: #e8decb;
+  overflow: hidden;
+  border: 2px solid #d4c5ab;
+}
+.fl-hp-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #2fc58a;
+  transition: width 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.25s;
+}
+.fl-sub {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #5b4a75;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Bottom Action Dock (Strictly inside Bottom 18% UI Safe Zone) */
+.fl-dock {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  z-index: 28;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: min(920px, 96vw);
+  padding: 10px 14px;
+  border-radius: 26px;
+  background: rgba(255, 248, 236, 0.94);
+  border: 4px solid #cfe6ff;
+  border-bottom: 7px solid #96c5f7;
+  box-shadow: 0 12px 28px rgba(43, 29, 64, 0.24);
+}
+.fl-dock.hidden { display: none; }
+
+.fl-meter-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 3px solid #cfe6ff;
+  color: #2b1d40;
+  font: 800 0.95rem 'Fredoka', system-ui, sans-serif;
+}
+.fl-pwr-track {
+  position: relative;
+  width: 150px;
+  height: 18px;
+  border-radius: 999px;
+  background: #e5effa;
+  border: 2.5px solid #2b1d40;
+  overflow: hidden;
+}
+.fl-pwr-fill {
+  height: 100%;
+  width: 20%;
+  background: linear-gradient(90deg, #2fc58a 0%, #ffb320 65%, #ff5fa2 92%, #e11d48 100%);
+  border-radius: 999px;
+}
+.fl-pwr-red {
+  position: absolute;
+  right: 6%;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #e11d48;
+}
+
+.fl-btn {
+  font: 800 1rem 'Fredoka', system-ui, sans-serif;
+  padding: 10px 18px;
+  border-radius: 18px;
+  border: 3px solid #2b1d40;
+  border-bottom: 6px solid #2b1d40;
+  cursor: pointer;
+  color: #fff;
+  background: #4f9dff;
+  transition: transform 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-bottom-width 0.14s;
+  user-select: none;
+  touch-action: manipulation;
+}
+.fl-btn:active {
+  transform: translateY(4px);
+  border-bottom-width: 2px;
+}
+.fl-btn.green { background: #2fc58a; border-color: #167d54; border-bottom-color: #0e593b; }
+.fl-btn.amber { background: #ffb320; color: #2b1d40; border-color: #c98200; border-bottom-color: #9c6200; }
+.fl-btn.pink  { background: #ff5fa2; border-color: #c93d7d; border-bottom-color: #9d174d; }
+.fl-btn.soft  { background: #ffffff; color: #2b1d40; border-color: #cfe6ff; border-bottom-color: #96c5f7; }
+.fl-btn.sm    { padding: 8px 13px; font-size: 0.88rem; border-radius: 14px; border-bottom-width: 5px; }
+.fl-btn.on    { box-shadow: 0 0 0 4px rgba(255, 179, 32, 0.65); }
+.fl-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Setup Options inside Title Card */
+.fl-setup-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+.fl-setup-grp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 3px solid #cfe6ff;
+  border-radius: 16px;
+  padding: 6px 10px;
+  font: 800 0.9rem 'Fredoka', system-ui, sans-serif;
+  color: #2b1d40;
+}
+.fl-pill {
+  padding: 5px 11px;
+  border-radius: 12px;
+  border: 2px solid #cfe6ff;
+  border-bottom: 4px solid #96c5f7;
+  background: #f4f9ff;
+  color: #2b1d40;
+  font: 800 0.86rem 'Fredoka', system-ui, sans-serif;
+  cursor: pointer;
+}
+.fl-pill.on {
+  background: #ffb320;
+  border-color: #c98200;
+  border-bottom-color: #9c6200;
+}
+
+/* 3-Step Visual How-to-Play Modal */
+.fl-howto-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: rgba(43, 29, 64, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.fl-howto-card {
+  width: min(760px, 95vw);
+  background: #fff8ec;
+  border: 5px solid #ff5fa2;
+  border-bottom: 9px solid #c93d7d;
+  border-radius: 28px;
+  padding: 22px;
+  color: #2b1d40;
+  text-align: center;
+  box-shadow: 0 24px 50px rgba(43, 29, 64, 0.35);
+}
+.fl-howto-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+.fl-step {
+  background: #ffffff;
+  border: 3.5px solid var(--sc, #4f9dff);
+  border-bottom: 6px solid var(--sc, #4f9dff);
+  border-radius: 20px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.fl-step-ico { font-size: 2.3rem; }
+.fl-step b { font-size: 1rem; }
+.fl-step p { font-size: 0.84rem; color: #5b4a75; margin: 0; }
+.fl-step-say {
+  margin-top: 4px;
+  padding: 5px 10px;
+  border-radius: 12px;
+  border: 2px solid #cfe6ff;
+  background: #eef7ff;
+  font: 800 0.8rem 'Fredoka', system-ui, sans-serif;
+  color: #2b1d40;
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  .fl-scores { top: 54px; left: 6px; right: 6px; gap: 6px; }
+  .fl-card { min-width: 0; flex: 1; padding: 5px 8px; border-radius: 14px; border-width: 3px; border-bottom-width: 5px; }
+  .fl-card-row { font-size: 0.85rem; }
+  .fl-pts { font-size: 0.82rem; padding: 1px 7px; }
+  .fl-sub { display: none; }
+  .fl-hud-top { top: 106px; gap: 4px; max-width: 94vw; }
+  .fl-banner { padding: 4px 12px; font-size: 0.82rem; border-width: 3px; border-bottom-width: 5px; }
+  .fl-wind-pill { padding: 4px 10px; font-size: 0.76rem; gap: 6px; }
+  .fl-wind-track { width: 72px; height: 9px; }
+  .fl-howto-steps { grid-template-columns: 1fr; }
+  .fl-dock { bottom: 8px; padding: 7px 10px; gap: 6px; }
+  .fl-pwr-track { width: 92px; }
+}

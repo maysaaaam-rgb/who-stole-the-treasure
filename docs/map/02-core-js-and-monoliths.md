@@ -85,7 +85,7 @@
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
 | [calendar-view.js](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js) | 103.2 KB | 880 | #23 (`v=20261123`) | `renderCalendarView`, `CalendarView` | Teacher calendar (sidebar: 📅 Calendar). Month and Week views of: the lessons of every class (from the weekly timetable, or the k12 timetable until it is set), |
-| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 401.4 KB | 10471 | #1 (`v=20261123`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
+| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 411.6 KB | 10471 | #1 (`v=20261123`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
 | [homework-data.js](file:///C:/Users/maysa/Desktop/DV/js/homework-data.js) | 15.3 KB | 392 | #8 (`v=3.1`) | `ALICE_HOMEWORK_ASSIGNMENTS`, `ALICE_WONDERLAND_XP_QUEST`, `AdventureAcademy`, `openMonsterLevelUpModal` | ADVENTURE ACADEMY — DISCRETE HOMEWORK XP TASKS DATA |
 | [island-apply.js](file:///C:/Users/maysa/Desktop/DV/js/island-apply.js) | 13.3 KB | 319 | #11 (`v=2`) | `IslandApply` | Practice Island — Platform XP & Monster Look Auto-Applier (js/island-apply.js) |
 | [island-curriculum-data.js](file:///C:/Users/maysa/Desktop/DV/js/island-curriculum-data.js) | 202.6 KB | 3813 | Standalone | `ISLAND_CURRICULUM_DATA` | ISLAND HOMEWORK REVISION PROJECT — MASTER CURRICULUM DATASET |
@@ -379,7 +379,7 @@
 
 ---
 
-### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10471 lines (401.4 KB)
+### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10471 lines (411.6 KB)
 
 
 

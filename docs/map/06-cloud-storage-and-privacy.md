@@ -136,13 +136,13 @@
 | `class-reset/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `classroom-instructions-challenge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `creature-cafe/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
-| `css/` | Platform Infrastructure | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `css/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
 | `detectives/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `dino-arena/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `dino-dig/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `dino-expedition/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
-| `directory.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
-| `docs/` | Platform Infrastructure | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `directory.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
+| `docs/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
 | `eco-engineers/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `egypt-project/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `fantasy-creatures/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
@@ -158,16 +158,16 @@
 | `good-ideas-lab/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `halloween-pet-shop/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `harvest-feast/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
-| `home-view/` | Core App / World | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `home-view/` | Core App / World | ✅ | — | — | **LIVE** | Tracked & safe |
 | `home3d/` | Lesson / Game Module | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `hq2.out` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
-| `index.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `index.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
 | `inventor-forge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `inventor-lab/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `inventors-odyssey/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `island/` | Core App / World | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `island-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `js/` | Platform Infrastructure | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `js/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
 | `jungle/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `karaoke-stage/` | Core App / World | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `kenney-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
@@ -175,7 +175,7 @@
 | `library-audit/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `lingo-g3-u3-review/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `lingo-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `magic-book/` | Core App / World | ✅ | ✅ | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `magic-book/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `manifest.json` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `meme-rules/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `milestone-1000/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -184,7 +184,7 @@
 | `monster-evolution/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `monster-lab/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `monster-lab-3d/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `monster-studio/` | Core App / World | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `monster-studio/` | Core App / World | ✅ | — | — | **LIVE** | Tracked & safe |
 | `monster-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `monsters/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `mouse/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -195,7 +195,7 @@
 | `ninja-trials/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `ocean-cleaners/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `part6_battle_flat_complete.zip` | Root File | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `passport/` | Core App / World | ✅ | — | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `passport/` | Core App / World | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `pharaoh-living-book.html` | HTML Entry Page | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `phonics/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `platform-art/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -221,11 +221,11 @@
 | `robots/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `school-subjects-challenge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `scratch/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
-| `simon-says/` | Lesson / Game Module | ✅ | ✅ | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
-| `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
-| `site-map/` | Platform Infrastructure | ✅ | — | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `simon-says/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
+| `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
+| `site-map/` | Platform Infrastructure | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `small-inventor/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `smart-board/` | Core App / World | ✅ | ✅ | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `smart-board/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `smart-farm/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `solar-system/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `sound-detective/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
@@ -244,7 +244,7 @@
 | `talk-show/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `tea-party-cards/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `teams/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `telephone-pictionary/` | Lesson / Game Module | ✅ | ✅ | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `telephone-pictionary/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `time-machine/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `tools/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
 | `treasure/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
