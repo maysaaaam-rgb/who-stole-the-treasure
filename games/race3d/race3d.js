@@ -7,8 +7,43 @@
   var K = window.K3, T3 = window.THREE;
   var rnd = K.rnd, clamp = K.clamp, V = function (x, y, z) { return new T3.Vector3(x, y, z); };
   var IN_WORLD = !!K.World && !K.Q.has('noworld');
-  K.init({ fov: 44, fogNear: IN_WORLD ? 90 : 45, fogFar: IN_WORLD ? 260 : 120 });
+  K.init({ fov: 36, fogNear: IN_WORLD ? 90 : 45, fogFar: IN_WORLD ? 260 : 120 });
   var scene = K.scene;
+
+  /* ---------------- rich procedural track audio layer ---------------- */
+  function playRaceSfx(kind) {
+    var a = K.audio ? K.audio() : null;
+    if (!a || K.CAPTURE || K.muted) return;
+    var now = a.currentTime;
+    try {
+      if (kind === 'turbo') {
+        [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) {
+          var o = a.createOscillator(), g = a.createGain();
+          o.type = 'triangle'; o.frequency.setValueAtTime(f, now + i * 0.04);
+          o.frequency.exponentialRampToValueAtTime(f * 1.12, now + i * 0.04 + 0.16);
+          g.gain.setValueAtTime(0.09, now + i * 0.04);
+          g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.04 + 0.24);
+          o.connect(g); g.connect(a.destination);
+          o.start(now + i * 0.04); o.stop(now + i * 0.04 + 0.26);
+        });
+      } else if (kind === 'stride') {
+        var o2 = a.createOscillator(), g2 = a.createGain();
+        o2.type = 'sine'; o2.frequency.setValueAtTime(115, now); o2.frequency.exponentialRampToValueAtTime(52, now + 0.06);
+        g2.gain.setValueAtTime(0.14, now); g2.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+        o2.connect(g2); g2.connect(a.destination);
+        o2.start(now); o2.stop(now + 0.08);
+      } else if (kind === 'tape') {
+        [587.33, 739.99, 880, 1174.66].forEach(function (f, i) {
+          var o3 = a.createOscillator(), g3 = a.createGain();
+          o3.type = 'triangle'; o3.frequency.value = f;
+          g3.gain.setValueAtTime(0.10, now + i * 0.05);
+          g3.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.45);
+          o3.connect(g3); g3.connect(a.destination);
+          o3.start(now + i * 0.05); o3.stop(now + i * 0.05 + 0.47);
+        });
+      }
+    } catch (e) {}
+  }
 
   var nTeams = clamp(+K.Q.get('teams') || 4, 2, 4);
   var STEPS = clamp(+K.Q.get('steps') || 5, 2, 10);
@@ -24,12 +59,14 @@
 
   function laneZ(i) { return (i - (nTeams - 1) / 2) * LANE; }
 
-  /* ---------------- world & Tripo props ---------------- */
-  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0);
+  /* ---------------- world & Tripo props (GameQualityCore Sunlit Sprint Track) ---------------- */
+  var GQC = window.GameQualityCore || null;
+  K._gqcTheme = 'stadium';
+  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0, 'stadium');
   K.world.lights();
-  K.world.clouds(14, -70, 90);
+  if (!GQC) K.world.clouds(14, -70, 90);
   if (!IN_WORLD) {
-    K.world.ground(0x72cf7a);
+    K.world.ground(0x6eb84c);
     K.world.hills(-30, 70, -40, 10);
     for (var ti = 0; ti < 20; ti++) {
       K.world.tree(rnd(-14, 48), ti % 2 ? rnd(-24, -13) : rnd(13, 24), rnd(.9, 1.5), ti % 5 === 0);
@@ -75,7 +112,7 @@
   startLine.position.set(0, .126, 0);
   scene.add(startLine);
 
-  // Distance tick lines along the track
+  // Distance tick lines + high-contrast golden chevron boost pads along the track
   for (var dx = 5; dx < TRACK; dx += 5) {
     var tickLn = new T3.Mesh(
       new T3.PlaneGeometry(.08, trackW - .8),
@@ -85,6 +122,18 @@
     tickLn.position.set(dx, .125, 0);
     scene.add(tickLn);
   }
+  [8.5, 17.5, 25.5].forEach(function (bx) {
+    for (var bl = 0; bl < MAX_LANES; bl++) {
+      var pad = new T3.Mesh(
+        new T3.ConeGeometry(.38, .68, 3),
+        new T3.MeshBasicMaterial({ color: 0xffd84a, transparent: true, opacity: .78 })
+      );
+      pad.rotation.x = -Math.PI / 2;
+      pad.rotation.z = -Math.PI / 2;
+      pad.position.set(bx, .13, (bl - (MAX_LANES - 1) / 2) * LANE);
+      scene.add(pad);
+    }
+  });
 
   // Lane numbers (repositioned dynamically when nTeams changes)
   var laneDiscs = [];
@@ -322,6 +371,7 @@
     K.onFrame(function (dt, t) {
       if (!g.visible) return;
       ring.scale.setScalar(1 + Math.sin(t * 6) * .08);
+      cone.visible = !/run|photofinish|question|boost/.test(game.phase);
       cone.position.y = 2.35 + Math.sin(t * 5.5) * .16;
       cone.rotation.y = t * 2.8;
     });
@@ -375,43 +425,50 @@
     });
   });
 
-  /* ---------------- camera presets (with live chase camera!) ---------------- */
+  /* ---------------- camera presets (child-eye broadcast & live chase camera!) ---------------- */
+  function setFov(f) {
+    if (K.camera.fov !== f) { K.camera.fov = f; K.camera.updateProjectionMatrix(); }
+  }
   function camFor(mode, who) {
     K.cam.follow = null;
+    setFov(/question|follow|stumble|photofinish|start/.test(mode) ? 34 : 38);
     if (mode === 'orbit') {
       K.cam.follow = function () {
-        var a = .5 + K.now * .18;
-        K.cam.tPos.set(Math.sin(a) * 11, 4.8, Math.cos(a) * 11);
-        K.cam.tLook.set(2, 1.0, 0);
+        var a = .5 + K.now * .16;
+        K.cam.tPos.set(Math.sin(a) * 9.5 + 1.5, 3.3, Math.cos(a) * 8.5);
+        K.cam.tLook.set(2.2, 0.95, 0);
       };
-      K.cam.k = 1.5;
+      K.cam.k = 1.6;
     } else if (mode === 'intro') {
-      K.cam.set(V(TRACK + 3, 5.5, 9), V(TRACK - 4, 1.2, 0), true);
-      K.after(.1, function () { K.cam.set(V(2.2, 3.8, 8.8), V(2.5, 1.0, 0)); });
+      K.cam.set(V(TRACK + 2.5, 4.4, 7.6), V(TRACK - 4, 1.05, 0), true);
+      K.after(.1, function () { K.cam.set(V(3.8, 2.2, 6.2), V(0.8, 0.95, 0)); });
     } else if (mode === 'start') {
-      K.cam.set(V(2.2, 3.6, 8.4), V(2.0, 1.0, 0));
+      K.cam.set(V(4.2, 1.85, 5.6), V(0.6, 0.92, 0), 2.8);
     } else if (mode === 'question') {
+      // Child-eye front-3/4 broadcast angle: active runner & rivals fill upper 68% cleanly above bottom-30% .qcard
       var rx = who ? who.x : 0, rz = who ? who.z : 0;
-      K.cam.set(V(rx - 4.2, 2.6, rz + 5.2), V(rx + 2.5, .9, rz), 2.4);
+      K.cam.set(V(rx + 4.8, 1.62, rz + 4.85), V(rx + 0.6, 0.68, rz * 0.45), 2.8);
     } else if (mode === 'follow' && who) {
-      // Dynamic Chase Camera tracking the sprinting runner!
-      K.cam.k = 3.6;
+      // Low dynamic broadcast chase camera tracking the sprinting runner!
+      setFov(who.isBoost ? 36 : 34);
+      K.cam.k = 4.0;
       K.cam.follow = function () {
-        K.cam.tPos.set(who.x - 3.2, 2.45, who.z + 5.6);
-        K.cam.tLook.set(who.x + 3.0, 1.0, who.z);
+        K.cam.tPos.set(who.x - 2.6, 1.62, who.z + 4.1);
+        K.cam.tLook.set(who.x + 2.4, 0.92, who.z * 0.55);
       };
     } else if (mode === 'photofinish') {
-      // Side finish-line photo-finish camera
-      K.cam.set(V(TRACK + 2.2, 1.85, trackW / 2 + 4.4), V(TRACK - .2, 1.15, 0), 4.5);
+      // Crisp unobstructed finish-line broadcast camera inside the arch looking across the checkered tape!
+      setFov(34);
+      K.cam.set(V(TRACK + 5.2, 1.82, trackW / 2 - 0.4), V(TRACK - 0.6, 0.96, -0.35), 4.8);
     } else if (mode === 'stumble' && who) {
-      K.cam.set(V(who.x + 1.8, 2.2, who.z + 4.8), V(who.x, .8, who.z), 2.8);
+      K.cam.set(V(who.x + 2.2, 1.65, who.z + 3.9), V(who.x, .82, who.z), 3.0);
     } else if (mode === 'podium') {
       K.cam.follow = function () {
-        var a = Math.sin(K.now * .3) * .55;
-        K.cam.tPos.set(TRACK + 7.2, 3.8, a * 1.8);
-        K.cam.tLook.set(TRACK - 1.2, .35, 0);
+        var a = Math.sin(K.now * .3) * .45;
+        K.cam.tPos.set(TRACK + 6.4, 3.2, a * 1.5);
+        K.cam.tLook.set(TRACK - 1.2, .45, 0);
       };
-      K.cam.k = 2;
+      K.cam.k = 2.2;
     }
   }
 
@@ -465,7 +522,52 @@
 
   window.__race3d = {
     openHowTo: openHowTo,
-    getFps: function () { return Math.round(fpsAvg); }
+    getFps: function () { return Math.round(fpsAvg); },
+    captureShot: function (mode) {
+      K.ui.clear();
+      hud = K.ui.teamBar(TEAMS, function (t) { return t.score + '/' + STEPS + ' 🏃'; });
+      K.ui.topButtons(); addHelpTopButton();
+      turnBannerEl = K.ui.add(K.el('div', 'rc-turn-banner'));
+      liveBoardEl = K.ui.add(K.el('div', 'rc-live-board'));
+      activeIdx = 0;
+      runners.forEach(function (r, idx) {
+        r.x = mode === 'photofinish' ? (idx === 0 ? TRACK - 0.15 : TRACK - 2.6 - idx * 1.2) : (4.5 - idx * 0.9);
+        r.score = mode === 'photofinish' ? (idx === 0 ? STEPS : Math.max(1, STEPS - idx)) : Math.max(0, 2 - idx);
+        r.team.score = r.score;
+        r.holder.position.set(r.x, .12, r.z);
+        r.holder.rotation.set(0, 0, 0);
+        r.runDist = 0;
+        r.setState(mode === 'sprint' || mode === 'photofinish' ? 'turbo' : 'ready');
+      });
+      hud.refresh(activeIdx);
+      updateLiveTrackUI(activeIdx);
+      var r0 = runners[0];
+      if (mode === 'question') {
+        setPhase('question');
+        updateTurnUI(0, 'Answer right for a Turbo Sprint Boost!');
+        camFor('question', r0); K.cam.snap();
+        K.ui.ask(QS.next(), r0.team, { prompt: 'answer right to unlock Turbo Boost!', onAnswer: function () {} });
+      } else if (mode === 'boost') {
+        setPhase('boost');
+        camFor('question', r0); K.cam.snap();
+        promptTurboBoost(r0, function () {});
+      } else if (mode === 'sprint') {
+        setPhase('run');
+        updateTurnUI(0, '🔥 SUPER TURBO BOOST!');
+        r0.isBoost = true; r0.runDist = 4; r0.speed = 9.0;
+        spawnBoostRing(r0.holder.position.clone().add(V(-0.8, 0, 0)), r0.team.hex);
+        spawnBoostRing(r0.holder.position.clone().add(V(-1.7, 0, 0)), 0xffd84a);
+        camFor('follow', r0); K.cam.snap();
+      } else if (mode === 'photofinish') {
+        setPhase('run');
+        updateTurnUI(0, '🏁 PHOTO FINISH!');
+        tape.visible = false;
+        tapeHalves.forEach(function (h) { h.visible = true; h.userData.t = 0.25; });
+        K.ui.add(K.el('div', 'rc-photo-badge', '📸 PHOTO FINISH!'));
+        K.ui.big('🏁 ' + r0.team.name + ' Finishes!', 5, true);
+        camFor('photofinish'); K.cam.snap();
+      }
+    }
   };
 
   /* ---------------- runners (all 4 loaded at boot) ---------------- */
@@ -479,6 +581,7 @@
     scene.add(holder);
     kid.root.rotation.y = Math.PI / 2;
     holder.add(kid.root);
+    if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(holder, 0.78, { y: 0.012, opacity: 0.28 });
 
     var ring = new T3.Mesh(new T3.RingGeometry(.45, .62, 32), new T3.MeshBasicMaterial({ color: team.hex }));
     ring.rotation.x = -Math.PI / 2;
@@ -505,26 +608,47 @@
       boostTimer: 0,
       onDone: null,
       onCross: null,
-      setState: function (s) { kid.setState(s); },
+      pace: 0.91 + (i % 4) * 0.055,
+      phaseOff: i * 1.4,
+      strideStep: 0,
+      setState: function (s) {
+        if (kid.playClip) {
+          if (s === 'turbo') kid.playClip('SprintRun', { speed: 1.85 * r.pace, fade: 0.10 });
+          else if (s === 'run') kid.playClip('SprintRun', { speed: 1.35 * r.pace, fade: 0.12 });
+          else if (s === 'cheer') kid.playClip('TugWin', { speed: 1.0 * r.pace, fade: 0.14 });
+          else if (s === 'stumble' || s === 'sad') kid.playClip('HandsHead', { speed: 1.0 * r.pace, fade: 0.12 });
+          else if (s === 'ready' || s === 'idle') kid.playClip('SoccerReady', { speed: 0.95 * r.pace, fade: 0.16 });
+          else kid.setState(s);
+        } else {
+          kid.setState(s);
+        }
+      },
       sprint: function (dist, cb, isBoost) {
         r.runDist = dist;
         r.speed = isBoost ? 8.2 : 6.2;
         r.isBoost = !!isBoost;
         r.onDone = cb || null;
         kid.speed = isBoost ? 2.15 : 1.45;
-        kid.setState(isBoost ? 'turbo' : 'run');
+        r.setState(isBoost ? 'turbo' : 'run');
       }
     };
     K.onFrame(function (dt, t) {
-      kid.update(dt);
+      kid.update(dt * r.pace);
+      if (r.lab) r.lab.visible = /title|ready|start/.test(game.phase);
       if (r.runDist > 0) {
         var step = Math.min(r.runDist, r.speed * dt);
         r.x += step;
         r.runDist -= step;
         holder.position.x = r.x;
-        // Real Blender skeletal animation drives the stride — zero stiff holder tilting!
+        // Real Blender skeletal animation drives the stride — grounded cleanly on track top y = 0.12!
         holder.position.y = .12;
         holder.rotation.z = 0;
+        r.strideStep += dt * (r.isBoost ? 5.6 : 4.2);
+        if (r.strideStep >= 1) {
+          r.strideStep -= 1;
+          K.fx.puff(V(r.x - .18, .15, r.z), 2, { color: 0xffe8c8, size: .22 });
+          playRaceSfx('stride');
+        }
         if (r === runners[activeIdx]) turnMarker.set(r);
 
         if (r.isBoost) {
@@ -800,7 +924,7 @@
     btn.onclick = trigger;
     addEventListener('keydown', onKey);
     K.renderer.domElement.addEventListener('pointerdown', onTap);
-    if (K.DEMO) K.after(.55, trigger);
+    if (K.DEMO || (K.isAI && K.isAI(r.team))) K.after(.52 + Math.random() * .25, trigger);
   }
 
   function advanceRound() {
@@ -825,9 +949,16 @@
     updateTurnUI(activeIdx, isSuper ? '🔥 SUPER TURBO BOOST! (+1.35×!)' : '⚡ TURBO SPRINT BOOST! (' + r.score + '/' + STEPS + ')');
     camFor('follow', r);
     crowdHype = isSuper ? 1.0 : .75;
+    if (GQC && GQC.Juice) {
+      GQC.Juice.squashStretch(r.holder, 1.24, 0.80, 1.24, 0.28);
+      GQC.Juice.spawnBurst(scene, r.holder.position.clone().add(V(0, .35, 0)), isSuper ? 'stars' : 'dust', 14);
+      GQC.Juice.popupScore(isSuper ? '🔥 SUPER TURBO!' : '⚡ BOOST!', r.holder.position.clone().add(V(0, 1.85, 0)), K.camera, r.team.c);
+    }
+    playRaceSfx('turbo');
     K.fx.ring(r.holder.position.clone().add(V(0, .15, 0)), isSuper ? 0xffd84a : r.team.hex, isSuper ? 4.4 : 3.2);
     if (isSuper) {
-      K.cam.shake(.24);
+      if (GQC && GQC.Juice) GQC.Juice.shakeCamera(0.22, 0.28);
+      else K.cam.shake(.24);
       K.ui.big('🔥 SUPER TURBO!', .95, true);
       K.say('Super turbo boost!');
       K.fx.confetti(r.holder.position.clone().add(V(0, 1.4, 0)), 45);
@@ -837,9 +968,14 @@
 
     r.onCross = function () {
       r.finished = true;
-      // Photo-Finish Slow-Motion as the winner snaps the finish tape!
+      // Photo-Finish Hitstop + Slow-Motion as the winner snaps the finish tape!
       camFor('photofinish');
       var badge = K.ui.add(K.el('div', 'rc-photo-badge', '📸 PHOTO FINISH!'));
+      if (GQC && GQC.Juice) {
+        GQC.Juice.hitstop(42);
+        GQC.Juice.shakeCamera(0.24, 0.30);
+        GQC.Juice.spawnBurst(scene, V(TRACK, 1.35, r.z), 'stars', 20);
+      }
       K.timeScale = 0.26;
       setTimeout(function () {
         K.timeScale = 1;
@@ -849,6 +985,7 @@
       if (tape.visible) {
         tape.visible = false;
         tapeHalves.forEach(function (h) { h.visible = true; h.userData.t = 0; });
+        playRaceSfx('tape');
         K.fx.confetti(V(TRACK, 3.5, 0), 140);
       }
       K.ui.big('🏁 ' + r.team.name + ' Finishes!', 1.15, true);
@@ -1027,6 +1164,19 @@
 
     res.slice(4).forEach(function (kid, i) {
       allRunners.push(makeRunner(kid, ALL_TEAMS[i], i));
+    });
+    // Attach Blender skeletal sports & celebration animation clips with per-runner phase offset!
+    Promise.all([
+      K.loadAnimClips(K.ROOT + 'assets/3d/characters/kid-sports-anims.glb').catch(function () { return []; }),
+      K.loadAnimClips(K.ROOT + 'assets/3d/characters/kid-tug-anims.glb').catch(function () { return []; })
+    ]).then(function (clipSets) {
+      var allClips = (clipSets[0] || []).concat(clipSets[1] || []);
+      allRunners.forEach(function (r, idx) {
+        if (r && r.kid && r.kid.attachClips) {
+          r.kid.attachClips(allClips);
+          r.kid.playClip('SoccerReady', { startPhase: (idx * 0.27) % 1 });
+        }
+      });
     });
     syncRunnersForTeamCount();
     loading.remove();

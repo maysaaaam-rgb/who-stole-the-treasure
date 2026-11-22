@@ -9,12 +9,14 @@
   var K = window.K3, T3 = window.THREE;
   var rnd = K.rnd, clamp = K.clamp, V = function (x, y, z) { return new T3.Vector3(x, y, z); };
   var IN_WORLD = !!K.World && !K.Q.has('noworld');
-  K.init({ fov: 40, fogNear: 80, fogFar: 240 });
+  K.init({ fov: 32, fogNear: 80, fogFar: 240 });
   var scene = K.scene;
 
   var nTeams = clamp(+K.Q.get('teams') || 4, 2, 4);
   var WIN = clamp(+K.Q.get('steps') || 3, 2, 4);
   var STRONG = 1, SMALL = .5, MAX_Q = +K.Q.get('maxq') || 10;
+  var WIN_WORLD_X = 1.28;               // world-space distance from center to each team's win line
+  function worldOffOf(p) { return (p / WIN) * WIN_WORLD_X; }
 
   var ALL_TEAMS = K.TEAMS.map(function (t) {
     return Object.assign({ score: 0, wins: 0, place: 0, rank: 0 }, t);
@@ -22,11 +24,13 @@
   var TEAMS = ALL_TEAMS.slice(0, nTeams);
   var QS = K.questions('g3-u5-vocab');
 
-  /* ---------------- meadow, mud pit, lines & Tripo props ---------------- */
-  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0);
+  /* ---------------- meadow, mud pit, lines & Tripo props (GameQualityCore Festival Meadow) ---------------- */
+  var GQC = window.GameQualityCore || null;
+  K._gqcTheme = 'island';
+  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0, 'island');
   K.world.lights();
-  K.world.clouds(14, -80, 80);
-  if (!IN_WORLD) K.world.ground(0x8fdc7a);
+  if (!GQC) K.world.clouds(14, -80, 80);
+  if (!IN_WORLD) K.world.ground(0x6eb84c);
 
   var field = new T3.Group();
   scene.add(field);
@@ -62,7 +66,7 @@
       new T3.MeshStandardMaterial({ color: 0x6e4325, roughness: .45 })
     );
     mudOuter.rotation.x = -Math.PI / 2;
-    mudOuter.scale.set(1.72, 2.52, 1);
+    mudOuter.scale.set(0.98, 1.72, 1);
     mudOuter.position.y = .082;
     mudOuter.receiveShadow = true;
     field.add(mudOuter);
@@ -70,17 +74,17 @@
     var mudMat = new T3.MeshStandardMaterial({ color: 0x8a542e, roughness: .18, metalness: .08 });
     var pit = new T3.Mesh(new T3.CircleGeometry(1, 48), mudMat);
     pit.rotation.x = -Math.PI / 2;
-    pit.scale.set(1.55, 2.35, 1);
+    pit.scale.set(0.88, 1.60, 1);
     pit.position.y = .09;
     pit.receiveShadow = true;
     field.add(pit);
 
     var rim = new T3.Mesh(
-      new T3.TorusGeometry(1, .095, 10, 48),
+      new T3.TorusGeometry(1, .08, 10, 48),
       new T3.MeshStandardMaterial({ color: 0x5c361c, roughness: .55 })
     );
     rim.rotation.x = Math.PI / 2;
-    rim.scale.set(1.58, 2.38, 1);
+    rim.scale.set(0.90, 1.62, 1);
     rim.position.y = .10;
     field.add(rim);
 
@@ -88,9 +92,9 @@
     var stoneMat = new T3.MeshStandardMaterial({ color: 0x9c8c78, roughness: .65 });
     for (var r = 0; r < 14; r++) {
       var ang = (r / 14) * Math.PI * 2;
-      var st = new T3.Mesh(new T3.DodecahedronGeometry(rnd(.14, .22), 0), stoneMat);
-      st.position.set(Math.cos(ang) * 1.66, .12, Math.sin(ang) * 2.45);
-      st.scale.y = .65;
+      var st = new T3.Mesh(new T3.DodecahedronGeometry(rnd(.095, .145), 0), stoneMat);
+      st.position.set(Math.cos(ang) * 0.95, .11, Math.sin(ang) * 1.68);
+      st.scale.y = .62;
       st.rotation.y = rnd(0, 6);
       st.castShadow = true;
       field.add(st);
@@ -99,10 +103,10 @@
     // Bubbling mud blisters
     for (var b = 0; b < 9; b++) {
       var bub = new T3.Mesh(
-        new T3.SphereGeometry(rnd(.07, .14), 12, 10),
+        new T3.SphereGeometry(rnd(.05, .09), 12, 10),
         new T3.MeshStandardMaterial({ color: 0xa1663a, roughness: .16 })
       );
-      bub.position.set(rnd(-1.05, 1.05), .10, rnd(-1.65, 1.65));
+      bub.position.set(rnd(-.58, .58), .10, rnd(-1.05, 1.05));
       field.add(bub);
       (function (m, ph) {
         K.onFrame(function (dt, t) {
@@ -143,14 +147,14 @@
     field.add(m);
     return m;
   }
-  var centreLine = groundLine(0, 0xffffff, .14);
+  var centreLine = groundLine(0, 0xffffff, .12);
   var sideLine = {
-    '-1': groundLine(-WIN, 0xff5fa2, .32),
-    '1':  groundLine(WIN, 0x4f9dff, .32)
+    '-1': groundLine(-WIN_WORLD_X, 0xff5fa2, .24),
+    '1':  groundLine(WIN_WORLD_X, 0x4f9dff, .24)
   };
   function updateWinLines() {
-    sideLine['-1'].position.x = -WIN;
-    sideLine['1'].position.x = WIN;
+    sideLine['-1'].position.x = -WIN_WORLD_X;
+    sideLine['1'].position.x = WIN_WORLD_X;
   }
 
   var sideFlag = {};
@@ -175,7 +179,21 @@
       arch.position.set(0, 0, 7.6);
       arch.rotation.y = Math.PI;
       propGroup.add(arch);
+      if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(arch, 3.6, 3.6, 0.25, 0.02);
     }
+    // Perimeter low wooden festival rails framing the back of Tug Meadow
+    [-9.5, -4.5, 4.5, 9.5].forEach(function (fx) {
+      var rail = new T3.Mesh(new T3.BoxGeometry(3.6, .14, .12), new T3.MeshStandardMaterial({ color: 0xd99b52, roughness: .72 }));
+      rail.position.set(fx, .68, 4.1);
+      rail.castShadow = true;
+      propGroup.add(rail);
+      [-1.6, 1.6].forEach(function (ox) {
+        var fp = new T3.Mesh(new T3.CylinderGeometry(.08, .09, .86, 8), new T3.MeshStandardMaterial({ color: 0x8c5828, roughness: .8 }));
+        fp.position.set(fx + ox, .43, 4.1);
+        fp.castShadow = true;
+        propGroup.add(fp);
+      });
+    });
     if (flagpoleModel) {
       [-1, 1].forEach(function (s) {
         var fp = flagpoleModel.clone(true);
@@ -205,25 +223,32 @@
 
   /* ---------------- 3D Mud Splash Physics Droplets ---------------- */
   var mudDroplets = [];
-  var mudDropGeo = new T3.SphereGeometry(.14, 10, 8);
-  var mudDropMat1 = new T3.MeshStandardMaterial({ color: 0x7a4928, roughness: .2 });
-  var mudDropMat2 = new T3.MeshStandardMaterial({ color: 0x5c341a, roughness: .25 });
+  var mudDropGeo = new T3.SphereGeometry(.058, 10, 8);
+  var mudDropMat1 = new T3.MeshStandardMaterial({ color: 0x7a4928, roughness: .22 });
+  var mudDropMat2 = new T3.MeshStandardMaterial({ color: 0x5c341a, roughness: .28 });
+
+  function clearMudDroplets() {
+    for (var i = mudDroplets.length - 1; i >= 0; i--) {
+      scene.remove(mudDroplets[i].mesh);
+    }
+    mudDroplets.length = 0;
+  }
 
   function spawnMudSplash(center) {
-    for (var i = 0; i < 26; i++) {
-      var ang = rnd(0, Math.PI * 2), spd = rnd(1.8, 5.2);
+    for (var i = 0; i < 32; i++) {
+      var ang = rnd(0, Math.PI * 2), spd = rnd(1.5, 4.2);
       var m = new T3.Mesh(mudDropGeo, i % 2 ? mudDropMat1 : mudDropMat2);
       var sc = rnd(.55, 1.35);
       m.scale.set(sc, sc * 1.15, sc);
-      m.position.copy(center).add(V(rnd(-.4, .4), .18, rnd(-.4, .4)));
+      m.position.copy(center).add(V(rnd(-.35, .35), .16, rnd(-.35, .35)));
       scene.add(m);
       mudDroplets.push({
         mesh: m,
         vx: Math.cos(ang) * spd,
-        vy: rnd(3.5, 7.2),
+        vy: rnd(2.8, 5.6),
         vz: Math.sin(ang) * spd,
         life: 0,
-        maxLife: rnd(.75, 1.25)
+        maxLife: rnd(.7, 1.15)
       });
     }
   }
@@ -288,34 +313,52 @@
   })();
   var activeTurnHolder = null, activeTurnHex = 0xff5fa2;
 
-  /* ---------------- the rope (braided hemp texture), grip knots & red ribbon ---------------- */
-  var pos = 0, posShow = 0;            // where the ribbon is: <0 towards right side, >0 towards left side
-  var ROPE_Y = 0.72, ROPE_HALF = 8.8;
-  var ropeTex = K.canvasTex(128, 512, function (c, W, H) {
-    c.fillStyle = '#cf9e5e';
+  /* ---------------- the rope (4 cm braided hemp, zero donut rings) & red ribbon ---------------- */
+  var pos = 0, posShow = 0;            // score steps: <0 towards right side, >0 towards left side
+  var ROPE_Y = 0.82, ROPE_R = 0.021, ROPE_HALF = 5.8;
+  var SLOTS_X = [1.46, 2.22, 2.98];    // 3 rigged kids per side, packed tightly in real tug formation
+  var KID_Z = 0.13;                    // rope runs right beside camera-facing hip so both arms reach comfortably
+
+  var ropeTex = K.canvasTex(256, 256, function (c, W, H) {
+    c.fillStyle = '#cf9e5d';
     c.fillRect(0, 0, W, H);
-    // Crisp high-contrast diagonal braided hemp strands
-    for (var y = -H; y < H * 2; y += 20) {
-      c.strokeStyle = '#784c1e';
+    // Crisp 3-strand diagonal braided hemp fibers (TubeGeometry u = along length, v = around circumference!)
+    for (var x = -W; x < W * 2; x += 32) {
+      c.strokeStyle = '#623914';
+      c.lineWidth = 10;
+      c.beginPath(); c.moveTo(x, 0); c.lineTo(x + W * 0.85, H); c.stroke();
+      c.strokeStyle = '#f8e0b2';
       c.lineWidth = 8;
-      c.beginPath(); c.moveTo(0, y); c.lineTo(W, y + W * 0.72); c.stroke();
-      c.strokeStyle = '#f5d7a3';
-      c.lineWidth = 5;
-      c.beginPath(); c.moveTo(0, y + 7); c.lineTo(W, y + 7 + W * 0.72); c.stroke();
+      c.beginPath(); c.moveTo(x + 10, 0); c.lineTo(x + 10 + W * 0.85, H); c.stroke();
+      c.strokeStyle = '#a87132';
+      c.lineWidth = 6;
+      c.beginPath(); c.moveTo(x + 20, 0); c.lineTo(x + 20 + W * 0.85, H); c.stroke();
+    }
+    // Fine twisted fiber highlights
+    c.strokeStyle = 'rgba(72,42,14,0.28)';
+    c.lineWidth = 2;
+    for (var f = -W; f < W * 2; f += 8) {
+      c.beginPath(); c.moveTo(f, 0); c.lineTo(f + W * 0.85, H); c.stroke();
     }
   });
   ropeTex.wrapS = ropeTex.wrapT = T3.RepeatWrapping;
-  ropeTex.repeat.set(1, 18);
-  var ropeMat = new T3.MeshStandardMaterial({ map: ropeTex, roughness: .72, metalness: .02 });
+  ropeTex.repeat.set(48, 2);
+  var ropeMat = new T3.MeshStandardMaterial({
+    map: ropeTex,
+    bumpMap: ropeTex,
+    bumpScale: 0.018,
+    roughness: .82,
+    metalness: .02
+  });
   var rope = new T3.Mesh(new T3.BufferGeometry(), ropeMat);
   rope.castShadow = true;
   scene.add(rope);
 
-  // Realistic procedural Tug-of-War Foley (rope creak, foot scuff, crowd roar)
+  // Realistic procedural Tug-of-War Foley: rope creak, "heave!" shout, foot scuff & crowd swell
   var foley = (function () {
     var ctx = null, nBuf = null;
     function ensure() {
-      if (K.muted) return false;
+      if (K.muted || K.CAPTURE) return false;
       if (ctx) { if (ctx.state === 'suspended') ctx.resume().catch(function () {}); return true; }
       var AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return false;
@@ -331,19 +374,49 @@
     return {
       ropeCreak: function (heavy) {
         if (!ensure() || !nBuf) return;
-        var t = ctx.currentTime, dur = heavy ? 0.65 : 0.4;
-        // Creaking taut hemp fiber sound
-        var o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-        o.type = 'sawtooth';
-        o.frequency.setValueAtTime(heavy ? 95 : 130, t);
-        o.frequency.exponentialRampToValueAtTime(heavy ? 185 : 220, t + dur * 0.6);
-        o.frequency.exponentialRampToValueAtTime(110, t + dur);
-        f.type = 'bandpass'; f.frequency.value = 520; f.Q.value = 4.5;
+        var t = ctx.currentTime, dur = heavy ? 0.58 : 0.38;
+        // Layered creaking hemp fiber stretch
+        var o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+        o.type = 'sawtooth'; o2.type = 'triangle';
+        o.frequency.setValueAtTime(heavy ? 88 : 122, t);
+        o.frequency.exponentialRampToValueAtTime(heavy ? 175 : 210, t + dur * 0.55);
+        o.frequency.exponentialRampToValueAtTime(104, t + dur);
+        o2.frequency.setValueAtTime(heavy ? 132 : 184, t);
+        o2.frequency.exponentialRampToValueAtTime(heavy ? 240 : 280, t + dur * 0.55);
+        f.type = 'bandpass'; f.frequency.value = 540; f.Q.value = 4.2;
         g.gain.setValueAtTime(0.001, t);
-        g.gain.linearRampToValueAtTime(heavy ? 0.14 : 0.08, t + 0.08);
+        g.gain.linearRampToValueAtTime(heavy ? 0.14 : 0.085, t + 0.07);
         g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-        o.connect(f); f.connect(g); g.connect(ctx.destination);
-        o.start(t); o.stop(t + dur + 0.04);
+        o.connect(f); o2.connect(f); f.connect(g); g.connect(ctx.destination);
+        o.start(t); o2.start(t); o.stop(t + dur + 0.04); o2.stop(t + dur + 0.04);
+      },
+      heaveShout: function (stepIdx) {
+        if (!ensure() || !nBuf) return;
+        // Energetic formant-filtered "HEAVE!" / "HO!" group effort shout
+        var t = ctx.currentTime, dur = stepIdx >= 2 ? 0.34 : 0.24;
+        var pitch0 = stepIdx >= 2 ? 275 : (stepIdx === 1 ? 245 : 225);
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(pitch0, t);
+        o.frequency.exponentialRampToValueAtTime(pitch0 * 1.24, t + dur * 0.35);
+        o.frequency.exponentialRampToValueAtTime(pitch0 * 0.78, t + dur);
+        var f1 = ctx.createBiquadFilter(), f2 = ctx.createBiquadFilter();
+        f1.type = 'bandpass'; f1.frequency.setValueAtTime(stepIdx >= 2 ? 680 : 540, t); f1.Q.value = 3.2;
+        f2.type = 'bandpass'; f2.frequency.setValueAtTime(stepIdx >= 2 ? 1950 : 1650, t); f2.Q.value = 3.6;
+        g.gain.setValueAtTime(0.001, t);
+        g.gain.linearRampToValueAtTime(stepIdx >= 2 ? 0.16 : 0.11, t + 0.035);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(f1); o.connect(f2); f1.connect(g); f2.connect(g); g.connect(ctx.destination);
+        o.start(t); o.stop(t + dur + 0.03);
+        // Breath burst on consonant "H"
+        var bs = ctx.createBufferSource(); bs.buffer = nBuf;
+        var bf = ctx.createBiquadFilter(); bf.type = 'bandpass'; bf.frequency.value = 1400; bf.Q.value = 1.4;
+        var bg = ctx.createGain();
+        bg.gain.setValueAtTime(0.001, t);
+        bg.gain.linearRampToValueAtTime(0.08, t + 0.015);
+        bg.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+        bs.connect(bf); bf.connect(bg); bg.connect(ctx.destination);
+        bs.start(t); bs.stop(t + 0.1);
       },
       footScuff: function () {
         if (!ensure() || !nBuf) return;
@@ -352,132 +425,507 @@
         var f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 680; f.Q.value = 1.2;
         var g = ctx.createGain();
         g.gain.setValueAtTime(0.001, t);
-        g.gain.linearRampToValueAtTime(0.11, t + 0.02);
+        g.gain.linearRampToValueAtTime(0.12, t + 0.02);
         g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
         s.connect(f); f.connect(g); g.connect(ctx.destination);
         s.start(t); s.stop(t + 0.18);
+      },
+      crowdSwell: function (power) {
+        if (!ensure() || !nBuf) return;
+        var t = ctx.currentTime, dur = power >= 0.9 ? 1.25 : 0.65;
+        var s = ctx.createBufferSource(); s.buffer = nBuf;
+        var f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.setValueAtTime(950, t);
+        f.frequency.linearRampToValueAtTime(1450, t + dur * 0.45);
+        f.Q.value = 0.85;
+        var g = ctx.createGain();
+        g.gain.setValueAtTime(0.001, t);
+        g.gain.linearRampToValueAtTime(0.14 * power, t + 0.14);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        s.connect(f); f.connect(g); g.connect(ctx.destination);
+        s.start(t); s.stop(t + dur + 0.04);
       }
     };
   })();
 
-  var SLOTS_X = [2.65, 3.85, 5.05];     // 3 rigged kids per side, tightly spaced along the rope!
-  var gripKnots = [];
-  (function () {
-    var knotGeo = new T3.TorusGeometry(.095, .042, 8, 16);
-    var knotMat = new T3.MeshStandardMaterial({ color: 0xb88b52, roughness: .5 });
-    [-1, 1].forEach(function (s) {
-      SLOTS_X.forEach(function (sx) {
-        var k = new T3.Mesh(knotGeo, knotMat);
-        k.rotation.y = Math.PI / 2;
-        scene.add(k);
-        gripKnots.push({ mesh: k, relX: s * sx });
-      });
-    });
-  })();
+  function setMusicDuck(ducked) {
+    K.loopVol('music', ducked ? 0.05 : 0.22);
+    K.loopVol('crowd', ducked ? 0.06 : 0.16);
+  }
 
   var ribbon = new T3.Group();
   scene.add(ribbon);
   (function () {
     var knot = new T3.Mesh(
-      new T3.SphereGeometry(.17, 16, 14),
-      new T3.MeshStandardMaterial({ color: 0xff2e2e, roughness: .3 })
+      new T3.SphereGeometry(.058, 16, 14),
+      new T3.MeshStandardMaterial({ color: 0xff2e2e, roughness: .32 })
     );
     ribbon.add(knot);
 
     var goldRing = new T3.Mesh(
-      new T3.TorusGeometry(.21, .032, 10, 24),
+      new T3.TorusGeometry(.074, .016, 10, 24),
       new T3.MeshStandardMaterial({ color: 0xffd84a, roughness: .25, metalness: .3 })
     );
     ribbon.add(goldRing);
 
     var tailMat = new T3.MeshStandardMaterial({ color: 0xff3b3b, roughness: .38, side: T3.DoubleSide });
-    var tail1 = new T3.Mesh(new T3.PlaneGeometry(.24, .95), tailMat);
-    tail1.position.set(-.06, -.46, 0);
+    var tail1 = new T3.Mesh(new T3.PlaneGeometry(.13, .54), tailMat);
+    tail1.position.set(-.03, -.28, 0);
     tail1.rotation.z = -.12;
     ribbon.add(tail1);
 
-    var tail2 = new T3.Mesh(new T3.PlaneGeometry(.22, .85), tailMat);
-    tail2.position.set(.07, -.42, .03);
+    var tail2 = new T3.Mesh(new T3.PlaneGeometry(.11, .48), tailMat);
+    tail2.position.set(.035, -.25, .018);
     tail2.rotation.z = .14;
     ribbon.add(tail2);
 
     K.onFrame(function (dt, t) {
-      tail1.rotation.y = Math.sin(t * 5.5) * .42;
-      tail2.rotation.y = Math.cos(t * 6.2) * .38;
-      goldRing.rotation.y = t * 2.5;
+      tail1.rotation.y = Math.sin(t * 5.5) * .38;
+      tail2.rotation.y = Math.cos(t * 6.2) * .34;
+      goldRing.rotation.y = t * 2.4;
     });
   })();
 
-  var tension = 0, pullSurge = 0;
-  var _lh = new T3.Vector3(), _rh = new T3.Vector3();
-  function ropeCurve(off, tens, t) {
-    // Route the braided rope RIGHT THROUGH the clenched hands of all 6 rigged pulling kids!
-    var pts = [];
-    if (playing && sides.length === 2) {
-      var rightKids = sides[1].crew.kids; // s = -1 (negative X)
-      var leftKids  = sides[0].crew.kids; // s = +1 (positive X)
-      // Tail end on right (-X)
-      pts.push(V(off - ROPE_HALF, ROPE_Y - 0.12, 0));
-      // Right team hands (back to front: k=2, 1, 0)
-      for (var r = rightKids.length - 1; r >= 0; r--) {
-        if (!rightKids[r].inMud) {
-          rightKids[r].getBoneWorldPos('LeftHand', _lh);
-          rightKids[r].getBoneWorldPos('RightHand', _rh);
-          pts.push(V((_lh.x + _rh.x) * 0.5, (_lh.y + _rh.y) * 0.5, (_lh.z + _rh.z) * 0.5));
-        }
-      }
-      // Center ribbon knot (with live tension vibration!)
-      var sag = 0.24 * (1 - tens);
-      var vibY = Math.sin(t * 28) * 0.045 * pullSurge;
-      var vibZ = Math.cos(t * 24) * 0.03 * pullSurge;
-      pts.push(V(off, ROPE_Y - sag + vibY, vibZ));
-      // Left team hands (front to back: k=0, 1, 2)
-      for (var l = 0; l < leftKids.length; l++) {
-        if (!leftKids[l].inMud) {
-          leftKids[l].getBoneWorldPos('LeftHand', _lh);
-          leftKids[l].getBoneWorldPos('RightHand', _rh);
-          pts.push(V((_lh.x + _rh.x) * 0.5, (_lh.y + _rh.y) * 0.5, (_lh.z + _rh.z) * 0.5));
-        }
-      }
-      // Tail end on left (+X)
-      pts.push(V(off + ROPE_HALF, ROPE_Y - 0.12, 0));
-      // Sort strictly by X so CatmullRomCurve3 never kinks
-      pts.sort(function (a, b) { return a.x - b.x; });
-      return new T3.CatmullRomCurve3(pts);
+  /* ---------------- straight, slightly sagging 4cm rope math (never bends to hands!) ---------------- */
+  var tension = 0, pullSurge = 0, strainLevel = 0;
+  function ropePointAtX(x, off, tens, t) {
+    var rel = x - off;
+    var span = SLOTS_X[2] + 0.35; // gripped span between the two anchors
+    var u = clamp((rel + span) / (span * 2), 0, 1);
+    var sagAmt = K.lerp(0.15, 0.014, clamp(tens, 0, 1));
+    var y = ROPE_Y - Math.sin(u * Math.PI) * sagAmt;
+    var z = 0;
+    // Slight natural droop on loose rope tails past the anchor kids
+    var over = Math.abs(rel) - span;
+    if (over > 0) {
+      y -= Math.min(0.46, over * over * 0.16);
+    } else if (playing) {
+      // Crisp high-frequency taut rope shake when both teams strain / pull
+      var env = Math.sin(u * Math.PI);
+      var vibAmp = (0.004 + strainLevel * 0.008 + pullSurge * 0.015) * env;
+      y += Math.sin(t * 32 + rel * 1.9) * vibAmp;
+      z += Math.cos(t * 27 + rel * 1.4) * vibAmp * 0.7;
     }
-    var sag2 = .26 * (1 - tens);
-    for (var i = 0; i <= 20; i++) {
-      var u = i / 20, x = -ROPE_HALF + u * ROPE_HALF * 2;
-      pts.push(V(x + off, ROPE_Y - Math.sin(u * Math.PI) * sag2, 0));
+    return V(x, y, z);
+  }
+  function ropeCurve(off, tens, t) {
+    var pts = [], N = 28;
+    for (var i = 0; i <= N; i++) {
+      var u = i / N;
+      var x = off - ROPE_HALF + u * ROPE_HALF * 2;
+      pts.push(ropePointAtX(x, off, tens, t));
     }
     return new T3.CatmullRomCurve3(pts);
   }
 
-  K.onFrame(function (dt, t) {
-    posShow = K.lerp(posShow, pos, 1 - Math.exp(-dt * 6.5));
-    tension = K.lerp(tension, playing ? 1 : 0, dt * 3.5);
-    pullSurge = Math.max(0, pullSurge - dt * 1.15);
-    var wob = playing ? Math.sin(t * 9.5) * (.025 + pullSurge * .07) : 0;
-    var off = posShow + wob;
+  /* ---------------- full-skeleton Tug Rig Driver + Two-Bone Arm IK + Closed Fists ---------------- */
+  var _ikV1 = new T3.Vector3(), _ikV2 = new T3.Vector3(), _ikV3 = new T3.Vector3(), _ikV4 = new T3.Vector3();
+  var _ikA = new T3.Vector3(), _ikB = new T3.Vector3(), _ikC = new T3.Vector3();
+  var _ikQ1 = new T3.Quaternion(), _ikQ2 = new T3.Quaternion(), _ikQ3 = new T3.Quaternion();
+  var _ikM = new T3.Matrix4();
+  var FINGER_GROUPS = ['Index', 'Middle', 'Ring', 'Pinky'];
+  var AX_L = K.AX.L, AX_U = K.AX.U, AX_F = K.AX.F;
 
-    // Update character positions & bones FIRST so rope threads through their live animated hands!
-    sides.forEach(function (sd) { placeSide(sd, off, t); });
-    crews.forEach(function (c) {
-      c.all.forEach(function (ch) { ch.update(dt); });
+  function ensureTugRigData(ch) {
+    if (ch._tugRigReady) return;
+    ch._tugRigReady = true;
+    ch._allRest = {};
+    var src = ch.allBones || ch.bones || {};
+    for (var bn in src) {
+      if (src[bn]) ch._allRest[bn] = src[bn].quaternion.clone();
+    }
+    ch.tugPhase = Math.random() * Math.PI * 2;
+    ch.tugSpeed = 0.90 + Math.random() * 0.20; // ±10% speed variation per kid
+    ch.tugTiltVar = (Math.random() - 0.5) * 0.07;
+    ch.tugMode = 'ready';
+    ch.tugModeT = 0;
+    ch.heaveStepT = 1;
+    ch.heaveStepIdx = 0;
+    ch._footOffsetY = null;
+  }
+
+  function rotBoneWorldAxis(bone, worldAxis, ang) {
+    if (!bone || !ang) return;
+    _ikQ1.setFromAxisAngle(worldAxis, ang);
+    bone.parent.getWorldQuaternion(_ikQ2);
+    _ikQ3.copy(_ikQ2).invert();
+    bone.quaternion.premultiply(_ikQ3.multiply(_ikQ1).multiply(_ikQ2));
+  }
+
+  function rotBoneKidAxis(ch, boneName, localAxis, ang) {
+    if (!ang) return;
+    var b = ch.bones[boneName] || (ch.allBones && ch.allBones[boneName]);
+    if (!b) return;
+    ch.body.getWorldQuaternion(_ikQ2);
+    _ikV1.copy(localAxis).applyQuaternion(_ikQ2).normalize();
+    rotBoneWorldAxis(b, _ikV1, ang);
+  }
+
+  // Analytical Two-Bone Arm IK (Arm -> ForeArm -> Hand) locking wrist dead-on to targetWorld
+  function solveTwoBoneArmIK(upperBone, lowerBone, handBone, targetWorld, poleWorld) {
+    if (!upperBone || !lowerBone || !handBone) return;
+    upperBone.parent.updateMatrixWorld(true);
+    upperBone.getWorldPosition(_ikA);
+    lowerBone.getWorldPosition(_ikB);
+    handBone.getWorldPosition(_ikC);
+
+    var L1 = _ikA.distanceTo(_ikB);
+    var L2 = _ikB.distanceTo(_ikC);
+    if (L1 < 0.01 || L2 < 0.01) return;
+
+    var dir = _ikV1.copy(targetWorld).sub(_ikA);
+    var dist = dir.length();
+    var minD = Math.abs(L1 - L2) + 0.02;
+    var maxD = (L1 + L2) * 0.992;
+    var d = clamp(dist, minD, maxD);
+    if (dist < 1e-5) return;
+    dir.multiplyScalar(1 / dist);
+
+    var cosA = clamp((L1 * L1 + d * d - L2 * L2) / (2 * L1 * d), -1, 1);
+    var sinA = Math.sqrt(Math.max(0, 1 - cosA * cosA));
+
+    // Bend direction from pole vector projected orthogonal to shoulder->target
+    var bend = _ikV2.copy(poleWorld).sub(_ikA);
+    bend.addScaledVector(dir, -bend.dot(dir));
+    if (bend.lengthSq() < 1e-6) bend.set(0, -1, 0);
+    bend.normalize();
+
+    var elbowDesired = _ikV3.copy(_ikA)
+      .addScaledVector(dir, L1 * cosA)
+      .addScaledVector(bend, L1 * sinA);
+
+    // 1) Aim upper arm (Arm -> ForeArm) at elbowDesired
+    var curUpper = _ikV4.copy(_ikB).sub(_ikA).normalize();
+    var dstUpper = _ikV2.copy(elbowDesired).sub(_ikA).normalize();
+    _ikQ1.setFromUnitVectors(curUpper, dstUpper);
+    upperBone.parent.getWorldQuaternion(_ikQ2);
+    _ikQ3.copy(_ikQ2).invert();
+    upperBone.quaternion.premultiply(_ikQ3.multiply(_ikQ1).multiply(_ikQ2));
+    upperBone.updateMatrixWorld(true);
+
+    // 2) Aim forearm (ForeArm -> Hand) at targetWorld
+    lowerBone.getWorldPosition(_ikB);
+    handBone.getWorldPosition(_ikC);
+    var curLower = _ikV4.copy(_ikC).sub(_ikB).normalize();
+    var dstLower = _ikV2.copy(targetWorld).sub(_ikB).normalize();
+    _ikQ1.setFromUnitVectors(curLower, dstLower);
+    lowerBone.parent.getWorldQuaternion(_ikQ2);
+    _ikQ3.copy(_ikQ2).invert();
+    lowerBone.quaternion.premultiply(_ikQ3.multiply(_ikQ1).multiply(_ikQ2));
+    lowerBone.updateMatrixWorld(true);
+  }
+
+  // Orient Hand cleanly for overhand (palm down) or underhand (palm up) grip & curl all 15 finger bones into a closed fist!
+  function gripRopeWithHand(ch, sidePrefix, isRight, ropePt, palmDown, sideDir) {
+    var bones = ch.allBones || ch.bones;
+    var upper = bones[sidePrefix + 'Arm'];
+    var lower = bones[sidePrefix + 'ForeArm'];
+    var hand  = bones[sidePrefix + 'Hand'];
+    var mid1  = bones[sidePrefix + 'HandMiddle1'];
+    if (!upper || !lower || !hand) return;
+
+    // Measure live world palm length (Wrist -> Middle knuckle) so rope passes dead-center inside the closed fist
+    hand.updateMatrixWorld(true);
+    hand.getWorldPosition(_ikA);
+    var palmLen = 0.095;
+    if (mid1) {
+      mid1.getWorldPosition(_ikB);
+      var pl = _ikA.distanceTo(_ikB);
+      if (pl > 0.03 && pl < 0.25) palmLen = pl;
+    }
+
+    // Desired hand world basis (verified directly from kid-boy.glb & kid-girl.glb):
+    //   +Y_local = Wrist -> Knuckles (wraps over/under rope toward -Z)
+    //   +X_local = Pinky -> Index (runs along the rope!)
+    //   uPalm    = isRight ? +Z_local : -Z_local
+    var wantPalm = palmDown
+      ? new T3.Vector3(0, -0.95, 0.31).normalize()   // palm faces DOWN onto top of rope
+      : new T3.Vector3(0,  0.95, 0.31).normalize();  // palm faces UP under bottom of rope
+
+    // Forearm approaches rope from body (+Z) toward rope (z=0), slight natural angle toward mud pit
+    var wantAlong = palmDown
+      ? new T3.Vector3(-sideDir * 0.14, -0.20, -0.97).normalize()
+      : new T3.Vector3(-sideDir * 0.14,  0.20, -0.97).normalize();
+
+    var zAxis = wantPalm.clone().multiplyScalar(isRight ? 1 : -1);
+    var yAxis = wantAlong.clone().addScaledVector(zAxis, -wantAlong.dot(zAxis)).normalize();
+    var xAxis = new T3.Vector3().crossVectors(yAxis, zAxis).normalize();
+    zAxis.crossVectors(xAxis, yAxis).normalize();
+
+    // Wrist target offset back & away from palm normal so the 4.2cm braided rope passes DEAD-CENTER inside the closed fist!
+    var wristTarget = ropePt.clone()
+      .addScaledVector(yAxis, -palmLen * 0.60)
+      .addScaledVector(wantPalm, -palmLen * 0.36);
+
+    // Natural downward & slightly outward elbow pole
+    var isNearArm = (sideDir > 0 && isRight) || (sideDir < 0 && !isRight);
+    var poleWorld = new T3.Vector3(
+      ropePt.x + sideDir * (isNearArm ? 0.24 : 0.12),
+      ropePt.y - 0.50,
+      KID_Z + (isNearArm ? -0.24 : 0.38)
+    );
+
+    // 1) Solve Two-Bone Arm IK to place wrist right at wristTarget
+    solveTwoBoneArmIK(upper, lower, hand, wristTarget, poleWorld);
+
+    // 2) Set Hand world quaternion directly to our exact palm-down / palm-up grip basis
+    _ikM.makeBasis(xAxis, yAxis, zAxis);
+    var handWorldQ = new T3.Quaternion().setFromRotationMatrix(_ikM);
+    hand.parent.getWorldQuaternion(_ikQ2);
+    hand.quaternion.copy(_ikQ2).invert().multiply(handWorldQ);
+    hand.updateMatrixWorld(true);
+
+    // 3) Curl ALL 12 finger phalanges tightly around the 4cm braided rope!
+    // curlAxis_world = uAlong_world x uPalm_world -> positive angle ALWAYS curls into the palm!
+    var uAlongW = new T3.Vector3(0, 1, 0).applyQuaternion(handWorldQ).normalize();
+    var uPalmW  = new T3.Vector3(0, 0, isRight ? 1 : -1).applyQuaternion(handWorldQ).normalize();
+    var curlAxisW = new T3.Vector3().crossVectors(uAlongW, uPalmW).normalize();
+    var angles = [1.56, 1.72, 1.32];
+
+    for (var fi = 0; fi < FINGER_GROUPS.length; fi++) {
+      var fg = FINGER_GROUPS[fi];
+      for (var seg = 1; seg <= 3; seg++) {
+        var fb = bones[sidePrefix + 'Hand' + fg + seg];
+        if (!fb) continue;
+        // Slightly tighter pinky/ring wrap for organic closed fist
+        var extra = (fi >= 2 ? 0.08 : 0);
+        rotBoneWorldAxis(fb, curlAxisW, angles[seg - 1] + extra);
+        fb.updateMatrixWorld(true);
+      }
+    }
+
+    // 4) Wrap Thumb firmly over the curled index/middle fingers to lock the fist!
+    var th1 = bones[sidePrefix + 'HandThumb1'];
+    var th2 = bones[sidePrefix + 'HandThumb2'];
+    var th3 = bones[sidePrefix + 'HandThumb3'];
+    if (th1) {
+      var thumbAxis1 = new T3.Vector3().copy(uAlongW).multiplyScalar(isRight ? -0.78 : 0.78)
+        .addScaledVector(curlAxisW, 0.62).normalize();
+      rotBoneWorldAxis(th1, thumbAxis1, 0.96);
+      th1.updateMatrixWorld(true);
+    }
+    if (th2) {
+      rotBoneWorldAxis(th2, curlAxisW, 0.84);
+      th2.updateMatrixWorld(true);
+    }
+    if (th3) {
+      rotBoneWorldAxis(th3, curlAxisW, 0.72);
+      th3.updateMatrixWorld(true);
+    }
+  }
+
+  // Organic 2.4–3.2 s procedural Tug-of-War body poses (side-on 25–40° lean-back, bent knees, 3-step heave, forward slip)
+  function updateTugKidPose(ch, sd, k, dt, t) {
+    ensureTugRigData(ch);
+    ch.tugModeT += dt;
+    if (ch.heaveStepT < 1) ch.heaveStepT = Math.min(1, ch.heaveStepT + dt / 0.76);
+
+    // If celebrating or tumbling into mud, let standard kit3d / celebration animation drive them
+    if (ch.inMud || ch.tugMode === 'lose' || ch.tugMode === 'win') {
+      ch.update(dt);
+      return;
+    }
+
+    // Ensure Mixamo short clip never fights our long procedural tug rig
+    if (ch.useMixer) ch.stopClip();
+
+    // Reset all 65 bones cleanly to rest pose before building this frame
+    var src = ch.allBones || ch.bones;
+    for (var bn in ch._allRest) {
+      if (src[bn]) src[bn].quaternion.copy(ch._allRest[bn]);
+    }
+    ch.body.rotation.set(0, 0, 0);
+    ch.body.position.set(0, 0, 0);
+
+    var ph = ch.tugPhase;
+    var sp = ch.tugSpeed;
+    var mode = ch.tugMode || 'ready';
+    // Long 2.6–3.1s multi-harmonic cycles so no two kids move alike
+    var slowA = Math.sin(t * 2.15 * sp + ph);
+    var slowB = Math.cos(t * 1.45 * sp + ph * 1.7);
+    var microVib = Math.sin(t * 24.0 * sp + ph * 2.3);
+
+    // Front leg is the leg closer to the mud pit (Left leg for Left team? Let's put outer/camera-side foot slightly back, inner foot braced forward!)
+    var isLeftTeam = sd.s > 0;
+    var hipPitch = -0.26;      // negative = lean BACKWARD (28–38° combined with spine!)
+    var spinePitch = -0.24;
+    var spineTwist = (isLeftTeam ? 0.24 : -0.24); // chest opened ~14° toward rope & camera
+    var headPitch = 0.36;      // chin level, eyes locked on the mud pit!
+    var headYaw = (isLeftTeam ? -0.18 : 0.18);
+    var frontThigh = -0.82;    // front leg braced firmly forward toward mud pit
+    var frontKnee = 0.56;
+    var frontFoot = 0.26;
+    var backThigh = -0.06;     // back leg dug in behind
+    var backKnee = 0.82;
+    var backFoot = -0.22;
+    var bodyShiftZ = -0.14;    // hips sit back behind front foot for authentic weight counterbalance
+
+    if (mode === 'ready') {
+      // 2.9s organic ready stance: 26–31° backward lean, weight shifting between heels, alert head
+      hipPitch   = -0.25 + slowA * 0.035 + ch.tugTiltVar;
+      spinePitch = -0.23 + slowB * 0.030;
+      frontThigh = -0.78 + slowA * 0.04;
+      frontKnee  =  0.54 - slowA * 0.04;
+      backThigh  = -0.05 - slowA * 0.04;
+      backKnee   =  0.76 + slowA * 0.05;
+      headPitch  =  0.34 - slowA * 0.04;
+      bodyShiftZ = -0.13 + slowA * 0.025;
+    } else if (mode === 'strain') {
+      // 2.6s heavy straining: 32–37° backward lean + muscle quiver
+      hipPitch   = -0.32 + slowA * 0.04 + microVib * 0.014 + ch.tugTiltVar;
+      spinePitch = -0.28 + slowB * 0.035 + microVib * 0.016;
+      frontThigh = -0.90 + slowA * 0.03;
+      frontKnee  =  0.60 + microVib * 0.015;
+      backThigh  = -0.02 + slowB * 0.04;
+      backKnee   =  0.92 + slowA * 0.05;
+      headPitch  =  0.42 + microVib * 0.012;
+      bodyShiftZ = -0.19 + slowA * 0.02;
+    } else if (mode === 'pull') {
+      // 3-step rhythmic "Heave... Ho!" cycle: lean back deeper -> step back -> plant foot!
+      var u = ch.heaveStepT; // 0 -> 1 over 0.76s per step
+      var heaveArc = Math.sin(u * Math.PI);
+      var stepLift = (u > 0.25 && u < 0.78) ? Math.sin(((u - 0.25) / 0.53) * Math.PI) : 0;
+      var plantBounce = u >= 0.78 ? Math.sin(((u - 0.78) / 0.22) * Math.PI) * 0.06 : 0;
+      var extraFinal = ch.heaveStepIdx >= 2 ? 0.07 : 0;
+      hipPitch   = -0.34 - heaveArc * (0.14 + extraFinal) + ch.tugTiltVar;
+      spinePitch = -0.28 - heaveArc * (0.12 + extraFinal) + microVib * 0.012;
+      frontThigh = -0.92 - heaveArc * 0.10;
+      frontKnee  =  0.58 + plantBounce;
+      backThigh  =  0.04 + stepLift * 0.34;    // back leg reaches back to take a step!
+      backKnee   =  0.86 + stepLift * 0.44 + plantBounce;
+      backFoot   = -0.18 - stepLift * 0.28;
+      headPitch  =  0.48 + heaveArc * 0.12;
+      bodyShiftZ = -0.22 - heaveArc * 0.08;
+    } else if (mode === 'slip') {
+      // Losing team stumbles 1 step forward, pitched forward, arms pulled straight, front kid nearly falls!
+      var frontFactor = (k === 0) ? 1.38 : 1.0;
+      var stumbleWave = Math.sin(ch.tugModeT * 7.5 + ph);
+      hipPitch   =  0.22 * frontFactor + stumbleWave * 0.07;
+      spinePitch =  0.20 * frontFactor + Math.cos(ch.tugModeT * 6.5 + ph) * 0.06;
+      frontThigh = -0.58 - Math.max(0, stumbleWave) * 0.22;
+      frontKnee  =  0.66 + Math.max(0, stumbleWave) * 0.18;
+      backThigh  =  0.42 * frontFactor + Math.abs(stumbleWave) * 0.18;
+      backKnee   =  0.45 + (k === 0 ? 0.28 : 0.10);
+      backFoot   = -0.45 * frontFactor; // heel lifting as front kid nearly loses balance!
+      headPitch  = -0.26 * frontFactor;
+      bodyShiftZ =  0.14 * frontFactor;
+    }
+
+    // Apply pelvic & spinal posture
+    ch.body.position.z = bodyShiftZ;
+    rotBoneKidAxis(ch, 'Hips', AX_L, hipPitch);
+    rotBoneKidAxis(ch, 'Spine', AX_L, spinePitch * 0.45);
+    rotBoneKidAxis(ch, 'Spine1', AX_L, spinePitch * 0.35);
+    rotBoneKidAxis(ch, 'Spine1', AX_U, spineTwist);
+    rotBoneKidAxis(ch, 'Spine2', AX_L, spinePitch * 0.20);
+    rotBoneKidAxis(ch, 'Neck', AX_L, headPitch * 0.45);
+    rotBoneKidAxis(ch, 'Head', AX_L, headPitch * 0.55);
+    rotBoneKidAxis(ch, 'Head', AX_U, headYaw);
+
+    // Apply wide staggered legs (inner leg forward toward pit, outer leg braced behind)
+    var fLeg = isLeftTeam ? 'Left' : 'Right';
+    var bLeg = isLeftTeam ? 'Right' : 'Left';
+    // Slight hip splay (feet wide for stability!)
+    rotBoneKidAxis(ch, fLeg + 'UpLeg', AX_F, isLeftTeam ? -0.10 : 0.10);
+    rotBoneKidAxis(ch, bLeg + 'UpLeg', AX_F, isLeftTeam ?  0.14 : -0.14);
+
+    rotBoneKidAxis(ch, fLeg + 'UpLeg', AX_L, frontThigh - hipPitch * 0.85);
+    rotBoneKidAxis(ch, fLeg + 'Leg',   AX_L, frontKnee);
+    rotBoneKidAxis(ch, fLeg + 'Foot',  AX_L, frontFoot);
+
+    rotBoneKidAxis(ch, bLeg + 'UpLeg', AX_L, backThigh - hipPitch * 0.85);
+    rotBoneKidAxis(ch, bLeg + 'Leg',   AX_L, backKnee);
+    rotBoneKidAxis(ch, bLeg + 'Foot',  AX_L, backFoot);
+
+    // Measure rest ankle height once, then auto-ground lowest foot so shoes ALWAYS plant firmly on the sand (zero floating!)
+    ch.root.updateMatrixWorld(true);
+    var lf = ch.bones.LeftFoot, rf = ch.bones.RightFoot;
+    if (lf && rf) {
+      lf.getWorldPosition(_ikA);
+      rf.getWorldPosition(_ikB);
+      var minFootY = Math.min(_ikA.y, _ikB.y);
+      var targetAnkleY = 0.08 + ch.height * 0.068; // sole sits cleanly on strip (y=0.075)
+      ch.body.position.y += (targetAnkleY - minFootY);
+      ch.root.updateMatrixWorld(true);
+    }
+
+    if (ch._syncHead) ch._syncHead(K.now, mode);
+    if (ch._itemSyncs && ch._itemSyncs.length) {
+      ch.root.updateMatrixWorld(true);
+      for (var si = 0; si < ch._itemSyncs.length; si++) ch._itemSyncs[si](K.now);
+    }
+  }
+
+  function applySideRopeGripIK(sd, off, tens, t) {
+    sd.crew.kids.forEach(function (ch, k) {
+      if (ch.inMud || ch.tugMode === 'lose' || ch.tugMode === 'win') return;
+      var bones = ch.allBones || ch.bones;
+      var la = bones.LeftArm, ra = bones.RightArm;
+      var shoulderMidX = ch.holder.position.x + sd.s * 0.25;
+      if (la && ra) {
+        la.getWorldPosition(_ikA);
+        ra.getWorldPosition(_ikB);
+        shoulderMidX = (_ikA.x + _ikB.x) * 0.5;
+      }
+      // Slip stretches arms slightly further forward toward the mud pit!
+      var reachExtra = (ch.tugMode === 'slip') ? (k === 0 ? 0.12 : 0.08) : 0;
+      var frontX = shoulderMidX - sd.s * (0.31 + reachExtra); // Front hand closer to mud pit (palm DOWN)
+      var backX  = shoulderMidX - sd.s * (0.06 + reachExtra * 0.6); // Back hand ~25 cm behind front hand (palm UP)
+      ch._gripMidX = (frontX + backX) * 0.5;
+
+      var pFront = ropePointAtX(frontX, off, tens, t);
+      var pBack  = ropePointAtX(backX,  off, tens, t);
+
+      if (sd.s > 0) {
+        // Left team (facing -X, right hip next to rope): LeftHand = front (palm down), RightHand = back (palm up)
+        gripRopeWithHand(ch, 'Left',  false, pFront, true,  sd.s);
+        gripRopeWithHand(ch, 'Right', true,  pBack,  false, sd.s);
+      } else {
+        // Right team (facing +X, left hip next to rope): RightHand = front (palm down), LeftHand = back (palm up)
+        gripRopeWithHand(ch, 'Right', true,  pFront, true,  sd.s);
+        gripRopeWithHand(ch, 'Left',  false, pBack,  false, sd.s);
+      }
     });
+  }
 
+  K.onFrame(function (dt, t) {
+    posShow = K.lerp(posShow, pos, 1 - Math.exp(-dt * 5.8));
+    var targetTension = playing ? (phase === 'pull' || phase === 'heave' ? 1.0 : 0.82) : 0.05;
+    tension = K.lerp(tension, targetTension, dt * 4.0);
+    pullSurge = Math.max(0, pullSurge - dt * 0.85);
+    var targetStrain = (playing && (phase === 'pull' || phase === 'heave' || sides.some(function (sd) {
+      return sd.crew.kids.some(function (ch) { return ch.tugMode === 'strain' || ch.tugMode === 'pull'; });
+    }))) ? 1 : 0.25;
+    strainLevel = K.lerp(strainLevel, targetStrain, dt * 4.0);
+
+    var wob = playing ? Math.sin(t * 7.5) * (.012 + pullSurge * .04) : 0;
+    var off = worldOffOf(posShow) + wob;
+
+    // 1) Update straight braided rope FIRST so hands lock onto its exact centerline
     var curve = ropeCurve(off, tension, t);
     rope.geometry.dispose();
-    rope.geometry = new T3.TubeGeometry(curve, 44, .062, 8, false);
-    var midPt = curve.getPointAt(0.5);
-    ribbon.position.set(off, midPt.y, midPt.z);
+    rope.geometry = new T3.TubeGeometry(curve, 64, ROPE_R, 10, false);
+    var midPt = ropePointAtX(off, off, tension, t);
+    ribbon.position.copy(midPt);
 
-    gripKnots.forEach(function (gk) {
-      gk.mesh.visible = rope.visible;
-      var u = clamp((gk.relX + ROPE_HALF) / (ROPE_HALF * 2), 0, 1);
-      var pt = curve.getPointAt(u);
-      gk.mesh.position.copy(pt);
+    // 2) Place active pulling kids & update their long organic procedural poses
+    sides.forEach(function (sd) {
+      placeSide(sd, off, t);
+      sd.crew.kids.forEach(function (ch, k) {
+        updateTugKidPose(ch, sd, k, dt, t);
+      });
+      if (sd.crew.mon) sd.crew.mon.update(dt);
     });
+
+    // 3) Update bench / non-active crews cleanly
+    crews.forEach(function (c) {
+      var isActive = sides.some(function (sd) { return sd.crew === c; });
+      if (!isActive) c.all.forEach(function (ch) { ch.update(dt); });
+    });
+
+    // 4) Post-update Two-Bone Arm IK + Palm Orientation + 30-Bone Closed Fists onto the straight rope!
+    if (playing && sides.length === 2) {
+      sides.forEach(function (sd) { applySideRopeGripIK(sd, off, tension, t); });
+    }
 
     if (activeTurnHolder && playing) {
       turnMarker.set(activeTurnHolder, activeTurnHex);
@@ -492,36 +940,40 @@
     });
   });
 
-  /* ---------------- characters: each team = 3 rigged kids on the rope + 1 mascot coach on sideline ---------------- */
-  var crews = [];          // one per team: { mon (coach), kids:[k0,k1,k2], all:[..] }
+  /* ---------------- characters: each team = 3 rigged kids on the rope + 1 small mascot on sideline ---------------- */
+  var crews = [];          // one per team: { mon (sideline coach), kids:[k0,k1,k2], all:[..] }
   var sides = [];          // the two crews pulling now: { crew, s, team, ti }
   var playing = false;
 
   function placeSide(sd, off, t) {
-    // 3 rigged kids stand directly along the rope (z ≈ 0), facing the center pit, hands gripping the rope!
+    // 3 rigged kids stand side-on along the rope (z = +KID_Z), facing the mud pit (angled 10° open toward camera)
     sd.crew.kids.forEach(function (ch, k) {
       if (ch.inMud) return;
       var h = ch.holder;
       h.position.x = off + sd.s * SLOTS_X[k] + (ch.step || 0) * sd.s;
-      h.position.y = (ch.hopY || 0) + 0.08;
-      // Alternating tiny Z offset so kids stand shoulder-to-shoulder along the rope without clipping
-      h.position.z = (k % 2 === 0 ? 0.06 : -0.06);
-      h.rotation.y = sd.s < 0 ? Math.PI / 2 : -Math.PI / 2;
-      h.rotation.z = 0; // REAL skeletal animation drives the lean — ZERO stiff box-tilting!
+      h.position.y = (ch.hopY || 0);
+      h.position.z = KID_Z + (k === 1 ? 0.02 : 0);
+      // Left team (s=+1) faces -X (mud pit), slightly open toward camera (-Z); Right team (s=-1) faces +X, slightly open toward camera (-Z)
+      h.rotation.set(0, sd.s > 0 ? (-Math.PI / 2 - 0.16) : (Math.PI / 2 + 0.16), 0);
     });
-    // Team monster stands proudly on the sideline cheering as Team Captain/Coach!
+    // Smaller team mascot cheers from the sidelines, well off the rope!
     if (sd.crew.mon && !sd.crew.mon.inMud) {
       var mh = sd.crew.mon.holder;
-      mh.position.set(off + sd.s * 6.6, 0.08, 2.25);
-      mh.rotation.set(0, Math.PI, 0);
+      mh.position.set(off + sd.s * 4.35, 0.08, 2.75);
+      mh.rotation.set(0, sd.s > 0 ? Math.PI + 0.25 : Math.PI - 0.25, 0);
     }
   }
 
-  // Teams that are not pulling wait on the side and cheer
+  // Teams that are not pulling wait behind the rail facing the rope and cheer (NEVER T-pose!)
   var benchOrder = [];
   function benchSpot(ti, k) {
     var order = benchOrder.indexOf(ti);
-    return V(-((order - (benchOrder.length - 1) / 2) * 5 + (k - 1) * 1.3), 0, 5.6 + (k === 0 ? 0 : .6));
+    return V(-((order - (benchOrder.length - 1) / 2) * 4.6 + (k - 1) * 0.95), 0.06, 4.95 + (k === 0 ? 0.35 : 0));
+  }
+  function setBenchCheer(ch, k) {
+    if (ch.useMixer && ch.stopClip) ch.stopClip();
+    var states = ['clap', 'cheer', 'wave'];
+    ch.setState(states[(k + Math.floor(Math.random() * 3)) % states.length]);
   }
   function toBench(ti) {
     if (ti >= nTeams) {
@@ -537,12 +989,16 @@
         ch.hopY = 0;
         var p = benchSpot(bi, k);
         ch.holder.position.copy(p);
+        // Face -Z (directly toward the rope and action!)
         ch.holder.rotation.set(0, Math.PI, 0);
         ch.holder.visible = bi < nTeams;
-        if (ch.kind === 'kid' && ch.actions && ch.actions.SideCheer) {
-          ch.playClip('SideCheer', { startPhase: Math.random(), speed: 0.9 + Math.random() * 0.25 });
+        // Hide floating team-name pills while on the bench so background stays clean
+        ch.holder.children.forEach(function (c) { if (c.isSprite) c.visible = false; });
+        if (ch.kind === 'kid') {
+          if (ch.useMixer && ch.stopClip) ch.stopClip();
+          ch.setState(k % 2 === 0 ? 'clap' : 'wave');
         } else {
-          ch.setState('idle');
+          ch.setState('cheer');
         }
       });
     });
@@ -567,47 +1023,72 @@
   function cheerBench() {
     benchOrder.forEach(function (bi) {
       if (!crews[bi]) return;
-      var ch = crews[bi].all[(Math.random() * crews[bi].all.length) | 0];
-      if (ch && ch.state === 'idle') {
-        ch.setState(Math.random() < .5 ? 'clap' : 'hop');
-        K.after(1.2, function () { if (ch.state !== 'cheer') ch.setState('idle'); });
-      }
+      crews[bi].all.forEach(function (ch, k) {
+        if (ch.kind === 'kid') {
+          if (ch.useMixer && ch.stopClip) ch.stopClip();
+          ch.setState(k % 2 === 0 ? 'cheer' : 'clap');
+          K.after(1.6, function () { if (benchOrder.indexOf(bi) >= 0) ch.setState(k % 2 === 0 ? 'clap' : 'wave'); });
+        } else {
+          ch.setState('cheer');
+        }
+      });
     });
   }
 
-  /* ---------------- camera (cinematic low-angle sports broadcast!) ---------------- */
+  /* ---------------- camera (child-eye-height 1.22m side broadcast: kids fill 42–50% height!) ---------------- */
+  function snapCamNow() {
+    if (K.cam.follow) K.cam.follow(0);
+    K.cam.snap();
+  }
   function shot(name, extra) {
     K.cam.follow = null;
     if (name === 'title') {
       K.cam.follow = function () {
         var a = K.now * .12;
-        K.cam.tPos.set(Math.sin(a) * 4.5, 4.6, -13.5 - Math.cos(a) * 1.0);
-        K.cam.tLook.set(0, 1.0, .6);
+        K.cam.tPos.set(Math.sin(a) * 2.8, 2.25, -8.4 - Math.cos(a) * 0.6);
+        K.cam.tLook.set(0, 0.95, 0.4);
       };
-      K.cam.k = 1.6;
+      K.cam.k = 1.8;
     }
     if (name === 'match') {
       K.cam.follow = function () {
-        var zoomIn = pullSurge * 1.15;
-        K.cam.tPos.set(posShow * .6, 3.1 - zoomIn * .18, -11.4 + zoomIn);
-        K.cam.tLook.set(posShow * .6, 1.0, 0);
+        var wOff = worldOffOf(posShow);
+        var zoomIn = pullSurge * 0.35;
+        K.cam.tPos.set(wOff * .48, 1.22, -6.90 + zoomIn);
+        K.cam.tLook.set(wOff * .48, 0.88, 0.08);
       };
-      K.cam.k = 2.6;
+      K.cam.k = 3.2;
     }
-    if (name === 'side') {
-      var x = posShow * .6 + extra * 2.2;
-      K.cam.set(V(x + extra * 1.2, 2.35, -7.8), V(x, .85, 0), 2.8);
+    if (name === 'question' || name === 'side') {
+      // Shift lookY slightly lower so rope + kids sit cleanly in upper 66% above bottom-30% translucent .qcard
+      K.cam.follow = function () {
+        var wOff = worldOffOf(posShow);
+        K.cam.tPos.set(wOff * .42, 1.24, -6.75);
+        K.cam.tLook.set(wOff * .42, 0.58, 0.08);
+      };
+      K.cam.k = 3.0;
+    }
+    if (name === 'pull') {
+      // 2.4s close-up of the pulling team during the 3-step "heave... ho!" pull!
+      var pullDir = extra || 1;
+      K.cam.follow = function () {
+        var wOff = worldOffOf(posShow);
+        var cx = wOff + pullDir * 2.08;
+        K.cam.tPos.set(cx - pullDir * 0.20, 1.18, -4.15);
+        K.cam.tLook.set(cx, 0.86, 0.10);
+      };
+      K.cam.k = 3.6;
     }
     if (name === 'mud') {
-      K.cam.set(V(posShow * .2, 2.6, -6.8), V(0, .55, 0), 3.4);
+      K.cam.set(V(worldOffOf(posShow) * .12, 1.52, -4.65), V(0, 0.56, 0), 3.8);
     }
     if (name === 'podium') {
       K.cam.follow = function () {
         var a = Math.sin(K.now * .3) * .55;
-        K.cam.tPos.set(a * 2, 3.6, -11.2);
-        K.cam.tLook.set(0, .55, 1.6);
+        K.cam.tPos.set(a * 1.8, 2.4, -8.4);
+        K.cam.tLook.set(0, 1.05, 1.6);
       };
-      K.cam.k = 2;
+      K.cam.k = 2.2;
     }
   }
 
@@ -760,14 +1241,109 @@
     openHowTo: openHowTo,
     getFps: function () { return Math.round(fpsAvg); },
     getPhase: function () { return phase; },
-    startQuickMatch: function () {
+    startQuickMatch: function (opts) {
+      opts = opts || {};
       K.ui.clear(); K.ui.topButtons(); addHelpTopButton();
       turnBannerEl = K.ui.add(K.el('div', 'tg-turn-banner'));
       liveBoardEl = K.ui.add(K.el('div', 'tg-live-board'));
-      match(0, 1);
+      match(0, 1, opts);
     },
     triggerPull: function (mega) {
       if (sides.length === 2) pull(sides[0], sides[1], mega ? 1.5 : 1, true, !!mega);
+    },
+    // Deterministic QA state inspector for acceptance screenshots & 10s pull recording
+    setDemoState: function (st) {
+      if (sides.length !== 2) {
+        this.startQuickMatch({ noAutoTurn: true });
+      }
+      clearMudDroplets();
+      // Clear floating question / toast overlays for crisp inspection unless st === 'question'
+      document.querySelectorAll('.qwrap, .tg-heave-bar, .big, .toast').forEach(function (el) { el.remove(); });
+      document.querySelectorAll('.tg-turn-banner, .tg-live-board').forEach(function (el) { el.style.display = ''; });
+      var L = sides[0], R = sides[1];
+      playing = true;
+      rope.visible = ribbon.visible = true;
+      K.cam.manual = false;
+      K.cam.follow = null;
+      L.crew.kids.forEach(function (ch) { ch.inMud = false; ch.step = 0; ch.hopY = 0; ch.holder.rotation.set(0, 0, 0); });
+      R.crew.kids.forEach(function (ch) { ch.inMud = false; ch.step = 0; ch.hopY = 0; ch.holder.rotation.set(0, 0, 0); });
+
+      if (st === 'ready') {
+        pos = 0; posShow = 0; tension = 0.85; pullSurge = 0; strainLevel = 0.25; phase = 'match';
+        L.crew.kids.forEach(function (ch) { ch.tugMode = 'ready'; ch.tugModeT = 0.6; });
+        R.crew.kids.forEach(function (ch) { ch.tugMode = 'ready'; ch.tugModeT = 0.6; });
+        shot('match'); snapCamNow();
+      } else if (st === 'strain') {
+        pos = 0.20; posShow = 0.20; tension = 1.0; pullSurge = 0.45; strainLevel = 1.0; phase = 'match';
+        L.crew.kids.forEach(function (ch) { ch.tugMode = 'strain'; ch.tugModeT = 0.9; });
+        R.crew.kids.forEach(function (ch) { ch.tugMode = 'strain'; ch.tugModeT = 0.9; });
+        shot('match'); snapCamNow();
+      } else if (st === 'pull') {
+        pos = 0.95; posShow = 0.95; tension = 1.0; pullSurge = 1.0; strainLevel = 1.0; phase = 'pull';
+        L.crew.kids.forEach(function (ch) { ch.tugMode = 'pull'; ch.heaveStepT = 0.42; ch.heaveStepIdx = 2; ch.step = 0.14; });
+        R.crew.kids.forEach(function (ch) { ch.tugMode = 'slip'; ch.tugModeT = 0.45; ch.step = -0.08; });
+        shot('pull', L.s); snapCamNow();
+      } else if (st === 'slip') {
+        pos = 1.35; posShow = 1.35; tension = 1.0; pullSurge = 0.9; strainLevel = 1.0; phase = 'pull';
+        L.crew.kids.forEach(function (ch) { ch.tugMode = 'pull'; ch.heaveStepT = 0.55; ch.heaveStepIdx = 2; ch.step = 0.16; });
+        R.crew.kids.forEach(function (ch) { ch.tugMode = 'slip'; ch.tugModeT = 0.50; ch.step = -0.10; });
+        K.cam.set(V(-0.32, 1.22, -6.15), V(-0.32, 0.86, 0.08), 8);
+        snapCamNow();
+      } else if (st === 'question') {
+        pos = 0.35; posShow = 0.35; tension = 0.85; pullSurge = 0; phase = 'question';
+        L.crew.kids.forEach(function (ch) { ch.tugMode = 'ready'; });
+        R.crew.kids.forEach(function (ch) { ch.tugMode = 'ready'; });
+        shot('question'); snapCamNow();
+        K.ui.ask(QS.next(), L.team, { prompt: 'answer right to pull the rope!' });
+      } else if (st === 'win-mud') {
+        pos = WIN; posShow = WIN; playing = false; tension = 0.02; phase = 'won';
+        var wOff = worldOffOf(WIN);
+        placeSide(L, wOff, K.now);
+        placeSide(R, wOff, K.now);
+        var front = R.crew.kids[0];
+        front.inMud = true;
+        front.tugMode = 'lose';
+        if (front.useMixer && front.stopClip) front.stopClip();
+        front.setState('fly');
+        front.holder.position.set(-0.08, 0.14, -0.04);
+        front.holder.rotation.set(0.18, Math.PI * 0.56, 0.12);
+        R.crew.kids.slice(1).forEach(function (ch, idx) {
+          ch.tugMode = 'lose';
+          if (ch.useMixer && ch.stopClip) ch.stopClip();
+          ch.setState('headhands');
+          ch.holder.position.set(-1.35 - idx * 0.78, 0.06, 0.28);
+          ch.holder.rotation.set(0, Math.PI * 0.65, 0);
+        });
+        L.crew.kids.forEach(function (ch, idx) {
+          ch.tugMode = 'win';
+          if (ch.useMixer && ch.stopClip) ch.stopClip();
+          ch.setState('cheer');
+          ch.holder.position.set(1.55 + idx * 0.72, 0.06, 0.25);
+          ch.holder.rotation.set(0, -Math.PI * 0.72, 0);
+        });
+        spawnMudSplash(V(0, 0.18, 0));
+        K.fx.puff(V(0, 0.26, 0), 14, { color: 0x8a542e, size: 0.72, life: 1.8, opacity: .88 });
+        K.fx.confetti(V(L.s * 1.9, 2.4, 0), 90);
+        K.cam.set(V(0.05, 1.48, -5.85), V(0.05, 0.68, 0.05), 8);
+        snapCamNow();
+      }
+      refreshMeter(7);
+    },
+    focusHandsCloseup: function () {
+      if (sides.length !== 2) this.startQuickMatch({ noAutoTurn: true });
+      clearMudDroplets();
+      document.querySelectorAll('.qwrap, .tg-heave-bar, .big, .toast, .tg-turn-banner, .tg-live-board').forEach(function (el) { el.style.display = 'none'; });
+      pos = 0; posShow = 0; playing = true; tension = 1.0; pullSurge = 0.15; strainLevel = 0.8; phase = 'match';
+      sides[0].crew.kids.forEach(function (ch) { ch.inMud = false; ch.step = 0; ch.tugMode = 'strain'; });
+      sides[1].crew.kids.forEach(function (ch) { ch.inMud = false; ch.step = 0; ch.tugMode = 'strain'; });
+      // Force one update pass so _gripMidX is exact
+      placeSide(sides[0], 0, K.now);
+      updateTugKidPose(sides[0].crew.kids[0], sides[0], 0, 1 / 60, K.now);
+      applySideRopeGripIK(sides[0], 0, 1.0, K.now);
+      var handMidX = sides[0].crew.kids[0]._gripMidX || (SLOTS_X[0] + 0.02);
+      K.cam.follow = null;
+      K.cam.set(V(handMidX - 0.04, ROPE_Y + 0.05, -0.82), V(handMidX, ROPE_Y, 0.01), 12);
+      snapCamNow();
     }
   };
 
@@ -888,14 +1464,16 @@
     rows.appendChild(go);
     box.appendChild(rows);
     K.say(roundName(matchNo) + '. Team ' + L.name + ' against Team ' + R.name + '!');
-    if (K.DEMO) K.after(1.3, function () { if (phase === 'bracket') go.onclick(); });
+    if (K.DEMO || (K.isAI && K.isAI(L) && K.isAI(R))) K.after(1.1, function () { if (phase === 'bracket') go.onclick(); });
   }
 
-  function match(li, ri) {
+  function match(li, ri, opts) {
+    opts = opts || {};
     phase = 'match';
     window.__k3phase = 'match';
     pos = 0;
     posShow = 0;
+    setMusicDuck(false);
     crews.forEach(function (c, i) {
       if (i < nTeams && i !== li && i !== ri) toBench(i);
       else if (i >= nTeams) c.all.forEach(function (ch) { ch.holder.visible = false; });
@@ -910,13 +1488,16 @@
     ];
     sides.forEach(function (sd) {
       sd.crew.kids.forEach(function (ch, idx) {
+        ensureTugRigData(ch);
         ch.inMud = false;
         ch.step = 0;
         ch.hopY = 0;
-        ch.lean = 1;
+        ch.tugMode = 'ready';
+        ch.tugModeT = 0;
+        ch.heaveStepT = 1;
         ch.holder.visible = true;
-        ch.holder.position.y = 0.08;
-        ch.playClip('TugReady', { startPhase: idx * 0.25, fade: 0.18 });
+        ch.holder.children.forEach(function (c) { if (c.isSprite) c.visible = true; });
+        if (ch.useMixer && ch.stopClip) ch.stopClip();
       });
       if (sd.crew.mon) {
         sd.crew.mon.inMud = false;
@@ -948,29 +1529,37 @@
       activeTurnHolder = (sd.crew.kids[0] || sd.crew.mon).holder;
       activeTurnHex = sd.team.hex;
       updateTurnUI(sd);
-      shot('side', sd.s);
+      // Both teams brace & strain gently while the question is up, music ducked under the question voice!
+      sides.forEach(function (sObj) {
+        sObj.crew.kids.forEach(function (ch) { if (!ch.inMud) { ch.tugMode = 'ready'; ch.tugModeT = 0; } });
+      });
+      shot('question');
+      setMusicDuck(true);
       demoTurn++;
       asked++;
 
       if (sd.crew.mon) sd.crew.mon.setState('hello');
       K.sfx('hello');
       K.after(.75, function () { if (phase === 'question' && sd.crew.mon) sd.crew.mon.setState('idle'); });
-      K.ui.toast('Team ' + sd.team.name + ' · answer to PULL!', 1.5, sd.team.c);
+      K.ui.toast('Team ' + sd.team.name + ' · answer to PULL!', 1.4, sd.team.c);
 
-      K.after(.8, function () {
+      K.after(.75, function () {
         K.ui.ask(QS.next(), sd.team, {
           prompt: 'answer right to pull the rope!',
           demoRight: DEMO_WRONG.indexOf(demoTurn) < 0,
           onAnswer: function (ok) {
-            shot('match');
+            setMusicDuck(false);
             if (ok) {
               sd.team.score += 1;
               K.sfx('correct');
+              sides.forEach(function (sObj) {
+                sObj.crew.kids.forEach(function (ch) { if (!ch.inMud) { ch.tugMode = 'strain'; ch.tugModeT = 0; } });
+              });
               promptHeaveBoost(sd, function (isMega) {
                 pull(sd, other, isMega ? STRONG * 1.5 : STRONG, true, isMega);
                 refreshMeter(MAX_Q - asked);
                 turnSide = 1 - turnSide;
-                K.after(1.9, turn);
+                K.after(2.95, turn);
               });
             } else {
               K.sfx('wrong');
@@ -978,13 +1567,13 @@
               pull(other, sd, SMALL, false, false);
               refreshMeter(MAX_Q - asked);
               turnSide = 1 - turnSide;
-              K.after(2.0, turn);
+              K.after(2.45, turn);
             }
           }
         });
       });
     }
-    K.after(1.4, turn);
+    if (!opts.noAutoTurn) K.after(1.4, turn);
   }
 
   // Interactive 2-second "TAP TO HEAVE!" power mash burst for Mega Heave (+1.5 steps)!
@@ -992,6 +1581,7 @@
     phase = 'heave';
     window.__k3phase = 'heave';
     updateTurnUI(sd);
+    shot('match');
     var bar = K.ui.add(K.el('div', 'tg-heave-bar'));
     bar.style.setProperty('--c', sd.team.c);
     var left = K.el('div', 'tg-heave-left');
@@ -1016,7 +1606,7 @@
       taps++;
       pullSurge = Math.min(1, pullSurge + .45);
       K.sfx('whoosh');
-      K.fx.burst(V(pos, ROPE_Y, 0), 6, { color: [sd.team.hex, 0xffd84a], speed: 3, size: .1, life: .32 });
+      K.fx.burst(V(worldOffOf(posShow), ROPE_Y, 0), 6, { color: [sd.team.hex, 0xffd84a], speed: 3, size: .09, life: .32 });
       fill.style.width = Math.min(100, (taps / TARGET_TAPS) * 100) + '%';
       if (taps >= TARGET_TAPS) finishHeave();
     }
@@ -1027,73 +1617,122 @@
     btn.onclick = pump;
     addEventListener('keydown', onKey);
     K.renderer.domElement.addEventListener('pointerdown', pump);
-    if (K.DEMO) {
+    if (K.DEMO || (K.isAI && K.isAI(sd.team))) {
       K.after(.22, pump);
       K.after(.44, pump);
       K.after(.66, pump);
-      K.after(.9, finishHeave);
+      if (Math.random() < .55) { K.after(.82, pump); K.after(.98, pump); }
+      K.after(1.08, finishHeave);
     } else {
       K.after(2.0, finishHeave);
     }
   }
 
-  // Rhythmic heave-ho stepping & leaning pull animation with rope tension surge
+  // Rhythmic 3-step "Heave... Ho!" pull with 2.4s close-up camera, rope creaks, shouts & stumbling losers
   function pull(winSide, loseSide, amount, big, isMega) {
     phase = 'pull';
     window.__k3phase = 'pull';
-    var before = pos;
-    pos = clamp(pos + winSide.s * amount, -WIN, WIN);
-    pullSurge = isMega ? 1.35 : (big ? 1.0 : .6);
-    K.sfx(big ? 'pull' : 'whoosh');
-    if (isMega) K.say('Mega heave! Huge pull!');
-    else if (big) K.say('Heave! Pull!');
+    var startPos = pos;
+    var targetPos = clamp(pos + winSide.s * amount, -WIN, WIN);
+    var totalDelta = targetPos - startPos;
+    var steps = big ? 3 : 2;
+    var stepInterval = 0.78; // 3 steps = 2.34 s dramatic rhythm ("heave... ho!... HEAVE!")
 
-    // Winning crew executes REAL Blender TugPull skeletal heave with foot-dirt puffs!
-    foley.ropeCreak(isMega || big);
-    winSide.crew.kids.forEach(function (ch, k) {
-      K.after(k * .05, function () {
-        ch.playClip('TugPull', { speed: isMega ? 1.55 : (big ? 1.25 : 1.0), fade: 0.14, restart: true });
-        foley.footScuff();
-        // Dirt & grass puffs right under each kid's planted feet!
-        var lf = ch.getBoneWorldPos('LeftFoot');
-        var rf = ch.getBoneWorldPos('RightFoot');
-        K.fx.puff(lf.clone().add(V(0, .1, 0)), 4, { size: .38, color: 0xe6cda0 });
-        K.fx.puff(rf.clone().add(V(0, .1, 0)), 3, { size: .32, color: 0xd9bc8c });
-        K.after(1.05, function () {
-          if (!ch.inMud && playing) ch.playClip('TugStrain', { fade: 0.25 });
-        });
-      });
-    });
+    // Cut smoothly to a 2.4s close-up of the pulling team on right answers, then back to wide view!
+    if (big) shot('pull', winSide.s);
+    else shot('match');
+
+    if (isMega) K.say('Heave! Ho! Mega pull!');
+    else if (big) K.say('Heave! Ho! Pull!');
+
     if (winSide.crew.mon) winSide.crew.mon.setState('cheer');
-
-    // Losing crew gets yanked forward with REAL TugSlip skeletal animation!
-    loseSide.crew.kids.forEach(function (ch, k) {
-      K.after(k * .05, function () {
-        ch.playClip('TugSlip', { speed: big ? 1.3 : 1.0, fade: 0.14, restart: true });
-        var lf = ch.getBoneWorldPos('LeftFoot');
-        K.fx.puff(lf.clone().add(V(0, .08, 0)), 5, { size: .45, color: 0xe9d3a8 });
-        K.after(1.05, function () {
-          if (!ch.inMud && playing) ch.playClip('TugReady', { fade: 0.25 });
-        });
-      });
-    });
     if (loseSide.crew.mon) loseSide.crew.mon.setState('sad');
 
-    var p = V(pos, ROPE_Y + .4, 0);
-    K.fx.puff(V(before + loseSide.s * SLOTS_X[0], .2, 0), 6, { size: .62, color: 0xe9d3a8 });
-    K.fx.burst(V(pos, ROPE_Y, 0), 14, { color: [winSide.team.hex, 0xffd84a], speed: 3.8, size: .12, life: .48 });
-    if (isMega) {
-      K.fx.confetti(p.clone().add(V(0, 1.4, 0)), 65);
-      K.fx.text('+1.5!', p.clone().add(V(0, 1.35, 0)), '#ffd84a', .9);
-      K.ui.big('💥 MEGA HEAVE! +1.5', 1.0, true);
-      K.cam.shake(.24);
-    } else if (big) {
-      K.fx.text('+1!', p.clone().add(V(0, 1.25, 0)), winSide.team.c, .85);
-      K.cam.shake(.15);
-    } else {
-      K.fx.text('+½!', p.clone().add(V(0, 1.15, 0)), winSide.team.c, .8);
+    for (var sIdx = 0; sIdx < steps; sIdx++) {
+      (function (idx) {
+        K.after(idx * stepInterval, function () {
+          if (!playing && phase !== 'pull') return;
+          var isFinal = (idx === steps - 1);
+          var frac = isFinal ? 1 : (idx + 1) / steps;
+          pos = startPos + totalDelta * frac;
+          pullSurge = isFinal ? (isMega ? 1.35 : 1.1) : 0.82;
+
+          // Sound: rope creak + short "heave!" shout on EVERY pull step; crowd louder on final step!
+          foley.ropeCreak(isFinal || isMega);
+          foley.heaveShout(idx);
+          foley.footScuff();
+          K.sfx(isFinal && big ? 'pull' : 'whoosh');
+          if (isFinal) {
+            foley.crowdSwell(1.0);
+            K.loopVol('crowd', 0.34);
+            K.after(1.3, function () { K.loopVol('crowd', 0.16); });
+          } else {
+            foley.crowdSwell(0.45);
+          }
+
+          // Winning team: lean back deeper -> step back -> plant foot with dirt puffs!
+          winSide.crew.kids.forEach(function (ch, k) {
+            K.after(k * 0.045, function () {
+              if (ch.inMud) return;
+              ch.tugMode = 'pull';
+              ch.heaveStepT = 0;
+              ch.heaveStepIdx = idx;
+              ch.step = (idx + 1) * 0.06;
+              var lf = ch.getBoneWorldPos('LeftFoot');
+              var rf = ch.getBoneWorldPos('RightFoot');
+              K.fx.puff(lf.clone().add(V(0, .06, 0)), 4, { size: .30, color: 0xe6cda0 });
+              K.fx.puff(rf.clone().add(V(0, .06, 0)), 3, { size: .26, color: 0xd9bc8c });
+            });
+          });
+
+          // Losing team: stumbles 1 step forward, arms pulled straight, front kid nearly falls!
+          loseSide.crew.kids.forEach(function (ch, k) {
+            K.after(k * 0.045, function () {
+              if (ch.inMud) return;
+              ch.tugMode = 'slip';
+              ch.tugModeT = 0;
+              ch.step = -(idx + 1) * 0.05;
+              var lf = ch.getBoneWorldPos('LeftFoot');
+              K.fx.puff(lf.clone().add(V(0, .06, 0)), 4, { size: .36, color: 0xe9d3a8 });
+            });
+          });
+
+          var wPos = worldOffOf(pos);
+          var p = V(wPos, ROPE_Y + .35, 0);
+          if (GQC && GQC.Juice) {
+            GQC.Juice.squashStretch(ribbon, 1.32, 0.80, 1.32, 0.24);
+            GQC.Juice.shakeCamera(isFinal ? (isMega ? 0.22 : 0.14) : 0.08, 0.22);
+            if (isFinal) GQC.Juice.spawnBurst(scene, V(wPos, ROPE_Y, 0), isMega ? 'stars' : 'dust', 14);
+          }
+          K.fx.burst(V(wPos, ROPE_Y, 0), isFinal ? 14 : 7, { color: [winSide.team.hex, 0xffd84a], speed: 3.4, size: .10, life: .44 });
+          if (isFinal) {
+            if (GQC && GQC.Juice) {
+              GQC.Juice.popupScore(isMega ? '💥 MEGA HEAVE!' : (big ? '🪢 HEAVE HO!' : '+½ PULL'), p.clone().add(V(0, .35, 0)), K.camera, winSide.team.c, isMega ? 1.25 : 1.05);
+            }
+            if (isMega) {
+              K.fx.confetti(p.clone().add(V(0, 1.3, 0)), 65);
+              K.fx.text('+1.5!', p.clone().add(V(0, 1.2, 0)), '#ffd84a', .85);
+              K.ui.big('💥 MEGA HEAVE! +1.5', 1.0, true);
+              K.cam.shake(.22);
+            } else if (big) {
+              K.fx.text('+1!', p.clone().add(V(0, 1.15, 0)), winSide.team.c, .8);
+              K.cam.shake(.14);
+            } else {
+              K.fx.text('+½!', p.clone().add(V(0, 1.05, 0)), winSide.team.c, .75);
+            }
+            cheerBench();
+          }
+        });
+      })(sIdx);
     }
-    cheerBench();
+
+    // After the 3-step pull completes (~2.45s), settle into straining stance and return to wide broadcast view!
+    K.after(steps * stepInterval + 0.15, function () {
+      if (!playing) return;
+      winSide.crew.kids.forEach(function (ch) { if (!ch.inMud) { ch.step = 0; ch.tugMode = 'strain'; ch.tugModeT = 0; } });
+      loseSide.crew.kids.forEach(function (ch) { if (!ch.inMud) { ch.step = 0; ch.tugMode = 'ready'; ch.tugModeT = 0; } });
+      shot('match');
+    });
   }
 
   function win(sd, how) {
@@ -1102,6 +1741,7 @@
     window.__k3phase = 'won';
     activeTurnHolder = null;
     updateTurnUI(null);
+    setMusicDuck(false);
 
     if (!sd) {
       var a = sides[0].team.score, b = sides[1].team.score;
@@ -1114,48 +1754,65 @@
     K.sfx('whistle');
     if (how === 'time') K.ui.toast('⏱ Time! Team ' + sd.team.name + ' is ahead!', 2, sd.team.c);
 
-    // Losing front kid tumbles into the mud pit with REAL TugLose skeletal animation & slow-mo splash!
+    // Losing front kid releases the rope and slides/tumbles into the mud pit with a big splash!
     var front = lose.crew.kids[0] || lose.crew.mon;
     var mudDz = null;
-    K.after(.35, function () {
+    K.after(.3, function () {
       shot('mud');
       front.inMud = true;
-      if (front.playClip) front.playClip('TugLose', { once: true, fade: 0.12 });
-      else front.setState('tumble');
+      front.tugMode = 'lose';
+      if (front.useMixer && front.stopClip) front.stopClip();
+      front.setState('tumble');
       K.sfx('splash');
+      foley.crowdSwell(1.0);
       var h = front.holder, from = h.position.clone(), t0 = K.now;
       var splashed = false;
       var fn = K.onFrame(function () {
         var u = Math.min(1, (K.now - t0) / .72);
-        h.position.set(K.lerp(from.x, 0, u), 0.08 + Math.sin(u * Math.PI) * 0.85, K.lerp(from.z, -.15, u));
-        if (u >= .68 && !splashed) {
+        h.position.set(K.lerp(from.x, 0, u), 0.10 + Math.sin(u * Math.PI) * 0.78, K.lerp(from.z, -.05, u));
+        h.rotation.x = u * 0.65;
+        h.rotation.z = -lose.s * u * 0.45;
+        if (u >= .66 && !splashed) {
           splashed = true;
-          K.timeScale = 0.28;
+          if (GQC && GQC.Juice) {
+            GQC.Juice.hitstop(42);
+            GQC.Juice.shakeCamera(0.28, 0.35);
+            GQC.Juice.spawnBurst(scene, V(0, .3, 0), 'splash', 18);
+          }
+          K.timeScale = 0.32;
           setTimeout(function () { K.timeScale = 1; }, 420);
           spawnMudSplash(V(0, .18, 0));
-          K.fx.puff(V(0, .35, 0), 18, { color: 0x8a542e, size: 1.15, life: 1.15, opacity: .92 });
-          K.fx.burst(V(0, .45, 0), 22, { color: [0x8a542e, 0x5c361c, 0xc28452], speed: 5.2, size: .18, life: .75 });
-          K.fx.text('💦 SPLASH!', V(0, 2.2, 0), '#8a542e', 1.45);
-          K.cam.shake(.35);
+          K.fx.puff(V(0, .35, 0), 18, { color: 0x8a542e, size: 1.12, life: 1.15, opacity: .92 });
+          K.fx.burst(V(0, .45, 0), 22, { color: [0x8a542e, 0x5c361c, 0xc28452], speed: 5.2, size: .16, life: .75 });
+          K.fx.text('💦 SPLASH!', V(0, 1.9, 0), '#8a542e', 1.35);
+          K.cam.shake(.32);
         }
         if (u >= 1) {
           K.offFrame(fn);
-          mudDz = K.dizzyStars(h, 1.35);
+          mudDz = K.dizzyStars(h, 1.25);
         }
       });
-      lose.crew.kids.slice(1).forEach(function (k) { k.playClip('TugLose', { once: true, fade: 0.2 }); });
+      lose.crew.kids.slice(1).forEach(function (k) {
+        k.tugMode = 'lose';
+        if (k.useMixer && k.stopClip) k.stopClip();
+        k.setState('headhands');
+      });
       if (lose.crew.mon) lose.crew.mon.setState('sad');
-      sd.crew.kids.forEach(function (ch, idx) { ch.playClip('TugWin', { startPhase: idx * 0.2, fade: 0.16 }); });
+      sd.crew.kids.forEach(function (ch) {
+        ch.tugMode = 'win';
+        if (ch.useMixer && ch.stopClip) ch.stopClip();
+        ch.setState('cheer');
+      });
       if (sd.crew.mon) sd.crew.mon.setState('cheer');
-      K.fx.confetti(V(sd.s * 4.2, 3.2, 0), 160);
+      K.fx.confetti(V(sd.s * 2.4, 2.8, 0), 150);
       K.ui.big('🏆 Team ' + sd.team.name + ' Wins ' + roundName(matchNo) + '!', 2.0, true);
       K.say('Splash! Team ' + sd.team.name + ' wins!');
     });
 
-    K.after(3.6, function () {
+    K.after(3.8, function () {
       if (mudDz) mudDz.remove();
       if (meter) { meter.remove(); meter = null; }
-      lose.crew.all.forEach(function (ch) { ch.inMud = false; ch.holder.rotation.set(0, Math.PI, 0); });
+      lose.crew.all.forEach(function (ch) { ch.inMud = false; ch.tugMode = 'ready'; ch.holder.rotation.set(0, Math.PI, 0); });
       lose.team.place = matchNo === BRACKET.length - 1 ? 2 : 1;
       matchNo++;
       if (matchNo >= BRACKET.length) return finish(sd.ti);
@@ -1297,11 +1954,11 @@
   var animsP = K.loadAnimClips(K.ROOT + 'assets/3d/characters/kid-tug-anims.glb').catch(function (e) { console.warn('anims', e); return []; });
   var jobs = [worldP, archP, flagP, trophyP, animsP];
   ALL_TEAMS.forEach(function (t, ti) {
-    // 1 team mascot coach + 3 rigged kids (boy/girl/boy) on the rope!
-    jobs.push(K.makeCharacter(t, { monHeight: 1.35, kidHeight: 1.35 }));
-    jobs.push(K.makeCharacter(t, { kidsOnly: true, kid: ti % 2 === 0 ? 'boy' : 'girl', kidHeight: 1.42 }).catch(function (err) { console.error('kid1', t.name, err); return null; }));
-    jobs.push(K.makeCharacter(t, { kidsOnly: true, kid: ti % 2 === 0 ? 'girl' : 'boy', kidHeight: 1.38 }).catch(function (err) { console.error('kid2', t.name, err); return null; }));
-    jobs.push(K.makeCharacter(t, { kidsOnly: true, kid: 'boy', kidHeight: 1.40 }).catch(function (err) { console.error('kid3', t.name, err); return null; }));
+    // 1 small sideline mascot coach (0.80m, smaller than kids!) + 3 rigged kids (1.54–1.58m) on the rope
+    jobs.push(K.makeCharacter(t, { monHeight: 0.80, kidHeight: 0.80 }));
+    jobs.push(K.makeCharacter(t, { kidsOnly: true, kid: ti % 2 === 0 ? 'boy' : 'girl', kidHeight: 1.58 }).catch(function (err) { console.error('kid1', t.name, err); return null; }));
+    jobs.push(K.makeCharacter(t, { kidsOnly: true, kid: ti % 2 === 0 ? 'girl' : 'boy', kidHeight: 1.54 }).catch(function (err) { console.error('kid2', t.name, err); return null; }));
+    jobs.push(K.makeCharacter(t, { kidsOnly: true, kid: 'boy', kidHeight: 1.56 }).catch(function (err) { console.error('kid3', t.name, err); return null; }));
   });
 
   Promise.all(jobs).then(function (res) {
@@ -1320,6 +1977,7 @@
         var h = new T3.Group();
         h.add(ch.root);
         scene.add(h);
+        if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(h, 0.52, 0.52, 0.24, 0.012);
         ch.holder = h;
         if (k === 1) { // label above front pulling kid!
           var lab = K.label(t.name, t.c);

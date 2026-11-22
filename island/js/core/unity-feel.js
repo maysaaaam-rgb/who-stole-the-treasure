@@ -275,7 +275,7 @@
         '<button type="button" class="uf-btn coral" data-uf-act="cinema" title="Watch Story & Reading Videos">🎬 <span class="uf-lbl">Videos</span></button>' +
         '<button type="button" class="uf-btn amber" data-uf-act="store" title="Island Store">🛒 <span class="uf-lbl">Store</span></button>' +
         '<button type="button" class="uf-btn violet" data-uf-act="look" title="Monster Dressing Room">👕 <span class="uf-lbl">Look</span></button>' +
-        '<button type="button" class="uf-btn emerald" data-uf-act="games" title="Football, Volleyball, Battles & Cabin">🎮 <span class="uf-lbl">Games</span></button>' +
+        '<button type="button" class="uf-btn emerald" data-uf-act="games" title="Play 3D Adventure Park Games Solo vs Island Crew">🕹️ <span class="uf-lbl">3D Park</span></button>' +
         '<button type="button" class="uf-btn" data-uf-act="cam" title="Toggle Camera View">' + (camOverview ? '🔍' : '🗺️') + '</button>' +
       '</div>';
 
@@ -613,6 +613,56 @@
   ];
   var bottleIdx = 0;
 
+  var PARK_3D_GAMES = [
+    { slug: 'cannon3d',  title: '🎯 Pirate & Monster Cannon 3D', desc: 'Aim the coastal cannon, topple 2-story pirate forts & sink ships vs Island Crew!', poster: '../games/posters/cannon3d.jpg' },
+    { slug: 'penalty3d', title: '⚽ 3D Penalty Shootout',        desc: 'Curve power shots past the diving keeper in the Adventure Park Stadium!',          poster: '../games/posters/penalty3d.jpg' },
+    { slug: 'bowling3d', title: '🎳 3D Monster Bowling',         desc: 'Spin & hook bowling balls down the sunny boardwalk lane for huge strikes!',       poster: '../games/posters/bowling3d.jpg' },
+    { slug: 'race3d',    title: '🏁 3D Sprint Race',             desc: 'Answer fast & time your hurdle boosts to beat the Monster Crew to the tape!',    poster: '../games/posters/race3d.jpg' },
+    { slug: 'tug3d',     title: '🪢 3D Tug of War',              desc: 'Hit the power-pull sweet spot to yank the rival crew into the splash creek!',    poster: '../games/posters/tug3d.jpg' },
+    { slug: 'bomb3d',    title: '💣 3D Bomb or Bonus',           desc: 'Open sparkling 3D mystery chests — dodge friendly bombs & bank big points!',     poster: '../games/posters/bomb3d.jpg' },
+    { slug: 'board3d',   title: '🎲 3D Park Board Game',         desc: 'Roll the giant 3D dice & hop across 24 tropical island tiles to the trophy!',    poster: '../games/posters/board3d.jpg' }
+  ];
+
+  function drain3DParkRewards() {
+    try {
+      var sess = getSession();
+      var sid = (sess && sess.student && sess.student.id) || (new URLSearchParams(root.location.search).get('student')) || 'demo';
+      var cKey = 'eaa_island_3d_rewards_v1';
+      var rMap = JSON.parse(localStorage.getItem(cKey) || '{}') || {};
+      var rec = rMap[sid] || rMap.demo;
+      if (!rec || (!(Number(rec.pendingCoins) > 0) && !(Number(rec.pendingXp) > 0))) return;
+      var coins = Number(rec.pendingCoins) || 0;
+      var xp = Number(rec.pendingXp) || 0;
+      rec.pendingCoins = 0;
+      rec.pendingXp = 0;
+      localStorage.setItem(cKey, JSON.stringify(rMap));
+      if (coins > 0 && root.WorldGame && root.WorldGame.addBonusCoins) {
+        root.WorldGame.addBonusCoins(coins);
+      }
+      if (xp > 0 && root.IslandApp && typeof root.IslandApp.awardIslandXP === 'function') {
+        root.IslandApp.awardIslandXP(xp, '3d-park');
+      }
+      setTimeout(function () {
+        if (coins > 0) flyCoinsToHud(coins);
+        if (root.Ch1Audio && root.Ch1Audio.sfxCorrect) root.Ch1Audio.sfxCorrect();
+      }, 450);
+    } catch (e) {}
+  }
+
+  function launch3DParkGame(slug) {
+    if (root.Ch1Audio) root.Ch1Audio.sfxTap();
+    var sess = getSession();
+    var g = (root.Ch1Progress && root.Ch1Progress.getActiveGrade ? root.Ch1Progress.getActiveGrade() : (sess && sess.grade)) || 3;
+    var sid = (sess && sess.student && sess.student.id) || (new URLSearchParams(root.location.search).get('student')) || '';
+    var ch = activeZone === 2 ? 2 : 1;
+    var setId = g === 4 ? (ch === 2 ? 'g4-u2-vocab' : 'g4-u5-vocab') : (ch === 2 ? 'g3-u2-vocab' : 'g3-u5-vocab');
+    var ret = root.location.pathname + root.location.search;
+    var url = '../games/' + encodeURIComponent(slug) + '/index.html?from=island&solo=1&grade=' + g + '&set=' + encodeURIComponent(setId);
+    if (sid) url += '&student=' + encodeURIComponent(sid);
+    if (ret) url += '&return=' + encodeURIComponent(ret);
+    root.location.href = url;
+  }
+
   function openGamesHub() {
     var modalRoot = document.getElementById('isl-modal-root');
     if (!modalRoot) return;
@@ -661,12 +711,28 @@
 
     modalRoot.innerHTML =
       '<div class="isl-modal-backdrop" id="uf-games-backdrop">' +
-        '<div class="isl-card-modal" style="max-width:940px;width:95vw">' +
+        '<div class="isl-card-modal" style="max-width:980px;width:95vw;max-height:88dvh;overflow-y:auto">' +
           '<div class="isl-mission-top">' +
-            '<div style="font-size:1.42rem;font-weight:800;color:#fde047">🎮 Practice Island Arcade & Crew Activities</div>' +
+            '<div style="font-size:1.42rem;font-weight:900;color:#2b1d40">🕹️ Practice Island Arcade &amp; 3D Adventure Park</div>' +
             '<button type="button" class="isl-btn" style="margin-left:auto;min-height:44px;min-width:44px;padding:6px 12px" onclick="WorldGame.closeModal()">✕</button>' +
           '</div>' +
-          '<div style="color:#bae6fd;font-size:0.95rem;font-weight:700">Take a fun crew break anytime — every game practices English and earns Gold Coins for the Island Store!</div>' +
+          '<div class="uf-3d-showcase">' +
+            '<div style="font-size:1.08rem;font-weight:900;color:#9a5800;margin-bottom:8px">🏝️ 3D Adventure Park — Play Solo vs Island Crew (+25 🪙 &amp; +20 XP per match!)</div>' +
+            '<div class="uf-games-grid">' +
+              PARK_3D_GAMES.map(function (g3) {
+                return (
+                  '<button type="button" class="uf-game-card" onclick="IslandGamesHub.launch3D(\'' + g3.slug + '\')">' +
+                    '<div class="uf-game-art" style="padding:0;overflow:hidden"><img src="' + esc(g3.poster) + '" style="width:100%;height:100%;object-fit:cover" alt=""></div>' +
+                    '<div class="uf-game-caption">' +
+                      '<b>' + esc(g3.title) + '</b>' +
+                      '<span>' + esc(g3.desc) + '</span>' +
+                    '</div>' +
+                  '</button>'
+                );
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          '<div style="color:#2b558a;font-size:0.98rem;font-weight:900;margin:10px 0 6px">⚓ Harbour &amp; Crew Mini-Activities</div>' +
           '<div class="uf-games-grid">' +
             cards.map(function (c) {
               return (
@@ -825,9 +891,12 @@
     close: closeCinema
   };
 
+  setTimeout(drain3DParkRewards, 1200);
+
   root.IslandGamesHub = {
     open: openGamesHub,
     launch: launchGameActivity,
+    launch3D: launch3DParkGame,
     openBottleRiddle: openBottleRiddle
   };
 })(typeof window !== 'undefined' ? window : this);

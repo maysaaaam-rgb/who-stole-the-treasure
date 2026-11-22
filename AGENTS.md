@@ -57,6 +57,22 @@ You are the **Principal EdTech Game Architect, Lead UI/UX Designer, and Primary 
   * Soft-Fail Architecture: Errors trigger an elastic wobble (`translateX(-4px)`) and a supportive audio hint with zero point deductions.
   * Zero-Bug State: Guard against `undefined`, `null`, or `NaN` in all dynamic text slots, scoreboards, and badges.
 
+### 1.4b Commercial Stylized 3D GameQualityCore & Visual QA Gate (Zero Programmer Art)
+Every 3D game in `games/*3d/` MUST run on the unified `GameQualityCore` pipeline (`games/engine3d/SceneAtmosphere.js`, `StylizedWater.js`, `JuiceManager.js`, plus `games/kit3d/`):
+- **Unified Sunlit Lighting & Fog Calibration**:
+  * `SRGBColorSpace` + `ACESFilmicToneMapping` (`1.05`) + `PCFSoftShadowMap` (`2048×2048`, `bias = -0.0004`, `normalBias = 0.02`).
+  * **Sun vs. Fill Contrast**: Warm Sun `DirectionalLight` (`#FFF2D6`, intensity `2.5`) at a `3/4` side angle (`[35, 45, 25]`) casting crisp directional shadows across play surfaces; `HemisphereLight` (`#9CE0FF` sky / `#C49A6C` ground) capped at `<= 0.55` so surfaces never bleach flat; warm back **Rim Light** (`#FFE4B5`, intensity `0.60`, no shadow) so targets pop off water/turf.
+  * **Low-Density Fog (`FogExp2 <= 0.0032`)**: Keep `FogExp2` between `0.0022` and `0.0032`—horizon islands, landmarks, and stadiums must retain recognizable warm colors, never a milky whiteout.
+- **Cohesive Tropical / Park Palette & High-Contrast Targets**:
+  * **Grass/Hills**: Warm olive-meadow green (`#6EB84C` lit, `#4B8B3B` shaded) via `GQC.Atmosphere.gradeEnvironment`—never neon or pale mint.
+  * **Sand**: Golden sand (`#F3CF8A`) blending to darker wet sand (`#C99D5B`) along the waterline.
+  * **Ocean (`StylizedWater.js`)**: Sunlit turquoise-to-cerulean (`#26C6DA` shallow -> `#1282C8` mid -> `#0D5EA6` deep) with dual-layer wave normals, white shoreline foam rings, and soft sun shimmer (never dark navy).
+  * **Target Readability (`1.35×–1.5×` Scale)**: Scale destructible crates/barrels/pins/forts up `1.35×–1.5×` with high-contrast multi-part styling (`#D99B52` oak crates with `#8C5828` frames, `#E63946` crimson TNT with `#FFD43B` bands) + both real cast shadows and darkened AO contact rings (`addBlobShadow`).
+- **Environmental Dressing, Camera Choreography & Juice**:
+  * **Zero Bare Pancakes**: Dress every playable island/arena perimeter (never blocking sightlines) with swaying trees/palms, faceted rocks, docks/stakes/fences, fluttering pennants, and ambient life (circling gulls, drifting skiffs).
+  * **UI Safe Zones & Quiz Backdrop**: Keep focal launchers/avatars/balls clear above the **Bottom 18% UI Safe Zone**, tilt/pan the camera on quiz modals so the live 3D arena stays framed above `.qcard`, use **strictly one** short muzzle/aiming pointer (no landing-ring cheat bullseyes, no double arrows), and wire `JuiceManager` (`squashStretch`, `40ms` `hitstop`, micro-shake, 3D splinters/dust/stars/splash, bouncy score popups, and avatar head-tracking).
+  * **Mandatory Visual QA Gate**: Verify all 5 checks in live browser screenshots (`1920×1080`, `1366×768`, `844×390`, `390×844`) with `0` console errors before marking any 3D game complete.
+
 ### 1.5 Directory & Registry Deliverables
 For any module `[module-slug]`, write directly to disk:
 1. Complete self-contained module folder:

@@ -64,13 +64,17 @@
     r.shadowMap.type = T3.PCFSoftShadowMap;
     if (T3.ACESFilmicToneMapping !== undefined) {
       r.toneMapping = T3.ACESFilmicToneMapping;
-      r.toneMappingExposure = 1.06;
+      r.toneMappingExposure = 1.05;
     }
     if (T3.SRGBColorSpace) r.outputColorSpace = T3.SRGBColorSpace;
+    else if (T3.sRGBEncoding) r.outputEncoding = T3.sRGBEncoding;
     K.scene = new T3.Scene();
-    K.scene.fog = new T3.Fog(opts.fog || 0xc8ebff, opts.fogNear || 48, opts.fogFar || 135);
+    // Calibrated low-density FogExp2 (never milky whiteout!)
+    K.scene.fog = new T3.FogExp2(opts.fog || 0xe6f4ff, opts.fogDensity || 0.0026);
     K._initPMREM(r);
-    K._initPostFX(r, opts);
+    // Retire legacy blurry 512x512 _initPostFX unless explicitly requested via ?legacyBloom=1
+    if (Q.get('legacyBloom') === '1') K._initPostFX(r, opts);
+    else K._post = null;
     K._baseFov = opts.fov || 42;
     K._autoPortraitFov = opts.autoPortraitFov !== false;
     K.camera = new T3.PerspectiveCamera(K._baseFov, 16 / 9, .1, opts.far || 400);
@@ -238,6 +242,9 @@
     runJobs();
     for (var i = 0; i < frameFns.length; i++) frameFns[i](dt, K.now);
     K.cam.update(dt);
+    if (root.GameQualityCore && root.GameQualityCore.Juice) {
+      root.GameQualityCore.Juice.update(dt, K.now, K.camera);
+    }
     var p = K._post;
     if (p && p.enabled && !K.CAPTURE) {
       var prevTM = K.renderer.toneMapping, prevCS = K.renderer.outputColorSpace;
@@ -272,8 +279,14 @@
       ready: true, K: K
     };
     if (K.CAPTURE) { frame(1 / 30); return; }
-    var last = 0;
-    (function loop(ts) { var dt = last ? (ts - last) / 1000 : 1 / 60; last = ts; frame(dt); requestAnimationFrame(loop); })(0);
+    var last = 0, ecoTick = 0;
+    (function loop(ts) {
+      if (K.ecoHalfRate && ((++ecoTick) & 1)) { requestAnimationFrame(loop); return; }
+      var dt = last ? Math.min(0.1, (ts - last) / 1000) : 1 / 60;
+      last = ts;
+      if (!K.paused) frame(dt);
+      requestAnimationFrame(loop);
+    })(0);
   };
 
   /* ---------- materials / textures / pictures ---------- */
@@ -383,12 +396,23 @@
       root.removeEventListener(ev, unlock, true);
     }, { capture: true, passive: true });
   });
-  /* short English phrases spoken aloud (rate .88, pitch 1.05, en-US); silent in automatic tests or when muted */
+  /* short English phrases spoken aloud (rate .88, pitch 1.05, en-US); silent in automatic tests or when muted; ducks music & crowd cleanly */
+  var _duckTimer = null;
+  K.duckAudio = function (on, holdMs) {
+    if (_duckTimer) { clearTimeout(_duckTimer); _duckTimer = null; }
+    K.loopVol('music', on ? .06 : .25);
+    K.loopVol('crowd', on ? .05 : .18);
+    if (on && holdMs) {
+      _duckTimer = setTimeout(function () { K.duckAudio(false); }, holdMs);
+    }
+  };
   K.say = function (text) {
     if (K.muted || K.CAPTURE || K.DEMO || !root.speechSynthesis || !text) return;
     try {
       var u = new SpeechSynthesisUtterance(String(text)); u.lang = 'en-US'; u.rate = .88; u.pitch = 1.05;
       var v = (speechSynthesis.getVoices() || []).filter(function (x) { return /^en(-|_)US/i.test(x.lang); })[0]; if (v) u.voice = v;
+      K.duckAudio(true, Math.max(2200, Math.min(7500, String(text).length * 85)));
+      u.onend = u.onerror = function () { K.duckAudio(false); };
       speechSynthesis.cancel(); speechSynthesis.speak(u);
     } catch (e) {}
   };
@@ -402,42 +426,57 @@
 
   /* ---------- world pieces ---------- */
   K.world = {};
-  K.world.sky = function (top, mid, bot) {
+  K.world.sky = function (top, mid, bot, theme) {
+    if (root.GameQualityCore && root.GameQualityCore.Atmosphere && !K.scene.getObjectByName('gqc-sky-dome')) {
+      var atm = root.GameQualityCore.Atmosphere.applyCommercialAtmosphere(K.renderer, K.scene, theme || K._gqcTheme || 'stadium');
+      K._gqcAtm = atm;
+      K.sun = atm.sun;
+      K.onFrame(function (dt, t) { atm.update(t, K.camera); });
+      return atm.skyDome;
+    }
     var m = new T3.ShaderMaterial({
       side: T3.BackSide, depthWrite: false, fog: false,
-      uniforms: { top: { value: new T3.Color(top || 0x7cc6ff) }, mid: { value: new T3.Color(mid || 0xc4e7ff) }, bot: { value: new T3.Color(bot || 0xffe9f4) } },
+      uniforms: { top: { value: new T3.Color(top || 0x2b8ae8) }, mid: { value: new T3.Color(mid || 0x7bd3ff) }, bot: { value: new T3.Color(bot || 0xfff3de) } },
       vertexShader: 'varying vec3 p; void main(){ p = position; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); }',
       fragmentShader: 'uniform vec3 top; uniform vec3 mid; uniform vec3 bot; varying vec3 p; void main(){ float h = normalize(p).y; vec3 c = h>0.15 ? mix(mid, top, smoothstep(.15,.7,h)) : mix(bot, mid, smoothstep(-.05,.15,h)); gl_FragColor = vec4(c,1.); }'
     });
-    var sky = new T3.Mesh(new T3.SphereGeometry(200, 32, 16), m);
+    var sky = new T3.Mesh(new T3.SphereGeometry(320, 32, 16), m);
     K.onFrame(function () { sky.position.copy(K.camera.position); });
     K.scene.add(sky); return sky;
   };
   K.world.lights = function () {
-    // Warm sunny sky + soft lilac-blue shadow bounce (ART_STYLE.md §3: shadows are blue-lilac, never cold black!)
-    K.scene.add(new T3.HemisphereLight(0xf8fcff, 0x9aa6e8, 1.08));
-    var sun = K.sun = new T3.DirectionalLight(0xfff4dc, 1.55);
+    if (K._gqcAtm && K._gqcAtm.sun) return K._gqcAtm.sun;
+    if (root.GameQualityCore && root.GameQualityCore.Atmosphere) {
+      var atm = root.GameQualityCore.Atmosphere.applyCommercialAtmosphere(K.renderer, K.scene, 'stadium');
+      K._gqcAtm = atm;
+      K.onFrame(function (dt, t) { atm.update(t, K.camera); });
+      return atm.sun;
+    }
+    // Calibrated Sunlight vs. Fill Contrast: Sun 2.5 @ [35,45,25], Hemi 0.55, Warm Rim 0.60 (#FFE4B5)
+    K.scene.add(new T3.HemisphereLight(0x9ce0ff, 0xc49a6c, 0.55));
+    var sun = K.sun = new T3.DirectionalLight(0xfff2d6, 2.5);
     sun.castShadow = true; var sm = (K.quality === 'low' || K.MOBILE) ? 1024 : 2048; sun.shadow.mapSize.set(sm, sm); sun.shadow.bias = -.0004; sun.shadow.normalBias = .02;
-    var sc = sun.shadow.camera; sc.left = -16; sc.right = 16; sc.top = 12; sc.bottom = -12; sc.near = 1; sc.far = 80;
+    var sc = sun.shadow.camera; sc.left = -26; sc.right = 26; sc.top = 24; sc.bottom = -24; sc.near = 1; sc.far = 120;
+    sc.updateProjectionMatrix();
     K.scene.add(sun); K.scene.add(sun.target);
-    var rim = new T3.DirectionalLight(0xbde8ff, 0.36);
-    rim.position.set(16, 12, -18);
+    var rim = new T3.DirectionalLight(0xffe4b5, 0.60);
+    rim.position.set(-20, 18, -30);
     K.scene.add(rim);
-    K.onFrame(function () {   // shadows follow what the camera looks at
-      var l = K.cam.look; sun.position.set(l.x - 12, 24, l.z + 14); sun.target.position.set(l.x, 0, l.z); sun.target.updateMatrixWorld();
+    K.onFrame(function () {
+      var l = K.cam.look; sun.position.set(l.x + 35, 45, l.z + 25); sun.target.position.set(l.x, 0, l.z); sun.target.updateMatrixWorld();
     });
     return sun;
   };
   K.world.ground = function (color, stripes) {
-    var g = new T3.Mesh(new T3.PlaneGeometry(600, 600), K.mat(color || 0x8fdc7a));
+    var g = new T3.Mesh(new T3.PlaneGeometry(600, 600), K.mat(color || 0x6eb84c));
     g.rotation.x = -Math.PI / 2; g.receiveShadow = true; K.scene.add(g);
     if (stripes) stripes.forEach(function (s) {
-      var b = new T3.Mesh(new T3.PlaneGeometry(s.w, s.d), K.mat(s.c || 0x84d36f)); b.rotation.x = -Math.PI / 2; b.position.set(s.x, .004, s.z || 0); b.receiveShadow = true; K.scene.add(b);
+      var b = new T3.Mesh(new T3.PlaneGeometry(s.w, s.d), K.mat(s.c || 0x62aa43)); b.rotation.x = -Math.PI / 2; b.position.set(s.x, .004, s.z || 0); b.receiveShadow = true; K.scene.add(b);
     });
     return g;
   };
   K.world.hills = function (x0, x1, z, n) {
-    var cols = [0x7fcf6e, 0x9ae08a, 0x6fc46a];
+    var cols = [0x6eb84c, 0x5ea842, 0x4b8b3b];
     for (var i = 0; i < n; i++) {
       var h = new T3.Mesh(new T3.SphereGeometry(K.rnd(10, 18), 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), K.mat(cols[i % 3]));
       h.scale.y = K.rnd(.3, .55); h.position.set(K.lerp(x0, x1, i / Math.max(1, n - 1)) + K.rnd(-3, 3), -.5, z - K.rnd(0, 14)); K.scene.add(h);
@@ -709,6 +748,28 @@
       case 'dizzy':
         P.bodyR = .22 * Math.sin(t * 4); P.bodyP = .12 * Math.cos(t * 4); P.headR = .3 * Math.sin(t * 4 + 1); P.headY = .3 * Math.cos(t * 4);
         P.liftL = .5 + .2 * Math.sin(t * 4); P.liftR = .5 + .2 * Math.cos(t * 4); P.elbowL = P.elbowR = -.2; P.kneeL = P.kneeR = .35; P.bob = -.06; break;
+      case 'sit':   // seated on amphitheatre / classroom bench: thighs horizontal, knees 90°, hands on knees, gentle leg swing
+        P.thighL = -1.48; P.thighR = -1.48;
+        P.kneeL = 1.50 + .09 * Math.sin(t * 2.1 + sd); P.kneeR = 1.50 - .09 * Math.sin(t * 2.1 + sd);
+        P.footL = .08; P.footR = .08;
+        P.lean = .07 + .025 * Math.sin(t * 1.5 + sd);
+        P.armL = -.56; P.armR = -.56; P.liftL = .14; P.liftR = .14; P.elbowL = -.76; P.elbowR = -.76;
+        P.headY = .28 * Math.sin(t * .65 + sd); P.headP = .04 + .05 * Math.sin(t * 1.1 + sd);
+        P.bob = -this.height * .235; break;
+      case 'sitWave':   // seated on bench raising hand / waving eagerly ("Pick me!")
+        P.thighL = -1.48; P.thighR = -1.48; P.kneeL = 1.50; P.kneeR = 1.50; P.footL = P.footR = .08;
+        P.lean = -.03; P.armL = -.56; P.liftL = .14; P.elbowL = -.76;
+        P.liftR = 2.68; P.armR = -.15; P.elbowR = -.28 + .46 * Math.sin(t * 10.5);
+        P.headY = .18; P.headP = -.12; P.bob = -this.height * .235; break;
+      case 'sitClap':   // seated on bench clapping happily
+        var scl = Math.sin(t * 12.5);
+        P.thighL = -1.48; P.thighR = -1.48; P.kneeL = 1.50; P.kneeR = 1.50; P.footL = P.footR = .08;
+        P.armL = -.96; P.armR = -.96; P.liftL = .34 + .22 * scl; P.liftR = .34 + .22 * scl; P.elbowL = -.96; P.elbowR = -.96;
+        P.headP = -.08; P.headY = .16 * Math.sin(t * 2.2 + sd); P.bob = -this.height * .235 + .02 * Math.abs(Math.sin(t * 6.2)); break;
+      case 'sitCheer':   // seated celebration (+XP!)
+        P.thighL = -1.42; P.thighR = -1.42; P.kneeL = 1.45; P.kneeR = 1.45; P.footL = P.footR = .08;
+        P.liftL = 2.75 + .18 * Math.sin(t * 10); P.liftR = 2.75 + .18 * Math.sin(t * 10 + 1); P.elbowL = P.elbowR = -.25;
+        P.lean = -.08; P.headP = -.22; P.bob = -this.height * .215 + .05 * Math.abs(Math.sin(t * 7.5)); break;
     }
     return P;
   };
@@ -737,7 +798,9 @@
     if (!next) return false;
     this.useMixer = true;
     this.body.position.set(0, 0, 0);
-    this.body.rotation.set(0, 0, 0);
+    // All Blender clips in kid-sports-anims.glb & kid-tug-anims.glb carry a -90deg Hips yaw;
+    // compensate +PI/2 on body so characters always face +Z of kid.root!
+    this.body.rotation.set(0, Math.PI / 2, 0);
     next.enabled = true;
     next.setLoop(opts.once ? T3.LoopOnce : T3.LoopRepeat, opts.once ? 1 : Infinity);
     next.clampWhenFinished = !!opts.once;
@@ -757,6 +820,7 @@
   Kid.prototype.stopClip = function () {
     if (this.activeAction) { this.activeAction.stop(); this.activeAction = null; }
     this.useMixer = false;
+    this.body.rotation.set(0, 0, 0);
   };
   Kid.prototype.getBoneWorldPos = function (shortName, out) {
     var b = this.bones[shortName];
@@ -800,7 +864,7 @@
       return;
     }
     if (this.state === 'run') this.phase += dt * (5 + this.speed * 1.55);
-    var tgt = this.pose(this.state, this.stateT), fast = /run|stumble|cheer|clap|tumble|fly|dizzy/.test(this.state);
+    var tgt = this.pose(this.state, this.stateT), fast = /run|stumble|cheer|clap|tumble|fly|dizzy|sitWave|sitClap|sitCheer/.test(this.state);
     var rate = 1 - Math.exp(-dt * (fast ? 22 : 10));
     for (var key in tgt) this.P[key] = K.lerp(this.P[key], tgt[key], rate);
     var P = this.P;
@@ -1426,11 +1490,148 @@
   };
 
   K.Kid = Kid; K.Mon = Mon;
+  /* ---------- Solo vs AI Crew Mode & Home Island / Practice Island Bridge ---------- */
+  var _pathMatch = /\/games\/([^/]+)\//i.exec(location.pathname || '');
+  var _inferredGameId = (_pathMatch && _pathMatch[1]) ? _pathMatch[1].toLowerCase() : 'game3d';
+  K.solo = {
+    on: Q.get('solo') === '1' || (Q.get('from') === 'island' && Q.get('solo') !== '0'),
+    studentId: Q.get('student') || ''
+  };
+  K.isAI = function (teamOrIdx) {
+    if (!K.solo.on) return false;
+    if (typeof teamOrIdx === 'number') return teamOrIdx > 0;
+    if (!teamOrIdx) return false;
+    if (typeof teamOrIdx.idx === 'number') return teamOrIdx.idx > 0;
+    var ti = K.TEAMS.findIndex(function (t) { return t.name === teamOrIdx.name; });
+    return ti > 0;
+  };
+  K.solo.toggleRow = function (box) {
+    if (K.ui.preview) return null;
+    var row = K.el('div', 'k3-solorow');
+    var bClass = K.el('button', 'k3-solobtn' + (!K.solo.on ? ' on' : ''), '👥 Class Teams');
+    var bSolo = K.el('button', 'k3-solobtn' + (K.solo.on ? ' on' : ''), '🤖 1P vs Island Crew');
+    bClass.type = bSolo.type = 'button';
+    function sync() {
+      bClass.classList.toggle('on', !K.solo.on);
+      bSolo.classList.toggle('on', K.solo.on);
+    }
+    bClass.onclick = function () { K.solo.on = false; K.sfx('tap'); sync(); };
+    bSolo.onclick = function () { K.solo.on = true; K.sfx('tap'); sync(); };
+    row.appendChild(bClass); row.appendChild(bSolo);
+    if (box && box.lastChild) box.insertBefore(row, box.lastChild);
+    else if (box) box.appendChild(row);
+    return row;
+  };
+
+  K.island = {
+    from: (Q.get('from') || '').toLowerCase(),
+    gameId: _inferredGameId,
+    _recorded: false,
+    backHref: function () {
+      var f = K.island.from;
+      if (f === 'games3d' || f === 'home3d') {
+        return K.ROOT + 'home3d/index.html?island=games&returned=' + encodeURIComponent(K.island.gameId);
+      }
+      if (f === 'island' || f === 'practice-island') {
+        var ret = Q.get('return');
+        if (ret && /^(\.\.\/|\/|island\/)/i.test(ret)) return ret;
+        var st = Q.get('student');
+        return K.ROOT + 'island/index.html' + (st ? '?student=' + encodeURIComponent(st) : '?demo=1');
+      }
+      var is3dGame = /\/games\/[^/]+3d\//i.test(location.pathname);
+      return (is3dGame || f === 'gm') ? (K.ROOT + 'home3d/index.html?island=games') : '../index.html';
+    },
+    backLabel: function () {
+      var f = K.island.from;
+      if (f === 'games3d' || f === 'home3d') return '🕹️ ← Games Island';
+      if (f === 'island' || f === 'practice-island') return '🏝️ ← Practice Island';
+      if (/\/games\/[^/]+3d\//i.test(location.pathname)) return '🕹️ ← Games Island';
+      return '🎮 ← Games';
+    },
+    recordWin: function (gameId, opts) {
+      if (K.island._recorded || K.CAPTURE) return;
+      K.island._recorded = true;
+      opts = opts || {};
+      var gid = gameId || K.island.gameId || 'game3d';
+      try {
+        // 1. Save weekly trophy badge for Home Island 3D landmarks
+        var tKey = 'eaa_3d_trophies_v1';
+        var trophies = JSON.parse(localStorage.getItem(tKey) || '{}') || {};
+        var scope = (K.cls && K.cls.classId) || Q.get('class') || 'default';
+        trophies[scope] = trophies[scope] || {};
+        trophies[scope][gid] = {
+          ts: Date.now(),
+          winner: opts.winner || 'Team Pink',
+          score: opts.score || 0
+        };
+        localStorage.setItem(tKey, JSON.stringify(trophies));
+      } catch (e) {}
+      try {
+        // 2. Advance Home Island's daily Treasure Bridge progress (both Demo & Live!)
+        var bKey = 'eaa_home3d_bridge_xp_v1';
+        var today = new Date().toISOString().slice(0, 10);
+        var bData = JSON.parse(localStorage.getItem(bKey) || '{}') || {};
+        if (bData.day !== today) bData = { day: today, bonus: 0, games: [] };
+        bData.bonus = (Number(bData.bonus) || 0) + (Number(opts.bridgeXp) || 45);
+        if (Array.isArray(bData.games) && bData.games.indexOf(gid) < 0) bData.games.push(gid);
+        bData.lastGame = gid;
+        bData.lastTs = Date.now();
+        localStorage.setItem(bKey, JSON.stringify(bData));
+      } catch (e) {}
+      try {
+        // 3. If launched from Student Practice Island, award +25 Gold Coins & +20 Island XP!
+        if (K.island.from === 'island' || K.island.from === 'practice-island') {
+          var sid = Q.get('student') || 'demo';
+          var cKey = 'eaa_island_3d_rewards_v1';
+          var rMap = JSON.parse(localStorage.getItem(cKey) || '{}') || {};
+          rMap[sid] = rMap[sid] || { pendingCoins: 0, pendingXp: 0, count: 0 };
+          rMap[sid].pendingCoins = (Number(rMap[sid].pendingCoins) || 0) + 25;
+          rMap[sid].pendingXp = (Number(rMap[sid].pendingXp) || 0) + 20;
+          rMap[sid].count = (Number(rMap[sid].count) || 0) + 1;
+          rMap[sid].lastGame = gid;
+          localStorage.setItem(cKey, JSON.stringify(rMap));
+        }
+      } catch (e) {}
+    },
+    endButtons: function (endBox, gameId, opts) {
+      if (!endBox) return null;
+      var gid = gameId || K.island.gameId;
+      K.island.recordWin(gid, opts);
+      var f = K.island.from;
+      var nav = K.el('div', 'k3-end-nav');
+      function autoSendPendingXp() {
+        try {
+          var sendBtn = endBox.querySelector('.xpcard .btn.green:not([disabled])');
+          if (sendBtn) sendBtn.click();
+        } catch (e) {}
+      }
+      if (f === 'island' || f === 'practice-island') {
+        var pBtn = K.el('a', 'btn isl-return', '🏝️ Back to Practice Island (+25 🪙)');
+        pBtn.href = K.island.backHref();
+        pBtn.onclick = autoSendPendingXp;
+        nav.appendChild(pBtn);
+      } else {
+        var gBtn = K.el('a', 'btn isl-return', '🕹️ Back to Games Island');
+        gBtn.href = K.ROOT + 'home3d/index.html?island=games&returned=' + encodeURIComponent(gid);
+        gBtn.onclick = autoSendPendingXp;
+        nav.appendChild(gBtn);
+
+        var hBtn = K.el('a', 'btn blue', '🌉 Home Island (Grow Bridge!)');
+        hBtn.href = K.ROOT + 'home3d/index.html?island=home&returned=' + encodeURIComponent(gid);
+        hBtn.onclick = autoSendPendingXp;
+        nav.appendChild(hBtn);
+      }
+      endBox.appendChild(nav);
+      return nav;
+    }
+  };
+
   /* team character: their monster if the model exists, otherwise a kid */
   K.makeCharacter = function (team, opts) {
     opts = opts || {};
     var monUrl = K.ROOT + 'assets/3d/monsters/' + team.mon + '.glb';
     var kind = opts.kid || team.kid, kidUrl2 = K.ROOT + 'assets/3d/characters/kid-' + kind + '.glb?v=2';
+    var autoSid = opts.studentId || ((team && team.pupils && team.pupils[0] && team.pupils[0].id) ? team.pupils[0].id : '') || ((team === K.TEAMS[0] && K.solo.studentId) ? K.solo.studentId : '');
     return (opts.kidsOnly || K.Q.has('kids') ? Promise.resolve(null) : K.tryGLB(monUrl)).then(function (g) {
       if (g) return new Mon(g, opts.monHeight);
       return K.loadGLB(kidUrl2).then(function (g2) {
@@ -1441,13 +1642,13 @@
         // Optional private 3D pupil head + worn 3D shop items (only when teacher is signed in & studentId given)
         var PA = root.PupilAvatars || null;
         if (!PA) { try { if (root.parent && root.parent !== root && root.parent.PupilAvatars) PA = root.parent.PupilAvatars; } catch (e) {} }
-        if (opts.studentId && PA) {
+        if (autoSid && PA) {
           var headP = (typeof PA.getHead3d === 'function')
-            ? PA.getHead3d(opts.studentId).then(function (buf) { return buf ? kid.mountHead(buf) : kid; })
+            ? PA.getHead3d(autoSid).then(function (buf) { return buf ? kid.mountHead(buf) : kid; })
             : Promise.resolve(kid);
           headP.then(function () {
             if (opts.wear === false) return;
-            var w = (typeof PA.wearingOf === 'function') ? PA.wearingOf(opts.studentId) : null;
+            var w = (typeof PA.wearingOf === 'function') ? PA.wearingOf(autoSid) : null;
             var ids = opts.items || (w ? Object.keys(w).map(function (k) { return w[k]; }).filter(Boolean) : []);
             if (ids.length) kid.wearItems(ids);
           }).catch(function () {});
@@ -1513,15 +1714,33 @@
   K.ui.teamBar = function (teams, fmt) {
     var bar = K.ui.add(K.el('div', 'hud'));
     teams.forEach(function (t, i) {
-      var p = K.el('div', 'tpill', '<i>' + (i + 1) + '</i><span>' + t.name + '</span><b>0</b>'); p.style.setProperty('--c', t.c); t.pill = p; bar.appendChild(p);
+      var p = K.el('div', 'tpill', '<i>' + (i + 1) + '</i><span>' + K.esc(t.name) + '</span><b>0</b>'); p.style.setProperty('--c', t.c); t.pill = p; bar.appendChild(p);
     });
-    return {
-      refresh: function (active) { teams.forEach(function (t, i) { t.pill.classList.toggle('turn', i === active); t.pill.querySelector('b').textContent = fmt ? fmt(t) : t.score; }); },
-      bump: function (i) { var p = teams[i].pill; p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); }
+    var lastActive = 0;
+    var hudApi = {
+      refresh: function (active) {
+        if (active != null) lastActive = active;
+        teams.forEach(function (t, i) {
+          if (!t.pill) return;
+          t.pill.classList.toggle('turn', i === lastActive);
+          var sp = t.pill.querySelector('span'); if (sp) sp.textContent = t.name;
+          var b = t.pill.querySelector('b'); if (b) b.textContent = fmt ? fmt(t) : t.score;
+        });
+      },
+      bump: function (i) { var p = teams[i] && teams[i].pill; if (!p) return; p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); }
     };
+    K._activeTeams = teams;
+    K._activeHud = hudApi;
+    return hudApi;
   };
   K.ui.topButtons = function (back) {
     var tb = K.ui.add(K.el('div', 'topbtns'));
+    var scBtn = K.el('button', 'ibtn k3-gm-topbtn', '✏️'); scBtn.title = 'Edit Scores & Team Names';
+    scBtn.onclick = function () { if (K.gm) K.gm.scoreEditor(); };
+    var flBtn = K.el('button', 'ibtn k3-gm-topbtn', '🔁'); flBtn.title = 'Flashcards Revision (Remember First)';
+    flBtn.onclick = function () { if (K.gm && K._qs) K.gm.rememberFirst(K._qs.allItems ? K._qs.allItems() : [], function () {}); };
+    var exBtn = K.el('button', 'ibtn k3-gm-topbtn', '📝'); exBtn.title = '3-Question Exit Ticket';
+    exBtn.onclick = function () { if (K.gm && K._qs) K.gm.exitTicket(K._qs.allItems ? K._qs.allItems() : []); };
     var mu = K.el('button', 'ibtn', K.muted ? '🔇' : '🔊'); mu.title = 'Sound on/off';
     mu.onclick = function () { K.muted = !K.muted; mu.textContent = K.muted ? '🔇' : '🔊'; K.loopVol('music', .25); K.loopVol('crowd', .18); };
     var de = document.documentElement;
@@ -1541,13 +1760,15 @@
       } catch (e) {}
     };
     var is3dGame = /\/games\/[^/]+3d\//i.test(location.pathname);
-    var backHref = back || (is3dGame || Q.get('from') === 'gm' ? '../../game-maker/index.html' : '../index.html');
-    var bk = K.el('button', 'ibtn', '✕'); bk.title = 'Back to All Games'; bk.onclick = function () { location.href = backHref; };
-    tb.appendChild(mu); tb.appendChild(fs); tb.appendChild(bk);
-    if ((is3dGame || Q.get('from') === 'gm') && !Q.has('preview')) {
-      var gmPill = K.ui.add(K.el('a', 'gm-back-pill', '🎮 ← Games'));
+    var fromIsl = K.island && (K.island.from === 'home3d' || K.island.from === 'island' || K.island.from === 'practice-island');
+    var backHref = back || (K.island ? K.island.backHref() : (is3dGame || Q.get('from') === 'gm' ? '../../game-maker/index.html' : '../index.html'));
+    var backTitle = fromIsl ? K.island.backLabel() : 'Back to All Games';
+    var bk = K.el('button', 'ibtn', '✕'); bk.title = backTitle; bk.onclick = function () { location.href = backHref; };
+    tb.appendChild(scBtn); tb.appendChild(flBtn); tb.appendChild(exBtn); tb.appendChild(mu); tb.appendChild(fs); tb.appendChild(bk);
+    if ((is3dGame || Q.get('from') === 'gm' || fromIsl) && !Q.has('preview')) {
+      var gmPill = K.ui.add(K.el('a', 'gm-back-pill' + (fromIsl ? ' isl-pill' : ''), K.island ? K.island.backLabel() : '🎮 ← Games'));
       gmPill.href = backHref;
-      gmPill.title = 'Back to All Games';
+      gmPill.title = backTitle;
     }
     addEventListener('keydown', function (ev) {
       if (ev.target && /input|textarea|select/i.test(ev.target.tagName)) return;
@@ -1556,72 +1777,670 @@
       else if (k === 'f' && canFs) fs.click();
     });
   };
+
+  /* ---------- Merged Game Maker Classroom Features (Remember First, Speaking Mode, Smart Mix, Teacher Controls) ---------- */
+  var GM_CFG_KEY = 'eaa_k3_gm_cfg_v1';
+  var REV_KEY = 'eaa_revision_v1';
+  var VID_KEY = 'eaa_k3_rev_videos_v1';
+  var gmCfg = { rem: 1, timer: 0, pics: 'off', judge: 'off', cards: 0 };
+  try {
+    var savedCfg = JSON.parse(localStorage.getItem(GM_CFG_KEY) || 'null');
+    if (savedCfg && typeof savedCfg === 'object') Object.assign(gmCfg, savedCfg);
+  } catch (e) {}
+  function saveGmCfg() { try { localStorage.setItem(GM_CFG_KEY, JSON.stringify(gmCfg)); } catch (e) {} }
+
+  function revHash(s) { var x = 5381, i; for (i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) | 0; return (x >>> 0).toString(36); }
+  function revKeyOf(it) { return revHash(String((it && it.q) || '') + '|' + String((it && it.a) || '')); }
+  function revLoad() {
+    try {
+      var d = JSON.parse(localStorage.getItem(REV_KEY) || 'null');
+      if (d && d.v === 1) { d.items = d.items || {}; d.cls = d.cls || {}; d.pup = d.pup || {}; return d; }
+    } catch (e) {}
+    return { v: 1, items: {}, cls: {}, pup: {} };
+  }
+  function revSave(d) { d.at = Date.now(); try { localStorage.setItem(REV_KEY, JSON.stringify(d)); } catch (e) {} }
+  function revClassId() { return (K.cls && K.cls.classId) || 'class-default'; }
+  function revRecordClass(it, frac) {
+    if (!it || !it.q || K.DEMO) return;
+    var cid = revClassId(), d = revLoad(), k = revKeyOf(it);
+    var c = d.cls[cid] = d.cls[cid] || {};
+    var r = c[k] = c[k] || { n: 0, s: 0, t: 0 };
+    r.n++;
+    r.s = Math.round((r.s + Math.max(0, Math.min(1, frac))) * 1000) / 1000;
+    r.t = Date.now();
+    d.items[k] = { q: String(it.q), a: String(it.a) };
+    revSave(d);
+  }
+  function revNeed(it) {
+    var c = (revLoad().cls[revClassId()] || {})[revKeyOf(it)];
+    if (!c || !c.n) return 0.55 + Math.random() * 0.1;
+    var mean = c.s / c.n, age = Math.min(1, (Date.now() - c.t) / (14 * 864e5));
+    return (1 - mean) * 0.8 + age * 0.25 + Math.random() * 0.05;
+  }
+  function revPickSmart(items, n) {
+    var seen = {}, list = (items || []).filter(function (it) {
+      if (!it || !it.q) return false;
+      var k = revKeyOf(it); if (seen[k]) return false; seen[k] = 1; return true;
+    });
+    list.forEach(function (it) { it._need = revNeed(it); });
+    list.sort(function (a, b) { return b._need - a._need; });
+    return K.shuffle(list.slice(0, n || 16));
+  }
+  function loadRevVideos() { try { return JSON.parse(localStorage.getItem(VID_KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function saveRevVideo(packId, url) {
+    var map = loadRevVideos();
+    if (url && String(url).trim()) map[packId || 'default'] = String(url).trim();
+    else delete map[packId || 'default'];
+    try { localStorage.setItem(VID_KEY, JSON.stringify(map)); } catch (e) {}
+  }
+  function toEmbedHtml(rawUrl) {
+    var u = String(rawUrl || '').trim();
+    if (!u) return '';
+    var yt = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/.exec(u);
+    if (yt) return '<iframe class="k3-gm-vid" src="https://www.youtube.com/embed/' + yt[1] + '?rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+    if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(u)) return '<video class="k3-gm-vid" src="' + K.esc(u) + '" controls playsinline></video>';
+    return '';
+  }
+  function formatCardSentence(it) {
+    var q = String((it && it.q) || ''), a = String((it && it.a) || '');
+    if (/_{2,}/.test(q)) return { full: q.replace(/_{2,}/, a), gap: q.replace(/_{2,}/, '▢▢▢▢'), a: a, mark: true, spoken: q.replace(/_{2,}/, a) };
+    if (it && (it.speak === 1 || !it.w || !it.w.length)) return { full: a, prompt: q, gap: q + ' → ▢▢▢', a: a, mark: false, spoken: a };
+    return { full: q + ' → ' + a, prompt: q, gap: q + ' → ▢▢▢', a: a, mark: false, spoken: a };
+  }
+
+  K.gm = {
+    cfg: gmCfg,
+    remDone: false,
+    sessionTally: [],
+    cardNo: 0,
+    videoForPack: function (packId) { var m = loadRevVideos(); return m[packId || 'default'] || ''; },
+
+    /* 1. Pre-Game "Remember First" Flashcards (Auto-built pictures + text + audio + optional video clip) */
+    rememberFirst: function (items, done) {
+      var list = (items && items.length ? items : (K._qs && K._qs.allItems ? K._qs.allItems() : [])).slice(0, 8);
+      if (!list.length) { if (done) done(); return; }
+      var pts = revPickSmart(list, Math.min(8, list.length));
+      var packId = (K._qs && K._qs.id) || 'default';
+      var vidHtml = toEmbedHtml(K.gm.videoForPack(packId));
+      var ov = K.el('div', 'k3-gm-ov');
+      document.body.appendChild(ov);
+      function finish() {
+        try { root.speechSynthesis && root.speechSynthesis.cancel(); } catch (e) {}
+        ov.remove();
+        K.gm.remDone = true;
+        if (done) done();
+      }
+      function renderLook(idx) {
+        var it = pts[idx], s = formatCardSentence(it);
+        var mediaHtml = '';
+        if (idx === 0 && vidHtml) mediaHtml += '<div class="k3-gm-vidwrap">' + vidHtml + '</div>';
+        if (it.img) mediaHtml += '<img class="k3-gm-fimg" alt="" src="' + K.ROOT + K.esc(it.img) + '">';
+        else if (it.pic) mediaHtml += '<div class="k3-gm-fpic">' + K.esc(it.pic) + '</div>';
+        var bigHtml = '';
+        if (s.mark) {
+          var parts = s.full.split(s.a);
+          bigHtml = K.esc(parts[0]) + '<mark>' + K.esc(s.a) + '</mark>' + K.esc(parts.slice(1).join(s.a));
+        } else if (s.prompt) {
+          bigHtml = '<div class="k3-gm-fsub">' + K.esc(s.prompt) + '</div><mark>' + K.esc(s.a) + '</mark>';
+        } else {
+          bigHtml = K.esc(s.full);
+        }
+        var actHtml = it.act ? '<div class="k3-gm-fact">' + K.esc(it.act) + '</div>' : '';
+        ov.innerHTML =
+          '<div class="k3-gm-card wide">' +
+            '<div class="k3-gm-barhead"><b>🔁 Remember First · Flashcards</b><span>Card ' + (idx + 1) + ' of ' + pts.length + '</span><button type="button" class="k3-gm-sbtn ghost" id="k3-rem-skip">Skip to Game ⏭</button></div>' +
+            '<div class="k3-gm-flash">' +
+              mediaHtml +
+              '<div class="k3-gm-fbig">' + bigHtml + '</div>' +
+              actHtml +
+              '<div class="k3-gm-fdo">👂 Listen · 🗣️ Say it together · 👥 Say it to your partner!</div>' +
+            '</div>' +
+            '<div class="k3-gm-row">' +
+              (idx > 0 ? '<button type="button" class="k3-gm-sbtn ghost" id="k3-rem-prev">◀ Back</button>' : '') +
+              '<button type="button" class="k3-gm-sbtn amber" id="k3-rem-say">🔊 Hear It</button>' +
+              '<button type="button" class="k3-gm-sbtn green bigbtn" id="k3-rem-next">' + (idx + 1 < pts.length ? 'Next Card ▶' : 'Cover & Recall ▶') + '</button>' +
+            '</div>' +
+          '</div>';
+        ov.querySelector('#k3-rem-skip').onclick = finish;
+        ov.querySelector('#k3-rem-say').onclick = function () { K.say(s.spoken || s.full); };
+        if (idx > 0) ov.querySelector('#k3-rem-prev').onclick = function () { K.sfx('click'); renderLook(idx - 1); };
+        ov.querySelector('#k3-rem-next').onclick = function () {
+          K.sfx('click');
+          if (idx + 1 < pts.length) renderLook(idx + 1);
+          else renderRecall();
+        };
+        setTimeout(function () { K.say(s.spoken || s.full); }, 220);
+      }
+      function renderRecall() {
+        ov.innerHTML =
+          '<div class="k3-gm-card wide">' +
+            '<div class="k3-gm-barhead"><b>🧠 Cover &amp; Recall</b><span>Step 2 of 2</span><button type="button" class="k3-gm-sbtn green" id="k3-rem-go">🚀 Start Game!</button></div>' +
+            '<p class="k3-gm-hint">Say the missing words together, then tap each bar to check and hear it!</p>' +
+            '<div class="k3-gm-rlist" id="k3-rem-rlist"></div>' +
+            '<div class="k3-gm-row">' +
+              '<button type="button" class="k3-gm-sbtn ghost" id="k3-rem-again">◀ Flashcards Again</button>' +
+              '<button type="button" class="k3-gm-sbtn green bigbtn" id="k3-rem-start">🚀 Start Game Now!</button>' +
+            '</div>' +
+          '</div>';
+        var rl = ov.querySelector('#k3-rem-rlist');
+        pts.forEach(function (it) {
+          var s = formatCardSentence(it);
+          var b = K.el('button', 'k3-gm-rrow', (it.pic ? '<span>' + K.esc(it.pic) + '</span> ' : '') + K.esc(s.gap));
+          b.type = 'button';
+          b.onclick = function () {
+            if (b.classList.contains('open')) { K.say(s.spoken || s.full); return; }
+            b.classList.add('open');
+            b.innerHTML = (it.pic ? '<span>' + K.esc(it.pic) + '</span> ' : '') + K.esc(s.full);
+            K.sfx('correct');
+            K.say(s.spoken || s.full);
+          };
+          rl.appendChild(b);
+        });
+        ov.querySelector('#k3-rem-again').onclick = function () { renderLook(0); };
+        ov.querySelector('#k3-rem-go').onclick = finish;
+        ov.querySelector('#k3-rem-start').onclick = finish;
+      }
+      renderLook(0);
+    },
+
+    /* 2. Live Score & Team Name Editor */
+    scoreEditor: function () {
+      var teams = K._activeTeams;
+      if (!teams || !teams.length) { K.ui.toast('Start a game first to edit team scores!', 1.8, '#ffb320'); return; }
+      var old = document.getElementById('k3-sedit'); if (old) { old.remove(); return; }
+      var ov = K.el('div', 'k3-gm-ov'); ov.id = 'k3-sedit';
+      var card = K.el('div', 'k3-gm-card');
+      card.innerHTML = '<div class="k3-gm-barhead"><b>✏️ Live Scores &amp; Team Names</b><button type="button" class="k3-gm-sbtn ghost" id="k3-se-x">✕</button></div><p class="k3-gm-hint">Adjust any score or rename a team mid-game.</p>';
+      var rows = K.el('div', 'k3-gm-serows');
+      teams.forEach(function (t, i) {
+        var r = K.el('div', 'k3-gm-serow');
+        r.style.setProperty('--c', t.c || '#4f9dff');
+        var dot = K.el('span', 'k3-gm-sedot'); dot.style.background = t.c || '#4f9dff';
+        var inp = K.el('input', 'k3-gm-sename'); inp.value = t.name; inp.maxLength = 16;
+        inp.oninput = function () { t.name = inp.value || ('Team ' + (i + 1)); if (K._activeHud) K._activeHud.refresh(); };
+        var sc = K.el('input', 'k3-gm-senum'); sc.type = 'number'; sc.value = String(t.score || 0);
+        function setV(v) { t.score = Math.max(0, Math.round(+v || 0)); sc.value = String(t.score); if (K._activeHud) { K._activeHud.refresh(); K._activeHud.bump(i); } }
+        sc.onchange = function () { setV(sc.value); };
+        var m5 = K.el('button', 'k3-gm-sbtn ghost', '−1'); m5.type = 'button'; m5.onclick = function () { setV((t.score || 0) - 1); };
+        var p1 = K.el('button', 'k3-gm-sbtn amber', '+1'); p1.type = 'button'; p1.onclick = function () { setV((t.score || 0) + 1); };
+        var p5 = K.el('button', 'k3-gm-sbtn green', '+5'); p5.type = 'button'; p5.onclick = function () { setV((t.score || 0) + 5); };
+        r.appendChild(dot); r.appendChild(inp); r.appendChild(m5); r.appendChild(sc); r.appendChild(p1); r.appendChild(p5);
+        rows.appendChild(r);
+      });
+      card.appendChild(rows);
+      var doneB = K.el('button', 'k3-gm-sbtn green bigbtn', '✔ Done'); doneB.type = 'button';
+      doneB.onclick = function () { ov.remove(); if (K._activeHud) K._activeHud.refresh(); };
+      card.appendChild(doneB);
+      ov.appendChild(card);
+      document.body.appendChild(ov);
+      ov.querySelector('#k3-se-x').onclick = function () { ov.remove(); };
+      ov.onclick = function (e) { if (e.target === ov) ov.remove(); };
+    },
+
+    /* 3. Choose Questions + Optional Pre-Game Video Attachment */
+    chooseQuestions: function () {
+      if (!K._qs || !K._qs.rawItems) { K.ui.toast('Loading question set...', 1.4, '#4f9dff'); return; }
+      var all = K._qs.rawItems();
+      if (!all.length) return;
+      var chosen = {};
+      var cur = K._qs.selectedIdx && K._qs.selectedIdx.length ? K._qs.selectedIdx : all.map(function (_, i) { return i; });
+      cur.forEach(function (i) { chosen[i] = 1; });
+      var packId = K._qs.id || 'default';
+      var ov = K.el('div', 'k3-gm-ov');
+      var card = K.el('div', 'k3-gm-card wide');
+      card.innerHTML =
+        '<div class="k3-gm-barhead"><b>✔ Choose Questions &amp; Warm-Up Video</b><span id="k3-cq-cnt"></span><button type="button" class="k3-gm-sbtn ghost" id="k3-cq-x">✕</button></div>' +
+        '<div class="k3-gm-vidin"><label>🎬 Optional Pre-Game Video / YouTube Link:</label><input id="k3-cq-vid" type="text" placeholder="Paste YouTube URL or local .mp4 path (optional)"></div>' +
+        '<div class="k3-gm-row" style="justify-content:flex-start;margin:6px 0"><button type="button" class="k3-gm-sbtn amber" id="k3-cq-all">Select All</button><button type="button" class="k3-gm-sbtn ghost" id="k3-cq-none">Clear</button></div>' +
+        '<div class="k3-gm-qlist" id="k3-cq-list"></div>' +
+        '<div class="k3-gm-row"><button type="button" class="k3-gm-sbtn ghost" id="k3-cq-cancel">Cancel</button><button type="button" class="k3-gm-sbtn green bigbtn" id="k3-cq-save">✔ Use Selected Questions</button></div>';
+      ov.appendChild(card);
+      document.body.appendChild(ov);
+      var vidInp = card.querySelector('#k3-cq-vid');
+      vidInp.value = K.gm.videoForPack(packId);
+      var listEl = card.querySelector('#k3-cq-list'), cntEl = card.querySelector('#k3-cq-cnt');
+      function paintCnt() { cntEl.textContent = Object.keys(chosen).length + ' / ' + all.length + ' selected'; }
+      all.forEach(function (it, i) {
+        var lab = K.el('label', 'k3-gm-qitem');
+        var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!chosen[i];
+        cb.onchange = function () { if (cb.checked) chosen[i] = 1; else delete chosen[i]; paintCnt(); };
+        lab.appendChild(cb);
+        lab.appendChild(K.el('span', '', (it.pic ? K.esc(it.pic) + ' ' : '') + K.esc(it.q) + ' <em>→ ' + K.esc(it.a) + '</em>'));
+        listEl.appendChild(lab);
+      });
+      paintCnt();
+      card.querySelector('#k3-cq-all').onclick = function () { all.forEach(function (_, i) { chosen[i] = 1; }); [].forEach.call(listEl.querySelectorAll('input'), function (c) { c.checked = true; }); paintCnt(); };
+      card.querySelector('#k3-cq-none').onclick = function () { chosen = {}; [].forEach.call(listEl.querySelectorAll('input'), function (c) { c.checked = false; }); paintCnt(); };
+      card.querySelector('#k3-cq-x').onclick = card.querySelector('#k3-cq-cancel').onclick = function () { ov.remove(); };
+      card.querySelector('#k3-cq-save').onclick = function () {
+        var idxs = all.map(function (_, i) { return i; }).filter(function (i) { return chosen[i]; });
+        if (!idxs.length) { K.ui.toast('Pick at least 1 question!', 1.5, '#ff5fa2'); return; }
+        saveRevVideo(packId, vidInp.value);
+        if (K._qs && K._qs.applySelection) K._qs.applySelection(idxs);
+        ov.remove();
+        K.ui.toast('✔ ' + idxs.length + ' questions ready!', 1.6, '#2fc58a');
+      };
+    },
+
+    /* 4. Smart Mix (Spaced Repetition from eaa_revision_v1) */
+    activateSmartMix: function () {
+      var g = /4/.test(String(revClassId())) ? 4 : 3;
+      K.qlib().then(function (QL) {
+        var pool = [];
+        var sets = (root.GM && root.GM.sets) || [];
+        sets.forEach(function (s) {
+          if (s && s.grade == g && !s.smart && Array.isArray(s.items)) pool = pool.concat(s.items);
+        });
+        if (!pool.length && K._qs && K._qs.rawItems) pool = K._qs.rawItems();
+        var picked = revPickSmart(pool, 20);
+        if (picked.length && K._qs) {
+          K._qs.usePack({ id: 'smart-g' + g, name: '🧠 Smart Mix · Grade ' + g + ' (Most Missed)', items: picked });
+          K.ui.toast('🧠 Loaded ' + picked.length + ' Smart Mix questions for Grade ' + g + '!', 2, '#9b7bff');
+        }
+      });
+    },
+
+    /* 5. Answer Cards Class Tally Overlay */
+    tally: function (item, ok) {
+      return new Promise(function (resolve) {
+        if (!gmCfg.cards || K.DEMO) { revRecordClass(item, ok ? 1 : 0); return resolve(); }
+        var n = ++K.gm.cardNo;
+        var ov = K.el('div', 'k3-gm-ov');
+        var card = K.el('div', 'k3-gm-card');
+        card.innerHTML =
+          '<div class="k3-gm-barhead"><b>🃏 Answer Cards · Line ' + n + '</b></div>' +
+          '<div class="k3-gm-tans">Answer: <mark>' + K.esc(item.a) + '</mark></div>' +
+          '<p class="k3-gm-hint">Cards up! How many pupils got it right?</p>';
+        var row = K.el('div', 'k3-gm-row');
+        [['🙌 All', 1, 'green'], ['👍 Most', 0.75, 'green'], ['🤔 Half', 0.5, 'amber'], ['😬 A few', 0.25, 'coral'], ['🫥 None', 0, 'coral']].forEach(function (t) {
+          var b = K.el('button', 'k3-gm-sbtn ' + t[2], t[0]); b.type = 'button';
+          b.onclick = function () {
+            revRecordClass(item, t[1]);
+            K.gm.sessionTally.push({ n: n, item: item, f: t[1] });
+            ov.remove(); resolve();
+          };
+          row.appendChild(b);
+        });
+        var sk = K.el('button', 'k3-gm-sbtn ghost', 'Skip'); sk.type = 'button'; sk.onclick = function () { ov.remove(); resolve(); };
+        row.appendChild(sk);
+        card.appendChild(row); ov.appendChild(card); document.body.appendChild(ov);
+      });
+    },
+
+    /* 6. Judge Mode (Anyone Can Answer / Partial Credit) */
+    judge: function (team, ok) {
+      return new Promise(function (resolve) {
+        if (gmCfg.judge === 'off' || K.DEMO || !K._activeTeams || !K._activeTeams.length) return resolve(ok);
+        var teams = K._activeTeams;
+        var selIdx = ok ? teams.indexOf(team) : -1;
+        var frac = ok ? 1 : 0;
+        var ov = K.el('div', 'k3-gm-ov');
+        var card = K.el('div', 'k3-gm-card');
+        card.innerHTML = '<div class="k3-gm-barhead"><b>🏅 Teacher Judge</b></div><p class="k3-gm-hint">' + (gmCfg.judge === 'anyone' ? 'Tap which team earned the points:' : 'Choose partial or full credit:') + '</p>';
+        var tRow = K.el('div', 'k3-gm-row');
+        var fRow = K.el('div', 'k3-gm-row');
+        var goBtn = K.el('button', 'k3-gm-sbtn green bigbtn', '✔ Confirm'); goBtn.type = 'button';
+        function paint() {
+          [].forEach.call(tRow.children, function (b) { b.classList.toggle('sel', +b.dataset.i === selIdx); });
+          [].forEach.call(fRow.children, function (b) { b.classList.toggle('sel', +b.dataset.f === frac); });
+        }
+        if (gmCfg.judge === 'anyone' || gmCfg.judge === 'both') {
+          teams.forEach(function (t, i) {
+            var b = K.el('button', 'k3-gm-sbtn', K.esc(t.name)); b.type = 'button'; b.dataset.i = String(i);
+            b.style.borderColor = t.c;
+            b.onclick = function () { selIdx = i; if (frac === 0) frac = 1; paint(); };
+            tRow.appendChild(b);
+          });
+          var nb = K.el('button', 'k3-gm-sbtn ghost', '🙈 Nobody'); nb.type = 'button'; nb.dataset.i = '-1';
+          nb.onclick = function () { selIdx = -1; frac = 0; paint(); };
+          tRow.appendChild(nb);
+          card.appendChild(tRow);
+        }
+        if (gmCfg.judge === 'partial' || gmCfg.judge === 'both') {
+          [[0, '0'], [0.25, '¼'], [0.5, '½'], [0.75, '¾'], [1, 'Full']].forEach(function (f) {
+            var b = K.el('button', 'k3-gm-sbtn amber', f[1]); b.type = 'button'; b.dataset.f = String(f[0]);
+            b.onclick = function () { frac = f[0]; if (frac > 0 && selIdx < 0) selIdx = Math.max(0, teams.indexOf(team)); paint(); };
+            fRow.appendChild(b);
+          });
+          card.appendChild(fRow);
+        }
+        goBtn.onclick = function () {
+          ov.remove();
+          if (selIdx >= 0 && teams[selIdx] && teams[selIdx] !== team && frac > 0) {
+            teams[selIdx].score = (teams[selIdx].score || 0) + Math.max(1, Math.round(frac * 2));
+            if (K._activeHud) { K._activeHud.refresh(); K._activeHud.bump(selIdx); }
+          }
+          resolve(selIdx >= 0 && frac > 0);
+        };
+        card.appendChild(goBtn); ov.appendChild(card); document.body.appendChild(ov);
+        paint();
+      });
+    },
+
+    /* 7. End-of-Game "What We Found Hard" Review */
+    hardReview: function () {
+      var hard = (K.gm.sessionTally || []).filter(function (x) { return x.f <= 0.5; }).sort(function (a, b) { return a.f - b.f; });
+      var ov = K.el('div', 'k3-gm-ov');
+      var card = K.el('div', 'k3-gm-card wide');
+      card.innerHTML = '<div class="k3-gm-barhead"><b>📋 What We Found Hard</b><button type="button" class="k3-gm-sbtn ghost" id="k3-hr-x">✕</button></div>' +
+        '<p class="k3-gm-hint">' + (hard.length ? 'Tap each tricky question to reveal and say it together!' : 'Every question was strong for the class! Awesome job!') + '</p>' +
+        '<div class="k3-gm-rlist" id="k3-hr-list"></div>';
+      var listEl = card.querySelector('#k3-hr-list');
+      hard.forEach(function (x) {
+        var s = formatCardSentence(x.item);
+        var b = K.el('button', 'k3-gm-rrow', 'Line ' + x.n + ' · ' + K.esc(s.gap)); b.type = 'button';
+        b.onclick = function () { b.classList.add('open'); b.textContent = 'Line ' + x.n + ' · ' + s.full; K.say(s.spoken || s.full); };
+        listEl.appendChild(b);
+      });
+      var row = K.el('div', 'k3-gm-row');
+      if (hard.length) {
+        var pr = K.el('button', 'k3-gm-sbtn green bigbtn', '🔁 Practise These ' + Math.min(6, hard.length)); pr.type = 'button';
+        pr.onclick = function () { ov.remove(); K.gm.rememberFirst(hard.slice(0, 6).map(function (x) { return x.item; }), function () {}); };
+        row.appendChild(pr);
+      }
+      var cl = K.el('button', 'k3-gm-sbtn ghost', 'Done'); cl.type = 'button'; cl.onclick = function () { ov.remove(); };
+      row.appendChild(cl);
+      card.appendChild(row); ov.appendChild(card); document.body.appendChild(ov);
+      card.querySelector('#k3-hr-x').onclick = function () { ov.remove(); };
+    },
+
+    /* 8. 3-Question Exit Ticket + Private Teacher Marking Grid */
+    exitTicket: function (items) {
+      var list = (items && items.length ? items : (K._qs && K._qs.allItems ? K._qs.allItems() : []));
+      var qs = revPickSmart(list, 3);
+      if (!qs.length) { K.ui.toast('No questions loaded yet!', 1.5, '#ffb320'); return; }
+      var ov = K.el('div', 'k3-gm-ov');
+      function showBoard() {
+        var card = K.el('div', 'k3-gm-card wide');
+        card.innerHTML = '<div class="k3-gm-barhead"><b>📝 Exit Ticket · 3 Quick Questions</b><button type="button" class="k3-gm-sbtn ghost" id="k3-et-x">✕</button></div><p class="k3-gm-hint">Write or say your 3 answers before leaving!</p><div class="k3-gm-etlist" id="k3-et-list"></div>';
+        var el = card.querySelector('#k3-et-list'), revFns = [];
+        qs.forEach(function (it, i) {
+          var opts = (it.w && it.w.length) ? K.shuffle([it.a].concat(it.w.slice(0, 2))) : [];
+          var box = K.el('div', 'k3-gm-etq');
+          var ans = K.el('div', 'k3-gm-etans', '');
+          revFns.push(function () { ans.textContent = '✅ ' + it.a; ans.classList.add('on'); });
+          box.innerHTML = '<b>' + (i + 1) + '. ' + (it.pic ? K.esc(it.pic) + ' ' : '') + K.esc(it.q) + '</b>' +
+            (opts.length ? '<div class="k3-gm-etopts">' + opts.map(function (o, k) { return '<span><b>' + 'ABC'[k] + ')</b> ' + K.esc(o) + '</span>'; }).join('') + '</div>' : '<div class="k3-gm-etopts"><em>🎤 Speaking answer</em></div>');
+          box.appendChild(ans);
+          el.appendChild(box);
+        });
+        var row = K.el('div', 'k3-gm-row');
+        var showA = K.el('button', 'k3-gm-sbtn amber', '👀 Show Answers'); showA.type = 'button';
+        showA.onclick = function () { revFns.forEach(function (f) { f(); }); K.sfx('correct'); };
+        var markB = K.el('button', 'k3-gm-sbtn green bigbtn', '✔ Quick Mark & Save'); markB.type = 'button';
+        markB.onclick = function () { showMarking(); };
+        row.appendChild(showA); row.appendChild(markB);
+        card.appendChild(row); ov.innerHTML = ''; ov.appendChild(card);
+        card.querySelector('#k3-et-x').onclick = function () { ov.remove(); };
+      }
+      function showMarking() {
+        var pupils = [];
+        if (K._activeTeams) K._activeTeams.forEach(function (t) { if (t.pupils) pupils = pupils.concat(t.pupils); });
+        if (!pupils.length && K.cls && K.cls.preview) K.cls.preview.forEach(function (t) { if (t.pupils) pupils = pupils.concat(t.pupils); });
+        var marks = {};
+        var card = K.el('div', 'k3-gm-card wide');
+        card.innerHTML = '<div class="k3-gm-barhead"><b>📝 Exit Ticket · Private Marking</b><button type="button" class="k3-gm-sbtn ghost" id="k3-etm-x">✕</button></div><p class="k3-gm-hint">Tap each box: ✓ right, ✗ missed. Saves privately to spaced repetition.</p>';
+        if (!pupils.length) {
+          card.innerHTML += '<p class="k3-gm-hint">Select a class on the title screen to mark individual pupils, or tap Save to record these 3 questions.</p>';
+        } else {
+          var tbl = K.el('div', 'k3-gm-etbl');
+          tbl.innerHTML = '<div class="k3-gm-eprow head"><span>Pupil</span><b>Q1</b><b>Q2</b><b>Q3</b></div>';
+          pupils.forEach(function (p) {
+            var r = K.el('div', 'k3-gm-eprow');
+            r.appendChild(K.el('span', '', K.esc(p.name)));
+            qs.forEach(function (_, qi) {
+              var b = K.el('button', 'k3-gm-emark', ''); b.type = 'button';
+              b.onclick = function () {
+                var m = marks[p.id] = marks[p.id] || [];
+                m[qi] = m[qi] === 1 ? 0 : m[qi] === 0 ? undefined : 1;
+                b.textContent = m[qi] === 1 ? '✓' : m[qi] === 0 ? '✗' : '';
+                b.className = 'k3-gm-emark' + (m[qi] === 1 ? ' ok' : m[qi] === 0 ? ' no' : '');
+              };
+              r.appendChild(b);
+            });
+            tbl.appendChild(r);
+          });
+          card.appendChild(tbl);
+        }
+        var row = K.el('div', 'k3-gm-row');
+        var bk = K.el('button', 'k3-gm-sbtn ghost', '◀ Back'); bk.type = 'button'; bk.onclick = showBoard;
+        var sv = K.el('button', 'k3-gm-sbtn green bigbtn', '💾 Save Marks'); sv.type = 'button';
+        sv.onclick = function () {
+          var d = revLoad(), count = 0;
+          Object.keys(marks).forEach(function (sid) {
+            marks[sid].forEach(function (v, qi) {
+              if (v === 1 || v === 0) {
+                var k = revKeyOf(qs[qi]), p = d.pup[sid] = d.pup[sid] || {}, r = p[k] = p[k] || { lv: 0, n: 0, ok: 0, t: 0, d: '' };
+                if (v === 1) { r.lv = Math.min(3, r.lv + 1); r.ok++; } else r.lv = Math.max(0, r.lv - 1);
+                r.n++; r.t = Date.now(); r.d = new Date().toISOString().slice(0, 10);
+                d.items[k] = { q: String(qs[qi].q), a: String(qs[qi].a) }; count++;
+              }
+            });
+          });
+          revSave(d);
+          ov.remove();
+          K.ui.toast(count ? ('✅ Saved ' + count + ' Exit Ticket marks!') : '✅ Exit Ticket closed!', 2, '#2fc58a');
+        };
+        row.appendChild(bk); row.appendChild(sv); card.appendChild(row);
+        ov.innerHTML = ''; ov.appendChild(card);
+        card.querySelector('#k3-etm-x').onclick = function () { ov.remove(); };
+      }
+      document.body.appendChild(ov);
+      showBoard();
+    },
+
+    /* 9. Compact Title-Screen Teacher Options Bar */
+    optionsBar: function (box) {
+      if (K.ui.preview || K.DEMO) return null;
+      var bar = K.el('div', 'k3-gm-optbar');
+      function paint() {
+        bar.innerHTML = '';
+        function pill(txt, on, fn, title) {
+          var b = K.el('button', 'k3-gm-pill' + (on ? ' on' : ''), txt);
+          b.type = 'button'; if (title) b.title = title;
+          b.onclick = function () { K.sfx('click'); fn(); saveGmCfg(); paint(); };
+          bar.appendChild(b);
+        }
+        pill(gmCfg.rem ? '🔁 Warm-Up: ON' : '🔁 Warm-Up: OFF', !!gmCfg.rem, function () { gmCfg.rem = gmCfg.rem ? 0 : 1; }, 'Show Remember First flashcards before Question 1');
+        pill('📖 Flashcards', false, function () { K.gm.rememberFirst(K._qs && K._qs.allItems ? K._qs.allItems() : [], function () {}); }, 'Preview illustrated flashcards right now');
+        pill('✔ Pick Qs / 🎬 Video', false, function () { K.gm.chooseQuestions(); }, 'Tick specific questions or attach a warm-up video');
+        pill('🧠 Smart Mix', false, function () { K.gm.activateSmartMix(); }, 'Load the 20 questions the class missed most');
+        var tCycle = [0, 10, 15, 20, 30];
+        pill(gmCfg.timer ? ('⏱ ' + gmCfg.timer + 's') : '⏱ Timer: Off', !!gmCfg.timer, function () { gmCfg.timer = tCycle[(tCycle.indexOf(gmCfg.timer) + 1) % tCycle.length]; }, 'Countdown timer per question');
+        var pCycle = ['off', 'zoom', 'blur'], pLbl = { off: '🖼 Pics: Normal', zoom: '🔍 Super Zoom', blur: '🌫 Blur Reveal' };
+        pill(pLbl[gmCfg.pics] || '🖼 Pics: Normal', gmCfg.pics !== 'off', function () { gmCfg.pics = pCycle[(pCycle.indexOf(gmCfg.pics) + 1) % pCycle.length]; }, 'Tap picture to zoom fullscreen or slide to unblur');
+        var jCycle = ['off', 'anyone', 'partial', 'both'], jLbl = { off: '🏅 Judge: Off', anyone: '🏅 Anyone', partial: '🏅 Partial', both: '🏅 Full Judge' };
+        pill(jLbl[gmCfg.judge] || '🏅 Judge: Off', gmCfg.judge !== 'off', function () { gmCfg.judge = jCycle[(jCycle.indexOf(gmCfg.judge) + 1) % jCycle.length]; }, 'Award points to any team or give partial credit');
+        pill(gmCfg.cards ? '🃏 Cards: ON' : '🃏 Cards: Off', !!gmCfg.cards, function () { gmCfg.cards = gmCfg.cards ? 0 : 1; }, 'Whole-class answer card tally after each question');
+      }
+      paint();
+      box.insertBefore(bar, box.lastChild);
+      return bar;
+    }
+  };
+
   var keyFn = null;
   addEventListener('keydown', function (e) { if (keyFn) keyFn(e); });
-  /* question card: resolves true/false. In demo mode it answers by itself (demoRight decides). */
+  /* question card: supports Quiz, Speaking Choice, AND Speaking & Acting cards + Pre-Game Remember First + Timer + Zoom/Blur + Judge + Answer Cards */
   K.ui.ask = function (item, team, opts) {
     opts = opts || {};
-    return new Promise(function (resolve) {
-      var choices = K.shuffle([item.a].concat(item.w.slice(0, 2)));
-      var wrap = K.ui.add(K.el('div', 'qwrap')), card = K.el('div', 'qcard');
-      card.style.setProperty('--c', team.c);
-      var sp = K.cls && K.cls.speaker(team);
-      var sayPrompt = (typeof item.speak === 'string' && item.speak) ? item.speak : String(item.q || '').replace(/_+/g, 'blank');
-      card.innerHTML = '<div class="qhead"><span>●</span> ' + (sp ? '<i class="qface" data-k3-face="' + sp.id + '">' + sp.initial + '</i>' + K.esc(sp.name) + '\u2019s turn · Team ' + team.name : 'Team ' + team.name) + (opts.prompt ? ' — ' + opts.prompt : '') + '<small class="qkhint">Keys: 1 · 2 · 3</small></div>' +
-        '<div class="qtext">' + (item.img ? '<img class="qimg" alt="" src="' + K.ROOT + item.img + '">' : (item.pic ? '<span class="pic">' + item.pic + '</span>' : '')) + '<span>' + item.q + '</span>' +
-        '<button type="button" class="qsay" title="Listen to question">🔊</button></div>';
-      var grid = K.el('div', 'opts'), done = false;
-      choices.forEach(function (o, idx) {
-        var b = K.el('button', 'opt');
-        b.type = 'button';
-        b.dataset.ans = o;
-        var kbd = K.el('kbd', 'okbd', String(idx + 1));
-        var lbl = K.el('span', 'otxt', K.esc(o));
-        var spk = K.el('span', 'osay', '🔊');
-        spk.title = 'Hear this answer';
-        spk.onclick = function (ev) { ev.stopPropagation(); K.say(o); };
-        b.appendChild(kbd); b.appendChild(lbl); b.appendChild(spk);
-        b.onclick = function () {
-          if (done) return; done = true; keyFn = null;
-          var ok = o === item.a;
-          if (sp) { sp.turns++; if (ok) sp.right++; team.speakerIdx = (team.speakerIdx || 0) + 1; }
-          Array.prototype.forEach.call(grid.children, function (x) { if (x.dataset.ans === item.a) x.classList.add('right'); else if (x === b) x.classList.add('wrong'); });
-          K.sfx(ok ? 'correct' : 'wrong');
-          K.after(ok ? .7 : 1.3, function () { wrap.remove(); if (opts.onAnswer) opts.onAnswer(ok); resolve(ok); });
-        };
-        grid.appendChild(b);
+    var skipRev = K.DEMO || Q.get('norev') === '1' || opts.skipRemember;
+    if (!skipRev && gmCfg.rem && !K.gm.remDone && K._qs) {
+      K.gm.remDone = true;
+      return new Promise(function (resolve) {
+        var all = K._qs.allItems ? K._qs.allItems() : [item];
+        K.gm.rememberFirst(all, function () {
+          K.ui.ask(item, team, Object.assign({}, opts, { skipRemember: true })).then(resolve);
+        });
       });
-      card.appendChild(grid); wrap.appendChild(card);
+    }
+    return new Promise(function (resolve) {
+      var isAiTurn = !K.DEMO && K.isAI && K.isAI(team);
+      var isSpeaking = !item.w || item.w.length === 0 || item.speak === 1;
+      var wrap = K.ui.add(K.el('div', 'qwrap')), card = K.el('div', 'qcard' + (isSpeaking ? ' k3-speak-card' : ''));
+      card.style.setProperty('--c', team.c);
+      var sp = !isAiTurn && K.cls && K.cls.speaker(team);
+      var sayPrompt = (typeof item.speak === 'string' && item.speak) ? item.speak : (isSpeaking ? String(item.a || '') : String(item.q || '').replace(/_+/g, 'blank'));
+      var badgeHtml = isSpeaking ? '<span class="k3-spk-badge">🎤 SPEAK &amp; ACT</span>' : (item.speakChoice ? '<span class="k3-spk-badge choice">🗣️ CHOOSE &amp; SAY!</span>' : '');
+      var picHtml = item.img ? '<span class="k3-picwrap"><img class="qimg" alt="" src="' + K.ROOT + K.esc(item.img) + '"></span>' : (item.pic ? '<span class="k3-picwrap"><span class="pic">' + K.esc(item.pic) + '</span></span>' : '');
+      var timerHtml = (gmCfg.timer && !isAiTurn && !K.DEMO) ? '<div class="k3-timer-track"><div class="k3-timer-fill" id="k3-tfill"></div><span class="k3-timer-sec" id="k3-tsec">' + gmCfg.timer + 's</span></div>' : '';
+
+      card.innerHTML = '<div class="qhead"><span>●</span> ' + (sp ? '<i class="qface" data-k3-face="' + sp.id + '">' + sp.initial + '</i>' + K.esc(sp.name) + '\u2019s turn · Team ' + K.esc(team.name) : 'Team ' + K.esc(team.name)) + (isAiTurn ? '<span class="k3-ai-badge">🤖 Crew AI</span>' : '') + badgeHtml + (opts.prompt ? ' — ' + opts.prompt : '') + (isAiTurn || isSpeaking ? '' : '<small class="qkhint">Keys: 1 · 2 · 3</small>') + '</div>' +
+        timerHtml +
+        '<div class="qtext">' + picHtml + '<span>' + K.esc(item.q) + '</span>' +
+        '<button type="button" class="qsay" title="Listen">🔊</button></div>';
+
+      // Picture Tricks: Super Zoom or Blur Slide-to-Reveal
+      var picBox = card.querySelector('.k3-picwrap');
+      if (picBox && gmCfg.pics === 'zoom') {
+        picBox.classList.add('k3-zoomable'); picBox.title = 'Tap to zoom big';
+        picBox.onclick = function () {
+          var zov = K.el('div', 'k3-gm-ov k3-zoom-ov');
+          zov.innerHTML = '<div class="k3-zoom-box">' + picBox.innerHTML + '</div><div class="k3-zoom-x">✕ Tap anywhere to close</div>';
+          zov.onclick = function () { zov.remove(); };
+          document.body.appendChild(zov);
+        };
+      } else if (picBox && gmCfg.pics === 'blur') {
+        picBox.classList.add('k3-blurpic');
+        picBox.style.setProperty('--blur', '20px');
+        var rng = K.el('input', 'k3-blur-rng'); rng.type = 'range'; rng.min = '0'; rng.max = '100'; rng.value = '0';
+        rng.oninput = function () { picBox.style.setProperty('--blur', (20 * (1 - rng.value / 100)).toFixed(1) + 'px'); };
+        picBox.appendChild(rng);
+      }
+
+      var timerId = null, done = false;
+      function clearTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+      if (gmCfg.timer && !isAiTurn && !K.DEMO) {
+        var remSec = gmCfg.timer, tFill = card.querySelector('#k3-tfill'), tSec = card.querySelector('#k3-tsec');
+        timerId = setInterval(function () {
+          remSec = Math.max(0, remSec - 0.1);
+          if (tFill) tFill.style.width = ((remSec / gmCfg.timer) * 100).toFixed(1) + '%';
+          if (tSec) tSec.textContent = Math.ceil(remSec) + 's';
+          if (remSec <= 0) {
+            clearTimer();
+            K.sfx('wrong');
+            if (tSec) tSec.textContent = '⏰ Time!';
+          }
+        }, 100);
+      }
+
+      function settle(ok) {
+        if (done) return;
+        done = true; keyFn = null; clearTimer();
+        if (sp) { sp.turns++; if (ok) sp.right++; team.speakerIdx = (team.speakerIdx || 0) + 1; }
+        K.sfx(ok ? 'correct' : 'wrong');
+        if (ok && item.speakChoice) K.say(item.a);
+        K.after(isAiTurn ? .55 : (ok ? .65 : 1.15), function () {
+          wrap.remove();
+          K.gm.tally(item, ok).then(function () {
+            return K.gm.judge(team, ok);
+          }).then(function (finalOk) {
+            if (opts.onAnswer) opts.onAnswer(finalOk);
+            resolve(finalOk);
+          });
+        });
+      }
+
+      if (isSpeaking) {
+        // SPEAKING & ACTING CARD UI
+        var spkBox = K.el('div', 'k3-spk-body');
+        if (item.act) spkBox.appendChild(K.el('div', 'k3-spk-act', K.esc(item.act)));
+        var ansPill = K.el('div', 'k3-spk-model', '<span>“' + K.esc(item.a) + '”</span>');
+        var togBtn = K.el('button', 'k3-spk-tog', '🙈 Hide Model'); togBtn.type = 'button';
+        togBtn.onclick = function () {
+          var hid = ansPill.classList.toggle('masked');
+          togBtn.textContent = hid ? '👀 Show Model' : '🙈 Hide Model';
+        };
+        ansPill.appendChild(togBtn);
+        spkBox.appendChild(ansPill);
+        if (item.words && item.words.length) {
+          spkBox.appendChild(K.el('div', 'k3-spk-words', item.words.map(function (w) { return '<span>' + K.esc(w) + '</span>'; }).join('')));
+        }
+        var actRow = K.el('div', 'k3-spk-btns');
+        var bOk = K.el('button', 'opt k3-spk-ok', '✅ Great Speaking!'); bOk.type = 'button';
+        var bSuper = K.el('button', 'opt k3-spk-super', '⭐ Super Sentence!'); bSuper.type = 'button';
+        var bTry = K.el('button', 'opt k3-spk-try', '🔁 Try Again'); bTry.type = 'button';
+        bOk.onclick = function () { if (!isAiTurn) settle(true); };
+        bSuper.onclick = function () { if (!isAiTurn) { K.ui.toast('⭐ Super Speaking!', 1.4, '#ffb320'); settle(true); } };
+        bTry.onclick = function () { if (!isAiTurn) settle(false); };
+        actRow.appendChild(bOk); actRow.appendChild(bSuper); actRow.appendChild(bTry);
+        spkBox.appendChild(actRow);
+        card.appendChild(spkBox);
+        if (!isAiTurn) keyFn = function (e) { if (e.key === '1') bOk.click(); else if (e.key === '2') bSuper.click(); else if (e.key === '3') bTry.click(); };
+        if (isAiTurn || K.DEMO) K.after(1.1, function () { settle(opts.demoRight !== undefined ? opts.demoRight : true); });
+      } else {
+        // MULTIPLE-CHOICE & SPEAKING-CHOICE CARD UI
+        var choices = K.shuffle([item.a].concat(item.w.slice(0, 2)));
+        var grid = K.el('div', 'opts');
+        function finishAnswer(b, o) {
+          if (done) return;
+          var ok = o === item.a;
+          Array.prototype.forEach.call(grid.children, function (x) { if (x.dataset.ans === item.a) x.classList.add('right'); else if (x === b) x.classList.add('wrong'); });
+          settle(ok);
+        }
+        choices.forEach(function (o, idx) {
+          var b = K.el('button', 'opt');
+          b.type = 'button';
+          b.dataset.ans = o;
+          var kbd = K.el('kbd', 'okbd', String(idx + 1));
+          var lbl = K.el('span', 'otxt', K.esc(o));
+          var spk = K.el('span', 'osay', '🔊');
+          spk.title = 'Hear this answer';
+          spk.onclick = function (ev) { ev.stopPropagation(); K.say(o); };
+          b.appendChild(kbd); b.appendChild(lbl); b.appendChild(spk);
+          b.onclick = function () { if (!isAiTurn) finishAnswer(b, o); };
+          if (isAiTurn) b.style.cursor = 'default';
+          grid.appendChild(b);
+        });
+        card.appendChild(grid);
+        if (!isAiTurn) keyFn = function (e) { var n = +e.key; if (n >= 1 && n <= 3 && grid.children[n - 1]) grid.children[n - 1].click(); };
+        if (isAiTurn) {
+          K.after(0.85, function () {
+            var aiRight = Math.random() < 0.72;
+            var aiBtn = Array.prototype.find.call(grid.children, function (b) { return (b.dataset.ans === item.a) === aiRight; }) || grid.children[0];
+            if (aiBtn) finishAnswer(aiBtn, aiBtn.dataset.ans);
+          });
+        } else if (K.DEMO) K.after(1.7 + Math.random() * .6, function () {
+          var right = opts.demoRight !== undefined ? opts.demoRight : Math.random() < .8;
+          var targetBtn = Array.prototype.find.call(grid.children, function (b) { return (b.dataset.ans === item.a) === right; });
+          if (targetBtn) targetBtn.click();
+        });
+      }
+
+      wrap.appendChild(card);
       if (sp) K.cls.paintFaces(card);
       var say = function () { K.say(sayPrompt); };
       var sb = card.querySelector('.qsay'); if (sb) sb.onclick = say;
-      if (typeof item.speak === 'string' && item.speak) K.after(.35, say);
-      keyFn = function (e) { var n = +e.key; if (n >= 1 && n <= 3 && grid.children[n - 1]) grid.children[n - 1].click(); };
-      if (K.DEMO) K.after(1.7 + Math.random() * .6, function () {
-        var right = opts.demoRight !== undefined ? opts.demoRight : Math.random() < .8;
-        var targetBtn = Array.prototype.find.call(grid.children, function (b) { return (b.dataset.ans === item.a) === right; });
-        if (targetBtn) targetBtn.click();
-      });
+      if (!isAiTurn && ((typeof item.speak === 'string' && item.speak) || isSpeaking)) K.after(.35, say);
     });
   };
 
   /* ---------- questions from the Game Maker sets ---------- */
   // Questions come from the ONE shared library (games/kit/questions.js): every Game Maker set for Units 1-5,
-  // unit packs, the teacher's own sets, mixes, and one remembered choice shared with the 2D games.
-  // Explicit URL ?set=<id> or ?pack=<id> ALWAYS wins over saved preferences so Game Maker Quick Play works 1:1!
+  // Speaking & Acting sets, Speaking Choice sets, unit packs, teacher sets, and Smart Mix!
   K.questions = function (fallbackId) {
     var GM = root.GM || { sets: [] };
     var customSets = [];
     try { customSets = JSON.parse(localStorage.getItem('eaa_gm_sets_v1') || '[]') || []; } catch (e) { customSets = []; }
     var allLocalSets = (GM.sets || []).concat(customSets);
-    function usable(arr) { return (arr || []).filter(function (q) { return q && q.q && q.a && q.w && q.w.length; }); }
-    var qs = [], i = 0, api = { title: '', id: '' };
+    function usable(arr) { return (arr || []).filter(function (q) { return q && q.q && q.a != null && String(q.a).trim() !== ''; }); }
+    var raw = [], qs = [], i = 0, api = { title: '', id: '', selectedIdx: [] };
     function take(items, id, title) {
-      qs = K.shuffle(usable(items).map(function (x) { var o = {}; for (var k in x) o[k] = x[k]; if (!o.pic && o.img) o.pic = ''; return o; }));
-      if (!qs.length) qs = [{ q: 'A king of Ancient Egypt is a…', a: 'pharaoh', w: ['chariot', 'camel'], pic: '👑' }];
+      raw = usable(items).map(function (x) { var o = {}; for (var k in x) o[k] = x[k]; if (!o.pic && o.img) o.pic = ''; return o; });
+      if (!raw.length) raw = [{ q: 'A king of Ancient Egypt is a…', a: 'pharaoh', w: ['chariot', 'camel'], pic: '👑' }];
+      api.selectedIdx = [];
+      qs = K.shuffle(raw.slice());
       i = 0; api.id = id || ''; api.title = title || '';
+      if (K.gm) K.gm.remDone = false;
     }
     api.usePack = function (p) { if (p) take(p.items, p.id, p.name || p.title); return api; };
+    api.rawItems = function () { return raw.slice(); };
+    api.allItems = function () { return qs.slice(); };
+    api.applySelection = function (idxs) {
+      api.selectedIdx = idxs.slice();
+      var sub = idxs.map(function (idx) { return raw[idx]; }).filter(Boolean);
+      if (sub.length) { qs = K.shuffle(sub); i = 0; if (K.gm) K.gm.remDone = false; }
+    };
     api.next = function () { return qs[i++ % qs.length]; };
     var urlSet = Q.get('set') || Q.get('pack') || '';
     var first = urlSet || fallbackId || 'g3-u5-vocab';
@@ -1641,19 +2460,20 @@
   K.qlib = function () {
     if (qlibP) return qlibP;
     kitShim();
-    qlibP = (root.Kit && root.Kit.questions ? Promise.resolve() : loadOnce(K.ROOT + 'games/kit/questions.js?v=4'))
+    qlibP = (root.Kit && root.Kit.questions ? Promise.resolve() : loadOnce(K.ROOT + 'games/kit/questions.js?v=5'))
       .then(function () { return root.Kit && root.Kit.questions && root.Kit.questions.picker ? root.Kit.questions : null; })
       .catch(function () { return null; });
     return qlibP;
   };
 
-  // The shared question picker on the title screen (grade · unit · part · "Make a mix").
+  // The shared question picker on the title screen (now supports ALL Quiz, Speaking Choice & Speaking/Acting sets!).
   K.ui.setPicker = function (box) {
     var holder = K.el('div', 'setpick'); box.insertBefore(holder, box.lastChild);
     K.qlib().then(function (QL) {
       if (!QL || !K._qs) { holder.remove(); return; }
-      QL.picker(holder, function (p) { K._qs.usePack(p); }, { quizOnly: true, silentFirst: true });
+      QL.picker(holder, function (p) { K._qs.usePack(p); }, { quizOnly: false, silentFirst: true });
     });
+    if (K.gm && K.gm.optionsBar) K.gm.optionsBar(box);
     return holder;
   };
 
@@ -1710,6 +2530,9 @@
   /* the title screen row: pick the class (or no names), see the teams, shuffle them */
   C.setupRow = function (box, nTeams) {
     if (!K.ui.preview) K.ui.setPicker(box);
+    if (!K.ui.preview && (K.island.from === 'island' || K.island.from === 'practice-island' || Q.has('solo'))) {
+      K.solo.toggleRow(box);
+    }
     var wrap = K.el('div', 'clsbox'); box.insertBefore(wrap, box.lastChild);
     C.boot().then(function (ok) {
       if (!ok) { wrap.remove(); return; }
@@ -1732,6 +2555,10 @@
         none.title = 'Play with colour teams only';
         none.onclick = function () { C.classId = ''; Kit.pref('classId', 'none'); draw(); };
         pick.appendChild(none);
+        var soloBtn = K.el('button', 'clsbtn' + (K.solo.on ? ' on' : ''), '🤖 1P vs AI');
+        soloBtn.title = 'Team 1 (Player) vs AI Island Crew';
+        soloBtn.onclick = function () { K.solo.on = !K.solo.on; draw(); };
+        pick.appendChild(soloBtn);
         wrap.appendChild(pick);
         C.on = false; C.preview = null;
         if (!C.classId) return;
@@ -1783,8 +2610,35 @@
   var PLACE_XP = [20, 15, 10, 10];
   C.pointsPanel = function (box, TEAMS, opts) {
     opts = opts || {};
-    if (!C.on || !C.classId || !TEAMS.some(function (t) { return t.pupils && t.pupils.length; })) return null;
     var scoreOf = opts.scoreOf || function (t) { return t.score || 0; };
+    var bestTeam = (TEAMS && TEAMS[0]) || { name: 'Pink' };
+    var bestScore = -Infinity;
+    (TEAMS || []).forEach(function (t) {
+      var s = scoreOf(t);
+      if (s > bestScore) { bestScore = s; bestTeam = t; }
+    });
+    K.island.recordWin(opts.game || K.island.gameId, {
+      winner: 'Team ' + bestTeam.name,
+      score: Math.max(0, Math.round(bestScore || 0)),
+      bridgeXp: 45
+    });
+    var hasPupils = C.on && C.classId && TEAMS.some(function (t) { return t.pupils && t.pupils.length; });
+    if (K.gm && !K.DEMO) {
+      var revRow = K.el('div', 'k3-gm-endrow');
+      if (K.gm.sessionTally && K.gm.sessionTally.some(function (x) { return x.f <= 0.5; })) {
+        var hrB = K.el('button', 'k3-gm-sbtn amber', '📋 What We Found Hard'); hrB.type = 'button';
+        hrB.onclick = function () { K.gm.hardReview(); };
+        revRow.appendChild(hrB);
+      }
+      var etB = K.el('button', 'k3-gm-sbtn green', '📝 Exit Ticket (3 Qs)'); etB.type = 'button';
+      etB.onclick = function () { K.gm.exitTicket(K._qs && K._qs.allItems ? K._qs.allItems() : []); };
+      revRow.appendChild(etB);
+      box.appendChild(revRow);
+    }
+    if (!hasPupils) {
+      K.island.endButtons(box, opts.game || K.island.gameId);
+      return null;
+    }
     var sorted = TEAMS.map(function (t) { return scoreOf(t); }).sort(function (a, b) { return b - a; });
     var base = TEAMS.map(function (t) { return PLACE_XP[Math.min(3, sorted.indexOf(scoreOf(t)))]; });
     var stamp = Date.now().toString(36) + Math.random().toString(36).slice(2, 6), sent = false;
@@ -1807,7 +2661,7 @@
         r.appendChild(ctl); rows.appendChild(r);
       });
       var tt = total();
-      send.textContent = sent ? '✓ Sent to the Class Board!' : '⭐ Send ' + tt.xp + ' XP to ' + tt.kids + ' pupils';
+      send.textContent = sent ? '✓ Sent to Class Board & Treasure Bridge!' : '⭐ Send ' + tt.xp + ' XP to ' + tt.kids + ' pupils';
       send.disabled = sent;
       C.paintFaces(card);
     }
@@ -1832,6 +2686,7 @@
     card.appendChild(rows); card.appendChild(send);
     box.insertBefore(card, box.firstChild.nextSibling || null);
     draw();
+    K.island.endButtons(box, opts.game || K.island.gameId);
     return card;
   };
 })(window);

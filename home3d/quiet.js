@@ -972,6 +972,12 @@
       var kp = creaturePresence('kids');
       HOST.kidStates.forEach(function (ks, i) {
         var kr = ks.k.root;
+        if (ks.seated || !ks.road) {
+          kr.visible = true;
+          if (curState === 'loud') ks.k.setState('headhands');
+          else if (curState === 'returning' && ks.k.state === 'headhands') ks.k.setState('sit');
+          return;
+        }
         if (curState === 'uneasy') {
           // Pause on road and look up nervously
           kr.rotation.y += Math.sin(t * 3 + i) * dt * 1.5;
@@ -1511,7 +1517,13 @@
     togglePanel: togglePanel,
     openPanel: openPanel,
     closePanel: closePanel,
-    forceState: forceState
+    forceState: forceState,
+    setOverlayPaused: function (paused) {
+      if (micStream && micStream.getAudioTracks) {
+        micStream.getAudioTracks().forEach(function (tr) { tr.enabled = !paused; });
+      }
+      if (paused) { smoothLevel = 0; stateTimer = 0; }
+    }
   };
 
   // Stop microphone tracks cleanly when leaving the page

@@ -92,3 +92,31 @@ const ASSET_REGISTRY = {
 };
 ```
 Always pair texture loaders with zero-dependency procedural fallbacks so games remain 100% playable even in offline or firewall-restricted classrooms.
+
+---
+
+## 🌴 7. Commercial Stylized 3D GameQualityCore & Visual QA Gate (Nintendo / Angry Birds Standard)
+
+Every 3D game in `games/*3d/` MUST initialize through `GameQualityCore` (`games/engine3d/SceneAtmosphere.js`, `StylizedWater.js`, `JuiceManager.js`) and pass all 5 Visual QA Gates before completion:
+
+1. **Calibrated Sunlit Palette & Fog (`SceneAtmosphere.js`):**
+   - `SRGBColorSpace` + `ACESFilmicToneMapping` (`1.05`) + `PCFSoftShadowMap` (`2048×2048`, `bias = -0.0004`, `normalBias = 0.02`).
+   - **Fog (`FogExp2` `0.0022`–`0.0032`, never `> 0.0035`):** Subtle aerial depth only—distant hills, lighthouses, and stands must keep warm recognizable color, never milky whiteout.
+   - **Sunlight vs. Fill Contrast:** Warm Sun `DirectionalLight` (`#FFF2D6`, `2.5`) at `[35, 45, 25]` (`3/4` side angle) + `HemisphereLight` (`#9CE0FF` / `#C49A6C`, `0.55`) + warm back **Rim Light** (`#FFE4B5`, `0.60`, no shadow).
+   - **Surface Palette:** Olive-meadow grass (`#6EB84C` lit / `#4B8B3B` shaded), golden sand (`#F3CF8A`) with wet waterline (`#C99D5B`), and sunlit turquoise-to-cerulean ocean (`#26C6DA -> #1282C8 -> #0D5EA6`, `StylizedWater.js`).
+
+2. **Pro Target Silhouette (`1.35×–1.5×`) & Environmental Perimeter Dressing:**
+   - Scale interactive crates, TNT barrels, pins, and fort blocks up `1.35×–1.5×` with high-contrast multi-part coloring (`#D99B52`/`#8C5828` oak crates, `#E63946`/`#FFD43B` crimson TNT) + real cast shadows + AO contact rings (`addBlobShadow`).
+   - Dress every playable island/stage perimeter (never blocking aim sightlines) with swaying palms/trees, faceted boulders, docks/stakes, fluttering pennants, and ambient life (circling gulls, bobbing skiffs/buoys). Zero bare primitive pancakes.
+
+3. **Camera Choreography, UI Safe Zones & `JuiceManager.js`:**
+   - **Bottom 18% UI Safe Zone:** Launchers, balls, and crew feet must project above the bottom 18% HUD strip; when quiz modals open, pan/tilt the camera so the live 3D arena frames cleanly above `.qcard`.
+   - **Single Honest Aim Guide & 3-Tier English Stakes:** Strictly one short muzzle pointer (`15%–20%` length; no cheat bullseye rings or double shadow arrows), 3-tier English ammo/power stakes, opposing-team Steal rule, and full Impact Trio (`squashStretch`, `40ms` `hitstop`, spring camera micro-shake, 3D splinters/stars/splash, bouncy score popups, and avatar head-tracking).
+
+4. **Mandatory 5-Point Visual QA Checklist:**
+   - [ ] `FogExp2 <= 0.0035` — horizon silhouettes retain warm color without milky washout.
+   - [ ] Crisp directional sun shadows visible across play surfaces (`Hemi <= 0.65`, `Sun >= 2.2`).
+   - [ ] Perimeter framing props & ambient life on every stage — zero bare platforms.
+   - [ ] High-contrast `1.35×–1.5×` target separation against sand, turf, and water.
+   - [ ] Bottom/Top 18% UI Safe Zones clean across Smartboard (`1920×1080`), Laptop (`1366×768`), and Mobile (`844×390` & `390×844`) with `0` console errors.
+

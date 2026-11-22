@@ -21,7 +21,7 @@
     'game-maker/js/sets-unit4.js?v=2',
     'game-maker/js/sets-unit5.js?v=3',
     'game-maker/js/sets-units14.js?v=2',
-    'game-maker/js/sets-speaking.js?v=3',
+    'game-maker/js/sets-speaking.js?v=4',
     'game-maker/js/bank.js?v=2'
   ];
 

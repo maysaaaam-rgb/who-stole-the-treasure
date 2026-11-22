@@ -16,7 +16,7 @@
   var BUCKET = 'pupil-avatars';
   var LOOK_KEY = 'eaa_board_look';
   var BASE = (root.EAA_AVATAR_BASE || 'assets/avatars/');   // Practice Island loads this file from island/ and sets '../assets/avatars/'
-  var ASSET_V = '?v=26';
+  var ASSET_V = '?v=27';
   var IS_LOCAL_DEV = (typeof location !== 'undefined' && /^(localhost|127\.0\.0\.1)$/i.test(location.hostname || ''));
   var TONES = [
     { id: 'auto', label: 'Match Face ✨' },
@@ -156,7 +156,8 @@
     'cs-teddy': 1, 'acc-compass': 1, 'acc-wand': 1, 'acc-book': 1, 'cs-magnifier': 1,
     'acc-trophy': 1, 'acc-microphone': 1, 'cs-ladle': 1, 'cs-wiz-staff': 1, 'cs-knight-shield': 1, 'cs-witch-broom': 1
   };
-  var STAFF_PROPS = { 'cs-wiz-staff': 1, 'cs-witch-broom': 1, 'cs-ladle': 1 };
+  var STAFF_PROPS = { 'cs-wiz-staff': 1, 'cs-witch-broom': 1 };
+  var ARM_CUTOUT_ARMORS = { 'cs-knight-armor': 1, 'clothing-knight-armor': 1, 'clothing-dragon-armor': 1 };
   var UPRIGHT_PROPS = { 'acc-trophy': 1, 'acc-book': 1, 'cs-teddy': 1, 'cs-knight-shield': 1 };
   var FREE_STARTER_ITEMS = {
     'clothing-hoodie': 1, 'clothing-school-jacket': 1, 'cs-sport-shirt': 1, 'clothing-scarf': 1,
@@ -1581,12 +1582,19 @@
         gripX = 128; gripY = 355;
       } else if (pose === 'cheer' && !STAFF_PROPS[tid]) {
         pg.save();
-        pg.translate(10, -258);
+        pg.translate(tid === 'cs-ladle' ? 2 : 10, tid === 'cs-ladle' ? -246 : -258);
         pg.drawImage(graded, 0, 0, BODY_W, BODY_H);
         pg.restore();
         gripX = 394; gripY = 98;
       } else {
-        pg.drawImage(graded, 0, 0, BODY_W, BODY_H);
+        if (tid === 'cs-teddy') {
+          pg.save();
+          pg.translate(-14, -14);
+          pg.drawImage(graded, 0, 0, BODY_W, BODY_H);
+          pg.restore();
+        } else {
+          pg.drawImage(graded, 0, 0, BODY_W, BODY_H);
+        }
         gripX = 384; gripY = 355;
       }
     } else {
@@ -1734,8 +1742,9 @@
         } else {
           // Drawn Wave / Cheer outfits include their own complete drawn sleeves & 5-finger hands:
           // erase base arms outside chest [172..340] above waist and outside jeans hips [138..374] below waist
+          // (skip arm erasure for elbow-gapped armors so the pupil's own shaded arms connect cleanly underneath!)
           var hasPosedSleeveTop = L.tops.some(function (tid, idx) {
-            return !!topsIms[idx] && !!POSED_TOPS[tid] && !TORSO_ONLY_TOPS[tid] && tid !== 'cs-sport-shirt';
+            return !!topsIms[idx] && !!POSED_TOPS[tid] && !TORSO_ONLY_TOPS[tid] && !ARM_CUTOUT_ARMORS[tid] && tid !== 'cs-sport-shirt';
           });
           if (hasPosedSleeveTop) {
             bg.clearRect(0, 0, 172, 392);
@@ -1866,6 +1875,7 @@
             dy = Math.round(Math.max(-14, Math.min(26, (topNorm - 0.205) * hSize * 0.85)));
           } else if (FOREHEAD_BANDS[hid]) {
             dy = Math.round(Math.max(-12, Math.min(12, (eyeNorm - 0.532) * hSize * 0.8)));
+            if (hid === 'hat-headband') dy += 28;
           }
           cc.save();
           cc.shadowColor = 'rgba(43, 29, 64, 0.18)';

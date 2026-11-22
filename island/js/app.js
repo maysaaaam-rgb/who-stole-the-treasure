@@ -565,7 +565,7 @@
       'js/rewards.js?v=rg-20261114d',
       'js/shop.js?v=rg-20261114d',
       'lib/phaser.min.js',
-      'js/core/unity-feel.js?v=rg-20261114d',
+      'js/core/unity-feel.js?v=20261122p',
       'js/minigames/listenTap.js?v=ch1-20261107c',
       'js/minigames/dragMatch.js?v=ch1-20261107fix',
       'js/minigames/wordOrder.js?v=rg-20261114d',
@@ -593,7 +593,7 @@
       'js/realgame/rg-engine.js?v=w1-20261114c',
       'js/world-game.js?v=rg-20261114d',
       'js/world.js?v=rg-20261114d',
-      '../js/pupil-avatars.js?v=26',
+      '../js/pupil-avatars.js?v=27',
       'js/avatar-walker.js?v=1'
     ];
     _enginePromise = (async function () {

@@ -111,13 +111,74 @@ body.w-page { background: linear-gradient(180deg, #78c4ff 0%, #c8eaff 100%) !imp
 .hb-dots i.now { background: var(--bp-yellow) !important; }
 .hb-dots i.got { background: var(--bp-green) !important; }
 
-/* ── Chapter 1 homework: hide what belongs to later chapters ── */
-body.w-page .uf-coin-pill,
+/* ── Chapter 1 homework: hide what belongs to later chapters (keep 3D Park & Coins live!) ── */
 body.w-page [data-uf-act="store"],
 body.w-page [data-uf-act="look"],
-body.w-page [data-uf-act="games"],
 body.w-page #w-sports,
 body.w-page #w-dress { display: none !important; }
+
+/* ── Bright Adventure-Park 3D Park & Arcade Hub Modal ── */
+#uf-games-backdrop .isl-card-modal,
+#uf-bottle-backdrop .isl-card-modal,
+#uf-cinema-backdrop .isl-card-modal {
+  background: var(--bp-cream) !important;
+  color: var(--bp-ink) !important;
+  border: 5px solid var(--bp-blue) !important;
+  border-bottom: 8px solid #2f74c9 !important;
+  border-radius: 26px !important;
+  box-shadow: 0 18px 42px rgba(43, 29, 64, 0.28) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+#uf-games-backdrop .isl-btn,
+#uf-bottle-backdrop .isl-btn {
+  background: #ffffff !important;
+  color: var(--bp-ink) !important;
+  border: 3px solid var(--bp-lip) !important;
+  border-bottom: 5px solid #c9b591 !important;
+}
+#uf-games-backdrop .isl-btn.cyan { background: var(--bp-blue) !important; color: #fff !important; border-color: #2f74c9 !important; border-bottom-color: #1e56a0 !important; }
+#uf-games-backdrop .isl-btn.violet { background: #9b7bff !important; color: #fff !important; border-color: #6f52d6 !important; border-bottom-color: #5438b8 !important; }
+#uf-games-backdrop .uf-3d-showcase {
+  margin: 6px 0 14px;
+  padding: 12px 14px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #fffdf7 0%, #fff3d6 100%) !important;
+  border: 4px solid var(--bp-yellow) !important;
+  border-bottom: 6px solid #d9900f !important;
+  box-shadow: 0 8px 20px rgba(43, 29, 64, 0.1) !important;
+}
+#uf-games-backdrop .uf-game-card {
+  background: #ffffff !important;
+  color: var(--bp-ink) !important;
+  border: 3px solid #cfe4ff !important;
+  border-bottom: 6px solid var(--bp-blue) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 18px rgba(43, 29, 64, 0.12) !important;
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.15s ease !important;
+}
+#uf-games-backdrop .uf-game-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: var(--bp-pink) !important;
+  border-bottom-color: #c93d7d !important;
+}
+#uf-games-backdrop .uf-game-card:active {
+  transform: translateY(3px) !important;
+  border-bottom-width: 2px !important;
+}
+#uf-games-backdrop .uf-game-art {
+  background: linear-gradient(180deg, #dff2ff 0%, #fff8ec 100%) !important;
+}
+#uf-games-backdrop .uf-game-caption {
+  background: #ffffff !important;
+  color: var(--bp-ink) !important;
+}
+#uf-games-backdrop .uf-game-caption b {
+  color: var(--bp-ink) !important;
+}
+#uf-games-backdrop .uf-game-caption span {
+  color: var(--bp-ink-soft) !important;
+}
 
 /* ── Phones held upright: ask to turn sideways (or 1-tap play upright) ──────────── */
 #bp-turn { display: none; }

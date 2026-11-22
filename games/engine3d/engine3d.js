@@ -128,7 +128,8 @@
       geo.rotateX(-Math.PI / 2);
 
       var mat = new T3.ShaderMaterial({
-        transparent: true,
+        transparent: false,
+        depthWrite: true,
         uniforms: {
           uTime:      E3D.uTime,
           uSunDir:    E3D.uSunDir,
@@ -224,25 +225,25 @@
           '  float foamMask = clamp((outerRing * 0.82 + beachEdge) * shoreStrength + openCrests, 0.0, 1.0);',
           '  waterCol = mix(waterCol, uFoam, foamMask);',
           '',
-          '  // Stylized sun specular glitter (HDR > 1.0 for subtle selective bloom!)',
+          '  // Warm soft sun sheen on waves (kept smooth below bloom threshold so waves never strobe/flash!)',
           '  vec3 viewDir = normalize(cameraPosition - vWPos);',
           '  vec3 halfV = normalize(normalize(uSunDir) + viewDir);',
-          '  vec3 pertN = normalize(vNormalW + vec3((n1 - 0.5) * 0.28, 0.0, (n2 - 0.5) * 0.28));',
-          '  float spec = pow(max(0.0, dot(pertN, halfV)), 72.0);',
-          '  float sparkle = smoothstep(0.45, 0.82, spec) * 1.45;',
-          '  waterCol += vec3(1.0, 0.97, 0.86) * sparkle * (1.0 - foamMask * 0.7);',
+          '  vec3 pertN = normalize(vNormalW + vec3((n1 - 0.5) * 0.14, 0.0, (n2 - 0.5) * 0.14));',
+          '  float spec = pow(max(0.0, dot(pertN, halfV)), 24.0);',
+          '  float sparkle = smoothstep(0.35, 0.88, spec) * 0.28;',
+          '  waterCol += vec3(1.0, 0.97, 0.88) * sparkle * (1.0 - foamMask * 0.7);',
           '',
           '  // Soft horizon atmospheric blend',
           '  float fogF = smoothstep(uFogNear, uFogFar, vCamDist);',
           '  waterCol = mix(waterCol, uFogColor, fogF);',
-          '  gl_FragColor = vec4(waterCol, 0.96);',
+          '  gl_FragColor = vec4(waterCol, 1.0);',
           '}'
         ].join('\n')
       });
 
       var ocean = new T3.Mesh(geo, mat);
       ocean.receiveShadow = false;
-      ocean.renderOrder = -2;
+      ocean.renderOrder = 0;
       return ocean;
     },
 
@@ -359,34 +360,35 @@
         return null;
       }
       try {
-        // Let pmndrs/postprocessing handle ACESFilmic in linear HalfFloat space
+        // IMPORTANT: WebGLRenderer from kit3d already has antialias:true + SRGBColorSpace on the default swapchain!
+        // Using HalfFloatType + multisampling>0 on top of an antialias:true DXGI flip swapchain causes
+        // ANGLE/D3D11 triple-buffer swapchain flicker in Chromium/Electron. Use UnsignedByteType + multisampling:0 + SMAAEffect!
         renderer.toneMapping = T3.NoToneMapping;
-        var isMob = !!(root.K3 && root.K3.MOBILE);
         var composer = new PP.EffectComposer(renderer, {
-          frameBufferType: T3.HalfFloatType,
-          multisampling: isMob ? 0 : 4
+          frameBufferType: T3.UnsignedByteType,
+          multisampling: 0
         });
         var renderPass = new PP.RenderPass(scene, camera);
         composer.addPass(renderPass);
 
         var bloom = new PP.BloomEffect({
           mipmapBlur: true,
-          luminanceThreshold: opts.bloomThreshold != null ? opts.bloomThreshold : 1.02,
-          luminanceSmoothing: 0.22,
-          intensity: opts.bloomIntensity != null ? opts.bloomIntensity : 0.68,
-          radius: 0.62
+          luminanceThreshold: opts.bloomThreshold != null ? opts.bloomThreshold : 0.92,
+          luminanceSmoothing: 0.25,
+          intensity: opts.bloomIntensity != null ? opts.bloomIntensity : 0.35,
+          radius: 0.52
         });
         var tone = new PP.ToneMappingEffect({
           mode: PP.ToneMappingMode ? PP.ToneMappingMode.ACES_FILMIC : 4
         });
         var vig = new PP.VignetteEffect({
           eskil: false,
-          offset: 0.34,
-          darkness: 0.26
+          offset: 0.36,
+          darkness: 0.20
         });
 
         var effects = [bloom, vig, tone];
-        if (isMob && PP.SMAAEffect) {
+        if (PP.SMAAEffect) {
           try { effects.unshift(new PP.SMAAEffect()); } catch (e) {}
         }
         var effectPass = new PP.EffectPass(camera, ...effects);
@@ -407,7 +409,11 @@
     },
 
     resize: function (w, h) {
-      if (this.composer) this.composer.setSize(w, h);
+      if (this.composer) {
+        this._lastW = w;
+        this._lastH = h;
+        this.composer.setSize(w, h, false);
+      }
     },
 
     renderSingle: function (renderer, scene, camera, dt) {
@@ -415,9 +421,23 @@
       renderer.info.autoReset = false;
       renderer.info.reset();
       if (this.enabled && this.composer) {
+        if (!this._sizeVec) this._sizeVec = new T3.Vector2();
+        renderer.getSize(this._sizeVec);
+        var pr = renderer.getPixelRatio();
+        if (this._lastW !== this._sizeVec.x || this._lastH !== this._sizeVec.y || this._lastPR !== pr) {
+          this._lastW = this._sizeVec.x;
+          this._lastH = this._sizeVec.y;
+          this._lastPR = pr;
+          this.composer.setSize(this._sizeVec.x, this._sizeVec.y, false);
+        }
         this.renderPass.mainCamera = camera;
+        renderer.setRenderTarget(null);
+        renderer.clear(true, true, true);
+        renderer.autoClear = false;
         this.composer.render(dt);
+        renderer.autoClear = true;
       } else {
+        renderer.autoClear = true;
         renderer.toneMapping = T3.ACESFilmicToneMapping;
         renderer.render(scene, camera);
       }
@@ -432,9 +452,9 @@
 
     renderSplitHorizontal: function (renderer, scene, camLeft, camRight) {
       // Used in 2-Kid Simultaneous Smartboard Duel Mode!
-      var prevTM = renderer.toneMapping;
+      var prevTM = renderer.toneMapping, prevExp = renderer.toneMappingExposure;
       renderer.toneMapping = T3.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.06;
+      renderer.toneMappingExposure = 1.14;
       var sz = renderer.getSize(new T3.Vector2());
       var w = sz.x, h = sz.y, halfW = Math.floor(w * 0.5);
 
@@ -443,18 +463,23 @@
       camRight.aspect = (w - halfW) / Math.max(1, h);
       camRight.updateProjectionMatrix();
 
+      renderer.autoClear = false;
       renderer.setScissorTest(true);
       renderer.setViewport(0, 0, halfW, h);
       renderer.setScissor(0, 0, halfW, h);
+      renderer.clear(true, true, true);
       renderer.render(scene, camLeft);
 
       renderer.setViewport(halfW, 0, w - halfW, h);
       renderer.setScissor(halfW, 0, w - halfW, h);
+      renderer.clear(true, true, true);
       renderer.render(scene, camRight);
 
       renderer.setScissorTest(false);
       renderer.setViewport(0, 0, w, h);
+      renderer.autoClear = true;
       renderer.toneMapping = prevTM;
+      renderer.toneMappingExposure = prevExp;
     }
   };
 
@@ -496,8 +521,40 @@
     im.count = 0;
     im.frustumCulled = false;
     if (scene) scene.add(im);
-    this.batches[key] = { key: key, mesh: im, max: maxCount, count: 0, items: [] };
+    this.batches[key] = { key: key, meshes: [im], mesh: im, max: maxCount, count: 0, items: [] };
     return im;
+  };
+
+  PhysicsStage.prototype.registerGLBBatch = function (key, gltfObj, maxCount, scene, batchOpts) {
+    if (!gltfObj || !gltfObj.scene) return null;
+    batchOpts = batchOpts || {};
+    var vScale = batchOpts.visualScale || 1.0;
+    gltfObj.scene.updateMatrixWorld(true);
+    var rootInv = new T3.Matrix4().copy(gltfObj.scene.matrixWorld).invert();
+    var meshes = [];
+    gltfObj.scene.traverse(function (o) {
+      if (!o.isMesh || !o.geometry) return;
+      var geo = o.geometry.clone();
+      var relM = new T3.Matrix4().multiplyMatrices(rootInv, o.matrixWorld);
+      geo.applyMatrix4(relM);
+      if (vScale !== 1.0) geo.scale(vScale, vScale, vScale);
+      var mat = Array.isArray(o.material) ? o.material[0].clone() : o.material.clone();
+      E3D.Shaders.stylizeMaterial(mat, { rim: 0.16 });
+      if (batchOpts.gradeKind && root.GameQualityCore && root.GameQualityCore.Atmosphere && root.GameQualityCore.Atmosphere.gradeTargetMaterial) {
+        root.GameQualityCore.Atmosphere.gradeTargetMaterial(mat, batchOpts.gradeKind);
+      }
+      var im = new T3.InstancedMesh(geo, mat, maxCount);
+      im.instanceMatrix.setUsage(T3.DynamicDrawUsage);
+      im.castShadow = true;
+      im.receiveShadow = true;
+      im.count = 0;
+      im.frustumCulled = false;
+      if (scene) scene.add(im);
+      meshes.push(im);
+    });
+    if (!meshes.length) return null;
+    this.batches[key] = { key: key, meshes: meshes, mesh: meshes[0], max: maxCount, count: 0, items: [] };
+    return meshes;
   };
 
   PhysicsStage.prototype.addStaticBox = function (hx, hy, hz, pos, rotY, tag) {
@@ -585,7 +642,7 @@
         rec.batch = b;
         rec.slot = b.count++;
         b.items[rec.slot] = rec;
-        b.mesh.count = b.count;
+        for (var mi = 0; mi < b.meshes.length; mi++) b.meshes[mi].count = b.count;
       }
     }
     if (opts.sleepInitially) body.sleep();
@@ -600,10 +657,11 @@
     if (!rec || !rec.body) return;
     var tr = rec.body.translation();
     var rt = rec.body.rotation();
+    var mi;
     if (rec.hidden) {
       if (rec.batch && rec.slot >= 0) {
         _dummyM.makeScale(0, 0, 0);
-        rec.batch.mesh.setMatrixAt(rec.slot, _dummyM);
+        for (mi = 0; mi < rec.batch.meshes.length; mi++) rec.batch.meshes[mi].setMatrixAt(rec.slot, _dummyM);
       } else if (rec.mesh) {
         rec.mesh.visible = false;
       }
@@ -613,7 +671,7 @@
       _dummyP.set(tr.x, tr.y, tr.z);
       _dummyQ.set(rt.x, rt.y, rt.z, rt.w);
       _dummyM.compose(_dummyP, _dummyQ, rec.scale);
-      rec.batch.mesh.setMatrixAt(rec.slot, _dummyM);
+      for (mi = 0; mi < rec.batch.meshes.length; mi++) rec.batch.meshes[mi].setMatrixAt(rec.slot, _dummyM);
     } else if (rec.mesh) {
       rec.mesh.position.set(tr.x, tr.y, tr.z);
       rec.mesh.quaternion.set(rt.x, rt.y, rt.z, rt.w);
@@ -624,13 +682,26 @@
     if (!rec || rec.hidden) return;
     rec.hidden = true;
     this._syncRecordVisual(rec);
-    if (rec.batch) rec.batch.mesh.instanceMatrix.needsUpdate = true;
+    if (rec.batch) {
+      for (var mi = 0; mi < rec.batch.meshes.length; mi++) rec.batch.meshes[mi].instanceMatrix.needsUpdate = true;
+    }
     try {
       this.world.removeRigidBody(rec.body);
     } catch (e) {}
     delete this.byHandle[rec.handle];
     rec.body = null;
     rec.collider = null;
+  };
+
+  PhysicsStage.prototype.isSettled = function () {
+    for (var i = 0; i < this.bodies.length; i++) {
+      var r = this.bodies[i];
+      if (!r.body || r.hidden || r.kind !== 'dynamic') continue;
+      if (r.body.isSleeping()) continue;
+      var lv = r.body.linvel();
+      if ((lv.x * lv.x + lv.y * lv.y + lv.z * lv.z) > 0.22) return false;
+    }
+    return true;
   };
 
   PhysicsStage.prototype.radialExplosion = function (center, radius, force) {
@@ -664,11 +735,16 @@
     this.accumulator += Math.min(dt, 0.06);
     var steps = 0;
     while (this.accumulator >= this.fixedDt && steps < 4) {
-      // Apply wind force ONLY to flying cannonballs so resting crate towers don't drift before hit!
+      // Apply exact wind acceleration (dv = a_wind * dt) ONLY to flying cannonballs — never persistent addForce!
       for (var w = 0; w < this.bodies.length; w++) {
         var bw = this.bodies[w];
         if (bw.body && !bw.hidden && bw.tag === 'ammo') {
-          bw.body.addForce({ x: E3D.wind.x * 2.2, y: 0, z: E3D.wind.z * 2.2 }, true);
+          var lv = bw.body.linvel();
+          bw.body.setLinvel({
+            x: lv.x + E3D.wind.x * this.fixedDt,
+            y: lv.y,
+            z: lv.z + E3D.wind.z * this.fixedDt
+          }, true);
         }
       }
       this.world.step(this.eventQueue);
@@ -694,16 +770,20 @@
     }
     for (var bk in this.batches) {
       if (this.batches[bk].count > 0) {
-        this.batches[bk].mesh.instanceMatrix.needsUpdate = true;
+        var ms = this.batches[bk].meshes;
+        for (var mi = 0; mi < ms.length; mi++) ms[mi].instanceMatrix.needsUpdate = true;
       }
     }
   };
 
   PhysicsStage.prototype.dispose = function (scene) {
     for (var bk in this.batches) {
-      var im = this.batches[bk].mesh;
-      if (scene && im.parent === scene) scene.remove(im);
-      im.dispose();
+      var ms = this.batches[bk].meshes;
+      for (var mi = 0; mi < ms.length; mi++) {
+        var im = ms[mi];
+        if (scene && im.parent === scene) scene.remove(im);
+        im.dispose();
+      }
     }
     for (var i = 0; i < this.bodies.length; i++) {
       var r = this.bodies[i];
@@ -783,30 +863,77 @@
       if (Howler) Howler.mute(E3D.sfxMuted && E3D.musicMuted);
     },
 
-    // Warm tropical marimba + gentle ocean surf background ambience (quiet enough to talk over; 1-tap mute!)
+    // Warm breathing tropical marimba phrases + gentle ocean surf wave wash (never repetitive!)
     startIslandMarimbaLoop: function () {
       if (E3D.musicMuted || _musicTimer || (root.K3 && root.K3.CAPTURE)) return;
-      var notes = [523.25, 659.25, 783.99, 880.00, 783.99, 659.25, 587.33, 783.99]; // Sunny C6/G5 pentatonic marimba
+      // 24-step sunny phrase with generous breathing rests (0 = rest)
+      var phrase = [
+        523.25, 659.25, 783.99, 0,  880.00, 783.99, 0,      0,
+        587.33, 783.99, 987.77, 0,  783.99, 659.25, 523.25, 0,
+        0,      659.25, 0,      783.99, 659.25, 0,  0,      0
+      ];
       var step = 0;
       _musicTimer = setInterval(function () {
         if (E3D.musicMuted) return;
         var a = getAC();
         if (!a || a.state !== 'running') return;
-        var f = notes[step % notes.length];
+        var idx = step % phrase.length;
+        var f = phrase[idx];
+        // Soft ocean wave surf swell every 12 steps (~5.8s)
+        if (idx === 0 || idx === 12) {
+          var wLen = Math.floor(a.sampleRate * 2.2), wBuf = a.createBuffer(1, wLen, a.sampleRate), ch = wBuf.getChannelData(0);
+          for (var i = 0; i < wLen; i++) ch[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * (i / wLen));
+          var ws = a.createBufferSource(), lp = a.createBiquadFilter(), wg = a.createGain();
+          lp.type = 'lowpass'; lp.frequency.value = 440;
+          wg.gain.value = 0.032;
+          ws.buffer = wBuf; ws.connect(lp); lp.connect(wg); wg.connect(a.destination);
+          ws.start(a.currentTime);
+        }
         step++;
-        if (step % 4 === 3) return; // gentle breathing rest
+        if (!f) return;
         var t0 = a.currentTime;
         var o1 = a.createOscillator(), o2 = a.createOscillator(), g = a.createGain();
         o1.type = 'sine'; o2.type = 'triangle';
         o1.frequency.setValueAtTime(f, t0);
         o2.frequency.setValueAtTime(f * 2, t0);
         g.gain.setValueAtTime(0.0001, t0);
-        g.gain.linearRampToValueAtTime(0.032, t0 + 0.012);
-        g.gain.exponentialRampToValueAtTime(0.0005, t0 + 0.36);
+        g.gain.linearRampToValueAtTime(0.026, t0 + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.0004, t0 + 0.42);
         o1.connect(g); o2.connect(g); g.connect(a.destination);
         o1.start(t0); o2.start(t0);
-        o1.stop(t0 + 0.38); o2.stop(t0 + 0.38);
-      }, 420);
+        o1.stop(t0 + 0.45); o2.stop(t0 + 0.45);
+      }, 480);
+    },
+
+    cannonWhistle: function (durSec) {
+      if (E3D.sfxMuted) return;
+      var a = getAC(); if (!a) return;
+      var t = a.currentTime, d = Math.min(1.6, Math.max(0.5, durSec || 1.1));
+      var o1 = a.createOscillator(), o2 = a.createOscillator(), g = a.createGain();
+      o1.type = 'sine'; o2.type = 'triangle';
+      o1.frequency.setValueAtTime(840, t); o1.frequency.exponentialRampToValueAtTime(340, t + d);
+      o2.frequency.setValueAtTime(1680, t); o2.frequency.exponentialRampToValueAtTime(680, t + d);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(0.055, t + 0.08);
+      g.gain.exponentialRampToValueAtTime(0.0006, t + d);
+      o1.connect(g); o2.connect(g); g.connect(a.destination);
+      o1.start(t); o2.start(t); o1.stop(t + d + 0.02); o2.stop(t + d + 0.02);
+    },
+
+    shipSinkGlug: function () {
+      if (E3D.sfxMuted) return;
+      var a = getAC(); if (!a) return;
+      [0, 0.14, 0.29, 0.45].forEach(function (off, i) {
+        var t = a.currentTime + off;
+        var o1 = a.createOscillator(), o2 = a.createOscillator(), g = a.createGain();
+        o1.type = 'sine'; o2.type = 'triangle';
+        var f0 = 210 + i * 35;
+        o1.frequency.setValueAtTime(f0, t); o1.frequency.exponentialRampToValueAtTime(f0 * 1.65, t + 0.11);
+        o2.frequency.setValueAtTime(f0 * 1.5, t); o2.frequency.exponentialRampToValueAtTime(f0 * 2.2, t + 0.11);
+        g.gain.setValueAtTime(0.14, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+        o1.connect(g); o2.connect(g); g.connect(a.destination);
+        o1.start(t); o2.start(t); o1.stop(t + 0.13); o2.stop(t + 0.13);
+      });
     },
 
     // Rich multi-layered gameplay SFX (zero harsh raw square/sawtooth beeps per AGENTS.md §1.3)

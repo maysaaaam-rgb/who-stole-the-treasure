@@ -115,9 +115,9 @@
 | `404.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
 | `adventure-engine/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `advice/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `AGENTS.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
+| `AGENTS.md` | Documentation / Rule | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `all-about-me/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `ARCHITECTURE_STANDARDS.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
+| `ARCHITECTURE_STANDARDS.md` | Documentation / Rule | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `art-prompts/` | Folder | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `assets/` | Folder | ✅ | — | — | **LIVE** | Shared 3D packs, avatars (`student-*`), icons & audio |
 | `audit-report/` | Folder | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
@@ -221,8 +221,8 @@
 | `school-subjects-challenge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `scratch/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `simon-says/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
-| `site-map/` | Platform Infrastructure | ✅ | — | ✅ | **LIVE** | Tracked & safe |
+| `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
+| `site-map/` | Platform Infrastructure | ✅ | — | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `small-inventor/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `smart-board/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `smart-farm/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |

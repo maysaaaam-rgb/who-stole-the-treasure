@@ -276,15 +276,18 @@
     var existing = c.querySelector('#pn-home3d-frame');
     if (existing) {
       try {
-        if (existing.contentWindow && existing.contentWindow.__home3d && existing.contentWindow.__home3d.refreshGoal) {
-          existing.contentWindow.__home3d.refreshGoal();
+        var cw = existing.contentWindow;
+        if (cw && cw.__home3d && cw.__home3d.refreshGoal) cw.__home3d.refreshGoal();
+        var actCls = S() && S().getActiveClass && S().getActiveClass();
+        if (actCls && actCls.id && cw && cw.HomeClassroomHub && cw.HomeClassroomHub.setClass) {
+          cw.HomeClassroomHub.setClass(actCls.id);
         }
       } catch (e) {}
       return;
     }
     c.innerHTML =
       '<div class="pn-home3d-wrap" style="position:fixed;inset:0;width:100%;height:100%;height:100dvh;z-index:2000;background:#78c4ff">' +
-        '<iframe id="pn-home3d-frame" class="pn-home3d-frame" src="home3d/index.html?v=20261121c" title="Adventure Island · English Adventure Academy 3D Front Door" allow="autoplay; fullscreen; microphone" style="width:100%;height:100%;border:0;display:block"></iframe>' +
+        '<iframe id="pn-home3d-frame" class="pn-home3d-frame" src="home3d/index.html?v=20261122p" title="Adventure Island · English Adventure Academy 3D Front Door" allow="autoplay; fullscreen; microphone" style="width:100%;height:100%;border:0;display:block"></iframe>' +
         '<div class="sr-only" aria-hidden="false" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">' +
           'English Adventure Academy 3D Island Front Door — Tap the Castle for Today, the Theatre for Class Board, the Market for Shop, the Stadium for Games, or the Library Tower for Library.' +
         '</div>' +

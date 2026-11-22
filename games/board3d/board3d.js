@@ -12,8 +12,47 @@
   var K = window.K3, T3 = window.THREE;
   var rnd = K.rnd, clamp = K.clamp, V = function (x, y, z) { return new T3.Vector3(x, y, z); };
   var IN_WORLD = !!K.World && !K.Q.has('noworld');
-  K.init({ fov: 40, fogNear: 80, fogFar: 240 });
+  K.init({ fov: 36, fogNear: 80, fogFar: 240 });
   var scene = K.scene;
+
+  /* ---------------- rich procedural board-game audio layer ---------------- */
+  function playBoardSfx(kind) {
+    var a = K.audio ? K.audio() : null;
+    if (!a || K.CAPTURE || K.muted) return;
+    var now = a.currentTime;
+    try {
+      if (kind === 'hop') {
+        var o = a.createOscillator(), g = a.createGain();
+        o.type = 'sine'; o.frequency.setValueAtTime(310, now); o.frequency.exponentialRampToValueAtTime(520, now + 0.09);
+        g.gain.setValueAtTime(0.14, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+        o.connect(g); g.connect(a.destination); o.start(now); o.stop(now + 0.12);
+      } else if (kind === 'die') {
+        [380, 470, 560].forEach(function (f, i) {
+          var o2 = a.createOscillator(), g2 = a.createGain();
+          o2.type = 'triangle'; o2.frequency.value = f;
+          g2.gain.setValueAtTime(0.11, now + i * 0.06);
+          g2.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.09);
+          o2.connect(g2); g2.connect(a.destination); o2.start(now + i * 0.06); o2.stop(now + i * 0.06 + 0.10);
+        });
+      } else if (kind === 'ladder') {
+        [523.25, 587.33, 659.25, 783.99, 1046.5].forEach(function (f, i) {
+          var o3 = a.createOscillator(), g3 = a.createGain();
+          o3.type = 'triangle'; o3.frequency.value = f;
+          g3.gain.setValueAtTime(0.10, now + i * 0.09);
+          g3.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.22);
+          o3.connect(g3); g3.connect(a.destination); o3.start(now + i * 0.09); o3.stop(now + i * 0.09 + 0.24);
+        });
+      } else if (kind === 'chest') {
+        [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach(function (f, i) {
+          var o4 = a.createOscillator(), g4 = a.createGain();
+          o4.type = 'triangle'; o4.frequency.value = f;
+          g4.gain.setValueAtTime(0.11, now + i * 0.06);
+          g4.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.45);
+          o4.connect(g4); g4.connect(a.destination); o4.start(now + i * 0.06); o4.stop(now + i * 0.06 + 0.48);
+        });
+      }
+    } catch (e) {}
+  }
 
   var nTeams = clamp(+K.Q.get('teams') || 4, 2, 4), MAX_ROUNDS = clamp(+K.Q.get('rounds') || 8, 1, 12);
   var TEAMS = [];
@@ -25,10 +64,12 @@
   initTeams();
   var QS = K.questions('g3-u5-vocab');
 
-  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0);
+  var GQC = window.GameQualityCore || null;
+  K._gqcTheme = 'island';
+  K.world.sky(0x78c4ff, 0xc8eaff, 0xfff0e0, 'island');
   K.world.lights();
-  K.world.clouds(14, -80, 80);
-  if (!IN_WORLD) K.world.ground(0x8fdc7a);
+  if (!GQC) K.world.clouds(14, -80, 80);
+  if (!IN_WORLD) K.world.ground(0x6eb84c);
 
   /* ---------------- the board: 30 colourful themed squares winding in rows ---------------- */
   var N = 30, COLS = 6, STEP = 2.55, ROWS = 5;
@@ -231,26 +272,40 @@
       boardGroup.add(post);
     });
 
-    // Giant Dice monument beside START square
+    // Giant Dice monument beside START square + 4 corner team pennants framing the board
     var p0 = tilePos(0);
     if (giantDiceMesh) {
       var monDie = giantDiceMesh.clone(true);
-      monDie.scale.multiplyScalar(.82);
-      monDie.position.set(p0.x - 1.55, .32, p0.z - .4);
+      monDie.scale.multiplyScalar(1.05);
+      monDie.position.set(p0.x - 1.65, .32, p0.z - .4);
       monDie.rotation.y = .45;
       boardGroup.add(monDie);
+      if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(monDie, 0.95, { y: 0.02, opacity: 0.28 });
     }
+    var bwHalf = (COLS * STEP + 3.4) * 0.5, bdHalf = (ROWS * STEP + 2.1) * 0.5;
+    [[-bwHalf, -bdHalf, 0], [bwHalf, -bdHalf, 1], [-bwHalf, bdHalf, 2], [bwHalf, bdHalf, 3]].forEach(function (cp) {
+      var pole = new T3.Mesh(new T3.CylinderGeometry(.09, .11, 2.8, 10), new T3.MeshStandardMaterial({ color: 0xffffff, roughness: .35 }));
+      pole.position.set(cp[0], 1.5, cp[1]);
+      pole.castShadow = true;
+      boardGroup.add(pole);
+      var fl = new T3.Mesh(new T3.PlaneGeometry(1.15, .72), new T3.MeshStandardMaterial({ color: K.TEAMS[cp[2]].hex, side: T3.DoubleSide }));
+      fl.geometry.translate(.57, 0, 0);
+      fl.position.set(cp[0], 2.52, cp[1]);
+      if (K.windify) K.windify(fl.material, 0.06, 0.7);
+      boardGroup.add(fl);
+    });
 
-    // Closed & Open Treasure Chests at Square 30 (Finish)
+    // Closed & Open Treasure Chests seated cleanly behind-right of Square 30 so the winning kid never clips into the chest!
     if (chestClosedMesh) {
-      chestClosedMesh.position.set(chestSpot.x + .55, .53, chestSpot.z - .42);
-      chestClosedMesh.rotation.y = -.4;
+      chestClosedMesh.position.set(chestSpot.x + 1.18, .53, chestSpot.z - .98);
+      chestClosedMesh.rotation.y = -.45;
       chestClosedMesh.visible = true;
       boardGroup.add(chestClosedMesh);
+      if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(chestClosedMesh, 1.05, { y: 0.02, opacity: 0.28 });
     }
     if (chestOpenMesh) {
-      chestOpenMesh.position.set(chestSpot.x + .55, .53, chestSpot.z - .42);
-      chestOpenMesh.rotation.y = -.4;
+      chestOpenMesh.position.set(chestSpot.x + 1.18, .53, chestSpot.z - .98);
+      chestOpenMesh.rotation.y = -.45;
       chestOpenMesh.visible = false;
       boardGroup.add(chestOpenMesh);
     }
@@ -315,10 +370,16 @@
       });
     }
     if (chestLight) chestLight.intensity = 5.5;
-    // Dramatic slow-mo + erupting 3D gold coins from the open chest!
-    K.timeScale = 0.32;
-    setTimeout(function () { K.timeScale = 1.0; }, 380);
-    K.cam.shake(.28);
+    // Dramatic hitstop + erupting 3D gold coins from the open chest!
+    if (GQC && GQC.Juice) {
+      GQC.Juice.hitstop(42);
+      GQC.Juice.shakeCamera(0.28, 0.34);
+      GQC.Juice.spawnBurst(scene, chestSpot.clone().add(V(0, .8, 0)), 'stars', 22);
+    } else {
+      K.timeScale = 0.32;
+      setTimeout(function () { K.timeScale = 1.0; }, 380);
+      K.cam.shake(.28);
+    }
     var coinGeo = new T3.CylinderGeometry(.18, .18, .05, 14);
     var coinMat = new T3.MeshStandardMaterial({ color: 0xffd84a, emissive: 0xffb320, emissiveIntensity: .35, roughness: .2, metalness: .4 });
     for (var i = 0; i < 24; i++) {
@@ -366,7 +427,7 @@
       });
     }
     // box faces: +x, -x, +y, -y, +z, -z  →  3, 4, 1, 6, 2, 5
-    var m = new T3.Mesh(new T3.BoxGeometry(1.3, 1.3, 1.3), [face(3), face(4), face(1), face(6), face(2), face(5)]);
+    var m = new T3.Mesh(new T3.BoxGeometry(1.58, 1.58, 1.58), [face(3), face(4), face(1), face(6), face(2), face(5)]);
     m.castShadow = true;
     var g = new T3.Group();
     g.add(m);
@@ -409,6 +470,13 @@
               popped = true;
               K.offFrame(fn);
               K.sfx('pop');
+              if (GQC && GQC.Juice) {
+                GQC.Juice.hitstop(36);
+                GQC.Juice.shakeCamera(0.16, 0.22);
+                GQC.Juice.spawnBurst(scene, g.position.clone().add(V(0, .5, 0)), 'stars', 16);
+                GQC.Juice.popupScore('🎲 ROLLED ' + value + '!', g.position.clone().add(V(0, .9, 0)), K.camera, '#ffb320');
+              }
+              playBoardSfx('die');
               K.fx.burst(g.position.clone().add(V(0, .6, 0)), 22, { color: [0xffd84a, colorHex || 0x4f9dff, 0xffffff], speed: 4.5, size: .14, life: .6 });
               K.fx.text('🎲 ' + value + '!', g.position.clone().add(V(0, 1.1, 0)), '#ffb320', 1.15);
               K.after(.65, function () { done(); });
@@ -422,7 +490,11 @@
 
   /* ---------------- pieces: hopping square-by-square, climbing ladders, sliding chutes ---------------- */
   var mons = [], holders = [];
-  K.onFrame(function (dt) { mons.forEach(function (m) { if (m) m.update(dt); }); });
+  K.onFrame(function (dt) {
+    mons.forEach(function (m, i) {
+      if (m) m.update(dt * (m._pace || 1));
+    });
+  });
   function spotOn(n, ti) {
     var p = tilePos(n), here = TEAMS.filter(function (t) { return t.pos === n; }).length, k = ti % 4;
     var off = here > 1 || n === 0 ? [[-.52, -.45], [.52, -.45], [-.52, .45], [.52, .45]][k] : [0, 0];
@@ -476,6 +548,7 @@
           K.offFrame(fn);
           h.scale.set(1, 1, 1);
           K.sfx('step');
+          playBoardSfx('hop');
           pulseTile(targetSq, t.hex);
           updateLiveProgressUI(ti);
           k++;
@@ -558,32 +631,43 @@
     });
   }
 
-  /* ---------------- camera ---------------- */
+  /* ---------------- camera (closer dynamic broadcast framing) ---------------- */
+  function setFov(f) {
+    if (K.camera.fov !== f) { K.camera.fov = f; K.camera.updateProjectionMatrix(); }
+  }
   function shot(name, at) {
     K.cam.follow = null;
+    setFov(/ask|follow|chest/.test(name) ? 34 : 38);
     if (name === 'title') {
       K.cam.follow = function () {
         var a = Math.sin(K.now * .16) * .28;
-        K.cam.tPos.set(Math.sin(a) * 18, 15, Math.cos(a) * 18);
-        K.cam.tLook.set(0, 0, -.5);
+        K.cam.tPos.set(Math.sin(a) * 16.5, 12.8, Math.cos(a) * 16.5);
+        K.cam.tLook.set(0, 0.2, -.4);
       };
       K.cam.k = 1.4;
     }
-    if (name === 'board') K.cam.set(V(0, 15.5, 15), V(0, 0, -.6), 2.2);
-    if (name === 'ask') K.cam.set(V(0, 31, 13.5), V(0, 0, 4.4), 2.2);
+    if (name === 'board') K.cam.set(V(0, 12.6, 13.4), V(0, 0.2, -.4), 2.4);
+    if (name === 'ask') {
+      // Closer broadcast focus blending active kid & board path so characters stay large & clear above bottom-30% .qcard!
+      var hi = typeof at === 'number' && holders[at] ? holders[at].position : (holders[turnI] ? holders[turnI].position : V(0, .55, 2));
+      K.cam.set(V(hi.x * .48, 7.8, hi.z + 10.6), V(hi.x * .62, -0.35, hi.z - 0.6), 2.6);
+    }
     if (name === 'follow') {
       K.cam.follow = function () {
-        var p = holders[at].position;
-        K.cam.tPos.set(p.x * .6, 9.5, p.z + 9);
-        K.cam.tLook.set(p.x * .8, .5, p.z - .5);
+        var p = holders[at] ? holders[at].position : V(0, .55, 0);
+        K.cam.tPos.set(p.x * .68, 5.8, p.z + 7.6);
+        K.cam.tLook.set(p.x * .86, .65, p.z - .35);
       };
-      K.cam.k = 2.6;
+      K.cam.k = 3.0;
+    }
+    if (name === 'chest') {
+      K.cam.set(V(chestSpot.x + 2.4, 4.2, chestSpot.z + 6.2), V(chestSpot.x + .2, 1.0, chestSpot.z - .2), 3.0);
     }
     if (name === 'end') {
       K.cam.follow = function () {
-        var a = Math.sin(K.now * .28) * 1.5;
-        K.cam.tPos.set(a, 4.0, 14.2);
-        K.cam.tLook.set(0, .35, 6.8);
+        var a = Math.sin(K.now * .28) * 1.4;
+        K.cam.tPos.set(a, 3.6, 13.4);
+        K.cam.tLook.set(0, .45, 6.8);
       };
       K.cam.k = 2;
     }
@@ -815,7 +899,7 @@
     btn.onclick = trigger;
     addEventListener('keydown', onKey);
     K.renderer.domElement.addEventListener('pointerdown', trigger);
-    if (K.DEMO) K.after(.5, trigger);
+    if (K.DEMO || (K.isAI && K.isAI(t))) K.after(.52 + Math.random() * .25, trigger);
   }
 
   function nextTurn() {
@@ -876,6 +960,7 @@
     if (n >= N) {
       winner = ti;
       openTreasureChest();
+      playBoardSfx('chest');
       K.sfx('win');
       K.fx.confetti(chestSpot.clone().add(V(0, 2.2, 0)), 220);
       K.ui.big('🏆 Team ' + t.name + ' Opened the Treasure!', 2.2, true);
@@ -885,6 +970,7 @@
     }
     if (LADDERS[n]) {
       K.sfx('ladder');
+      playBoardSfx('ladder');
       K.ui.big('🪜 LADDER UP! → #' + LADDERS[n], 1.25, true);
       K.fx.text('🪜 Up to ' + LADDERS[n] + '!', at, '#2fc58a', 1.3);
       K.say('Ladder! Climb up!');
@@ -1039,9 +1125,9 @@
   /* ---------------- boot ---------------- */
   var loading = K.ui.add(K.el('div', 'loading', '<span>Setting up the board…</span>'));
   var worldP = IN_WORLD ? K.World.load({ zone: 'board', clear: true }).catch(function (e) { console.warn('world', e); K.world.ground(0x8fdc7a); return null; }) : Promise.resolve(null);
-  var closedP = K.tryGLB('models/chest-closed.glb').then(function (g) { return g ? K.fitModel(g.scene, 1.35) : null; });
-  var openP = K.tryGLB('models/chest-open.glb').then(function (g) { return g ? K.fitModel(g.scene, 1.45) : null; });
-  var diceP = K.tryGLB('models/giant-dice.glb').then(function (g) { return g ? K.fitModel(g.scene, 1.45) : null; });
+  var closedP = K.tryGLB('models/chest-closed.glb').then(function (g) { return g ? K.fitModel(g.scene, 1.75) : null; });
+  var openP = K.tryGLB('models/chest-open.glb').then(function (g) { return g ? K.fitModel(g.scene, 1.88) : null; });
+  var diceP = K.tryGLB('models/giant-dice.glb').then(function (g) { return g ? K.fitModel(g.scene, 1.75) : null; });
   var trophyP = K.tryGLB('models/trophy.glb').then(function (g) { return g ? K.fitModel(g.scene, 1.35) : null; });
 
   Promise.all([worldP, closedP, openP, diceP, trophyP].concat(K.TEAMS.map(function (t, i) { return K.makeCharacter(t, { kidsOnly: true, kid: i % 2 === 0 ? 'boy' : 'girl', kidHeight: 1.25 }); }))).then(function (res) {
@@ -1052,9 +1138,11 @@
     die.attachTripo(giantDiceMesh);
 
     res.slice(5).forEach(function (ch, i) {
+      ch._pace = 0.91 + (i % 4) * 0.055;
       var h = new T3.Group();
       h.add(ch.root);
       scene.add(h);
+      if (GQC && GQC.Atmosphere) GQC.Atmosphere.addBlobShadow(h, 0.76, { y: 0.015, opacity: 0.28 });
       holders[i] = h;
       mons[i] = ch;
       var lab = K.label(K.TEAMS[i].name, K.TEAMS[i].c);
@@ -1076,7 +1164,34 @@
       },
       getTeams: function () { return TEAMS; },
       openHowTo: openHowTo,
-      openChest: openTreasureChest
+      openChest: openTreasureChest,
+      captureShot: function (mode) {
+        K.ui.clear(); K.ui.topButtons(); addHelpTopButton();
+        hud = K.ui.teamBar(TEAMS, function (t) { return t.pos === N ? '🏆' : '▢ ' + t.pos; });
+        turnBannerEl = K.ui.add(K.el('div', 'bd-turn-banner'));
+        liveBoardEl = K.ui.add(K.el('div', 'bd-live-board'));
+        die.hide();
+        var demoPos = mode === 'chest' ? [30, 24, 18, 12] : [9, 6, 4, 2];
+        TEAMS.forEach(function (t, i) { t.pos = demoPos[i] || 2; });
+        placeAll();
+        turnI = 0; round = 2;
+        refresh(0);
+        if (mode === 'question') {
+          phase = 'ask'; window.__k3phase = 'ask';
+          shot('ask', 0); K.cam.snap();
+          K.ui.ask(QS.next(), TEAMS[0], { prompt: 'answer right to roll the Giant Die!', onAnswer: function () {} });
+        } else if (mode === 'roll') {
+          phase = 'ask'; window.__k3phase = 'ask';
+          shot('follow', 0); K.cam.snap();
+          promptRollDie(0, function () {});
+        } else if (mode === 'chest') {
+          phase = 'move'; window.__k3phase = 'move';
+          openTreasureChest();
+          if (mons[0]) mons[0].setState('cheer');
+          K.ui.big('🏆 Team Pink Opened the Treasure!', 5, true);
+          shot('chest'); K.cam.snap();
+        }
+      }
     };
     K.start();
   }).catch(function (e) {
