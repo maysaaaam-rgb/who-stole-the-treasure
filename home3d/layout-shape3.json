@@ -1,0 +1,86 @@
+{
+ "_note": "WORLD 3 — Five-Isle Tropical Star Archipelago: 5 completely distinct tropical islands radiating around a Central Star-Hub Gazebo Islet linked by 4 X-shaped wooden boardwalk bridges over turquoise sandbars! Colosseum Isle sits front-center-left so seated students are right near the foreground!",
+ "shipZ": 44.5,
+ "pier": { "from": [24.5, 31.2], "to": [26.0, 36.5], "boat": [21.0, 36.0] },
+ "treasureBridge": { "from": [36.8, 21.8], "to": [41.8, 22.8] },
+ "bridges": [
+  { "from": [-6.5, -12.5], "to": [-2.2, -3.8] },
+  { "from": [4.2, -3.5], "to": [12.8, -6.8] },
+  { "from": [-5.2, 1.8], "to": [-11.2, 1.8] },
+  { "from": [4.5, 3.8], "to": [13.2, 12.5] },
+  { "from": [-25.5, 11.5], "to": [-29.5, 18.8] }
+ ],
+ "waterfalls": [
+  { "from": [5.5, 3.8, -16.5], "to": [6.8, 0.2, -10.5], "w": 2.8 }
+ ],
+ "islands": [
+  { "id": "star-hub-atoll", "x": 0.0, "z": 0.5, "rx": 6.8, "rz": 5.8, "seed": 1.1, "wob": 0.06, "h": 0.72 },
+  { "id": "north-castle-crown", "x": -2.5, "z": -22.5, "rx": 18.8, "rz": 8.8, "seed": 0.7, "wob": 0.05, "h": 3.8, "terrace": 1.8 },
+  { "id": "colosseum-coral-isle", "x": -23.5, "z": 0.8, "rx": 14.8, "rz": 11.2, "seed": 1.4, "wob": 0.06, "h": 0.95, "rot": -0.12 },
+  { "id": "east-creator-isle", "x": 27.5, "z": -9.5, "rx": 17.5, "rz": 10.8, "seed": 2.2, "wob": 0.06, "h": 0.80, "rot": 0.14 },
+  { "id": "se-monster-lagoon", "x": 24.5, "z": 21.5, "rx": 15.2, "rz": 9.6, "seed": 3.5, "wob": 0.07, "h": 0.65 },
+  { "id": "se-beach", "x": 24.5, "z": 28.8, "rx": 12.2, "rz": 4.2, "seed": 2.0, "wob": 0.06, "h": -0.08, "kind": "sand" },
+  { "id": "treasure", "x": 45.8, "z": 23.5, "rx": 5.8, "rz": 4.4, "seed": 1.1, "wob": 0.07, "h": 0.18, "kind": "sand" },
+  { "id": "lighthouse-isle", "x": 46.5, "z": 7.8, "rx": 4.2, "rz": 3.6, "seed": 6.2, "wob": 0.08, "h": 2.8, "terrace": 1.1 },
+  { "id": "games-bluff", "x": -33.5, "z": 20.5, "rx": 14.2, "rz": 5.8, "seed": 0.9, "wob": 0.05, "h": 2.4, "terrace": 1.2 },
+  { "id": "games-main", "x": -33.5, "z": 29.8, "rx": 17.5, "rz": 10.0, "seed": 1.8, "wob": 0.06, "h": 0.65 },
+  { "id": "games-beach", "x": -33.5, "z": 38.8, "rx": 13.8, "rz": 4.4, "seed": 3.1, "wob": 0.06, "h": -0.05, "kind": "sand" }
+ ],
+ "stairs": [
+  { "kind": "stone", "from": [-33.5, 26.2], "to": [-33.5, 23.8], "y0": 0.65, "y1": 2.4, "w": 3.2, "steps": 5 }
+ ],
+ "plaza": { "x": 24.5, "z": -7.8, "r": 2.8 },
+ "gamesPlaza": { "x": -33.5, "z": 30.5, "r": 2.8 },
+ "gamesRaft": [-33.5, 45.2],
+ "gamesPalms": [[-44.5, 38.5, 0.4], [-38.5, 40.5, 1.9], [-28.5, 40.5, 3.6], [-22.5, 38.5, 5.1], [4.5, 3.5, 1.2], [-12.5, 8.5, 2.6]],
+ "places": [
+  { "id": "today", "title": "Today's Lesson", "link": "index.html#today", "x": -3.5, "z": -23.2, "w": 15.8, "model": "castle", "fallback": "castle", "islandZone": "home" },
+  { "id": "board", "title": "Class Colosseum", "link": "index.html#board", "x": -22.5, "z": 0.2, "w": 17.4, "model": "colosseum", "fallback": "colosseum", "islandZone": "home" },
+  { "id": "smartboard", "title": "AI Smart Board", "link": "smart-board/index.html", "x": 17.5, "z": -9.2, "w": 8.4, "model": "smartboard", "fallback": "smartboard", "islandZone": "home" },
+  { "id": "shop", "title": "Pupil Shop", "link": "index.html#store-pupil", "x": 27.2, "z": -13.5, "w": 6.8, "model": "shop", "fallback": "stall", "islandZone": "home" },
+  { "id": "library", "title": "Magic Book & Library", "link": "magic-book/index.html", "x": 38.2, "z": -10.8, "w": 8.6, "model": "library", "fallback": "library", "islandZone": "home" },
+  { "id": "games", "title": "All Games", "link": "game-maker/index.html", "x": -33.5, "z": 19.2, "w": 11.2, "model": "stadium", "fallback": "stadium", "islandZone": "games" }
+ ],
+ "tools3d": [
+  { "id": "tool-ufo", "tool": "ufo", "icon": "🛸", "color": "#9b7bff", "title": "UFO Pupil Picker", "x": -16.2, "z": 2.8, "y": 9.8, "sky": true },
+  { "id": "tool-groups", "tool": "groups", "icon": "👫", "color": "#4f9dff", "title": "Groups & Line-Up", "x": -11.2, "z": -3.5, "ry": 0.35 },
+  { "id": "tool-timer", "tool": "timer", "icon": "⏱️", "color": "#ffb320", "title": "Sun Clock Tower", "x": -15.2, "z": -21.5, "ry": 0.2 },
+  { "id": "tool-bell", "tool": "bell", "icon": "🔔", "color": "#ff5fa2", "title": "Star-Hub Bell Pavilion", "x": 0.0, "z": 0.5, "ry": 0.0 },
+  { "id": "tool-dice", "tool": "dice", "icon": "🎲", "color": "#2fc58a", "title": "Dice & Prize Wheel", "x": 22.8, "z": -2.2, "ry": -0.15 },
+  { "id": "tool-prize", "tool": "prize", "icon": "🎁", "color": "#ffb320", "title": "Mystery Prize Shrine", "x": 29.8, "z": -2.0, "ry": -0.25 },
+  { "id": "tool-freeze", "tool": "freeze", "icon": "❄️", "color": "#38bdf8", "title": "Freeze Ice Grotto (F)", "x": 21.5, "z": 26.8, "ry": -0.3 },
+  { "id": "tool-party", "tool": "party", "icon": "🎂", "color": "#ff5fa2", "title": "Two Stars & Birthday", "x": 18.8, "z": -16.5, "ry": 0.15 },
+  { "id": "tool-pass", "tool": "pass", "icon": "🚻", "color": "#2fc58a", "title": "Hall Pass Booth", "x": 14.5, "z": 22.8, "ry": 0.05 }
+ ],
+ "arcade3d": [
+  { "id": "cannon3d", "icon": "🎯", "color": "#ff5fa2", "title": "Monster Cannon", "link": "games/cannon3d/index.html", "x": -33.5, "z": 39.0, "ry": 0.0, "islandZone": "games" },
+  { "id": "penalty3d", "icon": "⚽", "color": "#2fc58a", "title": "Penalty Shootout", "link": "games/penalty3d/index.html", "x": -45.2, "z": 29.0, "ry": 0.25, "islandZone": "games" },
+  { "id": "race3d", "icon": "🏁", "color": "#4f9dff", "title": "Sprint Race", "link": "games/race3d/index.html", "x": -43.8, "z": 20.8, "ry": 0.20, "islandZone": "games" },
+  { "id": "tug3d", "icon": "🪢", "color": "#ffb320", "title": "Tug of War", "link": "games/tug3d/index.html", "x": -41.5, "z": 35.5, "ry": 0.16, "islandZone": "games" },
+  { "id": "bowling3d", "icon": "🎳", "color": "#9b7bff", "title": "Monster Bowling", "link": "games/bowling3d/index.html", "x": -25.5, "z": 35.5, "ry": -0.16, "islandZone": "games" },
+  { "id": "bomb3d", "icon": "💣", "color": "#ff5fa2", "title": "Bomb or Bonus", "link": "games/bomb3d/index.html", "x": -23.2, "z": 20.8, "ry": -0.20, "islandZone": "games" },
+  { "id": "board3d", "icon": "🎲", "color": "#ffb320", "title": "Park Board Game", "link": "games/board3d/index.html", "x": -22.2, "z": 28.8, "ry": -0.22, "islandZone": "games" }
+ ],
+ "homes": [
+  { "team": 0, "model": "nest-tower", "fallback": "nestTower", "x": 10.5, "z": -22.5, "w": 8.0, "flag": "top", "monster": "anchor", "face": -0.35 },
+  { "team": 1, "model": "pond-waterfall", "fallback": "pond", "x": 32.8, "z": 19.5, "w": 10.8, "flag": [1.2, -3.3, 3.4], "monster": [-2.6, 1.5], "face": -0.35, "door": [-4.4, -1.0] },
+  { "team": 2, "model": "windmill", "fallback": "windmill", "x": -35.2, "z": -3.2, "w": 7.5, "flag": [1.7, -2.8, 0], "monster": [4.0, 2.3], "face": 0.3, "flowers": true },
+  { "team": 3, "model": "flower-garden", "fallback": "garden", "x": 16.5, "z": 16.2, "w": 5.0, "flag": [-2.2, -2.4, 0], "monster": [0.8, 2.2], "face": 0.15 }
+ ],
+ "harbour": { "x": 23.8, "z": 30.5, "door": [23.2, 28.0] },
+ "treasure": { "x": 45.8, "z": 23.5 },
+ "paths": [
+  { "to": "shop" },
+  { "to": "library" }
+ ],
+ "trees": [[-18.5, -24.5], [16.5, -24.5], [39.5, -14.5], [-36.5, 6.5], [35.5, 25.5], [-44.5, 21.5]],
+ "bushes": [[-31.5, 7.5], [35.5, -2.5], [12.5, 20.5], [31.5, 26.5]],
+ "props": [
+  { "kind": "fountain", "x": 0.0, "z": -3.2, "ry": 0.0 },
+  { "kind": "carrots", "x": 31.2, "z": -13.2, "ry": 0.4 }
+ ],
+ "extras": [
+  { "model": "lighthouse", "x": 46.5, "z": 7.8, "h": 12.2, "block": 1.8 },
+  { "model": "hot-air-balloon", "x": -13.5, "z": -25.5, "y": 14.5, "h": 5.8, "float": 0.65 }
+ ]
+}

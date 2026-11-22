@@ -483,7 +483,7 @@
     if (name === 'title')    K.cam.set(V(0, 5.2, 18.5), V(0, 2.2, 0), 3.5);
     if (name === 'wide')     K.cam.set(V(0, 5.4, 17.6), V(0, 2.35, 0), 4.0);
     if (name === 'question') K.cam.set(V(0, 6.2, 18.8), V(0, 1.35, 0), 4.5); // Frames live 3D arena cleanly above .qcard!
-    if (name === 'aim')      K.cam.set(V(side === 0 ? -2.2 : 2.2, 4.9, 16.4), V(side === 0 ? -1.4 : 1.4, 2.5, 0), 4.8);
+    if (name === 'aim')      K.cam.set(V(side === 0 ? -0.55 : 0.55, 5.35, 18.6), V(0, 2.35, 0), 4.8);
     if (name === 'impact')   K.cam.set(V(side === 0 ? -4.2 : 4.2, 3.8, 10.6), V(fighters[side].x, 1.8, 0), 6.5);
     if (name === 'end')      K.cam.set(V(0, 4.2, 12.8), V(0, 2.0, 0), 3.6);
   }
