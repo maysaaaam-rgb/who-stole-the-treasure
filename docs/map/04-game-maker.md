@@ -5,33 +5,31 @@
 
 ---
 
-## 1. All 4 Playable Arcade Modes (`GM.modes.*`)
+## 1. All 3 Playable Arcade Modes (`GM.modes.*`)
 
 | Mode ID | Title | Source File & Line | Launch Query | Gameplay Summary |
 | :--- | :--- | :--- | :--- | :--- |
 | `tower` | 🏗️ **Tower Stack** | [mode-tower.js:L21](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-tower.js#L21) (374L) | `?game=tower` | Answer a question, then time the fast-swinging crane to stack blocks! Overhangs get sliced off permanently — hit a Perfect Drop to widen your tower! |
 | `baseball` | ⚾ **Baseball** | [mode-baseball.js:L38](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-baseball.js#L38) (437L) | `?game=baseball` | Answer to step up to the plate, read the pitch type (Fastball, Curveball, Changeup), and time the fast swing bar — late or early swings Foul off or Strike Out! |
 | `jigsaw` | 🧩 **Jigsaw Race** | [mode-jigsaw.js:L72](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-jigsaw.js#L72) (472L) | `?game=jigsaw` | Two teams race side-by-side to answer questions and snap 12 jigsaw pieces into place! |
-| `fling` | 🐱 **Alley Fling** | [mode-fling.js:L145](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-fling.js#L145) (1662L) | `?game=fling` | True Cat vs Dog skill battle! Read the wind gauge, lock your throw angle, time the fast power bar (or pull the slingshot), dodge the patrolling wasp, and bonk your rival! |
 
 ---
 
-## 2. Game Maker Core Engine & Support Files (17 JS files)
+## 2. Game Maker Core Engine & Support Files (16 JS files)
 
 | File | Size | Lines | Cache `?v=` |
 | :--- | :---: | :---: | :---: |
-| [app.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/app.js) | 65.5 KB | 969 | `20261122a` |
+| [app.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/app.js) | 66.1 KB | 971 | `20261122b` |
 | [audio.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/audio.js) | 15.8 KB | 185 | `20261121b` |
 | [bank.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/bank.js) | 8.8 KB | 253 | `2` |
-| [core.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/core.js) | 36.2 KB | 607 | `17` |
+| [core.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/core.js) | 37.2 KB | 615 | `18` |
 | [data.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/data.js) | 16.4 KB | 145 | `8` |
 | [juice.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/juice.js) | 13.2 KB | 223 | `5` |
 | [mode-baseball.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-baseball.js) | 17.3 KB | 437 | `8` |
-| [mode-fling.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-fling.js) | 62.7 KB | 1662 | `20261122a` |
 | [mode-jigsaw.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-jigsaw.js) | 17.8 KB | 472 | `8` |
 | [mode-tower.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-tower.js) | 14.8 KB | 374 | `8` |
 | [monsters.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/monsters.js) | 6.8 KB | 161 | `9` |
-| [revision.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/revision.js) | 17.2 KB | 225 | `5` |
+| [revision.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/revision.js) | 19.7 KB | 249 | `6` |
 | [sets-speaking.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/sets-speaking.js) | 27.4 KB | 349 | `4` |
 | [sets-unit4.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/sets-unit4.js) | 9.2 KB | 162 | `2` |
 | [sets-unit5.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/sets-unit5.js) | 12.4 KB | 195 | `3` |

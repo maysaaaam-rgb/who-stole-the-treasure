@@ -11,7 +11,7 @@
 | [index.html](file:///C:/Users/maysa/Desktop/DV/index.html) | 280.1 KB (4297L) | Main School Platform SPA Host (Teacher, Student, Parent, Class Mode) |
 | [directory.html](file:///C:/Users/maysa/Desktop/DV/directory.html) | 0.7 KB (15L) | Students Directory & Monster Companions Grid |
 | [site-map/index.html](file:///C:/Users/maysa/Desktop/DV/site-map/index.html) | 6.8 KB (149L) | Interactive Visual Site Map & Developer Explorer (Read-Only) |
-| [game-maker/index.html](file:///C:/Users/maysa/Desktop/DV/game-maker/index.html) | 3.8 KB (73L) | Game Maker 2.0 Arcade Host (22 Modes + 75 Question Sets) |
+| [game-maker/index.html](file:///C:/Users/maysa/Desktop/DV/game-maker/index.html) | 3.8 KB (72L) | Game Maker 2.0 Arcade Host (22 Modes + 75 Question Sets) |
 | [island/index.html](file:///C:/Users/maysa/Desktop/DV/island/index.html) | 6.4 KB (109L) | Practice Island Student Home App (Chapters, Harbour, Shop) |
 | [island/world.html](file:///C:/Users/maysa/Desktop/DV/island/world.html) | 0.7 KB (15L) | Practice Island 2D Walking World |
 | [island/teacher.html](file:///C:/Users/maysa/Desktop/DV/island/teacher.html) | 12.2 KB (309L) | Practice Island Teacher Live Progress Wall |

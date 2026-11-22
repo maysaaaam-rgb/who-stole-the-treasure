@@ -20,6 +20,7 @@
     { id: 'ext-board3d',   cat: 'park3d', phone: true, badge: '🎲 3D BOARD',       k3d: true, mins: '15–20 min', teams: '2–4 Teams', sub3: '30 Squares · Giant 3D Die · Ladders & Slides', name: 'Board Game 3D', desc: 'Roll the Giant 3D Die across 30 pastel squares! Climb ladders, zoom down slides, and open the erupting Treasure Chest!', poster: '../games/posters/board3d.jpg', url: '../games/board3d/', previewUrl: '../games/board3d/?demo=1&preview=1', steps: ['1. Answer right to roll the Giant 3D Die', '2. Climb ladders, ride slides & collect stars', '3. First monster to the Treasure Chest wins!'] },
     { id: 'ext-bomb3d',    cat: 'park3d', phone: true, badge: '🎁 3D FUNFAIR',     k3d: true, mins: '10–15 min', teams: '2–4 Teams', sub3: '12 3D Gift Boxes · Stars, Swap, Double or BOOM', name: 'Bomb or Bonus 3D', desc: 'Answer right on the 3D Funfair stage and pick one of 12 numbered gift boxes: bonus stars, power swaps, or silly boom!', poster: '../games/posters/bomb3d.jpg', url: '../games/bomb3d/', previewUrl: '../games/bomb3d/?demo=1&preview=1', steps: ['1. Answer a question for your team', '2. Pick any of the 12 3D gift boxes', '3. Win +Stars, Swap, Steal, Double… or BOOM!'] },
     { id: 'ext-keepgive3d',cat: 'park3d', phone: true, badge: '🎀 3D STRATEGY',    k3d: true, mins: '10–15 min', teams: '2–4 Teams', sub3: '3D Gift Stage · Keep It or Give It to Rivals', name: 'Keep It or Give It 3D', desc: 'Pick a 3D mystery gift box and choose BEFORE it bursts open: KEEP IT for your team or GIVE IT to a rival!', poster: '../games/posters/keepgive.webp', url: '../games/bomb3d/?mode=keepgive', previewUrl: '../games/bomb3d/?mode=keepgive&demo=1&preview=1', steps: ['1. Answer right & choose a 3D gift box', '2. Decide: KEEP IT or GIVE IT to another team!', '3. Watch the box burst open on the 3D stage!'] },
+    { id: 'ext-fling3d',   cat: 'park3d', phone: true, badge: '🐱🐶 3D BACKYARD', k3d: true, mins: '8–12 min',  teams: '2–4 Teams', sub3: '3D Backyard Fence · Slingshot Pull-Back · 3D Windsock & Wasp', name: 'Cat vs Dog: Alley Fling 3D', desc: '3D backyard battle! Answer right, read the 3D windsock flag, pull back the slingshot, dodge the 3D wasp & bonk your rival!', poster: '../game-maker/art/card_fling.webp', url: '../games/fling3d/', previewUrl: '../games/fling3d/?demo=1&preview=1', steps: ['1. Answer right to load Cat\'s 3D yarn or Dog\'s 3D bone', '2. Check the 3D windsock & pull back the slingshot', '3. Dodge the 3D wasp, smash tin cans & score Headshots!'] },
 
     { id: 'ext-slice',     cat: 'action', phone: true, badge: '🍉 SWIPE / CAM',    k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Swipe Finger on Phone/Board or Wave Hands · Speaking & Choice', name: 'Fruit & Word Slice', desc: 'Swipe your finger across the sunny screen (or turn on Motion Cam) to slice the juicy fruit carrying the right word!', poster: '../games/posters/slice.webp', url: '../games/live/index.html?game=slice', previewUrl: '../games/live/index.html?game=slice&preview=1', steps: ['1. Revise with Remember First flashcards', '2. Swipe across or tap the right fruit', '3. Score +15 Stars per clean slice!'] },
 
@@ -39,13 +40,13 @@
     { id: 'ext-simonsays', cat: 'speak',  phone: true, badge: '🦉 TPR LIVE',       k3d: false, mins: '5–10 min',  teams: 'Whole Class', sub3: 'Spoken Voice Commands · Do It Only If Simon Says!', name: 'Simon Says Live', desc: 'Active TPR listening & movement game for Grade 3 and Grade 4 — listen closely and only move when Simon says!', poster: '../assets/shelf/simon-says-grade3.webp', url: '../simon-says/index.html', previewUrl: '../simon-says/index.html', steps: ['1. Pick Grade 3 or Grade 4 & tap Start', '2. Listen to Simon\'s spoken action command', '3. Move ONLY when it starts with "Simon says…"!'] },
     { id: 'ext-telpic',    cat: 'speak',  phone: true, badge: '📞 DRAW & PASS',    k3d: false, mins: '10–15 min', teams: 'Groups of 4–6', sub3: 'Write a Sentence · Draw It · Fold & Pass!', name: 'Telephone Pictionary', desc: 'Hilarious group writing & drawing relay with built-in timer, sentence starters, and reveal prompts!', poster: '../platform-art/h_pencil.webp', url: '../telephone-pictionary/index.html', previewUrl: '../telephone-pictionary/index.html', steps: ['1. Pupil 1 secretly writes a starter sentence', '2. Next pupil draws it, folds, and passes', '3. Unfold at the end & read the funny chain aloud!'] }
   ];
-  var ORDER = ['fling', 'tower', 'baseball', 'jigsaw'];
-  var GM_PHONE = { fling: true, tower: true, baseball: true, jigsaw: true };
-  var GM_MINS = { fling: '8–12 min', tower: '6–10 min', baseball: '8–12 min', jigsaw: '8–12 min' };
+  var ORDER = ['tower', 'baseball', 'jigsaw'];
+  var GM_PHONE = { tower: true, baseball: true, jigsaw: true };
+  var GM_MINS = { tower: '6–10 min', baseball: '8–12 min', jigsaw: '8–12 min' };
   var GAME_CATS = [
     ['all',     '⭐ All Games (26)', null],
-    ['park3d',  '🌍 3D Park (8)', ['ext-tug3d', 'ext-penalty3d', 'ext-cannon3d', 'ext-race3d', 'ext-bowling3d', 'ext-board3d', 'ext-bomb3d', 'ext-keepgive3d']],
-    ['action',  '🎯 Action & Skill (5)', ['fling', 'tower', 'baseball', 'jigsaw', 'ext-slice']],
+    ['park3d',  '🌍 3D Park (9)', ['ext-tug3d', 'ext-penalty3d', 'ext-cannon3d', 'ext-race3d', 'ext-bowling3d', 'ext-board3d', 'ext-bomb3d', 'ext-keepgive3d', 'ext-fling3d']],
+    ['action',  '🎯 Action & Skill (4)', ['tower', 'baseball', 'jigsaw', 'ext-slice']],
     ['mystery', '🔍 Mystery & Suspense (5)', ['ext-flashlight', 'ext-doors', 'ext-pixels', 'ext-croc', 'ext-cups']],
     ['word',    '🔤 Words & Grammar (6)', ['ext-timetrain', 'ext-builder', 'ext-bubbles', 'ext-prep', 'ext-bingo', 'ext-pairs']],
     ['speak',   '🎤 Live Speaking (2)', ['ext-simonsays', 'ext-telpic']]
@@ -901,11 +902,12 @@
     var ov = document.getElementById('gm-tov'); if (ov) ov.remove(); teamsBtn();
   }
   function init() {
-    stage = document.getElementById('gm-stage'); load(); if (!GM.modes[S.modeId]) S.modeId = 'fling';
+    stage = document.getElementById('gm-stage'); load(); if (!GM.modes[S.modeId]) S.modeId = 'tower';
     /* links from the platform & lessons: ?class=<classId>&set=<setId>&game=<gameId> */
     try {
       var qs = location.search, mc = /[?&]class=([\w-]+)/.exec(qs), ms = /[?&](?:set|pack)=([\w-]+)/.exec(qs), mg = /[?&]game=([\w-]+)/.exec(qs), mcat = /[?&]cat=([\w-]+)/.exec(qs), mq = /[?&]q=([^&]+)/.exec(qs);
       var LEGACY_3D = {
+        fling: '../games/fling3d/',
         penalty: '../games/penalty3d/',
         race: '../games/race3d/',
         cannon: '../games/cannon3d/',
