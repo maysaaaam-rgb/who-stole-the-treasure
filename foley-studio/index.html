@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>🎬 Foley Sound Engineer Studio · Interactive 35-Min Smartboard Lesson</title>
+  <link rel="icon" href="../favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body>
+  <div class="fs-shell" id="fs-shell">
+    <!-- TOP SUNNY STUDIO BAR -->
+    <header class="fs-topbar">
+      <div class="fs-brand">
+        <a class="fs-btn ghost sm" href="../index.html" title="Back to Platform">← Park</a>
+        <div class="fs-title-box">
+          <h1>🎬 Foley Sound Engineer Studio</h1>
+          <div class="fs-meta-line">
+            <span class="fs-onair" id="fs-onair"><i></i> STUDIO READY</span>
+            <span class="fs-energy-pill">⚡ Studio Energy: <b id="fs-energy-val">20%</b></span>
+            <span class="fs-time-pill">⏱ 35-Min Lesson</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4-TEAM SCOREBOARD (Pink, Blue, Yellow, Green) -->
+      <div class="fs-teams" id="fs-teams" aria-label="Team Scores"></div>
+
+      <div class="fs-top-actions">
+        <button type="button" class="fs-btn amber sm" id="fs-tip-btn" title="Teacher Tips & Timings">📋 Tips</button>
+        <a class="fs-btn lilac sm" href="worksheet.html" target="_blank" rel="noopener" title="Printable Worksheet">🖨️ Sheet</a>
+        <button type="button" class="fs-btn ghost sm" id="fs-mute-btn" title="Mute / Unmute">🔊</button>
+        <button type="button" class="fs-btn ghost sm" id="fs-fs-btn" title="Fullscreen Smartboard">⛶</button>
+      </div>
+    </header>
+
+    <!-- 6-SCENE STEPPER (5 + 8 + 6 + 7 + 5 + 4 = 35 MINUTES) -->
+    <nav class="fs-stepper" id="fs-stepper" aria-label="Lesson Scenes"></nav>
+
+    <!-- MAIN INTERACTIVE STAGE -->
+    <main class="fs-stage" id="fs-stage"></main>
+
+    <!-- PERSISTENT SPEAKING FORMULA FOOTER -->
+    <footer class="fs-speakbar" id="fs-speakbar">
+      <span class="fs-spk-tag">🗣️ SAY IT ALOUD:</span>
+      <span class="fs-spk-line" id="fs-spk-line">When you bang two coconut shells, it sounds like a horse!</span>
+      <button type="button" class="fs-btn blue sm" id="fs-spk-hear">🔊 Hear Model</button>
+      <div class="fs-nav-btns">
+        <button type="button" class="fs-btn ghost sm" id="fs-prev-btn">◀ Back</button>
+        <button type="button" class="fs-btn green sm" id="fs-next-btn">Next Scene ▶</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- TEACHER TIP DRAWER MODAL -->
+  <div class="fs-modal hide" id="fs-tip-modal" role="dialog" aria-modal="true">
+    <div class="fs-modal-card">
+      <div class="fs-modal-head">
+        <h2 id="fs-tip-title">📋 Teacher Tips</h2>
+        <button type="button" class="fs-btn ghost sm" id="fs-tip-close">✕ Close</button>
+      </div>
+      <div id="fs-tip-body"></div>
+    </div>
+  </div>
+
+  <!-- FLOATING TOAST -->
+  <div class="fs-toast hide" id="fs-toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js?v=1"></script>
+  <script src="js/audio.js?v=1"></script>
+  <script src="js/app.js?v=1"></script>
+</body>
+</html>

@@ -630,8 +630,62 @@
       store().setCalendarFlag('seed32');
     } catch (e) { /* the calendar still works */ }
   }
+  /* 22 Nov 2026: Seed Week 10 (Mon 23–Fri 27 Nov) — Speaking-Only Units 1–5 Review + Quizzes + Thu–Fri Speaking Quiz (28 lessons across 3A, 3B, 4A, 4B). */
+  function weekNov23Once() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed33')) return;
+      var list = customEvents().slice();
+      var W10 = [
+        /* Monday 23 Nov — Foley Sound Engineer Studio Launch + Units 1–2 Speaking Review */
+        ['2026-11-23', '09:45', 'class-4b', 'speaking', 'Foley Sound Engineer Studio (35-Min Interactive Lesson) + Speaking Review', 'Launch Foley Sound Engineer Studio (foley-studio/index.html + foley-studio/worksheet.html): tap, shake & drag 8 sound tools live, dub 4 movies, and speak ON AIR! Bonus: Penalty 3D Slingshot (games/penalty3d/index.html?set=speak-choice-g4-u1).'],
+        ['2026-11-23', '10:30', 'class-4a', 'speaking', 'Foley Sound Engineer Studio (35-Min Interactive Lesson)', 'Launch Foley Sound Engineer Studio (foley-studio/index.html + foley-studio/worksheet.html): touch/shake 8 sound props on the smartboard, solve Mystery Sounds, dub 4 movies live, and perform ON AIR!'],
+        ['2026-11-23', '11:15', 'class-4a', 'speaking', 'Speaking Review · Units 1–2: Flashcards + Penalty 3D & Tug 3D', 'Warm up with Remember First flashcards, then play Penalty 3D Slingshot (games/penalty3d/index.html?set=speak-choice-g4-u1) and Tug 3D Acting (games/tug3d/index.html?set=speak-g4-u2).'],
+        ['2026-11-23', '13:30', 'class-3a', 'speaking', 'Foley Sound Engineer Studio (35-Min Interactive CLIL & Speaking Lesson)', 'Launch Foley Sound Engineer Studio (foley-studio/index.html + foley-studio/worksheet.html): pupils touch, shake & drag 8 Foley tools to create realistic sounds, dub movies, and speak full sentences!'],
+        ['2026-11-23', '14:15', 'class-3a', 'speaking', 'Speaking Review · Units 1–2: Flashcards + Penalty 3D & Tug 3D', 'Warm up with Remember First flashcards, then practise Units 1–2 speaking cards in Penalty 3D Slingshot (games/penalty3d/index.html?set=speak-choice-g3-u1) and Tug 3D (games/tug3d/index.html?set=speak-g3-u2).'],
+        ['2026-11-23', '16:05', 'class-3b', 'speaking', 'Foley Sound Engineer Studio (35-Min Interactive Lesson) + Speaking Review', 'Launch Foley Sound Engineer Studio (foley-studio/index.html + foley-studio/worksheet.html): interactive 8-tool Foley workbench, live movie dubbing & ON AIR speaking show!'],
+
+        /* Tuesday 24 Nov — Units 3–4 Speaking Review + MEB Lesson 1 */
+        ['2026-11-24', '09:00', 'class-4b', 'speaking', 'Speaking Review · Units 3–4: Sprint Race 3D & Bowling 3D', 'Review Arctic & Clean Cars + Teamwork speaking sentences with Remember First flashcards in Sprint Race 3D (games/race3d/index.html?set=speak-choice-g4-u3) and Bowling 3D (games/bowling3d/index.html?set=speak-choice-g4-u4).'],
+        ['2026-11-24', '09:45', 'class-4b', 'book', 'MEB Government Book (Lesson 1) + Speaking Warm-Up', 'Week 10 MEB student book speaking & listening activities + 5-min pair speaking warm-up (speaking-quiz/worksheet.html?grade=4).'],
+        ['2026-11-24', '10:30', 'class-3a', 'book', 'MEB Government Book (Lesson 1) + Speaking Warm-Up', 'Week 10 MEB student book speaking & listening activities + 5-min pair speaking warm-up (speaking-quiz/worksheet.html?grade=3).'],
+        ['2026-11-24', '11:15', 'class-3a', 'speaking', 'Speaking Review · Units 3–4: Money & Mystery Race / Bowling 3D', 'Practise How Much Is It? & Mona Lisa / Volcano speaking cards with Remember First flashcards in Sprint Race 3D (games/race3d/index.html?set=speak-choice-g3-u3) and Bowling 3D (games/bowling3d/index.html?set=speak-choice-g3-u4).'],
+        ['2026-11-24', '15:20', 'class-4a', 'book', 'MEB Government Book (Lesson 1) + Speaking Warm-Up', 'Week 10 MEB student book speaking & listening activities + 5-min pair speaking warm-up (speaking-quiz/worksheet.html?grade=4).'],
+
+        /* Wednesday 25 Nov — Unit 5 & All-Units (1–5) Mega Speaking Review + Smart Mix Quiz */
+        ['2026-11-25', '10:30', 'class-3b', 'speaking', 'Speaking Review · Units 3–4: Money & Mystery Race / Bowling 3D', 'Practise Units 3–4 speaking choice & acting with Remember First flashcards in Sprint Race 3D (games/race3d/index.html?set=speak-choice-g3-u3) and Bowling 3D (games/bowling3d/index.html?set=speak-choice-g3-u4).'],
+        ['2026-11-25', '11:15', 'class-3b', 'book', 'MEB Government Book (Lesson 1) + Speaking Warm-Up', 'Week 10 MEB student book speaking & listening activities + 5-min pair speaking warm-up (speaking-quiz/worksheet.html?grade=3).'],
+        ['2026-11-25', '12:45', 'class-4b', 'speaking', 'Speaking Review · Unit 5: Make Some Noise + Board Game 3D', 'Warm up with Remember First flashcards on Foley Studio & Beethoven, then play Board Game 3D (games/board3d/index.html?set=speak-choice-g4-u5) and Talk Show (talk-show/index.html?grade=4).'],
+        ['2026-11-25', '13:30', 'class-4b', 'quiz', 'Units 1–5 Speaking Choice Mega Quiz · Bomb/Cannon 3D + Exit Ticket', 'All-Units Speaking Choice review in Bomb or Bonus 3D (games/bomb3d/index.html?set=speak-choice-g4) with Smart Mix & 3-question Exit Ticket.'],
+        ['2026-11-25', '14:15', 'class-4a', 'speaking', 'Speaking Review · Units 3–5: Arctic, Teamwork & Noise (Board 3D)', 'Warm up with Remember First flashcards, then play Board Game 3D (games/board3d/index.html?set=speak-choice-g4-u5) and Bowling 3D (games/bowling3d/index.html?set=speak-choice-g4-u3).'],
+        ['2026-11-25', '15:20', 'class-4a', 'quiz', 'Units 1–5 Speaking Choice Mega Quiz · Bomb/Cannon 3D + Exit Ticket', 'All-Units Speaking Choice review in Bomb or Bonus 3D (games/bomb3d/index.html?set=speak-choice-g4) with Smart Mix & 3-question Exit Ticket.'],
+
+        /* Thursday 26 Nov — Speaking Quiz Day 1 (1-on-1 Units 1–5 Check + Pair Practice Cards) & MEB Lesson 2 */
+        ['2026-11-26', '09:45', 'class-3a', 'quiz', 'Units 1–5 Speaking Quiz · Day 1 (Group A) + Pair Practice Cards', 'Run 1-on-1 Units 1–5 Speaking Quiz (speaking-quiz/index.html?grade=3) while pairs practise with printed cards (speaking-quiz/worksheet.html?grade=3).'],
+        ['2026-11-26', '10:30', 'class-3b', 'speaking', 'Speaking Review · Unit 5 & All-Units (1–5) Mega Quiz (Board/Bomb 3D)', 'Warm up with Remember First flashcards, then play Units 1–5 Speaking Choice in Board Game 3D (games/board3d/index.html?set=speak-choice-g3) and Bomb 3D (games/bomb3d/index.html?set=speak-g3-u5).'],
+        ['2026-11-26', '11:15', 'class-3b', 'quiz', 'Units 1–5 Speaking Quiz · Day 1 (Group A) + Pair Practice Cards', 'Run 1-on-1 Units 1–5 Speaking Quiz (speaking-quiz/index.html?grade=3) while pairs practise with printed cards (speaking-quiz/worksheet.html?grade=3).'],
+        ['2026-11-26', '16:05', 'class-4a', 'book', 'MEB Government Book (Lesson 2) + Pair Speaking Warm-Up', 'Week 10 MEB Lesson 2 + printed pair speaking cards warm-up (speaking-quiz/worksheet.html?grade=4).'],
+        ['2026-11-26', '16:55', 'class-4a', 'quiz', 'Units 1–5 Speaking Quiz · Day 1 & 2 (Full Class Check)', 'Run 1-on-1 Units 1–5 Speaking Quiz (speaking-quiz/index.html?grade=4) while pairs practise with cards (speaking-quiz/worksheet.html?grade=4) + Penalty 3D celebration!'],
+
+        /* Friday 27 Nov — Speaking Quiz Day 2 (Finish Full Class + 3D Speaking Celebration) & MEB Lesson 2 */
+        ['2026-11-27', '09:00', 'class-3b', 'book', 'MEB Government Book (Lesson 2)', 'Completed Week 10 MEB student book and workbook listening & speaking practice.'],
+        ['2026-11-27', '09:45', 'class-3b', 'quiz', 'Units 1–5 Speaking Quiz · Day 2 (Group B) + 3D Speaking Celebration', 'Finish 1-on-1 Units 1–5 Speaking Quiz (speaking-quiz/index.html?grade=3), award XP, and celebrate with Cannon 3D (games/cannon3d/index.html?set=speak-choice-g3).'],
+        ['2026-11-27', '10:30', 'class-3a', 'book', 'MEB Government Book (Lesson 2)', 'Completed Week 10 MEB student book and workbook listening & speaking practice.'],
+        ['2026-11-27', '11:15', 'class-3a', 'quiz', 'Units 1–5 Speaking Quiz · Day 2 (Group B) + 3D Speaking Celebration', 'Finish 1-on-1 Units 1–5 Speaking Quiz (speaking-quiz/index.html?grade=3), award XP, and celebrate with Cannon 3D (games/cannon3d/index.html?set=speak-choice-g3).'],
+        ['2026-11-27', '14:15', 'class-4b', 'book', 'MEB Government Book (Lesson 2)', 'Completed Week 10 MEB student book and workbook listening & speaking practice.'],
+        ['2026-11-27', '15:20', 'class-4b', 'quiz', 'Units 1–5 Speaking Quiz · Day 1 & 2 + 3D Speaking Celebration', 'Run 1-on-1 Units 1–5 Speaking Quiz (speaking-quiz/index.html?grade=4), award XP, and celebrate with Cannon 3D (games/cannon3d/index.html?set=speak-choice-g4).']
+      ];
+      W10.forEach(function (r, idx) {
+        var exists = list.some(function (e) { return e && e.date === r[0] && e.time === r[1] && e.classId === r[2]; });
+        if (!exists) {
+          list.push({ id: 'seed33-' + idx, date: r[0], time: r[1], classId: r[2], type: r[3], title: r[4], note: r[5] });
+        }
+      });
+      saveEvents(list);
+      store().setCalendarFlag('seed33');
+    } catch (e) { /* the calendar still works */ }
+  }
   function ensureSeeded() {
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce(); movieAndEzPetWeekOnce(); weekNov9Once(); talkShowOnce(); unit5RevisionGamesOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce(); movieAndEzPetWeekOnce(); weekNov9Once(); talkShowOnce(); unit5RevisionGamesOnce(); weekNov23Once();
   }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
