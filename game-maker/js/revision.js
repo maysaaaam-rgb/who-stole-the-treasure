@@ -100,7 +100,31 @@
       var big = h('div', { class: 'gm-rev-big' }); if (s.mark) { var parts = s.full.split(s.a); big.appendChild(document.createTextNode(parts[0])); big.appendChild(h('mark', { text: s.a })); big.appendChild(document.createTextNode(parts.slice(1).join(s.a))); } else big.textContent = s.full;
       o.appendChild(h('div', { class: 'gm-rev-card' }, [h('div', { class: 'gm-rev-n', text: (k + 1) + ' / ' + pts.length }), it.pic ? h('div', { class: 'gm-rev-pic', html: U.pic(it.pic) }) : null, big,
         h('div', { class: 'gm-rev-do', text: 'Listen. Say it together. Then say it to your partner.' })]));
-      var row = h('div', { class: 'gm-rev-row' }, [btn('🔊 Hear it again', 'amber', function () { say(s.spoken || s.full); }), btn(k + 1 < pts.length ? 'Next ▶' : 'Cover and recall ▶', 'huge green', function () { A.play('tap'); if (k + 1 < pts.length) stepLook(k + 1); else stepRecall(); })]);
+      var VID_KEY = 'eaa_k3_rev_videos_v1', curSetId = st().setId || 'default';
+      function getVid() { try { return (JSON.parse(localStorage.getItem(VID_KEY) || '{}') || {})[curSetId] || ''; } catch (e) { return ''; } }
+      function setVid(u) { try { var m = JSON.parse(localStorage.getItem(VID_KEY) || '{}') || {}; if (u) m[curSetId] = u; else delete m[curSetId]; localStorage.setItem(VID_KEY, JSON.stringify(m)); } catch (e) {} }
+      function openVidModal() {
+        var ov = h('div', { class: 'gm-rev center small', style: 'z-index:9999' });
+        var inp = h('input', { type: 'url', value: getVid(), placeholder: 'Paste YouTube or .mp4 link for this unit…', style: 'width:min(540px,88vw);padding:12px 16px;border-radius:16px;border:3px solid #4f9dff;font:700 1rem Fredoka,sans-serif;color:#2b1d40;background:#fff' });
+        var holder = h('div', { style: 'margin-top:12px;width:min(620px,90vw)' });
+        function paintVid(raw) {
+          holder.innerHTML = '';
+          var u = String(raw || '').trim(); if (!u) return;
+          var ym = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/.exec(u);
+          if (ym) holder.appendChild(h('iframe', { src: 'https://www.youtube.com/embed/' + ym[1] + '?rel=0', style: 'width:100%;aspect-ratio:16/9;border:4px solid #4f9dff;border-radius:20px;background:#000', allow: 'autoplay; fullscreen' }));
+          else if (/\.(mp4|webm|ogg)(\?|$)/i.test(u)) holder.appendChild(h('video', { src: u, controls: '1', style: 'width:100%;max-height:50vh;border:4px solid #4f9dff;border-radius:20px;background:#000' }));
+          else holder.appendChild(h('a', { href: u, target: '_blank', rel: 'noopener', text: '▶ Open Lesson Video ↗', style: 'display:inline-block;padding:12px 20px;border-radius:16px;background:#4f9dff;color:#fff;font-weight:800;text-decoration:none' }));
+        }
+        if (getVid()) paintVid(getVid());
+        ov.appendChild(h('h3', { text: '🎬 Lesson Video Clip (Optional)', style: 'margin:0 0 10px;color:#2b1d40' }));
+        ov.appendChild(inp); ov.appendChild(holder);
+        ov.appendChild(h('div', { class: 'gm-rev-row' }, [
+          btn('💾 Save & Watch', 'green', function () { setVid(inp.value.trim()); paintVid(inp.value.trim()); }),
+          btn('✕ Back to Cards', 'ghost', function () { ov.remove(); })
+        ]));
+        stage().appendChild(ov);
+      }
+      var row = h('div', { class: 'gm-rev-row' }, [btn('🔊 Hear it again', 'amber', function () { say(s.spoken || s.full); }), btn(getVid() ? '🎬 Watch Video' : '🎬 Add Video', 'ghost', openVidModal), btn(k + 1 < pts.length ? 'Next ▶' : 'Cover and recall ▶', 'huge green', function () { A.play('tap'); if (k + 1 < pts.length) stepLook(k + 1); else stepRecall(); })]);
       if (k > 0) row.insertBefore(btn('◀ Back', 'ghost', function () { stepLook(k - 1); }), row.firstChild);
       o.appendChild(row); setTimeout(function () { say(s.spoken || s.full); }, 250);
     }

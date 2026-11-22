@@ -456,8 +456,15 @@
         type: 'button',
         class: 'btn sm kit-rem-btn',
         text: '🧠 Remember First',
-        title: 'Revise pictures & words with audio flashcards before playing!',
+        title: 'Revise pictures, words & optional video with Cover & Recall before playing!',
         onclick: function () { Kit.sound('tap'); Kit.openRememberFirst(); }
+      }));
+      bar.appendChild(el('button', {
+        type: 'button',
+        class: 'btn sm kit-spk-btn',
+        text: '🎤 Speak & Judge',
+        title: 'Speaking & Acting Cards + Judge Mode + Answer Cards Tally (Smart Mix)',
+        onclick: function () { Kit.sound('tap'); Kit.openSpeakingCards(); }
       }));
       bar.appendChild(el('button', {
         type: 'button',
@@ -1603,15 +1610,44 @@
   Kit.openRememberFirst = function (customCards) {
     var existing = doc.querySelector('.kit-rev-modal');
     if (existing) existing.remove();
+    var VID_KEY = 'eaa_k3_rev_videos_v1';
+    var setKey = Kit.param('set') || Kit.param('pack') || Kit.pref('qpack') || Kit.pref('set') || 'default';
+    function getVid() { try { return (JSON.parse(localStorage.getItem(VID_KEY) || '{}') || {})[setKey] || ''; } catch (e) { return ''; } }
+    function setVid(u) { try { var m = JSON.parse(localStorage.getItem(VID_KEY) || '{}') || {}; if (u) m[setKey] = u; else delete m[setKey]; localStorage.setItem(VID_KEY, JSON.stringify(m)); } catch (e) {} }
     var loader = Array.isArray(customCards) && customCards.length ? Promise.resolve(customCards) : collectActiveFlashcards();
     loader.then(function (cards) {
       if (!cards.length) { Kit.toast('Pick a word or question pack first!'); return; }
-      var idx = 0, coverMode = false, revealed = true;
+      var idx = 0, coverMode = false, revealed = true, picFx = 'off';
       var ov = el('div', { class: 'kit-rev-modal', role: 'dialog', 'aria-label': 'Remember First Flashcards' });
       var box = el('div', { class: 'kit-rev-card' });
       ov.appendChild(box);
       ov.addEventListener('click', function (ev) { if (ev.target === ov) ov.remove(); });
       doc.body.appendChild(ov);
+
+      function openVidBox() {
+        var vov = el('div', { class: 'kit-rev-modal', style: { zIndex: 9600 } });
+        var vcard = el('div', { class: 'kit-rev-card' });
+        var inp = el('input', { type: 'url', value: getVid(), placeholder: 'Paste YouTube or .mp4 video link for this unit…', style: { width: '100%', padding: '10px 14px', borderRadius: '14px', border: '3px solid #4f9dff', fontWeight: '700' } });
+        var hold = el('div');
+        function drawV(raw) {
+          hold.innerHTML = '';
+          var u = String(raw || '').trim(); if (!u) return;
+          var ym = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/.exec(u);
+          if (ym) hold.appendChild(el('iframe', { src: 'https://www.youtube.com/embed/' + ym[1] + '?rel=0', style: { width: '100%', aspectRatio: '16/9', border: '4px solid #4f9dff', borderRadius: '18px', background: '#000' }, allow: 'autoplay; fullscreen' }));
+          else if (/\.(mp4|webm|ogg)(\?|$)/i.test(u)) hold.appendChild(el('video', { src: u, controls: true, style: { width: '100%', maxHeight: '46vh', border: '4px solid #4f9dff', borderRadius: '18px', background: '#000' } }));
+          else hold.appendChild(el('a', { href: u, target: '_blank', rel: 'noopener', class: 'btn sm', text: '▶ Open Lesson Video ↗' }));
+        }
+        if (getVid()) drawV(getVid());
+        vcard.appendChild(el('div', { class: 'kit-rev-head' }, [el('b', { text: '🎬 Lesson Video Clip (Optional)' }), el('button', { type: 'button', class: 'icon-btn', text: '✕', onclick: function () { vov.remove(); } })]));
+        vcard.appendChild(inp);
+        vcard.appendChild(hold);
+        vcard.appendChild(el('div', { class: 'kit-rev-foot' }, [
+          el('button', { type: 'button', class: 'btn sm mint', text: '💾 Save & Watch', onclick: function () { setVid(inp.value.trim()); drawV(inp.value.trim()); } }),
+          el('button', { type: 'button', class: 'btn sm', text: 'Back to Cards', onclick: function () { vov.remove(); } })
+        ]));
+        vov.appendChild(vcard);
+        doc.body.appendChild(vov);
+      }
 
       function renderCard() {
         var c = cards[idx];
@@ -1621,17 +1657,26 @@
           el('div', { class: 'kit-rev-tools' }, [
             el('button', {
               type: 'button',
+              class: 'chip sm' + (picFx !== 'off' ? ' on' : ''),
+              text: picFx === 'blur' ? '🌫 Blur: ON' : (picFx === 'zoom' ? '🔍 Zoom: ON' : '🔍 Blur/Zoom'),
+              onclick: function () { Kit.sound('tap'); picFx = picFx === 'off' ? 'blur' : (picFx === 'blur' ? 'zoom' : 'off'); renderCard(); }
+            }),
+            el('button', {
+              type: 'button',
               class: 'chip sm' + (coverMode ? ' on' : ''),
-              text: coverMode ? '🙈 Cover & Recall: ON' : '👁️ Cover & Recall',
+              text: coverMode ? '🙈 Cover: ON' : '👁️ Cover & Recall',
               onclick: function () { Kit.sound('tap'); coverMode = !coverMode; revealed = !coverMode; renderCard(); }
             }),
+            el('button', { type: 'button', class: 'chip sm', text: getVid() ? '🎬 Video' : '🎬 +Video', onclick: function () { Kit.sound('tap'); openVidBox(); } }),
             el('button', { type: 'button', class: 'icon-btn', text: '✕', title: 'Close', onclick: function () { ov.remove(); } })
           ])
         ]);
 
         var stage = el('div', { class: 'kit-rev-stage' });
         if (c.img) {
-          stage.appendChild(el('img', { class: 'kit-rev-img', src: Kit.src(c.img), alt: c.word }));
+          var im = el('img', { class: 'kit-rev-img' + (picFx === 'blur' ? ' is-blur' : (picFx === 'zoom' ? ' is-zoom' : '')), src: Kit.src(c.img), alt: c.word });
+          im.onclick = function () { im.classList.remove('is-blur', 'is-zoom'); Kit.sound('reveal'); };
+          stage.appendChild(im);
         }
         var wordEl = el('div', {
           class: 'kit-rev-word' + (coverMode && !revealed ? ' is-hidden' : ''),
@@ -1669,6 +1714,61 @@
       }
       renderCard();
       Kit.say(cards[0].say || cards[0].word);
+    });
+  };
+
+  /* Speaking & Acting Card Mode + Judge Mode + Answer Cards Tally (Smart Mix eaa_revision_v1) */
+  Kit.openSpeakingCards = function () {
+    var existing = doc.querySelector('.kit-rev-modal');
+    if (existing) existing.remove();
+    collectActiveFlashcards().then(function (cards) {
+      if (!cards.length) { Kit.toast('Pick a pack first!'); return; }
+      var deck = Kit.shuffle(cards), idx = 0, tallyCount = 0;
+      var ov = el('div', { class: 'kit-rev-modal', role: 'dialog', 'aria-label': 'Speaking & Acting Cards' });
+      var box = el('div', { class: 'kit-rev-card' });
+      ov.appendChild(box);
+      ov.addEventListener('click', function (ev) { if (ev.target === ov) ov.remove(); });
+      doc.body.appendChild(ov);
+
+      function recordRev(card, frac) {
+        try {
+          var KEY = 'eaa_revision_v1';
+          var d = JSON.parse(localStorage.getItem(KEY) || 'null') || { v: 1, items: {}, cls: {}, pup: {} };
+          var cid = (Kit.classroom && Kit.classroom.defaultClassId && Kit.classroom.defaultClassId()) || Kit.pref('classId') || 'class-3a';
+          var s = String(card.hint || card.word) + '|' + String(card.word);
+          var x = 5381; for (var i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) | 0;
+          var k = (x >>> 0).toString(36);
+          d.cls[cid] = d.cls[cid] || {};
+          var r = d.cls[cid][k] = d.cls[cid][k] || { n: 0, s: 0, t: 0 };
+          r.n++; r.s = Math.round((r.s + frac) * 1000) / 1000; r.t = Date.now();
+          d.items[k] = { q: card.hint || card.word, a: card.word };
+          d.at = Date.now();
+          localStorage.setItem(KEY, JSON.stringify(d));
+        } catch (e) {}
+      }
+
+      function draw() {
+        var c = deck[idx % deck.length];
+        box.innerHTML = '';
+        box.appendChild(el('div', { class: 'kit-rev-head' }, [
+          el('b', { text: '🎤 Speaking & Acting Card ' + ((idx % deck.length) + 1) + ' / ' + deck.length }),
+          el('button', { type: 'button', class: 'icon-btn', text: '✕', onclick: function () { ov.remove(); } })
+        ]));
+        var stage = el('div', { class: 'kit-rev-stage' });
+        if (c.img) stage.appendChild(el('img', { class: 'kit-rev-img', src: Kit.src(c.img), alt: c.word }));
+        stage.appendChild(el('div', { class: 'kit-rev-word', text: '🗣️ Say & Act: "' + c.word + '"', onclick: function () { Kit.say(c.say || c.word); } }));
+        stage.appendChild(el('div', { class: 'kit-rev-hint', text: c.hint && c.hint !== c.word ? c.hint : 'Use this word in a full English sentence and act it out!' }));
+        box.appendChild(stage);
+
+        var judgeRow = el('div', { class: 'kit-rev-foot' }, [
+          el('button', { type: 'button', class: 'btn sm mint', text: '🏅 Full Speak (+10)', onclick: function () { Kit.sound('correct'); recordRev(c, 1); tallyCount++; Kit.toast('🌟 Full Speak! Recorded to Smart Mix!'); idx++; draw(); } }),
+          el('button', { type: 'button', class: 'btn sm', text: '👍 Partial (+5)', onclick: function () { Kit.sound('tap'); recordRev(c, 0.5); tallyCount++; Kit.toast('👍 Great try! Half credit saved.'); idx++; draw(); } }),
+          el('button', { type: 'button', class: 'btn sm lilac', text: '🙌 Answer Cards: All Right', onclick: function () { Kit.sound('fanfare'); recordRev(c, 1); tallyCount++; idx++; draw(); } }),
+          el('button', { type: 'button', class: 'btn sm', text: '😬 Need Practice', onclick: function () { Kit.sound('soft'); recordRev(c, 0.2); tallyCount++; Kit.toast('📋 Saved for Smart Mix review!'); idx++; draw(); } })
+        ]);
+        box.appendChild(judgeRow);
+      }
+      draw();
     });
   };
 

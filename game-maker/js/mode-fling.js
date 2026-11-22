@@ -36,15 +36,15 @@
   var U = function () { return GM.u; };
   var A = function () { return GM.audio; };
 
-  /* Virtual 16:9 Smartboard Panorama Dimensions */
+  /* Virtual 16:9 Smartboard Panorama Dimensions (Zero-Overlap Commercial Safe Zones) */
   var W = 1600;
   var H = 900;
-  var GROUND_Y = 790;
+  var GROUND_Y = 742;
   var FENCE_X = 800;
-  var FENCE_TOP_Y = 468; /* Taller wooden dividing fence requiring real arc control */
-  var FENCE_HALF_W = 30;
-  var BASE_CAT_X = 300;
-  var BASE_DOG_X = 1260;
+  var FENCE_TOP_Y = 472; /* Stylized timber fence post requiring real arc control */
+  var FENCE_HALF_W = 28;
+  var BASE_CAT_X = 310;
+  var BASE_DOG_X = 1255;
   var GRAVITY = 980;
 
   var ASSET_PATHS = {
@@ -56,7 +56,9 @@
     doghouse: 'art/o_doghouse.webp',
     yarn: 'art/o_yarn.webp',
     bone: 'art/o_bone.webp',
-    starCoin: 'art/o_star_coin.webp'
+    starCoin: 'art/o_star_coin.webp',
+    impactStar: 'art/fx_impact_star.webp',
+    starTwirl: 'art/fx_star_twirl.webp'
   };
 
   /* Clean baked-in bottom grey shadow blobs from character cutouts */
@@ -335,21 +337,21 @@
         charState[0].duckOffset = 0;
         charState[1].duckOffset = 0;
 
-        /* 3. High-altitude Bonus Star Coin (requires risky high lob over the wasp!) */
+        /* 3. High-altitude Bonus Star Coin (crisp sky gap below Wind Meter & above Wasp!) */
         bonusStar = {
-          x: FENCE_X + (Math.random() * 70 - 35),
-          y: 215 + Math.random() * 40,
+          x: FENCE_X + (Math.random() * 80 - 40),
+          y: 298 + Math.random() * 8,
           r: 32,
           hit: false,
           bobPhase: Math.random() * 6.28
         };
 
-        /* 4. Patrolling Backyard Wasp above the fence */
-        waspHazard.baseY = 335 + (Math.random() * 40 - 20);
+        /* 4. Patrolling Backyard Wasp cleanly above Tin Cans (zero overlap!) */
+        waspHazard.baseY = 368;
         waspHazard.stingCooldown = 0;
 
-        /* 5. 3 colorful tin cans perched on the fence top */
-        var canColors = ['#ef4444', '#38bdf8', '#f59e0b'];
+        /* 5. 3 colorful tin cans perched on the fence cap */
+        var canColors = ['#ff5fa2', '#4f9dff', '#ffb320'];
         fenceCans = [
           { x: FENCE_X - 18, y: FENCE_TOP_Y - 22, vx: 0, vy: 0, rot: 0, vrot: 0, hit: false, col: canColors[0] },
           { x: FENCE_X + 18, y: FENCE_TOP_Y - 22, vx: 0, vy: 0, rot: 0, vrot: 0, hit: false, col: canColors[1] },
@@ -655,13 +657,14 @@
           var summaryTitle = roundHeadlines.join(' + ') || 'Nice Shot!';
           updateBanner(summaryTitle, '+' + roundPoints + ' points for ' + T[turn].name + '!', hitOpponentThisTurn);
         } else {
-          /* Real miss consequence: 0 points! */
+          /* Zero-Shame Soft-Fail Coaching Clue: teach wind & aim adjustment! */
           A().play('bounce');
-          var failMsg = missReason || '💨 Missed Wide! Zero Points!';
-          charState[turn].bubble = 'Aw, missed! Next turn! 🎯';
+          var windTip = wind < -40 ? 'Wind blew LEFT — add power or aim right!' : (wind > 40 ? 'Wind blew RIGHT — watch the gust!' : 'Try adjusting angle & power!');
+          var failMsg = missReason || '💨 Close Try! Read the Wind!';
+          charState[turn].bubble = 'Almost! I\'ll get you next throw! 💪';
           charState[1 - turn].state = 'cheer';
-          charState[1 - turn].bubble = 'Haha! Missed me! 😜';
-          updateBanner(failMsg, '0 points — read the wind & distance carefully next turn!', false);
+          charState[1 - turn].bubble = 'Whew! Close call! 😄';
+          updateBanner(failMsg, windTip, false);
         }
 
         activePower = null;
@@ -947,102 +950,186 @@
         }
       }
 
-      /* Draw Fence Extension, Tin Cans, Patrolling Wasp & Floating Bonus Star */
+      /* Draw Stylized Garden Timber Fence, Animated Windsock, Glossy Tin Cans, Cartoon Wasp & Star Coin */
       function drawFenceAndHazards(now, dt) {
-        /* Wooden Fence Top Extension so the taller fence barrier is clearly visible */
+        /* 1. Grounded Garden Timber Fence Post with beveled cap, woodgrain & grass tufts */
         g.save();
-        roundRect(g, FENCE_X - 22, FENCE_TOP_Y, 44, GROUND_Y - FENCE_TOP_Y - 10, 8);
-        var woodGr = g.createLinearGradient(FENCE_X - 22, 0, FENCE_X + 22, 0);
-        woodGr.addColorStop(0, '#92400e');
-        woodGr.addColorStop(0.5, '#d97706');
-        woodGr.addColorStop(1, '#78350f');
+        var postH = GROUND_Y - FENCE_TOP_Y;
+        /* Soft ground contact shadow */
+        g.fillStyle = 'rgba(43, 29, 64, 0.24)';
+        g.beginPath();
+        g.ellipse(FENCE_X, GROUND_Y + 2, 46, 12, 0, 0, Math.PI * 2);
+        g.fill();
+        /* Main timber post */
+        roundRect(g, FENCE_X - 24, FENCE_TOP_Y + 6, 48, postH - 6, 8);
+        var woodGr = g.createLinearGradient(FENCE_X - 24, 0, FENCE_X + 24, 0);
+        woodGr.addColorStop(0, '#a35d28');
+        woodGr.addColorStop(0.32, '#e29e53');
+        woodGr.addColorStop(0.7, '#c77c36');
+        woodGr.addColorStop(1, '#85471c');
         g.fillStyle = woodGr;
         g.fill();
+        g.lineWidth = 3.5;
+        g.strokeStyle = '#5c2f10';
+        g.stroke();
+        /* Subtle vertical woodgrain & plank bolts */
+        g.strokeStyle = 'rgba(92, 47, 16, 0.25)';
+        g.lineWidth = 2;
+        [-10, 4, 14].forEach(function (ox) {
+          g.beginPath();
+          g.moveTo(FENCE_X + ox, FENCE_TOP_Y + 18);
+          g.lineTo(FENCE_X + ox, GROUND_Y - 14);
+          g.stroke();
+        });
+        /* Beveled wooden top cap */
+        roundRect(g, FENCE_X - 34, FENCE_TOP_Y - 2, 68, 16, 7);
+        g.fillStyle = '#f2b86e';
+        g.fill();
         g.lineWidth = 3;
-        g.strokeStyle = '#451a03';
+        g.strokeStyle = '#5c2f10';
+        g.stroke();
+        /* Cute green grass tufts hugging the base of the fence */
+        g.fillStyle = '#4ea83b';
+        [-30, -18, 16, 28].forEach(function (gx, gi) {
+          g.beginPath();
+          g.moveTo(FENCE_X + gx - 8, GROUND_Y + 4);
+          g.quadraticCurveTo(FENCE_X + gx + (gi % 2 ? 6 : -6), GROUND_Y - 20, FENCE_X + gx + 8, GROUND_Y + 4);
+          g.fill();
+        });
+
+        /* 2. Animated Striped Windsock Flag on side of Fence Post (instant visual wind cue!) */
+        var wFrac = clamp(wind / 260, -1, 1);
+        var wDir = wFrac >= 0 ? 1 : -1;
+        var sockLen = 36 + Math.abs(wFrac) * 54;
+        var flap = Math.sin(now / (95 - Math.abs(wFrac) * 45)) * (5 + Math.abs(wFrac) * 7);
+        var poleX = FENCE_X + wDir * 24;
+        var poleY = FENCE_TOP_Y + 34;
+        g.strokeStyle = '#fff8ec';
+        g.lineWidth = 4;
+        g.beginPath();
+        g.moveTo(FENCE_X + wDir * 20, poleY);
+        g.lineTo(poleX + wDir * 12, poleY);
+        g.stroke();
+        var sX0 = poleX + wDir * 10;
+        var sX1 = sX0 + wDir * sockLen;
+        var sY1 = poleY + (1 - Math.abs(wFrac)) * 18 + flap;
+        g.beginPath();
+        g.moveTo(sX0, poleY - 10);
+        g.quadraticCurveTo(sX0 + wDir * sockLen * 0.5, poleY - 8 + flap * 0.6, sX1, sY1 - 5);
+        g.lineTo(sX1, sY1 + 5);
+        g.quadraticCurveTo(sX0 + wDir * sockLen * 0.5, poleY + 10 + flap * 0.6, sX0, poleY + 10);
+        g.closePath();
+        g.fillStyle = wDir > 0 ? '#ffb320' : '#4f9dff';
+        g.fill();
+        g.lineWidth = 2.5;
+        g.strokeStyle = '#2b1d40';
+        g.stroke();
+        /* White stripe across middle of windsock */
+        g.strokeStyle = '#ffffff';
+        g.lineWidth = 6;
+        g.beginPath();
+        g.moveTo(sX0 + wDir * sockLen * 0.42, poleY - 6 + flap * 0.4);
+        g.lineTo(sX0 + wDir * sockLen * 0.42, poleY + 8 + flap * 0.4);
         g.stroke();
         g.restore();
 
-        /* Tin Cans on top of the wooden dividing fence */
+        /* 3. Glossy 3D-Shaded Tin Cans perched on top of the fence cap */
         fenceCans.forEach(function (can) {
           g.save();
           g.translate(can.x, can.y);
           g.rotate(can.rot);
-          roundRect(g, -15, -20, 30, 40, 6);
+          roundRect(g, -15, -20, 30, 40, 7);
           g.fillStyle = can.col;
+          g.fill();
+          g.fillStyle = 'rgba(255, 255, 255, 0.35)';
+          g.fillRect(-10, -16, 7, 32);
+          g.fillStyle = 'rgba(255, 255, 255, 0.9)';
+          g.fillRect(-13, -5, 26, 11);
+          g.fillStyle = '#e2e8f0';
+          roundRect(g, -16, -21, 32, 6, 3);
+          g.fill();
+          roundRect(g, -16, 15, 32, 6, 3);
           g.fill();
           g.lineWidth = 2.5;
           g.strokeStyle = '#2b1d40';
+          roundRect(g, -15, -20, 30, 40, 7);
           g.stroke();
-          g.fillStyle = 'rgba(255,255,255,0.85)';
-          g.fillRect(-13, -6, 26, 12);
-          g.fillStyle = '#e2e8f0';
-          g.fillRect(-16, -20, 32, 5);
-          g.fillRect(-16, 15, 32, 5);
           g.restore();
         });
 
-        /* Patrolling Backyard Wasp Hazard above the Fence */
+        /* 4. Patrolling Cartoon Backyard Wasp Hazard (clean airspace above cans!) */
         waspHazard.phase += dt * DIFF.waspSpd;
         if (waspHazard.stingCooldown > 0) waspHazard.stingCooldown = Math.max(0, waspHazard.stingCooldown - dt);
-        waspHazard.x = FENCE_X + Math.sin(waspHazard.phase * 0.7) * 32;
-        waspHazard.y = waspHazard.baseY + Math.sin(waspHazard.phase) * DIFF.waspAmp;
+        var safeAmp = Math.min(DIFF.waspAmp, 24);
+        waspHazard.x = FENCE_X + Math.sin(waspHazard.phase * 0.72) * 52;
+        waspHazard.y = waspHazard.baseY + Math.sin(waspHazard.phase) * safeAmp;
 
         g.save();
         g.translate(waspHazard.x, waspHazard.y);
-        /* Danger zone ring */
+        /* Soft dashed danger halo */
         g.beginPath();
         g.arc(0, 0, waspHazard.r, 0, Math.PI * 2);
-        g.fillStyle = 'rgba(239, 68, 68, 0.16)';
+        g.fillStyle = 'rgba(255, 95, 162, 0.14)';
         g.fill();
         g.lineWidth = 2;
         g.setLineDash([5, 5]);
-        g.strokeStyle = 'rgba(239, 68, 68, 0.65)';
+        g.strokeStyle = 'rgba(255, 95, 162, 0.55)';
         g.stroke();
         g.setLineDash([]);
-        /* Fluttering wings */
-        var wingFlap = Math.sin(now / 28) * 10;
-        g.fillStyle = 'rgba(224, 242, 254, 0.85)';
+        /* Fluttering glossy translucent wings */
+        var wingFlap = Math.sin(now / 26) * 10;
+        g.fillStyle = 'rgba(235, 248, 255, 0.92)';
+        g.strokeStyle = '#4f9dff';
+        g.lineWidth = 2;
         g.beginPath();
-        g.ellipse(-10, -14 - wingFlap * 0.3, 16, 9, -0.4, 0, Math.PI * 2);
-        g.ellipse(10, -14 + wingFlap * 0.3, 16, 9, 0.4, 0, Math.PI * 2);
-        g.fill();
-        /* Striped Wasp Body */
+        g.ellipse(-11, -15 - wingFlap * 0.32, 16, 9, -0.45, 0, Math.PI * 2);
+        g.fill(); g.stroke();
         g.beginPath();
-        g.ellipse(0, 0, 22, 15, 0, 0, Math.PI * 2);
-        g.fillStyle = '#facc15';
+        g.ellipse(11, -15 + wingFlap * 0.32, 16, 9, 0.45, 0, Math.PI * 2);
+        g.fill(); g.stroke();
+        /* Glossy yellow striped cartoon wasp body + cute eyes */
+        g.beginPath();
+        g.ellipse(0, 0, 23, 15, 0, 0, Math.PI * 2);
+        g.fillStyle = '#ffd43b';
         g.fill();
+        g.fillStyle = '#2b1d40';
+        g.fillRect(-7, -13, 6, 26);
+        g.fillRect(5, -12, 6, 24);
+        /* Eyes on front */
+        g.fillStyle = '#ffffff';
+        g.beginPath(); g.arc(-14, -3, 5, 0, Math.PI * 2); g.fill();
+        g.fillStyle = '#2b1d40';
+        g.beginPath(); g.arc(-15, -3, 2.6, 0, Math.PI * 2); g.fill();
         g.lineWidth = 3;
         g.strokeStyle = '#2b1d40';
+        g.beginPath();
+        g.ellipse(0, 0, 23, 15, 0, 0, Math.PI * 2);
         g.stroke();
-        g.fillStyle = '#2b1d40';
-        g.fillRect(-8, -13, 6, 26);
-        g.fillRect(4, -12, 6, 24);
-        drawOutlinedText(g, '🐝 HAZARD', 0, 32, 15, '#ff5fa2', '#2b1d40');
+        drawOutlinedText(g, '🐝 BUZZ!', 0, 30, 14, '#ff5fa2', '#2b1d40');
         g.restore();
 
-        /* High-Altitude Bonus Star Coin above the Wasp */
+        /* 5. High-Altitude Bonus Star Coin cleanly above the Wasp */
         if (!bonusStar.hit) {
-          var bobY = bonusStar.y + Math.sin(now / 260 + bonusStar.bobPhase) * 9;
+          var bobY = bonusStar.y + Math.sin(now / 260 + bonusStar.bobPhase) * 7;
           g.save();
           g.translate(bonusStar.x, bobY);
-          var halo = g.createRadialGradient(0, 0, 6, 0, 0, 48);
-          halo.addColorStop(0, 'rgba(250, 204, 21, 0.65)');
-          halo.addColorStop(1, 'rgba(250, 204, 21, 0)');
+          var halo = g.createRadialGradient(0, 0, 6, 0, 0, 44);
+          halo.addColorStop(0, 'rgba(255, 200, 40, 0.65)');
+          halo.addColorStop(1, 'rgba(255, 200, 40, 0)');
           g.fillStyle = halo;
           g.beginPath();
-          g.arc(0, 0, 48, 0, Math.PI * 2);
+          g.arc(0, 0, 44, 0, Math.PI * 2);
           g.fill();
 
           if (imgReady(art.starCoin)) {
-            g.drawImage(art.starCoin, -34, -34, 68, 68);
+            g.drawImage(art.starCoin, -31, -31, 62, 62);
           } else {
-            g.fillStyle = '#facc15';
+            g.fillStyle = '#ffb320';
             g.beginPath();
-            g.arc(0, 0, 28, 0, Math.PI * 2);
+            g.arc(0, 0, 26, 0, Math.PI * 2);
             g.fill();
           }
-          drawOutlinedText(g, '+15', 0, 42, 20, '#ffb320', '#2b1d40');
+          drawOutlinedText(g, '+15', 0, 38, 19, '#ffb320', '#2b1d40');
           g.restore();
         }
       }
@@ -1130,14 +1217,20 @@
           g.restore();
 
           /* Dizzy Spinning Stars when bonked! */
+          /* Dizzy Star Ring (real fx_star_twirl.webp sprite!) */
           if (isDizzy) {
             g.save();
-            g.translate(baseX, baseY - 210);
-            for (var s = 0; s < 3; s++) {
-              var sa = (now / 180) + (s * Math.PI * 2 / 3);
-              var sxStar = Math.cos(sa) * 48;
-              var syStar = Math.sin(sa) * 14;
-              drawOutlinedText(g, '⭐', sxStar, syStar, 24, '#ffb320', '#2b1d40');
+            g.translate(baseX, baseY - 216);
+            if (imgReady(art.starTwirl)) {
+              g.rotate(Math.sin(now / 150) * 0.16);
+              g.drawImage(art.starTwirl, -64, -36, 128, 72);
+            } else {
+              for (var s = 0; s < 3; s++) {
+                var sa = (now / 180) + (s * Math.PI * 2 / 3);
+                var sxStar = Math.cos(sa) * 48;
+                var syStar = Math.sin(sa) * 14;
+                drawOutlinedText(g, '⭐', sxStar, syStar, 24, '#ffb320', '#2b1d40');
+              }
             }
             g.restore();
           }
@@ -1195,11 +1288,11 @@
         });
       }
 
-      /* Draw Sunny Adventure Park Top-Center Wind Meter Bar */
+      /* Draw Sunny Adventure Park Top-Center Wind Meter Bar (clean sky gap below Turn Banner!) */
       function drawClassicWindMeter(now) {
         var cx = FENCE_X;
-        var cy = 176;
-        var boxW = 374, boxH = 62;
+        var cy = 228;
+        var boxW = 374, boxH = 56;
 
         g.save();
         roundRect(g, cx - boxW / 2, cy - boxH / 2, boxW, boxH, 30);
@@ -1273,16 +1366,25 @@
           g.stroke();
         }
 
-        /* If dragging manually, draw slingshot band to finger */
+        /* If dragging manually, draw taut double-band slingshot fork to finger */
         if (aimState.dragging && aimSubPhase === 'drag') {
+          g.save();
+          g.lineWidth = 7;
+          g.lineCap = 'round';
+          g.strokeStyle = '#ff5fa2';
           g.beginPath();
-          g.moveTo(orig.x, orig.y);
+          g.moveTo(orig.x - 10, orig.y - 12);
           g.lineTo(aimState.curX, aimState.curY);
-          g.lineWidth = 6;
-          g.strokeStyle = '#ffb320';
-          g.setLineDash([8, 6]);
+          g.lineTo(orig.x + 10, orig.y + 10);
           g.stroke();
-          g.setLineDash([]);
+          g.beginPath();
+          g.arc(aimState.curX, aimState.curY, 18, 0, Math.PI * 2);
+          g.fillStyle = '#fff8ec';
+          g.fill();
+          g.lineWidth = 4;
+          g.strokeStyle = '#2b1d40';
+          g.stroke();
+          g.restore();
         }
 
         /* 2. Bright Park Vertical Power Charge Bar in front of the Character */
