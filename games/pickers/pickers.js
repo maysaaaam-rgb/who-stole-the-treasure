@@ -51,8 +51,7 @@
     }
   };
 
-  var gameId = Kit.param('game') || 'ufo';
-  if (!MODES[gameId]) gameId = 'ufo';
+  var gameId = 'slime';
   var M = MODES[gameId];
 
   var CUSTOM_KEY = 'eaa_picker_custom_roster_v1';

@@ -1763,12 +1763,31 @@
     var fromIsl = K.island && (K.island.from === 'home3d' || K.island.from === 'island' || K.island.from === 'practice-island');
     var backHref = back || (K.island ? K.island.backHref() : (is3dGame || Q.get('from') === 'gm' ? '../../game-maker/index.html' : '../index.html'));
     var backTitle = fromIsl ? K.island.backLabel() : 'Back to All Games';
-    var bk = K.el('button', 'ibtn', '✕'); bk.title = backTitle; bk.onclick = function () { location.href = backHref; };
+    function leaveGame(ev) {
+      try {
+        if (window.parent && window.parent !== window) {
+          if (window.parent.ClassroomHub && typeof window.parent.ClassroomHub.closeOverlay === 'function') {
+            if (ev) ev.preventDefault();
+            window.parent.ClassroomHub.closeOverlay();
+            return;
+          }
+          if (/home3d\/index\.html/i.test(backHref)) {
+            if (ev) ev.preventDefault();
+            window.parent.postMessage({ type: 'eaa:closeOverlay' }, '*');
+            return;
+          }
+        }
+      } catch (e) {}
+      if (ev) ev.preventDefault();
+      location.href = backHref;
+    }
+    var bk = K.el('button', 'ibtn', '✕'); bk.title = backTitle; bk.onclick = leaveGame;
     tb.appendChild(scBtn); tb.appendChild(flBtn); tb.appendChild(exBtn); tb.appendChild(mu); tb.appendChild(fs); tb.appendChild(bk);
     if ((is3dGame || Q.get('from') === 'gm' || fromIsl) && !Q.has('preview')) {
       var gmPill = K.ui.add(K.el('a', 'gm-back-pill' + (fromIsl ? ' isl-pill' : ''), K.island ? K.island.backLabel() : '🎮 ← Games'));
       gmPill.href = backHref;
       gmPill.title = backTitle;
+      gmPill.addEventListener('click', leaveGame);
     }
     addEventListener('keydown', function (ev) {
       if (ev.target && /input|textarea|select/i.test(ev.target.tagName)) return;

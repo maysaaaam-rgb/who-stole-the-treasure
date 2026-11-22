@@ -8,25 +8,27 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function jsq(s) { return esc(String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'")); }
 
+  /* Unified Adventure Park Map (6 clean places matching docs/STYLE_GUIDE.md — zero overlapping hubs) */
   var PLACES = [
-    { id: 'home', icon: '🏝️', label: 'Island', tip: '3D Adventure Island front door: tap the castle, theatre, market, stadium or library tower', views: ['home'] },
-    { id: 'today', icon: '🏰', label: 'Today', tip: 'Your lessons today with one-tap buttons', views: ['today', 'dashboard'] },
-    { id: 'games', icon: '🎮', label: 'Games', tip: 'All 47 smartboard & phone games in one unified hub', views: ['shelf'] },
-    { id: 'board', icon: '📺', label: 'Class Board', tip: 'Points, timer and picker', views: ['board', 'classview', 'rewards'] },
-    { id: 'shop', icon: '🛍️', label: 'Shop', tip: 'Avatar items with try-on, mystery boxes and real prizes', views: ['store-pupil', 'closet', 'monster'] },
-    { id: 'library', icon: '📖', label: 'Library', tip: 'Lessons, unit reviews and printable lesson plans', views: ['library', 'curriculum'] },
-    { id: 'tools', icon: '🪄', label: 'Board & Book', tip: 'Smart Board, Magic Book and classroom tools', views: ['tools'] },
-    { id: 'calendar', icon: '📅', label: 'Plan', tip: 'Timetable and school calendar', views: ['calendar'] },
-    { id: 'more', icon: '⚙️', label: 'More', tip: 'Teacher Hub, store settings, Practice Island, settings and the archive', views: ['more'] }
+    { id: 'home', icon: '🏝️', label: 'Island', tip: '3D Adventure Island — the single map for class pupils, lessons, games & shop', views: ['home'] },
+    { id: 'today', icon: '🏰', label: 'Today', tip: 'Your lessons today & Week Plan with one-tap launch', views: ['today', 'dashboard', 'calendar'] },
+    { id: 'games', icon: '🎮', label: 'Games', tip: '25 vetted smartboard & phone games — zero duplicates!', views: ['shelf'] },
+    { id: 'board', icon: '📺', label: 'Class Board', tip: 'Teams, XP points, timer and picker', views: ['board', 'classview', 'rewards', 'tools'] },
+    { id: 'shop', icon: '🛍️', label: 'Shop', tip: 'Pupil avatars, outfits, mystery boxes and prizes', views: ['store-pupil', 'closet', 'monster'] },
+    { id: 'library', icon: '📖', label: 'Library', tip: 'Lessons, Magic Book, Smart Board, Story Quests & plans', views: ['library', 'curriculum', 'more'] }
   ];
   var MORE = [
+    { v: 'calendar', icon: '📅', label: 'Week Plan', tip: 'Timetable and school calendar' },
+    { v: 'tools', icon: '🪄', label: 'Board & Book', tip: 'Smart Board, Magic Book & Speaking Pair Picker' },
     { v: 'command', icon: '🧑‍🏫', label: 'Teacher Hub', tip: 'Pupils, XP, homework, logs' },
-    { v: 'store-teacher', icon: '🪙', label: 'Store settings', tip: 'Prices, what is on sale, coins, who bought what' },
-    { v: 'island', icon: '🏝️', label: 'Practice Island', tip: 'Pupils practise at home' },
-    { v: 'lesson-archive', icon: '📦', label: 'Old lessons', tip: 'Units 1–4, Halloween, Alice, Wonderland' },
+    { v: 'store-teacher', icon: '🪙', label: 'Store settings', tip: 'Prices, sales, coins, who bought what' },
+    { v: 'island', icon: '⛵', label: 'Harbour Story Quest', tip: 'Practice Island 2D reading quest' },
+    { v: 'planet3d', icon: '🌍', label: 'Treasure Planet 3D', tip: 'Chapter 1 3D story globe quest' },
+    { v: 'pairpicker', icon: '🟢', label: 'Slime Pair Picker', tip: 'Pick 2 speakers together for dialogues' },
+    { v: 'lesson-archive', icon: '📦', label: 'Old lessons', tip: 'Units 1–4 archive' },
     { v: 'settings', icon: '⚙️', label: 'School settings', tip: 'Classes, school, devices' },
     { v: 'archived', icon: '🗄️', label: 'Archived & restore', tip: 'Restore classes, pupils and files' },
-    { v: 'backups', icon: '💾', label: 'Backups', tip: 'A copy of XP and coins every day' }
+    { v: 'backups', icon: '💾', label: 'Backups', tip: 'Daily XP and coins backup' }
   ];
   function placeOf(view) {
     for (var i = 0; i < PLACES.length; i++) if (PLACES[i].views.indexOf(view) >= 0) return PLACES[i].id;
@@ -50,9 +52,11 @@
         else openUrl('game-maker/index.html');
         return;
       case 'island': openUrl('island/index.html?demo=1'); return;
+      case 'planet3d': openUrl('island/planet.html?demo=1'); return;
+      case 'pairpicker': openUrl('games/pickers/index.html?game=slime'); return;
       case 'plans': sw('library'); setTimeout(function () { if (root.LibraryShelf && root.LibraryShelf.openTab) root.LibraryShelf.openTab('plans'); }, 60); return;
-      case 'smartboard': openUrl('smart-board/index.html', 'smartboard'); return;
-      case 'book': openUrl('magic-book/index.html?grade=' + (arg || activeGrade()), 'magicbook'); return;
+      case 'smartboard': openUrl('smart-board/index.html'); return;
+      case 'book': openUrl('magic-book/index.html?grade=' + (arg || activeGrade())); return;
       case 'timer': if (root.openClassroomToolkitModal) root.openClassroomToolkitModal('timer'); return;
       case 'pick': if (root.ClassMode) root.ClassMode.go('pick'); else sw('board'); return;
       case 'groups': sw('board'); setTimeout(function () { try { root.ClassBoard.groups(); } catch (e) { /* optional */ } }, 400); return;
@@ -76,9 +80,13 @@
     var html = '<button type="button" class="pn-search-btn" onclick="PlatformNav.search()" title="Find any lesson, game, plan, page, pupil or tool (Ctrl+K)"><span>🔍</span><span class="nav-label">Search</span><kbd>Ctrl K</kbd></button>' +
       '<ul class="sidebar-nav-list pn-places">';
     PLACES.forEach(function (p) {
-      html += b(cur === p.id && (p.id !== 'more' || view === 'more'), "PlatformNav.go('" + p.id + "')", p.icon, p.label, p.tip);
-      if (p.id === 'library') html += b(false, "PlatformNav.go('plans')", '📋', 'Lesson Plans', 'Word and PDF lesson plans', true);
-      if (p.id === 'more') MORE.forEach(function (m) { html += b(view === m.v || (m.v === 'store-teacher' && view === 'store'), "PlatformNav.go('" + m.v + "')", m.icon, m.label, m.tip, true); });
+      html += b(cur === p.id && view !== 'more' && view !== 'calendar' && view !== 'tools', "PlatformNav.go('" + p.id + "')", p.icon, p.label, p.tip);
+      if (p.id === 'today') html += b(view === 'calendar', "PlatformNav.go('calendar')", '📅', 'Week Plan', 'Timetable and weekly schedule', true);
+      if (p.id === 'library') {
+        html += b(false, "PlatformNav.go('plans')", '📋', 'Lesson Plans', 'Word and PDF lesson plans', true);
+        html += b(view === 'tools', "PlatformNav.go('tools')", '🪄', 'Board & Book', 'Smart Board, Magic Book & Pair Picker', true);
+        html += b(view === 'more', "PlatformNav.go('more')", '⚙️', 'More & Settings', 'Teacher Hub, Story Quests, Settings & Backups', true);
+      }
     });
     html += '</ul>' +
       '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px;margin-top:10px;border-top:1px solid var(--border-light);">' +
@@ -230,7 +238,7 @@
     var hello = now.getHours() < 12 ? 'Good morning' : now.getHours() < 17 ? 'Good afternoon' : 'Good evening';
     var sub = finished ? 'Today’s lessons are done. Here is ' + dayName(day) + '.' : tries ? 'No lessons today. Here is ' + dayName(day) + '.' : dayName(now) + ', ' + timed.length + (timed.length === 1 ? ' lesson' : ' lessons');
     var html = CSS + '<div class="pn"><div class="pn-top"><div><h1>' + esc(hello) + '</h1><div class="sub">' + esc(sub) + '</div></div>' +
-      '<button type="button" class="pn-a s p" onclick="PlatformNav.go(\'games\')">🎮 All 47 Games</button>' +
+      '<button type="button" class="pn-a s p" onclick="PlatformNav.go(\'games\')">🎮 All 25 Games</button>' +
       '<button type="button" class="pn-a s v" onclick="PlatformNav.go(\'home\')">🏝️ 3D Island</button>' +
       '<button type="button" class="pn-a s" onclick="PlatformNav.search()">🔍 Search</button>' +
       '<button type="button" class="pn-a s" onclick="PlatformNav.go(\'calendar\')">📅 Whole week</button></div>';
@@ -296,18 +304,21 @@
 
   /* ---------------------------------------------------------------- Board & Book */
   function renderTools(c) {
-    c.innerHTML = CSS + '<div class="pn"><h1>Board &amp; Book</h1><div class="sub">What you open during a lesson.</div>' +
+    c.innerHTML = CSS + '<div class="pn"><h1>Board, Book &amp; Story Quests</h1><div class="sub">Classroom tools, Magic Book, Smart Board and story adventures.</div>' +
       '<div class="pn-tiles">' +
         tile('h_pencil.webp', 'Smart Board', 'Neat writing, word cards, pictures', "PlatformNav.go('smartboard')") +
         tile('magic-book/art/o_g3_timebook.webp', 'Magic Book, Grade 3', "Unit 5: Let's Go Back", "PlatformNav.go('book',3)") +
         tile('magic-book/art/o_g4_bigdrum.webp', 'Magic Book, Grade 4', 'Unit 5: Make Some Noise', "PlatformNav.go('book',4)") +
-        tile('m_games.webp', 'Game Maker', 'Turn a word set into a team game', "PlatformNav.go('gm')") +
-      '</div><h2 class="pn-sec">Classroom tools</h2><div class="pn-tiles sm">' +
+        tile('m_games.webp', 'All 25 Games', 'Turn any unit into a team game', "PlatformNav.go('gm')") +
+      '</div><h2 class="pn-sec">Classroom tools &amp; Story Quests</h2><div class="pn-tiles sm">' +
         tile('m_timer.webp', 'Timer', 'Count down a task', "PlatformNav.go('timer')") +
         tile('m_pick.webp', 'Pick a pupil', 'Everyone once before repeats', "PlatformNav.go('pick')") +
+        tile('🟢', 'Slime Pair Picker', 'Pick 2 speakers for dialogues', "PlatformNav.go('pairpicker')") +
         tile('h_backpack.webp', 'Groups', 'Make teams on the board', "PlatformNav.go('groups')") +
         tile('h_headphones.webp', 'Sleepy Mio', 'The quiet game', "PlatformNav.go('sleepy')") +
         tile('h_mic.webp', 'Karaoke', 'Pupils read one by one', "PlatformNav.go('karaoke')") +
+        tile('🌍', 'Treasure Planet 3D', 'Chapter 1 3D reading globe', "PlatformNav.go('planet3d')") +
+        tile('⛵', 'Harbour Story Quest', 'Practice Island story adventure', "PlatformNav.go('island')") +
         tile('🚻', 'Bathroom pass', 'Sign out and back in', "PlatformNav.go('bathroom')") +
       '</div></div>';
   }

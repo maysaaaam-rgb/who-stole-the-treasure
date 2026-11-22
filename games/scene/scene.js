@@ -33,7 +33,7 @@
   };
 
   var qMatch = /[?&]game=([^&]+)/.exec(root.location.search);
-  var GAME_ID = (qMatch && GAMES[qMatch[1]]) ? qMatch[1] : 'shadows';
+  var GAME_ID = 'prep';
   var META = GAMES[GAME_ID];
 
   var PREP_SPOTS = [

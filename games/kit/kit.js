@@ -428,8 +428,45 @@
       el('i', { text: '🎮' }),
       el('span', null, [el('small', { text: 'Adventure Academy' }), homeLbl])
     ]));
+    var islHref = (root.KIT_ROOT || '../../') + 'index.html#home';
+    bar.appendChild(el('a', {
+      class: 'btn sm kit-isl-pill',
+      href: islHref,
+      title: 'Back to 3D Adventure Island',
+      text: '🏝️ Island',
+      onclick: function (ev) {
+        try {
+          if (root.parent && root.parent !== root) {
+            ev.preventDefault();
+            if (root.parent.ClassroomHub && typeof root.parent.ClassroomHub.closeOverlay === 'function') {
+              root.parent.ClassroomHub.closeOverlay();
+            } else {
+              root.parent.postMessage({ type: 'eaa:closeOverlay' }, '*');
+            }
+            return;
+          }
+        } catch (e) {}
+      }
+    }));
     bar.appendChild(el('div', { class: 'grow' }, o.title ? el('div', { class: 'title', text: o.title }) : null));
     (o.extra || []).forEach(function (n) { if (n) bar.appendChild(n); });
+
+    if (o.rememberFirst !== false) {
+      bar.appendChild(el('button', {
+        type: 'button',
+        class: 'btn sm kit-rem-btn',
+        text: '🧠 Remember First',
+        title: 'Revise pictures & words with audio flashcards before playing!',
+        onclick: function () { Kit.sound('tap'); Kit.openRememberFirst(); }
+      }));
+      bar.appendChild(el('button', {
+        type: 'button',
+        class: 'btn sm kit-exit-btn',
+        text: '📝 Exit Ticket',
+        title: 'Quick 3-question end-of-lesson speaking/recall check!',
+        onclick: function () { Kit.sound('tap'); Kit.openExitTicket(); }
+      }));
+    }
 
     if (typeof o.onEdit === 'function') {
       bar.appendChild(el('button', {
@@ -1519,5 +1556,164 @@
     } else {
       loadPics(initOpts.setId);
     }
+  };
+
+  /* ---------------- Core Games Rules: Remember First Flashcards & Exit Ticket (All 2D Games) ---------------- */
+  function collectActiveFlashcards() {
+    var wantId = Kit.param('set') || Kit.param('pack') || Kit.pref('qpack') || Kit.pref('pz_pack') || Kit.pref('wd_pack') || Kit.pref('set') || '';
+    var pSets = (Kit.sets && typeof Kit.sets.all === 'function') ? Kit.sets.all().catch(function () { return []; }) : Promise.resolve([]);
+    var pQs = (Kit.questions && typeof Kit.questions.all === 'function') ? Kit.questions.all().catch(function () { return []; }) : Promise.resolve([]);
+    var pSs = (Kit.sentences && typeof Kit.sentences.all === 'function') ? Kit.sentences.all().catch(function () { return []; }) : Promise.resolve([]);
+    return Promise.all([pSets, pQs, pSs]).then(function (res) {
+      var picSets = res[0] || [], qPacks = res[1] || [], sPacks = res[2] || [];
+      var cards = [];
+      function pushCard(word, hint, img, sayText) {
+        word = String(word || '').trim();
+        if (!word) return;
+        cards.push({ word: word, hint: String(hint || '').trim(), img: img || '', say: sayText || word });
+      }
+      var foundQ = qPacks.find(function (p) { return p && p.id === wantId; });
+      if (foundQ && Array.isArray(foundQ.items || foundQ.questions)) {
+        (foundQ.items || foundQ.questions).slice(0, 14).forEach(function (it) {
+          var ans = typeof it.a === 'string' ? it.a : (Array.isArray(it.a) ? it.a[it.ok || 0] : '');
+          var qText = it.q || it.prompt || it.say || '';
+          pushCard(ans || qText, qText && ans ? qText : (it.say || ''), it.img || '', (qText ? qText.replace(/_{2,}/g, ans) : ans));
+        });
+      }
+      if (!cards.length) {
+        var foundP = picSets.find(function (p) { return p && p.id === wantId; }) || picSets[0];
+        if (foundP && Array.isArray(foundP.cards || foundP.items)) {
+          (foundP.cards || foundP.items).slice(0, 14).forEach(function (c) {
+            pushCard(c.w || c.word || c.a || '', c.cl || c.q || '', c.img || '', c.w || c.word || c.a || '');
+          });
+        }
+      }
+      if (!cards.length && sPacks.length) {
+        var sp = sPacks.find(function (p) { return p && p.id === wantId; }) || sPacks[0];
+        (sp.items || []).slice(0, 12).forEach(function (it) {
+          var fm = Kit.sentences && Kit.sentences.forms ? Kit.sentences.forms(it) : null;
+          var txt = fm ? fm.posFull : ((it.subj || '') + ' ' + (it.past || '') + ' ' + (it.rest || ''));
+          pushCard(it.past || txt, txt, it.img || '', txt);
+        });
+      }
+      return cards;
+    });
+  }
+
+  Kit.openRememberFirst = function (customCards) {
+    var existing = doc.querySelector('.kit-rev-modal');
+    if (existing) existing.remove();
+    var loader = Array.isArray(customCards) && customCards.length ? Promise.resolve(customCards) : collectActiveFlashcards();
+    loader.then(function (cards) {
+      if (!cards.length) { Kit.toast('Pick a word or question pack first!'); return; }
+      var idx = 0, coverMode = false, revealed = true;
+      var ov = el('div', { class: 'kit-rev-modal', role: 'dialog', 'aria-label': 'Remember First Flashcards' });
+      var box = el('div', { class: 'kit-rev-card' });
+      ov.appendChild(box);
+      ov.addEventListener('click', function (ev) { if (ev.target === ov) ov.remove(); });
+      doc.body.appendChild(ov);
+
+      function renderCard() {
+        var c = cards[idx];
+        box.innerHTML = '';
+        var top = el('div', { class: 'kit-rev-head' }, [
+          el('b', { text: '🧠 Remember First · Card ' + (idx + 1) + ' / ' + cards.length }),
+          el('div', { class: 'kit-rev-tools' }, [
+            el('button', {
+              type: 'button',
+              class: 'chip sm' + (coverMode ? ' on' : ''),
+              text: coverMode ? '🙈 Cover & Recall: ON' : '👁️ Cover & Recall',
+              onclick: function () { Kit.sound('tap'); coverMode = !coverMode; revealed = !coverMode; renderCard(); }
+            }),
+            el('button', { type: 'button', class: 'icon-btn', text: '✕', title: 'Close', onclick: function () { ov.remove(); } })
+          ])
+        ]);
+
+        var stage = el('div', { class: 'kit-rev-stage' });
+        if (c.img) {
+          stage.appendChild(el('img', { class: 'kit-rev-img', src: Kit.src(c.img), alt: c.word }));
+        }
+        var wordEl = el('div', {
+          class: 'kit-rev-word' + (coverMode && !revealed ? ' is-hidden' : ''),
+          text: (coverMode && !revealed) ? '❓ Tap to reveal!' : c.word,
+          onclick: function () {
+            if (coverMode && !revealed) { revealed = true; Kit.sound('reveal'); Kit.say(c.say || c.word); renderCard(); }
+            else { Kit.say(c.say || c.word); }
+          }
+        });
+        stage.appendChild(wordEl);
+        if (c.hint && c.hint !== c.word) {
+          stage.appendChild(el('div', { class: 'kit-rev-hint', text: c.hint }));
+        }
+        var foot = el('div', { class: 'kit-rev-foot' }, [
+          el('button', {
+            type: 'button', class: 'btn sm', text: '◀ Prev',
+            onclick: function () { Kit.sound('tap'); idx = (idx - 1 + cards.length) % cards.length; revealed = !coverMode; renderCard(); }
+          }),
+          el('button', {
+            type: 'button', class: 'btn sm mint', text: '🔊 Say Aloud',
+            onclick: function () { Kit.say(c.say || c.word); }
+          }),
+          el('button', {
+            type: 'button', class: 'btn sm', text: 'Next ▶',
+            onclick: function () { Kit.sound('tap'); idx = (idx + 1) % cards.length; revealed = !coverMode; renderCard(); }
+          }),
+          el('button', {
+            type: 'button', class: 'btn sm lilac', text: '▶ Ready to Play!',
+            onclick: function () { Kit.sound('correct'); ov.remove(); }
+          })
+        ]);
+        box.appendChild(top);
+        box.appendChild(stage);
+        box.appendChild(foot);
+      }
+      renderCard();
+      Kit.say(cards[0].say || cards[0].word);
+    });
+  };
+
+  Kit.openExitTicket = function () {
+    var existing = doc.querySelector('.kit-rev-modal');
+    if (existing) existing.remove();
+    collectActiveFlashcards().then(function (cards) {
+      if (!cards.length) { Kit.toast('Pick a pack first!'); return; }
+      var picks = Kit.shuffle(cards).slice(0, 3);
+      var ov = el('div', { class: 'kit-rev-modal', role: 'dialog', 'aria-label': 'Exit Ticket' });
+      var box = el('div', { class: 'kit-rev-card' });
+      var head = el('div', { class: 'kit-rev-head' }, [
+        el('b', { text: '📝 3-Question Exit Ticket (Class Speak & Check!)' }),
+        el('button', { type: 'button', class: 'icon-btn', text: '✕', onclick: function () { ov.remove(); } })
+      ]);
+      var list = el('div', { class: 'kit-exit-list' });
+      picks.forEach(function (c, i) {
+        var ans = el('div', { class: 'kit-exit-ans hidden', text: '✅ ' + c.word });
+        var row = el('div', { class: 'kit-exit-row' }, [
+          c.img ? el('img', { class: 'kit-exit-thumb', src: Kit.src(c.img), alt: '' }) : el('span', { class: 'kit-exit-num', text: String(i + 1) }),
+          el('div', { class: 'kit-exit-body' }, [
+            el('b', { text: c.hint && c.hint !== c.word ? c.hint : ('Say this word in a sentence: #' + (i + 1)) }),
+            ans
+          ]),
+          el('button', {
+            type: 'button', class: 'btn sm mint', text: '👁️ Reveal',
+            onclick: function () {
+              ans.classList.remove('hidden');
+              Kit.sound('correct');
+              Kit.say(c.say || c.word);
+            }
+          })
+        ]);
+        list.appendChild(row);
+      });
+      var foot = el('div', { class: 'kit-rev-foot' }, [
+        el('button', { type: 'button', class: 'btn sm', text: '🔄 3 New Questions', onclick: function () { ov.remove(); Kit.openExitTicket(); } }),
+        el('button', { type: 'button', class: 'btn sm lilac', text: '🎉 Finish Class!', onclick: function () { Kit.sound('fanfare'); Kit.confetti(innerWidth / 2, innerHeight / 3, 60); ov.remove(); } })
+      ]);
+      box.appendChild(head);
+      box.appendChild(list);
+      box.appendChild(foot);
+      ov.appendChild(box);
+      ov.addEventListener('click', function (ev) { if (ev.target === ov) ov.remove(); });
+      doc.body.appendChild(ov);
+    });
   };
 })(window);

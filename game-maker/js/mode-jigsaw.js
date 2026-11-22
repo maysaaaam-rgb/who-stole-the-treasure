@@ -8,7 +8,8 @@
 (function () {
   'use strict';
 
-  var GM = window.GM;
+  var GM = window.GM = window.GM || {};
+  GM.modes = GM.modes || {};
   var U = function () { return GM.u; };
   var A = function () { return GM.audio; };
   var J = function () { return GM.juice; };
@@ -160,7 +161,7 @@
         bg.setAttribute('x', -8); bg.setAttribute('y', -8);
         bg.setAttribute('width', BW + 16); bg.setAttribute('height', BH + 16);
         bg.setAttribute('rx', 16);
-        bg.setAttribute('fill', '#0f172a');
+        bg.setAttribute('fill', '#e6f5ff');
         bg.setAttribute('stroke', lane.team.color);
         bg.setAttribute('stroke-width', '5');
         svg.appendChild(bg);

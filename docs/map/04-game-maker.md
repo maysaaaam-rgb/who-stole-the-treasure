@@ -5,64 +5,31 @@
 
 ---
 
-## 1. All 22 Playable Arcade Modes (`GM.modes.*`)
+## 1. All 4 Playable Arcade Modes (`GM.modes.*`)
 
 | Mode ID | Title | Source File & Line | Launch Query | Gameplay Summary |
 | :--- | :--- | :--- | :--- | :--- |
-| `board` | 🎁 **Bomb or Bonus** | [mode-board.js:L39](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-board.js#L39) (308L) | `?game=board` | Pick a mystery box and answer to open it. It shakes, it bursts… bonus points, a power-up, or a bomb! |
-| `plinko` | 🎰 **Prize Machine** | [mode-plinko.js:L9](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-plinko.js#L9) (262L) | `?game=plinko` | Answer right, then time your DROP! Your ball bounces down the prize machine. Hit the flashing JACKPOT for double! |
-| `hunt` | 🔦 **Treasure Hunt** | [mode-hunt.js:L10](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-hunt.js#L10) (231L) | `?game=hunt` | Your monster digs a line of pumpkins to find hidden prizes. A right answer says how far! |
-| `ttt` | ⭕ **Tic-Tac-Toe** | [mode-extra.js:L146](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-extra.js#L146) (2770L) | `?game=ttt` | Two teams. Answer right to put your monster on a square. Three in a row wins the round! |
-| `connect4` | 🔴 **Connect 4** | [mode-extra.js:L193](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-extra.js#L193) (2770L) | `?game=connect4` | Two teams. Answer right to drop your monster disc. Connect four in a row to win! |
-| `pass` | 🥔 **Pass the Bomb** | [mode-extra.js:L335](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-extra.js#L335) (2770L) | `?game=pass` | A ticking pumpkin passes from monster to monster! Answer right (+5) to toss it on. When it pops, every other team wins +10 Safe bonus points! |
-| `bowling` | 🎳 **Bowling** | [mode-extra.js:L1402](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-extra.js#L1402) (2770L) | `?game=bowling` | Answer right, then time 3 skill steps: Stand Position, Launch Angle (at the lane arrows), and Fast Power + Hook! Hit the 1-3 or 1-2 pocket for a strike — hitting dead-center leaves a split! |
-| `race` | 🏁 **Monster Race** | [mode-race.js:L8](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-race.js#L8) (329L) | `?game=race` | 3-2-1-GO! Answer right for a turbo boost, overtake rivals with dust puffs, snap the finish ribbon, and claim the podium! |
-| `cannon` | 🎯 **Monster Cannon** | [mode-cannon.js:L116](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-cannon.js#L116) (1478L) | `?game=cannon` | Answer right: your monster hops into the big cannon! Drag back to aim angle & power, launch across the meadow, pop balloons and land in the haystack! |
-| `penalty` | ⚽ **3D Penalty Shootout** *(Three.js 3D)* | [mode-penalty.js:L967](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-penalty.js#L967) (2931L) | `?game=penalty` | Real 3D Stadium! Answer right to ignite your shot, then swipe the 3D ball with curve or lock onto Top-Bins targets! |
-| `whack` | 🔨 **Whack-a-Word** | [mode-whack.js:L90](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-whack.js#L90) (997L) | `?game=whack` | Answer right, then whack ONLY the moles holding the target word! Build combos & crack 2-hit Boss Moles — whacking wrong decoy words stuns your hammer! |
-| `tower` | 🏗️ **Tower Stack** | [mode-tower.js:L20](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-tower.js#L20) (373L) | `?game=tower` | Answer a question, then time the fast-swinging crane to stack blocks! Overhangs get sliced off permanently — hit a Perfect Drop to widen your tower! |
-| `balloon` | 🎈 **Balloon Pop** | [mode-balloon.js:L19](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-balloon.js#L19) (257L) | `?game=balloon` | Read the question and pop the fast-weaving answer balloon before it escapes into the clouds — watch out for the Storm Bomb balloon! |
-| `baseball` | ⚾ **Baseball** | [mode-baseball.js:L37](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-baseball.js#L37) (436L) | `?game=baseball` | Answer to step up to the plate, read the pitch type (Fastball, Curveball, Changeup), and time the fast swing bar — late or early swings Foul off or Strike Out! |
-| `jigsaw` | 🧩 **Jigsaw Race** | [mode-jigsaw.js:L71](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-jigsaw.js#L71) (471L) | `?game=jigsaw` | Two teams race side-by-side to answer questions and snap 12 jigsaw pieces into place! |
-| `snakes` | 🎲 **Snakes & Ladders** | [mode-snakes.js:L18](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-snakes.js#L18) (338L) | `?game=snakes` | Answer a question to roll the big dice, climb ladders, and race to the finish square! |
-| `memory` | 🃏 **Memory Match** | [mode-memory.js:L103](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-memory.js#L103) (1027L) | `?game=memory` | Flip two cards on the living tabletop to match a Question with its Answer, then read the full sentence aloud! |
-| `fling` | 🐱 **Alley Fling** | [mode-fling.js:L145](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-fling.js#L145) (1657L) | `?game=fling` | True Cat vs Dog skill battle! Read the wind gauge, lock your throw angle, time the fast power bar (or pull the slingshot), dodge the patrolling wasp, and bonk your rival! |
-| `boardgame` | 🎲 **Star Loop Board** | [mode-board3.js:L271](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-board3.js#L271) (1502L) | `?game=boardgame` | Roll the 3D dice, hop your monster around the 24-square Monopoly island, speak English to claim & upgrade properties, complete Color Sets, and trade with rival teams! |
-| `storydice` | 🎲 **Story Dice** | [mode-storydice.js:L32](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-storydice.js#L32) (132L) | `?game=storydice` | Roll the dice, see the pictures, and make a sentence or a story with all of them. The teacher gives stars! |
-| `bingo` | 🎯 **Bingo** | [mode-bingo.js:L9](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-bingo.js#L9) (126L) | `?game=bingo` | Listen to the clue and tap the answer on the big bingo board. Win squares and make a line of your colour! |
-| `guesseroo` | 🕵️ **Guess-eroo** | [mode-guesseroo.js:L17](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-guesseroo.js#L17) (132L) | `?game=guesseroo` | A secret card is hidden. Ask yes/no questions out loud and cross out cards until your team knows what it is! |
+| `tower` | 🏗️ **Tower Stack** | [mode-tower.js:L21](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-tower.js#L21) (374L) | `?game=tower` | Answer a question, then time the fast-swinging crane to stack blocks! Overhangs get sliced off permanently — hit a Perfect Drop to widen your tower! |
+| `baseball` | ⚾ **Baseball** | [mode-baseball.js:L38](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-baseball.js#L38) (437L) | `?game=baseball` | Answer to step up to the plate, read the pitch type (Fastball, Curveball, Changeup), and time the fast swing bar — late or early swings Foul off or Strike Out! |
+| `jigsaw` | 🧩 **Jigsaw Race** | [mode-jigsaw.js:L72](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-jigsaw.js#L72) (472L) | `?game=jigsaw` | Two teams race side-by-side to answer questions and snap 12 jigsaw pieces into place! |
+| `fling` | 🐱 **Alley Fling** | [mode-fling.js:L145](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-fling.js#L145) (1662L) | `?game=fling` | True Cat vs Dog skill battle! Read the wind gauge, lock your throw angle, time the fast power bar (or pull the slingshot), dodge the patrolling wasp, and bonk your rival! |
 
 ---
 
-## 2. Game Maker Core Engine & Support Files (32 JS files)
+## 2. Game Maker Core Engine & Support Files (17 JS files)
 
 | File | Size | Lines | Cache `?v=` |
 | :--- | :---: | :---: | :---: |
-| [app.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/app.js) | 74.5 KB | 963 | `20261121c` |
+| [app.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/app.js) | 65.5 KB | 969 | `20261122a` |
 | [audio.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/audio.js) | 15.8 KB | 185 | `20261121b` |
 | [bank.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/bank.js) | 8.8 KB | 253 | `2` |
 | [core.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/core.js) | 36.2 KB | 607 | `17` |
 | [data.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/data.js) | 16.4 KB | 145 | `8` |
 | [juice.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/juice.js) | 13.2 KB | 223 | `5` |
-| [mode-balloon.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-balloon.js) | 9.8 KB | 257 | `8` |
-| [mode-baseball.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-baseball.js) | 17.2 KB | 436 | `7` |
-| [mode-bingo.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-bingo.js) | 7.7 KB | 126 | `2` |
-| [mode-board.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-board.js) | 18.7 KB | 308 | `13` |
-| [mode-board3.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-board3.js) | 62.8 KB | 1502 | `6` |
-| [mode-cannon.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-cannon.js) | 50.6 KB | 1478 | `11` |
-| [mode-extra.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-extra.js) | 108.8 KB | 2770 | `16` |
-| [mode-fling.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-fling.js) | 62.7 KB | 1657 | `10` |
-| [mode-guesseroo.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-guesseroo.js) | 9.2 KB | 132 | `2` |
-| [mode-hunt.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-hunt.js) | 9.5 KB | 231 | `9` |
-| [mode-jigsaw.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-jigsaw.js) | 17.8 KB | 471 | `7` |
-| [mode-memory.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-memory.js) | 35.9 KB | 1027 | `8` |
-| [mode-penalty.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-penalty.js) | 125.2 KB | 2931 | `31` |
-| [mode-plinko.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-plinko.js) | 11.9 KB | 262 | `10` |
-| [mode-race.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-race.js) | 13.6 KB | 329 | `5` |
-| [mode-snakes.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-snakes.js) | 13.5 KB | 338 | `6` |
-| [mode-storydice.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-storydice.js) | 7.9 KB | 132 | `4` |
-| [mode-tower.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-tower.js) | 14.7 KB | 373 | `7` |
-| [mode-whack.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-whack.js) | 34.5 KB | 997 | `8` |
+| [mode-baseball.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-baseball.js) | 17.3 KB | 437 | `8` |
+| [mode-fling.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-fling.js) | 62.7 KB | 1662 | `20261122a` |
+| [mode-jigsaw.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-jigsaw.js) | 17.8 KB | 472 | `8` |
+| [mode-tower.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-tower.js) | 14.8 KB | 374 | `8` |
 | [monsters.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/monsters.js) | 6.8 KB | 161 | `9` |
 | [revision.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/revision.js) | 17.2 KB | 225 | `5` |
 | [sets-speaking.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/sets-speaking.js) | 27.4 KB | 349 | `4` |

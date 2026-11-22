@@ -8,18 +8,18 @@
 
 | Entry Page | Size / Lines | Purpose |
 | :--- | :---: | :--- |
-| [index.html](file:///C:/Users/maysa/Desktop/DV/index.html) | 280 KB (4297L) | Main School Platform SPA Host (Teacher, Student, Parent, Class Mode) |
-| [directory.html](file:///C:/Users/maysa/Desktop/DV/directory.html) | 32.9 KB (627L) | Students Directory & Monster Companions Grid |
+| [index.html](file:///C:/Users/maysa/Desktop/DV/index.html) | 280.1 KB (4297L) | Main School Platform SPA Host (Teacher, Student, Parent, Class Mode) |
+| [directory.html](file:///C:/Users/maysa/Desktop/DV/directory.html) | 0.7 KB (15L) | Students Directory & Monster Companions Grid |
 | [site-map/index.html](file:///C:/Users/maysa/Desktop/DV/site-map/index.html) | 6.8 KB (149L) | Interactive Visual Site Map & Developer Explorer (Read-Only) |
-| [game-maker/index.html](file:///C:/Users/maysa/Desktop/DV/game-maker/index.html) | 4.6 KB (93L) | Game Maker 2.0 Arcade Host (22 Modes + 75 Question Sets) |
+| [game-maker/index.html](file:///C:/Users/maysa/Desktop/DV/game-maker/index.html) | 3.8 KB (73L) | Game Maker 2.0 Arcade Host (22 Modes + 75 Question Sets) |
 | [island/index.html](file:///C:/Users/maysa/Desktop/DV/island/index.html) | 6.4 KB (109L) | Practice Island Student Home App (Chapters, Harbour, Shop) |
-| [island/world.html](file:///C:/Users/maysa/Desktop/DV/island/world.html) | 9.5 KB (159L) | Practice Island 2D Walking World |
+| [island/world.html](file:///C:/Users/maysa/Desktop/DV/island/world.html) | 0.7 KB (15L) | Practice Island 2D Walking World |
 | [island/teacher.html](file:///C:/Users/maysa/Desktop/DV/island/teacher.html) | 12.2 KB (309L) | Practice Island Teacher Live Progress Wall |
-| [passport/index.html](file:///C:/Users/maysa/Desktop/DV/passport/index.html) | 1.6 KB (38L) | My Passport Student Booklets & Class Gallery |
-| [home-view/index.html](file:///C:/Users/maysa/Desktop/DV/home-view/index.html) | 0.4 KB (16L) | Parent & Student Home Overview Portal |
-| [smart-board/index.html](file:///C:/Users/maysa/Desktop/DV/smart-board/index.html) | 11 KB (176L) | AI Classroom Smart Board |
-| [magic-book/index.html](file:///C:/Users/maysa/Desktop/DV/magic-book/index.html) | 3.7 KB (93L) | The Magic Book Interactive Unit 5 Textbook Reader |
-| [monster-studio/index.html](file:///C:/Users/maysa/Desktop/DV/monster-studio/index.html) | 35.1 KB (1014L) | Standalone Monster Studio Preview Host |
+| [passport/index.html](file:///C:/Users/maysa/Desktop/DV/passport/index.html) | 1.9 KB (39L) | My Passport Student Booklets & Class Gallery |
+| [home-view/index.html](file:///C:/Users/maysa/Desktop/DV/home-view/index.html) | 0.7 KB (15L) | Parent & Student Home Overview Portal |
+| [smart-board/index.html](file:///C:/Users/maysa/Desktop/DV/smart-board/index.html) | 11.2 KB (176L) | AI Classroom Smart Board |
+| [magic-book/index.html](file:///C:/Users/maysa/Desktop/DV/magic-book/index.html) | 4.3 KB (95L) | The Magic Book Interactive Unit 5 Textbook Reader |
+| [monster-studio/index.html](file:///C:/Users/maysa/Desktop/DV/monster-studio/index.html) | 0.7 KB (15L) | Standalone Monster Studio Preview Host |
 | [pharaoh-living-book.html](file:///C:/Users/maysa/Desktop/DV/pharaoh-living-book.html) | 116.8 KB (2680L) | The Pharaoh's Kingdom 3D Living Pop-Up Book (Grade 3 Egypt) |
 | [404.html](file:///C:/Users/maysa/Desktop/DV/404.html) | 25.1 KB (423L) | GitHub Pages Deep-Link Router & Detective Navigation Hub |
 

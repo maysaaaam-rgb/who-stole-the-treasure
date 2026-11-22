@@ -30,7 +30,8 @@
   <!-- Bright Adventure Park Top HUD -->
   <div id="pl-hud-top">
     <div class="pl-hud-left">
-      <button type="button" class="pl-btn" id="pl-back-btn" title="Back to Sea Chart">🗺️ Sea Chart</button>
+      <a class="pl-btn" href="../index.html#home" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'eaa:closeOverlay'},'*');return false;}}catch(e){}" title="Back to 3D Adventure Island" style="text-decoration:none">🏝️ ← Island</a>
+      <button type="button" class="pl-btn" id="pl-back-btn" title="Back to Harbour Quest" onclick="location.href='index.html?demo=1'">⛵ Harbour</button>
       <div class="pl-title-pill">
         <span>🏴‍☠️ Treasure Island</span>
         <small>· Chapter 1</small>

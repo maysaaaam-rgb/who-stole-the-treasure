@@ -15,6 +15,7 @@
 
   <!-- SHELF -->
   <section id="shelf-view">
+    <a class="mb-island-pill" href="../index.html#home" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'eaa:closeOverlay'},'*');return false;}}catch(e){}" title="Back to 3D Adventure Island">🏝️ ← Island</a>
     <h1 class="shelf-title">✨ The Magic Book ✨</h1>
     <p class="shelf-sub">Choose a book</p>
     <div class="shelf">
@@ -26,6 +27,7 @@
   <!-- BOOK -->
   <section id="book-view" hidden>
     <header class="topbar">
+      <a class="tb-btn mb-isl-btn" href="../index.html#home" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'eaa:closeOverlay'},'*');return false;}}catch(e){}" title="Back to 3D Adventure Island" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center">🏝️</a>
       <button class="tb-btn" id="btn-home" title="Back to the shelf">📚</button>
       <div class="tb-title" id="tb-title"></div>
       <div class="tb-classes" id="tb-classes"></div>

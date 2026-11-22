@@ -112,7 +112,7 @@
 | `.github/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `.gitignore` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `.nojekyll` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
-| `404.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `404.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
 | `adventure-engine/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `advice/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `AGENTS.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -136,12 +136,12 @@
 | `class-reset/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `classroom-instructions-challenge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `creature-cafe/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
-| `css/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
+| `css/` | Platform Infrastructure | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `detectives/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `dino-arena/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `dino-dig/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `dino-expedition/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
-| `directory.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
+| `directory.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `docs/` | Platform Infrastructure | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `eco-engineers/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `egypt-project/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -149,16 +149,16 @@
 | `favicon.ico` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `feelings/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `firefighter/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
-| `foley-studio/` | Lesson / Game Module | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `foley-studio/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `forest-adaptation/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `forest-safari/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `freeze-game/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
-| `game-maker/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
+| `game-maker/` | Core App / World | ✅ | ✅ | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `games/` | Lesson / Game Module | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `good-ideas-lab/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `halloween-pet-shop/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `harvest-feast/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
-| `home-view/` | Core App / World | ✅ | — | — | **LIVE** | Tracked & safe |
+| `home-view/` | Core App / World | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `home3d/` | Lesson / Game Module | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `hq2.out` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `index.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
@@ -175,7 +175,7 @@
 | `library-audit/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `lingo-g3-u3-review/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `lingo-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `magic-book/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
+| `magic-book/` | Core App / World | ✅ | ✅ | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `manifest.json` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `meme-rules/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `milestone-1000/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -184,7 +184,7 @@
 | `monster-evolution/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `monster-lab/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `monster-lab-3d/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `monster-studio/` | Core App / World | ✅ | — | — | **LIVE** | Tracked & safe |
+| `monster-studio/` | Core App / World | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `monster-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `monsters/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `mouse/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -192,15 +192,15 @@
 | `nasa-mission/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `neighbourhood/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `NH/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `ninja-trials/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
+| `ninja-trials/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `ocean-cleaners/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `part6_battle_flat_complete.zip` | Root File | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `passport/` | Core App / World | ✅ | — | ✅ | **LIVE** | Tracked & safe |
+| `passport/` | Core App / World | ✅ | — | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `pharaoh-living-book.html` | HTML Entry Page | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `phonics/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `platform-art/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `platform-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `pokemon/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
+| `pokemon/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `predictions/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `preposition-catapult/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `quaternius-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
@@ -221,18 +221,18 @@
 | `robots/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `school-subjects-challenge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `scratch/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
-| `simon-says/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
+| `simon-says/` | Lesson / Game Module | ✅ | ✅ | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `site-map/` | Platform Infrastructure | ✅ | — | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `small-inventor/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `smart-board/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
+| `smart-board/` | Core App / World | ✅ | ✅ | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `smart-farm/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `solar-system/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `sound-detective/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `sound-detective-pro/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `space-cadet/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `speaking-g4/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `speaking-quiz/` | Lesson / Game Module | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `speaking-quiz/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `sql/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
 | `src/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `store-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
@@ -244,7 +244,7 @@
 | `talk-show/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `tea-party-cards/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `teams/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `telephone-pictionary/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
+| `telephone-pictionary/` | Lesson / Game Module | ✅ | ✅ | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `time-machine/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `tools/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
 | `treasure/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |

@@ -16,7 +16,8 @@
 (function () {
   'use strict';
 
-  var GM = window.GM;
+  var GM = window.GM = window.GM || {};
+  GM.modes = GM.modes || {};
   var U = function () { return GM.u; };
   var A = function () { return GM.audio; };
   var J = function () { return GM.juice; };
@@ -392,7 +393,7 @@
         fxCtx.fillStyle = bgBat;
         fxCtx.strokeStyle = '#fff'; fxCtx.lineWidth = 2;
         fxCtx.beginPath(); fxCtx.roundRect(-7, -64, 14, 52, 7); fxCtx.fill(); fxCtx.stroke();
-        fxCtx.fillStyle = '#1e293b';
+        fxCtx.fillStyle = '#2b1d40';
         fxCtx.beginPath(); fxCtx.roundRect(-5, -14, 10, 18, 3); fxCtx.fill();
         fxCtx.restore();
 
