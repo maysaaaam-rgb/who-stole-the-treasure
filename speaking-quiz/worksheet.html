@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🖨️ Units 1–5 Pair Speaking Practice Cards · Grades 3 &amp; 4</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+      background: linear-gradient(180deg, #78c4ff 0%, #c8eaff 40%, #fff8ec 100%);
+      color: #2b1d40;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .bar {
+      max-width: 980px;
+      margin: 0 auto 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      background: #fffdf8;
+      border: 4px solid #4f9dff;
+      border-radius: 22px;
+      padding: 12px 18px;
+    }
+    .bar h1 { font-family: 'Fredoka', sans-serif; font-size: 1.35rem; }
+    .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      font: 900 0.95rem 'Nunito', sans-serif;
+      padding: 9px 16px;
+      border-radius: 14px;
+      border: 3px solid #2b6ec7;
+      border-bottom: 5px solid #1e539c;
+      background: #4f9dff;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn.green { background: #2fc58a; border-color: #1e9666; border-bottom-color: #14734d; }
+    .btn.amber { background: #ffb320; border-color: #d98e00; border-bottom-color: #a66a00; color: #2b1d40; }
+    .btn.on { outline: 3px solid #2b1d40; }
+    .sheet {
+      max-width: 980px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 4px solid #ffb320;
+      border-radius: 26px;
+      padding: 20px 22px;
+      box-shadow: 0 12px 30px rgba(43, 29, 64, 0.12);
+    }
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 3px dashed #ffe0a3;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+    .sheet-head h2 { font-family: 'Fredoka', sans-serif; font-size: 1.45rem; }
+    .sheet-head p { font-size: 0.9rem; color: #5b467a; font-weight: 800; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .card {
+      border: 3px dashed var(--c, #4f9dff);
+      border-radius: 18px;
+      padding: 12px 14px;
+      background: #fffdf8;
+      page-break-inside: avoid;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ctop { display: flex; justify-content: space-between; align-items: center; }
+    .utag {
+      background: var(--c, #4f9dff);
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+    .pico { font-size: 1.9rem; line-height: 1; }
+    .cq { font-size: 1.05rem; font-weight: 900; color: #2b1d40; }
+    .cframe {
+      background: #fff8ec;
+      border: 2px solid #ffe0a3;
+      border-radius: 12px;
+      padding: 6px 10px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #5b467a;
+    }
+    .cwords { display: flex; flex-wrap: wrap; gap: 5px; }
+    .cwords span {
+      background: #f3ecff;
+      border: 1.5px solid #cbb7ee;
+      border-radius: 999px;
+      padding: 1px 9px;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .bar { display: none !important; }
+      .sheet { border: 0; box-shadow: none; padding: 6mm; max-width: none; }
+      .grid { gap: 4mm; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <h1>🖨️ Units 1–5 Pair Speaking Practice Cards</h1>
+    <div class="btns">
+      <button type="button" class="btn on" id="g3">📗 Grade 3 Cards</button>
+      <button type="button" class="btn amber" id="g4">📘 Grade 4 Cards</button>
+      <button type="button" class="btn green" onclick="window.print()">🖨️ Print A4</button>
+      <a class="btn" href="index.html">← Quiz Studio</a>
+    </div>
+  </div>
+  <div class="sheet" id="sheet"></div>
+  <script src="js/data.js?v=1"></script>
+  <script>
+    (function () {
+      var grade = new URLSearchParams(location.search).get('grade') === '4' ? 4 : 3;
+      function draw() {
+        document.getElementById('g3').classList.toggle('on', grade === 3);
+        document.getElementById('g4').classList.toggle('on', grade === 4);
+        var pack = window.SPEAKING_QUIZ_DATA[grade];
+        var cards = pack.practiceCards || [];
+        document.getElementById('sheet').innerHTML =
+          '<div class="sheet-head">' +
+            '<h2>🎤 Grade ' + grade + ' · Units 1–5 Pair Practice Cards</h2>' +
+            '<p>Partner A asks → Partner B answers in a FULL sentence → Swap!</p>' +
+          '</div>' +
+          '<div class="grid">' +
+            cards.map(function (c) {
+              var u = pack.units[c.unit - 1] || { color: '#4f9dff', short: 'Unit ' + c.unit };
+              return '<div class="card" style="--c:' + u.color + '">' +
+                '<div class="ctop"><span class="utag">Unit ' + c.unit + ' · ' + u.short + '</span><span class="pico">' + c.pic + '</span></div>' +
+                '<div class="cq">' + c.q + '</div>' +
+                '<div class="cframe">💬 Starter: <b>' + c.frame + '</b></div>' +
+                '<div class="cwords">' + (c.words || []).map(function (w) { return '<span>' + w + '</span>'; }).join('') + '</div>' +
+              '</div>';
+            }).join('') +
+          '</div>';
+      }
+      document.getElementById('g3').onclick = function () { grade = 3; draw(); };
+      document.getElementById('g4').onclick = function () { grade = 4; draw(); };
+      draw();
+    })();
+  </script>
+</body>
+</html>

@@ -84,8 +84,8 @@
 ### Curriculum, Library & Island (13)
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
-| [calendar-view.js](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js) | 94.1 KB | 826 | #23 (`v=20261116`) | `renderCalendarView`, `CalendarView` | Teacher calendar (sidebar: 📅 Calendar). Month and Week views of: the lessons of every class (from the weekly timetable, or the k12 timetable until it is set), |
-| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 427.5 KB | 10882 | #1 (`v=20261121b`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
+| [calendar-view.js](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js) | 103.2 KB | 880 | #23 (`v=20261123`) | `renderCalendarView`, `CalendarView` | Teacher calendar (sidebar: 📅 Calendar). Month and Week views of: the lessons of every class (from the weekly timetable, or the k12 timetable until it is set), |
+| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 429.6 KB | 10945 | #1 (`v=20261123`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
 | [homework-data.js](file:///C:/Users/maysa/Desktop/DV/js/homework-data.js) | 15.3 KB | 392 | #8 (`v=3.1`) | `ALICE_HOMEWORK_ASSIGNMENTS`, `ALICE_WONDERLAND_XP_QUEST`, `AdventureAcademy`, `openMonsterLevelUpModal` | ADVENTURE ACADEMY — DISCRETE HOMEWORK XP TASKS DATA |
 | [island-apply.js](file:///C:/Users/maysa/Desktop/DV/js/island-apply.js) | 13.3 KB | 319 | #11 (`v=2`) | `IslandApply` | Practice Island — Platform XP & Monster Look Auto-Applier (js/island-apply.js) |
 | [island-curriculum-data.js](file:///C:/Users/maysa/Desktop/DV/js/island-curriculum-data.js) | 202.6 KB | 3813 | Standalone | `ISLAND_CURRICULUM_DATA` | ISLAND HOMEWORK REVISION PROJECT — MASTER CURRICULUM DATASET |
@@ -118,7 +118,7 @@
 | [mystery-box-modal.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-modal.js) | 44.5 KB | 967 | #47 (`v=1.4`) | `MysteryBoxModal`, `TradingCabinet`, `openMysteryBoxModal`, `openTradingCabinet` | ENGLISH ADVENTURE ACADEMY — MYSTERY BOX UNBOXING & TRADING ENGINE |
 | [mystery-box-v2.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-v2.js) | 20.8 KB | 223 | #48 (`v=5`) | `MysteryBoxArt` | Mystery box opening, version 2 (9 Nov 2026). Replaces the drawn chest and the "energy surge" texts. |
 | [no-monsters.js](file:///C:/Users/maysa/Desktop/DV/js/no-monsters.js) | 7.6 KB | 119 | #18 (`v=2`) | `EAA_HIDE_MONSTERS`, `renderMonsterSVG`, `triggerEvolutionCeremony`, `switchView` | Monsters hidden (11 Nov 2026). |
-| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 184.2 KB | 3639 | #31 (`v=20261121c`) | `PupilAvatars` | Pupil avatars (v2) |
+| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 184.7 KB | 3649 | #31 (`v=20261122p`) | `PupilAvatars` | Pupil avatars (v2) |
 | [pupil-card.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-card.js) | 17.9 KB | 156 | #61 (`v=7`) | `PupilCard` | Pupil trading card, laid out like a real Yu-Gi-Oh monster card: a name banner with an attribute orb, level stars, the monster picture in a framed art box |
 | [pupil-profile.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-profile.js) | 19.9 KB | 173 | #60 (`v=10`) | `PupilProfile` | Pupil profile: one dark page for the teacher (no tabs). Top: who, status + reason, quick actions. Then the numbers that matter (XP, quiz, homework, |
 | [sleepy-monster.js](file:///C:/Users/maysa/Desktop/DV/js/sleepy-monster.js) | 33.7 KB | 633 | #27 (`v=4`) | `SleepyMonster`, `openSleepyMonster` | Sleepy Monster: a full-screen noise game for the class. |
@@ -129,7 +129,7 @@
 | [command-center.js](file:///C:/Users/maysa/Desktop/DV/js/command-center.js) | 126 KB | 1123 | #26 (`v=62`) | `CommandCenter`, `renderCommandCenterView` | Command Center: a dense, calm teacher overview (class stats, the XP each pupil earned day by day, homework of the last two weeks from the Google Sheets, activit |
 | [daily-backup.js](file:///C:/Users/maysa/Desktop/DV/js/daily-backup.js) | 11.9 KB | 171 | #63 (`v=1`) | `DailyBackup` | Daily backup of the classroom data (XP, coins, shop, attendance) on this device. |
 | [daily-report.js](file:///C:/Users/maysa/Desktop/DV/js/daily-report.js) | 4.2 KB | 38 | #59 (`v=1`) | `DailyReport` | Daily report page. The 18:00 school-day check (a scheduled task that reads the school's k12 site and the platform in the teacher's own Chrome) writes its summar |
-| [platform-nav.js](file:///C:/Users/maysa/Desktop/DV/js/platform-nav.js) | 43.1 KB | 465 | #62 (`v=20261121c`) | `EAAShortTitle`, `PlatformNav`, `PlatformViews` | Platform layout (9 Nov 2026): six places instead of a long menu. |
+| [platform-nav.js](file:///C:/Users/maysa/Desktop/DV/js/platform-nav.js) | 43.3 KB | 468 | #62 (`v=20261122p`) | `EAAShortTitle`, `PlatformNav`, `PlatformViews` | Platform layout (9 Nov 2026): six places instead of a long menu. |
 | [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) | 1048.2 KB | 17227 | #64 (`v=20261121c`) | `showNotification`, `updateClassroomTheme`, `prevTextbookPage`, `nextTextbookPage` | ENGLISH ADVENTURE ACADEMY — MASTER APPLICATION CONTROLLER & ROUTER |
 | [school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js) | 762.3 KB | 17601 | #10 (`v=20261119sp1`) | `renderStudentRoster`, `renderCurrentView`, `safeBackgroundSupabaseSync`, `AdventureAcademy` | ENGLISH ADVENTURE ACADEMY — RELATIONAL PERSISTENT SCHOOL DATA ENGINE |
 | [ui.js](file:///C:/Users/maysa/Desktop/DV/js/ui.js) | 125.4 KB | 2815 | Standalone | `uiController` | UI Controller for "Who Stole the Treasure?" & "Detective Preparation" |
@@ -379,7 +379,7 @@
 
 ---
 
-### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10882 lines (427.5 KB)
+### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10945 lines (429.6 KB)
 
 
 
@@ -476,79 +476,79 @@
 
 ---
 
-### 📦 [js/pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) — 3639 lines (184.2 KB)
+### 📦 [js/pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) — 3649 lines (184.7 KB)
 
 #### Section Banners (3)
 | Lines | Section Title |
 | :---: | :--- |
-| [L638–L2045](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L638-L2045) | picture cache (IndexedDB): finished avatar pictures survive a page reload ---------- |
-| [L2046–L2715](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2046-L2715) | Game Maker & 3D Stadium Avatar Bridge ---------- |
-| [L2716–L3639](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2716-L3639) | for the shop & unified studio: item facts, try-on, style and wearing ---------- |
+| [L639–L2055](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L639-L2055) | picture cache (IndexedDB): finished avatar pictures survive a page reload ---------- |
+| [L2056–L2725](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2056-L2725) | Game Maker & 3D Stadium Avatar Bridge ---------- |
+| [L2726–L3649](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2726-L3649) | for the shop & unified studio: item facts, try-on, style and wearing ---------- |
 
 
 #### Key Functions & Methods (showing 60 of 141)
 | Line | Function / Method |
 | :---: | :--- |
-| [L211](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L211) | `auraUrl` |
-| [L214](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L214) | `petById` |
-| [L219](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L219) | `petImageUrl` |
-| [L232](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L232) | `pickerCategories` |
-| [L247](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L247) | `allItemCount` |
-| [L251](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L251) | `inClassMode` |
-| [L296](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L296) | `prettyName` |
-| [L347](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L347) | `client` |
-| [L348](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L348) | `store` |
-| [L349](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L349) | `esc` |
-| [L350](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L350) | `firstName` |
-| [L353](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L353) | `monstersHidden` |
-| [L354](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L354) | `mode` |
-| [L356](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L356) | `setMode` |
-| [L361](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L361) | `lockMode` |
-| [L364](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L364) | `rerender` |
-| [L369](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L369) | `loadImg` |
-| [L378](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L378) | `seedBuiltinDefaults` |
-| [L403](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L403) | `saveLocal` |
-| [L414](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L414) | `nowIso` |
-| [L416](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L416) | `mergeDocs` |
-| [L439](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L439) | `markRemoved` |
-| [L450](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L450) | `readSyncRow` |
-| [L457](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L457) | `hiddenRow` |
-| [L460](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L460) | `writeHeadRows` |
-| [L477](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L477) | `readHeadRows` |
-| [L493](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L493) | `decodeDataUrlToArrayBuffer` |
-| [L505](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L505) | `getHead3d` |
-| [L509](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L509) | `fromLocal3d` |
-| [L530](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L530) | `preloadHeads3d` |
-| [L562](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L562) | `writeSyncRow` |
-| [L582](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L582) | `readJson` |
-| [L593](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L593) | `writeJson` |
-| [L596](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L596) | `fetchHead` |
-| [L600](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L600) | `fromLocalDev` |
-| [L605](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L605) | `fromCloud` |
-| [L615](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L615) | `fetchEmotionHead` |
-| [L633](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L633) | `fetchWear` |
-| [L641](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L641) | `picCacheOpen` |
-| [L654](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L654) | `headKey` |
-| [L660](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L660) | `picSig` |
-| [L663](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L663) | `picCacheGet` |
-| [L673](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L673) | `picCachePut` |
-| [L680](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L680) | `equipSignature` |
-| [L683](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L683) | `load` |
-| [L745](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L745) | `studentRecord` |
-| [L758](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L758) | `equippedOf` |
-| [L770](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L770) | `avatarEquipFromMonster` |
-| [L792](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L792) | `effectiveWear` |
-| [L811](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L811) | `studentOwnsItem` |
-| [L849](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L849) | `pupilLevel` |
-| [L859](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L859) | `itemLockInfo` |
-| [L877](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L877) | `medianOf` |
-| [L883](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L883) | `analyzeHead` |
-| [L891](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L891) | `samplePatch` |
-| [L1029](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1029) | `getGradedBody` |
-| [L1092](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1092) | `getGradedLeg` |
-| [L1126](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1126) | `topHasHands` |
-| [L1137](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1137) | `handLayer` |
-| [L1164](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1164) | `getGradedTop` |
+| [L212](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L212) | `auraUrl` |
+| [L215](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L215) | `petById` |
+| [L220](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L220) | `petImageUrl` |
+| [L233](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L233) | `pickerCategories` |
+| [L248](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L248) | `allItemCount` |
+| [L252](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L252) | `inClassMode` |
+| [L297](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L297) | `prettyName` |
+| [L348](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L348) | `client` |
+| [L349](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L349) | `store` |
+| [L350](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L350) | `esc` |
+| [L351](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L351) | `firstName` |
+| [L354](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L354) | `monstersHidden` |
+| [L355](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L355) | `mode` |
+| [L357](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L357) | `setMode` |
+| [L362](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L362) | `lockMode` |
+| [L365](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L365) | `rerender` |
+| [L370](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L370) | `loadImg` |
+| [L379](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L379) | `seedBuiltinDefaults` |
+| [L404](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L404) | `saveLocal` |
+| [L415](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L415) | `nowIso` |
+| [L417](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L417) | `mergeDocs` |
+| [L440](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L440) | `markRemoved` |
+| [L451](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L451) | `readSyncRow` |
+| [L458](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L458) | `hiddenRow` |
+| [L461](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L461) | `writeHeadRows` |
+| [L478](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L478) | `readHeadRows` |
+| [L494](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L494) | `decodeDataUrlToArrayBuffer` |
+| [L506](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L506) | `getHead3d` |
+| [L510](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L510) | `fromLocal3d` |
+| [L531](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L531) | `preloadHeads3d` |
+| [L563](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L563) | `writeSyncRow` |
+| [L583](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L583) | `readJson` |
+| [L594](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L594) | `writeJson` |
+| [L597](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L597) | `fetchHead` |
+| [L601](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L601) | `fromLocalDev` |
+| [L606](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L606) | `fromCloud` |
+| [L616](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L616) | `fetchEmotionHead` |
+| [L634](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L634) | `fetchWear` |
+| [L642](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L642) | `picCacheOpen` |
+| [L655](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L655) | `headKey` |
+| [L661](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L661) | `picSig` |
+| [L664](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L664) | `picCacheGet` |
+| [L674](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L674) | `picCachePut` |
+| [L681](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L681) | `equipSignature` |
+| [L684](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L684) | `load` |
+| [L746](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L746) | `studentRecord` |
+| [L759](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L759) | `equippedOf` |
+| [L771](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L771) | `avatarEquipFromMonster` |
+| [L793](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L793) | `effectiveWear` |
+| [L812](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L812) | `studentOwnsItem` |
+| [L850](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L850) | `pupilLevel` |
+| [L860](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L860) | `itemLockInfo` |
+| [L878](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L878) | `medianOf` |
+| [L884](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L884) | `analyzeHead` |
+| [L892](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L892) | `samplePatch` |
+| [L1030](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1030) | `getGradedBody` |
+| [L1093](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1093) | `getGradedLeg` |
+| [L1127](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1127) | `topHasHands` |
+| [L1138](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1138) | `handLayer` |
+| [L1165](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1165) | `getGradedTop` |
 
 ---
 

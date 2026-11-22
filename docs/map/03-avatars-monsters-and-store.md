@@ -70,7 +70,7 @@ English Adventure Academy features **two complementary companion/character pipel
 | [mystery-box-modal.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-modal.js) | 967L (44.5 KB) | `MysteryBoxModal`, `TradingCabinet`, `openMysteryBoxModal`, `openTradingCabinet` | ENGLISH ADVENTURE ACADEMY — MYSTERY BOX UNBOXING & TRADING ENGINE |
 | [mystery-box-v2.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-v2.js) | 223L (20.8 KB) | `MysteryBoxArt` | Mystery box opening, version 2 (9 Nov 2026). Replaces the drawn chest and the "energy surge" texts. |
 | [no-monsters.js](file:///C:/Users/maysa/Desktop/DV/js/no-monsters.js) | 119L (7.6 KB) | `EAA_HIDE_MONSTERS`, `renderMonsterSVG`, `triggerEvolutionCeremony`, `switchView`, `openMonsterCreator` | Monsters hidden (11 Nov 2026). |
-| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 3639L (184.2 KB) | `PupilAvatars` | Pupil avatars (v2) |
+| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 3649L (184.7 KB) | `PupilAvatars` | Pupil avatars (v2) |
 | [pupil-card.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-card.js) | 156L (17.9 KB) | `PupilCard` | Pupil trading card, laid out like a real Yu-Gi-Oh monster card: a name banner with an attribute orb, level stars, the monster picture in a framed art box |
 | [pupil-profile.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-profile.js) | 173L (19.9 KB) | `PupilProfile` | Pupil profile: one dark page for the teacher (no tabs). Top: who, status + reason, quick actions. Then the numbers that matter (XP, quiz, homework, |
 | [sleepy-monster.js](file:///C:/Users/maysa/Desktop/DV/js/sleepy-monster.js) | 633L (33.7 KB) | `SleepyMonster`, `openSleepyMonster` | Sleepy Monster: a full-screen noise game for the class. |

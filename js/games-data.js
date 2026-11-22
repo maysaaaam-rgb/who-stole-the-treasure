@@ -10873,6 +10873,69 @@ const GAMES_REGISTRY = [
       "Grade 4",
       "Unit 5"
     ]
+  },
+  {
+    "id": "speaking-quiz-u15",
+    "type": "quiz",
+    "gameKind": "speaking",
+    "gameOrder": 13,
+    "title": "🎤 Units 1–5 Speaking Quiz Studio (Grades 3 & 4)",
+    "subtitle": "5 Short Picture Tasks (1 per Unit) · 0–2 Tap Rubric · Printable Pair Cards",
+    "description": "Teacher-led 1-on-1 Units 1–5 Speaking Quiz with 3 randomized prompt versions per unit, 45s timer, sentence starters, support mode, private TSV scorecard, XP rewards, and printable A4 pair practice cards.",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "speaking-quiz/index.html",
+    "url": "speaking-quiz/index.html",
+    "worksheetUrl": "speaking-quiz/worksheet.html",
+    "thumbnailIcon": "🎤",
+    "categoryLabel": "Speaking Quiz",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "Speaking",
+      "Quiz",
+      "Assessment",
+      "Units 1-5",
+      "Grade 3",
+      "Grade 4"
+    ]
+  },
+  {
+    "id": "foley-studio",
+    "type": "lesson",
+    "gameKind": "team",
+    "gameOrder": 14,
+    "title": "🎬 Foley Sound Engineer Studio (Interactive 35-Min Lesson)",
+    "subtitle": "Touch, Shake & Drag 8 Sound Tools · Live Oscilloscope · Movie Dubbing & Speaking Show",
+    "description": "Full 35-minute teacher-led CLIL & Speaking smartboard lesson where pupils become Foley Sound Engineers! Tap, shake, and drag 8 custom 3D studio props to synthesize realistic horse hooves, thunder, knight armor, rain, and creaky doors, play 4 team games, dub 4 movies live, and perform ON AIR.",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "foley-studio/index.html",
+    "url": "foley-studio/index.html",
+    "worksheetUrl": "foley-studio/worksheet.html",
+    "thumbnailIcon": "🎬",
+    "thumbnail": "foley-studio/art/studio-backdrop.webp",
+    "thumbnailUrl": "foley-studio/art/studio-backdrop.webp",
+    "categoryLabel": "Interactive Studio Lesson",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "Foley",
+      "Sound Lab",
+      "Speaking",
+      "CLIL",
+      "Unit 5",
+      "Grade 3",
+      "Grade 4"
+    ]
   }
 ];
 

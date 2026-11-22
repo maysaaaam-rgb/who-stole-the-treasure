@@ -65,7 +65,7 @@
 | [mode-whack.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/mode-whack.js) | 34.5 KB | 997 | `8` |
 | [monsters.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/monsters.js) | 6.8 KB | 161 | `9` |
 | [revision.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/revision.js) | 17.2 KB | 225 | `5` |
-| [sets-speaking.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/sets-speaking.js) | 10.2 KB | 168 | `3` |
+| [sets-speaking.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/sets-speaking.js) | 27.4 KB | 349 | `4` |
 | [sets-unit4.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/sets-unit4.js) | 9.2 KB | 162 | `2` |
 | [sets-unit5.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/sets-unit5.js) | 12.4 KB | 195 | `3` |
 | [sets-units14.js](file:///C:/Users/maysa/Desktop/DV/game-maker/js/sets-units14.js) | 7 KB | 121 | `2` |
@@ -73,7 +73,7 @@
 
 ---
 
-## 3. All 75 Built-In Question & Speaking Sets (`GM.sets`)
+## 3. All 89 Built-In Question & Speaking Sets (`GM.sets`)
 
 | Set ID | Grade | Questions | Title |
 | :--- | :---: | :---: | :--- |
@@ -104,16 +104,30 @@
 | `g4-u5-mega` | `4` | **40** | G4 Unit 5 • Make Some Noise (All 40 Qs) |
 | `u14-g3` | `3` | **40** | Units 1–4 Mix · Grade 3 (All 4 Units) |
 | `u14-g4` | `4` | **40** | Units 1–4 Mix · Grade 4 (All 4 Units) |
-| `speak-g3` | `3` | **24** | Grade 3 · Units 1–4 Easy Speaking & Acting |
-| `speak-g4` | `4` | **24** | Grade 4 · Units 1–4 Easy Speaking & Acting |
-| `speak-g3-u1` | `3` | **6** | G3 U1 · Easy Speaking (Inventions & Bridges) |
-| `speak-g4-u1` | `4` | **6** | G4 U1 · Easy Speaking (Reading & Butterflies) |
-| `speak-g3-u2` | `3` | **6** | G3 U2 · Easy Speaking (Thank You & Moon Song) |
-| `speak-g4-u2` | `4` | **6** | G4 U2 · Easy Speaking (Animals & Forest) |
-| `speak-g3-u3` | `3` | **6** | G3 U3 · Easy Speaking (How Much Is It? · Money) |
-| `speak-g4-u3` | `4` | **6** | G4 U3 · Easy Speaking (Arctic & Clean Cars) |
-| `speak-g3-u4` | `3` | **6** | G3 U4 · Easy Speaking (Mona Lisa & Volcano) |
-| `speak-g4-u4` | `4` | **6** | G4 U4 · Easy Speaking (Late for the Show & Teamwork) |
+| `speak-g3` | `3` | **30** | Grade 3 · Units 1–5 Easy Speaking & Acting |
+| `speak-g4` | `4` | **30** | Grade 4 · Units 1–5 Easy Speaking & Acting |
+| `speak-choice-g3` | `3` | **30** | Grade 3 · Units 1–5 Speaking Choice (All Units) |
+| `speak-choice-g4` | `4` | **30** | Grade 4 · Units 1–5 Speaking Choice (All Units) |
+| `speak-g3-u1` | `3` | **6** | G3 U1 · Easy Speaking & Acting (Inventions & Bridges) |
+| `speak-g4-u1` | `4` | **6** | G4 U1 · Easy Speaking & Acting (Reading & Butterflies) |
+| `speak-choice-g3-u1` | `3` | **6** | G3 U1 · Speaking Choice (What Do You Say? · Inventions) |
+| `speak-choice-g4-u1` | `4` | **6** | G4 U1 · Speaking Choice (What Do You Say? · Reading) |
+| `speak-g3-u2` | `3` | **6** | G3 U2 · Easy Speaking & Acting (Thank You & Moon Song) |
+| `speak-g4-u2` | `4` | **6** | G4 U2 · Easy Speaking & Acting (Animals & Forest) |
+| `speak-choice-g3-u2` | `3` | **6** | G3 U2 · Speaking Choice (What Do You Say? · Harvest) |
+| `speak-choice-g4-u2` | `4` | **6** | G4 U2 · Speaking Choice (What Do You Say? · Animal Survivors) |
+| `speak-g3-u3` | `3` | **6** | G3 U3 · Easy Speaking & Acting (How Much Is It? · Money) |
+| `speak-g4-u3` | `4` | **6** | G4 U3 · Easy Speaking & Acting (Arctic & Clean Cars) |
+| `speak-choice-g3-u3` | `3` | **6** | G3 U3 · Speaking Choice (What Do You Say? · Money) |
+| `speak-choice-g4-u3` | `4` | **6** | G4 U3 · Speaking Choice (What Do You Say? · Arctic & Clean Cars) |
+| `speak-g3-u4` | `3` | **6** | G3 U4 · Easy Speaking & Acting (Mona Lisa & Volcano) |
+| `speak-g4-u4` | `4` | **6** | G4 U4 · Easy Speaking & Acting (Late for the Show & Teamwork) |
+| `speak-choice-g3-u4` | `3` | **6** | G3 U4 · Speaking Choice (What Do You Say? · Mystery & Volcano) |
+| `speak-choice-g4-u4` | `4` | **6** | G4 U4 · Speaking Choice (What Do You Say? · Teamwork & Show) |
+| `speak-g3-u5` | `3` | **6** | G3 U5 · Easy Speaking & Acting (Time Book & Time Capsules) |
+| `speak-g4-u5` | `4` | **6** | G4 U5 · Easy Speaking & Acting (Foley Studio & Beethoven) |
+| `speak-choice-g3-u5` | `3` | **6** | G3 U5 · Speaking Choice (What Do You Say? · Time Book & Capsules) |
+| `speak-choice-g4-u5` | `4` | **6** | G4 U5 · Speaking Choice (What Do You Say? · Make Some Noise) |
 | `u1-g3` | `3` | **26** | Unit 1 · Grade 3 (What Does It Do?) |
 | `u1-g3-listen` | `3` | **4** | G3 U1 · Listening |
 | `u1-g3-words` | `3` | **5** | G3 U1 · Words |

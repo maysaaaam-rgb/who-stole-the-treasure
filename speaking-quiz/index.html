@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>🎤 Units 1–5 Speaking Quiz Studio · English Adventure Academy</title>
+  <link rel="icon" href="../favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body>
+  <div class="sq-wrap">
+    <header class="sq-head">
+      <div class="sq-brand">
+        <a class="sq-btn ghost sm" href="../index.html" title="Back to Platform">← Platform</a>
+        <div>
+          <h1>🎤 Units 1–5 Speaking Quiz Studio</h1>
+          <p class="sq-sub" id="sq-subtitle">Grades 3 &amp; 4 · 5 short tasks (1 per Unit) · ~1 minute per pupil · scored 0–2 per task</p>
+        </div>
+      </div>
+      <nav class="sq-tabs" aria-label="Views">
+        <button type="button" class="sq-btn blue on" data-tab="assess">🎯 Assess</button>
+        <button type="button" class="sq-btn ghost" data-tab="results">📊 Results</button>
+        <button type="button" class="sq-btn ghost" data-tab="guide">📘 Guide</button>
+        <a class="sq-btn amber" href="worksheet.html" target="_blank" rel="noopener">🖨️ Practice Cards</a>
+      </nav>
+    </header>
+
+    <!-- TAB 1: LIVE ASSESS STAGE -->
+    <section id="tab-assess" class="sq-panel">
+      <div class="sq-card sq-controls">
+        <div class="sq-ctrl-row">
+          <div class="sq-grade-pills" role="group" aria-label="Grade">
+            <button type="button" class="sq-pill on" data-grade="3">📗 Grade 3</button>
+            <button type="button" class="sq-pill" data-grade="4">📘 Grade 4</button>
+          </div>
+          <label class="sq-field"><span>Class</span><select id="sq-class"></select></label>
+          <label class="sq-field"><span>Pupil</span><select id="sq-pupil"></select></label>
+          <label class="sq-check" title="In Support Mode, showing a hint does not cap the score at 1">
+            <input type="checkbox" id="sq-support">
+            <span>💛 Support Mode</span>
+          </label>
+          <button type="button" class="sq-btn green" id="sq-start">▶ Start Quiz</button>
+          <button type="button" class="sq-btn pink" id="sq-next-pupil">Next Pupil ⏭</button>
+        </div>
+      </div>
+
+      <div class="sq-card sq-stage" id="sq-stage">
+        <div class="sq-steps" id="sq-steps"></div>
+        <div class="sq-meta-row">
+          <span class="sq-unit-badge" id="sq-unit-badge">Units 1–5 Speaking Check</span>
+          <span class="sq-where" id="sq-where">Choose a class &amp; pupil, then press ▶ Start Quiz!</span>
+        </div>
+
+        <div class="sq-prompt-box">
+          <div class="sq-pic" id="sq-pic">🎤</div>
+          <div class="sq-q" id="sq-q">Ready for your 1-minute speaking adventure?</div>
+          <div class="sq-act" id="sq-act"></div>
+          <div class="sq-hint" id="sq-hint"></div>
+          <div class="sq-model" id="sq-model"></div>
+        </div>
+
+        <div class="sq-tools-row">
+          <span class="sq-timer" id="sq-timer">0:45</span>
+          <button type="button" class="sq-btn amber sm" id="sq-tstart">⏱ 45s</button>
+          <button type="button" class="sq-btn blue sm" id="sq-say">🔊 Hear Prompt</button>
+          <button type="button" class="sq-btn lilac sm" id="sq-hbtn">💡 Show Hint</button>
+          <button type="button" class="sq-btn ghost sm" id="sq-mbtn">👁 Model Answer</button>
+          <button type="button" class="sq-btn ghost sm" id="sq-back">↩ Back</button>
+        </div>
+
+        <div class="sq-score-row" id="sq-score-row">
+          <button type="button" class="sq-score-btn s0" data-s="0">
+            <b>0</b>
+            <span>Not yet / no answer</span>
+          </button>
+          <button type="button" class="sq-score-btn s1" data-s="1">
+            <b>1</b>
+            <span>Understood (word / slip)</span>
+          </button>
+          <button type="button" class="sq-score-btn s2" data-s="2">
+            <b>2</b>
+            <span>Clear full sentence!</span>
+          </button>
+        </div>
+
+        <div class="sq-listen-for" id="sq-listen-for"></div>
+
+        <div class="sq-note-row">
+          <input type="text" id="sq-note" placeholder="Optional private English note (e.g. past tense strong, needs 'there are')" aria-label="Teacher note">
+        </div>
+      </div>
+
+      <div class="sq-card sq-done hide" id="sq-done"></div>
+    </section>
+
+    <!-- TAB 2: PRIVATE TEACHER RESULTS -->
+    <section id="tab-results" class="sq-panel hide">
+      <div class="sq-card">
+        <div class="sq-res-head">
+          <div>
+            <h2>📊 Private Speaking Results (Units 1–5)</h2>
+            <p class="sq-sub">Stored only on this device. Speaking is /10 (2 pts × 5 units). Add optional Written Quiz /30 for a /40 total.</p>
+          </div>
+          <div class="sq-res-acts">
+            <button type="button" class="sq-btn blue sm" id="sq-copy">📋 Copy TSV</button>
+            <button type="button" class="sq-btn pink sm" id="sq-clear">🗑 Clear Class</button>
+          </div>
+        </div>
+        <div class="sq-tbl-wrap">
+          <table class="sq-tbl" id="sq-tbl">
+            <thead>
+              <tr>
+                <th>Pupil</th>
+                <th>U1</th>
+                <th>U2</th>
+                <th>U3</th>
+                <th>U4</th>
+                <th>U5</th>
+                <th>Speak /10</th>
+                <th>Band</th>
+                <th>Written /30</th>
+                <th>Total /40</th>
+                <th>XP</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: TEACHER GUIDE -->
+    <section id="tab-guide" class="sq-panel hide">
+      <div class="sq-card sq-guide">
+        <h2>📘 How to Run the Thu–Fri Units 1–5 Speaking Quiz (35 Min)</h2>
+        <div class="sq-guide-grid">
+          <div class="sq-gbox pink">
+            <h3>1. Warm-Up &amp; Model (0–5 min)</h3>
+            <p>Tell the class: <em>“You will talk with me for 1 minute — 5 tiny picture questions, one from each unit. Mistakes are totally OK!”</em> Model one prompt with a confident volunteer.</p>
+          </div>
+          <div class="sq-gbox blue">
+            <h3>2. Pair Practice Cards (5–10 min)</h3>
+            <p>Hand out the printed <strong>Practice Cards</strong> (not the exact quiz prompts). Pairs take turns asking and answering in full sentences while you call pupils 1-by-1 to your desk.</p>
+          </div>
+          <div class="sq-gbox yellow">
+            <h3>3. 1-on-1 Speaking Quiz (10–32 min)</h3>
+            <p>Each pupil automatically gets randomized question versions across Units 1–5 so nobody can copy answers in line. Smile, wait 5 seconds before showing a hint, and tap <strong>0, 1, or 2</strong>.</p>
+          </div>
+          <div class="sq-gbox green">
+            <h3>4. Bands &amp; Celebration (32–35 min)</h3>
+            <p><strong>0–2:</strong> Below A1 · <strong>3–5:</strong> A1 · <strong>6–8:</strong> A1+ · <strong>9–10:</strong> A1+ Strong. Tap <strong>⭐ Give XP</strong> after each pupil, then finish with a 3D Speaking Game celebration!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/data.js?v=1"></script>
+  <script src="js/audio.js?v=1"></script>
+  <script src="js/app.js?v=1"></script>
+</body>
+</html>

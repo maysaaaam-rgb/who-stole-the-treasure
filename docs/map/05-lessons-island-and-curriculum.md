@@ -25,9 +25,9 @@
 
 ---
 
-## 3. Registered `GAMES_DATA` Modules (131 total in [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js))
+## 3. Registered `GAMES_DATA` Modules (133 total in [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js))
 
-### Grade 3 Modules (84)
+### Grade 3 Modules (86)
 | ID | Title | URL | Worksheet | Local Disk | `404.html` |
 | :--- | :--- | :--- | :---: | :---: | :---: |
 | `pharaoh-living-book` | 👑 👑 The Pharaoh's Kingdom • 3D Living Pop-Up Book (Lessons 1–8) | `pharaoh-living-book.html` | — | ✅ Present | — |
@@ -114,6 +114,8 @@
 | `tug-of-war-3d` | 🪢 🪢 3D Tug of War · Class Pull | `games/tug3d/index.html` | — | ✅ Present | ✅ |
 | `bowling-3d` | 🎳 🎳 3D Monster Bowling · Park Alley | `games/bowling3d/index.html` | — | ✅ Present | ✅ |
 | `board-game-3d` | 🎲 🎲 3D Park Board Game · 24-Tile Trail | `games/board3d/index.html` | — | ✅ Present | ✅ |
+| `speaking-quiz-u15` | 🎤 🎤 Units 1–5 Speaking Quiz Studio (Grades 3 & 4) | `speaking-quiz/index.html` | 🖨️ Yes | ✅ Present | ✅ |
+| `foley-studio` | 🎬 🎬 Foley Sound Engineer Studio (Interactive 35-Min Lesson) | `foley-studio/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 
 ### Grade 4 Modules (47)
 | ID | Title | URL | Worksheet | Local Disk | `404.html` |

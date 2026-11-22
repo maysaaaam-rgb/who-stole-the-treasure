@@ -100,7 +100,7 @@
 
 ---
 
-## 5. Complete Root Directory & Git Safety Classification (186 entries)
+## 5. Complete Root Directory & Git Safety Classification (188 entries)
 
 > **Why `git add -A` is forbidden:** Entries marked `MISSING LOCALLY (GIT DELETED)` exist on the live published site (`main` / `gh-pages`) but were cleaned from this local disk. Running `git add -A` would delete them from the live school website!
 
@@ -112,12 +112,12 @@
 | `.github/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `.gitignore` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `.nojekyll` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
-| `404.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
+| `404.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `adventure-engine/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `advice/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `AGENTS.md` | Documentation / Rule | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `AGENTS.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
 | `all-about-me/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `ARCHITECTURE_STANDARDS.md` | Documentation / Rule | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `ARCHITECTURE_STANDARDS.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
 | `art-prompts/` | Folder | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `assets/` | Folder | ✅ | — | — | **LIVE** | Shared 3D packs, avatars (`student-*`), icons & audio |
 | `audit-report/` | Folder | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
@@ -149,6 +149,7 @@
 | `favicon.ico` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `feelings/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `firefighter/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
+| `foley-studio/` | Lesson / Game Module | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `forest-adaptation/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `forest-safari/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `freeze-game/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
@@ -160,13 +161,13 @@
 | `home-view/` | Core App / World | ✅ | — | — | **LIVE** | Tracked & safe |
 | `home3d/` | Lesson / Game Module | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `hq2.out` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
-| `index.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
+| `index.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `inventor-forge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `inventor-lab/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `inventors-odyssey/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `island/` | Core App / World | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `island-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `js/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
+| `js/` | Platform Infrastructure | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `jungle/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `karaoke-stage/` | Core App / World | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `kenney-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
@@ -221,7 +222,7 @@
 | `school-subjects-challenge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `scratch/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `simon-says/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
+| `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `site-map/` | Platform Infrastructure | ✅ | — | ✅ | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `small-inventor/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `smart-board/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
@@ -231,6 +232,7 @@
 | `sound-detective-pro/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `space-cadet/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `speaking-g4/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
+| `speaking-quiz/` | Lesson / Game Module | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `sql/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
 | `src/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `store-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
