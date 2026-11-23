@@ -351,8 +351,7 @@ body.preview .hud { top: 76px; }
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: rgba(43, 29, 64, 0.48);
-  backdrop-filter: blur(6px);
+  background: rgba(43, 29, 64, 0.54);
   display: flex;
   align-items: center;
   justify-content: center;

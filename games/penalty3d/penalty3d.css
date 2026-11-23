@@ -51,7 +51,6 @@
   inset: 0;
   z-index: 120;
   background: rgba(43, 29, 64, 0.42);
-  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -278,8 +277,6 @@
   padding: 9px 14px 10px;
   border-radius: 26px;
   background: linear-gradient(180deg, rgba(255, 251, 242, 0.80) 0%, rgba(255, 253, 248, 0.95) 100%);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border: 5px solid var(--c, #2fc58a);
   box-shadow: 0 12px 26px rgba(43, 29, 64, 0.24), 0 6px 0 rgba(0, 0, 0, 0.14);
   font: 900 0.92rem 'Nunito', 'Trebuchet MS', sans-serif;
@@ -500,8 +497,6 @@
     rgba(255, 250, 240, 0.90) 38%,
     rgba(255, 255, 255, 0.96) 100%
   ) !important;
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
   box-shadow: 0 18px 36px -14px rgba(43, 29, 64, 0.36) !important;
   pointer-events: auto;
 }

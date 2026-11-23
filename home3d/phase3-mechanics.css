@@ -81,9 +81,7 @@ body.h3-focus-mode .h3-p3-award-fab { opacity: 0 !important; pointer-events: non
   position: fixed;
   inset: 0;
   z-index: 95;
-  background: rgba(31, 20, 48, 0.44);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: rgba(31, 20, 48, 0.52);
   display: flex;
   align-items: flex-end;
   justify-content: center;

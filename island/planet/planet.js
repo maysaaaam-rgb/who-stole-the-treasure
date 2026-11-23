@@ -247,12 +247,39 @@
   }
 
   /* ---------- Renderer, Scene, Bright Adventure Park Daylight ---------- */
+  var IS_MOBILE_PLANET = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '') || (Math.min(root.innerWidth || 1280, root.innerHeight || 720) <= 860);
+  var IS_LOW_GPU_PLANET = (function () {
+    if (IS_MOBILE_PLANET) return true;
+    try {
+      var touch = (navigator.maxTouchPoints > 0) || ('ontouchstart' in root);
+      if (touch && Math.max(screen.width || 0, root.innerWidth || 0) >= 1900) return true;
+      var p = document.createElement('canvas');
+      var gl = p.getContext('webgl') || p.getContext('experimental-webgl');
+      if (gl) {
+        var dbg = gl.getExtension('WEBGL_debug_renderer_info');
+        var rn = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '') : String(gl.getParameter(gl.RENDERER) || '');
+        var lose = gl.getExtension('WEBGL_lose_context');
+        if (lose) lose.loseContext();
+        if (/Intel.*(UHD|HD Graphics|Iris)|Mali|Adreno|PowerVR|SwiftShader|Vega [3678]/i.test(rn)) return true;
+      }
+    } catch (e) {}
+    return false;
+  })();
+  var _planetDynScale = 1.0;
+  function computePlanetPR(w, h) {
+    var dpr = root.devicePixelRatio || 1;
+    var maxPr = IS_LOW_GPU_PLANET ? Math.min(1.25, dpr) : Math.min(1.5, dpr);
+    var maxPx = IS_LOW_GPU_PLANET ? 1480000 : 2250000;
+    var budgetPr = Math.sqrt(maxPx / Math.max(1, w * h));
+    return Math.max(0.42, Math.min(2.0, Math.min(maxPr, budgetPr) * _planetDynScale));
+  }
+
   var R = 22.0; // Planet base radius (~138u circumference -> ~33s walk around)
-  var renderer = new T3.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(root.devicePixelRatio || 1, 1.5));
+  var renderer = new T3.WebGLRenderer({ canvas: canvas, antialias: !IS_LOW_GPU_PLANET, stencil: false, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(computePlanetPR(root.innerWidth, root.innerHeight));
   renderer.setSize(root.innerWidth, root.innerHeight);
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = T3.PCFSoftShadowMap;
+  renderer.shadowMap.type = IS_LOW_GPU_PLANET ? T3.PCFShadowMap : T3.PCFSoftShadowMap;
   renderer.toneMapping = T3.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.08;
   if (T3.SRGBColorSpace) renderer.outputColorSpace = T3.SRGBColorSpace;
@@ -261,7 +288,6 @@
   scene.background = new T3.Color(0x8bd2ff);
   scene.fog = new T3.Fog(0xbce8ff, 44, 145);
 
-  var IS_MOBILE_PLANET = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '') || (Math.min(root.innerWidth || 1280, root.innerHeight || 720) <= 860);
   var uPlanetTime = { value: 0 };
 
   function calcPlanetFov(aspect) {
@@ -2179,6 +2205,7 @@
 
   function animate() {
     requestAnimationFrame(animate);
+    if (document.hidden) { clock.getDelta(); return; }
     var dt = Math.min(clock.getDelta(), 0.05);
     var t = clock.elapsedTime;
     uPlanetTime.value = t;
@@ -2192,12 +2219,17 @@
     updateStopsParrotAndVisitors(dt, t);
     renderer.render(scene, camera);
 
-    // FPS monitor & friendly <20 FPS fallback guard
+    // FPS monitor, Dynamic Resolution Governor & friendly <20 FPS fallback guard
     fpsFrames++;
     fpsAccum += dt;
     if (fpsAccum >= 1.0) {
       curFps = Math.round(fpsFrames / fpsAccum);
       fpsFrames = 0; fpsAccum = 0;
+      if (state.ready && curFps < 46 && _planetDynScale > 0.64) {
+        _planetDynScale = Math.max(0.62, +(_planetDynScale * 0.86).toFixed(2));
+        renderer.setPixelRatio(computePlanetPR(root.innerWidth, root.innerHeight));
+        renderer.setSize(root.innerWidth, root.innerHeight);
+      }
       if (canvas) {
         canvas.setAttribute('data-stats', JSON.stringify({
           fps: curFps,
@@ -2229,6 +2261,7 @@
     camera.aspect = asp;
     camera.fov = calcPlanetFov(asp);
     camera.updateProjectionMatrix();
+    renderer.setPixelRatio(computePlanetPR(root.innerWidth, root.innerHeight));
     renderer.setSize(root.innerWidth, root.innerHeight);
     syncGoalPillTop();
   });
