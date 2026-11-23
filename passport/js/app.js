@@ -149,10 +149,10 @@
         '<div class="pass-book" style="padding:32px 24px;min-height:0">' +
           '<div style="font-size:3.5rem;margin-bottom:12px">🛂</div>' +
           '<h2 style="font-size:1.9rem;margin-bottom:8px">Welcome to My Passport</h2>' +
-          '<p style="color:#cbd5e1;margin-bottom:20px;font-size:1.05rem">Enter your secret Island link code to view and edit your passport!</p>' +
+          '<p style="color:#5b4a75;margin-bottom:20px;font-size:1.05rem">Enter your secret Island link code to view and edit your passport!</p>' +
           (errorMsg ? '<div style="color:#f87171;font-weight:700;margin-bottom:16px;background:rgba(239,68,68,0.15);padding:10px;border-radius:12px">' + esc(errorMsg) + '</div>' : '') +
           '<div style="display:flex;gap:10px;justify-content:center">' +
-            '<input type="text" id="pass-code-input" placeholder="CODE" maxlength="8" style="text-transform:uppercase;font-size:1.4rem;font-weight:800;letter-spacing:3px;text-align:center;width:160px;padding:10px;border-radius:14px;border:2px solid #38bdf8;background:rgba(15,23,42,0.8);color:#ffffff">' +
+            '<input type="text" id="pass-code-input" placeholder="CODE" maxlength="8" style="text-transform:uppercase;font-size:1.4rem;font-weight:800;letter-spacing:3px;text-align:center;width:160px;padding:10px;border-radius:14px;border:3px solid #4f9dff;background:#fff8ec;color:#2b1d40">' +
             '<button type="button" class="pass-btn cyan" onclick="PassportApp.submitCode()">Open 🚀</button>' +
           '</div>' +
           '<div style="margin-top:24px;border-top:1px dashed rgba(148,163,184,0.3);padding-top:18px">' +
@@ -179,6 +179,7 @@
     if (!ses || ses.status !== 'ok') {
       bar.innerHTML =
         '<div class="pass-pupil-meta">' +
+          '<a class="pass-btn emerald" href="../index.html#home" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:\'eaa:closeOverlay\'},\'*\');return false;}}catch(e){}" style="min-height:40px;padding:6px 14px;font-size:0.9rem">🏝️ ← Island</a>' +
           '<img src="art/o_passport_book.webp" alt="" style="width:40px;height:40px;object-fit:contain">' +
           '<span class="pass-pupil-name">My Passport</span>' +
         '</div>';
@@ -191,7 +192,7 @@
     var demoSwitcher = '';
     if (ses.isDemo) {
       demoSwitcher =
-        '<div style="display:flex;gap:6px">' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
           '<button type="button" class="pass-btn ' + (st.id === 'demo-p3' ? 'cyan' : '') + '" style="min-height:38px;padding:4px 10px;font-size:0.85rem" onclick="PassportApp.switchDemo(\'demo-p3\')">Leo (G3)</button>' +
           '<button type="button" class="pass-btn ' + (st.id === 'demo-p4' ? 'cyan' : '') + '" style="min-height:38px;padding:4px 10px;font-size:0.85rem" onclick="PassportApp.switchDemo(\'demo-p4\')">Maya (G4)</button>' +
           '<button type="button" class="pass-btn ' + (st.id === 'demo-p5' ? 'cyan' : '') + '" style="min-height:38px;padding:4px 10px;font-size:0.85rem" onclick="PassportApp.switchDemo(\'demo-p5\')">Sam (G4)</button>' +
@@ -200,7 +201,8 @@
 
     bar.innerHTML =
       '<div class="pass-pupil-meta">' +
-        '<div style="width:42px;height:42px;border-radius:12px;overflow:hidden;background:rgba(15,23,42,0.8);display:flex;align-items:center;justify-content:center">' +
+        '<a class="pass-btn emerald" href="../index.html#home" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:\'eaa:closeOverlay\'},\'*\');return false;}}catch(e){}" style="min-height:40px;padding:6px 12px;font-size:0.88rem" title="Back to 3D Adventure Island">🏝️ Island</a>' +
+        '<div style="width:42px;height:42px;border-radius:12px;overflow:hidden;background:#eef7ff;border:2px solid #cfe6ff;display:flex;align-items:center;justify-content:center">' +
           renderMonsterSvg(st.monsterProfile, 38) +
         '</div>' +
         '<div>' +
@@ -210,11 +212,10 @@
       '</div>' +
       demoSwitcher +
       '<div class="pass-actions">' +
-        '<button type="button" class="pass-btn amber" id="pass-btn-island" onclick="PassportApp.goToIsland()" title="Practice Island">🏝️ Island</button>' +
+        '<button type="button" class="pass-btn amber" id="pass-btn-island" onclick="PassportApp.goToIsland()" title="Practice Island Story Quest">⛵ Quest</button>' +
         '<button type="button" class="pass-btn violet" id="pass-btn-gallery" onclick="PassportApp.openClassGallery()">👥 Our class</button>' +
         '<button type="button" class="pass-btn emerald" id="pass-btn-save" onclick="PassportApp.savePupilPassport()">💾 Save</button>' +
         '<button type="button" class="pass-btn" id="pass-btn-mute" onclick="PassportApp.toggleMute()" title="Sound">' + (muted ? '🔇' : '🔊') + '</button>' +
-        '<button type="button" class="pass-btn" id="pass-btn-home" onclick="PassportApp.goHome()" title="Platform Home">🏠</button>' +
       '</div>';
   }
 
@@ -311,7 +312,7 @@
         '</div>' +
         '<h1 class="pass-pupil-title">' + esc(st.firstName || st.name) + '</h1>' +
         '<div class="pass-pupil-level-pill">Level Explorer • ' + (st.xp || 100) + ' XP</div>' +
-        '<p style="color:#cbd5e1;font-size:0.98rem;max-width:380px;margin-top:6px">Official Pupil Explorer Profile. Tap the tabs above to share your favourite things in English!</p>' +
+        '<p style="color:#5b4a75;font-size:0.98rem;max-width:380px;margin-top:6px">Official Pupil Explorer Profile. Tap the tabs above to share your favourite things in English!</p>' +
         '<div class="pass-stamp-seal" onclick="PassportApp.switchTab(\'stamp\')" title="My Stamp">' +
           '<img src="art/' + esc(stampId) + '.webp" alt="Stamp">' +
         '</div>' +
@@ -362,7 +363,7 @@
       '<div style="width:100%;max-width:680px">' +
         '<div style="text-align:center;margin-bottom:18px">' +
           '<h2 style="font-size:1.7rem">All About Me 🌟</h2>' +
-          '<p style="color:#cbd5e1;font-size:0.95rem">Choose up to 5 sentences. Tap any gap to change your words!</p>' +
+          '<p style="color:#5b4a75;font-size:0.95rem">Choose up to 5 sentences. Tap any gap to change your words!</p>' +
         '</div>' +
         '<div class="pass-sentences-list">' +
           listHtml +
@@ -402,7 +403,7 @@
       '<div style="width:100%;max-width:640px">' +
         '<div style="text-align:center;margin-bottom:18px">' +
           '<h2 style="font-size:1.7rem">Ask Me in Class! 💬</h2>' +
-          '<p style="color:#cbd5e1;font-size:0.95rem">Pick 2 questions your classmates can ask you when we play warm-up games!</p>' +
+          '<p style="color:#5b4a75;font-size:0.95rem">Pick 2 questions your classmates can ask you when we play warm-up games!</p>' +
         '</div>' +
         '<div class="pass-ask-list">' +
           cardsHtml +
@@ -421,7 +422,7 @@
     return (
       '<div style="width:100%;max-width:680px;text-align:center">' +
         '<h2 style="font-size:1.7rem;margin-bottom:6px">My Academy Badges 🏅</h2>' +
-        '<p style="color:#cbd5e1;font-size:0.95rem;margin-bottom:20px">Badges and achievements earned on Practice Island and classroom arcade games!</p>' +
+        '<p style="color:#5b4a75;font-size:0.95rem;margin-bottom:20px">Badges and achievements earned on Practice Island and classroom arcade games!</p>' +
         '<div class="pass-badges-grid">' +
           '<div class="pass-badge-item">' +
             '<div class="pass-badge-icon">⭐</div>' +
@@ -467,7 +468,7 @@
     return (
       '<div style="width:100%;max-width:680px;text-align:center">' +
         '<h2 style="font-size:1.7rem;margin-bottom:6px">Choose Your Passport Stamp ⭐</h2>' +
-        '<p style="color:#cbd5e1;font-size:0.95rem;margin-bottom:20px">Pick the stamp that best represents your adventure spirit!</p>' +
+        '<p style="color:#5b4a75;font-size:0.95rem;margin-bottom:20px">Pick the stamp that best represents your adventure spirit!</p>' +
         '<div class="pass-stamps-grid">' +
           stampsHtml +
         '</div>' +
@@ -511,7 +512,7 @@
             '<h3 style="font-size:1.4rem">' + esc(frame.label) + '</h3>' +
             '<button type="button" class="pass-btn" style="min-height:40px;min-width:40px;padding:4px 8px" onclick="PassportApp.closeModal()">✕</button>' +
           '</div>' +
-          '<p style="color:#cbd5e1;margin-top:6px">Tap your favourite choice:</p>' +
+          '<p style="color:#5b4a75;margin-top:6px">Tap your favourite choice:</p>' +
           '<div class="pass-choices-grid">' +
             choicesHtml +
           '</div>' +
@@ -553,7 +554,7 @@
       return (
         '<button type="button" class="pass-choice-btn" style="text-align:left;align-items:flex-start;padding:12px 14px" onclick="PassportApp.addNewSentence(\'' + f.id + '\')">' +
           '<div style="font-size:1.5rem;margin-bottom:4px">' + f.icon + ' ' + esc(f.label) + '</div>' +
-          '<div style="font-size:0.88rem;color:#cbd5e1">' + esc(f.template.replace('{pick}', '_____')) + '</div>' +
+          '<div style="font-size:0.88rem;color:#5b4a75">' + esc(f.template.replace('{pick}', '_____')) + '</div>' +
         '</button>'
       );
     }).join('');
@@ -603,7 +604,7 @@
     var qListHtml = PassportData.ASK_ME_QUESTIONS.map(function (q) {
       return (
         '<button type="button" class="pass-choice-btn" style="text-align:left;align-items:flex-start;padding:12px 14px" onclick="PassportApp.setAskQuestion(' + idx + ', \'' + q.id + '\')">' +
-          '<div style="font-size:1.2rem;font-weight:800;color:#fde047">' + q.icon + ' “' + esc(q.text) + '”</div>' +
+          '<div style="font-size:1.2rem;font-weight:800;color:#b45309">' + q.icon + ' “' + esc(q.text) + '”</div>' +
         '</button>'
       );
     }).join('');
@@ -694,7 +695,7 @@
           '<div class="pass-modal-card" style="text-align:center;max-width:480px">' +
             '<div style="font-size:3.5rem;margin-bottom:12px">🔒</div>' +
             '<h2 style="font-size:1.8rem;margin-bottom:8px">Class Gallery Opening Soon</h2>' +
-            '<p style="color:#cbd5e1;font-size:1.05rem;margin-bottom:20px">Your teacher has not opened the gallery for this class yet. Keep polishing your sentences!</p>' +
+            '<p style="color:#5b4a75;font-size:1.05rem;margin-bottom:20px">Your teacher has not opened the gallery for this class yet. Keep polishing your sentences!</p>' +
             '<button type="button" class="pass-btn emerald" onclick="PassportApp.closeModal()">Back to my passport ✓</button>' +
           '</div>' +
         '</div>';
@@ -708,7 +709,7 @@
 
     var isMyApproved = ordered.some(function (p) { return p.studentId === myId; });
     var topBanner = !isMyApproved ?
-      '<div style="background:rgba(245,158,11,0.2);border:1px solid #f59e0b;color:#fde047;font-weight:700;padding:8px 14px;border-radius:12px;margin-bottom:12px;text-align:center">' +
+      '<div style="background:#fff4d9;border:2px solid #ffb320;color:#92400e;font-weight:700;padding:8px 14px;border-radius:12px;margin-bottom:12px;text-align:center">' +
         'Your passport will be in the gallery soon 🌟' +
       '</div>' : '';
 
@@ -718,13 +719,13 @@
           '<div class="pass-classmate-stamp"><img src="art/' + esc(c.stamp || 's_star') + '.webp" alt=""></div>' +
           '<div class="pass-classmate-sprite">' + renderMonsterSvg(c.monsterProfile, 100) + '</div>' +
           '<div class="pass-classmate-name">' + esc(c.firstName) + '</div>' +
-          '<div style="font-size:0.8rem;color:#94a3b8;margin-top:2px">' + c.about.length + ' sentences</div>' +
+          '<div style="font-size:0.8rem;color:#68537d;margin-top:2px">' + c.about.length + ' sentences</div>' +
         '</div>'
       );
     }).join('');
 
     if (ordered.length === 0) {
-      cardsHtml = '<div style="grid-column:1/-1;text-align:center;color:#94a3b8;padding:40px 0">No approved classmate passports yet.</div>';
+      cardsHtml = '<div style="grid-column:1/-1;text-align:center;color:#68537d;padding:40px 0">No approved classmate passports yet.</div>';
     }
 
     modalRoot.innerHTML =
@@ -733,7 +734,7 @@
           '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
             '<div>' +
               '<h2 style="font-size:1.8rem;display:flex;align-items:center;gap:10px">👥 Our Class Passports</h2>' +
-              '<div style="font-size:0.9rem;color:#94a3b8">Tap any classmate to hear what they like!</div>' +
+              '<div style="font-size:0.9rem;color:#68537d">Tap any classmate to hear what they like!</div>' +
             '</div>' +
             '<button type="button" class="pass-btn" style="min-height:40px;min-width:40px;padding:4px 8px" onclick="PassportApp.closeModal()">✕</button>' +
           '</div>' +
@@ -756,8 +757,8 @@
     var sentencesHtml = classmate.about.map(function (item) {
       var fullSentence = PassportData.formatSentence(item.frame, item.pick);
       return (
-        '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:rgba(15,23,42,0.7);border-radius:14px;margin-bottom:8px">' +
-          '<div style="font-size:1.1rem;font-weight:600;color:#f8fafc">“' + esc(fullSentence) + '”</div>' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:#fff8ec;border-radius:14px;margin-bottom:8px">' +
+          '<div style="font-size:1.1rem;font-weight:600;color:#2b1d40">“' + esc(fullSentence) + '”</div>' +
           '<button type="button" class="pass-btn cyan" style="min-height:36px;min-width:36px;padding:4px 8px" onclick="PassportApp.speakSentence(\'' + esc(fullSentence) + '\')">🔊</button>' +
         '</div>'
       );
@@ -769,7 +770,7 @@
       var aSentence = item.a ? PassportData.formatSentence(item.a.frame, item.a.pick) : '';
       return (
         '<div style="padding:12px 16px;background:rgba(168,85,247,0.15);border:1px solid #a855f7;border-radius:16px;margin-bottom:10px">' +
-          '<div style="font-size:1.15rem;font-weight:800;color:#fde047">“' + esc(qText) + '”</div>' +
+          '<div style="font-size:1.15rem;font-weight:800;color:#b45309">“' + esc(qText) + '”</div>' +
           '<div style="font-size:0.95rem;color:#e2e8f0;margin-top:4px">Ask in class! 💬 “' + esc(aSentence) + '”</div>' +
         '</div>'
       );
@@ -800,7 +801,7 @@
                   '<button type="button" class="pass-btn cyan" style="flex:1;min-width:140px" onclick="PassportApp.openNoteBuilder(\'' + esc(classmate.studentId) + '\')">💌 Send a kind note</button>' +
                 '</div>' +
                 '<div style="display:flex;gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap">' +
-                  '<span style="font-size:0.88rem;color:#cbd5e1;font-weight:700">Monster Waves:</span>' +
+                  '<span style="font-size:0.88rem;color:#5b4a75;font-weight:700">Monster Waves:</span>' +
                   '<button type="button" class="pass-btn" style="min-height:38px;padding:4px 12px;font-size:0.9rem" onclick="PassportApp.sendClassmateWave(\'' + esc(classmate.studentId) + '\', \'wave\')">👋 Wave</button>' +
                   '<button type="button" class="pass-btn" style="min-height:38px;padding:4px 12px;font-size:0.9rem" onclick="PassportApp.sendClassmateWave(\'' + esc(classmate.studentId) + '\', \'dance\')">💃 Dance</button>' +
                   '<button type="button" class="pass-btn" style="min-height:38px;padding:4px 12px;font-size:0.9rem" onclick="PassportApp.sendClassmateWave(\'' + esc(classmate.studentId) + '\', \'highfive\')">✋ High-Five</button>' +
@@ -866,7 +867,7 @@
         '<div style="text-align:center;padding:36px 16px">' +
           '<img src="art/o_envelope.webp" alt="Mailbox" style="width:110px;height:110px;object-fit:contain;margin-bottom:12px;animation:idleBob 3s ease-in-out infinite">' +
           '<h2 style="font-size:1.6rem;margin-bottom:8px">Your Mailbox is Quiet</h2>' +
-          '<p style="color:#cbd5e1;font-size:1.05rem;max-width:400px;margin:0 auto 20px">Send a kind note or a monster wave to a classmate from "Our Class" 👥 to start sharing encouragement!</p>' +
+          '<p style="color:#5b4a75;font-size:1.05rem;max-width:400px;margin:0 auto 20px">Send a kind note or a monster wave to a classmate from "Our Class" 👥 to start sharing encouragement!</p>' +
           '<button type="button" class="pass-btn violet" onclick="PassportApp.openClassGallery()">👥 Open Our Class</button>' +
         '</div>'
       );
@@ -890,7 +891,7 @@
           '<button type="button" class="pass-btn amber" style="min-height:38px;padding:4px 14px;font-size:0.9rem" onclick="PassportApp.speakSentence(\'' + esc(n.text) + '\')">🔊 Listen</button>' +
           '<button type="button" class="pass-btn emerald" style="min-height:38px;padding:4px 14px;font-size:0.9rem" onclick="PassportApp.sendQuickThanks(\'' + esc(n.senderId) + '\')">Thank you! 💖</button>' +
           '<button type="button" class="pass-btn cyan" style="min-height:38px;padding:4px 14px;font-size:0.9rem" onclick="PassportApp.openNoteBuilderForSender(\'' + esc(n.senderId) + '\', \'' + esc(n.senderName) + '\')">Send note back 💌</button>' +
-          '<button type="button" class="pass-btn" style="min-height:38px;padding:4px 10px;font-size:0.85rem;color:#94a3b8" onclick="PassportApp.hideNote(\'' + esc(n.key) + '\')">✕ Hide</button>' +
+          '<button type="button" class="pass-btn" style="min-height:38px;padding:4px 10px;font-size:0.85rem;color:#68537d" onclick="PassportApp.hideNote(\'' + esc(n.key) + '\')">✕ Hide</button>' +
         '</div>');
 
       return (
@@ -918,7 +919,7 @@
             '<img src="art/o_envelope.webp" alt="" style="width:36px;height:36px;object-fit:contain">' +
             'Notes for Me' +
           '</h2>' +
-          '<div style="font-size:0.9rem;color:#94a3b8">' + notes.length + ' encouraging messages</div>' +
+          '<div style="font-size:0.9rem;color:#68537d">' + notes.length + ' encouraging messages</div>' +
         '</div>' +
         '<div class="pass-mailbox-list">' +
           listHtml +
@@ -951,7 +952,7 @@
       '<div class="pass-modal-backdrop">' +
         '<div class="pass-modal-card" style="max-width:540px;text-align:center">' +
           '<div style="font-size:2.8rem;margin-bottom:8px">🎉</div>' +
-          '<h2 style="font-size:1.8rem;color:#fde047;margin-bottom:4px">' + esc(wave.senderName) + ' ' + actionLabel + '</h2>' +
+          '<h2 style="font-size:1.8rem;color:#b45309;margin-bottom:4px">' + esc(wave.senderName) + ' ' + actionLabel + '</h2>' +
           '<div class="pass-wave-stage">' +
             '<div class="pass-wave-partner">' +
               '<div class="' + animClass + '">' + renderMonsterSvg(wave.senderMonster, 110) + '</div>' +
@@ -1061,7 +1062,7 @@
             '<h2 style="font-size:1.6rem;display:flex;align-items:center;gap:10px">💌 Send a Kind Note</h2>' +
             '<button type="button" class="pass-btn" style="min-height:38px;min-width:38px;padding:4px 8px" onclick="PassportApp.closeModal()">✕</button>' +
           '</div>' +
-          '<p style="color:#cbd5e1;font-size:0.95rem;margin-bottom:12px">Pick sentence parts to build an encouraging note in English for ' + esc(b.targetName) + ':</p>' +
+          '<p style="color:#5b4a75;font-size:0.95rem;margin-bottom:12px">Pick sentence parts to build an encouraging note in English for ' + esc(b.targetName) + ':</p>' +
           '<div class="pass-postcard">' +
             '<div class="pass-postcard-preview">“' + esc(fullNoteText) + '”</div>' +
           '</div>' +
@@ -1187,7 +1188,7 @@
           '<div class="pass-smartboard-card" style="max-width:600px">' +
             '<div style="font-size:4rem;margin-bottom:16px">📺</div>' +
             '<h2 style="font-size:2.2rem;margin-bottom:12px">No Approved Passports Yet</h2>' +
-            '<p style="color:#cbd5e1;font-size:1.2rem">Open the Teacher Studio to approve pupil passports for this class!</p>' +
+            '<p style="color:#5b4a75;font-size:1.2rem">Open the Teacher Studio to approve pupil passports for this class!</p>' +
           '</div>' +
         '</div>';
       return;
@@ -1222,7 +1223,7 @@
             '<button type="button" class="pass-btn amber" style="font-size:1.3rem;padding:12px 24px" onclick="PassportApp.speakSentence(\'Who can ask ' + esc(pupil.firstName) + ' a question?\')">🔊 Speak Prompt</button>' +
             '<button type="button" class="pass-btn cyan" style="font-size:1.3rem;padding:12px 24px" onclick="PassportApp.nextBoard()">Next ▶</button>' +
           '</div>' +
-          '<div style="margin-top:16px;color:#94a3b8;font-size:1.1rem">' + (idx + 1) + ' of ' + list.length + ' pupils</div>' +
+          '<div style="margin-top:16px;color:#68537d;font-size:1.1rem">' + (idx + 1) + ' of ' + list.length + ' pupils</div>' +
         '</div>' +
       '</div>';
   }
@@ -1236,7 +1237,7 @@
           '<div class="pass-smartboard-card" style="max-width:600px">' +
             '<div style="font-size:4rem;margin-bottom:16px">⭐</div>' +
             '<h2 style="font-size:2.2rem;margin-bottom:12px">No Shout-Outs Picked Yet</h2>' +
-            '<p style="color:#cbd5e1;font-size:1.2rem">Open the Teacher Studio and star kind notes to show them here as warm-up shout-outs!</p>' +
+            '<p style="color:#5b4a75;font-size:1.2rem">Open the Teacher Studio and star kind notes to show them here as warm-up shout-outs!</p>' +
           '</div>' +
         '</div>';
       return;
@@ -1264,7 +1265,7 @@
             '<div style="font-size:3.5rem;animation:idleBob 2s ease infinite">💌</div>' +
             '<div style="text-align:center">' +
               '<div style="width:140px;height:140px">' + renderMonsterSvg(item.target && item.target.monsterProfile, 140) + '</div>' +
-              '<div style="font-size:1.3rem;font-weight:800;color:#fde047;margin-top:6px">' + esc(targetName) + '</div>' +
+              '<div style="font-size:1.3rem;font-weight:800;color:#b45309;margin-top:6px">' + esc(targetName) + '</div>' +
             '</div>' +
           '</div>' +
           '<div class="pass-shoutout-text">“' + esc(item.text) + '”</div>' +
@@ -1273,7 +1274,7 @@
             '<button type="button" class="pass-btn amber" style="font-size:1.3rem;padding:12px 24px" onclick="PassportApp.speakSentence(\'' + esc(item.text) + '\')">🔊 Read Aloud</button>' +
             '<button type="button" class="pass-btn violet" style="font-size:1.3rem;padding:12px 24px" onclick="PassportApp.nextShoutout()">Next ▶</button>' +
           '</div>' +
-          '<div style="margin-top:20px;color:#94a3b8;font-size:1.15rem">' + (sIdx + 1) + ' of ' + shoutouts.length + ' shout-outs</div>' +
+          '<div style="margin-top:20px;color:#68537d;font-size:1.15rem">' + (sIdx + 1) + ' of ' + shoutouts.length + ' shout-outs</div>' +
         '</div>' +
       '</div>';
   }

@@ -162,6 +162,7 @@ body.gm-on-setup .gm-bg::before {
 .gm-game-pic {
   position: relative;
   aspect-ratio: 16 / 10 !important;
+  overflow: hidden !important;
   border-bottom: 3px solid #f4e8f8 !important;
   background: linear-gradient(135deg, #ffe4f1, #e1f1ff) !important;
 }

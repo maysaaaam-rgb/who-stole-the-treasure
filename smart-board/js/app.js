@@ -21,6 +21,7 @@
 
   const opts = Object.assign({ autoNeat: true, shapes: true, speak: true, turkish: true, bg: 'white', muted: false, holdMs: 500, neatMs: 1300, palm: true, chalkSound: true, bigUI: false }, lsGet(OPT_KEY, {}));
   if (opts.neatMs === 2200) opts.neatMs = 1300;   // the old default waited too long before reading
+  if (!opts._brightParkV1) { opts.bg = 'white'; opts._brightParkV1 = true; lsSet(OPT_KEY, opts); }
   let state = { strokes: [], objects: [] };
   let tool = 'pen', color = 'ink', size = 7;
   let uid = Math.floor(Math.random() * 1e6);

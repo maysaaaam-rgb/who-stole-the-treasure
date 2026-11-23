@@ -98,8 +98,6 @@ body.light { --ink: #0f172a; }
   color: var(--text);
   border-radius: 14px;
   box-shadow: 0 5px 0 rgba(2, 6, 23, 0.8), 0 8px 16px rgba(0, 0, 0, 0.3);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
   cursor: pointer;
   transition: transform 0.14s var(--spring), box-shadow 0.14s ease, border-color 0.2s, background 0.2s;
 }
@@ -135,7 +133,6 @@ body.light { --ink: #0f172a; }
   background: var(--glass);
   border: 2px solid var(--glass-border);
   font-weight: 800; font-size: 1.2rem; letter-spacing: 0.3px;
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
 }
 .brand-icon { display: inline-block; animation: wand 3s ease-in-out infinite; }
 @keyframes wand { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(10deg); } }
@@ -148,7 +145,6 @@ body.light { --ink: #0f172a; }
   color: var(--text);
   font-weight: 800; font-size: 1.05rem;
   cursor: pointer;
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
   box-shadow: 0 5px 0 rgba(2, 6, 23, 0.8);
 }
 .ai-dot { width: 13px; height: 13px; border-radius: 50%; background: #64748b; }
@@ -172,7 +168,6 @@ body.light { --ink: #0f172a; }
   background: var(--glass);
   border: 2px solid var(--glass-border);
   box-shadow: var(--shadow);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
   max-height: calc(100vh - 200px);
   overflow-y: auto;
   scrollbar-width: none;
@@ -244,7 +239,6 @@ body.light { --ink: #0f172a; }
   background: var(--glass-strong);
   border: 2px solid rgba(56, 189, 248, 0.35);
   box-shadow: var(--shadow), 0 0 0 0 rgba(56, 189, 248, 0);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
   transition: box-shadow 0.2s, border-color 0.2s;
 }
 .cmd-wrap:focus-within { border-color: var(--cyan); box-shadow: var(--shadow), 0 0 0 4px rgba(56, 189, 248, 0.25); }
@@ -396,7 +390,6 @@ body.light .neat-note { color: #065f46; background: rgba(16, 185, 129, 0.14); }
   background: var(--glass);
   border: 2px solid var(--glass-border);
   box-shadow: var(--shadow), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
   color: var(--text);
   font-family: var(--ui-font);
 }
@@ -631,7 +624,6 @@ body.light .neat-note { color: #065f46; background: rgba(16, 185, 129, 0.14); }
   background: var(--glass-strong);
   border-left: 2px solid var(--glass-border);
   box-shadow: -20px 0 50px rgba(0, 0, 0, 0.5);
-  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
   z-index: 80;
   animation: drawerIn 0.3s var(--spring);
 }
@@ -685,7 +677,6 @@ body.light .neat-note { color: #065f46; background: rgba(16, 185, 129, 0.14); }
   height: 50px; padding: 0 0.4rem;
   border-radius: 14px;
   background: var(--glass); border: 2px solid var(--glass-border);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
   font-weight: 800;
 }
 .page-strip button {
@@ -1101,3 +1092,33 @@ body.ui-small .classic-frame .screw.tr, body.ui-small .classic-frame .screw.br {
 .read-chip { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; max-width: 520px; }
 .read-chip button[data-i] { font-size: 1.15rem; padding: 0.35rem 0.9rem; border-radius: 12px; cursor: pointer; font-family: inherit; }
 .read-chip .alt { background: rgba(255,255,255,0.12); color: inherit; border: 2px solid rgba(255,255,255,0.3); }
+
+/* ── Bright Sunny Adventure Park Polish: Zero-Clip Chips, Non-Overlapping Word Drawer & Crisp Contrast ── */
+body:not(.bg-dark) .set-sec { background: #f5f9ff; }
+body:not(.bg-dark) .set-status { color: var(--muted); }
+body:not(.bg-dark) .set-status.ok { color: #059669; font-weight: 700; }
+body:not(.bg-dark) .set-status.warn { color: #b45309; font-weight: 700; }
+body:not(.bg-dark) .set-hint a { color: #1d64c8; font-weight: 700; }
+body:not(.bg-dark) .tips { color: var(--muted); }
+body:not(.bg-dark) .sug-name { color: #1d64c8; }
+body:not(.bg-dark) .sug-desc { color: var(--muted); }
+body:not(.bg-dark) .sb-select,
+body:not(.bg-dark) .sb-input,
+body:not(.bg-dark) .sb-textarea,
+body:not(.bg-dark) .pin-row input { background: #ffffff; color: #2b1d40; }
+body:not(.bg-dark) .sb-select option { background: #ffffff; color: #2b1d40; }
+.pin-row { flex-wrap: wrap; }
+.pin-row input { letter-spacing: 0.4px; font-size: 0.96rem; min-width: 180px; }
+.quick-chips { flex-wrap: wrap; justify-content: center; max-height: 82px; overflow-y: auto; }
+.settings.left {
+  left: 88px;
+  top: 74px;
+  bottom: 16px;
+  width: min(380px, calc(100vw - 104px));
+  border-radius: 22px;
+  border: 2.5px solid var(--glass-border);
+  box-shadow: 0 18px 40px rgba(43, 29, 64, 0.22);
+}
+@media (max-width: 720px) {
+  .settings.left { left: 8px; top: 68px; width: calc(100vw - 16px); }
+}

@@ -271,7 +271,7 @@
     var searchInput = h('input', {
       type: 'search',
       class: 'gm-game-search',
-      placeholder: '🔍 Search 47 games…',
+      placeholder: '🔍 Search 26 games…',
       value: S.searchQ || '',
       'aria-label': 'Search all games'
     });

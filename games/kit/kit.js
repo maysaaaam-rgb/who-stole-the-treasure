@@ -455,22 +455,22 @@
       bar.appendChild(el('button', {
         type: 'button',
         class: 'btn sm kit-rem-btn',
-        text: '🧠 Remember First',
-        title: 'Revise pictures, words & optional video with Cover & Recall before playing!',
+        text: '🧠 Cards',
+        title: 'Remember First: Revise pictures, words & optional video before playing!',
         onclick: function () { Kit.sound('tap'); Kit.openRememberFirst(); }
       }));
       bar.appendChild(el('button', {
         type: 'button',
         class: 'btn sm kit-spk-btn',
-        text: '🎤 Speak & Judge',
+        text: '🎤 Speak',
         title: 'Speaking & Acting Cards + Judge Mode + Answer Cards Tally (Smart Mix)',
         onclick: function () { Kit.sound('tap'); Kit.openSpeakingCards(); }
       }));
       bar.appendChild(el('button', {
         type: 'button',
         class: 'btn sm kit-exit-btn',
-        text: '📝 Exit Ticket',
-        title: 'Quick 3-question end-of-lesson speaking/recall check!',
+        text: '📝 Exit',
+        title: 'Exit Ticket: Quick 3-question end-of-lesson speaking/recall check!',
         onclick: function () { Kit.sound('tap'); Kit.openExitTicket(); }
       }));
     }
@@ -479,7 +479,7 @@
       bar.appendChild(el('button', {
         type: 'button',
         class: 'btn lilac sm topbar-edit-btn',
-        text: o.editLabel || '✎ Edit game',
+        text: o.editLabel || '✎ Edit',
         title: 'Customize pictures or questions',
         onclick: function () { Kit.sound('tap'); o.onEdit(); }
       }));

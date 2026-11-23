@@ -227,7 +227,10 @@
       }
       if (p.imageSrc) return p.imageSrc;
     }
-    if (String(id || '').indexOf('pet-') === 0) return 'assets/monsters/pets/' + id + '.png';
+    if (String(id || '').indexOf('pet-') === 0) {
+      var mPet = BASE.match(/^(\.\.\/)+/);
+      return (mPet ? mPet[0] : '') + 'assets/monsters/pets/' + id + '.png';
+    }
     return '';
   }
   function pickerCategories(studentId) {
@@ -395,16 +398,43 @@
         data.approved[sid].skin = 'auto';
       }
     });
+    if (IS_LOCAL_DEV) {
+      try {
+        var stList = (store() && store().state && store().state.students) || [];
+        stList.forEach(function (st, idx) {
+          var sid = st && st.id;
+          if (!sid || !/^student-[a-z0-9-]+$/.test(sid)) return;
+          if (data.approved[sid] || (data.removed && data.removed['a:' + sid])) return;
+          var g = (st.avatar && (st.avatar.hair === 'girl' || st.avatar.hair === 'boy')) ? st.avatar.hair : '';
+          data.approved[sid] = {
+            skin: 'auto',
+            tee: TEES[idx % TEES.length],
+            gender: g,
+            wear: {},
+            head: true,
+            localDevDefault: true,
+            at: '2026-11-01T00:00:00.000Z'
+          };
+        });
+      } catch (eDev) {}
+    }
     Object.keys(data.approved).forEach(function (sid) {
       if (data.approved[sid] && !data.approved[sid].manualSkin) {
         data.approved[sid].skin = 'auto';
       }
     });
   }
+  function cleanApprovedForSave(map) {
+    var out = {};
+    Object.keys(map || {}).forEach(function (k) {
+      if (map[k] && !map[k].localDevDefault) out[k] = map[k];
+    });
+    return out;
+  }
   function saveLocal() {
     try {
       localStorage.setItem(LOCAL_KEY, JSON.stringify({
-        approved: data.approved,
+        approved: cleanApprovedForSave(data.approved),
         pending: data.pending,
         removed: data.removed || {},
         settings: data.settings || { lockMode: 'earned' },
@@ -503,20 +533,21 @@
       return bytes.buffer;
     } catch (e) { return null; }
   }
+  function fetchLocal3dHead(id) {
+    if (!IS_LOCAL_DEV || !/^student-[a-z0-9-]+$/.test(id)) return Promise.resolve(null);
+    var mPre = BASE.match(/^(\.\.\/)+/);
+    var prefix = mPre ? mPre[0] : '';
+    return fetch(prefix + '_tmp/pupil-heads-3d/glb/' + id + '.glb' + ASSET_V).then(function (r) {
+      return r.ok ? r.arrayBuffer() : null;
+    }).catch(function () { return null; });
+  }
   function getHead3d(studentId) {
     if (!studentId) return Promise.resolve(null);
     var id = String(studentId).toLowerCase();
     if (head3dMem[id]) return head3dMem[id];
-    function fromLocal3d() {
-      if (!IS_LOCAL_DEV || !/^student-[a-z0-9-]+$/.test(id)) return Promise.resolve(null);
-      var prefix = BASE.indexOf('../') === 0 ? '../' : '';
-      return fetch(prefix + '_tmp/pupil-heads-3d/glb/' + id + '.glb' + ASSET_V).then(function (r) {
-        return r.ok ? r.arrayBuffer() : null;
-      }).catch(function () { return null; });
-    }
     var sb = client();
     if (!sb) {
-      head3dMem[id] = fromLocal3d();
+      head3dMem[id] = fetchLocal3dHead(id);
       return head3dMem[id];
     }
     head3dMem[id] = sb.from('classes').select('description').eq('id', HEAD3D_ROW_PREFIX + id).maybeSingle().then(function (r) {
@@ -524,13 +555,17 @@
         var buf = decodeDataUrlToArrayBuffer(r.data.description);
         if (buf) return buf;
       }
-      return fromLocal3d();
-    }).catch(fromLocal3d);
+      return fetchLocal3dHead(id);
+    }).catch(function () { return fetchLocal3dHead(id); });
     return head3dMem[id];
   }
   function preloadHeads3d(ids) {
     var sb = client();
-    if (!sb || !Array.isArray(ids) || !ids.length) return Promise.resolve({});
+    if (!Array.isArray(ids) || !ids.length) return Promise.resolve({});
+    if (!sb) {
+      if (!IS_LOCAL_DEV) return Promise.resolve({});
+      return Promise.all(ids.map(function (x) { return getHead3d(x); }));
+    }
     var want = [];
     ids.forEach(function (x) {
       var id = String(x || '').toLowerCase();
@@ -550,13 +585,24 @@
           if (row && row.id && row.description) {
             var sid = row.id.slice(HEAD3D_ROW_PREFIX.length);
             var buf = decodeDataUrlToArrayBuffer(row.description);
-            found[sid] = buf;
-            if (resolvers[sid]) resolvers[sid](buf);
+            if (buf) {
+              found[sid] = buf;
+              if (resolvers[sid]) resolvers[sid](buf);
+            }
           }
         });
-        part.forEach(function (sid) { if (!found[sid] && resolvers[sid]) resolvers[sid](null); });
+        return Promise.all(part.map(function (sid) {
+          if (found[sid]) return null;
+          return fetchLocal3dHead(sid).then(function (buf) {
+            if (resolvers[sid]) resolvers[sid](buf);
+          });
+        }));
       }).catch(function () {
-        part.forEach(function (sid) { if (resolvers[sid]) resolvers[sid](null); });
+        return Promise.all(part.map(function (sid) {
+          return fetchLocal3dHead(sid).then(function (buf) {
+            if (resolvers[sid]) resolvers[sid](buf);
+          });
+        }));
       });
     }));
   }
@@ -570,11 +616,13 @@
       return readSyncRow();
     }).then(function (remote) {
       if (remote && remote.heads && legacyHeadsInRow) throw new Error('faces not moved yet');
-      var merged = mergeDocs(remote || {}, data);
+      var localClean = { approved: cleanApprovedForSave(data.approved), pending: data.pending, removed: data.removed, settings: data.settings };
+      var merged = mergeDocs(remote || {}, localClean);
       data.approved = merged.approved; data.pending = merged.pending; data.removed = merged.removed; data.settings = merged.settings;
+      if (IS_LOCAL_DEV) seedBuiltinDefaults();
       saveLocal();
       return sb.from('classes').upsert(hiddenRow(SYNC_ROW_ID, 'Pupil Avatars (Teacher Private Sync)', JSON.stringify({
-        v: 3, at: nowIso(), approved: data.approved, pending: data.pending, removed: data.removed, settings: data.settings
+        v: 3, at: nowIso(), approved: cleanApprovedForSave(data.approved), pending: data.pending, removed: data.removed, settings: data.settings
       })), { onConflict: 'id' }).then(function (r) {
         if (r.error) throw new Error(r.error.message || 'sync save failed');
       });
@@ -600,7 +648,8 @@
     }
     function fromLocalDev() {
       if (!IS_LOCAL_DEV || !/^student-[a-z0-9-]+$/.test(String(id || ''))) return Promise.resolve(null);
-      var prefix = BASE.indexOf('../') === 0 ? '../' : '';
+      var mPre = BASE.match(/^(\.\.\/)+/);
+      var prefix = mPre ? mPre[0] : '';
       return loadImg(prefix + '_tmp/k12-avatars/webp/' + id + '.webp' + ASSET_V).catch(function () { return null; });
     }
     function fromCloud() {
@@ -700,6 +749,13 @@
         return heads[id] ? null : fetchHead(id).then(function (im) { if (im) heads[id] = im; });
       }));
     }).then(function () {
+      if (IS_LOCAL_DEV) {
+        Object.keys(data.approved).forEach(function (sid) {
+          if (data.approved[sid] && data.approved[sid].localDevDefault && !heads[sid]) {
+            delete data.approved[sid];
+          }
+        });
+      }
       // Speed: draw the open class first, one pupil at a time with a pause in between (no long freeze),
       // and reuse yesterday's finished picture when nothing about the pupil changed (picture cache).
       var all = Object.keys(data.approved), first = [], rest = [];
@@ -2959,6 +3015,7 @@
       if (GIRL_NAMES[fn]) return 'girl';
       if (BOY_NAMES[fn]) return 'boy';
     }
+    if (st && st.avatar && (st.avatar.hair === 'girl' || st.avatar.hair === 'boy')) return st.avatar.hair;
     return longHair(headImg || (id && heads[id])) ? 'girl' : 'boy';
   }
   var DEFAULT_GIRL_PIC = BASE + 'head_demo_girl.webp' + ASSET_V;
@@ -3196,7 +3253,7 @@
     }, 0);
     return '<h2>Teacher check</h2><p class="s">Approve an avatar to put it on the Class Board. Add each pupil\'s cartoon face from Gemini with “Face”, or switch between Free Dress-Up and Earned Mode below.</p>' +
       '<div style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">' +
-      '<label class="pa-go" style="display:inline-block;margin:0;cursor:pointer">📁 Upload all heads (select PNGs in heads\\)<input type="file" multiple accept="image/png,image/webp,image/jpeg" style="display:none" onchange="PupilAvatars._bulkHeads(this)"></label>' +
+      '<label class="pa-go" style="display:inline-block;margin:0;cursor:pointer">📁 Upload 2D + 3D heads (.webp / .png / .glb)<input type="file" multiple accept="image/png,image/webp,image/jpeg,.glb,model/gltf-binary" style="display:none" onchange="PupilAvatars._bulkHeads(this)"></label>' +
       '<label class="pa-go" style="display:inline-block;margin:0;cursor:pointer;background:linear-gradient(135deg,#4f9dff,#2563eb);color:#fff" title="Upload private 3D .glb pupil heads (named student-*.glb) directly to teacher-only Supabase">🧊 Upload 3D Heads (.glb)<input type="file" multiple accept=".glb,model/gltf-binary" style="display:none" onchange="PupilAvatars._bulkHeads3d(this)"></label>' +
       '<button type="button" class="pa-go ' + (isEarned ? 'gold' : 'b') + '" style="margin:0" onclick="PupilAvatars._toggleLockMode()" title="Choose whether pupils can wear all 124 items freely or unlock special items by Monster Level &amp; Shop">' +
         (isEarned ? '🪙 Earned Mode (Level &amp; Shop Unlocks)' : '🔓 Free Dress-Up (All 124 Open)') +
@@ -3214,6 +3271,12 @@
         var g = c.getContext('2d'), side = Math.min(im.width, im.height);
         g.drawImage(im, (im.width - side) / 2, (im.height - side) / 2, side, side, 0, 0, S, S);
         var d = g.getImageData(0, 0, S, S), p = d.data;
+        if (p[3] < 8 && p[(S - 1) * 4 + 3] < 8 && p[((S - 1) * S) * 4 + 3] < 8) {
+          URL.revokeObjectURL(url);
+          if (im.width === S && im.height === S && /webp/i.test(String(file.type || file.name || ''))) { res(file); return; }
+          c.toBlob(function (b) { b ? res(b) : rej(new Error('picture')); }, 'image/webp', 0.92);
+          return;
+        }
         var bg = [p[0], p[1], p[2]];
         var bgGrey = new Uint8Array(S * S), q = [];
         for (var i = 0; i < S; i++) { q.push(i, i + (S - 1) * S, i * S, i * S + S - 1); }
@@ -3517,6 +3580,12 @@
     _bulkHeads: function (input) {
       var files = input && input.files ? Array.prototype.slice.call(input.files) : [];
       if (!files.length) return;
+      var glbFiles = files.filter(function (f) { return /\.glb$/i.test(String(f.name || '')); });
+      if (glbFiles.length) {
+        api._bulkHeads3d({ files: glbFiles });
+      }
+      files = files.filter(function (f) { return !/\.glb$/i.test(String(f.name || '')); });
+      if (!files.length) return;
       var sb = client();
       var count = 0;
       toast('Processing ' + files.length + ' head pictures…');
@@ -3527,7 +3596,6 @@
         var studentId = m[1].toLowerCase();
         var suffix = (m[2] || '').toLowerCase();
         var stem = studentId + suffix;
-        var storageName = 'heads/' + stem + '.webp';
         chain = chain.then(function () {
           return cleanHead(f).then(function (blob) {
             return new Promise(function (res) {
@@ -3536,14 +3604,20 @@
               fr.onerror = function () { res(blob); };
               fr.readAsDataURL(blob);
             });
-          }).then(function (blob) {
-            if (sb) writeHeadRows([stem]).catch(function () {});
+          }).then(function () {
+            if (sb) return writeHeadRows([stem]).catch(function () {});
+          }).then(function () {
             return loadImg(headB64[stem]);
           }).then(function (im) {
             if (!suffix) {
               heads[studentId] = im;
-              if (!data.approved[studentId]) {
-                data.approved[studentId] = { skin: 'auto', tee: TEES[6], at: new Date().toISOString() };
+              var gen = genderOf(studentId, null, im);
+              if (!data.approved[studentId] || data.approved[studentId].localDevDefault) {
+                data.approved[studentId] = { skin: 'auto', tee: gen === 'girl' ? '#ec4899' : '#3b82f6', gender: gen, wear: {}, head: true, at: new Date().toISOString() };
+              } else {
+                data.approved[studentId].head = true;
+                if (!data.approved[studentId].gender) data.approved[studentId].gender = gen;
+                data.approved[studentId].at = new Date().toISOString();
               }
               count++;
               return recompose(studentId);
@@ -3636,11 +3710,61 @@
     state = 'idle';
     load();
   }
+  function autoSyncLocalDevNewHeads() {
+    if (!IS_LOCAL_DEV) return;
+    var sb = client();
+    if (!sb || !sb.auth || !sb.auth.getSession) return;
+    sb.auth.getSession().then(function (s) {
+      if (!s || !s.data || !s.data.session) return;
+      var targets = [
+        { id: 'student-3a-207', gender: 'girl', tee: '#ec4899' },
+        { id: 'student-4b-305', gender: 'boy',  tee: '#3b82f6' }
+      ];
+      readSyncRow().then(function (remote) {
+        var remApp = (remote && remote.approved) || {};
+        var todo = targets.filter(function (t) { return !remApp[t.id] || !remApp[t.id].head; });
+        if (!todo.length) return;
+        var mPre = BASE.match(/^(\.\.\/)+/);
+        var prefix = mPre ? mPre[0] : '';
+        function fetchAsDataUrl(url, mime) {
+          return fetch(url).then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) {
+            if (!b) return null;
+            return new Promise(function (res) {
+              var fr = new FileReader();
+              fr.onload = function () {
+                var str = String(fr.result || ''), ix = str.indexOf('base64,');
+                res(ix >= 0 ? ('data:' + mime + ';base64,' + str.slice(ix + 7)) : str);
+              };
+              fr.onerror = function () { res(null); };
+              fr.readAsDataURL(b);
+            });
+          }).catch(function () { return null; });
+        }
+        return Promise.all(todo.map(function (t) {
+          return Promise.all([
+            fetchAsDataUrl(prefix + '_tmp/k12-avatars/webp/' + t.id + '.webp' + ASSET_V, 'image/webp'),
+            fetchAsDataUrl(prefix + '_tmp/pupil-heads-3d/glb/' + t.id + '.glb' + ASSET_V, 'model/gltf-binary')
+          ]).then(function (pair) { return { t: t, h2d: pair[0], h3d: pair[1] }; });
+        })).then(function (items) {
+          var rows = [];
+          items.forEach(function (it) {
+            if (it.h2d) { headB64[it.t.id] = it.h2d; rows.push(hiddenRow(HEAD_ROW_PREFIX + it.t.id, 'Pupil Avatar Face', it.h2d)); }
+            if (it.h3d) { rows.push(hiddenRow(HEAD3D_ROW_PREFIX + it.t.id, 'Pupil 3D Head', it.h3d)); }
+            if (it.h2d) {
+              data.approved[it.t.id] = { skin: 'auto', tee: it.t.tee, gender: it.t.gender, wear: {}, head: true, at: nowIso() };
+            }
+          });
+          if (!rows.length) return;
+          return sb.from('classes').upsert(rows, { onConflict: 'id' }).then(function () { return writeSyncRow(); });
+        });
+      }).catch(function () {});
+    }).catch(function () {});
+  }
   api.refreshFaces = function () { refreshAfterUnlock(0); };
   try {
     root.addEventListener('eaa:teacher-unlocked', function (e) {
       if (e && e.detail && e.detail.offline) return;   // offline unlock: the cloud is paused, nothing new to read
-      setTimeout(function () { refreshAfterUnlock(0); }, 700);
+      setTimeout(function () { autoSyncLocalDevNewHeads(); refreshAfterUnlock(0); }, 700);
     });
   } catch (e) { /* no window events (tests) */ }
 
