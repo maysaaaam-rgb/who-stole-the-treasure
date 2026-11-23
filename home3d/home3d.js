@@ -18,11 +18,11 @@
   R3.toneMapping = T3.ACESFilmicToneMapping;
   R3.toneMappingExposure = 1.04;   // airy, clean, balanced daylight without harsh dark blotches
   R3.shadowMap.enabled = true;
-  R3.shadowMap.type = K.LOW_GPU ? T3.PCFShadowMap : T3.PCFSoftShadowMap;
+  R3.shadowMap.type = K.MOBILE ? T3.PCFShadowMap : T3.PCFSoftShadowMap;
   if (!K.CAPTURE) {
     R3.shadowMap.autoUpdate = false;
     R3.shadowMap.needsUpdate = true;
-    K.shadowStride = K.LOW_GPU ? 8 : 5;
+    K.shadowStride = K.LOW_GPU ? 6 : 4;
   }
   // Cool-running 6-hour Eco Mode: drops to 30fps after 90s idle, wakes to 60fps in 0ms on any interaction
   var _lastClassroomAct = performance.now();
@@ -49,9 +49,9 @@
   var hemiLight = new T3.HemisphereLight(0xd8f3ff, 0x7cb860, 0.78);   // generous soft fill so shadows are airy & soft, never black blotches
   scene.add(hemiLight);
   var sun = new T3.DirectionalLight(0xfff2d8, 1.65);   // gentle warm daylight sun with soft shadows
-  var smSz = K.LOW_GPU ? 1024 : 2048;
+  var smSz = K.MOBILE ? 1024 : 2048;
   sun.castShadow = true; sun.shadow.mapSize.set(smSz, smSz);
-  sun.shadow.radius = K.LOW_GPU ? 1.5 : 4.5;
+  sun.shadow.radius = K.MOBILE ? 1.5 : 3.5;
   sun.shadow.bias = -.00045; sun.shadow.normalBias = .032;
   var sc = sun.shadow.camera; sc.left = -68; sc.right = 68; sc.top = 54; sc.bottom = -54; sc.near = 1; sc.far = 230;
   sun.position.set(-38, 56, 42); sun.target.position.set(2, 0, 0); scene.add(sun); scene.add(sun.target);

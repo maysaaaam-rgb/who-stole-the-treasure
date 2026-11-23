@@ -78,7 +78,7 @@
     opts = opts || {};
     var canvas = opts.canvas || document.getElementById('scene');
     K.quality = K.Q.get('q') || (K.LOW_GPU ? (K.MOBILE ? 'mobile' : 'board') : 'high');
-    var useAA = K.CAPTURE || (!K.LOW_GPU && K.quality !== 'low');
+    var useAA = K.CAPTURE || (K.quality !== 'low' && !K.MOBILE);
     var r = K.renderer = new T3.WebGLRenderer({
       canvas: canvas,
       antialias: useAA,
@@ -87,7 +87,7 @@
       preserveDrawingBuffer: K.CAPTURE
     });
     r.shadowMap.enabled = true;
-    r.shadowMap.type = K.LOW_GPU ? T3.PCFShadowMap : T3.PCFSoftShadowMap;
+    r.shadowMap.type = K.MOBILE ? T3.PCFShadowMap : T3.PCFSoftShadowMap;
     if (K.LOW_GPU && !K.CAPTURE) {
       r.shadowMap.autoUpdate = false;
       r.shadowMap.needsUpdate = true;
@@ -112,11 +112,11 @@
       if (K.CAPTURE) return +K.Q.get('pr') || 1;
       if (K.quality === 'ultra') return Math.min(2, root.devicePixelRatio || 1);
       var dpr = root.devicePixelRatio || 1;
-      var maxPr = K.LOW_GPU ? Math.min(1.25, dpr) : Math.min(1.65, dpr);
-      // Strict shaded-pixel budget so 4K Smartboards (3840x2160) never render 8M-18M pixels/frame!
-      var maxPixels = K.quality === 'low' ? 980000 : (K.LOW_GPU ? 1480000 : 2250000);
+      var maxPr = K.MOBILE ? Math.min(1.35, dpr) : (K.LOW_GPU ? Math.min(1.5, dpr) : Math.min(2.0, dpr));
+      // Crisp QHD 2560x1440 (3.69M px) budget on 4K Smartboards (sharp text/edges, never 18.6M 6K overload!)
+      var maxPixels = K.quality === 'low' ? 1600000 : (K.MOBILE ? 1850000 : (K.LOW_GPU ? 3686400 : 4600000));
       var budgetPr = Math.sqrt(maxPixels / Math.max(1, w * h));
-      return K.clamp(Math.min(maxPr, budgetPr) * K._dynScale, 0.42, 2.0);
+      return K.clamp(Math.min(maxPr, budgetPr) * K._dynScale, 0.65, 2.0);
     }
     K._computePixelRatio = computePixelRatio;
     function resize() {
@@ -294,22 +294,23 @@
       if (_fpsAcc >= 0.75) {
         K.perf.fps = Math.round(_fpsFrames / _fpsAcc);
         _fpsAcc = 0; _fpsFrames = 0;
-        if (!K.CAPTURE && K.quality !== 'ultra') {
-          if (K.perf.fps < 47) {
+        if (!K.CAPTURE && K.quality !== 'ultra' && K.now > 4.5 && !K.ecoHalfRate) {
+          // 4K HDMI Smartboards often run at 30Hz or 50Hz VSync: only downscale on real <23 FPS lag, never on 30Hz VSync or Eco Mode!
+          if (K.perf.fps < 23) {
             _lowFpsStrikes++;
             _highFpsWindows = 0;
             if (K._post && K._post.enabled && _lowFpsStrikes >= 2) { K._post.enabled = false; K.perf.bloomOn = false; }
-            if (K._dynScale > 0.64) {
-              K._dynScale = Math.max(0.62, +(K._dynScale * 0.86).toFixed(2));
+            if (_lowFpsStrikes >= 3 && K._dynScale > 0.85) {
+              K._dynScale = Math.max(0.85, +(K._dynScale * 0.92).toFixed(2));
               K.renderer.shadowMap.autoUpdate = false;
               _shadowStride = Math.min(6, _shadowStride + 2);
               if (K.resize) K.resize();
             }
           } else {
             _lowFpsStrikes = 0;
-            if (K.perf.fps >= 58 && K._dynScale < 1.0) {
+            if (K.perf.fps >= 29 && K._dynScale < 1.0) {
               _highFpsWindows++;
-              if (_highFpsWindows >= 5) {
+              if (_highFpsWindows >= 4) {
                 _highFpsWindows = 0;
                 K._dynScale = Math.min(1.0, +(K._dynScale + 0.08).toFixed(2));
                 if (K.resize) K.resize();

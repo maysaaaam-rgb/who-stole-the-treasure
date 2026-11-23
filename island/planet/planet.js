@@ -265,21 +265,21 @@
     } catch (e) {}
     return false;
   })();
-  var _planetDynScale = 1.0;
+  var _planetDynScale = 1.0, _planetLowStrikes = 0;
   function computePlanetPR(w, h) {
     var dpr = root.devicePixelRatio || 1;
-    var maxPr = IS_LOW_GPU_PLANET ? Math.min(1.25, dpr) : Math.min(1.5, dpr);
-    var maxPx = IS_LOW_GPU_PLANET ? 1480000 : 2250000;
+    var maxPr = IS_MOBILE_PLANET ? Math.min(1.35, dpr) : Math.min(1.5, dpr);
+    var maxPx = IS_MOBILE_PLANET ? 1850000 : (IS_LOW_GPU_PLANET ? 3686400 : 4600000);
     var budgetPr = Math.sqrt(maxPx / Math.max(1, w * h));
-    return Math.max(0.42, Math.min(2.0, Math.min(maxPr, budgetPr) * _planetDynScale));
+    return Math.max(0.65, Math.min(2.0, Math.min(maxPr, budgetPr) * _planetDynScale));
   }
 
   var R = 22.0; // Planet base radius (~138u circumference -> ~33s walk around)
-  var renderer = new T3.WebGLRenderer({ canvas: canvas, antialias: !IS_LOW_GPU_PLANET, stencil: false, powerPreference: 'high-performance' });
+  var renderer = new T3.WebGLRenderer({ canvas: canvas, antialias: !IS_MOBILE_PLANET, stencil: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(computePlanetPR(root.innerWidth, root.innerHeight));
   renderer.setSize(root.innerWidth, root.innerHeight);
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = IS_LOW_GPU_PLANET ? T3.PCFShadowMap : T3.PCFSoftShadowMap;
+  renderer.shadowMap.type = IS_MOBILE_PLANET ? T3.PCFShadowMap : T3.PCFSoftShadowMap;
   renderer.toneMapping = T3.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.08;
   if (T3.SRGBColorSpace) renderer.outputColorSpace = T3.SRGBColorSpace;
@@ -325,7 +325,8 @@
 
   var sun = new T3.DirectionalLight(0xfff6df, 1.48);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(1024, 1024);
+  var pSm = IS_MOBILE_PLANET ? 1024 : 2048;
+  sun.shadow.mapSize.set(pSm, pSm);
   sun.shadow.camera.near = 2;
   sun.shadow.camera.far = 65;
   var sCam = 18;
@@ -2225,10 +2226,15 @@
     if (fpsAccum >= 1.0) {
       curFps = Math.round(fpsFrames / fpsAccum);
       fpsFrames = 0; fpsAccum = 0;
-      if (state.ready && curFps < 46 && _planetDynScale > 0.64) {
-        _planetDynScale = Math.max(0.62, +(_planetDynScale * 0.86).toFixed(2));
-        renderer.setPixelRatio(computePlanetPR(root.innerWidth, root.innerHeight));
-        renderer.setSize(root.innerWidth, root.innerHeight);
+      if (state.ready && t > 4.5 && curFps < 23 && _planetDynScale > 0.85) {
+        _planetLowStrikes++;
+        if (_planetLowStrikes >= 3) {
+          _planetDynScale = Math.max(0.85, +(_planetDynScale * 0.92).toFixed(2));
+          renderer.setPixelRatio(computePlanetPR(root.innerWidth, root.innerHeight));
+          renderer.setSize(root.innerWidth, root.innerHeight);
+        }
+      } else {
+        _planetLowStrikes = 0;
       }
       if (canvas) {
         canvas.setAttribute('data-stats', JSON.stringify({

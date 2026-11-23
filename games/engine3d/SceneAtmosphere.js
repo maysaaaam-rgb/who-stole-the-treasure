@@ -457,9 +457,9 @@
     else if (T3.sRGBEncoding) renderer.outputEncoding = T3.sRGBEncoding;
     renderer.toneMapping = T3.ACESFilmicToneMapping;
     renderer.toneMappingExposure = cfg.exposure != null ? cfg.exposure : 1.05;
-    var isLowGpu = !!(root.K3 && (root.K3.LOW_GPU || root.K3.MOBILE));
+    var isMobileGpu = !!(root.K3 && root.K3.MOBILE);
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = isLowGpu ? T3.PCFShadowMap : T3.PCFSoftShadowMap;
+    renderer.shadowMap.type = isMobileGpu ? T3.PCFShadowMap : T3.PCFSoftShadowMap;
     renderer.autoClear = true;
 
     var oldObjs = [];
@@ -482,7 +482,7 @@
     var sun = new T3.DirectionalLight(cfg.sunColor, cfg.sunIntensity);
     sun.position.fromArray(cfg.sunPos);
     sun.castShadow = true;
-    var mapSz = isLowGpu ? 1024 : 2048;
+    var mapSz = isMobileGpu ? 1024 : 2048;
     sun.shadow.mapSize.set(mapSz, mapSz);
     sun.shadow.bias = -0.0004;
     sun.shadow.normalBias = 0.02;
