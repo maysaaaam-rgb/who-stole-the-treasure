@@ -8,7 +8,7 @@
     radial-gradient(ellipse 120px 70px at 9% 104%, #fff 60%, transparent 62%),
     radial-gradient(ellipse 170px 95px at 99% 100%, #fff 60%, transparent 62%),
     radial-gradient(ellipse 130px 70px at 60% -3%, #fff 60%, transparent 62%);
-  filter: drop-shadow(0 6px 10px rgba(80,140,200,.25)); opacity: .96; }
+  opacity: .96; }
 .h3-title { position: fixed; top: 16px; left: 16px; padding: 10px 22px; border-radius: 999px; background: #fffdf7; color: #2b1d40;
   font: 800 1.3rem 'Trebuchet MS', sans-serif; box-shadow: 0 6px 14px rgba(0,0,0,.14); }
 .h3-goal { position: fixed; top: max(14px, env(safe-area-inset-top)); left: max(14px, env(safe-area-inset-left)); z-index: 50; display: flex; align-items: center; gap: 10px; padding: 7px 16px; border-radius: 999px; background: #fffdf7;
@@ -591,10 +591,9 @@
   gap: 6px;
   padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(255, 253, 247, 0.94);
+  background: rgba(255, 253, 247, 0.97);
   border: 3px solid #4f9dff;
   box-shadow: 0 8px 20px rgba(24, 52, 92, 0.18);
-  backdrop-filter: blur(8px);
 }
 .h3-shape-lbl {
   font-size: 0.80rem;
@@ -650,11 +649,9 @@
   gap: 10px;
   padding: 8px 12px;
   border-radius: 28px;
-  background: rgba(255, 250, 240, 0.94);
+  background: rgba(255, 250, 240, 0.97);
   border: 4px solid #ffffff;
   box-shadow: 0 12px 30px rgba(24, 42, 74, 0.24), 0 6px 0 rgba(43, 29, 64, 0.14);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   max-width: calc(100vw - 24px);
   transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.22s ease;
 }
@@ -769,10 +766,9 @@
   gap: 8px;
   padding: 5px 8px;
   border-radius: 999px;
-  background: rgba(255, 252, 245, 0.94);
+  background: rgba(255, 252, 245, 0.97);
   border: 3px solid #ffffff;
   box-shadow: 0 6px 18px rgba(31, 20, 48, 0.18);
-  backdrop-filter: blur(8px);
 }
 .h3-acc-btn {
   appearance: none;
@@ -895,10 +891,8 @@ body.h3-focus-mode .h3-focus-shell {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  background: linear-gradient(180deg, rgba(255, 250, 240, 0.86) 0%, rgba(255, 250, 240, 0.72) 100%);
+  background: linear-gradient(180deg, rgba(255, 250, 240, 0.96) 0%, rgba(255, 250, 240, 0.92) 100%);
   border-bottom: 5px solid #2b1d40;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
   box-sizing: border-box;
 }
 .h3-focus-meters {

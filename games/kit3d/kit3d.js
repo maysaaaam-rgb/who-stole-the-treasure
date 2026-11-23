@@ -39,7 +39,7 @@
     for (var i = 0; i < jobs.length; i++) if (jobs[i].at <= K.now) { var j = jobs.splice(i, 1)[0]; i--; j.fn(); }
   }
 
-  /* ---------- renderer / scene ---------- */
+  /* ---------- renderer / scene (4K Smartboard & Integrated GPU Turbo Pipeline) ---------- */
   K.MOBILE = (function () {
     try {
       var ua = navigator.userAgent || '';
@@ -48,20 +48,50 @@
       return /iPhone|iPad|iPod|Android/i.test(ua) || (touch && small);
     } catch (e) { return false; }
   })();
+  K.GPU_INFO = (function () {
+    var rendererName = '', isLow = K.MOBILE, isSmartboard = false;
+    try {
+      var touch = (navigator.maxTouchPoints > 0) || ('ontouchstart' in root);
+      var bigScreen = Math.max(screen.width || 0, innerWidth || 0) >= 1900;
+      if (touch && bigScreen && !K.MOBILE) isSmartboard = true;
+      var probe = document.createElement('canvas');
+      var gl = probe.getContext('webgl') || probe.getContext('experimental-webgl');
+      if (gl) {
+        var dbg = gl.getExtension('WEBGL_debug_renderer_info');
+        rendererName = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '') : String(gl.getParameter(gl.RENDERER) || '');
+        if (/Intel.*(UHD|HD Graphics|Iris)|Mali|Adreno|PowerVR|VideoCore|Vivante|SwiftShader|llvmpipe|Microsoft Basic|Vega [3678]/i.test(rendererName)) {
+          isLow = true;
+        }
+        var lose = gl.getExtension('WEBGL_lose_context');
+        if (lose) lose.loseContext();
+      }
+    } catch (e) {}
+    if (Q.get('board') === '1' || Q.get('q') === 'low') { isSmartboard = true; isLow = true; }
+    if (Q.get('q') === 'ultra') { isSmartboard = false; isLow = false; }
+    return { name: rendererName, low: isLow || isSmartboard, smartboard: isSmartboard };
+  })();
+  K.SMARTBOARD = K.GPU_INFO.smartboard;
+  K.LOW_GPU = K.GPU_INFO.low;
+  K._dynScale = 1.0;
+
   K.init = function (opts) {
     opts = opts || {};
     var canvas = opts.canvas || document.getElementById('scene');
-    var r = K.renderer = new T3.WebGLRenderer({ canvas: canvas, antialias: true, preserveDrawingBuffer: K.CAPTURE, powerPreference: K.MOBILE ? 'default' : 'high-performance' });
-    // sharp picture on desktops (up to 2x), VRAM-safe Retina cap on phones/tablets (up to 1.5x)
-    K.quality = K.Q.get('q') || (K.MOBILE ? 'mobile' : 'high');
-    var dpr = root.devicePixelRatio || 1;
-    var pr = K.CAPTURE ? (+K.Q.get('pr') || 1)
-      : K.quality === 'low' ? Math.min(1, dpr)
-      : K.MOBILE ? Math.min(1.5, dpr)
-      : Math.min(2, Math.max(1.5, dpr));
-    r.setPixelRatio(pr);
+    K.quality = K.Q.get('q') || (K.LOW_GPU ? (K.MOBILE ? 'mobile' : 'board') : 'high');
+    var useAA = K.CAPTURE || (!K.LOW_GPU && K.quality !== 'low');
+    var r = K.renderer = new T3.WebGLRenderer({
+      canvas: canvas,
+      antialias: useAA,
+      powerPreference: K.MOBILE ? 'default' : 'high-performance',
+      stencil: false,
+      preserveDrawingBuffer: K.CAPTURE
+    });
     r.shadowMap.enabled = true;
-    r.shadowMap.type = T3.PCFSoftShadowMap;
+    r.shadowMap.type = K.LOW_GPU ? T3.PCFShadowMap : T3.PCFSoftShadowMap;
+    if (K.LOW_GPU && !K.CAPTURE) {
+      r.shadowMap.autoUpdate = false;
+      r.shadowMap.needsUpdate = true;
+    }
     if (T3.ACESFilmicToneMapping !== undefined) {
       r.toneMapping = T3.ACESFilmicToneMapping;
       r.toneMappingExposure = 1.05;
@@ -78,10 +108,22 @@
     K._baseFov = opts.fov || 42;
     K._autoPortraitFov = opts.autoPortraitFov !== false;
     K.camera = new T3.PerspectiveCamera(K._baseFov, 16 / 9, .1, opts.far || 400);
+    function computePixelRatio(w, h) {
+      if (K.CAPTURE) return +K.Q.get('pr') || 1;
+      if (K.quality === 'ultra') return Math.min(2, root.devicePixelRatio || 1);
+      var dpr = root.devicePixelRatio || 1;
+      var maxPr = K.LOW_GPU ? Math.min(1.25, dpr) : Math.min(1.65, dpr);
+      // Strict shaded-pixel budget so 4K Smartboards (3840x2160) never render 8M-18M pixels/frame!
+      var maxPixels = K.quality === 'low' ? 980000 : (K.LOW_GPU ? 1480000 : 2250000);
+      var budgetPr = Math.sqrt(maxPixels / Math.max(1, w * h));
+      return K.clamp(Math.min(maxPr, budgetPr) * K._dynScale, 0.42, 2.0);
+    }
+    K._computePixelRatio = computePixelRatio;
     function resize() {
       var vv = root.visualViewport;
       var w = Math.max(2, Math.round((vv && vv.width) || innerWidth || 1280));
       var h = Math.max(2, Math.round((vv && vv.height) || innerHeight || 720));
+      r.setPixelRatio(computePixelRatio(w, h));
       r.setSize(w, h, false);
       if (K._resizePostFX) K._resizePostFX(w, h);
       var aspect = w / h;
@@ -90,6 +132,7 @@
         K.camera.fov = aspect < 1.05 ? K.clamp(K._baseFov * (1 + (1.05 - aspect) * 0.68), K._baseFov, 68) : K._baseFov;
       }
       K.camera.updateProjectionMatrix();
+      r.shadowMap.needsUpdate = true;
     }
     K.resize = resize;
     addEventListener('resize', resize);
@@ -223,6 +266,24 @@
     });
   };
 
+  var _highFpsWindows = 0, _shadowTick = 0, _shadowStride = 2;
+  function _isBackgroundCovered() {
+    if (document.hidden) return true;
+    try {
+      if (root.frameElement && root.parent && root.parent !== root) {
+        if (root.frameElement.offsetParent === null) return true;
+        if (root.frameElement.id === 'pn-home3d-frame') {
+          var pd = root.parent.document;
+          var gm = pd.getElementById('game-maker-modal');
+          if (gm && !gm.classList.contains('hidden') && gm.style.display !== 'none') return true;
+          var lv = pd.getElementById('lesson-viewer-modal');
+          if (lv && !lv.classList.contains('hidden') && lv.style.display !== 'none') return true;
+        }
+      }
+    } catch (e) {}
+    return false;
+  }
+
   function frame(dt) {
     var rawDt = dt;
     dt = Math.min(dt, 1 / 20) * K.timeScale;
@@ -233,10 +294,31 @@
       if (_fpsAcc >= 0.75) {
         K.perf.fps = Math.round(_fpsFrames / _fpsAcc);
         _fpsAcc = 0; _fpsFrames = 0;
-        if (K._post && K._post.enabled && !K.CAPTURE && K.perf.fps < 46) {
-          _lowFpsStrikes++;
-          if (_lowFpsStrikes >= 3) { K._post.enabled = false; K.perf.bloomOn = false; }
-        } else { _lowFpsStrikes = 0; }
+        if (!K.CAPTURE && K.quality !== 'ultra') {
+          if (K.perf.fps < 47) {
+            _lowFpsStrikes++;
+            _highFpsWindows = 0;
+            if (K._post && K._post.enabled && _lowFpsStrikes >= 2) { K._post.enabled = false; K.perf.bloomOn = false; }
+            if (K._dynScale > 0.64) {
+              K._dynScale = Math.max(0.62, +(K._dynScale * 0.86).toFixed(2));
+              K.renderer.shadowMap.autoUpdate = false;
+              _shadowStride = Math.min(6, _shadowStride + 2);
+              if (K.resize) K.resize();
+            }
+          } else {
+            _lowFpsStrikes = 0;
+            if (K.perf.fps >= 58 && K._dynScale < 1.0) {
+              _highFpsWindows++;
+              if (_highFpsWindows >= 5) {
+                _highFpsWindows = 0;
+                K._dynScale = Math.min(1.0, +(K._dynScale + 0.08).toFixed(2));
+                if (K.resize) K.resize();
+              }
+            } else {
+              _highFpsWindows = 0;
+            }
+          }
+        }
       }
     }
     runJobs();
@@ -244,6 +326,9 @@
     K.cam.update(dt);
     if (root.GameQualityCore && root.GameQualityCore.Juice) {
       root.GameQualityCore.Juice.update(dt, K.now, K.camera);
+    }
+    if (!K.renderer.shadowMap.autoUpdate && ((++_shadowTick) % (K.shadowStride || _shadowStride) === 0)) {
+      K.renderer.shadowMap.needsUpdate = true;
     }
     var p = K._post;
     if (p && p.enabled && !K.CAPTURE) {
@@ -279,8 +364,10 @@
       ready: true, K: K
     };
     if (K.CAPTURE) { frame(1 / 30); return; }
-    var last = 0, ecoTick = 0;
+    var last = 0, ecoTick = 0, bgCheckTick = 0, bgCovered = false;
     (function loop(ts) {
+      if (((++bgCheckTick) & 15) === 1) bgCovered = _isBackgroundCovered();
+      if (bgCovered) { last = ts; requestAnimationFrame(loop); return; }
       if (K.ecoHalfRate && ((++ecoTick) & 1)) { requestAnimationFrame(loop); return; }
       var dt = last ? Math.min(0.1, (ts - last) / 1000) : 1 / 60;
       last = ts;
@@ -854,12 +941,16 @@
   };
   Kid.prototype.update = function (dt) {
     this.stateT += dt;
+    var hasSync = !!(this._syncHead || (this._itemSyncs && this._itemSyncs.length));
     if (this.useMixer && this.mixer) {
       this.mixer.update(dt);
-      if (this._syncHead) this._syncHead(K.now, this.state);
-      if (this._itemSyncs && this._itemSyncs.length) {
+      if (hasSync) {
+        if (this._syncHeadPrep) this._syncHeadPrep();
         this.root.updateMatrixWorld(true);
-        for (var mi = 0; mi < this._itemSyncs.length; mi++) this._itemSyncs[mi](K.now);
+        if (this._syncHead) this._syncHead(K.now, this.state);
+        if (this._itemSyncs) {
+          for (var mi = 0; mi < this._itemSyncs.length; mi++) this._itemSyncs[mi](K.now);
+        }
       }
       return;
     }
@@ -884,10 +975,13 @@
     this.rot('LeftLeg', L, P.kneeL); this.rot('RightLeg', L, P.kneeR);
     this.rot('LeftFoot', L, P.footL - (P.kneeL - .05) * .35 - P.thighL * .3);
     this.rot('RightFoot', L, P.footR - (P.kneeR - .05) * .35 - P.thighR * .3);
-    if (this._syncHead) this._syncHead(K.now, this.state);
-    if (this._itemSyncs && this._itemSyncs.length) {
+    if (hasSync) {
+      if (this._syncHeadPrep) this._syncHeadPrep();
       this.root.updateMatrixWorld(true);
-      for (var si = 0; si < this._itemSyncs.length; si++) this._itemSyncs[si](K.now);
+      if (this._syncHead) this._syncHead(K.now, this.state);
+      if (this._itemSyncs) {
+        for (var si = 0; si < this._itemSyncs.length; si++) this._itemSyncs[si](K.now);
+      }
     }
   };
 
@@ -1248,21 +1342,35 @@
       self.body.position.copy(sbP); self.body.rotation.copy(sbR);
       for (var k2 in saved) self.bones[k2].quaternion.copy(saved[k2]);
       self.root.updateMatrixWorld(true);
-      var _p = new T3.Vector3(), _q2 = new T3.Quaternion(), _ri = new T3.Quaternion();
-      self._syncHead = function () {
-        if (!headBone) return;
-        headBone.scale.set(1, 1, 1);
-        if (neckBone) neckBone.scale.set(1, 1, 1);
-        self.root.updateMatrixWorld(true);
-        headBone.getWorldPosition(_p);
-        headBone.getWorldQuaternion(_q2);
+      // Zero-cost unit-scale headSocket under headBone.parent so headBone stays 0.001 permanently (1 updateMatrixWorld instead of 3!)
+      var headSocket = null;
+      if (headBone && headBone.parent) {
+        headSocket = new T3.Object3D();
+        headSocket.position.copy(headBone.position);
+        headSocket.quaternion.copy(headBone.quaternion);
+        headBone.parent.add(headSocket);
         headBone.scale.setScalar(0.001);
-        self.root.updateMatrixWorld(true);
+        if (neckBone) neckBone.scale.set(1, 1, 1);
+      }
+      var _p = new T3.Vector3(), _q2 = new T3.Quaternion(), _ri = new T3.Quaternion();
+      self._syncHeadPrep = function () {
+        if (headSocket && headBone) {
+          headSocket.position.copy(headBone.position);
+          headSocket.quaternion.copy(headBone.quaternion);
+          if (headBone.scale.x > 0.01) headBone.scale.setScalar(0.001);
+        }
+      };
+      self._syncHead = function () {
+        if (!headSocket) return;
+        headSocket.getWorldPosition(_p);
+        headSocket.getWorldQuaternion(_q2);
         self.root.worldToLocal(_p);
         self.root.getWorldQuaternion(_ri).invert();
         _q2.premultiply(_ri).multiply(restHeadInv);
         holder.position.copy(_p); holder.quaternion.copy(_q2);
       };
+      self._syncHeadPrep();
+      self.root.updateMatrixWorld(true);
       self._syncHead();
       self._refreshHairTuck();
       return self;

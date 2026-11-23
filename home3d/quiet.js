@@ -1546,10 +1546,15 @@
 
     HOST.K.onFrame(function (dt, t) {
       var stepDt = Math.min(dt, 0.05);
-      updateNoiseAndState(stepDt);
-      updateWeatherAndFX(stepDt, t);
+      var idleCalm = !isOn && !isCalibrating && !testForced && curState === 'calm' && stormMix < 0.002 && rainMix < 0.002 && sunbeamMix < 0.002 && !ripples.length && !puffs.length && !sparkles.length && !qMarks.length;
+      if (!idleCalm) {
+        updateNoiseAndState(stepDt);
+        updateWeatherAndFX(stepDt, t);
+        SFX.updateBed(stepDt);
+      } else {
+        updateBeaconColor(t);
+      }
       updateCreatures(stepDt, t);
-      SFX.updateBed(stepDt);
     });
   }
 

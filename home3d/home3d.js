@@ -14,11 +14,16 @@
   var NOLINKS = K.Q.has('nolinks') || K.DEMO;
   var mat = function (c, o) { return new T3.MeshStandardMaterial(Object.assign({ color: c, roughness: .88, metalness: 0, envMapIntensity: .28 }, o || {})); };
   var R3 = K.renderer;
-  R3.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5)); // 6-hour classroom laptop thermal guard
+  if (K.resize) K.resize(); // Enforce kit3d 4K Smartboard pixel-budget cap (never 6K supersampling!)
   R3.toneMapping = T3.ACESFilmicToneMapping;
   R3.toneMappingExposure = 1.04;   // airy, clean, balanced daylight without harsh dark blotches
   R3.shadowMap.enabled = true;
-  R3.shadowMap.type = T3.PCFSoftShadowMap;
+  R3.shadowMap.type = K.LOW_GPU ? T3.PCFShadowMap : T3.PCFSoftShadowMap;
+  if (!K.CAPTURE) {
+    R3.shadowMap.autoUpdate = false;
+    R3.shadowMap.needsUpdate = true;
+    K.shadowStride = K.LOW_GPU ? 8 : 5;
+  }
   // Cool-running 6-hour Eco Mode: drops to 30fps after 90s idle, wakes to 60fps in 0ms on any interaction
   var _lastClassroomAct = performance.now();
   function _wakeClassroomEco() { _lastClassroomAct = performance.now(); K.ecoHalfRate = false; }
@@ -43,10 +48,10 @@
   K.world.sky(0x3ba8cc, 0x7bd4e6, 0xcff2f7);
   var hemiLight = new T3.HemisphereLight(0xd8f3ff, 0x7cb860, 0.78);   // generous soft fill so shadows are airy & soft, never black blotches
   scene.add(hemiLight);
-  var sun = new T3.DirectionalLight(0xfff2d8, 1.65);   // gentle warm daylight sun with ultra-soft feathered shadows
-  var smSz = K.MOBILE ? 1024 : 2048;
+  var sun = new T3.DirectionalLight(0xfff2d8, 1.65);   // gentle warm daylight sun with soft shadows
+  var smSz = K.LOW_GPU ? 1024 : 2048;
   sun.castShadow = true; sun.shadow.mapSize.set(smSz, smSz);
-  sun.shadow.radius = 6.0;
+  sun.shadow.radius = K.LOW_GPU ? 1.5 : 4.5;
   sun.shadow.bias = -.00045; sun.shadow.normalBias = .032;
   var sc = sun.shadow.camera; sc.left = -68; sc.right = 68; sc.top = 54; sc.bottom = -54; sc.near = 1; sc.far = 230;
   sun.position.set(-38, 56, 42); sun.target.position.set(2, 0, 0); scene.add(sun); scene.add(sun.target);
@@ -54,44 +59,132 @@
   var rimLight = new T3.DirectionalLight(0xffe7b8, 0.68);
   rimLight.position.set(36, 26, -46); scene.add(rimLight);
 
-  // Sea: sunny cartoon adventure-park water matching docs/design/home-world.jpg:
-  // exact analytical distance to every island's coastline (no spiky polygon rings),
-  // creamy breathing shore foam, warm aqua shallows, bright tropical turquoise water, and soft painterly swells.
-  var seaU = { uT: { value: 0 }, uStorm: { value: 0 }, uIsl: { value: [] }, uIslW: { value: [] }, uN: { value: 0 } };
+  // Sea: sunny cartoon adventure-park water matching docs/design/home-world.jpg.
+  // Smartboard Turbo: Static island coast distances & sandy shallows are baked ONCE into a 512x512 RGBA DataTexture
+  // (3.9cm shore precision!) + a seamless 128x128 wave-noise DataTexture — replacing ~180 trig/atan/loop instructions
+  // per ocean pixel with 3 bilinear texture fetches!
+  var COAST_HALF = 150.0, COAST_SPAN = 300.0, COAST_RES = 512;
+  var _coastData = new Uint8Array(COAST_RES * COAST_RES * 4);
+  for (var _ci = 0; _ci < COAST_RES * COAST_RES; _ci++) {
+    _coastData[_ci * 4] = 255; _coastData[_ci * 4 + 1] = 255; _coastData[_ci * 4 + 2] = 0; _coastData[_ci * 4 + 3] = 255;
+  }
+  var _coastTex = new T3.DataTexture(_coastData, COAST_RES, COAST_RES, T3.RGBAFormat);
+  _coastTex.wrapS = _coastTex.wrapT = T3.ClampToEdgeWrapping;
+  _coastTex.minFilter = _coastTex.magFilter = T3.LinearFilter;
+  _coastTex.needsUpdate = true;
+
+  var _waveRes = 128, _waveData = new Uint8Array(_waveRes * _waveRes * 4);
+  (function bakeWaveNoise() {
+    function h2(ix, iy, per) {
+      var x = ((ix % per) + per) % per, y = ((iy % per) + per) % per;
+      var s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+      return s - Math.floor(s);
+    }
+    function vn(u, v, per) {
+      var x = u * per, y = v * per, ix = Math.floor(x), iy = Math.floor(y);
+      var fx = x - ix, fy = y - iy;
+      fx = fx * fx * (3 - 2 * fx); fy = fy * fy * (3 - 2 * fy);
+      var a = h2(ix, iy, per), b = h2(ix + 1, iy, per), c = h2(ix, iy + 1, per), d = h2(ix + 1, iy + 1, per);
+      return (a + (b - a) * fx) + ((c + (d - c) * fx) - (a + (b - a) * fx)) * fy;
+    }
+    for (var y = 0; y < _waveRes; y++) {
+      for (var x = 0; x < _waveRes; x++) {
+        var u = x / _waveRes, v = y / _waveRes;
+        var f1 = vn(u, v, 7) * 0.65 + vn(u, v, 14) * 0.35;
+        var f2 = vn(u + 0.31, v + 0.57, 9) * 0.65 + vn(u + 0.31, v + 0.57, 18) * 0.35;
+        var idx = (y * _waveRes + x) * 4;
+        _waveData[idx] = Math.round(f1 * 255);
+        _waveData[idx + 1] = Math.round(f2 * 255);
+        _waveData[idx + 2] = 255;
+        _waveData[idx + 3] = 255;
+      }
+    }
+  })();
+  var _waveTex = new T3.DataTexture(_waveData, _waveRes, _waveRes, T3.RGBAFormat);
+  _waveTex.wrapS = _waveTex.wrapT = T3.RepeatWrapping;
+  _waveTex.minFilter = _waveTex.magFilter = T3.LinearFilter;
+  _waveTex.needsUpdate = true;
+
+  var seaU = {
+    uT: { value: 0 },
+    uStorm: { value: 0 },
+    uIsl: { value: [] },
+    uIslW: { value: [] },
+    uN: { value: 0 },
+    uCoastMap: { value: _coastTex },
+    uWaveMap: { value: _waveTex }
+  };
   for (var si = 0; si < 32; si++) {
     seaU.uIsl.value.push(new T3.Vector4(0, 0, 1, 1));
     seaU.uIslW.value.push(new T3.Vector4(0, 0, 0, 0));
   }
+  function bakeSeaCoastMap() {
+    var nIsl = Math.min(32, seaU.uN.value | 0);
+    if (!nIsl) return;
+    function sminJS(a, b, k) {
+      var h = Math.max(0, Math.min(1, 0.5 + 0.5 * (b - a) / k));
+      return (b + (a - b) * h) - k * h * (1 - h);
+    }
+    function sstep(e0, e1, x) {
+      var t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
+      return t * t * (3 - 2 * t);
+    }
+    var cosA = new Float32Array(nIsl), sinA = new Float32Array(nIsl);
+    for (var k0 = 0; k0 < nIsl; k0++) {
+      var rot = seaU.uIslW.value[k0].w;
+      cosA[k0] = Math.cos(rot); sinA[k0] = Math.sin(rot);
+    }
+    for (var py = 0; py < COAST_RES; py++) {
+      var wz = -COAST_HALF + ((py + 0.5) / COAST_RES) * COAST_SPAN;
+      for (var px = 0; px < COAST_RES; px++) {
+        var wx = -COAST_HALF + ((px + 0.5) / COAST_RES) * COAST_SPAN;
+        var dist = 999.0, sandNear = 0.0;
+        for (var k = 0; k < nIsl; k++) {
+          var e = seaU.uIsl.value[k], ew = seaU.uIslW.value[k];
+          var d0x = wx - e.x, d0y = wz - e.y;
+          var dx = d0x * cosA[k] + d0y * sinA[k];
+          var dy = -d0x * sinA[k] + d0y * cosA[k];
+          var a = Math.atan2(-dy, dx);
+          var w = 1.0 + ew.y * (Math.sin(a * 3.0 + ew.x) * 0.6 + Math.sin(a * 5.0 + ew.x * 2.3) * 0.4);
+          var rx = e.z * w + 0.82, ry = e.w * w + 0.82;
+          var qx = dx / rx, qy = dy / ry;
+          var di = (Math.sqrt(qx * qx + qy * qy) - 1.0) * (rx < ry ? rx : ry);
+          if (ew.z > 0.5) {
+            var sn = 1.0 - sstep(0.0, 7.5, di > 0 ? di : 0);
+            if (sn > sandNear) sandNear = sn;
+          }
+          dist = (k === 0) ? di : sminJS(dist, di, 2.2);
+        }
+        var dPos = dist > 0 ? dist : 0;
+        var rNear = Math.max(0, Math.min(1, (dist + 2.0) / 10.0));
+        var gFar  = Math.max(0, Math.min(1, dPos / 72.0));
+        var idx = (py * COAST_RES + px) * 4;
+        _coastData[idx]     = Math.round(rNear * 255);
+        _coastData[idx + 1] = Math.round(gFar * 255);
+        _coastData[idx + 2] = Math.round(Math.max(0, Math.min(1, sandNear)) * 255);
+        _coastData[idx + 3] = 255;
+      }
+    }
+    _coastTex.needsUpdate = true;
+  }
+
   var seaMesh = null;
   (function sea() {
     var m = new T3.Mesh(new T3.PlaneGeometry(1800, 1800, 1, 1), new T3.ShaderMaterial({
       uniforms: seaU,
       vertexShader: 'varying vec2 vW; void main(){ vec4 w = modelMatrix * vec4(position,1.0); vW = w.xz; gl_Position = projectionMatrix * viewMatrix * w; }',
       fragmentShader: [
-        'uniform float uT; uniform float uStorm; uniform vec4 uIsl[32]; uniform vec4 uIslW[32]; uniform int uN; varying vec2 vW;',
+        'uniform float uT; uniform float uStorm; uniform sampler2D uCoastMap; uniform sampler2D uWaveMap; varying vec2 vW;',
         'float h(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }',
-        'float n(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(h(i),h(i+vec2(1,0)),f.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x), f.y); }',
-        'float fbm(vec2 p){ return n(p) * 0.65 + n(p * 2.1 + 17.3) * 0.35; }',
-        'float smin(float a, float b, float k){ float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0); return mix(b, a, h) - k * h * (1.0 - h); }',
         'void main(){',
-        '  float dist = 999.0; float sandNear = 0.0;',
-        '  for (int k = 0; k < 32; k++) {',
-        '    if (k >= uN) break;',
-        '    vec4 e = uIsl[k]; vec4 ew = uIslW[k];',
-        '    vec2 d0 = vW - e.xy;',
-        '    float cr = cos(ew.w), sr = sin(ew.w);',
-        '    vec2 d = vec2(d0.x * cr + d0.y * sr, -d0.x * sr + d0.y * cr);',
-        '    float a = atan(-d.y, d.x);',
-        '    float w = 1.0 + ew.y * (sin(a * 3.0 + ew.x) * 0.6 + sin(a * 5.0 + ew.x * 2.3) * 0.4);',
-        '    vec2 rad = e.zw * w + vec2(0.82);',
-        '    vec2 q = d / rad;',
-        '    float di = (length(q) - 1.0) * min(rad.x, rad.y);',
-        '    if (ew.z > 0.5) sandNear = max(sandNear, 1.0 - smoothstep(0.0, 7.5, max(di, 0.0)));',
-        '    dist = (k == 0) ? di : smin(dist, di, 2.2);',
-        '  }',
-        '  dist = max(dist, 0.0);',
+        '  vec2 cUv = (vW + vec2(150.0)) / 300.0;',
+        '  float inB = step(0.002, cUv.x) * step(cUv.x, 0.998) * step(0.002, cUv.y) * step(cUv.y, 0.998);',
+        '  vec4 cm = texture2D(uCoastMap, clamp(cUv, 0.002, 0.998));',
+        '  float nearD = cm.r * 10.0 - 2.0;',
+        '  float farD  = cm.g * 72.0;',
+        '  float dist  = mix(72.0, max(0.0, farD < 7.2 ? nearD : farD), inB);',
+        '  float sandNear = cm.b * inB;',
         '  float st = clamp(uStorm, 0.0, 1.0);',
-        // Soft muted pastel coastal aqua (-18% saturation so high-saturation avatars & landmarks pop at 7-8m!)
         '  vec3 shal = mix(vec3(0.42, 0.78, 0.80), vec3(0.55, 0.84, 0.81), sandNear * 0.55);',
         '  vec3 turq = mix(vec3(0.24, 0.62, 0.67), vec3(0.11, 0.27, 0.36), st);',
         '  vec3 mid  = mix(vec3(0.20, 0.52, 0.60), vec3(0.08, 0.21, 0.30), st);',
@@ -100,29 +193,32 @@
         '  vec3 c = mix(shal, turq, smoothstep(0.0, 5.2, dist));',
         '  c = mix(c, mid,  smoothstep(4.5, 20.0, dist));',
         '  c = mix(c, deep, smoothstep(18.0, 68.0, dist));',
-        // Calm gentle ocean swells
         '  float spd = 1.0 + st * 2.2;',
-        '  vec2 sp = vec2(vW.x * (0.036 + st * 0.02) + uT * 0.02 * spd, vW.y * (0.10 + st * 0.05) - uT * 0.03 * spd);',
-        '  float swell = fbm(sp);',
+        '  vec2 sp = vec2(vW.x * (0.0052 + st * 0.003) + uT * 0.003 * spd, vW.y * (0.014 + st * 0.007) - uT * 0.0045 * spd);',
+        '  float swell = texture2D(uWaveMap, sp).r;',
         '  c += vec3(0.03 + st * 0.07, 0.05 + st * 0.07, 0.06 + st * 0.08) * (swell - 0.5);',
-        // Gentle sparse wave highlights + subtle sunlit sparkles
-        '  float rib = fbm(vec2(vW.x * 0.055 - uT * 0.025 * spd, vW.y * 0.24 + sin(vW.x * 0.04 + uT * st) * 0.20));',
+        '  float rib = texture2D(uWaveMap, vec2(vW.x * 0.008 - uT * 0.0038 * spd, vW.y * 0.032 + sin(vW.x * 0.04 + uT * st) * 0.028)).g;',
         '  float streak = smoothstep(0.68, 0.86, rib) * (1.0 - smoothstep(14.0, 95.0, dist));',
         '  c = mix(c, vec3(0.48, 0.88, 0.90), streak * 0.14 * (1.0 - st * 0.6));',
-        '  vec2 sg = floor(vW * 0.36); vec2 sf = fract(vW * 0.36) - 0.5;',
-        '  float sr = h(sg); float tw = 0.5 + 0.5 * sin(uT * 1.9 + sr * 62.8);',
-        '  float star = smoothstep(0.10, 0.02, length(sf)) * step(0.955, sr) * smoothstep(0.60, 1.0, tw) * (1.0 - st) * smoothstep(3.0, 8.0, dist) * (1.0 - smoothstep(45.0, 98.0, dist));',
-        '  c += vec3(0.98, 1.0, 0.96) * star * 0.65;',
+        '  if (dist < 98.0 && st < 0.85) {',
+        '    vec2 sg = floor(vW * 0.36); vec2 sf = fract(vW * 0.36) - 0.5;',
+        '    float sr = h(sg);',
+        '    if (sr > 0.955) {',
+        '      float tw = 0.5 + 0.5 * sin(uT * 1.9 + sr * 62.8);',
+        '      float star = smoothstep(0.10, 0.02, length(sf)) * smoothstep(0.60, 1.0, tw) * (1.0 - st) * smoothstep(3.0, 8.0, dist) * (1.0 - smoothstep(45.0, 98.0, dist));',
+        '      c += vec3(0.98, 1.0, 0.96) * star * 0.65;',
+        '    }',
+        '  }',
         '  float wcap = smoothstep(0.66 - st * 0.12, 0.78 - st * 0.10, rib) * smoothstep(0.32, 0.95, st);',
         '  c = mix(c, vec3(0.88, 0.94, 0.98), wcap * 0.58);',
-        // Crisp bright white Shoreline Foam anchoring the island firmly in the sea
-        '  float wave = sin(uT * (1.35 + st * 1.8) + vW.x * 0.22 + vW.y * 0.18) * (0.28 + st * 0.34);',
-        '  float dW = dist + wave;',
-        '  float foam1 = 1.0 - smoothstep(0.20, 1.65 + st * 0.6, dW);',
-        '  float foam2 = smoothstep(1.85, 2.55, dW) * (1.0 - smoothstep(2.55, 3.35, dW));',
-        '  c = mix(c, vec3(0.97, 1.00, 0.99), foam1 * (0.90 + st * 0.08));',
-        '  c = mix(c, vec3(0.78, 0.97, 0.96), foam2 * 0.42);',
-        // Soft distant horizon blend
+        '  if (dist < 4.5) {',
+        '    float wave = sin(uT * (1.35 + st * 1.8) + vW.x * 0.22 + vW.y * 0.18) * (0.28 + st * 0.34);',
+        '    float dW = dist + wave;',
+        '    float foam1 = 1.0 - smoothstep(0.20, 1.65 + st * 0.6, dW);',
+        '    float foam2 = smoothstep(1.85, 2.55, dW) * (1.0 - smoothstep(2.55, 3.35, dW));',
+        '    c = mix(c, vec3(0.97, 1.00, 0.99), foam1 * (0.90 + st * 0.08));',
+        '    c = mix(c, vec3(0.78, 0.97, 0.96), foam2 * 0.42);',
+        '  }',
         '  float farHaze = smoothstep(95.0, 230.0, length(vW));',
         '  vec3 hazeCol = mix(vec3(0.32, 0.77, 0.83), vec3(0.28, 0.38, 0.48), st);',
         '  c = mix(c, hazeCol, farHaze * 0.58);',
@@ -136,14 +232,19 @@
     K.onFrame(function (dt, tt) { seaU.uT.value = tt; });
   })();
 
-  // Clouds: soft, pillowy 3D storybook cumulus clouds framing the four corners like docs/design/home-world.jpg
+  // Clouds: two lightweight compact top-corner canvases (instead of a 4K 132MB full-screen 2D canvas!)
   (function clouds() {
-    var cv = document.createElement('canvas'); cv.className = 'h3-cloudcv'; var uiEl = document.getElementById('ui'); if (uiEl) uiEl.parentNode.insertBefore(cv, uiEl); else document.body.appendChild(cv);
+    var wrap = document.createElement('div');
+    wrap.className = 'h3-cloud-wrap';
+    wrap.style.cssText = 'position:fixed;top:0;left:0;right:0;height:0;overflow:visible;pointer-events:none;z-index:2;';
+    var cvL = document.createElement('canvas'), cvR = document.createElement('canvas');
+    cvL.className = 'h3-cloud-corner left'; cvR.className = 'h3-cloud-corner right';
+    cvL.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;';
+    cvR.style.cssText = 'position:absolute;top:0;right:0;pointer-events:none;';
+    wrap.appendChild(cvL); wrap.appendChild(cvR);
+    var uiEl = document.getElementById('ui');
+    if (uiEl) uiEl.parentNode.insertBefore(wrap, uiEl); else document.body.appendChild(wrap);
     var off = document.createElement('canvas');
-    // Keep the bottom ocean completely open & clear (NO bottom clouds making the island feel floating!)
-    var SPOTS = [
-      [-.02, .01, .10], [.99, .01, .10]
-    ];
     function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
     function cloud(c, cx, cy, s, seed, W, H, d) {
       var R = rng(seed * 997 + 13), puffs = [], i, a, rr;
@@ -159,12 +260,11 @@
       }
       puffs.push([cx - s * .16, cy - s * .42, s * .54, false], [cx + s * .24, cy - s * .30, s * .48, false]);
 
-      off.width = cv.width; off.height = cv.height;
+      off.width = Math.ceil(W * d); off.height = Math.ceil(H * d);
       var oc = off.getContext('2d');
       oc.setTransform(d, 0, 0, d, 0, 0);
       oc.clearRect(0, 0, W, H);
 
-      // 1. Unified cloud silhouette filled with soft sky-tinted base
       var bg = oc.createLinearGradient(cx - s * .5, cy - s * .9, cx + s * .5, cy + s * .6);
       bg.addColorStop(0, '#ffffff');
       bg.addColorStop(0.55, '#f2f9ff');
@@ -174,11 +274,9 @@
       puffs.forEach(function (p) { oc.moveTo(p[0] + p[2], p[1]); oc.arc(p[0], p[1], p[2], 0, Math.PI * 2); });
       oc.fill();
 
-      // 2. Sculpt each puff inside the silhouette: soft sky-blue lower-right curve + bright warm-white upper-left dome
       oc.globalCompositeOperation = 'source-atop';
       puffs.forEach(function (p) {
         var px = p[0], py = p[1], pr = p[2], isBack = p[3];
-        // Lower-right soft sky-blue volume shading
         var sg = oc.createRadialGradient(px + pr * .22, py + pr * .26, pr * .1, px + pr * .1, py + pr * .1, pr * 1.05);
         sg.addColorStop(0, isBack ? 'rgba(186,218,244,0.52)' : 'rgba(196,225,248,0.42)');
         sg.addColorStop(0.65, 'rgba(215,236,252,0.18)');
@@ -186,7 +284,6 @@
         oc.fillStyle = sg;
         oc.beginPath(); oc.arc(px, py, pr * 1.05, 0, Math.PI * 2); oc.fill();
 
-        // Upper-left bright sunlit pillow dome (fades to 0 alpha before the puff edge so zero hard rings)
         var pg = oc.createRadialGradient(px - pr * .26, py - pr * .30, pr * .04, px - pr * .08, py - pr * .10, pr * .90);
         pg.addColorStop(0, isBack ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.99)');
         pg.addColorStop(0.52, isBack ? 'rgba(255,255,255,0.54)' : 'rgba(255,255,255,0.82)');
@@ -196,7 +293,6 @@
         oc.beginPath(); oc.arc(px, py, pr, 0, Math.PI * 2); oc.fill();
       });
 
-      // Stamp finished cloud onto main canvas with a gentle sky shadow
       c.save();
       c.shadowColor = 'rgba(35,105,165,0.18)';
       c.shadowBlur = s * .26;
@@ -206,14 +302,19 @@
       c.restore();
     }
     function draw() {
-      var W = innerWidth, H = innerHeight, d = Math.min(devicePixelRatio || 1, K.MOBILE ? 1.5 : 2);
+      var W = innerWidth, H = innerHeight, d = Math.min(devicePixelRatio || 1, 1.25);
       if (W < 2 || H < 2) return;
-      cv.width = W * d; cv.height = H * d; var c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H);
-      var base = Math.max(W, H * 1.35);
-      SPOTS.forEach(function (sp, i) { cloud(c, sp[0] * W, sp[1] * H, sp[2] * base * .48, i + 1, W, H, d); });
+      var s = Math.max(W, H * 1.35) * 0.10 * 0.48;
+      var cw = Math.min(460, Math.ceil(s * 2.5)), ch = Math.min(280, Math.ceil(s * 1.8));
+      [cvL, cvR].forEach(function (cv, idx) {
+        cv.style.width = cw + 'px'; cv.style.height = ch + 'px';
+        cv.width = Math.ceil(cw * d); cv.height = Math.ceil(ch * d);
+        var c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, cw, ch);
+        cloud(c, idx === 0 ? -0.02 * W : (cw - 0.01 * W), 0.01 * H, s, idx + 1, cw, ch, d);
+      });
     }
     draw(); addEventListener('resize', draw);
-    window.__home3dCloudCv = cv;
+    window.__home3dCloudCv = wrap;
   })();
 
   /* ---------------- islands: blobs with grassy tops and earth cliffs ---------------- */
@@ -345,6 +446,7 @@
       seaU.uIsl.value[k].set(fm[0], fm[1], fm[2], fm[3]);
       seaU.uIslW.value[k].set(fm[4], fm[5], fm[6], fm[7]);
     });
+    bakeSeaCoastMap();
   }
 
   function buildWaterfalls() {
@@ -1421,7 +1523,14 @@
       canvas.style.cursor = 'grabbing';
       return;
     }
-    if (!drag) { hover = placeAt(e); canvas.style.cursor = hover ? 'pointer' : 'grab'; }
+    if (!drag) {
+      if (e.pointerType === 'touch') return;
+      var nowHov = performance.now();
+      if (nowHov - (canvas._lastHovMs || 0) < 48) return;
+      canvas._lastHovMs = nowHov;
+      hover = placeAt(e);
+      canvas.style.cursor = hover ? 'pointer' : 'grab';
+    }
   });
   addEventListener('pointerup', function (e) {
     delete pointers[e.pointerId];
@@ -2751,10 +2860,11 @@
 
       // Register soft shoreline foam ring in the sea shader
       var kIdx = seaU.uN.value;
-      if (kIdx < 16) {
+      if (kIdx < 32) {
         seaU.uIsl.value[kIdx].set(hx, hz, 16.5, 10.5);
         seaU.uIslW.value[kIdx].set(2.4, 0.14, 1.0, 0.0);
         seaU.uN.value = kIdx + 1;
+        bakeSeaCoastMap();
       }
 
       // Organic sculpted hilly island terrain with smooth height-blended vertex colors (sand -> coastal rock -> lush emerald ridge)
@@ -3114,18 +3224,32 @@
       if (ks.k.mixer) ks.k.mixer.timeScale = 0.56;
     }
 
+    var _kidFrameTick = 0, _cachedItPanel = null, _cachedPackPanel = null;
     K.onFrame(function (dt, t) {
-      // Seamless handoff when UFO Picker / Groups / Line-Up / Stars / Birthday uses the Colosseum stage!
-      var toolStageBusy = !!document.querySelector('#itPanel:not(.hidden), #itPackPanel:not(.hidden)');
+      _kidFrameTick++;
+      // Cache DOM panels instead of calling querySelector every 16ms!
+      if ((_kidFrameTick & 15) === 1 || !_cachedItPanel) {
+        _cachedItPanel = document.getElementById('itPanel');
+        _cachedPackPanel = document.getElementById('itPackPanel');
+      }
+      var toolStageBusy = !!((_cachedItPanel && !_cachedItPanel.classList.contains('hidden')) || (_cachedPackPanel && !_cachedPackPanel.classList.contains('hidden')));
       colosseumSeatGroup.visible = !toolStageBusy;
+      var idleSeatStride = (activeIsland === 'games') ? 4 : (K.LOW_GPU || view.zoom > 0.52 ? 3 : 2);
 
       kidStates.forEach(function (ks) {
         var k = ks.k;
         if (avatarsFrozen) return;
-        k.update(dt);
         if (ks.nameSprite) {
           var forceN = !!window.__home3dForceNames;
           ks.nameSprite.visible = !toolStageBusy && (forceN || !!(hover && hover.id === 'npc' && hover.npc === ks));
+        }
+        var isCalmSeated = ks.seated && ks.state === 'seated' && !(ks.glowT > 0) && !quietHooks.overrideKids;
+        if (isCalmSeated) {
+          if (toolStageBusy) return;
+          if (((ks.idx + _kidFrameTick) % idleSeatStride) !== 0) return;
+          k.update(dt * idleSeatStride);
+        } else {
+          k.update(dt);
         }
         if (ks.seated) {
           // Instant golden glow + brief bouncy scale-up highlight whenever a student receives a point!
@@ -3303,7 +3427,7 @@
       });
       if (rockSpots.length) {
         var rm = new T3.InstancedMesh(rockGeo, rockMat, rockSpots.length), m4 = new T3.Matrix4(), q = new T3.Quaternion();
-        rm.castShadow = true; rm.receiveShadow = true;
+        rm.castShadow = false; rm.receiveShadow = true;
         rockSpots.forEach(function (r, idx) {
           q.setFromAxisAngle(V(0, 1, 0), idx * 1.3);
           m4.compose(V(r[0], r[1] + .11 * r[3], r[2]), q, V(r[3] * 1.2, r[3] * .58, r[3]));
