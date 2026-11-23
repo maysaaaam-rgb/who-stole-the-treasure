@@ -4,11 +4,11 @@
    ========================================================================== */
 
 :root {
-  --bg-void: #060911;
-  --bg-stage: radial-gradient(circle at 50% 24%, #172554 0%, #0b132b 52%, #060911 100%);
-  --glass-panel: rgba(15, 23, 42, 0.86);
-  --glass-card: rgba(30, 41, 59, 0.9);
-  --glass-border: rgba(148, 163, 184, 0.28);
+  --bg-void: #c8eaff;
+  --bg-stage: linear-gradient(180deg, #78c4ff 0%, #c8eaff 52%, #fff8ec 100%);
+  --glass-panel: #ffffff;
+  --glass-card: #fffdf8;
+  --glass-border: #cfe6ff;
   --cyan: #38bdf8;
   --cyan-dark: #0284c7;
   --amber: #f59e0b;
@@ -19,8 +19,8 @@
   --coral-dark: #be123c;
   --violet: #a855f7;
   --violet-dark: #6b21a8;
-  --text-bright: #f8fafc;
-  --text-muted: #cbd5e1;
+  --text-bright: #2b1d40;
+  --text-muted: #5b4a75;
   --font-display: 'Fredoka', system-ui, sans-serif;
   --font-body: 'Nunito', system-ui, sans-serif;
   --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -63,7 +63,6 @@ html, body {
   gap: 12px;
   padding: 8px 16px;
   background: var(--glass-panel);
-  backdrop-filter: blur(14px);
   border: 2px solid rgba(56, 189, 248, 0.3);
   border-radius: 20px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
@@ -106,7 +105,7 @@ html, body {
   gap: 8px;
   padding: 6px 12px;
   border-radius: 14px;
-  background: rgba(30, 41, 59, 0.92);
+  background: #fff8ec;
   border: 2px solid rgba(148, 163, 184, 0.32);
   border-bottom: 5px solid #090d16;
   color: #fff;
@@ -122,16 +121,16 @@ html, body {
 }
 
 .sd-team-pill.active {
-  border-color: #fde047;
+  border-color: #b45309;
   background: linear-gradient(180deg, rgba(245, 158, 11, 0.32), rgba(180, 83, 9, 0.45));
   box-shadow: 0 0 14px rgba(250, 204, 21, 0.35);
 }
 
 .sd-team-score {
-  background: rgba(6, 9, 17, 0.75);
+  background: rgba(43, 29, 64, 0.45);
   padding: 2px 8px;
   border-radius: 99px;
-  color: #fde047;
+  color: #b45309;
   font-weight: 700;
 }
 
@@ -146,7 +145,7 @@ html, body {
   border-radius: 14px;
   background: rgba(245, 158, 11, 0.2);
   border: 2px solid rgba(251, 191, 36, 0.6);
-  color: #fde047;
+  color: #b45309;
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 700;
@@ -203,7 +202,6 @@ html, body {
   gap: 14px;
   padding: 8px 18px;
   background: var(--glass-panel);
-  backdrop-filter: blur(14px);
   border: 2px solid rgba(245, 158, 11, 0.45);
   border-radius: 20px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
@@ -232,7 +230,7 @@ html, body {
   font-family: var(--font-display);
   font-size: 0.92rem;
   font-weight: 700;
-  color: #fde047;
+  color: #b45309;
   margin-bottom: 2px;
 }
 
@@ -320,7 +318,7 @@ html, body {
   position: absolute;
   top: 8px;
   left: 10px;
-  background: rgba(6, 9, 17, 0.82);
+  background: rgba(43, 29, 64, 0.45);
   border: 1.5px solid rgba(56, 189, 248, 0.6);
   color: #38bdf8;
   font-family: var(--font-display);
@@ -334,7 +332,7 @@ html, body {
   position: absolute;
   top: 8px;
   right: 10px;
-  background: rgba(6, 9, 17, 0.82);
+  background: rgba(43, 29, 64, 0.45);
   padding: 2px 9px;
   border-radius: 99px;
   font-size: 0.95rem;
@@ -393,7 +391,7 @@ html, body {
   font-family: var(--font-display);
   font-size: clamp(1.2rem, 1.7vw, 1.55rem);
   font-weight: 700;
-  color: #fde047;
+  color: #b45309;
 }
 
 .sd-progress-pill {
@@ -429,7 +427,7 @@ html, body {
   gap: 4px;
   padding: 14px 16px;
   border-radius: 18px;
-  background: rgba(30, 41, 59, 0.92);
+  background: #fff8ec;
   border: 2px solid rgba(56, 189, 248, 0.45);
   font-size: clamp(1.08rem, 1.45vw, 1.32rem);
   font-weight: 800;
@@ -440,7 +438,7 @@ html, body {
   opacity: 0.55;
   border-style: dashed;
   border-color: rgba(148, 163, 184, 0.35);
-  color: #94a3b8;
+  color: #68537d;
 }
 
 .sd-clue-badge {
@@ -462,7 +460,7 @@ html, body {
   flex-direction: column;
   background: var(--glass-card);
   border: 2px solid rgba(148, 163, 184, 0.35);
-  border-bottom: 5px solid #0f172a;
+  border-bottom: 5px solid #96c5f7;
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
@@ -591,7 +589,7 @@ html, body {
 }
 
 .sd-sfx-token:active { transform: translateY(4px); }
-.sd-sfx-token.selected { border-color: #fde047; }
+.sd-sfx-token.selected { border-color: #b45309; }
 .sd-sfx-token.wrong { border-color: #f43f5e; transform: translateX(-6px); }
 
 /* ---------- MISSION 3: LOUD OR QUIET? ---------- */
@@ -642,7 +640,7 @@ html, body {
 .sd-m3-info h3 {
   font-family: var(--font-display);
   font-size: 1.45rem;
-  color: #fde047;
+  color: #b45309;
   margin-bottom: 4px;
 }
 
@@ -717,9 +715,9 @@ html, body {
   transform: translate(-50%, -50%);
   padding: 7px 14px;
   border-radius: 99px;
-  background: rgba(6, 9, 17, 0.88);
+  background: rgba(43, 29, 64, 0.45);
   border: 2.5px dashed #fde047;
-  color: #fde047;
+  color: #b45309;
   font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
@@ -758,7 +756,7 @@ html, body {
 }
 
 .sd-label-chip.selected {
-  border-color: #fde047;
+  border-color: #b45309;
   background: rgba(245, 158, 11, 0.25);
 }
 
@@ -815,7 +813,7 @@ html, body {
   font-family: var(--font-display);
   font-size: 1.55rem;
   font-weight: 700;
-  color: #fde047;
+  color: #b45309;
   margin-bottom: 6px;
 }
 
@@ -998,7 +996,7 @@ html, body {
 .sd-m7-text h3 {
   font-family: var(--font-display);
   font-size: 1.35rem;
-  color: #fde047;
+  color: #b45309;
   margin-bottom: 4px;
 }
 
@@ -1044,8 +1042,7 @@ html, body {
 .sd-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(6, 9, 17, 0.82);
-  backdrop-filter: blur(10px);
+  background: rgba(43, 29, 64, 0.45);
   display: none;
   align-items: center;
   justify-content: center;
@@ -1062,7 +1059,7 @@ html, body {
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  background: rgba(15, 23, 42, 0.96);
+  background: #ffffff;
   border: 3px solid #f59e0b;
   border-radius: 28px;
   padding: 26px 30px;
@@ -1073,7 +1070,7 @@ html, body {
 .sd-modal-card h2 {
   font-family: var(--font-display);
   font-size: 2rem;
-  color: #fde047;
+  color: #b45309;
   margin-bottom: 10px;
 }
 
@@ -1085,7 +1082,7 @@ html, body {
 
 .sd-modal-card p {
   font-size: 1.2rem;
-  color: #e2e8f0;
+  color: #2b1d40;
   margin-bottom: 18px;
 }
 
@@ -1102,7 +1099,7 @@ html, body {
   border-radius: 99px;
   background: rgba(245, 158, 11, 0.2);
   border: 2px solid #f59e0b;
-  color: #fde047;
+  color: #b45309;
   font-family: var(--font-display);
   font-size: 1.05rem;
   font-weight: 700;
@@ -1114,7 +1111,7 @@ html, body {
   flex-direction: column;
   gap: 10px;
   font-size: 0.98rem;
-  background: rgba(6, 9, 17, 0.65);
+  background: rgba(43, 29, 64, 0.45);
   padding: 16px;
   border-radius: 16px;
   border: 1px solid rgba(148, 163, 184, 0.25);
@@ -1141,3 +1138,6 @@ html, body {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
   100% { transform: translateY(105vh) rotate(540deg); opacity: 0; }
 }
+
+/* Bright Sunny Adventure Park primary button contrast guard */
+[class*="btn-primary"], [class*="btn-emerald"], [class*="btn-cyan"], [class*="btn-coral"], [class*="btn-violet"], [class*="badge-unit"] { color: #ffffff; }

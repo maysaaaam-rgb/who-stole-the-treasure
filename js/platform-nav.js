@@ -12,7 +12,7 @@
   var PLACES = [
     { id: 'home', icon: '🏝️', label: 'Island', tip: '3D Adventure Island — the single map for class pupils, lessons, games & shop', views: ['home'] },
     { id: 'today', icon: '🏰', label: 'Today', tip: 'Your lessons today & Week Plan with one-tap launch', views: ['today', 'dashboard', 'calendar'] },
-    { id: 'games', icon: '🎮', label: 'Games', tip: '25 vetted smartboard & phone games — zero duplicates!', views: ['shelf'] },
+    { id: 'games', icon: '🎮', label: 'Games', tip: '26 vetted smartboard & phone games — zero duplicates!', views: ['shelf'] },
     { id: 'board', icon: '📺', label: 'Class Board', tip: 'Teams, XP points, timer and picker', views: ['board', 'classview', 'rewards', 'tools'] },
     { id: 'shop', icon: '🛍️', label: 'Shop', tip: 'Pupil avatars, outfits, mystery boxes and prizes', views: ['store-pupil', 'closet', 'monster'] },
     { id: 'library', icon: '📖', label: 'Library', tip: 'Lessons, Magic Book, Smart Board, Story Quests & plans', views: ['library', 'curriculum', 'more'] }
@@ -309,7 +309,7 @@
         tile('h_pencil.webp', 'Smart Board', 'Neat writing, word cards, pictures', "PlatformNav.go('smartboard')") +
         tile('magic-book/art/o_g3_timebook.webp', 'Magic Book, Grade 3', "Unit 5: Let's Go Back", "PlatformNav.go('book',3)") +
         tile('magic-book/art/o_g4_bigdrum.webp', 'Magic Book, Grade 4', 'Unit 5: Make Some Noise', "PlatformNav.go('book',4)") +
-        tile('m_games.webp', 'All 25 Games', 'Turn any unit into a team game', "PlatformNav.go('gm')") +
+        tile('m_games.webp', 'All 26 Games', 'Turn any unit into a team game', "PlatformNav.go('gm')") +
       '</div><h2 class="pn-sec">Classroom tools &amp; Story Quests</h2><div class="pn-tiles sm">' +
         tile('m_timer.webp', 'Timer', 'Count down a task', "PlatformNav.go('timer')") +
         tile('m_pick.webp', 'Pick a pupil', 'Everyone once before repeats', "PlatformNav.go('pick')") +

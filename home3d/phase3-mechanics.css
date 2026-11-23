@@ -8,7 +8,7 @@
 .h3-p3-ctx-bar {
   position: fixed;
   left: 50%;
-  bottom: max(112px, calc(108px + env(safe-area-inset-bottom)));
+  bottom: max(124px, calc(120px + env(safe-area-inset-bottom)));
   transform: translateX(-50%);
   z-index: 47;
   display: inline-flex;

@@ -59,7 +59,8 @@
   { "id": "tug3d", "icon": "🪢", "color": "#ffb320", "title": "Tug of War", "link": "games/tug3d/index.html", "x": -41.5, "z": 35.5, "ry": 0.16, "islandZone": "games" },
   { "id": "bowling3d", "icon": "🎳", "color": "#9b7bff", "title": "Monster Bowling", "link": "games/bowling3d/index.html", "x": -25.5, "z": 35.5, "ry": -0.16, "islandZone": "games" },
   { "id": "bomb3d", "icon": "💣", "color": "#ff5fa2", "title": "Bomb or Bonus", "link": "games/bomb3d/index.html", "x": -23.2, "z": 20.8, "ry": -0.20, "islandZone": "games" },
-  { "id": "board3d", "icon": "🎲", "color": "#ffb320", "title": "Park Board Game", "link": "games/board3d/index.html", "x": -22.2, "z": 28.8, "ry": -0.22, "islandZone": "games" }
+  { "id": "board3d", "icon": "🎲", "color": "#ffb320", "title": "Park Board Game", "link": "games/board3d/index.html", "x": -22.2, "z": 28.8, "ry": -0.22, "islandZone": "games" },
+  { "id": "fling3d", "icon": "🐱", "color": "#2fc58a", "title": "Cat vs Dog 3D", "link": "games/fling3d/index.html", "x": -33.5, "z": 28.0, "ry": 0.0, "islandZone": "games" }
  ],
  "homes": [
   { "team": 0, "model": "nest-tower", "fallback": "nestTower", "x": 10.5, "z": -22.5, "w": 8.0, "flag": "top", "monster": "anchor", "face": -0.35 },
