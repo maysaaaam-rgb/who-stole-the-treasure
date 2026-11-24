@@ -389,3 +389,40 @@ body:has(#app-view-container[data-view="home"]) .classroom-unified-dock {
   html:not(#_b) body .cb-today a { min-width: 0 !important; max-width: calc(100vw - 108px) !important; }
   html:not(#_b) body .cb { padding-bottom: 136px !important; }
 }
+
+/* ── 24 Nov 2026: shop text readable on the bright white cards (old dark-theme inline colours) ── */
+html:not(#_b) body .cs-studio :is([style*="color:#f8fafc"], [style*="color:#e5edff"], [style*="color:#e2e8f0"], [style*="color:#cbd5e1"], [style*="color: #f8fafc"]) { color: #2b1d40 !important; }
+html:not(#_b) body .cs-studio :is([style*="color:#94a3b8"], [style*="color:#64748b"]) { color: #6b5a85 !important; }
+html:not(#_b) body .cs-studio [style*="color:#fde047"] { color: #a16207 !important; }
+html:not(#_b) body .cs-studio [style*="color:#38bdf8"] { color: #1d6fd6 !important; }
+html:not(#_b) body .cs-studio .cs-sec-title { font: 800 1.2rem Fraunces, Georgia, serif; color: #2b1d40; }
+html:not(#_b) body .cs-studio .cs-sec-sub { font-size: .84rem; font-weight: 700; color: #6b5a85; }
+html:not(#_b) body .cs-studio .cs-card-sub { font-size: .8rem; font-weight: 600; color: #6b5a85; line-height: 1.3; }
+html:not(#_b) body .cs-pbtn span { color: #a16207 !important; }
+
+/* pupil strip marks: hasn't bought yet / needs a little help */
+.cs-pbtn { position: relative; }
+.cs-pmark { position: absolute; top: -8px; right: -6px; display: flex; gap: 2px; pointer-events: none; }
+.cs-pmark i { font-style: normal; font-size: .78rem; line-height: 1; padding: 3px 5px; border-radius: 999px; background: #fff; border: 2px solid #ffb320; box-shadow: 0 2px 0 rgba(43,29,64,.18); }
+.cs-pmark i.help { border-color: #ff5fa2; }
+.cs-plegend { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: -4px 0 12px; font-size: .8rem; font-weight: 800; color: #6b5a85; }
+.cs-plegend button { border: 2px solid #e8dcc6; border-bottom-width: 4px; background: #fff8ec; color: #2b1d40; border-radius: 999px; padding: 4px 10px; font-weight: 900; font-size: .78rem; cursor: pointer; }
+.cs-plegend button.on { background: #ffefc2; border-color: #ffb320; }
+
+/* "Is this you?" buy check */
+.cs-who-ovl { position: fixed; inset: 0; z-index: 100000; background: rgba(43,29,64,.45); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.cs-who-card { width: min(440px, 100%); background: #fff8ec; border: 6px solid #4f9dff; border-radius: 28px; padding: 18px 20px 20px; text-align: center; color: #2b1d40; box-shadow: 0 24px 60px -20px rgba(43,29,64,.6); animation: csWhoIn .28s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes csWhoIn { from { transform: scale(.85); opacity: 0; } to { transform: none; opacity: 1; } }
+.cs-who-pic { width: 150px; height: 190px; margin: 0 auto 8px; border-radius: 22px; background: radial-gradient(circle at 50% 70%, #c8eaff, #ffffff 70%); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; border: 4px solid #fff; box-shadow: 0 6px 0 #d6e9ff; }
+.cs-who-pic img { width: 100%; height: 100%; object-fit: contain; }
+.cs-who-pic span { font-size: 5rem; align-self: center; }
+.cs-who-name { font: 800 1.6rem/1.15 Fraunces, Georgia, serif; margin: 4px 0; }
+.cs-who-what { font-weight: 900; font-size: 1.05rem; color: #1d6fd6; }
+.cs-who-coins { margin-top: 6px; font-weight: 800; color: #6b5a85; }
+.cs-who-note { margin-top: 6px; font-size: .85rem; color: #6b5a85; }
+.cs-who-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+.cs-who-btns button { border: 0; border-radius: 18px; padding: 12px 18px; font-weight: 900; font-size: 1rem; cursor: pointer; border-bottom: 5px solid rgba(0,0,0,.22); transition: transform .12s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.cs-who-btns button:active { transform: translateY(4px); border-bottom-width: 1px; }
+.cs-who-yes { background: #2fc58a; color: #fff; }
+.cs-who-no { background: #fff; color: #2b1d40; border: 2px solid #e8dcc6 !important; border-bottom: 5px solid #e8dcc6 !important; }
+html:not(#_b) body .cs-pstrip { padding-top: 10px !important; }

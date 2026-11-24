@@ -16,7 +16,7 @@
 
   var DEFAULTS = {
     coinsPerXp: 10,
-    itemPrices: { common: 20, rare: 40, epic: 80, legendary: 150, mythic: 250 },
+    itemPrices: { common: 30, rare: 60, epic: 100, legendary: 160, mythic: 220 },
     boxPrices: { BRONZE: 15, WOODEN: 30, GILDED: 80, CELESTIAL: 180 },
     privileges: [
       { id: 'p-cat-sticker',    icon: '🐱', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · KEEP IT!',   name: '1× Funny Cat Meme Sticker (Pick Your Favourite!)', price: 40, weeklyLimit: 2, coinsOnly: true, active: true },
@@ -46,6 +46,7 @@
     var t = String(tier || '').toUpperCase(), alias = { SILVER: 'WOODEN', GOLD: 'GILDED', DIAMOND: 'CELESTIAL' };
     return BOX_INFO[alias[t] || t] || BOX_INFO.WOODEN;
   };
+  var BOX_INK = { BRONZE: '#9a4f1c', WOODEN: '#475569', GILDED: '#a16207', CELESTIAL: '#0e7490' };   // dark box-name colours for the bright white cards
   var RARITY_COLOR = { common: '#64748b', rare: '#16a34a', epic: '#7c3aed', legendary: '#d97706', mythic: '#e11d48' };
 
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
@@ -98,6 +99,10 @@
     if (!c.priceV3) {   // 12 Nov 2026: pupils get about 20 coins a week (8 from the teacher, 12 from XP). Everyday = 1 week, Cool = 2, Epic = 4, Legendary = 7, Mythic = 12.
       c.itemPrices = { common: 20, rare: 40, epic: 80, legendary: 150, mythic: 250 };
       c.priceV3 = 1; c.updatedAt = Date.now();
+    }
+    if (!c.priceV4) {   // 24 Nov 2026: pupils really earn about 14 coins a week. Top items in reach in 5 to 8 weeks; the shop is a better deal than boxes.
+      c.itemPrices = { common: 30, rare: 60, epic: 100, legendary: 160, mythic: 220 };
+      c.priceV4 = 1; c.updatedAt = Date.now();
     }
     if (!c.boardGoals || typeof c.boardGoals !== 'object') c.boardGoals = {};
     if (!c.partyFunds || typeof c.partyFunds !== 'object') c.partyFunds = {};
@@ -223,11 +228,19 @@
     return { success: true, item: item, price: price, balance: balance(studentId) };
   }
 
+  // 24 Nov 2026: a pupil can buy one mystery box a week (boxes the teacher gifts do not count). The week starts on Monday.
+  var BOXES_PER_WEEK = 1;
+  function boxesBoughtThisWeek(studentId) {
+    var ws = weekStart(new Date());
+    return data().purchases.filter(function (p) { return p.studentId === studentId && p.kind === 'box' && p.status === 'done' && new Date(p.ts).getTime() >= ws; }).length;
+  }
+  function boxesLeftThisWeek(studentId) { return Math.max(0, BOXES_PER_WEEK - boxesBoughtThisWeek(studentId)); }
   function buyBox(studentId, tier) {
     tier = String(tier).toUpperCase();
     var price = data().config.boxPrices[tier];
     if (!price || !BOX_INFO[tier]) return { success: false, error: 'Unknown box' };
     if (isOff('tabs', 'boxes') || isOff('boxes', tier)) return { success: false, error: 'Your teacher has closed this box for now' };
+    if (!boxesLeftThisWeek(studentId)) return { success: false, error: 'One mystery box a week. You can buy the next one on Monday!' };
     if (balance(studentId) < price) return { success: false, error: 'Not enough coins (need ' + price + ')' };
     var box = store.grantMysteryBox(studentId, tier);
     var pid = uid('buy');
@@ -266,6 +279,12 @@
     return { success: true, request: r };
   }
 
+  /** A real thing to give by hand (sticker, toy, pen): from a privilege with a picture, or a prize won in a box. */
+  function isRealPrizeReq(r) {
+    var p = privilege(r.privilegeId);
+    return !!((p && (p.coinsOnly || p.image || p.boxOnly)) || /sticker|topper|pen\b|highlighter|toy/i.test(String(r.name || '')));
+  }
+  function handOutCount() { return data().requests.filter(function (r) { return r.status === 'approved' && isRealPrizeReq(r); }).length; }
   function undoPurchase(purchaseId) {
     var p = data().purchases.filter(function (x) { return x.id === purchaseId; })[0];
     if (!p || p.status !== 'done') return { success: false, error: 'Purchase not found' };
@@ -837,9 +856,18 @@
           '<div style="font-size:.78rem;color:#94a3b8;">' + esc(studentName(r.studentId)) + ' · ' + when(r.createdAt) + ' · ' + coinPill(r.price) + '</div></div>' +
           btn('✓ Approve', "ClassroomStore.ui.decide('" + r.id + "','approved')", 'ok') + ' ' + btn('✕ Decline', "ClassroomStore.ui.decline('" + r.id + "')", 'danger') + '</div>';
       }).join('') : '<div style="font-size:.85rem;color:#94a3b8;">No reward requests waiting right now.</div>') +
-      (approved.length ? '<div style="margin-top:12px;font-weight:800;font-size:.82rem;color:#38bdf8;">Approved, not used yet (' + approved.length + ')</div>' + approved.map(function (r) {
-        return '<div class="cs-row-line"><span>' + esc(r.icon) + '</span><div style="flex:1;font-size:.85rem;color:#e5edff;">' + esc(r.name) + ' <span style="color:#94a3b8;">· ' + esc(studentName(r.studentId)) + '</span></div>' + btn('✓ Mark used', "ClassroomStore.ui.decide('" + r.id + "','used')", 'ghost') + '</div>';
-      }).join('') : ''));
+      '');
+    // 24 Nov 2026: real prizes the teacher has said yes to, still to be given by hand (own card, oldest first), then class passes still to use
+    var handOut = approved.filter(isRealPrizeReq).sort(function (a, b) { return new Date(a.createdAt) - new Date(b.createdAt); });
+    var passes = approved.filter(function (r) { return !isRealPrizeReq(r); });
+    function apRow(r, label) {
+      return '<div class="cs-row-line"><span style="font-size:1.4rem;">' + esc(r.icon) + '</span><div style="flex:1;min-width:200px;"><div style="font-weight:800;color:#2b1d40;">' + esc(studentName(r.studentId)) + '</div>' +
+        '<div style="font-size:.8rem;color:#6b5a85;">' + esc(r.name) + ' · ' + when(r.decidedAt || r.createdAt) + '</div></div>' + btn(label, "ClassroomStore.ui.decide('" + r.id + "','used')", 'ok') + '</div>';
+    }
+    drawerHtml += card(h2('🎁 To hand out (' + handOut.length + ')', 'Real prizes you said yes to. Give them, then tap “Given” so the list stays short.') +
+      (handOut.length ? handOut.map(function (r) { return apRow(r, '✓ Given'); }).join('') : '<div style="font-size:.85rem;color:#6b5a85;">Nothing to hand out. 🎉</div>') +
+      (passes.length ? '<div style="margin-top:14px;font-weight:900;font-size:.9rem;color:#2b1d40;">🎟️ Class passes to use (' + passes.length + ')</div>' + passes.map(function (r) { return apRow(r, '✓ Used'); }).join('') : ''),
+      handOut.length ? 'border-color:#ffb320;' : '');
 
     mark('clean');
     var unearned = findUnearned(), hasBackup = false; try { hasBackup = !!localStorage.getItem(CLEAN_KEY); } catch (e) { hasBackup = false; }
@@ -1513,21 +1541,21 @@
 
     // 2. Mystery Boxes Shelf
     if (!isOff('tabs', 'boxes')) {
-      var visibleTiers = TIERS.filter(function (t) { return !isOff('boxes', t); });
+      var visibleTiers = TIERS.filter(function (t) { return !isOff('boxes', t); }), boxLeft = boxesLeftThisWeek(s.id);
       if (visibleTiers.length) {
         out += '<div style="margin-bottom:18px;">' +
           '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">' +
-            '<div style="font:800 1.15rem Fraunces,Georgia,serif;color:#f8fafc;">🎁 Mystery Boxes</div>' +
-            '<div style="font-size:.8rem;color:#94a3b8;">Every box guarantees a non-duplicate item, board flair, free class pass, or coin jackpot!</div>' +
+            '<div class="cs-sec-title">🎁 Mystery Boxes</div>' +
+            '<div class="cs-sec-sub">' + (boxLeft ? 'You can buy <b>1 box this week</b>. Every box has a new item, a free class pass or coins!' : '✅ You bought your box this week. The next one opens on <b>Monday</b>.') + '</div>' +
           '</div>' +
           '<div class="cs-prize-grid">' + visibleTiers.map(function (t) {
-            var price = cfg.boxPrices[t], can = bal >= price, bi = BOX_INFO[t];
+            var price = cfg.boxPrices[t], can = bal >= price && boxLeft > 0, bi = BOX_INFO[t];
             return '<div class="cs-prize-card" style="border-color:' + bi.color + ';">' +
               '<div><div style="font-size:2.7rem;line-height:1.1;">' + (root.MysteryBoxArt ? root.MysteryBoxArt(t) : bi.icon) + '</div>' +
-              '<div style="font-weight:900;font-size:1.02rem;color:' + bi.text + ';margin-top:4px;">' + bi.name + '</div>' +
-              '<div style="font-size:.76rem;color:#cbd5e1;margin:4px 0 10px;">' + bi.blurb + '</div></div>' +
+              '<div style="font-weight:900;font-size:1.05rem;color:' + (BOX_INK[t] || '#2b1d40') + ';margin-top:4px;">' + bi.name + '</div>' +
+              '<div class="cs-card-sub" style="margin:4px 0 10px;">' + bi.blurb + '</div></div>' +
               '<div><div style="margin-bottom:8px;">' + coinPill(price) + '</div>' +
-              btn(can ? '🪙 Buy ' + bi.name : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyBox('" + t + "')", can ? 'gold' : 'ghost', !can) + '</div></div>';
+              btn(!boxLeft ? 'Next box on Monday' : (can ? '🪙 Buy ' + bi.name : 'Need ' + (price - bal) + ' more'), "ClassroomStore.ui.buyBox('" + t + "')", can ? 'gold' : 'ghost', !can) + '</div></div>';
           }).join('') + '</div></div>';
       }
     }
@@ -1553,8 +1581,8 @@
       var activePrivs = cfg.privileges.filter(function (p) { return p.active; });
       out += '<div style="margin-top:6px;">' +
         '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">' +
-          '<div style="font:800 1.15rem Fraunces,Georgia,serif;color:#f8fafc;">⭐ Real Prizes &amp; Classroom Passes</div>' +
-          '<div style="font-size:.8rem;color:#94a3b8;">Your teacher approves each request — if declined, coins return automatically.</div>' +
+          '<div class="cs-sec-title">⭐ Real Prizes &amp; Classroom Passes</div>' +
+          '<div class="cs-sec-sub">Your teacher approves each request. If the answer is no, your coins come back.</div>' +
         '</div>' +
         '<div class="cs-prize-grid">' + activePrivs.map(function (p) {
           var used = usedThisWeek(s.id, p.id), left = p.weeklyLimit ? Math.max(0, p.weeklyLimit - used) : 99, can = bal >= p.price && left > 0;
@@ -1563,7 +1591,7 @@
               (p.badge ? '<span style="position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:.64rem;font-weight:900;padding:2px 8px;border-radius:999px;">' + esc(p.badge) + '</span>' : '') + '</div>'
             : '<div style="font-size:2.4rem;margin:6px 0;">' + esc(p.icon) + '</div>';
           return '<div class="cs-prize-card' + (p.image ? ' real' : '') + '"><div>' + visual +
-            '<div style="font-weight:900;margin:4px 0 6px;color:#f8fafc;font-size:.9rem;line-height:1.25;">' + esc(p.name) + '</div></div>' +
+            '<div style="font-weight:900;margin:4px 0 6px;color:#2b1d40;font-size:.9rem;line-height:1.25;">' + esc(p.name) + '</div></div>' +
             '<div>' + coinPill(p.price) +
             '<div style="font-size:.72rem;color:#94a3b8;margin:5px 0;">' + (p.weeklyLimit ? left + ' left this week' : 'Unlimited') + '</div>' +
             btn(left <= 0 ? 'Used this week' : (bal < p.price ? 'Need ' + (p.price - bal) + ' more' : '🙋 Ask Teacher'), "ClassroomStore.ui.request('" + p.id + "')", can ? 'ok' : 'ghost', !can) + '</div></div>';
@@ -1616,6 +1644,43 @@
   function confirm(title, message, confirmText, fn) {
     if (root.confirmAction) root.confirmAction({ title: title, message: message, confirmText: confirmText, isDanger: false, onConfirm: fn });
     else if (root.confirm && root.confirm(title + '\n' + message)) fn();
+  }
+  /* 24 Nov 2026: before coins are spent, show WHO is buying (picture + name) so nobody spends a classmate's coins by mistake. */
+  /* 24 Nov 2026: marks on the pupil strip. 🛒 = never bought or asked for anything. 💛 = no XP in the last 7 days.
+     The 💛 mark starts hidden while Class Mode is on (the class can see the board); the teacher shows it with one tap. */
+  var markNew = true, markHelp = null;
+  function markHelpOn() { return markHelp === null ? !inClassMode() : markHelp; }
+  function neverShopped(sid) {
+    var d = data();
+    return !d.purchases.some(function (p) { return p.studentId === sid && p.status === 'done'; }) && !d.requests.some(function (r) { return r.studentId === sid && !/^FREE:/.test(String(r.name || '')); });
+  }
+  function lastXpAt(sid) {
+    var t = 0;
+    function look(x) { if (!x || x.status === 'voided' || !(Number(x.amount) > 0)) return; var v = new Date(x.timestamp || x.date || 0).getTime(); if (v > t) t = v; }
+    try { var st = store.getStudent ? store.getStudent(sid) : null; if (st && Array.isArray(st.xpHistory)) st.xpHistory.forEach(look); } catch (e) { /* ignore */ }
+    try { (store.state.xpTransactions || []).forEach(function (x) { if (x.studentId === sid) look(x); }); } catch (e) { /* ignore */ }
+    return t;
+  }
+  function quietThisWeek(sid) { return Date.now() - lastXpAt(sid) > 7 * 86400000; }
+  function shopConfirm(sid, title, price, confirmText, fn, note) {
+    var doc = root.document; if (!doc || !doc.body) { confirm(title, 'It costs ' + price + ' coins.', confirmText, fn); return; }
+    var P = PA(), pic = '';
+    try { pic = P && P.pictureFor ? P.pictureFor(sid) : ''; } catch (e) { pic = ''; }
+    var name = studentName(sid), first = esc(/^Pupil \d+$/.test(name) ? name : (String(name).split(' ')[0] || 'Pupil')), bal = balance(sid), after = bal - (Number(price) || 0);
+    var old = doc.querySelector('.cs-who-ovl'); if (old) old.remove();
+    var o = doc.createElement('div'); o.className = 'cs-who-ovl';
+    o.innerHTML = '<div class="cs-who-card" role="dialog" aria-modal="true">' +
+      '<div class="cs-who-pic">' + (pic ? '<img src="' + esc(pic) + '" alt="">' : '<span>🧒</span>') + '</div>' +
+      '<div class="cs-who-name">Is this you, ' + first + '?</div>' +
+      '<div class="cs-who-what">' + esc(title) + '</div>' +
+      '<div class="cs-who-coins">🪙 ' + price + ' coins · you have ' + bal + ' → <b>' + Math.max(0, after) + ' left</b></div>' +
+      (note ? '<div class="cs-who-note">' + esc(note) + '</div>' : '') +
+      '<div class="cs-who-btns"><button type="button" class="cs-who-no">✋ No, not me</button><button type="button" class="cs-who-yes">✅ Yes, it\'s me · ' + esc(confirmText) + '</button></div></div>';
+    function close() { o.remove(); }
+    o.addEventListener('click', function (e) { if (e.target === o) close(); });
+    o.querySelector('.cs-who-no').onclick = close;
+    o.querySelector('.cs-who-yes').onclick = function () { close(); fn(); };
+    doc.body.appendChild(o);
   }
   var ui = {
     openStudio: function (opts) {
@@ -1671,6 +1736,7 @@
       rerender();
     },
     pick: function (sid) { return ui.pickStudent(sid); },
+    toggleMark: function (k) { if (k === 'new') markNew = !markNew; else markHelp = !markHelpOn(); studioModeHold = true; rerender(); },
     tab: function (t) {
       studentTab = t;
       if (t === 'boxes' || t === 'party' || t === 'rewards' || t === 'orders') studioMode = 'prizes';
@@ -1741,7 +1807,7 @@
       var sid = activeStudentId(), P = PA(), x = P && P.itemInfo ? P.itemInfo(id) : null; if (!sid || !x) return;
       var pr = avPrice(x), bal = balance(sid);
       if (bal < pr) { avTryId = id; notify('Need ' + (pr - bal) + ' more coins — previewing on ' + studentName(sid).split(' ')[0] + '!', 'info'); studioModeHold = true; rerender(); return; }
-      confirm('Buy ' + x.name + '?', 'It costs ' + pr + ' coins. You have ' + bal + '.', 'Buy & Wear', function () {
+      shopConfirm(sid, 'Buy ' + x.name, pr, 'Buy & Wear', function () {
         var r = buyAvatar(sid, id);
         notify(r.success ? 'You bought ' + r.item.name + '! Wearing it now.' : r.error, r.success ? 'success' : 'error');
         studioModeHold = true;
@@ -1772,7 +1838,7 @@
     previewSound: function (id) { if (root.ClassroomCosmetics) root.ClassroomCosmetics.playSound(id); },
     buyExtra: function (id) {
       var sid = activeStudentId(), x = findExtra(id); if (!sid || !x) return;
-      confirm('Buy ' + x.name + '?', 'It costs ' + extraPrice(x) + ' coins. You have ' + balance(sid) + '.', 'Buy', function () {
+      shopConfirm(sid, 'Buy ' + x.name, extraPrice(x), 'Buy', function () {
         var r = buyExtra(sid, id); notify(r.success ? 'You bought ' + r.item.name + '! Equipped right away.' : r.error, r.success ? 'success' : 'error');
         if (r.success && x.kind === 'sound' && root.ClassroomCosmetics) root.ClassroomCosmetics.playSound(id);
         studioModeHold = true; rerender();
@@ -1809,20 +1875,21 @@
     },
     buyItem: function (itemId) {
       var id = activeStudentId(), item = findItem(itemId); if (!id || !item) return;
-      confirm('Buy ' + item.name + '?', 'It costs ' + itemPrice(item) + ' coins. You have ' + balance(id) + '.', 'Buy', function () {
+      shopConfirm(id, 'Buy ' + item.name, itemPrice(item), 'Buy', function () {
         var r = buyItem(id, itemId); notify(r.success ? 'You bought ' + r.item.name + '!' : r.error, r.success ? 'success' : 'error'); studioModeHold = true; rerender();
       });
     },
     buyBox: function (tier) {
       var id = activeStudentId(); if (!id) return;
-      confirm('Buy a ' + BOX_INFO[tier].name + '?', 'It costs ' + data().config.boxPrices[tier] + ' coins.', 'Buy', function () {
+      if (!boxesLeftThisWeek(id)) { notify('One mystery box a week. The next one opens on Monday!', 'info'); return; }
+      shopConfirm(id, 'Buy a ' + BOX_INFO[tier].name, data().config.boxPrices[tier], 'Buy', function () {
         var r = buyBox(id, tier); notify(r.success ? 'Box bought! Open it right at the top.' : r.error, r.success ? 'success' : 'error'); studioMode = 'prizes'; studioModeHold = true; rerender();
       });
     },
     openBox: function (boxId) { var id = activeStudentId(); if (root.openMysteryBoxModal) root.openMysteryBoxModal(boxId, id, { onClose: function () { studioModeHold = true; rerender(); } }); else notify('Mystery box viewer is not loaded', 'error'); },
     request: function (privId) {
       var id = activeStudentId(), p = privilege(privId); if (!id || !p) return;
-      confirm('Ask for: ' + p.name + '?', 'It costs ' + p.price + ' coins. Your teacher will say yes or no. If no, you get the coins back.', 'Ask', function () {
+      shopConfirm(id, 'Ask for: ' + p.name, p.price, 'Ask', function () {
         var r = requestPrivilege(id, privId); notify(r.success ? 'Request sent to your teacher!' : r.error, r.success ? 'success' : 'error'); studioModeHold = true; rerender();
       });
     },
@@ -2042,7 +2109,7 @@
   function teacherModeHtml(P) {
     var S = P.sections, cls = P.cls, students = P.students;
     var avPend = (PA() && PA().pendingIds) ? PA().pendingIds().length : 0;
-    var reqCount = P.pending.length + avPend;
+    var reqCount = P.pending.length + avPend + handOutCount();
     var groups = [
       ['approvals', '📬 Approvals & Faces' + (reqCount ? ' (' + reqCount + ')' : '')],
       ['coins', '🪙 Coins, Boxes & Worksheets'],
@@ -2105,11 +2172,21 @@
 
     var rosterStrip = '';
     if (!isStudentRole && studioMode !== 'teacher') {
+      var nNew = 0, nQuiet = 0, showHelp = markHelpOn();
+      var stripBtns = students.map(function (s) {
+        var on = cur && s.id === cur.id, isNew = neverShopped(s.id), isQuiet = quietThisWeek(s.id), m = '';
+        if (isNew) nNew++;
+        if (isQuiet) nQuiet++;
+        if (isNew && markNew) m += '<i title="Has not bought anything yet: give a turn">🛒</i>';
+        if (isQuiet && showHelp) m += '<i class="help" title="No XP in the last 7 days: may need help or a chance to join in">💛</i>';
+        return '<button type="button" class="cs-pbtn' + (on ? ' on' : '') + '" onclick="ClassroomStore.ui.pickStudent(\'' + esc(s.id) + '\')">' + (m ? '<span class="cs-pmark">' + m + '</span>' : '') + '<b>' + firstName(s) + '</b><span>🪙 ' + balance(s.id) + '</span></button>';
+      }).join('');
+      var legend = (nNew || nQuiet) ? '<div class="cs-plegend">' +
+        (nNew ? '<button type="button" class="' + (markNew ? 'on' : '') + '" onclick="ClassroomStore.ui.toggleMark(\'new\')">🛒 Not bought yet: ' + nNew + '</button>' : '') +
+        (nQuiet ? '<button type="button" class="' + (showHelp ? 'on' : '') + '" onclick="ClassroomStore.ui.toggleMark(\'help\')">💛 ' + (showHelp ? 'Quiet this week: ' + nQuiet : 'Show who needs help') + '</button>' : '') +
+        '</div>' : '';
       rosterStrip = students.length
-        ? '<div class="cs-pstrip">' + students.map(function (s) {
-            var on = cur && s.id === cur.id;
-            return '<button type="button" class="cs-pbtn' + (on ? ' on' : '') + '" onclick="ClassroomStore.ui.pickStudent(\'' + esc(s.id) + '\')"><b>' + firstName(s) + '</b><span>🪙 ' + balance(s.id) + '</span></button>';
-          }).join('') + '</div>'
+        ? '<div class="cs-pstrip">' + stripBtns + '</div>' + legend
         : '<div class="cs-glass-card" style="text-align:center;">No pupils enrolled in this class yet.</div>';
     }
 
