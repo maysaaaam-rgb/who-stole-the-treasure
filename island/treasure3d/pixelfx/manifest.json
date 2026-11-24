@@ -1,0 +1,254 @@
+{
+  "campfire": {
+    "file": "treasure3d/pixelfx/sheets/campfire.webp",
+    "w": 128,
+    "h": 128,
+    "cols": 7,
+    "rows": 7,
+    "frames": 48,
+    "fps": 16,
+    "loop": true,
+    "pivot": [
+      64,
+      112
+    ]
+  },
+  "torch": {
+    "file": "treasure3d/pixelfx/sheets/torch.webp",
+    "w": 72,
+    "h": 120,
+    "cols": 7,
+    "rows": 6,
+    "frames": 40,
+    "fps": 20,
+    "loop": true,
+    "pivot": [
+      36,
+      94
+    ]
+  },
+  "waterfall": {
+    "file": "treasure3d/pixelfx/sheets/waterfall.webp",
+    "w": 144,
+    "h": 136,
+    "cols": 7,
+    "rows": 6,
+    "frames": 40,
+    "fps": 20,
+    "loop": true,
+    "pivot": [
+      72,
+      118
+    ]
+  },
+  "splash": {
+    "file": "treasure3d/pixelfx/sheets/splash.webp",
+    "w": 176,
+    "h": 100,
+    "cols": 7,
+    "rows": 7,
+    "frames": 48,
+    "fps": 19,
+    "loop": false,
+    "pivot": [
+      88,
+      78
+    ]
+  },
+  "bubbles": {
+    "file": "treasure3d/pixelfx/sheets/bubbles.webp",
+    "w": 104,
+    "h": 112,
+    "cols": 7,
+    "rows": 7,
+    "frames": 48,
+    "fps": 12,
+    "loop": true,
+    "pivot": [
+      52,
+      104
+    ]
+  },
+  "fish-school": {
+    "file": "treasure3d/pixelfx/sheets/fish-school.webp",
+    "w": 136,
+    "h": 80,
+    "cols": 7,
+    "rows": 7,
+    "frames": 48,
+    "fps": 12,
+    "loop": true,
+    "pivot": [
+      68,
+      40
+    ]
+  },
+  "butterfly": {
+    "file": "treasure3d/pixelfx/sheets/butterfly.webp",
+    "w": 128,
+    "h": 88,
+    "cols": 7,
+    "rows": 7,
+    "frames": 48,
+    "fps": 15,
+    "loop": true,
+    "pivot": [
+      64,
+      44
+    ]
+  },
+  "fireflies": {
+    "file": "treasure3d/pixelfx/sheets/fireflies.webp",
+    "w": 320,
+    "h": 180,
+    "cols": 7,
+    "rows": 7,
+    "frames": 48,
+    "fps": 12,
+    "loop": true,
+    "pivot": [
+      160,
+      170
+    ]
+  },
+  "heavy-landing": {
+    "file": "treasure3d/pixelfx/sheets/heavy-landing.webp",
+    "w": 176,
+    "h": 80,
+    "cols": 6,
+    "rows": 6,
+    "frames": 33,
+    "fps": 20,
+    "loop": false,
+    "pivot": [
+      88,
+      60
+    ]
+  },
+  "poof": {
+    "file": "treasure3d/pixelfx/sheets/poof.webp",
+    "w": 112,
+    "h": 92,
+    "cols": 6,
+    "rows": 6,
+    "frames": 33,
+    "fps": 20,
+    "loop": false,
+    "pivot": [
+      56,
+      80
+    ]
+  },
+  "dirt-explosion": {
+    "file": "treasure3d/pixelfx/sheets/dirt-explosion.webp",
+    "w": 260,
+    "h": 240,
+    "cols": 7,
+    "rows": 7,
+    "frames": 48,
+    "fps": 13,
+    "loop": false,
+    "pivot": [
+      130,
+      206
+    ]
+  },
+  "firework-burst": {
+    "file": "treasure3d/pixelfx/sheets/firework-burst.webp",
+    "w": 240,
+    "h": 248,
+    "cols": 8,
+    "rows": 7,
+    "frames": 56,
+    "fps": 15,
+    "loop": false,
+    "pivot": [
+      120,
+      100
+    ]
+  },
+  "collect-burst": {
+    "file": "treasure3d/pixelfx/sheets/collect-burst.webp",
+    "w": 112,
+    "h": 108,
+    "cols": 6,
+    "rows": 5,
+    "frames": 28,
+    "fps": 20,
+    "loop": false,
+    "pivot": [
+      56,
+      94
+    ]
+  },
+  "loot-beam": {
+    "file": "treasure3d/pixelfx/sheets/loot-beam.webp",
+    "w": 96,
+    "h": 176,
+    "cols": 7,
+    "rows": 7,
+    "frames": 48,
+    "fps": 20,
+    "loop": true,
+    "pivot": [
+      48,
+      162
+    ]
+  },
+  "chest-open": {
+    "file": "treasure3d/pixelfx/sheets/chest-open.webp",
+    "w": 176,
+    "h": 112,
+    "cols": 8,
+    "rows": 7,
+    "frames": 56,
+    "fps": 12,
+    "loop": false,
+    "pivot": [
+      88,
+      96
+    ]
+  },
+  "exclamation": {
+    "file": "treasure3d/pixelfx/sheets/exclamation.webp",
+    "w": 84,
+    "h": 104,
+    "cols": 6,
+    "rows": 5,
+    "frames": 29,
+    "fps": 20,
+    "loop": false,
+    "pivot": [
+      42,
+      92
+    ]
+  },
+  "quest-complete": {
+    "file": "treasure3d/pixelfx/sheets/quest-complete.webp",
+    "w": 204,
+    "h": 92,
+    "cols": 8,
+    "rows": 7,
+    "frames": 52,
+    "fps": 20,
+    "loop": false,
+    "pivot": [
+      102,
+      46
+    ]
+  },
+  "confetti": {
+    "file": "treasure3d/pixelfx/sheets/confetti.webp",
+    "w": 200,
+    "h": 140,
+    "cols": 8,
+    "rows": 7,
+    "frames": 56,
+    "fps": 16,
+    "loop": false,
+    "pivot": [
+      100,
+      126
+    ]
+  }
+}

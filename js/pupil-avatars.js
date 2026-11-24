@@ -16,7 +16,8 @@
   var BUCKET = 'pupil-avatars';
   var LOOK_KEY = 'eaa_board_look';
   var BASE = (root.EAA_AVATAR_BASE || 'assets/avatars/');   // Practice Island loads this file from island/ and sets '../assets/avatars/'
-  var ASSET_V = '?v=27';
+  var ASSET_V = '?v=28';
+  function withVer(u) { return !u ? '' : (u.indexOf('?') >= 0 || /^data:/i.test(u) ? u : (u + ASSET_V)); }
   var IS_LOCAL_DEV = (typeof location !== 'undefined' && /^(localhost|127\.0\.0\.1)$/i.test(location.hostname || ''));
   var TONES = [
     { id: 'auto', label: 'Match Face ✨' },
@@ -218,26 +219,30 @@
     try { return (root.MonsterPets && root.MonsterPets.byId) ? root.MonsterPets.byId(id) : null; } catch (e) { return null; }
   }
   function petImageUrl(id, pose) {
+    var mPet = BASE.match(/^(\.\.\/)+/);
+    var pfx = mPet ? mPet[0] : '';
     var p = petById(id);
+    var rel = '';
     if (p) {
       if (p.poses) {
-        if (pose === 'wave' && p.poses.wave) return p.poses.wave;
-        if (pose === 'cheer' && p.poses.cheer) return p.poses.cheer;
-        if (p.poses.idle) return p.poses.idle;
+        if (pose === 'wave' && p.poses.wave) rel = p.poses.wave;
+        else if (pose === 'cheer' && (p.poses.cheer || p.poses.jump)) rel = p.poses.cheer || p.poses.jump;
+        else if (p.poses.idle) rel = p.poses.idle;
       }
-      if (p.imageSrc) return p.imageSrc;
+      if (!rel && p.imageSrc) rel = p.imageSrc;
     }
-    if (String(id || '').indexOf('pet-') === 0) {
-      var mPet = BASE.match(/^(\.\.\/)+/);
-      return (mPet ? mPet[0] : '') + 'assets/monsters/pets/' + id + '.png';
+    if (!rel && String(id || '').indexOf('pet-') === 0) {
+      rel = 'assets/monsters/pets/' + id + '.png';
     }
-    return '';
+    if (!rel) return '';
+    if (/^(data:|https?:|\/|\.\.\/)/i.test(rel)) return rel;
+    return pfx + rel;
   }
   function pickerCategories(studentId) {
     var pets = (root.MonsterPets && Array.isArray(root.MonsterPets.items)) ? root.MonsterPets.items : [];
     var visiblePets = pets.concat(Object.keys(EXTRA_PETS).map(function (k) { return EXTRA_PETS[k]; })).filter(function (p) {
-      if (!p || /^pet-(hero|crew)-/.test(String(p.id || ''))) return false;
-      return !p.notForSale || (studentId && studentOwnsItem(studentId, p.id));   // original pets & buddies only (STYLE_GUIDE.md)
+      if (!p || !p.id) return false;
+      return !p.notForSale || (studentId && studentOwnsItem(studentId, p.id));
     });
     if (!visiblePets.length) return CATALOG;
     return CATALOG.concat([{
@@ -1696,7 +1701,7 @@
           return loadImg(BASE + 'wear/' + id + '.webp' + ASSET_V);
         }))
         .concat(L.head.map(function (id) { return loadImg(BASE + 'wear/' + id + '.webp' + ASSET_V); }))
-        .concat(petUrl ? [loadImg(petUrl + ASSET_V)] : [])
+        .concat(petUrl ? [loadImg(withVer(petUrl))] : [])
         .concat(mergedEq.aura ? [loadImg(auraUrl(mergedEq.aura))] : []);
 
       return Promise.all(need.map(function (p) { return p.catch(function () { return null; }); })).then(function (ims) {
@@ -2801,7 +2806,7 @@
   }
   function itemInfo(id) {
     var sl = slotOf(id); if (!sl) return null;
-    var pic = sl === 'pet' ? (petImageUrl(id, 'stand') + ASSET_V) : sl === 'aura' ? auraUrl(id) : (BASE + 'wear/' + id + '.webp' + ASSET_V);
+    var pic = sl === 'pet' ? withVer(petImageUrl(id, 'stand')) : sl === 'aura' ? auraUrl(id) : (BASE + 'wear/' + id + '.webp' + ASSET_V);
     var nm = '';
     if (sl === 'aura' && !ITEM_NAMES[id]) { try { var mi = (store() && store().getMonsterItems ? store().getMonsterItems() : []).filter(function (x) { return x.id === id; })[0]; nm = mi && mi.name; } catch (e) { nm = ''; } }
     return { id: id, name: nm || prettyName(id), slot: sl, rarity: rarityOf(id), pic: pic, free: !!FREE_STARTER_ITEMS[id] };

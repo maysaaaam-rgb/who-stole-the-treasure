@@ -90,8 +90,8 @@
 | `unit3-arctic-homework` | 🏔️ 🏔️ Unit 3 Homework: The Arctic Rescue (No-Fail Story Adventure) | `unit3-arctic-homework/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `print-g3-u2` | 🖨️ 🖨️ Unit 2 Print & Play: Worksheets & Check Paper (Grade 3) | `unit2-print/index.html?grade=3` | — | ✅ Present | — |
 | `res-global-readings-2` | 📚 Global Readings 2: Student's Book | `javascript:openTextbookViewer(1, 'book-global-readings-2')` | — | ⚠️ Published Only | — |
-| `practice-island-world` | 🌍 🏝️ Practice Island: 2D Walking World | `island/world.html?demo=1` | — | ✅ Present | ✅ |
-| `practice-island` | 🏝️ 🏝️ Practice Island · Student Home Practice & Mascot Quests | `island/index.html?demo=1` | — | ✅ Present | ✅ |
+| `practice-island-world` | 🌍 🏝️ Practice Island: 2D Walking World | `island/classic.html?demo=1` | — | ✅ Present | ✅ |
+| `practice-island` | 🏝️ 🏝️ Treasure Island 3D · Open-World Practice Island | `island/index.html?demo=1` | — | ✅ Present | ✅ |
 | `print-all-about-me` | 🌟 🌟 All About Me: Get to Know Your Pupils (printable) | `all-about-me/index.html` | — | ✅ Present | — |
 | `school-subjects-challenge` | 🔬 🔬 Mystery Subject Lab: Group Challenge (Maths · Art · Science · Music) | `school-subjects-challenge/index.html` | — | ✅ Present | ✅ |
 | `classroom-instructions-challenge` | 📢 📢 Classroom Instructions Challenge (Normal ➔ Turbo ➔ Double Combos ➔ Student Leader) | `classroom-instructions-challenge/index.html` | — | ✅ Present | ✅ |

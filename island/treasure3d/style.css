@@ -1,0 +1,357 @@
+/* island/treasure3d/style.css
+ * English Adventure Academy — Bright Adventure-Park HUD & Tactile 3D Controls
+ * Strictly follows docs/STYLE_GUIDE.md & AGENTS.md:
+ * - Sunny daylight cream (#fffdf8) & sky (#78c4ff -> #c8eaff)
+ * - Four team colors: Pink #ff5fa2, Blue #4f9dff, Yellow #ffb320, Green #2fc58a
+ * - Deep ink #2b1d40, Nunito rounded typography, 5px tactile push-button lips, ZERO blur/dark glass
+ */
+:root {
+  --ti-ink: #2b1d40;
+  --ti-cream: #fffdf8;
+  --ti-pink: #ff5fa2;
+  --ti-pink-dk: #cc3677;
+  --ti-blue: #4f9dff;
+  --ti-blue-dk: #296ec9;
+  --ti-yellow: #ffb320;
+  --ti-yellow-dk: #c98200;
+  --ti-green: #2fc58a;
+  --ti-green-dk: #1b8f61;
+  --ti-lilac: #9b7bff;
+  --ti-lilac-dk: #6b4cd4;
+  --ti-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+html, body {
+  margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+  background: linear-gradient(180deg, #78c4ff 0%, #c8eaff 60%, #fff8ec 100%);
+  font-family: 'Nunito', 'Fredoka', 'Trebuchet MS', system-ui, sans-serif;
+  color: var(--ti-ink);
+}
+
+#ti-canvas {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  display: block; touch-action: none; z-index: 1;
+}
+
+/* ---------- Tactile 3D Push-Buttons (5px solid bottom lip + 4px active travel) ---------- */
+.ti-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 42px; padding: 6px 13px;
+  border-radius: 999px;
+  background: var(--ti-cream);
+  color: var(--ti-ink);
+  border: 3px solid #d7e4f5;
+  border-bottom: 5px solid #aac0dc;
+  font: 800 0.90rem/1.1 'Nunito', 'Fredoka', sans-serif;
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+  box-shadow: 0 5px 12px rgba(43, 29, 64, 0.13);
+  transition: transform 0.14s var(--ti-spring), border-bottom-width 0.1s ease;
+}
+.ti-btn:hover { transform: translateY(-2px); }
+.ti-btn:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+/* ---------- Crisp Unity Screen-Space Diegetic World Labels ---------- */
+#ti-world-labels {
+  position: fixed; inset: 0; z-index: 12;
+  pointer-events: none; overflow: hidden;
+}
+#ti-pfx-hud {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 55;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+.ti-wlabel {
+  position: absolute; left: 0; top: 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.96);
+  border: 3px solid var(--ti-blue);
+  color: var(--ti-ink);
+  font: 900 0.84rem/1.15 'Nunito', 'Fredoka', sans-serif;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(43, 29, 64, 0.16);
+  will-change: transform, opacity;
+  transition: opacity 0.16s ease;
+}
+
+.ti-btn.pink   { background: var(--ti-pink);   color: #fff; border-color: var(--ti-pink-dk);   border-bottom-color: var(--ti-pink-dk); }
+.ti-btn.blue   { background: var(--ti-blue);   color: #fff; border-color: var(--ti-blue-dk);   border-bottom-color: var(--ti-blue-dk); }
+.ti-btn.yellow { background: var(--ti-yellow); color: var(--ti-ink); border-color: var(--ti-yellow-dk); border-bottom-color: var(--ti-yellow-dk); }
+.ti-btn.green  { background: var(--ti-green);  color: #fff; border-color: var(--ti-green-dk);  border-bottom-color: var(--ti-green-dk); }
+.ti-btn.lilac  { background: var(--ti-lilac);  color: #fff; border-color: var(--ti-lilac-dk);  border-bottom-color: var(--ti-lilac-dk); }
+.ti-btn.icon-only { min-width: 48px; padding: 8px 12px; font-size: 1.15rem; }
+
+/* ---------- Sunny Loading Screen ---------- */
+#ti-loading {
+  position: fixed; inset: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  background: linear-gradient(180deg, #78c4ff 0%, #c8eaff 58%, #fff8ec 100%);
+  transition: opacity 0.45s ease;
+}
+#ti-loading.hidden { opacity: 0; pointer-events: none; }
+.ti-load-card {
+  width: min(480px, 94vw);
+  background: var(--ti-cream);
+  border: 5px solid var(--ti-yellow);
+  border-radius: 28px;
+  padding: 28px 24px;
+  text-align: center;
+  box-shadow: 0 18px 40px rgba(43, 29, 64, 0.18);
+}
+.ti-load-icon { font-size: 3.4rem; margin-bottom: 6px; animation: tiBob 1.8s ease-in-out infinite; }
+.ti-load-title { margin: 0 0 6px; font-size: 1.85rem; font-weight: 900; color: var(--ti-ink); }
+.ti-load-sub { margin: 0 0 16px; font-size: 1.02rem; font-weight: 700; color: #5b4b73; }
+.ti-load-bar {
+  height: 18px; background: #e6f2ff; border-radius: 999px;
+  border: 3px solid var(--ti-blue); overflow: hidden;
+}
+.ti-load-fill {
+  height: 100%; width: 18%; background: linear-gradient(90deg, var(--ti-green), var(--ti-yellow));
+  border-radius: 999px; transition: width 0.25s ease;
+}
+
+@keyframes tiBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+/* ---------- Unified Non-Overlapping Top Header + Goal Banner ---------- */
+#ti-hud-header {
+  position: fixed; top: 10px; left: 12px; right: 12px; z-index: 20;
+  display: flex; flex-direction: column; align-items: stretch; gap: 8px;
+  pointer-events: none;
+}
+#ti-topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  pointer-events: none; flex-wrap: wrap;
+}
+.ti-top-group {
+  display: flex; align-items: center; gap: 7px; pointer-events: auto; flex-wrap: wrap;
+}
+.ti-stat-pill {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--ti-cream);
+  border: 4px solid var(--ti-yellow);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-weight: 900; font-size: 0.96rem;
+  box-shadow: 0 6px 14px rgba(43, 29, 64, 0.12);
+}
+.ti-zones-strip {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--ti-cream);
+  border: 4px solid var(--ti-blue);
+  border-radius: 999px;
+  padding: 4px 9px;
+  box-shadow: 0 6px 14px rgba(43, 29, 64, 0.12);
+}
+.ti-zone-dot {
+  width: 28px; height: 28px; border-radius: 50%; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  font: 900 0.85rem/1 'Nunito', sans-serif;
+  background: #e9f2fc; color: #6a7c96; border: 2px solid #c5d9f0;
+  cursor: pointer; transition: transform 0.14s var(--ti-spring);
+}
+.ti-zone-dot:hover { transform: scale(1.12); }
+.ti-zone-dot.active { background: var(--ti-yellow); color: var(--ti-ink); border-color: var(--ti-yellow-dk); transform: scale(1.1); }
+.ti-zone-dot.done { background: var(--ti-green); color: #fff; border-color: var(--ti-green-dk); }
+
+/* ---------- Active Quest Goal Banner ---------- */
+#ti-goal-banner {
+  align-self: center; pointer-events: auto;
+  max-width: min(680px, 94vw);
+  background: var(--ti-cream);
+  border: 4px solid var(--ti-green);
+  border-radius: 999px;
+  padding: 7px 18px;
+  display: inline-flex; align-items: center; gap: 9px;
+  font: 800 0.98rem/1.25 'Nunito', sans-serif; color: var(--ti-ink);
+  box-shadow: 0 8px 18px rgba(43, 29, 64, 0.14);
+  cursor: pointer;
+}
+#ti-goal-banner:active { transform: translateY(3px); }
+
+/* ---------- Toast Pill (inside #ti-hud-header flex column — never overlaps Goal Banner!) ---------- */
+#ti-toast {
+  align-self: center;
+  max-width: min(560px, 90vw);
+  background: var(--ti-cream);
+  border: 4px solid var(--ti-pink);
+  border-radius: 999px;
+  padding: 7px 18px;
+  font: 900 0.94rem/1.2 'Nunito', sans-serif; text-align: center;
+  box-shadow: 0 10px 24px rgba(43, 29, 64, 0.18);
+  opacity: 0; pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.22s ease, transform 0.22s var(--ti-spring);
+}
+#ti-toast.show { opacity: 1; transform: translateY(0); }
+
+/* ---------- In-World NPC Speech Bubble + Spoken Reply Pills (Zero 2D Quiz Modals!) ---------- */
+#ti-dialogue {
+  position: fixed; left: 50%; bottom: 108px; transform: translateX(-50%);
+  z-index: 30; width: min(650px, 94vw);
+  background: var(--ti-cream);
+  border: 5px solid var(--ti-blue);
+  border-radius: 26px;
+  padding: 16px 20px;
+  box-shadow: 0 14px 32px rgba(43, 29, 64, 0.22);
+  display: none;
+}
+#ti-dialogue.open { display: block; animation: tiPopIn 0.24s var(--ti-spring); }
+
+@keyframes tiPopIn {
+  from { transform: translateX(-50%) scale(0.92); opacity: 0; }
+  to   { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+.ti-dlg-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  margin-bottom: 6px;
+}
+.ti-dlg-speaker {
+  font-weight: 900; font-size: 1.16rem; color: var(--ti-ink);
+}
+.ti-dlg-line {
+  margin: 0 0 12px; font-size: 1.14rem; font-weight: 800; line-height: 1.38; color: var(--ti-ink);
+}
+.ti-dlg-replies {
+  display: flex; flex-wrap: wrap; gap: 9px; align-items: center;
+}
+.ti-reply-btn {
+  flex: 1 1 200px; min-height: 52px; font-size: 1.02rem;
+}
+.ti-wobble { animation: tiWobble 0.36s ease; }
+@keyframes tiWobble {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+/* ---------- 1st-Person Brass Spyglass HUD Overlay ---------- */
+#ti-spyglass-hud {
+  position: fixed; inset: 0; z-index: 24; pointer-events: none; display: none;
+  background: radial-gradient(circle at 50% 50%, transparent 34%, rgba(43, 29, 64, 0.22) 36%, rgba(255, 179, 32, 0.35) 38%, rgba(43, 29, 64, 0.72) 56%);
+}
+#ti-spyglass-hud.active { display: block; }
+.ti-spy-ring {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(68vmin, 520px); height: min(68vmin, 520px);
+  border-radius: 50%;
+  border: 10px solid var(--ti-yellow);
+  box-shadow: inset 0 0 0 4px var(--ti-yellow-dk), 0 10px 30px rgba(43, 29, 64, 0.35);
+}
+.ti-spy-cross {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 36px; height: 36px; border: 3px dashed #fff; border-radius: 50%;
+}
+.ti-spy-controls {
+  position: absolute; top: 122px; left: 50%; transform: translateX(-50%);
+  pointer-events: auto;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--ti-cream); border: 4px solid var(--ti-yellow);
+  border-radius: 999px; padding: 6px 16px; font-weight: 900;
+}
+
+/* ---------- Bottom Controls: Left Thumbstick + Center Quick Tool Belt + Right Jump/Action ---------- */
+#ti-joy {
+  position: fixed; left: 22px; bottom: 22px; z-index: 22;
+  width: 118px; height: 118px; border-radius: 50%;
+  background: rgba(255, 253, 248, 0.82);
+  border: 4px solid var(--ti-blue);
+  box-shadow: 0 8px 20px rgba(43, 29, 64, 0.16);
+  touch-action: none;
+}
+#ti-joy-knob {
+  position: absolute; left: 50%; top: 50%;
+  width: 50px; height: 50px; margin-left: -25px; margin-top: -25px;
+  border-radius: 50%;
+  background: var(--ti-blue);
+  border: 3px solid #fff;
+  border-bottom: 5px solid var(--ti-blue-dk);
+  box-shadow: 0 4px 10px rgba(43, 29, 64, 0.22);
+}
+
+#ti-toolbelt {
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+  z-index: 22; display: flex; align-items: center; gap: 8px;
+  background: var(--ti-cream);
+  border: 4px solid var(--ti-yellow);
+  border-radius: 999px;
+  padding: 6px 10px;
+  box-shadow: 0 8px 22px rgba(43, 29, 64, 0.16);
+}
+.ti-tool-slot {
+  min-width: 56px; height: 52px; border-radius: 999px;
+  border: 3px solid #dce7f5; border-bottom: 5px solid #b4c8e2;
+  background: #f5f9ff; color: var(--ti-ink);
+  font: 800 0.88rem/1 'Nunito', sans-serif;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  cursor: pointer; transition: transform 0.14s var(--ti-spring);
+}
+.ti-tool-slot span.ico { font-size: 1.25rem; }
+.ti-tool-slot.active {
+  background: var(--ti-yellow); border-color: var(--ti-yellow-dk); border-bottom-color: var(--ti-yellow-dk);
+  transform: translateY(-3px);
+}
+.ti-tool-slot.locked { opacity: 0.45; filter: grayscale(0.7); }
+
+#ti-right-actions {
+  position: fixed; right: 22px; bottom: 20px; z-index: 22;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+}
+#ti-context-btn {
+  min-height: 56px; padding: 10px 20px; font-size: 1.04rem;
+  animation: tiBob 1.9s ease-in-out infinite;
+}
+.ti-move-cluster { display: flex; align-items: center; gap: 10px; }
+
+/* ---------- Sunny Modals: Bottle Map Clue, Passport Code Sign-In & Grand Finale ---------- */
+.ti-overlay-card {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(43, 29, 64, 0.34);
+  display: none; align-items: center; justify-content: center; padding: 18px;
+}
+.ti-overlay-card.open { display: flex; }
+.ti-modal-box {
+  width: min(520px, 94vw);
+  background: var(--ti-cream);
+  border: 5px solid var(--ti-yellow);
+  border-radius: 28px;
+  padding: 24px 22px;
+  text-align: center;
+  box-shadow: 0 20px 48px rgba(43, 29, 64, 0.28);
+}
+.ti-code-input {
+  width: 220px; height: 54px; text-align: center;
+  font: 900 1.45rem 'Nunito', monospace; letter-spacing: 4px; text-transform: uppercase;
+  border-radius: 18px; border: 4px solid var(--ti-blue);
+  background: #f4f9ff; color: var(--ti-ink); outline: none;
+}
+
+@media (max-width: 960px) {
+  .ti-hide-sm { display: none; }
+  .ti-btn { min-height: 40px; padding: 5px 11px; font-size: 0.84rem; }
+  .ti-stat-pill { padding: 4px 10px; font-size: 0.84rem; gap: 6px; }
+  .ti-zone-dot { width: 25px; height: 25px; font-size: 0.78rem; }
+  #ti-goal-banner { font-size: 0.86rem; padding: 5px 14px; }
+}
+
+@media (max-width: 680px) {
+  .ti-hide-xs { display: none; }
+  #ti-hud-header { top: 6px; left: 6px; right: 6px; gap: 5px; }
+  #ti-topbar { gap: 4px; }
+  .ti-top-group { gap: 4px; }
+  .ti-btn { min-height: 36px; padding: 4px 9px; font-size: 0.78rem; border-bottom-width: 4px; }
+  .ti-btn.icon-only { min-width: 36px; padding: 4px 8px; font-size: 0.98rem; }
+  #ti-joy { width: 88px; height: 88px; left: 10px; bottom: 12px; }
+  #ti-joy-knob { width: 38px; height: 38px; margin-left: -19px; margin-top: -19px; }
+  /* Place Tool Belt cleanly ABOVE joystick & right buttons on narrow portrait phones — zero overlap! */
+  #ti-toolbelt { bottom: 112px; padding: 4px 7px; gap: 5px; }
+  .ti-tool-slot { min-width: 44px; height: 42px; font-size: 0.72rem; }
+  .ti-tool-slot span.ico { font-size: 1.05rem; }
+  #ti-right-actions { right: 10px; bottom: 12px; gap: 6px; max-width: calc(100vw - 114px); }
+  #ti-context-btn { min-height: 40px; padding: 6px 12px; font-size: 0.80rem; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  #ti-dialogue { bottom: 164px; padding: 12px 13px; }
+}
