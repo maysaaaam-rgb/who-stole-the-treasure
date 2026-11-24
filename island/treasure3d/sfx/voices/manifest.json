@@ -1,0 +1,142 @@
+{
+  "z1_benbow_ask_g3": {
+    "file": "treasure3d/sfx/voices/z1_benbow_ask_g3.mp3",
+    "speaker": "benbow",
+    "text": "Look at the map! Where does the golden path go first?"
+  },
+  "z1_benbow_ask_g4": {
+    "file": "treasure3d/sfx/voices/z1_benbow_ask_g4.mp3",
+    "speaker": "benbow",
+    "text": "Read the bottle message carefully! Which way should we travel to reach the jungle camp?"
+  },
+  "z1_benbow_hi_g3": {
+    "file": "treasure3d/sfx/voices/z1_benbow_hi_g3.mp3",
+    "speaker": "benbow",
+    "text": "Welcome to Treasure Island, explorer! Find the glass bottle by the shallow water and bring me the secret map!"
+  },
+  "z1_benbow_win": {
+    "file": "treasure3d/sfx/voices/z1_benbow_win.mp3",
+    "speaker": "benbow",
+    "text": "Brilliant work! Take this golden compass! The jungle gate is open now!"
+  },
+  "z1_benbow_hi_g4": {
+    "file": "treasure3d/sfx/voices/z1_benbow_hi_g4.mp3",
+    "speaker": "benbow",
+    "text": "Ahoy, brave explorer! Someone left a glass bottle near the shallow bay. Pick it up and read the first clue!"
+  },
+  "z1_parrot_tip": {
+    "file": "treasure3d/sfx/voices/z1_parrot_tip.mp3",
+    "speaker": "parrot",
+    "text": "Squawk! Follow me! You can splash in the shallow water or rest on the hammock!"
+  },
+  "z2_cook_planks_g3": {
+    "file": "treasure3d/sfx/voices/z2_cook_planks_g3.mp3",
+    "speaker": "cook",
+    "text": "Awesome! Now carry the three past-tense planks to fix the bridge: walked, jumped, sailed!"
+  },
+  "z2_cook_hi_g3": {
+    "file": "treasure3d/sfx/voices/z2_cook_hi_g3.mp3",
+    "speaker": "cook",
+    "text": "Hello, friend! My wooden bridge broke yesterday! First, tap the three giant shells in my song order: blue, pink, yellow!"
+  },
+  "z2_cook_hi_g4": {
+    "file": "treasure3d/sfx/voices/z2_cook_hi_g4.mp3",
+    "speaker": "cook",
+    "text": "Welcome to my jungle kitchen! A storm broke our creek bridge! First, listen and tap the giant musical shells: blue, pink, green, yellow!"
+  },
+  "z2_cook_planks_g4": {
+    "file": "treasure3d/sfx/voices/z2_cook_planks_g4.mp3",
+    "speaker": "cook",
+    "text": "Fantastic! Now carry the three adventure planks to repair the bridge: explored, climbed, discovered!"
+  },
+  "z2_cook_win": {
+    "file": "treasure3d/sfx/voices/z2_cook_win.mp3",
+    "speaker": "cook",
+    "text": "Hooray! You fixed the wooden bridge! Cross the creek to the boat lagoon!"
+  },
+  "z2_parrot_shells": {
+    "file": "treasure3d/sfx/voices/z2_parrot_shells.mp3",
+    "speaker": "parrot",
+    "text": "Listen closely! Tap the glowing giant shells in the right order!"
+  },
+  "z3_capt_hi_g3": {
+    "file": "treasure3d/sfx/voices/z3_capt_hi_g3.mp3",
+    "speaker": "captain",
+    "text": "Ahoy, matey! Hop into the wooden rowing boat on the dock! Row across the deep bay to the old shipwreck!"
+  },
+  "z3_capt_hi_g4": {
+    "file": "treasure3d/sfx/voices/z3_capt_hi_g4.mp3",
+    "speaker": "captain",
+    "text": "Ahoy, sailor! The deep sea is too deep for walking, so board the rowing boat and row east to Shipwreck Island!"
+  },
+  "z3_capt_win": {
+    "file": "treasure3d/sfx/voices/z3_capt_win.mp3",
+    "speaker": "captain",
+    "text": "Shiver me timbers! You found the spyglass and the lantern! The rope bridge to the lookout tower is open!"
+  },
+  "z3_parrot_wreck": {
+    "file": "treasure3d/sfx/voices/z3_parrot_wreck.mp3",
+    "speaker": "parrot",
+    "text": "Look! Inside the shipwreck! Grab the brass spyglass and the glowing cave lantern!"
+  },
+  "z4_parrot_spy_g3": {
+    "file": "treasure3d/sfx/voices/z4_parrot_spy_g3.mp3",
+    "speaker": "parrot",
+    "text": "Use your spyglass! Spot the waterfall cave in the north and the two palm trees in the west!"
+  },
+  "z4_parrot_spy_g4": {
+    "file": "treasure3d/sfx/voices/z4_parrot_spy_g4.mp3",
+    "speaker": "parrot",
+    "text": "Look through your spyglass! Find the hidden cave behind the waterfall, then spot Treasure Cove in the sunset!"
+  },
+  "z4_flint_hi_g4": {
+    "file": "treasure3d/sfx/voices/z4_flint_hi_g4.mp3",
+    "speaker": "flint",
+    "text": "Halt, explorer! Cross the swaying rope bridge, climb the lookout tower, and scan the island with your spyglass!"
+  },
+  "z4_flint_hi_g3": {
+    "file": "treasure3d/sfx/voices/z4_flint_hi_g3.mp3",
+    "speaker": "flint",
+    "text": "Squawk! I am Flint! Jump across the swaying rope bridge and climb the tall lookout tower!"
+  },
+  "z5_capt_clue_g3": {
+    "file": "treasure3d/sfx/voices/z5_capt_clue_g3.mp3",
+    "speaker": "captain",
+    "text": "Read the final clue! Dig with your shovel between the two tall palm trees near the big grey rock!"
+  },
+  "z5_capt_clue_g4": {
+    "file": "treasure3d/sfx/voices/z5_capt_clue_g4.mp3",
+    "speaker": "captain",
+    "text": "Here is Billy's last riddle! Use your shovel to dig between the twin palm trees beside the giant boulder!"
+  },
+  "z5_finale_win": {
+    "file": "treasure3d/sfx/voices/z5_finale_win.mp3",
+    "speaker": "captain",
+    "text": "You found the legendary Treasure of Adventure Island! Gold coins and your Passport Stamp are yours!"
+  },
+  "z5_parrot_wrong": {
+    "file": "treasure3d/sfx/voices/z5_parrot_wrong.mp3",
+    "speaker": "parrot",
+    "text": "Oops, only crabs and seashells here! Listen to the clue again: between the two palm trees near the big rock!"
+  },
+  "z4_flint_cave_g3": {
+    "file": "treasure3d/sfx/voices/z4_flint_cave_g3.mp3",
+    "speaker": "flint",
+    "text": "Hold your lantern inside the dark waterfall cave! Light the three torches: sun, moon, star!"
+  },
+  "z5_parrot_cheer": {
+    "file": "treasure3d/sfx/voices/z5_parrot_cheer.mp3",
+    "speaker": "parrot",
+    "text": "Squawk! Hooray! Best explorer ever!"
+  },
+  "z4_flint_cave_g4": {
+    "file": "treasure3d/sfx/voices/z4_flint_cave_g4.mp3",
+    "speaker": "flint",
+    "text": "Your lantern lights the dark cave! Touch the three ancient crystals in order: courage, wisdom, treasure!"
+  },
+  "z4_flint_win": {
+    "file": "treasure3d/sfx/voices/z4_flint_win.mp3",
+    "speaker": "flint",
+    "text": "Incredible! Take this golden shovel! Sunset Cove is open for the final treasure!"
+  }
+}

@@ -8,101 +8,180 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="art/real/icon-192.png">
   <link rel="apple-touch-icon" href="art/real/icon-192.png">
-  <title>Practice Island • Global Readings Adventure (Chapters 1 &amp; 2)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/map.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/story.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/games.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/adventure.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/wall.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/shop.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/world.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/chapter1.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/harbour.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/chapter2.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/unity-feel.css?v=rg-20261114d">
-  <link rel="stylesheet" href="css/realgame.css?v=w1-20261114b">
-  <link rel="stylesheet" href="css/bright.css?v=20261122p">
+  <title>Treasure Island 3D · Practice Island Adventure</title>
+  <link rel="stylesheet" href="treasure3d/style.css?v=20261123g">
 </head>
-<body class="w-page">
-  <!-- Practice Island 2D Adventure World (unified entry point). -->
-  <header class="isl-topbar" id="isl-topbar"></header>
-  <main class="isl-main" id="isl-main"></main>
-  <div id="world"></div>
+<body>
+  <canvas id="ti-canvas" aria-label="Treasure Island 3D Open World"></canvas>
 
-  <!-- Treasure Island HUD (Focused on Chapter 1: Admiral Benbow Harbour) -->
-  <div id="w-top">
-    <div class="w-hud-left">
-      <button type="button" class="w-btn w-icon-btn" id="w-back" aria-label="Sea Chart"><img src="art/flat/o_compass.webp" alt=""><span>Sea Chart</span></button>
-      <button type="button" class="w-btn w-status-chip" id="w-status" aria-label="Captain Level & Gold" title="Captain Progress">
-        <span class="w-lvl-badge" id="w-lvl-txt">Lv.3</span>
-        <span class="w-xp-track"><span class="w-xp-fill" id="w-xp-fill" style="width:35%"></span></span>
-        <span class="w-coin-val" id="w-coin-txt">🪙 130</span>
-      </button>
-      <button type="button" class="w-btn w-energy-chip" id="w-energy" style="display:none"><img src="art/flat/i_energy.webp" alt=""><b id="w-energy-val">100</b></button>
+  <!-- Crisp Unity Screen-Space Diegetic World Labels (Zero blurry 3D sprites!) -->
+  <div id="ti-world-labels" aria-hidden="true"></div>
+
+  <!-- Crisp PixelFX 2D Celebration HUD Overlay (quest-complete ribbon + confetti) -->
+  <canvas id="ti-pfx-hud" aria-hidden="true"></canvas>
+
+  <!-- Sunny Adventure-Park Loading Screen -->
+  <div id="ti-loading" role="status" aria-live="polite">
+    <div class="ti-load-card">
+      <div class="ti-load-icon" aria-hidden="true">🏝️</div>
+      <h1 class="ti-load-title">Treasure Island 3D</h1>
+      <p class="ti-load-sub" id="ti-load-sub">Sailing to Admiral Benbow Bay…</p>
+      <div class="ti-load-bar"><div class="ti-load-fill" id="ti-load-fill"></div></div>
     </div>
-    <div id="w-goal"></div>
-    <div id="w-tools">
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-story" aria-label="Story Cutscene"><img src="art/flat/o_map_scroll.webp" alt=""><span>Story</span></button>
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-sports" style="display:none" aria-label="Crew Sports"><img src="art/flat/o_compass.webp" alt=""><span>Sports</span></button>
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-dress" style="display:none" aria-label="Costumes"><img src="art/flat/u_dress.webp" alt=""><span>Look</span></button>
-      <button type="button" class="w-btn w-tool w-mute-btn" id="w-mute" aria-label="Sound On/Off" title="Sound On/Off">🔊</button>
-    </div>
-    <div id="w-fps"></div>
-  </div>
-  <button type="button" class="w-btn" id="w-compass" hidden></button>
-
-  <div id="w-joy"><div id="w-knob"></div></div>
-
-  <!-- Live In-World Talk Panel -->
-  <div id="w-talk">
-    <img id="w-face" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
-    <div id="w-line"></div>
-    <button type="button" class="w-btn" id="w-next">OK ▶</button>
   </div>
 
-  <!-- Live In-World Decorator Dock (My Home Island) -->
-  <div id="w-decor-dock" aria-label="Live Home Decorator">
-    <div class="w-dd-head">
-      <div class="w-dd-title">🪑 Live Yard &amp; Veranda Decorator <small id="w-dd-hint">Tap an item below or on the ground, then tap where to place it!</small></div>
-      <div class="w-dd-actions">
-        <button type="button" class="w-btn w-dd-btn cyan" id="w-dd-flip" onclick="WORLD.flipDecor()">↔ Flip</button>
-        <button type="button" class="w-btn w-dd-btn amber" id="w-dd-craft" onclick="WorldGame.openWorkshop('craft')">🔨 Craft More</button>
-        <button type="button" class="w-btn w-dd-btn coral" id="w-dd-store" onclick="WORLD.putAwayDecor()">📥 Put in Bag</button>
-        <button type="button" class="w-btn w-dd-btn emerald" id="w-dd-done" onclick="WORLD.closeDecorDock()">✓ Done</button>
+  <!-- Unified Non-Overlapping Top Header + Active Story Goal Banner -->
+  <div id="ti-hud-header">
+    <header id="ti-topbar">
+      <div class="ti-top-group">
+        <a class="ti-btn" href="../index.html#home" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'eaa:closeOverlay'},'*');return false;}}catch(e){}" title="Back to Home Island">🏝️ <span class="ti-hide-sm">Home</span></a>
+        <div class="ti-stat-pill" title="Explorer Progress">
+          <span>🧭 <b id="ti-explorer-name">Explorer</b></span>
+          <span>🪙 <b id="ti-coins-val">0</b></span>
+          <span>⭐ <b id="ti-stars-val">0/5</b></span>
+        </div>
+        <button type="button" class="ti-btn blue" id="ti-grade-btn" title="Switch Grade 3 / Grade 4 English Level">📘 Grade 3</button>
+      </div>
+
+      <div class="ti-top-group">
+        <div class="ti-zones-strip" aria-label="5 Island Zones">
+          <button type="button" class="ti-zone-dot active" id="ti-zdot-1" data-zone="1" title="Zone 1: Benbow Beach">1</button>
+          <button type="button" class="ti-zone-dot" id="ti-zdot-2" data-zone="2" title="Zone 2: Cook's Jungle & Bridge">2</button>
+          <button type="button" class="ti-zone-dot" id="ti-zdot-3" data-zone="3" title="Zone 3: Lagoon Boat & Shipwreck">3</button>
+          <button type="button" class="ti-zone-dot" id="ti-zdot-4" data-zone="4" title="Zone 4: Spyglass Tower & Dark Cave">4</button>
+          <button type="button" class="ti-zone-dot" id="ti-zdot-5" data-zone="5" title="Zone 5: Sunset Treasure Cove">5</button>
+        </div>
+        <button type="button" class="ti-btn yellow" id="ti-code-btn" title="Sign in with Passport Code">🔑 <span class="ti-hide-sm">Passport</span></button>
+        <a class="ti-btn lilac" href="../passport/index.html" title="Open My Passport Booklet">🛂 <span class="ti-hide-sm">Stamps</span></a>
+        <button type="button" class="ti-btn" id="ti-2d-btn" title="Light 2D Mode for older phones">🗺️ <span class="ti-hide-sm">2D Light</span></button>
+        <button type="button" class="ti-btn icon-only" id="ti-mute-btn" aria-label="Sound On or Off" title="Sound On/Off">🔊</button>
+      </div>
+    </header>
+
+    <button type="button" id="ti-goal-banner" title="Tap for Parrot Clue">
+      <span>🦜</span>
+      <span id="ti-goal-text">Zone 1 · Talk to Benbow outside the Inn!</span>
+    </button>
+
+    <!-- Feedback Toast (flows cleanly below Goal Banner, zero overlap!) -->
+    <div id="ti-toast" aria-live="polite"></div>
+  </div>
+
+  <!-- 1st-Person Brass Spyglass HUD (Active atop Lookout Tower!) -->
+  <div id="ti-spyglass-hud">
+    <div class="ti-spy-ring"></div>
+    <div class="ti-spy-cross"></div>
+    <div class="ti-spy-controls">
+      <span id="ti-spy-compass">🧭 N (0°)</span>
+      <button type="button" class="ti-btn icon-only yellow" id="ti-spy-zoom-in" title="Zoom In">➕</button>
+      <button type="button" class="ti-btn icon-only" id="ti-spy-zoom-out" title="Zoom Out">➖</button>
+      <button type="button" class="ti-btn pink" id="ti-spy-exit-btn">🪜 Down</button>
+    </div>
+  </div>
+
+  <!-- Live In-World NPC Speech Card + Spoken Reply Pills + Optional Mic -->
+  <section id="ti-dialogue" role="dialog" aria-label="Island Conversation">
+    <div class="ti-dlg-head">
+      <span class="ti-dlg-speaker" id="ti-dlg-speaker">🐆 Benbow</span>
+      <div style="display:flex;gap:6px">
+        <button type="button" class="ti-btn icon-only yellow" id="ti-dlg-hear" title="Listen Again">🔊</button>
+        <button type="button" class="ti-btn icon-only" id="ti-dlg-close" title="Close">✕</button>
       </div>
     </div>
-    <div class="w-dd-tray" id="w-dd-tray"></div>
-  </div>
+    <p class="ti-dlg-line" id="ti-dlg-line"></p>
+    <div class="ti-dlg-replies" id="ti-dlg-replies"></div>
+  </section>
 
-  <div id="w-bag" style="display:none"></div>
-  <div id="w-vignette"></div>
-  <div id="w-fade"></div>
-  <div id="w-load">⛵ Sailing to Treasure Island...<small id="w-load-small"></small></div>
-  <div id="isl-modal-root"></div>
-  <div id="bp-turn" aria-live="polite">
-    <img src="art/c_benbow_happy.webp" alt="">
-    <span class="bp-phone">📱</span>
-    <b>Turn your phone sideways — or play right here!</b>
-    <small>Landscape gives the widest view of Admiral Benbow Harbour.</small>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px">
-      <button type="button" class="uf-btn emerald" style="padding:11px 22px;border-radius:999px;font:800 1rem inherit;cursor:pointer" onclick="document.body.classList.add('bp-allow-portrait')">▶ Play on Phone Now</button>
-      <a class="uf-btn cyan" href="../game-maker/index.html" style="padding:11px 18px;border-radius:999px;font:800 .95rem inherit;text-decoration:none">🎮 All Games</a>
+  <!-- Left Virtual Thumbstick -->
+  <div id="ti-joy" aria-label="Move Explorer"><div id="ti-joy-knob"></div></div>
+
+  <!-- Center 4-Slot Quick Adventure Tool Belt -->
+  <nav id="ti-toolbelt" aria-label="Adventure Tools">
+    <button type="button" class="ti-tool-slot active" data-tool="hand" title="Free Hands (Key 1)">
+      <span class="ico">👋</span><span>Hand</span>
+    </button>
+    <button type="button" class="ti-tool-slot locked" data-tool="lantern" title="Glowing Cave Lantern (Key 2)">
+      <span class="ico">🏮</span><span>Lantern</span>
+    </button>
+    <button type="button" class="ti-tool-slot locked" data-tool="spyglass" title="Brass Spyglass (Key 3)">
+      <span class="ico">🔭</span><span>Spyglass</span>
+    </button>
+    <button type="button" class="ti-tool-slot locked" data-tool="shovel" title="Treasure Shovel (Key 4)">
+      <span class="ico">⛏️</span><span>Shovel</span>
+    </button>
+  </nav>
+
+  <!-- Right Action Cluster: Contextual Interaction + Dash + Run + Jump -->
+  <div id="ti-right-actions">
+    <button type="button" class="ti-btn yellow" id="ti-context-btn" style="display:none">💬 Talk</button>
+    <div class="ti-move-cluster">
+      <button type="button" class="ti-btn pink" id="ti-dash-btn" title="Sprint Dash (Shift / Q)">⚡ <span class="ti-hide-xs">Dash</span></button>
+      <button type="button" class="ti-btn blue" id="ti-run-btn" title="Toggle Run Speed">🏃 <span class="ti-hide-xs">Run</span></button>
+      <button type="button" class="ti-btn green" id="ti-jump-btn" title="Jump (Space)">⬆️ Jump</button>
     </div>
   </div>
 
+  <!-- Bottle Message Map Scroll Card -->
+  <div class="ti-overlay-card" id="ti-bottle-modal" role="dialog" aria-label="Message in a Bottle">
+    <div class="ti-modal-box">
+      <div style="font-size:3rem;margin-bottom:6px">🍾📜</div>
+      <h2 style="margin:0 0 8px;font-size:1.65rem;font-weight:900">Secret Bottle Map!</h2>
+      <p id="ti-bottle-clue-text" style="font-size:1.15rem;font-weight:800;line-height:1.45;background:#fff8e6;border:3px dashed #ffb320;border-radius:18px;padding:14px;margin:12px 0 18px"></p>
+      <button type="button" class="ti-btn green" id="ti-bottle-close">✅ Got It! Tell Benbow!</button>
+    </div>
+  </div>
 
-  <!-- Lightweight core boot scripts (heavy engine & content scripts lazy-load on Play!) -->
-  <script src="js/config.js?v=rg-20261114e"></script>
-  <script src="js/data.js?v=rg-20261114e"></script>
-  <script src="js/core/audio.js?v=rg-20261114e"></script>
-  <script src="js/audio.js?v=rg-20261114e"></script>
-  <script src="js/core/progress.js?v=rg-20261114e"></script>
-  <script src="js/core/feedback.js?v=rg-20261114e"></script>
-  <script src="js/story.js?v=rg-20261114e"></script>
-  <script src="js/sync.js?v=rg-20261114e"></script>
-  <script src="js/app.js?v=20261122p"></script>
+  <!-- Passport Code Home Login / Demo Picker Card -->
+  <div class="ti-overlay-card" id="ti-login-modal" role="dialog" aria-label="Explorer Sign In">
+    <div class="ti-modal-box">
+      <div style="font-size:3rem;margin-bottom:4px">🏴‍☠️🛂</div>
+      <h2 style="margin:0 0 6px;font-size:1.7rem;font-weight:900">Welcome to Treasure Island 3D!</h2>
+      <p style="margin:0 0 14px;font-weight:700;color:#5b4b73">Enter your personal Passport Code to save your stars &amp; coins — or jump straight into Demo Mode!</p>
+      <div style="display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+        <input type="text" id="ti-code-field" class="ti-code-input" maxlength="8" placeholder="CODE" aria-label="Passport Code">
+        <button type="button" class="ti-btn green" id="ti-login-submit">🚀 Sail In!</button>
+      </div>
+      <div id="ti-login-err" style="min-height:22px;font-weight:800;color:#cc3677;font-size:0.92rem;margin-bottom:10px"></div>
+      <div style="border-top:2px solid #e6effa;padding-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button type="button" class="ti-btn blue" id="ti-login-demo-g3">👦 Play Grade 3 Demo</button>
+        <button type="button" class="ti-btn pink" id="ti-login-demo-g4">👧 Play Grade 4 Demo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grand Finale Treasure Celebration Card -->
+  <div class="ti-overlay-card" id="ti-finale-modal" role="dialog" aria-label="Treasure Found">
+    <div class="ti-modal-box">
+      <div style="font-size:3.5rem;margin-bottom:4px">🏆🪙🏴‍☠️</div>
+      <h2 style="margin:0 0 8px;font-size:1.85rem;font-weight:900">Legendary Treasure Found!</h2>
+      <p id="ti-finale-summary" style="font-size:1.12rem;font-weight:800;line-height:1.45;margin:0 0 18px"></p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button type="button" class="ti-btn green" id="ti-finale-stay">🌴 Keep Exploring Island</button>
+        <a class="ti-btn lilac" href="../passport/index.html">🛂 View My Passport</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 100% Local Vendor & Shared 3D Engine Scripts (Zero External CDNs Required Offline!) -->
+  <script src="../game-maker/js/vendor/three.min.js"></script>
+  <script src="../game-maker/js/vendor/BufferGeometryUtils.js"></script>
+  <script src="../game-maker/js/vendor/GLTFLoader.js"></script>
+  <script src="../games/engine3d/SceneAtmosphere.js?v=20261123"></script>
+  <script src="../games/engine3d/StylizedWater.js?v=20261123"></script>
+  <script src="../games/kit3d/kit3d.js?v=20261123"></script>
+  <script>window.EAA_AVATAR_BASE = '../assets/avatars/';</script>
+  <script src="../js/monster-pets.js?v=20261124a"></script>
+  <script src="../js/pupil-avatars.js?v=20261124a"></script>
+  <script src="js/data.js?v=20261123"></script>
+  <script src="js/sync.js?v=20261123"></script>
+
+  <!-- Treasure Island 3D Open-World Modules + MIT PixelFX Engine -->
+  <script src="treasure3d/pixelfx/pixelfx-player.js?v=20261123g"></script>
+  <script src="treasure3d/atmosphere.js?v=20261123g"></script>
+  <script src="treasure3d/world-map.js?v=20261123g"></script>
+  <script src="treasure3d/player.js?v=20261123g"></script>
+  <script src="treasure3d/npcs.js?v=20261123g"></script>
+  <script src="treasure3d/quests.js?v=20261123g"></script>
+  <script src="treasure3d/app.js?v=20261123g"></script>
 </body>
 </html>
