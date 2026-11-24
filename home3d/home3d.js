@@ -14,6 +14,7 @@
   var NOLINKS = K.Q.has('nolinks') || K.DEMO;
   var mat = function (c, o) { return new T3.MeshStandardMaterial(Object.assign({ color: c, roughness: .88, metalness: 0, envMapIntensity: .28 }, o || {})); };
   var R3 = K.renderer;
+  if (!K.CAPTURE && !K.DEMO) { try { document.body.appendChild(K.qualityButton('ibtn k3-qbtn k3-qbtn-float')); } catch (eQ) {} }   // Auto / Sharp / Fast picture, saved on this device
   if (K.resize) K.resize(); // Enforce kit3d 4K Smartboard pixel-budget cap (never 6K supersampling!)
   R3.toneMapping = T3.ACESFilmicToneMapping;
   R3.toneMappingExposure = 1.04;   // airy, clean, balanced daylight without harsh dark blotches
