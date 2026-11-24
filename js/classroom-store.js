@@ -19,10 +19,12 @@
     itemPrices: { common: 15, rare: 30, epic: 60, legendary: 100, mythic: 150 },
     boxPrices: { BRONZE: 14, WOODEN: 25, GILDED: 50, CELESTIAL: 85 },
     privileges: [
-      { id: 'p-cat-sticker',    icon: '🐱', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · KEEP IT!',   name: '1× Funny Cat Meme Sticker (Pick Your Favourite!)', price: 40, weeklyLimit: 2, coinsOnly: true, active: true },
-      { id: 'p-cat-pack',       icon: '😻', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · 3 PACK!',    name: '3× Funny Cat Meme Sticker Pack',                  price: 100, weeklyLimit: 1, coinsOnly: true, active: true },
-      { id: 'p-topper-mystery', icon: '🎁', image: 'assets/store/prize_pencil_topper.webp', badge: 'REAL 3D TOY PRIZE!',      name: 'Mystery 3D Cute Pencil Topper (Blind Draw)',      price: 120, weeklyLimit: 1, coinsOnly: true, active: true },
-      { id: 'p-topper-vip',     icon: '👑', image: 'assets/store/prize_pencil_topper.webp', badge: 'VIP REAL 3D PRIZE!',      name: 'VIP Choice 3D Cute Pencil Topper (Pick Any One!)', price: 160, weeklyLimit: 1, coinsOnly: true, active: true },
+      { id: 'p-cat-sticker',       icon: '🐱', image: 'assets/store/prize_cat_stickers.webp',      badge: 'REAL PRIZE · KEEP IT!',   name: '1× Funny Cat Meme Sticker (Pick Your Favourite!)', price: 40,  weeklyLimit: 2, coinsOnly: true, active: true },
+      { id: 'p-cat-pack',          icon: '😻', image: 'assets/store/prize_cat_stickers.webp',      badge: 'REAL PRIZE · 3 PACK!',    name: '3× Funny Cat Meme Sticker Pack',                   price: 100, weeklyLimit: 1, coinsOnly: true, active: true },
+      { id: 'p-topper-mystery',    icon: '🎁', image: 'assets/store/prize_pencil_topper.webp',     badge: 'REAL 3D TOY PRIZE!',      name: 'Mystery 3D Cute Pencil Topper (Blind Draw)',       price: 120, weeklyLimit: 1, coinsOnly: true, active: true },
+      { id: 'p-topper-vip',        icon: '👑', image: 'assets/store/prize_pencil_topper.webp',     badge: 'VIP REAL 3D PRIZE!',      name: 'VIP Choice 3D Cute Pencil Topper (Pick Any One!)', price: 160, weeklyLimit: 1, coinsOnly: true, active: true },
+      { id: 'p-shaker-sticker',    icon: '🚚', image: 'assets/store/prize_shaker_stickers.webp',   badge: 'LEGENDARY BOX ONLY!',     name: '1× 3D Confetti Shaker Truck / Bus Sticker',        price: 0,   weeklyLimit: 1, coinsOnly: true, boxOnly: true, boxTier: 'CELESTIAL', rarity: 'legendary', active: true },
+      { id: 'p-astro-highlighter', icon: '🚀', image: 'assets/store/prize_astro_highlighter.webp', badge: 'LEGENDARY BOX ONLY!',     name: '1× 3D Astronaut Pastel Highlighter Pen',           price: 0,   weeklyLimit: 1, coinsOnly: true, boxOnly: true, boxTier: 'CELESTIAL', rarity: 'legendary', active: true },
       { id: 'p-song', icon: '🎵', name: 'Choose the warm-up song', price: 40, weeklyLimit: 2, active: true },
       { id: 'p-seat', icon: '🪑', name: 'Sit anywhere for one lesson', price: 30, weeklyLimit: 2, active: true },
       { id: 'p-helper', icon: '🧑‍🏫', name: "Be the teacher's helper", price: 50, weeklyLimit: 1, active: true },
@@ -39,7 +41,7 @@
     BRONZE:    { name: 'Bronze Box',  icon: '🥉', pill: 'tier-bronze',    color: '#c2783e', text: '#fdba74', title: 'Little Treasure',   blurb: 'A small surprise for a few coins.',                  odds: 'Common items, small prizes, a few coins' },
     WOODEN:    { name: 'Silver Box',  icon: '🥈', pill: 'tier-wooden',    color: '#cbd5e1', text: '#e2e8f0', title: 'Silver Strongbox',  blurb: 'Good prizes: items, sounds, titles, free rewards.',  odds: 'Items, sounds, titles, free rewards or coins' },
     GILDED:    { name: 'Gold Box',    icon: '🥇', pill: 'tier-gilded',    color: '#eab308', text: '#fef08a', title: 'Golden Reliquary',  blurb: 'Rare and epic items, sometimes a legendary.',                    odds: 'Rare and epic prizes, free rewards, big coins' },
-    CELESTIAL: { name: 'Diamond Box', icon: '💎', pill: 'tier-celestial', color: '#22d3ee', text: '#cffafe', title: 'Diamond Vault',     blurb: 'The best prizes: epic and legendary, jackpots.',     odds: 'Epic and legendary prizes, free rewards, jackpots' }
+    CELESTIAL: { name: 'Diamond Box', icon: '💎', pill: 'tier-celestial', color: '#22d3ee', text: '#cffafe', title: 'Legendary Vault',     blurb: 'Epic & Legendary items + exclusive 3D Astronaut Pen & 3D Truck/Bus Shaker!', odds: 'Epic & Legendary items, exclusive 3D Astronaut Pen & 3D Shaker Stickers, jackpots' }
   };
   /** Name, icon and colours of a box kind (works for old saved ids too). */
   root.boxTierInfo = function (tier) {
@@ -62,6 +64,7 @@
     if (!d.wallets) d.wallets = {};
     if (!Array.isArray(d.requests)) d.requests = [];
     if (!Array.isArray(d.purchases)) d.purchases = [];
+    var freshCfg = !d.config;
     if (!d.config) d.config = clone(DEFAULTS);
     var c = d.config;
     c.itemPrices = Object.assign({}, DEFAULTS.itemPrices, c.itemPrices || {});
@@ -71,7 +74,7 @@
     if (!Array.isArray(c.privileges)) c.privileges = clone(DEFAULTS.privileges);
     if (!c.physicalPrizesV1) {
       var existingIds = c.privileges.map(function (p) { return p.id; });
-      DEFAULTS.privileges.filter(function (p) { return p.coinsOnly && existingIds.indexOf(p.id) === -1; }).reverse().forEach(function (p) {
+      DEFAULTS.privileges.filter(function (p) { return p.coinsOnly && !p.boxOnly && existingIds.indexOf(p.id) === -1; }).reverse().forEach(function (p) {
         c.privileges.unshift(clone(p));
       });
       c.privileges.forEach(function (p) {
@@ -85,20 +88,30 @@
       c.privileges.forEach(function (p) { var x = P2[p.id]; if (x && Number(p.price) === x[0]) p.price = x[1]; });
       c.physicalPrizesV2 = 1;
     }
+    if (!c.physicalPrizesV4) {   // 24 Nov 2026: 3D Shaker Stickers & 3D Astronaut Highlighter Pen live inside Legendary/Diamond Box only (not sold directly)
+      ['p-shaker-sticker', 'p-astro-highlighter'].forEach(function (nid) {
+        var nd = DEFAULTS.privileges.filter(function (dp) { return dp.id === nid; })[0];
+        var ex = c.privileges.filter(function (p) { return p.id === nid; })[0];
+        if (ex && nd) { Object.assign(ex, clone(nd)); }
+        else if (nd) { c.privileges.push(clone(nd)); }
+      });
+      c.physicalPrizesV3 = 1; c.physicalPrizesV4 = 1;
+      if (!freshCfg) c.updatedAt = Date.now();
+    }
     if (!c.coinsPerXp) c.coinsPerXp = DEFAULTS.coinsPerXp;
     if (!c.balanceV1) {   // 30 Oct 2026: boxes were cheaper than the coins inside them; the cheapest class rewards cost less than a hat
       var BOX = { BRONZE: 8, WOODEN: 15, GILDED: 30, CELESTIAL: 60 }, PRIV = { 'p-song': 15, 'p-seat': 15, 'p-sticker': 15, 'p-helper': 20, 'p-game': 20, 'p-dj': 30, 'p-hwpass': 40 };
       Object.keys(BOX).forEach(function (k) { c.boxPrices[k] = Math.max(Number(c.boxPrices[k]) || 0, BOX[k]); });
       c.privileges.forEach(function (pv) { if (PRIV[pv.id]) pv.price = Math.max(Number(pv.price) || 0, PRIV[pv.id]); });
-      c.balanceV1 = 1; c.updatedAt = Date.now();
+      c.balanceV1 = 1; if (!freshCfg) c.updatedAt = Date.now();
     }
     if (!c.balanceV2) {   // 1 Nov 2026: the ladder. Small wins come soon, big dreams stay far. One price for each tier, in both stores.
-      c.itemPrices = Object.assign({}, DEFAULTS.itemPrices); c.balanceV2 = 1; c.updatedAt = Date.now();
+      c.itemPrices = Object.assign({}, DEFAULTS.itemPrices); c.balanceV2 = 1; if (!freshCfg) c.updatedAt = Date.now();
     }
     if (!c.itemPrices.mythic) c.itemPrices.mythic = DEFAULTS.itemPrices.mythic;
     if (!c.priceV3) {   // 12 Nov 2026: pupils get about 20 coins a week (8 from the teacher, 12 from XP). Everyday = 1 week, Cool = 2, Epic = 4, Legendary = 7, Mythic = 12.
       c.itemPrices = { common: 20, rare: 40, epic: 80, legendary: 150, mythic: 250 };
-      c.priceV3 = 1; c.updatedAt = Date.now();
+      c.priceV3 = 1; if (!freshCfg) c.updatedAt = Date.now();
     }
     if (!c.priceV5) {   // 24 Nov 2026, from the real XP log: in a normal school week a pupil earns about 12 coins (3A ~20, 4A ~15, 4B ~9, 3B ~7).
       // Everyday = about 1 week, Cool = 2.5, Epic = 5, Legendary = 8, Mythic = 12 (an end-of-term dream). Boxes now give back less than they cost (see BOX_ODDS).
@@ -106,6 +119,7 @@
       c.boxPrices = { BRONZE: 14, WOODEN: 25, GILDED: 50, CELESTIAL: 85 };
       c.priceV4 = 1; c.priceV5 = 1; c.updatedAt = Date.now();
     }
+    if (freshCfg) c.updatedAt = 0;
     if (!c.boardGoals || typeof c.boardGoals !== 'object') c.boardGoals = {};
     if (!c.partyFunds || typeof c.partyFunds !== 'object') c.partyFunds = {};
     if (!c.off || typeof c.off !== 'object') c.off = {};
@@ -261,7 +275,7 @@
   function privilege(id) { return data().config.privileges.filter(function (p) { return p.id === id; })[0] || null; }
   function requestPrivilege(studentId, privId) {
     var p = privilege(privId);
-    if (!p || !p.active) return { success: false, error: 'This reward is not available' };
+    if (!p || !p.active || p.boxOnly) return { success: false, error: 'This special prize can only be won inside a Diamond (Legendary) Box!' };
     if (isOff('tabs', 'rewards')) return { success: false, error: 'Class rewards are closed for now' };
     if (p.weeklyLimit && usedThisWeek(studentId, privId) >= p.weeklyLimit) return { success: false, error: 'You already used this reward ' + p.weeklyLimit + ' time(s) this week' };
     if (balance(studentId) < p.price) return { success: false, error: 'Not enough coins (need ' + p.price + ')' };
@@ -529,9 +543,23 @@
     giveExtra(studentId, x.id);
     return { type: 'extra', kind: x.kind, item: { id: x.id, name: x.name, category: C.KINDS[x.kind].one, rarity: x.rarity, icon: x.icon, description: x.desc } };
   }
+  function rewardLegendaryBoxPrize(studentId) {
+    var pool = data().config.privileges.filter(function (p) {
+      if (!p.active || !p.boxOnly || p.boxTier !== 'CELESTIAL') return false;
+      return !data().requests.some(function (r) { return r.studentId === studentId && r.privilegeId === p.id && r.status !== 'declined'; });
+    });
+    if (!pool.length) return null;
+    var p = pickOne(pool), rid = uid('req'), now = new Date().toISOString();
+    data().requests.unshift({ id: rid, studentId: studentId, privilegeId: p.id, name: '💎 LEGENDARY BOX WIN: ' + p.name, icon: p.icon, price: 0, status: 'pending', createdAt: now, decidedAt: null, note: 'Won inside a Diamond (Legendary) Box', voucher: true, boxPrize: true });
+    return { type: 'voucher', boxPrize: true, item: { id: p.id, name: p.name, category: 'legendary real prize', rarity: 'legendary', icon: p.icon, image: p.image, description: '🎉 LEGENDARY REAL PRIZE! Show your teacher to receive it!' } };
+  }
   function rewardVoucher(studentId, tier) {
-    var cap = BOX_VOUCHER_CAP[tier] || 20;   // free class passes only, worth at most about the price of the box
-    var pool = data().config.privileges.filter(function (p) { return p.active && (p.boxOnly || (!p.coinsOnly && !p.image && p.price <= cap)); });
+    if (tier === 'CELESTIAL' && Math.random() < 0.40) {
+      var legPrize = rewardLegendaryBoxPrize(studentId);
+      if (legPrize) return legPrize;
+    }
+    var cap = BOX_VOUCHER_CAP[tier] || 20;   // free class passes; real prizes only via the Diamond-box prize above
+    var pool = data().config.privileges.filter(function (p) { return p.active && !p.coinsOnly && !p.boxOnly && !p.image && p.price <= cap; });
     if (!pool.length) return null;
     var p = pickOne(pool), rid = uid('req'), now = new Date().toISOString();
     data().requests.unshift({ id: rid, studentId: studentId, privilegeId: p.id, name: 'FREE: ' + p.name, icon: p.icon, price: 0, status: 'approved', createdAt: now, decidedAt: now, note: 'Won in a Mystery Box', voucher: true });
@@ -912,9 +940,9 @@
       TIERS.map(function (k) { return '<label class="cs-field-lbl">' + BOX_INFO[k].name + '<input class="cs-dark-inp" type="number" min="1" value="' + cfg.boxPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'box\',\'' + k + '\',this.value)"></label>'; }).join('') + '</div>' +
       cfg.privileges.map(function (p) {
         return '<div class="cs-row-line">' +
-          '<span style="font-size:1.3rem;">' + esc(p.icon) + '</span><div style="flex:1;min-width:180px;font-weight:800;color:#f8fafc;">' + esc(p.name) + '</div>' +
-          '<label style="font-size:.74rem;color:#94a3b8;">coins <input class="cs-dark-inp" type="number" min="1" value="' + p.price + '" onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'price\',this.value)" style="width:74px;display:inline-block;margin-left:4px;"></label>' +
-          '<label style="font-size:.74rem;color:#94a3b8;">/week <input class="cs-dark-inp" type="number" min="0" value="' + (p.weeklyLimit || 0) + '" onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'weeklyLimit\',this.value)" style="width:62px;display:inline-block;margin-left:4px;"></label>' +
+          '<span style="font-size:1.3rem;">' + esc(p.icon) + '</span><div style="flex:1;min-width:180px;font-weight:800;color:#f8fafc;">' + esc(p.name) + (p.boxOnly ? ' <span style="font-size:.7rem;color:#22d3ee;font-weight:900;">[💎 Diamond/Legendary Box Only]</span>' : '') + '</div>' +
+          (p.boxOnly ? '' : '<label style="font-size:.74rem;color:#94a3b8;">coins <input class="cs-dark-inp" type="number" min="1" value="' + p.price + '" onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'price\',this.value)" style="width:74px;display:inline-block;margin-left:4px;"></label>' +
+          '<label style="font-size:.74rem;color:#94a3b8;">/week <input class="cs-dark-inp" type="number" min="0" value="' + (p.weeklyLimit || 0) + '" onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'weeklyLimit\',this.value)" style="width:62px;display:inline-block;margin-left:4px;"></label>') +
           '<label style="font-size:.78rem;font-weight:700;color:#e5edff;cursor:pointer;"><input type="checkbox" ' + (p.active ? 'checked' : '') + ' onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'active\',this.checked)"> active</label>' +
           btn('Remove', "ClassroomStore.ui.removePriv('" + p.id + "')", 'ghost') + '</div>';
       }).join('') + '<div style="margin-top:12px;">' + btn('+ Add classroom reward', 'ClassroomStore.ui.addPriv()', 'ghost') + '</div>');
@@ -1585,7 +1613,7 @@
 
     // 4. Real Classroom Prizes & Privileges
     if (!isOff('tabs', 'rewards')) {
-      var activePrivs = cfg.privileges.filter(function (p) { return p.active; });
+      var activePrivs = cfg.privileges.filter(function (p) { return p.active && !p.boxOnly; });
       out += '<div style="margin-top:6px;">' +
         '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">' +
           '<div class="cs-sec-title">⭐ Real Prizes &amp; Classroom Passes</div>' +
@@ -1594,13 +1622,13 @@
         '<div class="cs-prize-grid">' + activePrivs.map(function (p) {
           var used = usedThisWeek(s.id, p.id), left = p.weeklyLimit ? Math.max(0, p.weeklyLimit - used) : 99, can = bal >= p.price && left > 0;
           var visual = p.image
-            ? '<div style="position:relative;height:132px;margin:-4px -4px 8px;border-radius:12px;overflow:hidden;background:#060911;"><img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" style="width:100%;height:100%;object-fit:cover;display:block;">' +
+            ? '<div style="position:relative;height:132px;margin:-4px -4px 8px;border-radius:12px;overflow:hidden;background:#f8fafc;"><img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" style="width:100%;height:100%;object-fit:cover;display:block;">' +
               (p.badge ? '<span style="position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:.64rem;font-weight:900;padding:2px 8px;border-radius:999px;">' + esc(p.badge) + '</span>' : '') + '</div>'
             : '<div style="font-size:2.4rem;margin:6px 0;">' + esc(p.icon) + '</div>';
           return '<div class="cs-prize-card' + (p.image ? ' real' : '') + '"><div>' + visual +
             '<div style="font-weight:900;margin:4px 0 6px;color:#2b1d40;font-size:.9rem;line-height:1.25;">' + esc(p.name) + '</div></div>' +
             '<div>' + coinPill(p.price) +
-            '<div style="font-size:.72rem;color:#94a3b8;margin:5px 0;">' + (p.weeklyLimit ? left + ' left this week' : 'Unlimited') + '</div>' +
+            '<div style="font-size:.72rem;color:#5b4b73;font-weight:700;margin:5px 0;">' + (p.weeklyLimit ? left + ' left this week' : 'Unlimited') + '</div>' +
             btn(left <= 0 ? 'Used this week' : (bal < p.price ? 'Need ' + (p.price - bal) + ' more' : '🙋 Ask Teacher'), "ClassroomStore.ui.request('" + p.id + "')", can ? 'ok' : 'ghost', !can) + '</div></div>';
         }).join('') + '</div></div>';
     }

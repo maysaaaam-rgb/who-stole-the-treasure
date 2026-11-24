@@ -873,6 +873,8 @@
   function studentOwnsItem(studentId, itemId) {
     if (!studentId || !itemId || itemId === 'none') return false;
     try { if (root.ClassroomStore && root.ClassroomStore.avatar && root.ClassroomStore.avatar.owns(studentId, itemId)) return true; } catch (eS) { /* shop not loaded */ }
+    var apw = data.approved && data.approved[studentId] && data.approved[studentId].wear;
+    if (apw) { for (var wk in apw) { if (apw[wk] === itemId) return true; } }
     var st = store();
     var checkIds = [itemId].concat(AVATAR_TO_MONSTER_EQUIV[itemId] || []);
     try {
@@ -2878,6 +2880,13 @@
   /** Put an owned item on (or take a slot off) and save it to the board. */
   function wearItem(id, itemId, slot) {
     var c = lookOf(id), sl = slot || slotOf(itemId); if (!sl) return Promise.resolve(false);
+    var prevId = c.wear && c.wear[sl];
+    if (prevId && prevId !== 'none' && !FREE_STARTER_ITEMS[prevId]) {
+      try {
+        var csE = root.ClassroomStore && root.ClassroomStore.cosmetics && root.ClassroomStore.cosmetics.entry ? root.ClassroomStore.cosmetics.entry(id) : null;
+        if (csE) { if (!Array.isArray(csE.avatar)) csE.avatar = []; if (csE.avatar.indexOf(prevId) < 0) csE.avatar.push(prevId); }
+      } catch (ePrev) {}
+    }
     var monEq = avatarEquipFromMonster(equippedOf(id));
     var isGirl = genderOf(id, c, heads[id]) === 'girl';
     if (itemId && itemId !== 'none') {
