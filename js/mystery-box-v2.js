@@ -171,7 +171,7 @@
   function prizePic(item, res) {
     function art(n, e) { return has(n) ? '<img src="assets/store/' + n + '.webp" alt="" draggable="false" style="width:86%;height:86%;object-fit:contain">' : '<span class="em">' + e + '</span>'; }
     if (res.reward && res.reward.type === 'coins') return art(res.reward.rolled === 'jackpot' ? 'jackpot_gem' : (res.reward.amount > 5 ? 'coin_pile' : 'coin_one'), '🪙');
-    if (res.reward && res.reward.type === 'voucher') return art('reward_ticket', item.icon || '🎟️');
+    if (res.reward && res.reward.type === 'voucher') return (item && item.image) ? '<img src="' + esc(item.image) + '" alt="" draggable="false" style="width:88%;height:88%;object-fit:cover;border-radius:20px">' : art('reward_ticket', item.icon || '🎟️');
     var CS = root.ClassroomStore;
     if (item && item.avatar && item.image) return '<span class="sc"><img src="' + esc(item.image) + '" alt="" draggable="false" style="width:86%;height:86%;object-fit:contain"></span>';
     if (item && item.id && item.id !== 'preview' && item.id !== 'voucher' && CS && CS.itemPic) { try { var h = CS.itemPic(item); if (h) return '<span class="sc">' + h + '</span>'; } catch (e) { /* fall back */ } }
