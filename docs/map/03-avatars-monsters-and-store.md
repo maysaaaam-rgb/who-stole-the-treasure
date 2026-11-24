@@ -54,7 +54,7 @@ English Adventure Academy features **two complementary companion/character pipel
 | Module | Lines / Size | Exports | Purpose |
 | :--- | :---: | :--- | :--- |
 | [classroom-cosmetics.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-cosmetics.js) | 122L (9.9 KB) | `ClassroomCosmetics` | Classroom Store extras: the catalog and the sounds. |
-| [classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js) | 2162L (167.5 KB) | `boxTierInfo`, `EAA_ILLUSTRATED_MONSTERS`, `renderBoxTierCardsHtml`, `ClassroomStore`, `renderClassroomStoreView` | Classroom Store: coins, buying monster items and mystery boxes, and classroom privileges. |
+| [classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js) | 2274L (178 KB) | `boxTierInfo`, `EAA_ILLUSTRATED_MONSTERS`, `renderBoxTierCardsHtml`, `ClassroomStore`, `renderClassroomStoreView` | Classroom Store: coins, buying monster items and mystery boxes, and classroom privileges. |
 | [evolution-levels.js](file:///C:/Users/maysa/Desktop/DV/js/evolution-levels.js) | 8L (0.7 KB) | `EAA_EVOLUTION_XP`, `EAA_NEAR_EVOLVE_XP` | The XP needed for each of the 7 monster levels, in ONE place. |
 | [monster-anchors.js](file:///C:/Users/maysa/Desktop/DV/js/monster-anchors.js) | 7L (17.3 KB) | `MONSTER_ANCHORS`, `MONSTER_ITEM_BOX` | Generated: positions of the head, eyes, neck, body and paw on every illustrated monster (1024px space), |
 | [monster-closet.js](file:///C:/Users/maysa/Desktop/DV/js/monster-closet.js) | 191L (18.5 KB) | `EAA_ILLUSTRATED_MONSTERS`, `MonsterCloset`, `renderMonsterCloset` | Monster Closet: pick a pupil, try things on the 3D monster, save. |
@@ -68,9 +68,9 @@ English Adventure Academy features **two complementary companion/character pipel
 | [monster-pets.js](file:///C:/Users/maysa/Desktop/DV/js/monster-pets.js) | 1172L (270.6 KB) | `MonsterPets` | Monster Pets & 3D Character Buddies Pack |
 | [monster-renderer.js](file:///C:/Users/maysa/Desktop/DV/js/monster-renderer.js) | 4614L (272.8 KB) | `currentEvolutionBannerSpecies`, `switchEvolutionBannerSpecies`, `MonsterRenderer`, `getMonsterAsset`, `renderMonsterSVG` | ENGLISH ADVENTURE ACADEMY — PROCEDURAL MONSTER RENDERER |
 | [mystery-box-modal.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-modal.js) | 967L (44.5 KB) | `MysteryBoxModal`, `TradingCabinet`, `openMysteryBoxModal`, `openTradingCabinet` | ENGLISH ADVENTURE ACADEMY — MYSTERY BOX UNBOXING & TRADING ENGINE |
-| [mystery-box-v2.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-v2.js) | 223L (20.8 KB) | `MysteryBoxArt` | Mystery box opening, version 2 (9 Nov 2026). Replaces the drawn chest and the "energy surge" texts. |
+| [mystery-box-v2.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-v2.js) | 223L (21 KB) | `MysteryBoxArt` | Mystery box opening, version 2 (9 Nov 2026). Replaces the drawn chest and the "energy surge" texts. |
 | [no-monsters.js](file:///C:/Users/maysa/Desktop/DV/js/no-monsters.js) | 119L (7.6 KB) | `EAA_HIDE_MONSTERS`, `renderMonsterSVG`, `triggerEvolutionCeremony`, `switchView`, `openMonsterCreator` | Monsters hidden (11 Nov 2026). |
-| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 3778L (190.7 KB) | `PupilAvatars` | Pupil avatars (v2) |
+| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 3787L (191.3 KB) | `PupilAvatars` | Pupil avatars (v2) |
 | [pupil-card.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-card.js) | 156L (17.9 KB) | `PupilCard` | Pupil trading card, laid out like a real Yu-Gi-Oh monster card: a name banner with an attribute orb, level stars, the monster picture in a framed art box |
 | [pupil-profile.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-profile.js) | 173L (19.9 KB) | `PupilProfile` | Pupil profile: one dark page for the teacher (no tabs). Top: who, status + reason, quick actions. Then the numbers that matter (XP, quiz, homework, |
 | [sleepy-monster.js](file:///C:/Users/maysa/Desktop/DV/js/sleepy-monster.js) | 633L (33.7 KB) | `SleepyMonster`, `openSleepyMonster` | Sleepy Monster: a full-screen noise game for the class. |
