@@ -295,7 +295,7 @@
     }
     c.innerHTML =
       '<div class="pn-home3d-wrap" style="position:fixed;inset:0;width:100%;height:100%;height:100dvh;z-index:2000;background:#78c4ff">' +
-        '<iframe id="pn-home3d-frame" class="pn-home3d-frame" src="home3d/index.html?v=20261123hd" title="Adventure Island · English Adventure Academy 3D Front Door" allow="autoplay; fullscreen; microphone" style="width:100%;height:100%;border:0;display:block"></iframe>' +
+        '<iframe id="pn-home3d-frame" class="pn-home3d-frame" src="home3d/index.html?v=20261124q" title="Adventure Island · English Adventure Academy 3D Front Door" allow="autoplay; fullscreen; microphone" style="width:100%;height:100%;border:0;display:block"></iframe>' +
         '<div class="sr-only" aria-hidden="false" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">' +
           'English Adventure Academy 3D Island Front Door — Tap the Castle for Today, the Theatre for Class Board, the Market for Shop, the Stadium for Games, or the Library Tower for Library.' +
         '</div>' +

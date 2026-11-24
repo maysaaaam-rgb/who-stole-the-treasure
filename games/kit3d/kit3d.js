@@ -45,6 +45,9 @@
       var ua = navigator.userAgent || '';
       var touch = (navigator.maxTouchPoints > 0) || ('ontouchstart' in root);
       var small = Math.min(screen.width || innerWidth || 1280, screen.height || innerHeight || 720) <= 920;
+      // 24 Nov 2026: Android classroom smartboards (big screen) are not phones: they get the board budget and smooth edges
+      var bigTouch = touch && Math.max(screen.width || 0, screen.height || 0) >= 1900 && Math.min(screen.width || 0, screen.height || 0) >= 1000;
+      if (bigTouch) return false;
       return /iPhone|iPad|iPod|Android/i.test(ua) || (touch && small);
     } catch (e) { return false; }
   })();
@@ -74,11 +77,29 @@
   K.LOW_GPU = K.GPU_INFO.low;
   K._dynScale = 1.0;
 
+  /* 24 Nov 2026: picture setting kept on this device (button "Auto / Sharp / Fast" in every 3D game and on the island).
+     Auto = the automatic budget below. Sharp = full screen resolution, smooth edges, no automatic lowering. Fast = lighter picture for slow boards. */
+  var QKEY = 'eaa3d_quality';
+  K.qualityPref = (function () { try { var v = localStorage.getItem(QKEY); return /^(sharp|fast)$/.test(v) ? v : 'auto'; } catch (e) { return 'auto'; } })();
+  K.setQualityPref = function (v) { try { if (v === 'auto') localStorage.removeItem(QKEY); else localStorage.setItem(QKEY, v); } catch (e) {} location.reload(); };
+  K.qualityButton = function (cls) {
+    var LBL = { auto: 'Auto', sharp: 'Sharp', fast: 'Fast' }, NEXT = { auto: 'sharp', sharp: 'fast', fast: 'auto' };
+    var b = K.el('button', cls || 'ibtn k3-qbtn', '');
+    function paint() {
+      var fps = K.perf && K.perf.fps ? K.perf.fps : 0;
+      b.innerHTML = '<b>' + LBL[K.qualityPref] + '</b>' + (fps ? '<small>' + fps + ' fps</small>' : '');
+      b.title = 'Picture: ' + LBL[K.qualityPref] + '. Tap for ' + LBL[NEXT[K.qualityPref]] + '. (Sharp = clearest picture; Fast = smoother on slow boards.) Saved on this device.';
+    }
+    paint(); setInterval(paint, 2000);
+    b.onclick = function () { K.setQualityPref(NEXT[K.qualityPref]); };
+    return b;
+  };
   K.init = function (opts) {
     opts = opts || {};
     var canvas = opts.canvas || document.getElementById('scene');
-    K.quality = K.Q.get('q') || (K.LOW_GPU ? (K.MOBILE ? 'mobile' : 'board') : 'high');
-    var useAA = K.CAPTURE || (K.quality !== 'low' && !K.MOBILE);
+    var prefQ = K.qualityPref === 'sharp' ? 'ultra' : (K.qualityPref === 'fast' ? 'low' : '');
+    K.quality = K.Q.get('q') || prefQ || (K.LOW_GPU ? (K.MOBILE ? 'mobile' : 'board') : 'high');
+    var useAA = K.CAPTURE || K.quality === 'ultra' || (K.quality !== 'low' && !K.MOBILE);
     var r = K.renderer = new T3.WebGLRenderer({
       canvas: canvas,
       antialias: useAA,
@@ -1891,7 +1912,7 @@
       location.href = backHref;
     }
     var bk = K.el('button', 'ibtn', '✕'); bk.title = backTitle; bk.onclick = leaveGame;
-    tb.appendChild(scBtn); tb.appendChild(flBtn); tb.appendChild(exBtn); tb.appendChild(mu); tb.appendChild(fs); tb.appendChild(bk);
+    tb.appendChild(scBtn); tb.appendChild(flBtn); tb.appendChild(exBtn); if (!K.CAPTURE) tb.appendChild(K.qualityButton()); tb.appendChild(mu); tb.appendChild(fs); tb.appendChild(bk);
     if ((is3dGame || Q.get('from') === 'gm' || fromIsl) && !Q.has('preview')) {
       var gmPill = K.ui.add(K.el('a', 'gm-back-pill' + (fromIsl ? ' isl-pill' : ''), K.island ? K.island.backLabel() : '🎮 ← Games'));
       gmPill.href = backHref;
