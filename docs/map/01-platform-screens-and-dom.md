@@ -12,7 +12,7 @@
 | [directory.html](file:///C:/Users/maysa/Desktop/DV/directory.html) | 0.7 KB (15L) | Students Directory & Monster Companions Grid |
 | [site-map/index.html](file:///C:/Users/maysa/Desktop/DV/site-map/index.html) | 6.8 KB (149L) | Interactive Visual Site Map & Developer Explorer (Read-Only) |
 | [game-maker/index.html](file:///C:/Users/maysa/Desktop/DV/game-maker/index.html) | 3.8 KB (72L) | Game Maker 2.0 Arcade Host (22 Modes + 75 Question Sets) |
-| [island/index.html](file:///C:/Users/maysa/Desktop/DV/island/index.html) | 10.7 KB (188L) | Practice Island Student Home App (Chapters, Harbour, Shop) |
+| [island/index.html](file:///C:/Users/maysa/Desktop/DV/island/index.html) | 10.9 KB (188L) | Practice Island Student Home App (Chapters, Harbour, Shop) |
 | [island/world.html](file:///C:/Users/maysa/Desktop/DV/island/world.html) | 0.7 KB (15L) | Practice Island 2D Walking World |
 | [island/teacher.html](file:///C:/Users/maysa/Desktop/DV/island/teacher.html) | 12.2 KB (309L) | Practice Island Teacher Live Progress Wall |
 | [passport/index.html](file:///C:/Users/maysa/Desktop/DV/passport/index.html) | 1.6 KB (38L) | My Passport Student Booklets & Class Gallery |
@@ -196,7 +196,7 @@
 | 6 | [css/class-mode.css](file:///C:/Users/maysa/Desktop/DV/css/class-mode.css) | `20261121c` | [L29](file:///C:/Users/maysa/Desktop/DV/index.html#L29) |
 | 7 | [css/class-mode-pages.css](file:///C:/Users/maysa/Desktop/DV/css/class-mode-pages.css) | `7` | [L30](file:///C:/Users/maysa/Desktop/DV/index.html#L30) |
 | 8 | [css/tines-theme.css](file:///C:/Users/maysa/Desktop/DV/css/tines-theme.css) | `20261121b` | [L31](file:///C:/Users/maysa/Desktop/DV/index.html#L31) |
-| 9 | [css/bright-platform.css](file:///C:/Users/maysa/Desktop/DV/css/bright-platform.css) | `20261121d` | [L32](file:///C:/Users/maysa/Desktop/DV/index.html#L32) |
+| 9 | [css/bright-platform.css](file:///C:/Users/maysa/Desktop/DV/css/bright-platform.css) | `20261124c` | [L32](file:///C:/Users/maysa/Desktop/DV/index.html#L32) |
 
 ---
 
@@ -222,7 +222,7 @@
 | 16 | [js/monster-pets.js](file:///C:/Users/maysa/Desktop/DV/js/monster-pets.js) | `20261124a` | [L2951](file:///C:/Users/maysa/Desktop/DV/index.html#L2951) |
 | 17 | [js/classroom-cosmetics.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-cosmetics.js) | `1` | [L2952](file:///C:/Users/maysa/Desktop/DV/index.html#L2952) |
 | 18 | [js/no-monsters.js](file:///C:/Users/maysa/Desktop/DV/js/no-monsters.js) | `2` | [L2953](file:///C:/Users/maysa/Desktop/DV/index.html#L2953) |
-| 19 | [js/classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js) | `20261121b` | [L2954](file:///C:/Users/maysa/Desktop/DV/index.html#L2954) |
+| 19 | [js/classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js) | `20261124e` | [L2954](file:///C:/Users/maysa/Desktop/DV/index.html#L2954) |
 | 20 | [js/retired-themes.js](file:///C:/Users/maysa/Desktop/DV/js/retired-themes.js) | `3` | [L2955](file:///C:/Users/maysa/Desktop/DV/index.html#L2955) |
 | 21 | [js/timetable.js](file:///C:/Users/maysa/Desktop/DV/js/timetable.js) | `20261116` | [L2956](file:///C:/Users/maysa/Desktop/DV/index.html#L2956) |
 | 22 | [js/unit2-content.js](file:///C:/Users/maysa/Desktop/DV/js/unit2-content.js) | `ti101` | [L2957](file:///C:/Users/maysa/Desktop/DV/index.html#L2957) |
@@ -234,7 +234,7 @@
 | 28 | [js/voice-fx.js](file:///C:/Users/maysa/Desktop/DV/js/voice-fx.js) | `5` | [L2963](file:///C:/Users/maysa/Desktop/DV/index.html#L2963) |
 | 29 | [js/library-curate.js](file:///C:/Users/maysa/Desktop/DV/js/library-curate.js) | `20261121b` | [L2964](file:///C:/Users/maysa/Desktop/DV/index.html#L2964) |
 | 30 | [js/board-scenes.js](file:///C:/Users/maysa/Desktop/DV/js/board-scenes.js) | `9` | [L2965](file:///C:/Users/maysa/Desktop/DV/index.html#L2965) |
-| 31 | [js/pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | `20261124a` | [L2966](file:///C:/Users/maysa/Desktop/DV/index.html#L2966) |
+| 31 | [js/pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | `20261124b` | [L2966](file:///C:/Users/maysa/Desktop/DV/index.html#L2966) |
 | 32 | [js/class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js) | `47` | [L2967](file:///C:/Users/maysa/Desktop/DV/index.html#L2967) |
 | 33 | [js/bathroom-pass.js](file:///C:/Users/maysa/Desktop/DV/js/bathroom-pass.js) | `3` | [L2968](file:///C:/Users/maysa/Desktop/DV/index.html#L2968) |
 | 34 | [js/class-view.js](file:///C:/Users/maysa/Desktop/DV/js/class-view.js) | `14` | [L2969](file:///C:/Users/maysa/Desktop/DV/index.html#L2969) |
@@ -251,7 +251,7 @@
 | 45 | [js/progress-check.js](file:///C:/Users/maysa/Desktop/DV/js/progress-check.js) | `3.0` | [L2983](file:///C:/Users/maysa/Desktop/DV/index.html#L2983) |
 | 46 | [js/gamification-milestones.js](file:///C:/Users/maysa/Desktop/DV/js/gamification-milestones.js) | `3.4` | [L2984](file:///C:/Users/maysa/Desktop/DV/index.html#L2984) |
 | 47 | [js/mystery-box-modal.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-modal.js) | `1.4` | [L2985](file:///C:/Users/maysa/Desktop/DV/index.html#L2985) |
-| 48 | [js/mystery-box-v2.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-v2.js) | `5` | [L2986](file:///C:/Users/maysa/Desktop/DV/index.html#L2986) |
+| 48 | [js/mystery-box-v2.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-v2.js) | `20261124b` | [L2986](file:///C:/Users/maysa/Desktop/DV/index.html#L2986) |
 | 49 | [js/library.js](file:///C:/Users/maysa/Desktop/DV/js/library.js) | `3.1.3` | [L2988](file:///C:/Users/maysa/Desktop/DV/index.html#L2988) |
 | 50 | [js/library-shelf.js](file:///C:/Users/maysa/Desktop/DV/js/library-shelf.js) | `20261121c` | [L2989](file:///C:/Users/maysa/Desktop/DV/index.html#L2989) |
 | 51 | [js/theme-badges.js](file:///C:/Users/maysa/Desktop/DV/js/theme-badges.js) | `2.0` | [L2991](file:///C:/Users/maysa/Desktop/DV/index.html#L2991) |

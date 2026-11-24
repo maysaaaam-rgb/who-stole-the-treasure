@@ -8,7 +8,7 @@
 
 | File | Size | Lines | Loaded in `index.html`? |
 | :--- | :---: | :---: | :---: |
-| [bright-platform.css](file:///C:/Users/maysa/Desktop/DV/css/bright-platform.css) | 43.7 KB | 392 | Yes (#9, `?v=20261121d`) |
+| [bright-platform.css](file:///C:/Users/maysa/Desktop/DV/css/bright-platform.css) | 47.5 KB | 429 | Yes (#9, `?v=20261124c`) |
 | [class-mode-pages.css](file:///C:/Users/maysa/Desktop/DV/css/class-mode-pages.css) | 16.8 KB | 119 | Yes (#7, `?v=7`) |
 | [class-mode.css](file:///C:/Users/maysa/Desktop/DV/css/class-mode.css) | 30.5 KB | 407 | Yes (#6, `?v=20261121c`) |
 | [clil-styles.css](file:///C:/Users/maysa/Desktop/DV/css/clil-styles.css) | 7.8 KB | 330 | Module / Legacy |
@@ -102,7 +102,7 @@
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
 | [classroom-cosmetics.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-cosmetics.js) | 9.9 KB | 122 | #17 (`v=1`) | `ClassroomCosmetics` | Classroom Store extras: the catalog and the sounds. |
-| [classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js) | 167.5 KB | 2162 | #19 (`v=20261121b`) | `boxTierInfo`, `EAA_ILLUSTRATED_MONSTERS`, `renderBoxTierCardsHtml`, `ClassroomStore` | Classroom Store: coins, buying monster items and mystery boxes, and classroom privileges. |
+| [classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js) | 178 KB | 2274 | #19 (`v=20261124e`) | `boxTierInfo`, `EAA_ILLUSTRATED_MONSTERS`, `renderBoxTierCardsHtml`, `ClassroomStore` | Classroom Store: coins, buying monster items and mystery boxes, and classroom privileges. |
 | [evolution-levels.js](file:///C:/Users/maysa/Desktop/DV/js/evolution-levels.js) | 0.7 KB | 8 | #9 (`v=1`) | `EAA_EVOLUTION_XP`, `EAA_NEAR_EVOLVE_XP` | The XP needed for each of the 7 monster levels, in ONE place. |
 | [monster-anchors.js](file:///C:/Users/maysa/Desktop/DV/js/monster-anchors.js) | 17.3 KB | 7 | #43 (`v=2.1`) | `MONSTER_ANCHORS`, `MONSTER_ITEM_BOX` | Generated: positions of the head, eyes, neck, body and paw on every illustrated monster (1024px space), |
 | [monster-closet.js](file:///C:/Users/maysa/Desktop/DV/js/monster-closet.js) | 18.5 KB | 191 | #36 (`v=6`) | `EAA_ILLUSTRATED_MONSTERS`, `MonsterCloset`, `renderMonsterCloset` | Monster Closet: pick a pupil, try things on the 3D monster, save. |
@@ -116,9 +116,9 @@
 | [monster-pets.js](file:///C:/Users/maysa/Desktop/DV/js/monster-pets.js) | 270.6 KB | 1172 | #16 (`v=20261124a`) | `MonsterPets` | Monster Pets & 3D Character Buddies Pack |
 | [monster-renderer.js](file:///C:/Users/maysa/Desktop/DV/js/monster-renderer.js) | 272.8 KB | 4614 | #42 (`v=4.17`) | `currentEvolutionBannerSpecies`, `switchEvolutionBannerSpecies`, `MonsterRenderer`, `getMonsterAsset` | ENGLISH ADVENTURE ACADEMY — PROCEDURAL MONSTER RENDERER |
 | [mystery-box-modal.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-modal.js) | 44.5 KB | 967 | #47 (`v=1.4`) | `MysteryBoxModal`, `TradingCabinet`, `openMysteryBoxModal`, `openTradingCabinet` | ENGLISH ADVENTURE ACADEMY — MYSTERY BOX UNBOXING & TRADING ENGINE |
-| [mystery-box-v2.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-v2.js) | 20.8 KB | 223 | #48 (`v=5`) | `MysteryBoxArt` | Mystery box opening, version 2 (9 Nov 2026). Replaces the drawn chest and the "energy surge" texts. |
+| [mystery-box-v2.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-v2.js) | 21 KB | 223 | #48 (`v=20261124b`) | `MysteryBoxArt` | Mystery box opening, version 2 (9 Nov 2026). Replaces the drawn chest and the "energy surge" texts. |
 | [no-monsters.js](file:///C:/Users/maysa/Desktop/DV/js/no-monsters.js) | 7.6 KB | 119 | #18 (`v=2`) | `EAA_HIDE_MONSTERS`, `renderMonsterSVG`, `triggerEvolutionCeremony`, `switchView` | Monsters hidden (11 Nov 2026). |
-| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 190.7 KB | 3778 | #31 (`v=20261124a`) | `PupilAvatars` | Pupil avatars (v2) |
+| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 191.3 KB | 3787 | #31 (`v=20261124b`) | `PupilAvatars` | Pupil avatars (v2) |
 | [pupil-card.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-card.js) | 17.9 KB | 156 | #61 (`v=7`) | `PupilCard` | Pupil trading card, laid out like a real Yu-Gi-Oh monster card: a name banner with an attribute orb, level stars, the monster picture in a framed art box |
 | [pupil-profile.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-profile.js) | 19.9 KB | 173 | #60 (`v=10`) | `PupilProfile` | Pupil profile: one dark page for the teacher (no tabs). Top: who, status + reason, quick actions. Then the numbers that matter (XP, quiz, homework, |
 | [sleepy-monster.js](file:///C:/Users/maysa/Desktop/DV/js/sleepy-monster.js) | 33.7 KB | 633 | #27 (`v=4`) | `SleepyMonster`, `openSleepyMonster` | Sleepy Monster: a full-screen noise game for the class. |
@@ -476,14 +476,14 @@
 
 ---
 
-### 📦 [js/pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) — 3778 lines (190.7 KB)
+### 📦 [js/pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) — 3787 lines (191.3 KB)
 
 #### Section Banners (3)
 | Lines | Section Title |
 | :---: | :--- |
-| [L693–L2116](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L693-L2116) | picture cache (IndexedDB): finished avatar pictures survive a page reload ---------- |
-| [L2117–L2786](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2117-L2786) | Game Maker & 3D Stadium Avatar Bridge ---------- |
-| [L2787–L3778](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2787-L3778) | for the shop & unified studio: item facts, try-on, style and wearing ---------- |
+| [L693–L2118](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L693-L2118) | picture cache (IndexedDB): finished avatar pictures survive a page reload ---------- |
+| [L2119–L2788](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2119-L2788) | Game Maker & 3D Stadium Avatar Bridge ---------- |
+| [L2789–L3787](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2789-L3787) | for the shop & unified studio: item facts, try-on, style and wearing ---------- |
 
 
 #### Key Functions & Methods (showing 60 of 144)
@@ -541,14 +541,14 @@
 | [L832](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L832) | `avatarEquipFromMonster` |
 | [L854](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L854) | `effectiveWear` |
 | [L873](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L873) | `studentOwnsItem` |
-| [L911](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L911) | `pupilLevel` |
-| [L921](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L921) | `itemLockInfo` |
-| [L939](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L939) | `medianOf` |
-| [L945](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L945) | `analyzeHead` |
-| [L953](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L953) | `samplePatch` |
-| [L1091](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1091) | `getGradedBody` |
-| [L1154](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1154) | `getGradedLeg` |
-| [L1188](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1188) | `topHasHands` |
+| [L913](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L913) | `pupilLevel` |
+| [L923](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L923) | `itemLockInfo` |
+| [L941](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L941) | `medianOf` |
+| [L947](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L947) | `analyzeHead` |
+| [L955](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L955) | `samplePatch` |
+| [L1093](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1093) | `getGradedBody` |
+| [L1156](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1156) | `getGradedLeg` |
+| [L1190](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1190) | `topHasHands` |
 
 ---
 
@@ -573,73 +573,73 @@
 
 ---
 
-### 📦 [js/classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js) — 2162 lines (167.5 KB)
+### 📦 [js/classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js) — 2274 lines (178 KB)
 
 
 
-#### Key Functions & Methods (showing 60 of 135)
+#### Key Functions & Methods (showing 60 of 149)
 | Line | Function / Method |
 | :---: | :--- |
-| [L45](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L45) | `window.boxTierInfo` |
-| [L51](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L51) | `clone` |
-| [L52](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L52) | `esc` |
-| [L53](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L53) | `uid` |
-| [L54](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L54) | `notify` |
-| [L55](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L55) | `rerender` |
-| [L58](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L58) | `data` |
-| [L112](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L112) | `flushSave` |
-| [L113](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L113) | `save` |
-| [L116](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L116) | `wallet` |
-| [L125](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L125) | `balance` |
-| [L126](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L126) | `log` |
-| [L131](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L131) | `grant` |
-| [L142](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L142) | `spend` |
-| [L147](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L147) | `refund` |
-| [L154](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L154) | `allItems` |
-| [L155](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L155) | `findItem` |
-| [L156](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L156) | `levelOf` |
-| [L157](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L157) | `reqLevel` |
-| [L159](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L159) | `isLevelReward` |
-| [L160](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L160) | `shopLevel` |
-| [L161](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L161) | `isOwned` |
-| [L167](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L167) | `isAvailable` |
-| [L173](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L173) | `itemPrice` |
-| [L178](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L178) | `inSeason` |
-| [L184](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L184) | `canSell` |
-| [L193](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L193) | `isOff` |
-| [L194](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L194) | `shopItems` |
-| [L200](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L200) | `buyItem` |
-| [L226](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L226) | `buyBox` |
-| [L241](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L241) | `weekStart` |
-| [L242](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L242) | `usedThisWeek` |
-| [L246](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L246) | `privilege` |
-| [L247](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L247) | `requestPrivilege` |
-| [L259](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L259) | `decide` |
-| [L269](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L269) | `undoPurchase` |
-| [L309](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L309) | `CCo` |
-| [L310](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L310) | `cosEntry` |
-| [L317](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L317) | `ownedMonsterIds` |
-| [L324](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L324) | `setTitleFor` |
-| [L329](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L329) | `setTitleItems` |
-| [L333](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L333) | `findExtra` |
-| [L338](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L338) | `extraOwned` |
-| [L342](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L342) | `extraPrice` |
-| [L343](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L343) | `touchCos` |
-| [L344](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L344) | `buyExtra` |
-| [L360](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L360) | `giveExtra` |
-| [L368](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L368) | `equipExtra` |
-| [L378](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L378) | `equippedExtras` |
-| [L390](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L390) | `monstersHidden` |
-| [L391](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L391) | `avOwnedList` |
-| [L392](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L392) | `avOwns` |
-| [L393](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L393) | `avItems` |
-| [L398](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L398) | `avState` |
-| [L406](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L406) | `avPrice` |
-| [L407](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L407) | `buyAvatar` |
-| [L421](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L421) | `rewardAvatar` |
-| [L432](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L432) | `classOfStudent` |
-| [L433](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L433) | `fundFor` |
-| [L434](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L434) | `setFund` |
+| [L47](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L47) | `window.boxTierInfo` |
+| [L54](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L54) | `clone` |
+| [L55](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L55) | `esc` |
+| [L56](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L56) | `uid` |
+| [L57](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L57) | `notify` |
+| [L58](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L58) | `rerender` |
+| [L61](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L61) | `data` |
+| [L133](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L133) | `flushSave` |
+| [L134](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L134) | `save` |
+| [L137](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L137) | `wallet` |
+| [L146](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L146) | `balance` |
+| [L147](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L147) | `log` |
+| [L152](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L152) | `grant` |
+| [L163](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L163) | `spend` |
+| [L168](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L168) | `refund` |
+| [L175](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L175) | `allItems` |
+| [L176](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L176) | `findItem` |
+| [L177](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L177) | `levelOf` |
+| [L178](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L178) | `reqLevel` |
+| [L180](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L180) | `isLevelReward` |
+| [L181](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L181) | `shopLevel` |
+| [L182](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L182) | `isOwned` |
+| [L188](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L188) | `isAvailable` |
+| [L194](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L194) | `itemPrice` |
+| [L199](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L199) | `inSeason` |
+| [L205](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L205) | `canSell` |
+| [L214](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L214) | `isOff` |
+| [L215](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L215) | `shopItems` |
+| [L221](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L221) | `buyItem` |
+| [L249](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L249) | `boxesBoughtThisWeek` |
+| [L253](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L253) | `boxesLeftThisWeek` |
+| [L254](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L254) | `buyBox` |
+| [L270](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L270) | `weekStart` |
+| [L271](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L271) | `usedThisWeek` |
+| [L275](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L275) | `privilege` |
+| [L276](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L276) | `requestPrivilege` |
+| [L288](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L288) | `decide` |
+| [L299](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L299) | `isRealPrizeReq` |
+| [L303](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L303) | `handOutCount` |
+| [L304](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L304) | `undoPurchase` |
+| [L344](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L344) | `CCo` |
+| [L345](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L345) | `cosEntry` |
+| [L352](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L352) | `ownedMonsterIds` |
+| [L359](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L359) | `setTitleFor` |
+| [L364](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L364) | `setTitleItems` |
+| [L368](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L368) | `findExtra` |
+| [L373](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L373) | `extraOwned` |
+| [L377](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L377) | `extraPrice` |
+| [L378](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L378) | `touchCos` |
+| [L379](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L379) | `buyExtra` |
+| [L395](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L395) | `giveExtra` |
+| [L403](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L403) | `equipExtra` |
+| [L413](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L413) | `equippedExtras` |
+| [L425](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L425) | `monstersHidden` |
+| [L426](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L426) | `avOwnedList` |
+| [L427](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L427) | `avOwns` |
+| [L428](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L428) | `avItems` |
+| [L433](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L433) | `avState` |
+| [L441](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L441) | `avPrice` |
+| [L442](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js#L442) | `buyAvatar` |
 
 ---
 
