@@ -16,8 +16,8 @@
 
   var DEFAULTS = {
     coinsPerXp: 10,
-    itemPrices: { common: 30, rare: 60, epic: 100, legendary: 160, mythic: 220 },
-    boxPrices: { BRONZE: 15, WOODEN: 30, GILDED: 80, CELESTIAL: 180 },
+    itemPrices: { common: 15, rare: 30, epic: 60, legendary: 100, mythic: 150 },
+    boxPrices: { BRONZE: 14, WOODEN: 25, GILDED: 50, CELESTIAL: 85 },
     privileges: [
       { id: 'p-cat-sticker',    icon: '🐱', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · KEEP IT!',   name: '1× Funny Cat Meme Sticker (Pick Your Favourite!)', price: 40, weeklyLimit: 2, coinsOnly: true, active: true },
       { id: 'p-cat-pack',       icon: '😻', image: 'assets/store/prize_cat_stickers.webp',  badge: 'REAL PRIZE · 3 PACK!',    name: '3× Funny Cat Meme Sticker Pack',                  price: 100, weeklyLimit: 1, coinsOnly: true, active: true },
@@ -38,7 +38,7 @@
   var BOX_INFO = {
     BRONZE:    { name: 'Bronze Box',  icon: '🥉', pill: 'tier-bronze',    color: '#c2783e', text: '#fdba74', title: 'Little Treasure',   blurb: 'A small surprise for a few coins.',                  odds: 'Common items, small prizes, a few coins' },
     WOODEN:    { name: 'Silver Box',  icon: '🥈', pill: 'tier-wooden',    color: '#cbd5e1', text: '#e2e8f0', title: 'Silver Strongbox',  blurb: 'Good prizes: items, sounds, titles, free rewards.',  odds: 'Items, sounds, titles, free rewards or coins' },
-    GILDED:    { name: 'Gold Box',    icon: '🥇', pill: 'tier-gilded',    color: '#eab308', text: '#fef08a', title: 'Golden Reliquary',  blurb: 'Better items and big coin wins.',                    odds: 'Rare and epic prizes, free rewards, big coins' },
+    GILDED:    { name: 'Gold Box',    icon: '🥇', pill: 'tier-gilded',    color: '#eab308', text: '#fef08a', title: 'Golden Reliquary',  blurb: 'Rare and epic items, sometimes a legendary.',                    odds: 'Rare and epic prizes, free rewards, big coins' },
     CELESTIAL: { name: 'Diamond Box', icon: '💎', pill: 'tier-celestial', color: '#22d3ee', text: '#cffafe', title: 'Diamond Vault',     blurb: 'The best prizes: epic and legendary, jackpots.',     odds: 'Epic and legendary prizes, free rewards, jackpots' }
   };
   /** Name, icon and colours of a box kind (works for old saved ids too). */
@@ -100,9 +100,11 @@
       c.itemPrices = { common: 20, rare: 40, epic: 80, legendary: 150, mythic: 250 };
       c.priceV3 = 1; c.updatedAt = Date.now();
     }
-    if (!c.priceV4) {   // 24 Nov 2026: pupils really earn about 14 coins a week. Top items in reach in 5 to 8 weeks; the shop is a better deal than boxes.
-      c.itemPrices = { common: 30, rare: 60, epic: 100, legendary: 160, mythic: 220 };
-      c.priceV4 = 1; c.updatedAt = Date.now();
+    if (!c.priceV5) {   // 24 Nov 2026, from the real XP log: in a normal school week a pupil earns about 12 coins (3A ~20, 4A ~15, 4B ~9, 3B ~7).
+      // Everyday = about 1 week, Cool = 2.5, Epic = 5, Legendary = 8, Mythic = 12 (an end-of-term dream). Boxes now give back less than they cost (see BOX_ODDS).
+      c.itemPrices = { common: 15, rare: 30, epic: 60, legendary: 100, mythic: 150 };
+      c.boxPrices = { BRONZE: 14, WOODEN: 25, GILDED: 50, CELESTIAL: 85 };
+      c.priceV4 = 1; c.priceV5 = 1; c.updatedAt = Date.now();
     }
     if (!c.boardGoals || typeof c.boardGoals !== 'object') c.boardGoals = {};
     if (!c.partyFunds || typeof c.partyFunds !== 'object') c.partyFunds = {};
@@ -437,10 +439,12 @@
     save();
     return { success: true, item: x, price: price, balance: balance(studentId) };
   }
+  var RARITY_ORDER = ['common', 'rare', 'epic', 'legendary', 'mythic'];
+  function rarityRank(r) { var i = RARITY_ORDER.indexOf(String(r || 'common')); return i < 0 ? 0 : i; }
   function rewardAvatar(studentId, rarity) {
     var all = avItems().filter(function (x) { return !x.free && avState(studentId, x.id) === 'shop' && x.rarity !== 'mythic'; });
     var pool = all.filter(function (x) { return x.rarity === rarity; });
-    if (!pool.length) pool = all;
+    if (!pool.length) pool = all.filter(function (x) { return rarityRank(x.rarity) <= rarityRank(rarity); });   // never better than the box promised
     if (!pool.length) return null;
     var x = pickOne(pool);
     avOwnedList(studentId).push(x.id); touchCos(studentId);
@@ -481,15 +485,18 @@
   // ---------------------------------------------------------------- mystery boxes 2.0
   // Each box can hold a monster item, a sound / title / animal / name plate, a free class reward, coins, or a rare jackpot.
   // It never gives something the student already has (that would be a wasted box).
+  // 24 Nov 2026: a box is a fun surprise, not a bargain. On average a box gives back about 75-80% of its price
+  // (Bronze 14 → ~11, Silver 25 → ~20, Gold 50 → ~38, Diamond 85 → ~64, valued at the shop prices). Buying in the shop is the better deal.
+  // Real prizes (stickers, toys, pens) never come out of a bought box; free class passes do, up to the cap below.
   var BOX_ODDS = {
-    BRONZE:    [['item', 55], ['extra', 14], ['voucher', 7],  ['coins', 19], ['jackpot', 5]],
-    WOODEN:    [['item', 60], ['extra', 15], ['voucher', 10], ['coins', 10], ['jackpot', 5]],
-    GILDED:    [['item', 55], ['extra', 20], ['voucher', 12], ['coins', 8],  ['jackpot', 5]],
-    CELESTIAL: [['item', 50], ['extra', 20], ['voucher', 15], ['coins', 10], ['jackpot', 5]]
+    BRONZE:    [['item', 35], ['extra', 10], ['voucher', 5],  ['coins', 45], ['jackpot', 5]],
+    WOODEN:    [['item', 45], ['extra', 15], ['voucher', 10], ['coins', 25], ['jackpot', 5]],
+    GILDED:    [['item', 50], ['extra', 15], ['voucher', 10], ['coins', 20], ['jackpot', 5]],
+    CELESTIAL: [['item', 50], ['extra', 15], ['voucher', 10], ['coins', 20], ['jackpot', 5]]
   };
-  var BOX_RARITY = { BRONZE: [['common', 85], ['rare', 15]], WOODEN: [['common', 70], ['rare', 30]], GILDED: [['rare', 65], ['epic', 35]], CELESTIAL: [['epic', 60], ['legendary', 40]] };
-  var BOX_COINS = { BRONZE: [8, 20], WOODEN: [20, 40], GILDED: [50, 100], CELESTIAL: [120, 250] };
-  var BOX_VOUCHER_CAP = { BRONZE: 40, WOODEN: 70, GILDED: 100, CELESTIAL: 100000 };
+  var BOX_RARITY = { BRONZE: [['common', 100]], WOODEN: [['common', 60], ['rare', 40]], GILDED: [['rare', 60], ['epic', 40]], CELESTIAL: [['epic', 65], ['legendary', 35]] };
+  var BOX_JACKPOT = { BRONZE: 'rare', WOODEN: 'epic', GILDED: 'legendary', CELESTIAL: 'legendary' };
+  var BOX_VOUCHER_CAP = { BRONZE: 15, WOODEN: 20, GILDED: 30, CELESTIAL: 40 };
   function rollTable(t) { var r = Math.random() * 100, a = 0; for (var i = 0; i < t.length; i++) { a += t[i][1]; if (r < a) return t[i][0]; } return t[t.length - 1][0]; }
   function pickOne(a) { return a[Math.floor(Math.random() * a.length)]; }
   function grantMonsterItem(studentId, item) {
@@ -506,7 +513,7 @@
     if (monstersHidden() && PA()) return rewardAvatar(studentId, rarity);
     var all = allItems().filter(function (i) { return canSell(i) && !isAvailable(studentId, i) && i.category !== 'creature' && i.rarity !== 'mythic'; });   // creatures and Mythic items are bought with coins, never found in a box
     var pool = all.filter(function (i) { return i.rarity === rarity; });
-    if (!pool.length) pool = all;
+    if (!pool.length) pool = all.filter(function (x) { return rarityRank(x.rarity) <= rarityRank(rarity); });   // never better than the box promised
     if (!pool.length) return null;
     var it = pickOne(pool);
     grantMonsterItem(studentId, it);
@@ -516,22 +523,22 @@
     var C = CCo(); if (!C) return null;
     var all = C.CATALOG.filter(function (x) { return !extraOwned(studentId, x.id); });
     var pool = all.filter(function (x) { return x.rarity === rarity; });
-    if (!pool.length) pool = all;
+    if (!pool.length) pool = all.filter(function (x) { return rarityRank(x.rarity) <= rarityRank(rarity); });   // never better than the box promised
     if (!pool.length) return null;
     var x = pickOne(pool);
     giveExtra(studentId, x.id);
     return { type: 'extra', kind: x.kind, item: { id: x.id, name: x.name, category: C.KINDS[x.kind].one, rarity: x.rarity, icon: x.icon, description: x.desc } };
   }
   function rewardVoucher(studentId, tier) {
-    var cap = Math.min(BOX_VOUCHER_CAP[tier] || 70, (Number(data().config.boxPrices[tier]) || 10) * 3);   // a free reward is worth at most 3 boxes
-    var pool = data().config.privileges.filter(function (p) { return p.active && p.price <= cap; });
+    var cap = BOX_VOUCHER_CAP[tier] || 20;   // free class passes only, worth at most about the price of the box
+    var pool = data().config.privileges.filter(function (p) { return p.active && (p.boxOnly || (!p.coinsOnly && !p.image && p.price <= cap)); });
     if (!pool.length) return null;
     var p = pickOne(pool), rid = uid('req'), now = new Date().toISOString();
     data().requests.unshift({ id: rid, studentId: studentId, privilegeId: p.id, name: 'FREE: ' + p.name, icon: p.icon, price: 0, status: 'approved', createdAt: now, decidedAt: now, note: 'Won in a Mystery Box', voucher: true });
     return { type: 'voucher', item: { id: 'voucher', name: 'Free: ' + p.name, category: 'free reward', rarity: tier === 'WOODEN' ? 'rare' : 'epic', icon: p.icon, description: 'Show your teacher. This one is free!' } };
   }
-  function boxCoins(tier) { var pr = Number(data().config.boxPrices[tier]) || 10; return [Math.max(2, Math.round(pr * 0.4)), Math.max(3, Math.round(pr * 0.9))]; }
-  function jackpotCoins(tier) { return Math.max(10, (Number(data().config.boxPrices[tier]) || 10) * 3); }
+  function boxCoins(tier) { var pr = Number(data().config.boxPrices[tier]) || 10; return [Math.max(2, Math.round(pr * 0.25)), Math.max(3, Math.round(pr * 0.6))]; }
+  function jackpotCoins(tier) { return Math.max(10, Math.round((Number(data().config.boxPrices[tier]) || 10) * 1.5)); }
   function rewardCoins(studentId, tier, fixed) {
     var r = boxCoins(tier);
     var n = fixed || (r[0] + Math.floor(Math.random() * (r[1] - r[0] + 1)));
@@ -551,7 +558,7 @@
     else if (kind === 'extra') res = rewardExtra(studentId, rarity) || rewardItem(studentId, rarity);
     else if (kind === 'voucher') res = rewardVoucher(studentId, tier);
     else if (kind === 'coins') res = rewardCoins(studentId, tier);
-    else res = rewardItem(studentId, 'legendary') || rewardExtra(studentId, 'legendary') || rewardCoins(studentId, tier, jackpotCoins(tier));
+    else { var jr = BOX_JACKPOT[tier] || 'rare'; res = rewardItem(studentId, jr) || rewardExtra(studentId, jr) || rewardCoins(studentId, tier, jackpotCoins(tier)); }
     if (!res) res = rewardCoins(studentId, tier);
     box.isOpened = true; box.openedAt = new Date().toISOString();
     save();
