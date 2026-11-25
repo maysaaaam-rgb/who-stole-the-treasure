@@ -18,9 +18,9 @@
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private window: fine */ } }
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-  // first name only (a double first name like "Emir Ali" stays whole)
+  // first name only (a double first name like "Ali Can" stays whole)
   function first(s) { var n = String(s.firstName || '').trim() || String(s.name || '').trim().split(/\s+/)[0]; return n || 'Reader'; }
-  // two pupils with the same first name get the first letter of the family name: Emir B., Emir E.
+  // two pupils with the same first name get the first letter of the family name (e.g. Ali B., Ali E.)
   function dedupe(kids) {
     var cnt = {}; kids.forEach(function (k) { cnt[k.name] = (cnt[k.name] || 0) + 1; });
     kids.forEach(function (k) { if (cnt[k.name] > 1 && k.last) k.name += ' ' + k.last.charAt(0).toLocaleUpperCase('tr') + '.'; });

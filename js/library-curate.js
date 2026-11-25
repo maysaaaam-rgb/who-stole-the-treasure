@@ -36,7 +36,7 @@
   var ar = { back: {} };
   try { var a0 = JSON.parse(localStorage.getItem(AKEY) || 'null'); if (a0 && a0.back) ar.back = a0.back; } catch (e) { /* storage may be blocked */ }
   function persistAr() { try { localStorage.setItem(AKEY, JSON.stringify(ar)); } catch (e) { /* storage may be blocked */ } }
-  var KEEP = /^(karaoke-stage|simon-says.*|telephone-pictionary|school-subjects-challenge|classroom-instructions-challenge|gamemaker-.*|games-collection|time-train|treasure-planet-3d|sprint-race-3d|monster-cannon-3d|penalty-shootout-3d|bomb-or-bonus-3d|keep-or-give-3d|tug-of-war-3d|bowling-3d|board-game-3d|smart-board|magic-book|practice-island.*)$/;
+  var KEEP = /^(talk-review-.*|karaoke-stage|simon-says.*|telephone-pictionary|school-subjects-challenge|classroom-instructions-challenge|gamemaker-.*|games-collection|time-train|treasure-planet-3d|sprint-race-3d|monster-cannon-3d|penalty-shootout-3d|bomb-or-bonus-3d|keep-or-give-3d|tug-of-war-3d|bowling-3d|board-game-3d|smart-board|magic-book|practice-island.*)$/;
   var OLD_IDS = /^(week4-.*|city-mouse|wind-and-sun|forest-rangers-g4|swallow-gift-g4|first-harvest-g3|good-ideas-lab|inventor-lab|clara-inventor|inventor-forge|brain-quit|brain-explorers|u[1-4]-.*|rev-.*|lingo-g3-u3-review|board-u3-.*|revision-quest-.*|bamboozle-.*-u[1-4]|arcade-.*-u[1-4]|race-.*-u[1-4]|shop-counter-.*|print-g[34]-u[1-4]|worksheet-store-.*-u12|quiz-g[34]-u14|speak-g4-u4|unit[1-4].*|money-l\d-.*|changing-l\d-.*|bear-l\d-.*|ice-l\d-.*|poem-l\d-.*|cars-l\d-.*)$/;
   function isOld(g) {
     if (!g || KEEP.test(g.id)) return false;

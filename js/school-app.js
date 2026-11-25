@@ -6775,7 +6775,7 @@
   }
   /* Grade 4 has two classes. Every pupil is filed under class-4a in the store, so the real class comes from the pupil id
      (student-4a-... / student-4b-...), with two corrections taken from the teacher's class lists. */
-  const ASG_CLASS_FIX = {};   // the two pupils whose id named the other class were corrected in the records (Ozan T. 208 = 4B, Simal 319 = 4A)
+  const ASG_CLASS_FIX = {};   // the two pupils whose id named the other class were corrected in the records (208 = 4B, 319 = 4A)
   function asgClassOf(st) {
     if (ASG_CLASS_FIX[st.id]) return ASG_CLASS_FIX[st.id];
     const m = /^student-(\d)([ab])-/.exec(st.id || '');

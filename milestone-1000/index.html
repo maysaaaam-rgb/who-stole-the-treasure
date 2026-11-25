@@ -29,7 +29,7 @@
 
   <div class="card">
     <div class="grid">
-      <label>Pupil's name<input type="text" id="f-name" value="Öykü Çiğdem" autocomplete="off"></label>
+      <label>Pupil's name<input type="text" id="f-name" value="Pupil 322" autocomplete="off"></label>
       <label>Monster colour<select id="f-color"><option value="blue">Blue</option><option value="orange">Orange</option><option value="green">Green</option><option value="purple">Purple</option><option value="gold">Gold</option><option value="pink">Pink</option></select></label>
       <label>Teacher (for the certificate)<input type="text" id="f-teacher" value="Mr. Maysam" autocomplete="off"></label>
     </div>
@@ -70,7 +70,7 @@
   var f = { name: document.getElementById('f-name'), color: document.getElementById('f-color'), teacher: document.getElementById('f-teacher') };
   try { var cfg = JSON.parse(localStorage.getItem(KEY) || '{}'); if (cfg.name) f.name.value = cfg.name; if (cfg.color) f.color.value = cfg.color; if (cfg.teacher) f.teacher.value = cfg.teacher; } catch (e) { /* defaults */ }
   function save() { try { localStorage.setItem(KEY, JSON.stringify({ name: f.name.value, color: f.color.value, teacher: f.teacher.value })); } catch (e) { /* storage blocked */ } }
-  function opts() { save(); return { name: f.name.value.trim() || 'Öykü Çiğdem', id: f.name.value.trim() || 'Öykü Çiğdem', color: f.color.value, teacher: f.teacher.value.trim() || 'Mr. Maysam', xp: 1000 }; }
+  function opts() { save(); return { name: f.name.value.trim() || 'Pupil 322', id: f.name.value.trim() || 'Pupil 322', color: f.color.value, teacher: f.teacher.value.trim() || 'Mr. Maysam', xp: 1000 }; }
   function showPhoto() {
     var p = MC.photos.get(opts().id), box = document.getElementById('photo-box');
     box.innerHTML = p ? '<img' + (MC.isAvatar(p) ? ' class="av"' : '') + ' src="' + p + '" alt="">' : '<div>🙂</div>';

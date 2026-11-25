@@ -329,21 +329,14 @@
         doc.story = doc.story || {};
         doc.story.treasure3d = progressSnap;
         var g = quests.getGrade();
-        if (zoneDoneNum >= 1 && zoneDoneNum <= 5) {
-          var zUse = Math.min(4, zoneDoneNum);
-          doc.stars = doc.stars || {};
-          for (var m = 1; m <= 4; m++) {
-            var mKey = 'g' + g + '-z' + zUse + '-m' + m;
-            doc.stars[mKey] = Math.max(Number(doc.stars[mKey]) || 0, 3);
-          }
+        // 25 Nov 2026: the 3D game keeps its own progress in doc.story.treasure3d. It no longer fills in stars or chests
+        // of the old island's missions (those must be earned by playing them). Finishing all 5 zones gives the stamp.
+        if (zoneDoneNum === 5) {
           doc.chests = doc.chests || {};
-          doc.chests['z' + zUse] = true;
-          if (zoneDoneNum === 5) {
-            doc.chests.treasure3d_champion = true;
-            doc.collection = doc.collection || { stickers: {} };
-            doc.collection.stickers = doc.collection.stickers || {};
-            doc.collection.stickers['stamp-treasure-island-3d'] = { earnedAt: new Date().toISOString(), shiny: true };
-          }
+          doc.chests.treasure3d_champion = true;
+          doc.collection = doc.collection || { stickers: {} };
+          doc.collection.stickers = doc.collection.stickers || {};
+          doc.collection.stickers['stamp-treasure-island-3d'] = { earnedAt: new Date().toISOString(), shiny: true };
         }
         var dStr = root.IslandSync.todayStr();
         doc.days = doc.days || {};

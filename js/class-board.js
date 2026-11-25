@@ -337,9 +337,65 @@
       cardBg: 'linear-gradient(180deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.96) 100%)'
     };
   }
+  /* ---------- Points with a reason (teacher request, 25 Nov 2026) ----------
+     One tap picks WHY (sticky) and HOW MANY; every +XP on the board is saved with that reason. */
+  var WHY = [
+    { k: 'speaking', e: '🗣️', t: 'Speaking' }, { k: 'listening', e: '👂', t: 'Listening' },
+    { k: 'reading', e: '📖', t: 'Reading' }, { k: 'writing', e: '✏️', t: 'Writing' },
+    { k: 'words', e: '🔤', t: 'New words' }, { k: 'helping', e: '🤝', t: 'Helping' },
+    { k: 'effort', e: '💪', t: 'Effort' }, { k: 'homework', e: '🏠', t: 'Homework' }
+  ];
+  var AMTS = [5, 10, 20];
+  function whyNow() {
+    var k = ''; try { k = localStorage.getItem('cb_why') || ''; } catch (e) { /* ignore */ }
+    return WHY.filter(function (w) { return w.k === k; })[0] || WHY[0];
+  }
+  function amtNow() {
+    var n = 10; try { n = parseInt(localStorage.getItem('cb_amt') || '10', 10); } catch (e) { /* ignore */ }
+    return AMTS.indexOf(n) >= 0 ? n : 10;
+  }
+  function whyBar() {
+    var w = whyNow(), a = amtNow();
+    return '<div class="cb-why" id="cb-why"><span class="lab">Points for:</span>' +
+      WHY.map(function (x) { return '<button type="button" class="' + (x.k === w.k ? 'on' : '') + '" data-why="' + x.k + '" onclick="ClassBoard.setWhy(\'' + x.k + '\')">' + x.e + ' ' + x.t + '</button>'; }).join('') +
+      '<span class="sep"></span>' +
+      AMTS.map(function (n) { return '<button type="button" class="amt' + (n === a ? ' on' : '') + '" data-amt="' + n + '" onclick="ClassBoard.setAmt(' + n + ')">+' + n + '</button>'; }).join('') +
+      '</div>';
+  }
+  function addLabel() { var w = whyNow(); return w.e + ' +' + amtNow(); }
+  var WHY_CSS = '.cb-why{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 8px;padding:6px 10px;background:#fff8ec;border:3px solid #ffb320;border-radius:18px}' +
+    '.cb-why .lab{font-weight:900;color:#2b1d40;margin-right:2px}' +
+    '.cb-why button{font:inherit;font-weight:800;font-size:.95rem;min-height:40px;padding:0 12px;border-radius:999px;border:2px solid #f1dfb8;border-bottom:4px solid #e3c98f;background:#fff;color:#2b1d40;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275)}' +
+    '.cb-why button:active{transform:translateY(3px)}' +
+    '.cb-why button.on{background:#2fc58a;border-color:#1d8f62;color:#fff}' +
+    '.cb-why button.amt.on{background:#4f9dff;border-color:#2f6fc2}' +
+    '.cb-why .sep{width:2px;height:22px;background:#f1dfb8;margin:0 3px}' +
+    /* compact top bars so the pupils get more room (25 Nov 2026) */
+    'html body #cb-root .cb-why{gap:4px;margin:4px 0;padding:3px 8px;border-width:2px;border-radius:14px}' +
+    'html body #cb-root .cb-why .lab{font-size:.82rem}' +
+    'html body #cb-root .cb-why button{min-height:28px;padding:0 9px;font-size:.78rem;border-width:1.5px;border-bottom-width:3px}' +
+    'html body #cb-root .cb-hd{gap:10px}' +
+    'html body #cb-root .cb-hd h1{font-size:1.45rem}' +
+    'html body #cb-root .cb-hd small{font-size:.78rem}' +
+    'html body #cb-root .cb-hd button,html body #cb-root .cb-hd select{padding:4px 10px !important;font-size:.8rem !important;min-height:0 !important}' +
+    'html body #cb-root .cb-tm div{min-width:60px !important;padding:2px 8px !important}' +
+    'html body #cb-root .cb-tm b{font-size:1.1rem !important}' +
+    'html body #cb-root .cb-tm small{font-size:.66rem !important}' +
+    'html body #cb-root .cb-tabs{margin:4px 0 0;gap:5px}' +
+    'html body #cb-root .cb-tabs button{padding:3px 12px;font-size:.82rem;border-bottom-width:3px}' +
+    'html body #cb-root .cb-today{margin:4px 0 0;padding:3px 8px !important;gap:5px;font-size:.82rem}' +
+    'html body #cb-root .cb-today a,html body #cb-root .cb-today button{padding:3px 10px !important;font-size:.8rem !important;border-bottom-width:3px !important}' +
+    'html body #cb-root .cb-goal{margin:4px 0 6px;padding:4px 12px;gap:10px;border-radius:14px}' +
+    'html body #cb-root .cb-goal b{font-size:.85rem}' +
+    'html body #cb-root .cb-goal .bar{height:12px}' +
+    'html body #cb-root .cb-add button{min-height:28px;padding:3px 10px;font-size:.8rem}' +
+    'html body #cb-root .cb-dock{gap:4px !important;padding:5px 7px !important}' +
+    'html body #cb-root .cb-dock button{padding:5px 8px !important;font-size:.72rem !important;border-bottom-width:3px !important}' +
+    'html body #cb-root .cb-dock .cb-hat{font-size:.7rem}';
+
 function ensureCss() {
     if (document.getElementById('cb-css')) return;
-    var el = document.createElement('style'); el.id = 'cb-css'; el.textContent = CSS + EXTRA_CSS + (root.BoardScenes ? root.BoardScenes.css() : ''); document.head.appendChild(el);
+    var el = document.createElement('style'); el.id = 'cb-css'; el.textContent = CSS + EXTRA_CSS + WHY_CSS + (root.BoardScenes ? root.BoardScenes.css() : ''); document.head.appendChild(el);
   }
 
   function fmt(sec) { sec = Math.max(0, Math.round(sec)); return String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0'); }
@@ -562,7 +618,7 @@ function ensureCss() {
               '</div>' +
               '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
               (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
-              '<div class="cb-add"><button type="button" onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div>' +
+              '<div class="cb-add"><button type="button" onclick="ClassBoard.award(\'' + esc(s.id) + '\')" class="cb-addb">' + addLabel() + '</button></div>' +
               (discOn() ? '<div class="cb-dis"><button type="button" onclick="ClassBoard.minus(\'' + esc(s.id) + '\',10)" title="Take 10 XP away">−10</button></div>' : '') +
             '</div>';
           }).join('') +
@@ -585,6 +641,7 @@ function render(container) {
         '' + switcher + (root.PupilAvatars ? root.PupilAvatars.toggleButton() : '') + '<button class="cb-dsc' + (discOn() ? ' on' : '') + '" onclick="ClassBoard.disc()" title="Minus points and flags. Flags are visible on the board while this is ON. Off at the start of every session.">🚩 Discipline: ' + (discOn() ? 'On' : 'Off') + '</button><div class="cb-tm"><div class="cb-clock" id="cb-clock"><b>' + fmt(timer.left) + '</b><small>Timer</small></div><div><b id="cb-here">' + present + '</b><small>Here today</small></div><div><b id="cb-total">' + total.toLocaleString('en-US') + '</b><small>Class XP</small></div></div></div>' +
       '<div class="cb-tabs">' + (S().getClasses ? S().getClasses() : []).filter(function (c) { return !c.archived; }).map(function (c) { return '<button class="' + (c.id === cls.id ? 'on' : '') + '" onclick="ClassBoard.switchClass(\'' + esc(c.id) + '\')">' + esc(c.name) + '</button>'; }).join('') + '</div>' +
       '<div class="cb-today"><span class="lab">📅 Today:</span>' + todayChips(cls) + '</div>' +
+      whyBar() +
       '<div class="cb-goal" id="cb-goal" onclick="ClassBoard.setGoal()" title="Click to change the class goal"><b class="l"></b><div class="bar"><i style="width:0"></i></div><b class="r"></b></div>' +
       (discOn() ? stageStrip() : '') + (teamsOn ? renderTeamsView(cls, list) : ('<div class="cb-mg' + (sceneOn ? ' scene' : '') + '">' + list.map(function (s, idx) {
         var plateCss = !sceneOn && s.x && s.x.plate && s.x.plate.css ? s.x.plate.css : '';
@@ -598,7 +655,7 @@ function render(container) {
           (sceneOn ? '<div class="cb-pw"><i class="cb-ped"></i>' : '') + '<img class="cb-mon' + (s.pa ? ' pa-av' : '') + '" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Tap monster" onclick="ClassBoard.tapMonster(\'' + esc(s.id) + '\', this)">' + (sceneOn ? '</div>' : '') +
           '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
           (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
-          '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div>' +
+          '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\')" class="cb-addb">' + addLabel() + '</button></div>' +
           (discOn() ? '<div class="cb-dis"><button onclick="ClassBoard.minus(\'' + esc(s.id) + '\',10)" title="Take 10 XP away (Undo is offered)">−10</button><button class="fl" onclick="ClassBoard.flag(\'' + esc(s.id) + '\', event)" title="Move this pupil up one stage (1 to 6)">🪜 Stage' + (flagOf(s.id) ? ' ' + flagOf(s.id) : '') + '</button></div>' : '') + '</div>';
       }).join('') + '</div>')) +
       '<div class="cb-dock"><button class="p" id="cb-play" onclick="ClassBoard.play()" title="Start or pause the timer">▶ Start</button>' +
@@ -612,6 +669,7 @@ function render(container) {
         '<button onclick="if(window.SleepyMonster&&SleepyMonster.open)SleepyMonster.open();else if(window.openSleepyMonster)openSleepyMonster();" title="Sleepy Mio classroom quiet game">😴 Sleepy Mio</button>' +
         '<button onclick="BathroomPass && BathroomPass.open()" title="Bathroom: sign out and back in">🚻 Bathroom</button>' +
         '<button onclick="ClassBoard.karaoke()" title="Karaoke Stage: pupils read one by one">🎤 Karaoke</button>' +
+        '<button onclick="window.WeeklyCheck && WeeklyCheck.open(\'' + esc(cls.id) + '\')" title="5-minute Weekly Check: tap each pupil\'s score out of 5" style="background:linear-gradient(180deg,#4f9dff,#2f6fc2);border-bottom-color:#1d4f9a;font-weight:700">📝 Weekly check</button>' +
         '<button onclick="openFastAttendanceModal && openFastAttendanceModal()" title="Roll call">✓ Roll call</button>' +
         '<button class="ic" onclick="try{classSoundboard.playAttentionBell()}catch(e){}" title="Bell">🔔</button><button class="ic" onclick="try{classSoundboard.playApplause()}catch(e){}" title="Applause">👏</button><span class="sep"></span>' +
         '<div class="cb-more-wrap"><button type="button" class="cb-more-btn" onclick="var m=document.getElementById(\'cb-dock-more\');if(m)m.classList.toggle(\'open\')" title="More classroom tools">🧰 Tools ▾</button>' +
@@ -786,7 +844,7 @@ function render(container) {
       var grp = st.getGroup ? st.getGroup(groupId) : null;
       if (!grp || !grp.studentIds) return;
       grp.studentIds.forEach(function (id) {
-        st.giveXP(id, n, 'Team Points: ' + grp.name, 'Teacher', { category: 'team', icon: '🏆' });
+        st.giveXP(id, n, 'Team ' + grp.name + ': ' + whyNow().t, 'Teacher', { category: 'team', icon: '🏆' });
         var me = st.getStudent(id);
         var card = document.getElementById('cb-' + id);
         if (card) {
@@ -810,15 +868,26 @@ function render(container) {
       paintGoal();
       paintClock();
     },
+    setWhy: function (k) {
+      try { localStorage.setItem('cb_why', k); } catch (e) { /* ignore */ }
+      [].forEach.call(document.querySelectorAll('.cb-why [data-why]'), function (b) { b.classList.toggle('on', b.getAttribute('data-why') === k); });
+      [].forEach.call(document.querySelectorAll('.cb-addb'), function (b) { b.textContent = addLabel(); });
+    },
+    setAmt: function (n) {
+      try { localStorage.setItem('cb_amt', String(n)); } catch (e) { /* ignore */ }
+      [].forEach.call(document.querySelectorAll('.cb-why [data-amt]'), function (b) { b.classList.toggle('on', Number(b.getAttribute('data-amt')) === n); });
+      [].forEach.call(document.querySelectorAll('.cb-addb'), function (b) { b.textContent = addLabel(); });
+    },
     award: function (id, n) {
       var st = S(); if (!st.giveXP) return;
-      st.giveXP(id, n, 'Quick Classroom Award', 'Teacher', { category: 'positive', icon: '⭐' });
+      var w = whyNow(); n = Number(n) || amtNow();
+      st.giveXP(id, n, w.t, 'Teacher', { category: 'positive', icon: w.e });
       if (!pupilSound(id)) { try { root.classSoundboard && root.classSoundboard.playCoinReward && root.classSoundboard.playCoinReward(); } catch (e) { /* optional */ } }
       var list = totals(), me = list.filter(function (s) { return s.id === id; })[0];
       var card = document.getElementById('cb-' + id);
       if (me && card) {
         document.getElementById('cb-pt-' + id).textContent = me.xp.toLocaleString('en-US');
-        var b = document.createElement('div'); b.className = 'cb-burst'; b.textContent = '+' + n + ' ⭐'; card.appendChild(b); setTimeout(function () { b.remove(); }, 1000);
+        var b = document.createElement('div'); b.className = 'cb-burst'; b.textContent = '+' + n + ' ' + w.e; card.appendChild(b); setTimeout(function () { b.remove(); }, 1000);
         var img = card.querySelector('img.cb-mon') || card.querySelector('img'); if (img && me.img && img.getAttribute('src') !== me.img) img.src = me.img;   // monster may have evolved
         if (root.PupilAvatars && root.PupilAvatars.on && root.PupilAvatars.on() && me.pa) {
           try { root.PupilAvatars.triggerEmotion(id, 'laugh', 2400); } catch (e) {}

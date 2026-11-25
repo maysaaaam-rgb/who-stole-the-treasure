@@ -52,7 +52,7 @@
     });
     hw.submittedCount = Object.keys(hw.submissions).filter(function (k) { return hw.submissions[k].status === 'COMPLETED'; }).length;
   }
-  var CLASS_FIX = {};    // the ids now match the classes (Ozan T. 208 = 4B, Simal 319 = 4A: checked with the teacher 14 Oct)
+  var CLASS_FIX = {};    // the ids now match the classes (208 = 4B, 319 = 4A: checked with the teacher 14 Oct)
   /* sheet names that fit two pupils, matched by the teacher (14 Oct 2026) */
   var ALIAS = { '4b-ozan': 'student-4b-208', '4a-ada': 'student-4a-310', '4a-emirb': 'student-4a-342', '4b-elif': 'student-4b-307', '3b-ece': 'student-3b-217' };
   var last = { at: 0, text: '' };
