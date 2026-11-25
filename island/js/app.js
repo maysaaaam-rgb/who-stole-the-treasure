@@ -593,7 +593,7 @@
       'js/realgame/rg-engine.js?v=w1-20261114c',
       'js/world-game.js?v=rg-20261114d',
       'js/world.js?v=rg-20261114d',
-      '../js/pupil-avatars.js?v=27',
+      '../js/pupil-avatars.js?v=20261125b',
       'js/avatar-walker.js?v=1'
     ];
     _enginePromise = (async function () {

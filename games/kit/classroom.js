@@ -225,7 +225,7 @@
     }
     chain
       .then(function () { return loadScriptOnce(rootRel + 'js/monster-outfits.js?v=3'); })
-      .then(function () { return loadScriptOnce(rootRel + 'js/pupil-avatars.js?v=31'); })
+      .then(function () { return loadScriptOnce(rootRel + 'js/pupil-avatars.js?v=20261125b'); })
       .then(function () {
         if (root.PupilAvatars && typeof root.PupilAvatars.load === 'function') {
           try { root.PupilAvatars.load(); } catch (e) {}
