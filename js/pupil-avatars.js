@@ -41,6 +41,9 @@
   var BODY_W = 512, BODY_H = 768, BODY_DRAW_H = 716;
   var BODY_VSCALE = BODY_DRAW_H / BODY_H;
   var HEAD = 332;          // balanced Pixar kid head size with gentle normalization
+  // Per-pupil head size fix for face pictures that were drawn bigger in their frame (teacher request, 25 Nov 2026).
+  var HEAD_SIZE_FIX = { 'student-3a-207': 0.88, 'student-4a-314': 0.88 };
+  function headFix(id) { return HEAD_SIZE_FIX[String(id || '')] || 1; }
   var CHIN = 0.78;         // nominal chin anchor (refined per head in analyzeHead)
   var NECK_Y = 93;         // chin landing point in 512x768 body space (short, natural kid neck)
   var NECK_DRAW_Y = Math.round(NECK_Y * BODY_VSCALE);
@@ -691,7 +694,7 @@
   }
 
   /* ---------- picture cache (IndexedDB): finished avatar pictures survive a page reload ---------- */
-  var PIC_CACHE_VER = 'p2';
+  var PIC_CACHE_VER = 'p3';
   var picDb = null, picDbTried = false;
   function picCacheOpen() {
     if (picDbTried) return Promise.resolve(picDb);
@@ -1730,7 +1733,7 @@
         var c = document.createElement('canvas'); c.width = Math.round(W * OUT_SCALE); c.height = Math.round(H * OUT_SCALE);
         var ctx = c.getContext('2d'); ctx.scale(OUT_SCALE, OUT_SCALE);
 
-        var hScale = baseHeadInfo.headScale || 1;
+        var hScale = (baseHeadInfo.headScale || 1) * headFix(studentId);
         var chinNorm = info.chinNorm || CHIN;
         var hSize = Math.round(HEAD * hScale);
         var hx = Math.round((BODY_W - hSize) / 2);
@@ -2533,7 +2536,7 @@
         var targetRgb = TONE_PRESET_RGB[tone] || info.skinRgb || [215, 152, 114];
         var isGirl = (isDemo ? (key === 'demo-girl') : (genderOf(key, ch, smileIm) === 'girl'));
 
-        var hScale = info.headScale || 1;
+        var hScale = (info.headScale || 1) * headFix(key);
         var chinNorm = info.chinNorm || CHIN;
         var hSize = Math.round(HEAD * hScale);
 
