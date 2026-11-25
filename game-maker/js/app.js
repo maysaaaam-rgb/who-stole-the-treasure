@@ -38,18 +38,20 @@
     { id: 'ext-pairs',     cat: 'word',   phone: true, badge: '🃏 MEMORY',         k3d: false, mins: '6–10 min', teams: 'Phone & Board', sub3: 'Flip Cards · Match Pictures, Words & Audio', name: 'Matching Pairs', desc: 'Flip pastel cards on phone or smartboard to match every vocabulary picture with its spoken word!', poster: '../games/posters/pairs.webp', url: '../games/words/index.html?game=pairs', previewUrl: '../games/words/index.html?game=pairs&preview=1', steps: ['1. Flip any two pastel cards', '2. Match picture with its English word', '3. Clear all pairs to win!'] },
 
     { id: 'ext-simonsays', cat: 'speak',  phone: true, badge: '🦉 TPR LIVE',       k3d: false, mins: '5–10 min',  teams: 'Whole Class', sub3: 'Spoken Voice Commands · Do It Only If Simon Says!', name: 'Simon Says Live', desc: 'Active TPR listening & movement game for Grade 3 and Grade 4 — listen closely and only move when Simon says!', poster: '../assets/shelf/simon-says-grade3.webp', url: '../simon-says/index.html', previewUrl: '../simon-says/index.html', steps: ['1. Pick Grade 3 or Grade 4 & tap Start', '2. Listen to Simon\'s spoken action command', '3. Move ONLY when it starts with "Simon says…"!'] },
-    { id: 'ext-telpic',    cat: 'speak',  phone: true, badge: '📞 DRAW & PASS',    k3d: false, mins: '10–15 min', teams: 'Groups of 4–6', sub3: 'Write a Sentence · Draw It · Fold & Pass!', name: 'Telephone Pictionary', desc: 'Hilarious group writing & drawing relay with built-in timer, sentence starters, and reveal prompts!', poster: '../platform-art/h_pencil.webp', url: '../telephone-pictionary/index.html', previewUrl: '../telephone-pictionary/index.html', steps: ['1. Pupil 1 secretly writes a starter sentence', '2. Next pupil draws it, folds, and passes', '3. Unfold at the end & read the funny chain aloud!'] }
+    { id: 'ext-telpic',    cat: 'speak',  phone: true, badge: '📞 DRAW & PASS',    k3d: false, mins: '10–15 min', teams: 'Groups of 4–6', sub3: 'Write a Sentence · Draw It · Fold & Pass!', name: 'Telephone Pictionary', desc: 'Hilarious group writing & drawing relay with built-in timer, sentence starters, and reveal prompts!', poster: '../platform-art/h_pencil.webp', url: '../telephone-pictionary/index.html', previewUrl: '../telephone-pictionary/index.html', steps: ['1. Pupil 1 secretly writes a starter sentence', '2. Next pupil draws it, folds, and passes', '3. Unfold at the end & read the funny chain aloud!'] },
+    { id: 'ext-describe',  cat: 'speak',  phone: true, badge: '🗣️ HOT SEAT',       k3d: false, mins: '10–12 min', teams: 'Teams', sub3: 'Describe the Picture · Your Team Guesses!', name: 'Describe & Guess', desc: 'Units 1–5 review: one pupil sits with their back to the board while the team describes the picture with sentence frames. Hot seat or slow-reveal mode.', poster: '../speak-review/art/describe/g3-u4-volcano.webp', url: '../speak-review/index.html?game=describe', previewUrl: '../speak-review/index.html?game=describe', steps: ['1. One pupil sits with their back to the board', '2. Their team describes the picture: It is… It has…', '3. Guess it before 45 seconds = +2 points!'] },
+    { id: 'ext-spotdiff',  cat: 'speak',  phone: true, badge: '🔍 SAY IT FIRST',   k3d: false, mins: '12–16 min', teams: 'Teams', sub3: 'Two Pictures · 5 Differences · Full Sentences', name: 'Spot the Difference', desc: 'Units 1–5 review: say the full sentence (In picture A… In picture B…), then tap the difference to circle it on both pictures.', poster: '../speak-review/art/spot/g4-u5-a.webp', url: '../speak-review/index.html?game=spot', previewUrl: '../speak-review/index.html?game=spot', steps: ['1. Look at picture A and picture B', '2. Say: In picture A… In picture B…', '3. Tap the difference: +1 point for your team!'] }
   ];
   var ORDER = ['tower', 'baseball', 'jigsaw'];
   var GM_PHONE = { tower: true, baseball: true, jigsaw: true };
   var GM_MINS = { tower: '6–10 min', baseball: '8–12 min', jigsaw: '8–12 min' };
   var GAME_CATS = [
-    ['all',     '⭐ All Games (26)', null],
+    ['all',     '⭐ All Games (28)', null],
     ['park3d',  '🌍 3D Park (9)', ['ext-tug3d', 'ext-penalty3d', 'ext-cannon3d', 'ext-race3d', 'ext-bowling3d', 'ext-board3d', 'ext-bomb3d', 'ext-keepgive3d', 'ext-fling3d']],
     ['action',  '🎯 Action & Skill (4)', ['tower', 'baseball', 'jigsaw', 'ext-slice']],
     ['mystery', '🔍 Mystery & Suspense (5)', ['ext-flashlight', 'ext-doors', 'ext-pixels', 'ext-croc', 'ext-cups']],
     ['word',    '🔤 Words & Grammar (6)', ['ext-timetrain', 'ext-builder', 'ext-bubbles', 'ext-prep', 'ext-bingo', 'ext-pairs']],
-    ['speak',   '🎤 Live Speaking (2)', ['ext-simonsays', 'ext-telpic']]
+    ['speak',   '🎤 Live Speaking (4)', ['ext-simonsays', 'ext-telpic', 'ext-describe', 'ext-spotdiff']]
   ];
   var HOW = {
     race: ['3-2-1-GO! Monsters line up on the pastel racetrack.', 'Answer right to spin a Turbo Boost, fly past rivals with dust puffs, and shake the camera!', 'First to snap the finish ribbon wins +50 bonus points on the podium!'],
@@ -225,7 +227,7 @@
     var barLeft = h('div', { class: 'gm-ubar-left' });
     barLeft.appendChild(h('div', { class: 'gm-ubar-brand' }, [
       h('b', { text: '🎮 All Games' }),
-      h('small', { text: '26 Best-in-Class · Phone, Tablet & Smartboard' })
+      h('small', { text: '28 Best-in-Class · Phone, Tablet & Smartboard' })
     ]));
 
     if (classes.length) {
@@ -271,7 +273,7 @@
     var searchInput = h('input', {
       type: 'search',
       class: 'gm-game-search',
-      placeholder: '🔍 Search 26 games…',
+      placeholder: '🔍 Search 28 games…',
       value: S.searchQ || '',
       'aria-label': 'Search all games'
     });
