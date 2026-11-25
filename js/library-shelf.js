@@ -241,9 +241,9 @@
     var showLessonBar = tab !== 'else' && tab !== 'games' && tab !== 'plans';
     var showPlansSearch = tab === 'plans';
     container.innerHTML = '<div class="ls">' +
-      '<div class="ls-top"><div><h1>📖 Lessons, Games &amp; Curriculum Plans</h1><p class="ls-sub">Interactive smartboard lessons, unit reviews, all 47 games, and printable Word/PDF lesson plans — connected in one place.</p></div>' +
+      '<div class="ls-top"><div><h1>📖 Lessons, Games &amp; Curriculum Plans</h1><p class="ls-sub">Interactive smartboard lessons, unit reviews, all the games, and printable Word/PDF lesson plans — connected in one place.</p></div>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-        '<button type="button" class="ls-goto-games" onclick="if(window.openGameMaker)openGameMaker();else location.href=\'game-maker/index.html\'">🎮 Open All 47 Games →</button>' +
+        '<button type="button" class="ls-goto-games" onclick="if(window.openGameMaker)openGameMaker();else location.href=\'game-maker/index.html\'">🎮 Open All Games →</button>' +
       '</div></div>' +
       '<div class="ls-tabs">' + tabs + '</div>' +
       (showLessonBar ? '<div class="ls-bar"><div class="ls-kinds">' + kinds + '</div><input class="ls-q" id="ls-q" type="search" placeholder="Search lessons, reviews, quizzes..." value="' + esc(q) + '"></div>' : '') +

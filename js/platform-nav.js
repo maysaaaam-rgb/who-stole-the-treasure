@@ -238,7 +238,7 @@
     var hello = now.getHours() < 12 ? 'Good morning' : now.getHours() < 17 ? 'Good afternoon' : 'Good evening';
     var sub = finished ? 'Today’s lessons are done. Here is ' + dayName(day) + '.' : tries ? 'No lessons today. Here is ' + dayName(day) + '.' : dayName(now) + ', ' + timed.length + (timed.length === 1 ? ' lesson' : ' lessons');
     var html = CSS + '<div class="pn"><div class="pn-top"><div><h1>' + esc(hello) + '</h1><div class="sub">' + esc(sub) + '</div></div>' +
-      '<button type="button" class="pn-a s p" onclick="PlatformNav.go(\'games\')">🎮 All 25 Games</button>' +
+      '<button type="button" class="pn-a s p" onclick="PlatformNav.go(\'games\')">🎮 All Games</button>' +
       '<button type="button" class="pn-a s v" onclick="PlatformNav.go(\'home\')">🏝️ 3D Island</button>' +
       '<button type="button" class="pn-a s" onclick="PlatformNav.search()">🔍 Search</button>' +
       '<button type="button" class="pn-a s" onclick="PlatformNav.go(\'calendar\')">📅 Whole week</button></div>';
