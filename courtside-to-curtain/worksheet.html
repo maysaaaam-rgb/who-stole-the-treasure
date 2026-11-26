@@ -2,81 +2,117 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Courtside to Curtain Call · Companion Worksheet</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <title>Courtside to Curtain Call · Grade 4 Unit 4 Printable Worksheet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
-    @page { size: A4 portrait; margin: 10mm 12mm; }
+    @page { size: A4 portrait; margin: 12mm; }
     * { box-sizing: border-box; }
-    body { margin: 0; padding: 14px; font-family: 'Nunito', 'Trebuchet MS', sans-serif; color: #2b1d40; background: #e8f6ff; }
-    .bar { max-width: 820px; margin: 0 auto 12px; display: flex; justify-content: space-between; align-items: center; background: #fff8ec; border: 4px solid #4f9dff; border-bottom: 6px solid #1d6bd1; border-radius: 18px; padding: 10px 16px; }
-    .pbtn { font: 900 1rem 'Nunito', sans-serif; padding: 8px 18px; border-radius: 999px; background: #2fc58a; color: #fff; border: 2px solid #168d5f; border-bottom: 5px solid #168d5f; cursor: pointer; }
-    .sheet { max-width: 820px; margin: 0 auto; background: #fff; border: 4px solid #2b1d40; border-radius: 18px; padding: 16px 20px; }
-    .hdr { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #ffb320; padding-bottom: 8px; margin-bottom: 10px; }
-    .hdr h1 { margin: 0; font-size: 1.38rem; }
-    .line { display: inline-block; width: 110px; border-bottom: 2px solid #2b1d40; }
-    h2 { font-size: 1.05rem; margin: 12px 0 6px; padding: 4px 10px; border-radius: 10px; background: #fff8ec; border-left: 5px solid #ff5fa2; }
+    body { margin: 0; font-family: 'Nunito', sans-serif; color: #2b1d40; background: #fff; }
+    .toolbar { display: flex; gap: 10px; justify-content: center; padding: 12px; background: #eef7ff; border-bottom: 3px solid #4f9dff; }
+    .toolbar button, .toolbar a {
+      padding: 8px 18px; border-radius: 999px; border: 3px solid #256ec9; border-bottom-width: 5px;
+      background: #4f9dff; color: #fff; font-weight: 900; font-size: 15px; cursor: pointer; text-decoration: none;
+    }
+    .sheet { max-width: 210mm; margin: 0 auto; padding: 14px 18px; }
+    .hdr { display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #ffb320; padding-bottom: 8px; margin-bottom: 12px; }
+    .hdr h1 { margin: 0; font-size: 22px; font-weight: 900; }
+    .meta { font-size: 13px; font-weight: 800; }
+    .sec { border: 3px solid #4f9dff; border-radius: 16px; padding: 10px 14px; margin-bottom: 10px; background: #fffdf8; }
+    .sec.z1 { border-color: #ff6b4a; }
+    .sec.z2 { border-color: #2fc58a; }
+    .sec.z3 { border-color: #ff5fa2; }
+    .sec h2 { margin: 0 0 8px; font-size: 15px; font-weight: 900; }
     .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .box { border: 2px solid #cbd5e1; border-radius: 12px; padding: 8px 10px; font-size: 0.9rem; }
-    .wline { display: block; border-bottom: 1.5px dashed #64748b; height: 22px; margin-top: 4px; }
-    .seq-row { display: grid; grid-template-columns: 36px 1fr; gap: 8px; align-items: center; margin-bottom: 6px; font-weight: 800; font-size: 0.9rem; }
-    .num-box { width: 32px; height: 32px; border: 2.5px solid #4f9dff; border-radius: 8px; }
-    @media print { body { background: #fff; padding: 0; } .bar { display: none; } .sheet { border: 0; padding: 0; max-width: 100%; } }
+    .box { border: 2px dashed #c8b6e2; border-radius: 12px; padding: 8px 10px; background: #fff; font-size: 13px; }
+    .line { border-bottom: 2px dotted #9b8bb4; height: 22px; margin-top: 4px; }
+    .word-bank { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+    .chip { background: #fff3d1; border: 2px solid #ffb320; border-radius: 999px; padding: 2px 10px; font-weight: 900; font-size: 12px; }
+    .story-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .story-box { border: 2px solid #ffb320; border-radius: 12px; padding: 6px; text-align: center; background: #fff; }
+    .story-box img { width: 100%; height: 68px; object-fit: cover; border-radius: 8px; display: block; margin-bottom: 4px; }
+    .num-circle { display: inline-grid; place-items: center; width: 24px; height: 24px; border: 2px solid #ff5fa2; border-radius: 50%; font-weight: 900; font-size: 13px; }
+    @media print { .toolbar { display: none; } .sheet { padding: 0; } }
   </style>
 </head>
 <body>
-  <div class="bar">
-    <strong>🎭 Courtside to Curtain Call · Grade 4 Unit 4 Companion Sheet</strong>
-    <button type="button" class="pbtn" onclick="window.print()">🖨️ Print A4 Sheet</button>
+  <div class="toolbar">
+    <button type="button" onclick="window.print()">🖨️ Print A4 Worksheet</button>
+    <a href="index.html">🎮 Back to 3D Adventure</a>
   </div>
-  <div class="sheet">
-    <div class="hdr">
+  <main class="sheet">
+    <header class="hdr">
       <div>
-        <h1>🎭 Courtside to Curtain Call: The Festival Adventure</h1>
-        <div style="font-size:0.86rem;font-weight:700;color:#594a72;">Grade 4 · Unit 4 (Team Players &amp; Late for the Show)</div>
+        <h1>🎭 Courtside to Curtain Call · Grade 4 Unit 4</h1>
+        <div class="meta">Zone 1: Basketball Court · Zone 2: Festival Park · Zone 3: Grand Theatre</div>
       </div>
-      <div style="font-weight:800;font-size:0.9rem;">Name: <span class="line"></span> &nbsp; Class: <span class="line" style="width:45px"></span></div>
-    </div>
+      <div class="meta">Name: ______________________ &nbsp; Class: 4___</div>
+    </header>
 
-    <h2>1. Zone 1 · Spell &amp; Circle the OR Words!</h2>
-    <div class="grid2">
-      <div class="box">
-        <strong>Fill the missing letter:</strong><br>
-        1. B A S ___ E T &nbsp;&nbsp; 2. C O ___ C H<br>
-        3. C O S T ___ M E S &nbsp;&nbsp; 4. T H E A ___ R E
+    <section class="sec z1">
+      <h2>🏀 Zone 1 · Court Words &amp; OR-Phonics (SPORT /ɔː/ vs WORK /ɜː/)</h2>
+      <div class="grid2">
+        <div class="box">
+          <strong>1. Fill the missing letter &amp; say a sentence:</strong><br>
+          B A S ___ E T &nbsp;&nbsp;&nbsp; C O A ___ H &nbsp;&nbsp;&nbsp; C O U ___ T<br>
+          P L A ___ E R &nbsp;&nbsp;&nbsp; T H E A ___ R E &nbsp;&nbsp;&nbsp; T R ___ I N
+        </div>
+        <div class="box">
+          <strong>2. Sort the OR words into two hoops:</strong>
+          <div class="word-bank">
+            <span class="chip">sport</span><span class="chip">work</span><span class="chip">horse</span><span class="chip">world</span>
+            <span class="chip">fork</span><span class="chip">worm</span><span class="chip">storm</span><span class="chip">homework</span>
+          </div>
+          <strong>SPORT (/ɔː/):</strong> ___________________________<br>
+          <strong>WORK (/ɜː/):</strong> ____________________________
+        </div>
       </div>
-      <div class="box">
-        <strong>Circle the words with OR (underline the different sound!):</strong><br>
-        <span style="font-size:1.05rem;font-weight:900;letter-spacing:0.05em;">SPORT · TEAM · SHORT · MORE · WORK · CORN · PLAY</span>
-      </div>
-    </div>
+    </section>
 
-    <h2>2. Zone 2 · Build Full Present Continuous Sentences!</h2>
-    <div class="box">
-      1. <em>playing / are / They / basketball.</em> <span class="wline"></span>
-      2. <em>watching / The / is / audience / quietly.</em> <span class="wline"></span>
-      3. <em>wearing / are / costumes. / They / funny</em> <span class="wline"></span>
-      4. <strong>Speak &amp; Write your own sentence:</strong> <em>Look! They are</em> <span class="wline"></span>
-    </div>
+    <section class="sec z2">
+      <h2>🚂 Zone 2 · Present Continuous (Festival Park &amp; Express Train)</h2>
+      <div class="grid2">
+        <div class="box">
+          <strong>3. Unscramble the broken-track sentences:</strong><br>
+          a) playing / They / basketball. / are
+          <div class="line"></div>
+          b) running / He / the / is / to / train.
+          <div class="line"></div>
+        </div>
+        <div class="box">
+          <strong>4. Spot What Is Strange! Write 2 funny sentences:</strong><br>
+          <em>Example: A giant fish is flying in the sky!</em>
+          <div class="line"></div>
+          <div class="line"></div>
+        </div>
+      </div>
+    </section>
 
-    <h2>3. Zone 3 · Festival Program &amp; Story Order (Number 1 → 4)</h2>
-    <div class="grid2">
-      <div class="box">
-        <strong>Complete the Program Notes:</strong><br>
-        • Harry played the role of ____________________.<br>
-        • He travelled with his ____________________.<br>
-        • On the way, the _______________ suddenly stopped!<br>
-        • The children wore special ____________________.
+    <section class="sec z3">
+      <h2>🎭 Zone 3 · Grand Theatre Story Sequence (First · Next · Then · Finally)</h2>
+      <div class="story-grid">
+        <div class="story-box">
+          <img src="assets/art/story_3_hurry.webp" alt="Hurry to festival">
+          <span class="num-circle">&nbsp;</span> Hurry to Stage
+        </div>
+        <div class="story-box">
+          <img src="assets/art/story_1_home.webp" alt="Leave home">
+          <span class="num-circle">&nbsp;</span> Leave Home
+        </div>
+        <div class="story-box">
+          <img src="assets/art/story_4_curtain_call.webp" alt="Curtain call">
+          <span class="num-circle">&nbsp;</span> Curtain Call!
+        </div>
+        <div class="story-box">
+          <img src="assets/art/story_2_train_stop.webp" alt="Train stops">
+          <span class="num-circle">&nbsp;</span> Train Stops!
+        </div>
       </div>
-      <div class="box">
-        <strong>Number the story 1 to 4:</strong>
-        <div class="seq-row"><div class="num-box"></div><div>Suddenly, the train stops on the tracks!</div></div>
-        <div class="seq-row"><div class="num-box"></div><div>Harry and his mother leave home.</div></div>
-        <div class="seq-row"><div class="num-box"></div><div>The children perform the show on stage!</div></div>
-        <div class="seq-row"><div class="num-box"></div><div>They arrive at the theatre and put on costumes.</div></div>
+      <div class="box" style="margin-top:8px;">
+        <strong>5. Speaking &amp; Writing Star Challenge:</strong> Choose a stage role (<em>Actor, Singer, Musician, Wizard</em>) and write 2 full sentences:
+        <div class="line"></div>
+        <div class="line"></div>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 </body>
 </html>

@@ -204,7 +204,7 @@
 
 | # | Script | `?v=` | Index Line |
 | :---: | :--- | :---: | :---: |
-| 1 | [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | `20261126a` | [L2928](file:///C:/Users/maysa/Desktop/DV/index.html#L2928) |
+| 1 | [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | `20261126b` | [L2928](file:///C:/Users/maysa/Desktop/DV/index.html#L2928) |
 | 2 | [js/offline.js](file:///C:/Users/maysa/Desktop/DV/js/offline.js) | `2` | [L2931](file:///C:/Users/maysa/Desktop/DV/index.html#L2931) |
 | 3 | `https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2` | `—` | [L2932](file:///C:/Users/maysa/Desktop/DV/index.html#L2932) |
 | 4 | [js/supabase-config.js](file:///C:/Users/maysa/Desktop/DV/js/supabase-config.js) | `2.5` | [L2933](file:///C:/Users/maysa/Desktop/DV/index.html#L2933) |
@@ -224,9 +224,9 @@
 | 18 | [js/no-monsters.js](file:///C:/Users/maysa/Desktop/DV/js/no-monsters.js) | `2` | [L2953](file:///C:/Users/maysa/Desktop/DV/index.html#L2953) |
 | 19 | [js/classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js) | `20261124e` | [L2954](file:///C:/Users/maysa/Desktop/DV/index.html#L2954) |
 | 20 | [js/retired-themes.js](file:///C:/Users/maysa/Desktop/DV/js/retired-themes.js) | `3` | [L2955](file:///C:/Users/maysa/Desktop/DV/index.html#L2955) |
-| 21 | [js/timetable.js](file:///C:/Users/maysa/Desktop/DV/js/timetable.js) | `20261126a` | [L2956](file:///C:/Users/maysa/Desktop/DV/index.html#L2956) |
+| 21 | [js/timetable.js](file:///C:/Users/maysa/Desktop/DV/js/timetable.js) | `20261126b` | [L2956](file:///C:/Users/maysa/Desktop/DV/index.html#L2956) |
 | 22 | [js/unit2-content.js](file:///C:/Users/maysa/Desktop/DV/js/unit2-content.js) | `ti101` | [L2957](file:///C:/Users/maysa/Desktop/DV/index.html#L2957) |
-| 23 | [js/calendar-view.js](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js) | `20261123` | [L2958](file:///C:/Users/maysa/Desktop/DV/index.html#L2958) |
+| 23 | [js/calendar-view.js](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js) | `20261126b` | [L2958](file:///C:/Users/maysa/Desktop/DV/index.html#L2958) |
 | 24 | [js/revision-board.js](file:///C:/Users/maysa/Desktop/DV/js/revision-board.js) | `1` | [L2959](file:///C:/Users/maysa/Desktop/DV/index.html#L2959) |
 | 25 | [js/class-journey.js](file:///C:/Users/maysa/Desktop/DV/js/class-journey.js) | `2` | [L2960](file:///C:/Users/maysa/Desktop/DV/index.html#L2960) |
 | 26 | [js/command-center.js](file:///C:/Users/maysa/Desktop/DV/js/command-center.js) | `20261125c` | [L2961](file:///C:/Users/maysa/Desktop/DV/index.html#L2961) |

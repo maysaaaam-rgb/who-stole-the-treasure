@@ -85,8 +85,8 @@
 ### Curriculum, Library & Island (13)
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
-| [calendar-view.js](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js) | 103.2 KB | 880 | #23 (`v=20261123`) | `renderCalendarView`, `CalendarView` | Teacher calendar (sidebar: 📅 Calendar). Month and Week views of: the lessons of every class (from the weekly timetable, or the k12 timetable until it is set), |
-| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 414.2 KB | 10538 | #1 (`v=20261126a`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
+| [calendar-view.js](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js) | 106.2 KB | 913 | #23 (`v=20261126b`) | `renderCalendarView`, `CalendarView` | Teacher calendar (sidebar: 📅 Calendar). Month and Week views of: the lessons of every class (from the weekly timetable, or the k12 timetable until it is set), |
+| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 414.3 KB | 10538 | #1 (`v=20261126b`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
 | [homework-data.js](file:///C:/Users/maysa/Desktop/DV/js/homework-data.js) | 15.3 KB | 392 | #8 (`v=3.1`) | `ALICE_HOMEWORK_ASSIGNMENTS`, `ALICE_WONDERLAND_XP_QUEST`, `AdventureAcademy`, `openMonsterLevelUpModal` | ADVENTURE ACADEMY — DISCRETE HOMEWORK XP TASKS DATA |
 | [island-apply.js](file:///C:/Users/maysa/Desktop/DV/js/island-apply.js) | 13.3 KB | 319 | #11 (`v=2`) | `IslandApply` | Practice Island — Platform XP & Monster Look Auto-Applier (js/island-apply.js) |
 | [island-curriculum-data.js](file:///C:/Users/maysa/Desktop/DV/js/island-curriculum-data.js) | 202.6 KB | 3813 | Standalone | `ISLAND_CURRICULUM_DATA` | ISLAND HOMEWORK REVISION PROJECT — MASTER CURRICULUM DATASET |
@@ -96,7 +96,7 @@
 | [retired-themes.js](file:///C:/Users/maysa/Desktop/DV/js/retired-themes.js) | 1.6 KB | 32 | #20 (`v=3`) | `RetiredThemes` | Retired themes (2 Nov 2026): Alice in Wonderland and the Chuseok / Korean festival are gone from the platform. |
 | [revision-board.js](file:///C:/Users/maysa/Desktop/DV/js/revision-board.js) | 10.6 KB | 107 | #24 (`v=1`) | `RevisionBoard` | Revision board (teacher only): what the class missed, each pupil's level, suggested groups and pairs, and the cloud copy. |
 | [theme-badges.js](file:///C:/Users/maysa/Desktop/DV/js/theme-badges.js) | 1.9 KB | 38 | #52 (`v=2.0`) | `updateClassroomTheme`, `resolveStudentCompanion`, `getStudentBadge`, `renderStudentThemeBadge` | ENGLISH ADVENTURE ACADEMY: class themes and companion badges (neutral version, 2 Nov 2026) |
-| [timetable.js](file:///C:/Users/maysa/Desktop/DV/js/timetable.js) | 39.3 KB | 346 | #21 (`v=20261126a`) | `Timetable` | Weekly timetable: the teacher sets it once (per class, Monday to Friday) and the dashboard and the Class Board |
+| [timetable.js](file:///C:/Users/maysa/Desktop/DV/js/timetable.js) | 39.3 KB | 346 | #21 (`v=20261126b`) | `Timetable` | Weekly timetable: the teacher sets it once (per class, Monday to Friday) and the dashboard and the Class Board |
 | [unit2-content.js](file:///C:/Users/maysa/Desktop/DV/js/unit2-content.js) | 53.1 KB | 128 | #22 (`v=ti101`) | `Unit2Content` | Unit 2 content for Grade 3 (Global Readings 2, Thank You) and Grade 4 (Global Readings 3, What Lives Here?). |
 
 ### Avatars, Monsters & Store (21)
@@ -380,7 +380,7 @@
 
 ---
 
-### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10538 lines (414.2 KB)
+### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10538 lines (414.3 KB)
 
 
 
@@ -1109,4 +1109,74 @@
 | Line | Function / Method |
 | :---: | :--- |
 
+
+---
+
+### 📦 [js/calendar-view.js](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js) — 913 lines (106.2 KB)
+
+
+
+#### Key Functions & Methods (showing 60 of 63)
+| Line | Function / Method |
+| :---: | :--- |
+| [L33](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L33) | `esc` |
+| [L34](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L34) | `pad` |
+| [L35](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L35) | `ymd` |
+| [L36](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L36) | `parse` |
+| [L37](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L37) | `monday` |
+| [L38](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L38) | `classes` |
+| [L39](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L39) | `shortName` |
+| [L42](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L42) | `store` |
+| [L43](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L43) | `customEvents` |
+| [L44](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L44) | `saveEvents` |
+| [L45](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L45) | `seedOnce` |
+| [L53](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L53) | `retitleOnce` |
+| [L61](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L61) | `shortenOnce` |
+| [L69](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L69) | `g3Titles` |
+| [L77](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L77) | `moonOnce` |
+| [L88](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L88) | `moonNoteOnce` |
+| [L100](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L100) | `monaOnce` |
+| [L111](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L111) | `showOnce` |
+| [L122](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L122) | `mountainOnce` |
+| [L140](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L140) | `mountainSplitOnce` |
+| [L155](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L155) | `u4ReviewOnce` |
+| [L165](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L165) | `quizSpeakOnce` |
+| [L175](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L175) | `weekPlanOnce` |
+| [L194](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L194) | `mondayG3Once` |
+| [L207](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L207) | `rev1NoteOnce` |
+| [L215](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L215) | `rev1aOnce` |
+| [L224](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L224) | `g3QuizOnce` |
+| [L236](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L236) | `g3RevOnce` |
+| [L250](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L250) | `wed28Once` |
+| [L282](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L282) | `fri30Once` |
+| [L304](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L304) | `wed28PlansOnce` |
+| [L341](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L341) | `retireThemesOnce` |
+| [L349](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L349) | `weekNov2Once` |
+| [L410](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L410) | `bookWeekNov2Once` |
+| [L460](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L460) | `petShopLinkOnce` |
+| [L475](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L475) | `weekPlansOnce` |
+| [L492](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L492) | `movieAndEzPetWeekOnce` |
+| [L521](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L521) | `weekNov9Once` |
+| [L563](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L563) | `talkShowOnce` |
+| [L580](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L580) | `unit5RevisionGamesOnce` |
+| [L634](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L634) | `weekNov23Once` |
+| [L688](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L688) | `friNov27Once` |
+| [L720](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L720) | `ensureSeeded` |
+| [L723](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L723) | `lessonsOn` |
+| [L733](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L733) | `eventsOn` |
+| [L760](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L760) | `css` |
+| [L761](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L761) | `evHtml` |
+| [L765](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L765) | `head` |
+| [L777](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L777) | `monthHtml` |
+| [L787](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L787) | `weekHtml` |
+| [L796](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L796) | `linksOf` |
+| [L810](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L810) | `add` |
+| [L819](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L819) | `k12TextOf` |
+| [L824](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L824) | `linkBtns` |
+| [L829](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L829) | `sideHtml` |
+| [L839](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L839) | `draw` |
+| [L847](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L847) | `edit` |
+| [L859](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L859) | `closeCalModal` |
+| [L860](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L860) | `onCalEsc` |
+| [L870](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js#L870) | `del` |
 

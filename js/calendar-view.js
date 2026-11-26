@@ -684,8 +684,41 @@
       store().setCalendarFlag('seed33');
     } catch (e) { /* the calendar still works */ }
   }
+  /* 26 Nov 2026: Place Build the Bridge 3D & Courtside to Curtain Call 3D into Friday 27 Nov 2026 lesson slots (3B, 3A, 4B). */
+  function friNov27Once() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed34')) return;
+      var list = customEvents().slice();
+      var FRI = {
+        '2026-11-27|09:00|class-3b': ['speaking', 'MEB Lesson 2 + 🌉 Build the Bridge 3D (Full-Sentence Warm-Up)', 'Week 10 MEB Lesson 2 listening & speaking + 10-min full-sentence challenge in Build the Bridge 3D (build-the-bridge/index.html?grade=3) with printable sheet (build-the-bridge/worksheet.html).'],
+        '2026-11-27|09:45|class-3b': ['speaking', '🌉 Build the Bridge 3D (Full-Sentence Speaking) & Speaking Quiz Day 2', 'Push full-sentence speaking in Build the Bridge 3D (build-the-bridge/index.html?grade=3 + build-the-bridge/worksheet.html), then finish 1-on-1 Units 1–5 Speaking Quiz (speaking-quiz/index.html?grade=3).'],
+        '2026-11-27|10:30|class-3a': ['speaking', 'MEB Lesson 2 + 🌉 Build the Bridge 3D (Full-Sentence Warm-Up)', 'Week 10 MEB Lesson 2 listening & speaking + 10-min full-sentence challenge in Build the Bridge 3D (build-the-bridge/index.html?grade=3) with printable sheet (build-the-bridge/worksheet.html).'],
+        '2026-11-27|11:15|class-3a': ['speaking', '🌉 Build the Bridge 3D (Full-Sentence Speaking) & Speaking Quiz Day 2', 'Push full-sentence speaking in Build the Bridge 3D (build-the-bridge/index.html?grade=3 + build-the-bridge/worksheet.html), then finish 1-on-1 Units 1–5 Speaking Quiz (speaking-quiz/index.html?grade=3).'],
+        '2026-11-27|14:15|class-4b': ['speaking', '🎭 Courtside to Curtain Call 3D (3-Zone Adventure) + MEB Lesson 2', 'Launch the 3-Zone 3D Adventure (courtside-to-curtain/index.html + courtside-to-curtain/worksheet.html): Sunny Basketball Court, Red Festival Train Park & Grand Theatre Stage Show with Speak-to-Act Lock!'],
+        '2026-11-27|15:20|class-4b': ['speaking', '🌉 Build the Bridge 3D + 🎭 Courtside 3D & Units 1–5 Speaking Quiz', 'Full-sentence speaking showdown in Build the Bridge 3D (build-the-bridge/index.html?grade=4 + build-the-bridge/worksheet.html), Grand Theatre Finale (courtside-to-curtain/index.html), and Speaking Quiz (speaking-quiz/index.html?grade=4).']
+      };
+      var seen = {};
+      list.forEach(function (e) {
+        if (!e) return;
+        var k = e.date + '|' + e.time + '|' + e.classId;
+        if (FRI[k]) {
+          e.type = FRI[k][0];
+          e.title = FRI[k][1];
+          e.note = FRI[k][2];
+          seen[k] = 1;
+        }
+      });
+      Object.keys(FRI).forEach(function (k, idx) {
+        if (seen[k]) return;
+        var p = k.split('|');
+        list.push({ id: 'seed34-' + idx, date: p[0], time: p[1], classId: p[2], type: FRI[k][0], title: FRI[k][1], note: FRI[k][2] });
+      });
+      saveEvents(list);
+      store().setCalendarFlag('seed34');
+    } catch (e) { /* the calendar still works */ }
+  }
   function ensureSeeded() {
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce(); movieAndEzPetWeekOnce(); weekNov9Once(); talkShowOnce(); unit5RevisionGamesOnce(); weekNov23Once();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce(); movieAndEzPetWeekOnce(); weekNov9Once(); talkShowOnce(); unit5RevisionGamesOnce(); weekNov23Once(); friNov27Once();
   }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
