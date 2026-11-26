@@ -112,7 +112,7 @@
 | `.github/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `.gitignore` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `.nojekyll` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
-| `404.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
+| `404.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
 | `adventure-engine/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `advice/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `AGENTS.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -126,7 +126,7 @@
 | `brain/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `brain-explorers/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `brain-hackers/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
-| `build-the-bridge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `build-the-bridge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `camp-mystery/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `cat-meme-posters/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `cat-vs-dog/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |

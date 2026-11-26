@@ -163,7 +163,7 @@
 | `cat-meme-posters` | 🐱 🐱 2×2 Cat Meme Pronoun Posters: I, Me, You, He, Him, She, Her, It, We, Us, They, Them | `cat-meme-posters/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `res-global-readings-3` | 📚 Global Readings 3: Student's Book | `javascript:openTextbookViewer(1, 'book-global-readings-3')` | — | ⚠️ Published Only | — |
 | `rev-g4-sound-detectives` | 🦊 🦊 Sound Detectives: Grade 4 Unit 5 Revision (Foley Sound Studio & Beethoven’s 9th) | `review-g4-sound-detectives/index.html` | 🖨️ Yes | ✅ Present | ✅ |
-| `courtside-to-curtain` | 🎭 🎭 Courtside to Curtain Call: The Festival Adventure | `courtside-to-curtain/index.html` | 🖨️ Yes | ✅ Present | ✅ |
+| `courtside-to-curtain` | 🎭 🎭 Courtside to Curtain Call 3D: The Festival Adventure | `courtside-to-curtain/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 
 ### Shared / Multi-Grade Modules (0)
 | ID | Title | URL | Worksheet | Local Disk | `404.html` |

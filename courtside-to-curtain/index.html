@@ -2,72 +2,96 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#78c4ff">
-  <title>Courtside to Curtain Call · The Festival Adventure · English Adventure Academy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#5cb8ff">
+  <title>Courtside to Curtain Call 3D · The Full 3-Zone Festival Adventure</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261126a">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=20261126-3d2">
 </head>
 <body>
-  <canvas id="fx-canvas" aria-hidden="true"></canvas>
+  <!-- FULL-SCREEN 3D SUNNY ADVENTURE PARK: COURT -> FESTIVAL PARK -> GRAND THEATRE -->
+  <canvas id="scene"></canvas>
 
-  <div class="app-shell">
-    <!-- TOP STORYBOOK TEACHER RIBBON -->
-    <header class="ribbon">
-      <div class="ribbon-left">
-        <div class="brand-pill">🎭 <span>Courtside to Curtain Call</span></div>
-        <button type="button" class="btn yellow" id="btn-map" title="Return to Adventure Map">🗺️ Map</button>
-        <button type="button" class="btn lilac" id="btn-jump" title="Teacher Quick-Jump & Team Spinner">🧭 Jump / Spin</button>
-        <span class="stars-pill" id="stars-pill">⭐ 0 / 13</span>
+  <!-- FLOATING 3D WORLD PINS (projected cleanly from 3D anchors) -->
+  <div class="world-pins" id="world-pins" aria-hidden="true"></div>
+
+  <!-- ULTRA-CLEAN CINEMA HUD (90%+ Pure Full-Bleed 3D World) -->
+  <div class="hud" id="hud">
+    <!-- Minimal Floating Top Bar -->
+    <header class="top-bar">
+      <div class="top-left-nav">
+        <button type="button" class="pill-btn sky" id="btn-map" title="3D World Map (M)">🗺️ Map</button>
+        <div class="stage-pills" id="stage-pills" role="tablist" aria-label="Adventure Stages"></div>
       </div>
-      <div class="ribbon-right">
-        <button type="button" class="btn pink" id="btn-bravo" title="Instant Crowd Cheer & Star Burst">👏 Bravo!</button>
-        <button type="button" class="btn cream" id="btn-replay" title="Replay last spoken line">🗣️ Replay</button>
-        <button type="button" class="btn cream" id="btn-slow" title="Slow Turtle 0.7x Speech Toggle">🐢 Slow</button>
-        <button type="button" class="btn cream" id="btn-bgm" title="Toggle Background Music">🎵 BGM: OFF</button>
-        <button type="button" class="btn cream round" id="btn-sfx" title="Toggle SFX">🔊</button>
-        <a class="btn cream round" href="worksheet.html" target="_blank" title="Printable Companion Sheet">🖨️</a>
-        <a class="btn cream round" href="../index.html#home" title="Back to Platform" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'eaa:closeOverlay'},'*');return false;}}catch(e){}">✕</a>
+
+      <div class="round-chip" id="round-chip" aria-live="polite">3D Adventure Park · Choose Your Zone</div>
+
+      <div class="top-right-nav">
+        <button type="button" class="pill-btn yellow" id="btn-slow" title="Slow Studio Voice (0.78x)">🐢 Slow</button>
+        <button type="button" class="pill-btn round" id="btn-bgm" title="Toggle Music">🎵</button>
+        <button type="button" class="pill-btn round" id="btn-sfx" title="Mute / Unmute All Audio">🔊</button>
+        <a class="pill-btn round" href="worksheet.html" target="_blank" title="Printable Worksheet">🖨️</a>
+        <button type="button" class="pill-btn round" id="btn-fs" title="Fullscreen Smartboard">⛶</button>
+        <a class="pill-btn round" href="../index.html#home" title="Back to Academy" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'eaa:closeOverlay'},'*');return false;}}catch(e){}">✕</a>
       </div>
     </header>
 
-    <!-- MAIN STORYBOOK STAGE (Title / Adventure Map / Cutscene / 13 Activities / Finale) -->
-    <main class="stage-host" id="stage-host"></main>
-
-    <!-- BOTTOM DOCK: REACTIVE COMPANION MONSTER + 4 TEAMS -->
-    <footer class="bottom-bar">
-      <div class="companion-box" id="companion-box" title="Click to hear companion again">
-        <img class="companion-sprite" id="companion-img" src="../assets/monsters/art/emberwing_growing.webp" alt="Storybook Companion">
-        <div class="companion-text">
-          <div class="companion-name" id="companion-name">🏀 Coach Emberwing · Zone 1</div>
-          <div class="companion-say" id="companion-say">Welcome! Tap Start Adventure to travel from the Court to the Theatre!</div>
-        </div>
+    <!-- MAP MODE FLOATING HERO (Bottom-center so 3D Park Map stays 100% clear!) -->
+    <section class="map-hero" id="map-hero">
+      <div class="map-badge">GRADE 4 · UNIT 4 · 3-ZONE 3D ADVENTURE</div>
+      <h1 class="map-title">Courtside to Curtain Call</h1>
+      <div class="map-cta-row">
+        <button type="button" class="launch-btn coral" id="btn-enter-z1">🏀 Zone 1: Court</button>
+        <button type="button" class="launch-btn green" id="btn-enter-z2">🚂 Zone 2: Park</button>
+        <button type="button" class="launch-btn primary" id="btn-enter-z3">🎭 Zone 3: Theatre</button>
       </div>
-      <div class="teams-bar" id="teams-bar"></div>
+    </section>
+
+    <!-- TOP-LEFT FLOATING BRAND-NEW PIXAR PICTURE CUE CARD -->
+    <aside class="cue-card hidden" id="cue-card">
+      <div class="cue-img-wrap">
+        <img id="cue-img" src="assets/art/card_basket.webp" alt="Target card">
+        <button type="button" class="cue-voice-btn" id="btn-cue-voice" title="Hear Studio Voice">🔊</button>
+      </div>
+      <div class="cue-word" id="cue-word">B A S _ E T</div>
+      <div class="cue-hint" id="cue-hint">🗣️ Say a full sentence!</div>
+    </aside>
+
+    <!-- STAGE 5 BROKEN-TRACK SENTENCE STRIP (Compact floating wooden track slots above bottom dock) -->
+    <div class="track-strip hidden" id="track-strip"></div>
+
+    <!-- BIG CINEMATIC POPUP BANNER -->
+    <div class="cinema-toast" id="cinema-toast" aria-live="polite"></div>
+
+    <!-- ZONE COMPLETE / GRAND FINALE OVERLAY (Over live 3D fireworks & bowing monsters) -->
+    <div class="victory-banner hidden" id="victory-banner">
+      <div class="victory-crown" id="victory-crown">🏆</div>
+      <h2 class="victory-title" id="victory-title">Grand Curtain Call!</h2>
+      <p class="victory-sub" id="victory-sub">Bravo! Standing ovation for the whole class!</p>
+      <div class="victory-scores" id="victory-scores"></div>
+      <div class="victory-actions" id="victory-actions"></div>
+    </div>
+
+    <!-- BOTTOM SAFE-ZONE DOCK (Strictly inside bottom 16% — zero obstruction of 3D stage!) -->
+    <footer class="bottom-dock hidden" id="bottom-dock">
+      <div class="team-strip" id="team-strip"></div>
+      <div class="choice-tray" id="choice-tray"></div>
+      <button type="button" class="launch-btn shoot" id="btn-launch" disabled title="Student speaks a full sentence aloud, then press Space or tap!">
+        <span class="launch-icon" id="launch-icon">🏀</span>
+        <span class="launch-txt" id="launch-txt">PICK A CHOICE</span>
+      </button>
     </footer>
   </div>
 
-  <!-- TEACHER QUICK-JUMP & TEAM SPINNER DRAWER -->
-  <div class="drawer-back" id="drawer-back">
-    <div class="drawer-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
-        <h2 style="margin:0;">🧭 Teacher Quick-Jump &amp; Classroom Controls</h2>
-        <button type="button" class="btn cream round" id="btn-close-drawer">✕</button>
-      </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-        <button type="button" class="btn yellow" id="btn-spin-team">🎡 Spin Random Team!</button>
-        <button type="button" class="btn green" id="btn-reset-act">🔄 Reset Current Activity</button>
-        <button type="button" class="btn pink" id="btn-watch-cutscene">🚂 Play Zone 3 Cutscene</button>
-        <button type="button" class="btn lilac" id="btn-watch-finale">🎆 Play Grand Finale</button>
-      </div>
-      <div class="jump-grid" id="jump-grid"></div>
-    </div>
-  </div>
+  <!-- 100% Offline Three.js 0.169 + Commercial GameQualityCore -->
+  <script src="../games/engine3d/vendor/engine3d-deps.min.js?v=20261121d"></script>
+  <script src="../games/engine3d/SceneAtmosphere.js?v=20261123hd"></script>
+  <script src="../games/engine3d/JuiceManager.js?v=20261122n"></script>
 
-  <script src="js/data.js?v=20261126a"></script>
-  <script src="js/audio.js?v=20261126a"></script>
-  <script src="js/media-fx.js?v=20261126a"></script>
-  <script src="js/app.js?v=20261126a"></script>
+  <!-- Courtside to Curtain Call 3D Scripts -->
+  <script src="js/data.js?v=20261126-3d2"></script>
+  <script src="js/audio.js?v=20261126-3d2"></script>
+  <script src="js/app.js?v=20261126-3d2"></script>
 </body>
 </html>

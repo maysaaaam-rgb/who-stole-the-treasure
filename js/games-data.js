@@ -10503,9 +10503,9 @@ const GAMES_REGISTRY = [
     "type": "lesson",
     "gameKind": "team",
     "gameOrder": 16,
-    "title": "🎭 Courtside to Curtain Call: The Festival Adventure",
-    "subtitle": "13-Stop 3-Zone Adventure Map · Basketball Court → Festival Park → Grand Theatre",
-    "description": "Complete Grade 4 Unit 4 interactive storybook adventure across 13 multi-round activities: Word Match, Interactive Court Map, Missing Letter, Odd One Out, Meanings, OR Phonics (SPORT vs WORK), Live Animated Action Clips, Unscramble Bridge, Who Am I, Spot What Is Strange, Poster Puzzle, Festival Notes, and Story Sequence Finale + Worksheet.",
+    "title": "🎭 Courtside to Curtain Call 3D: The Festival Adventure",
+    "subtitle": "Full 3-Zone 3D World · Sunny Basketball Court → Express Train Park → Grand Theatre",
+    "description": "Commercial Three.js 3D classroom adventure across 3 connected sunlit park zones & 9 physical stages: 3D Court Explorer, Free-Throw Spell & Shoot, Twin-Hoop OR-Phonics Showdown, Red Festival Express Train, Broken-Track Bridge, 3D Spot What Is Strange, Animated Velvet Curtain Grand Theatre Casting, Story Sequence & Curtain Call Finale — with 32 custom Pixar illustrations & 65 studio neural voiceovers.",
     "grades": [
       4
     ],
@@ -10515,9 +10515,9 @@ const GAMES_REGISTRY = [
     "url": "courtside-to-curtain/index.html",
     "worksheetUrl": "courtside-to-curtain/worksheet.html",
     "thumbnailIcon": "🎭",
-    "thumbnail": "review-g4-show/art/bg_stage.webp",
-    "thumbnailUrl": "review-g4-show/art/bg_stage.webp",
-    "categoryLabel": "Storybook Adventure",
+    "thumbnail": "courtside-to-curtain/assets/art/card_theatre.webp",
+    "thumbnailUrl": "courtside-to-curtain/assets/art/card_theatre.webp",
+    "categoryLabel": "3D Adventure Lesson",
     "featured": true,
     "status": "active",
     "tags": [
