@@ -12,7 +12,7 @@
 | [class-mode-pages.css](file:///C:/Users/maysa/Desktop/DV/css/class-mode-pages.css) | 16.8 KB | 119 | Yes (#7, `?v=7`) |
 | [class-mode.css](file:///C:/Users/maysa/Desktop/DV/css/class-mode.css) | 30.5 KB | 407 | Yes (#6, `?v=20261121c`) |
 | [clil-styles.css](file:///C:/Users/maysa/Desktop/DV/css/clil-styles.css) | 7.8 KB | 330 | Module / Legacy |
-| [eaa-theme.css](file:///C:/Users/maysa/Desktop/DV/css/eaa-theme.css) | 5.2 KB | 104 | Yes (#2, `?v=3`) |
+| [eaa-theme.css](file:///C:/Users/maysa/Desktop/DV/css/eaa-theme.css) | 5.3 KB | 104 | Yes (#2, `?v=3`) |
 | [expedition-styles.css](file:///C:/Users/maysa/Desktop/DV/css/expedition-styles.css) | 6.5 KB | 298 | Module / Legacy |
 | [glass-theme.css](file:///C:/Users/maysa/Desktop/DV/css/glass-theme.css) | 9.6 KB | 101 | Yes (#5, `?v=6`) |
 | [room-styles.css](file:///C:/Users/maysa/Desktop/DV/css/room-styles.css) | 15.3 KB | 689 | Module / Legacy |
@@ -24,14 +24,14 @@
 
 ---
 
-## 2. All `js/*.js` Modules Grouped by Subsystem (90 files)
+## 2. All `js/*.js` Modules Grouped by Subsystem (91 files)
 
-### Utilities & Helpers (21)
+### Utilities & Helpers (22)
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
-| [academy-audio.js](file:///C:/Users/maysa/Desktop/DV/js/academy-audio.js) | 4.2 KB | 121 | #40 (`v=3.1`) | `AcademySoundEngine`, `academyAudio` | Adventure Academy - Global Sound System (Harmonic Web Audio) |
+| [academy-audio.js](file:///C:/Users/maysa/Desktop/DV/js/academy-audio.js) | 4.2 KB | 121 | #41 (`v=3.1`) | `AcademySoundEngine`, `academyAudio` | Adventure Academy - Global Sound System (Harmonic Web Audio) |
 | [app.js](file:///C:/Users/maysa/Desktop/DV/js/app.js) | 58.7 KB | 1580 | Standalone | `app`, `addQuickXP`, `syncSingleStudentXP`, `openDirectXPEdit` | Main Application Engine: State, Transitions, Interactions, Responsive Stage Scaling |
-| [audio.js](file:///C:/Users/maysa/Desktop/DV/js/audio.js) | 11.6 KB | 402 | Standalone | `soundEngine` | Audio Engine for "Who Stole the Treasure?" |
+| [audio.js](file:///C:/Users/maysa/Desktop/DV/js/audio.js) | 12 KB | 402 | Standalone | `soundEngine` | Audio Engine for "Who Stole the Treasure?" |
 | [avatar-3d-engine.js](file:///C:/Users/maysa/Desktop/DV/js/avatar-3d-engine.js) | 78.2 KB | 1839 | Standalone | `Avatar3DEngine` | ENGLISH ADVENTURE ACADEMY — 3D .GLB AVATAR, AUTO-RIGGER & BONE-SOCKET ENGINE (v2) |
 | [clil-data.js](file:///C:/Users/maysa/Desktop/DV/js/clil-data.js) | 26.3 KB | 546 | Standalone | — | CLIL CRIME LAB: FOUR MYSTERY CASES (4th Grade English & CLIL Revision) |
 | [clil-game.js](file:///C:/Users/maysa/Desktop/DV/js/clil-game.js) | 6.8 KB | 205 | Standalone | `clilEngine` | CLIL CRIME LAB: GAME ENGINE |
@@ -43,59 +43,60 @@
 | [expedition-svg.js](file:///C:/Users/maysa/Desktop/DV/js/expedition-svg.js) | 18.9 KB | 315 | Standalone | — | THE LAST EXPEDITION: VECTOR SVG ASSET GENERATOR |
 | [expedition-ui.js](file:///C:/Users/maysa/Desktop/DV/js/expedition-ui.js) | 74.1 KB | 1731 | Standalone | `expeditionUI` | THE LAST EXPEDITION: UI CONTROLLER |
 | [game.js](file:///C:/Users/maysa/Desktop/DV/js/game.js) | 19.1 KB | 375 | Standalone | `gameEngine` | Core Game Engine for "Who Stole the Treasure?" & "Detective Preparation" |
-| [games-points-bridge.js](file:///C:/Users/maysa/Desktop/DV/js/games-points-bridge.js) | 7.6 KB | 212 | #65 (`v=1`) | `GamesPointsBridge` | ENGLISH ADVENTURE ACADEMY — GAMES COLLECTION XP BRIDGE (js/games-points-bridge.js) |
+| [games-points-bridge.js](file:///C:/Users/maysa/Desktop/DV/js/games-points-bridge.js) | 7.6 KB | 212 | #66 (`v=1`) | `GamesPointsBridge` | ENGLISH ADVENTURE ACADEMY — GAMES COLLECTION XP BRIDGE (js/games-points-bridge.js) |
 | [room-data.js](file:///C:/Users/maysa/Desktop/DV/js/room-data.js) | 18.4 KB | 339 | Standalone | — | Room Rescue: The Lost Things Mission (4th Grade English Revision Game) |
 | [room-game.js](file:///C:/Users/maysa/Desktop/DV/js/room-game.js) | 5.3 KB | 196 | Standalone | `roomGameEngine` | Room Rescue: Core Engine |
 | [room-svg.js](file:///C:/Users/maysa/Desktop/DV/js/room-svg.js) | 14.4 KB | 258 | Standalone | — | Room Rescue: Rich Vector/SVG Visual Assets |
 | [room-ui.js](file:///C:/Users/maysa/Desktop/DV/js/room-ui.js) | 58.3 KB | 1393 | Standalone | `roomUI` | Room Rescue: UI & Real Drag-and-Drop Controller |
 | [sound-engine.js](file:///C:/Users/maysa/Desktop/DV/js/sound-engine.js) | 17 KB | 537 | Standalone | `AcademySoundEngine`, `academyAudio` | Adventure Academy - Global Sound System (Harmonic Web Audio Engine) |
 | [voice.js](file:///C:/Users/maysa/Desktop/DV/js/voice.js) | 5.9 KB | 128 | Standalone | `EAAVoice` | EAA shared voice module (window.EAAVoice) |
+| [weekly-check.js](file:///C:/Users/maysa/Desktop/DV/js/weekly-check.js) | 13 KB | 195 | #33 (`v=1`) | `WeeklyCheck` | js/weekly-check.js — 5-minute Weekly Check (teacher request, 25 Nov 2026) |
 
 ### Assessments, Quizzes & Reports (11)
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
-| [all-about-me-data.js](file:///C:/Users/maysa/Desktop/DV/js/all-about-me-data.js) | 6.2 KB | 250 | #52 (`v=2.0`) | `ALL_ABOUT_ME_TEAMS`, `AllAboutMeData` | ALL ABOUT ME: classroom teams (public, ids and team names only) + survey answers. |
-| [all-about-me-profile.js](file:///C:/Users/maysa/Desktop/DV/js/all-about-me-profile.js) | 16.3 KB | 422 | #53 (`v=1.0`) | `AllAboutMeProfile` | All About Me (AAM) Student Profile View Component |
-| [gamification-milestones.js](file:///C:/Users/maysa/Desktop/DV/js/gamification-milestones.js) | 24.9 KB | 552 | #46 (`v=3.4`) | `playHarmonicChime`, `renderCurrentView`, `EVOLUTION_TIERS`, `getStageFromXP` | ENGLISH ADVENTURE ACADEMY — GAMIFICATION & EVOLUTION MILESTONES ENGINE |
-| [milestone-ceremony.js](file:///C:/Users/maysa/Desktop/DV/js/milestone-ceremony.js) | 26.8 KB | 350 | #66 (`v=13`) | `openMonsterLevelUpModal`, `updateHeaderBadges`, `openStudentDetail`, `MilestoneCeremony` | 1,000 XP Grand Ceremony: a big full-screen celebration for a pupil who reaches Level 5 (Adventurer), |
-| [parent-report.js](file:///C:/Users/maysa/Desktop/DV/js/parent-report.js) | 47 KB | 427 | #58 (`v=21`) | `ParentReport` | Parent report cards. One clean A4 card per pupil: parents' names, the 4 skills, Unit 3 quiz in words, homework, XP, attendance and a short teacher comment in En |
-| [progress-check.js](file:///C:/Users/maysa/Desktop/DV/js/progress-check.js) | 107.1 KB | 1583 | #45 (`v=3.0`) | `setProgressCheckViewMode`, `triggerManualCloudSync`, `switchProgressCheckSelection`, `switchProgressCheckClass` | ENGLISH ADVENTURE ACADEMY — FOUR-SKILL WHOLE-CLASS PROGRESS CHECK |
-| [quiz-engine.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-engine.js) | 18.7 KB | 521 | #69 (`v=1.2`) | `ClassroomSoundboard`, `classSoundboard`, `playCoinChime`, `playPartyHorn` | Adventure Academy - Quiz & Task-by-Task Worksheet Grading Engine |
-| [quiz-results.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-results.js) | 21.8 KB | 177 | #56 (`v=15`) | `QuizResults` | Unit 3 paper quiz results (Grade 3, Form B, 15 Oct 2026). Opens from the library card "Unit 3 Quiz Results". |
-| [quiz-skills.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-skills.js) | 11 KB | 133 | #57 (`v=5`) | `QuizSkills` | Unit 3 quiz -> the pupil's 4 skills (listening, reading, writing, speaking) -> saved as an assessment, so the report generator, the Progress & CEFR page and the |
-| [sheet-sync.js](file:///C:/Users/maysa/Desktop/DV/js/sheet-sync.js) | 15 KB | 172 | #54 (`v=9`) | `SheetSync` | Google Sheet sync for the Assignments page. |
-| [worksheet-sync.js](file:///C:/Users/maysa/Desktop/DV/js/worksheet-sync.js) | 10.1 KB | 100 | #55 (`v=4`) | `WorksheetSync` | Worksheet sync: shows this grade's worksheets at the top of the Assignments page, checks that each worksheet file opens, |
+| [all-about-me-data.js](file:///C:/Users/maysa/Desktop/DV/js/all-about-me-data.js) | 6.2 KB | 250 | #53 (`v=2.0`) | `ALL_ABOUT_ME_TEAMS`, `AllAboutMeData` | ALL ABOUT ME: classroom teams (public, ids and team names only) + survey answers. |
+| [all-about-me-profile.js](file:///C:/Users/maysa/Desktop/DV/js/all-about-me-profile.js) | 16.3 KB | 422 | #54 (`v=1.0`) | `AllAboutMeProfile` | All About Me (AAM) Student Profile View Component |
+| [gamification-milestones.js](file:///C:/Users/maysa/Desktop/DV/js/gamification-milestones.js) | 24.9 KB | 552 | #47 (`v=3.4`) | `playHarmonicChime`, `renderCurrentView`, `EVOLUTION_TIERS`, `getStageFromXP` | ENGLISH ADVENTURE ACADEMY — GAMIFICATION & EVOLUTION MILESTONES ENGINE |
+| [milestone-ceremony.js](file:///C:/Users/maysa/Desktop/DV/js/milestone-ceremony.js) | 26.8 KB | 350 | #67 (`v=13`) | `openMonsterLevelUpModal`, `updateHeaderBadges`, `openStudentDetail`, `MilestoneCeremony` | 1,000 XP Grand Ceremony: a big full-screen celebration for a pupil who reaches Level 5 (Adventurer), |
+| [parent-report.js](file:///C:/Users/maysa/Desktop/DV/js/parent-report.js) | 47 KB | 427 | #59 (`v=21`) | `ParentReport` | Parent report cards. One clean A4 card per pupil: parents' names, the 4 skills, Unit 3 quiz in words, homework, XP, attendance and a short teacher comment in En |
+| [progress-check.js](file:///C:/Users/maysa/Desktop/DV/js/progress-check.js) | 107.1 KB | 1583 | #46 (`v=3.0`) | `setProgressCheckViewMode`, `triggerManualCloudSync`, `switchProgressCheckSelection`, `switchProgressCheckClass` | ENGLISH ADVENTURE ACADEMY — FOUR-SKILL WHOLE-CLASS PROGRESS CHECK |
+| [quiz-engine.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-engine.js) | 18.7 KB | 521 | #70 (`v=1.2`) | `ClassroomSoundboard`, `classSoundboard`, `playCoinChime`, `playPartyHorn` | Adventure Academy - Quiz & Task-by-Task Worksheet Grading Engine |
+| [quiz-results.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-results.js) | 22 KB | 177 | #57 (`v=20261125c`) | `QuizResults` | Unit 3 paper quiz results (Grade 3, Form B, 15 Oct 2026). Opens from the library card "Unit 3 Quiz Results". |
+| [quiz-skills.js](file:///C:/Users/maysa/Desktop/DV/js/quiz-skills.js) | 11.2 KB | 133 | #58 (`v=5`) | `QuizSkills` | Unit 3 quiz -> the pupil's 4 skills (listening, reading, writing, speaking) -> saved as an assessment, so the report generator, the Progress & CEFR page and the |
+| [sheet-sync.js](file:///C:/Users/maysa/Desktop/DV/js/sheet-sync.js) | 15 KB | 172 | #55 (`v=20261125c`) | `SheetSync` | Google Sheet sync for the Assignments page. |
+| [worksheet-sync.js](file:///C:/Users/maysa/Desktop/DV/js/worksheet-sync.js) | 10.1 KB | 100 | #56 (`v=4`) | `WorksheetSync` | Worksheet sync: shows this grade's worksheets at the top of the Assignments page, checks that each worksheet file opens, |
 
 ### Live Classroom & Smartboard (11)
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
-| [bathroom-pass.js](file:///C:/Users/maysa/Desktop/DV/js/bathroom-pass.js) | 12 KB | 109 | #33 (`v=3`) | `BathroomPass` | Bathroom pass: a pupil signs out and back in on the Class Board, the teacher gets the times. |
-| [birthday.js](file:///C:/Users/maysa/Desktop/DV/js/birthday.js) | 17.4 KB | 192 | #39 (`v=4`) | `Birthday` | Birthday Star: press a birthday pupil's monster or name (roster card or Class Board) and a full-screen birthday |
+| [bathroom-pass.js](file:///C:/Users/maysa/Desktop/DV/js/bathroom-pass.js) | 12 KB | 109 | #34 (`v=3`) | `BathroomPass` | Bathroom pass: a pupil signs out and back in on the Class Board, the teacher gets the times. |
+| [birthday.js](file:///C:/Users/maysa/Desktop/DV/js/birthday.js) | 17.4 KB | 192 | #40 (`v=4`) | `Birthday` | Birthday Star: press a birthday pupil's monster or name (roster card or Class Board) and a full-screen birthday |
 | [board-scenes.js](file:///C:/Users/maysa/Desktop/DV/js/board-scenes.js) | 8.6 KB | 71 | #30 (`v=9`) | `BoardScenes` | Class Board scenes: the roster becomes a place where the monsters live. The scene changes with the class and the date |
-| [class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js) | 96.5 KB | 1056 | #32 (`v=47`) | `ClassBoard`, `renderClassBoardView` | Class Board: a full-screen projector view. Every monster with its points and quick +1/+5/+10, |
+| [class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js) | 101.9 KB | 1125 | #32 (`v=49`) | `ClassBoard`, `renderClassBoardView` | Class Board: a full-screen projector view. Every monster with its points and quick +1/+5/+10, |
 | [class-journey.js](file:///C:/Users/maysa/Desktop/DV/js/class-journey.js) | 23.3 KB | 250 | #25 (`v=2`) | `ClassJourney` | Where we are (teacher only): for each class the last lesson (done or not), what the class still finds hard, the next lesson with what to print, |
-| [class-mode.js](file:///C:/Users/maysa/Desktop/DV/js/class-mode.js) | 27.3 KB | 457 | #37 (`v=20261121c`) | `openGameMaker`, `switchView`, `ClassMode`, `renderGameShelf` | Class Mode: a bright, picture-first skin for the whole platform, used on the smartboard. |
-| [class-rewards.js](file:///C:/Users/maysa/Desktop/DV/js/class-rewards.js) | 14.8 KB | 119 | #35 (`v=11`) | `EAA_ILLUSTRATED_MONSTERS`, `ClassRewards`, `renderRewardsHall` | Rewards Hall: the smartboard Podium & Badges view inside the unified Store & Podium Hub. |
-| [class-view.js](file:///C:/Users/maysa/Desktop/DV/js/class-view.js) | 20.1 KB | 203 | #34 (`v=14`) | `ClassView`, `renderClassView` | Class view: one simple smartboard screen for the classroom. Big 3D picture buttons only. |
-| [classroom-sounds.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-sounds.js) | 31 KB | 451 | #68 (`v=2`) | `ClassroomSoundboard`, `ClassroomSoundList`, `classSoundboard` | English Adventure Academy - Classroom Soundboard Engine v2 |
-| [simon-says-game.js](file:///C:/Users/maysa/Desktop/DV/js/simon-says-game.js) | 58.1 KB | 1223 | #67 (`v=4.1`) | `renderMonsterAvatar`, `closeModal`, `SimonSaysController`, `simonGame` | ENGLISH ADVENTURE ACADEMY — SIMON SAYS CLASSROOM GAME |
+| [class-mode.js](file:///C:/Users/maysa/Desktop/DV/js/class-mode.js) | 27.3 KB | 457 | #38 (`v=20261125c`) | `openGameMaker`, `switchView`, `ClassMode`, `renderGameShelf` | Class Mode: a bright, picture-first skin for the whole platform, used on the smartboard. |
+| [class-rewards.js](file:///C:/Users/maysa/Desktop/DV/js/class-rewards.js) | 14.8 KB | 119 | #36 (`v=11`) | `EAA_ILLUSTRATED_MONSTERS`, `ClassRewards`, `renderRewardsHall` | Rewards Hall: the smartboard Podium & Badges view inside the unified Store & Podium Hub. |
+| [class-view.js](file:///C:/Users/maysa/Desktop/DV/js/class-view.js) | 20.1 KB | 203 | #35 (`v=14`) | `ClassView`, `renderClassView` | Class view: one simple smartboard screen for the classroom. Big 3D picture buttons only. |
+| [classroom-sounds.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-sounds.js) | 31 KB | 451 | #69 (`v=2`) | `ClassroomSoundboard`, `ClassroomSoundList`, `classSoundboard` | English Adventure Academy - Classroom Soundboard Engine v2 |
+| [simon-says-game.js](file:///C:/Users/maysa/Desktop/DV/js/simon-says-game.js) | 58.1 KB | 1223 | #68 (`v=4.1`) | `renderMonsterAvatar`, `closeModal`, `SimonSaysController`, `simonGame` | ENGLISH ADVENTURE ACADEMY — SIMON SAYS CLASSROOM GAME |
 | [voice-fx.js](file:///C:/Users/maysa/Desktop/DV/js/voice-fx.js) | 35.1 KB | 436 | #28 (`v=5`) | `VoiceFX` | Voice Changer (teacher toolkit): speak into the microphone and the speakers play your voice as a character. |
 
 ### Curriculum, Library & Island (13)
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
 | [calendar-view.js](file:///C:/Users/maysa/Desktop/DV/js/calendar-view.js) | 103.2 KB | 880 | #23 (`v=20261123`) | `renderCalendarView`, `CalendarView` | Teacher calendar (sidebar: 📅 Calendar). Month and Week views of: the lessons of every class (from the weekly timetable, or the k12 timetable until it is set), |
-| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 411.7 KB | 10473 | #1 (`v=20261123`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
+| [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) | 414.2 KB | 10538 | #1 (`v=20261126a`) | `GAMES_DATA` | English Adventure Academy — Curriculum & Games Registry |
 | [homework-data.js](file:///C:/Users/maysa/Desktop/DV/js/homework-data.js) | 15.3 KB | 392 | #8 (`v=3.1`) | `ALICE_HOMEWORK_ASSIGNMENTS`, `ALICE_WONDERLAND_XP_QUEST`, `AdventureAcademy`, `openMonsterLevelUpModal` | ADVENTURE ACADEMY — DISCRETE HOMEWORK XP TASKS DATA |
 | [island-apply.js](file:///C:/Users/maysa/Desktop/DV/js/island-apply.js) | 13.3 KB | 319 | #11 (`v=2`) | `IslandApply` | Practice Island — Platform XP & Monster Look Auto-Applier (js/island-apply.js) |
 | [island-curriculum-data.js](file:///C:/Users/maysa/Desktop/DV/js/island-curriculum-data.js) | 202.6 KB | 3813 | Standalone | `ISLAND_CURRICULUM_DATA` | ISLAND HOMEWORK REVISION PROJECT — MASTER CURRICULUM DATASET |
-| [library-curate.js](file:///C:/Users/maysa/Desktop/DV/js/library-curate.js) | 9.7 KB | 103 | #29 (`v=20261121b`) | `LibraryCurate` | Library clean-up: hide the lessons and games you do not want, star the best ones. |
-| [library-shelf.js](file:///C:/Users/maysa/Desktop/DV/js/library-shelf.js) | 18.6 KB | 310 | #50 (`v=20261121c`) | `LibraryShelf` | Library shelf: Unified Hub 2 ("Lessons & Games"). |
-| [library.js](file:///C:/Users/maysa/Desktop/DV/js/library.js) | 26.4 KB | 657 | #49 (`v=3.1.3`) | `getFilteredLibraryLessons`, `launchGame`, `LibraryController`, `CurriculumLibraryController` | ENGLISH ADVENTURE ACADEMY — LESSON LIBRARY ARCHITECTURE (V3.0) |
+| [library-curate.js](file:///C:/Users/maysa/Desktop/DV/js/library-curate.js) | 9.7 KB | 103 | #29 (`v=20261125c`) | `LibraryCurate` | Library clean-up: hide the lessons and games you do not want, star the best ones. |
+| [library-shelf.js](file:///C:/Users/maysa/Desktop/DV/js/library-shelf.js) | 18.6 KB | 310 | #51 (`v=20261125c`) | `LibraryShelf` | Library shelf: Unified Hub 2 ("Lessons & Games"). |
+| [library.js](file:///C:/Users/maysa/Desktop/DV/js/library.js) | 27 KB | 657 | #50 (`v=3.1.3`) | `getFilteredLibraryLessons`, `launchGame`, `LibraryController`, `CurriculumLibraryController` | ENGLISH ADVENTURE ACADEMY — LESSON LIBRARY ARCHITECTURE (V3.0) |
 | [retired-themes.js](file:///C:/Users/maysa/Desktop/DV/js/retired-themes.js) | 1.6 KB | 32 | #20 (`v=3`) | `RetiredThemes` | Retired themes (2 Nov 2026): Alice in Wonderland and the Chuseok / Korean festival are gone from the platform. |
-| [revision-board.js](file:///C:/Users/maysa/Desktop/DV/js/revision-board.js) | 10.5 KB | 107 | #24 (`v=1`) | `RevisionBoard` | Revision board (teacher only): what the class missed, each pupil's level, suggested groups and pairs, and the cloud copy. |
-| [theme-badges.js](file:///C:/Users/maysa/Desktop/DV/js/theme-badges.js) | 1.9 KB | 38 | #51 (`v=2.0`) | `updateClassroomTheme`, `resolveStudentCompanion`, `getStudentBadge`, `renderStudentThemeBadge` | ENGLISH ADVENTURE ACADEMY: class themes and companion badges (neutral version, 2 Nov 2026) |
-| [timetable.js](file:///C:/Users/maysa/Desktop/DV/js/timetable.js) | 37.5 KB | 339 | #21 (`v=20261116`) | `Timetable` | Weekly timetable: the teacher sets it once (per class, Monday to Friday) and the dashboard and the Class Board |
+| [revision-board.js](file:///C:/Users/maysa/Desktop/DV/js/revision-board.js) | 10.6 KB | 107 | #24 (`v=1`) | `RevisionBoard` | Revision board (teacher only): what the class missed, each pupil's level, suggested groups and pairs, and the cloud copy. |
+| [theme-badges.js](file:///C:/Users/maysa/Desktop/DV/js/theme-badges.js) | 1.9 KB | 38 | #52 (`v=2.0`) | `updateClassroomTheme`, `resolveStudentCompanion`, `getStudentBadge`, `renderStudentThemeBadge` | ENGLISH ADVENTURE ACADEMY: class themes and companion badges (neutral version, 2 Nov 2026) |
+| [timetable.js](file:///C:/Users/maysa/Desktop/DV/js/timetable.js) | 39.3 KB | 346 | #21 (`v=20261126a`) | `Timetable` | Weekly timetable: the teacher sets it once (per class, Monday to Friday) and the dashboard and the Class Board |
 | [unit2-content.js](file:///C:/Users/maysa/Desktop/DV/js/unit2-content.js) | 53.1 KB | 128 | #22 (`v=ti101`) | `Unit2Content` | Unit 2 content for Grade 3 (Global Readings 2, Thank You) and Grade 4 (Global Readings 3, What Lives Here?). |
 
 ### Avatars, Monsters & Store (21)
@@ -104,41 +105,41 @@
 | [classroom-cosmetics.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-cosmetics.js) | 9.9 KB | 122 | #17 (`v=1`) | `ClassroomCosmetics` | Classroom Store extras: the catalog and the sounds. |
 | [classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js) | 178 KB | 2274 | #19 (`v=20261124e`) | `boxTierInfo`, `EAA_ILLUSTRATED_MONSTERS`, `renderBoxTierCardsHtml`, `ClassroomStore` | Classroom Store: coins, buying monster items and mystery boxes, and classroom privileges. |
 | [evolution-levels.js](file:///C:/Users/maysa/Desktop/DV/js/evolution-levels.js) | 0.7 KB | 8 | #9 (`v=1`) | `EAA_EVOLUTION_XP`, `EAA_NEAR_EVOLVE_XP` | The XP needed for each of the 7 monster levels, in ONE place. |
-| [monster-anchors.js](file:///C:/Users/maysa/Desktop/DV/js/monster-anchors.js) | 17.3 KB | 7 | #43 (`v=2.1`) | `MONSTER_ANCHORS`, `MONSTER_ITEM_BOX` | Generated: positions of the head, eyes, neck, body and paw on every illustrated monster (1024px space), |
-| [monster-closet.js](file:///C:/Users/maysa/Desktop/DV/js/monster-closet.js) | 18.5 KB | 191 | #36 (`v=6`) | `EAA_ILLUSTRATED_MONSTERS`, `MonsterCloset`, `renderMonsterCloset` | Monster Closet: pick a pupil, try things on the 3D monster, save. |
+| [monster-anchors.js](file:///C:/Users/maysa/Desktop/DV/js/monster-anchors.js) | 17.3 KB | 7 | #44 (`v=2.1`) | `MONSTER_ANCHORS`, `MONSTER_ITEM_BOX` | Generated: positions of the head, eyes, neck, body and paw on every illustrated monster (1024px space), |
+| [monster-closet.js](file:///C:/Users/maysa/Desktop/DV/js/monster-closet.js) | 18.5 KB | 191 | #37 (`v=6`) | `EAA_ILLUSTRATED_MONSTERS`, `MonsterCloset`, `renderMonsterCloset` | Monster Closet: pick a pupil, try things on the 3D monster, save. |
 | [monster-costumes.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes.js) | 30.8 KB | 303 | #12 (`v=5`) | `MonsterCostumes` | Monster Costumes: 8 themed sets x 3 pieces (24 new drawn items). |
 | [monster-costumes2.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes2.js) | 29.6 KB | 209 | #13 (`v=3`) | — | Monster Costumes, batch 2: 8 more themed sets (24 pieces) and 4 standalone legendary pieces. |
-| [monster-costumes3.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes3.js) | 13 KB | 97 | #14 (`v=2`) | — | Monster Costumes, batch 3: Halloween. 4 themed sets and 3 standalone pieces (12 pieces), all friendly and funny. |
-| [monster-costumes4.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes4.js) | 8.4 KB | 89 | #15 (`v=1`) | — | Monster Costumes, batch 4: the Mythic shelf (5 animated pieces, the top of the store) and trails (6 effects that follow the monster in the Island's walking worl |
-| [monster-dressup.js](file:///C:/Users/maysa/Desktop/DV/js/monster-dressup.js) | 22.2 KB | 322 | #44 (`v=9`) | `MonsterDressUp`, `EAA_ILLUSTRATED_MONSTERS` | Monster Dress-Up: puts accessory pictures on the illustrated monsters. |
+| [monster-costumes3.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes3.js) | 13.1 KB | 97 | #14 (`v=2`) | — | Monster Costumes, batch 3: Halloween. 4 themed sets and 3 standalone pieces (12 pieces), all friendly and funny. |
+| [monster-costumes4.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes4.js) | 8.5 KB | 89 | #15 (`v=1`) | — | Monster Costumes, batch 4: the Mythic shelf (5 animated pieces, the top of the store) and trails (6 effects that follow the monster in the Island's walking worl |
+| [monster-dressup.js](file:///C:/Users/maysa/Desktop/DV/js/monster-dressup.js) | 22.2 KB | 322 | #45 (`v=9`) | `MonsterDressUp`, `EAA_ILLUSTRATED_MONSTERS` | Monster Dress-Up: puts accessory pictures on the illustrated monsters. |
 | [monster-fit.js](file:///C:/Users/maysa/Desktop/DV/js/monster-fit.js) | 28.7 KB | 3 | Standalone | `MONSTER_OVERRIDES` | Generated hat fit: per monster and per hat, simulated on the real pixels (see _tmp/autofit2.py). Hats sit on the head with a small seat and never cover the eyes |
-| [monster-outfits.js](file:///C:/Users/maysa/Desktop/DV/js/monster-outfits.js) | 19.8 KB | 211 | #41 (`v=3`) | `MonsterOutfits` | Monster outfits, redrawn 10 Nov 2026 to match the 3D shop pictures (colour, collar, buttons, belts, emblems). |
+| [monster-outfits.js](file:///C:/Users/maysa/Desktop/DV/js/monster-outfits.js) | 19.8 KB | 211 | #42 (`v=3`) | `MonsterOutfits` | Monster outfits, redrawn 10 Nov 2026 to match the 3D shop pictures (colour, collar, buttons, belts, emblems). |
 | [monster-pets.js](file:///C:/Users/maysa/Desktop/DV/js/monster-pets.js) | 270.6 KB | 1172 | #16 (`v=20261124a`) | `MonsterPets` | Monster Pets & 3D Character Buddies Pack |
-| [monster-renderer.js](file:///C:/Users/maysa/Desktop/DV/js/monster-renderer.js) | 272.8 KB | 4614 | #42 (`v=4.17`) | `currentEvolutionBannerSpecies`, `switchEvolutionBannerSpecies`, `MonsterRenderer`, `getMonsterAsset` | ENGLISH ADVENTURE ACADEMY — PROCEDURAL MONSTER RENDERER |
-| [mystery-box-modal.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-modal.js) | 44.5 KB | 967 | #47 (`v=1.4`) | `MysteryBoxModal`, `TradingCabinet`, `openMysteryBoxModal`, `openTradingCabinet` | ENGLISH ADVENTURE ACADEMY — MYSTERY BOX UNBOXING & TRADING ENGINE |
-| [mystery-box-v2.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-v2.js) | 21 KB | 223 | #48 (`v=20261124b`) | `MysteryBoxArt` | Mystery box opening, version 2 (9 Nov 2026). Replaces the drawn chest and the "energy surge" texts. |
+| [monster-renderer.js](file:///C:/Users/maysa/Desktop/DV/js/monster-renderer.js) | 272.8 KB | 4614 | #43 (`v=4.17`) | `currentEvolutionBannerSpecies`, `switchEvolutionBannerSpecies`, `MonsterRenderer`, `getMonsterAsset` | ENGLISH ADVENTURE ACADEMY — PROCEDURAL MONSTER RENDERER |
+| [mystery-box-modal.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-modal.js) | 44.5 KB | 967 | #48 (`v=1.4`) | `MysteryBoxModal`, `TradingCabinet`, `openMysteryBoxModal`, `openTradingCabinet` | ENGLISH ADVENTURE ACADEMY — MYSTERY BOX UNBOXING & TRADING ENGINE |
+| [mystery-box-v2.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-v2.js) | 21 KB | 223 | #49 (`v=20261124b`) | `MysteryBoxArt` | Mystery box opening, version 2 (9 Nov 2026). Replaces the drawn chest and the "energy surge" texts. |
 | [no-monsters.js](file:///C:/Users/maysa/Desktop/DV/js/no-monsters.js) | 7.6 KB | 119 | #18 (`v=2`) | `EAA_HIDE_MONSTERS`, `renderMonsterSVG`, `triggerEvolutionCeremony`, `switchView` | Monsters hidden (11 Nov 2026). |
-| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 191.3 KB | 3787 | #31 (`v=20261124b`) | `PupilAvatars` | Pupil avatars (v2) |
-| [pupil-card.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-card.js) | 17.9 KB | 156 | #61 (`v=7`) | `PupilCard` | Pupil trading card, laid out like a real Yu-Gi-Oh monster card: a name banner with an attribute orb, level stars, the monster picture in a framed art box |
-| [pupil-profile.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-profile.js) | 19.9 KB | 173 | #60 (`v=10`) | `PupilProfile` | Pupil profile: one dark page for the teacher (no tabs). Top: who, status + reason, quick actions. Then the numbers that matter (XP, quiz, homework, |
+| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 191.6 KB | 3790 | #31 (`v=20261125b`) | `PupilAvatars` | Pupil avatars (v2) |
+| [pupil-card.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-card.js) | 17.9 KB | 156 | #62 (`v=7`) | `PupilCard` | Pupil trading card, laid out like a real Yu-Gi-Oh monster card: a name banner with an attribute orb, level stars, the monster picture in a framed art box |
+| [pupil-profile.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-profile.js) | 19.9 KB | 173 | #61 (`v=10`) | `PupilProfile` | Pupil profile: one dark page for the teacher (no tabs). Top: who, status + reason, quick actions. Then the numbers that matter (XP, quiz, homework, |
 | [sleepy-monster.js](file:///C:/Users/maysa/Desktop/DV/js/sleepy-monster.js) | 33.7 KB | 633 | #27 (`v=4`) | `SleepyMonster`, `openSleepyMonster` | Sleepy Monster: a full-screen noise game for the class. |
 
 ### Core Platform & State (7)
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
-| [command-center.js](file:///C:/Users/maysa/Desktop/DV/js/command-center.js) | 126 KB | 1123 | #26 (`v=62`) | `CommandCenter`, `renderCommandCenterView` | Command Center: a dense, calm teacher overview (class stats, the XP each pupil earned day by day, homework of the last two weeks from the Google Sheets, activit |
-| [daily-backup.js](file:///C:/Users/maysa/Desktop/DV/js/daily-backup.js) | 11.9 KB | 171 | #63 (`v=1`) | `DailyBackup` | Daily backup of the classroom data (XP, coins, shop, attendance) on this device. |
-| [daily-report.js](file:///C:/Users/maysa/Desktop/DV/js/daily-report.js) | 4.2 KB | 38 | #59 (`v=1`) | `DailyReport` | Daily report page. The 18:00 school-day check (a scheduled task that reads the school's k12 site and the platform in the teacher's own Chrome) writes its summar |
-| [platform-nav.js](file:///C:/Users/maysa/Desktop/DV/js/platform-nav.js) | 44.2 KB | 479 | #62 (`v=20261123hd`) | `EAAShortTitle`, `PlatformNav`, `PlatformViews` | Platform layout (9 Nov 2026): six places instead of a long menu. |
-| [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) | 1048.2 KB | 17227 | #64 (`v=20261121c`) | `showNotification`, `updateClassroomTheme`, `prevTextbookPage`, `nextTextbookPage` | ENGLISH ADVENTURE ACADEMY — MASTER APPLICATION CONTROLLER & ROUTER |
-| [school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js) | 762.3 KB | 17601 | #10 (`v=20261119sp1`) | `renderStudentRoster`, `renderCurrentView`, `safeBackgroundSupabaseSync`, `AdventureAcademy` | ENGLISH ADVENTURE ACADEMY — RELATIONAL PERSISTENT SCHOOL DATA ENGINE |
+| [command-center.js](file:///C:/Users/maysa/Desktop/DV/js/command-center.js) | 126 KB | 1123 | #26 (`v=20261125c`) | `CommandCenter`, `renderCommandCenterView` | Command Center: a dense, calm teacher overview (class stats, the XP each pupil earned day by day, homework of the last two weeks from the Google Sheets, activit |
+| [daily-backup.js](file:///C:/Users/maysa/Desktop/DV/js/daily-backup.js) | 11.9 KB | 171 | #64 (`v=1`) | `DailyBackup` | Daily backup of the classroom data (XP, coins, shop, attendance) on this device. |
+| [daily-report.js](file:///C:/Users/maysa/Desktop/DV/js/daily-report.js) | 4.2 KB | 38 | #60 (`v=1`) | `DailyReport` | Daily report page. The 18:00 school-day check (a scheduled task that reads the school's k12 site and the platform in the teacher's own Chrome) writes its summar |
+| [platform-nav.js](file:///C:/Users/maysa/Desktop/DV/js/platform-nav.js) | 44.2 KB | 479 | #63 (`v=20261125c`) | `EAAShortTitle`, `PlatformNav`, `PlatformViews` | Platform layout (9 Nov 2026): six places instead of a long menu. |
+| [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) | 1048.2 KB | 17227 | #65 (`v=20261125c`) | `showNotification`, `updateClassroomTheme`, `prevTextbookPage`, `nextTextbookPage` | ENGLISH ADVENTURE ACADEMY — MASTER APPLICATION CONTROLLER & ROUTER |
+| [school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js) | 762.6 KB | 17601 | #10 (`v=20261125a`) | `renderStudentRoster`, `renderCurrentView`, `safeBackgroundSupabaseSync`, `AdventureAcademy` | ENGLISH ADVENTURE ACADEMY — RELATIONAL PERSISTENT SCHOOL DATA ENGINE |
 | [ui.js](file:///C:/Users/maysa/Desktop/DV/js/ui.js) | 125.4 KB | 2815 | Standalone | `uiController` | UI Controller for "Who Stole the Treasure?" & "Detective Preparation" |
 
 ### Cloud, Auth & Privacy (6)
 | File | Size | Lines | In `index.html` | `window.*` Exports | Summary |
 | :--- | :---: | :---: | :---: | :--- | :--- |
 | [offline.js](file:///C:/Users/maysa/Desktop/DV/js/offline.js) | 2.7 KB | 62 | #2 (`v=2`) | `EAAOffline` | Turns on the offline safety net (sw.js) and shows a small note when the internet is down. |
-| [private-data.js](file:///C:/Users/maysa/Desktop/DV/js/private-data.js) | 122.8 KB | 69 | #38 (`v=2`) | `EAAPrivate` | PRIVATE DATA BUNDLE (encrypted). |
+| [private-data.js](file:///C:/Users/maysa/Desktop/DV/js/private-data.js) | 122.8 KB | 69 | #39 (`v=2`) | `EAAPrivate` | PRIVATE DATA BUNDLE (encrypted). |
 | [school-cloud-sync.js](file:///C:/Users/maysa/Desktop/DV/js/school-cloud-sync.js) | 12.6 KB | 295 | #7 (`v=3.1`) | `addEventListener`, `SchoolCloudSync` | ENGLISH ADVENTURE ACADEMY — UNIFIED CLOUD PERSISTENCE & CROSS-DEVICE SYNC SERVICE (v2.0) |
 | [supabase-client.js](file:///C:/Users/maysa/Desktop/DV/js/supabase-client.js) | 83.8 KB | 1865 | #5 (`v=4.6`) | `createClient`, `supabaseClient`, `pushStudentXPBatch`, `markXpIntent` | ENGLISH ADVENTURE ACADEMY — SUPABASE POSTGRESQL DATABASE CLIENT (v2.0) |
 | [supabase-config.js](file:///C:/Users/maysa/Desktop/DV/js/supabase-config.js) | 1.1 KB | 28 | #4 (`v=2.5`) | `SUPABASE_CONFIG` | ENGLISH ADVENTURE ACADEMY — PRODUCTION SUPABASE CONFIGURATION |
@@ -149,7 +150,7 @@
 
 ## 3. Deep Chapter & Function Landmarks Inside Large Monoliths (900+ Lines)
 
-### 📦 [js/school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js) — 17601 lines (762.3 KB)
+### 📦 [js/school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js) — 17601 lines (762.6 KB)
 
 #### Section Banners (32)
 | Lines | Section Title |
@@ -379,7 +380,7 @@
 
 ---
 
-### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10473 lines (411.7 KB)
+### 📦 [js/games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) — 10538 lines (414.2 KB)
 
 
 
@@ -476,79 +477,79 @@
 
 ---
 
-### 📦 [js/pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) — 3787 lines (191.3 KB)
+### 📦 [js/pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) — 3790 lines (191.6 KB)
 
 #### Section Banners (3)
 | Lines | Section Title |
 | :---: | :--- |
-| [L693–L2118](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L693-L2118) | picture cache (IndexedDB): finished avatar pictures survive a page reload ---------- |
-| [L2119–L2788](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2119-L2788) | Game Maker & 3D Stadium Avatar Bridge ---------- |
-| [L2789–L3787](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2789-L3787) | for the shop & unified studio: item facts, try-on, style and wearing ---------- |
+| [L696–L2121](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L696-L2121) | picture cache (IndexedDB): finished avatar pictures survive a page reload ---------- |
+| [L2122–L2791](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2122-L2791) | Game Maker & 3D Stadium Avatar Bridge ---------- |
+| [L2792–L3790](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L2792-L3790) | for the shop & unified studio: item facts, try-on, style and wearing ---------- |
 
 
-#### Key Functions & Methods (showing 60 of 144)
+#### Key Functions & Methods (showing 60 of 145)
 | Line | Function / Method |
 | :---: | :--- |
 | [L20](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L20) | `withVer` |
-| [L213](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L213) | `auraUrl` |
-| [L216](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L216) | `petById` |
-| [L221](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L221) | `petImageUrl` |
-| [L241](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L241) | `pickerCategories` |
-| [L256](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L256) | `allItemCount` |
-| [L260](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L260) | `inClassMode` |
-| [L305](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L305) | `prettyName` |
-| [L356](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L356) | `client` |
-| [L357](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L357) | `store` |
-| [L358](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L358) | `esc` |
-| [L359](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L359) | `firstName` |
-| [L362](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L362) | `monstersHidden` |
-| [L363](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L363) | `mode` |
-| [L365](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L365) | `setMode` |
-| [L370](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L370) | `lockMode` |
-| [L373](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L373) | `rerender` |
-| [L378](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L378) | `loadImg` |
-| [L387](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L387) | `seedBuiltinDefaults` |
-| [L432](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L432) | `cleanApprovedForSave` |
-| [L439](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L439) | `saveLocal` |
-| [L450](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L450) | `nowIso` |
-| [L452](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L452) | `mergeDocs` |
-| [L475](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L475) | `markRemoved` |
-| [L486](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L486) | `readSyncRow` |
-| [L493](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L493) | `hiddenRow` |
-| [L496](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L496) | `writeHeadRows` |
-| [L513](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L513) | `readHeadRows` |
-| [L529](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L529) | `decodeDataUrlToArrayBuffer` |
-| [L541](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L541) | `fetchLocal3dHead` |
-| [L549](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L549) | `getHead3d` |
-| [L567](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L567) | `preloadHeads3d` |
-| [L614](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L614) | `writeSyncRow` |
-| [L636](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L636) | `readJson` |
-| [L647](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L647) | `writeJson` |
-| [L650](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L650) | `fetchHead` |
-| [L654](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L654) | `fromLocalDev` |
-| [L660](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L660) | `fromCloud` |
-| [L670](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L670) | `fetchEmotionHead` |
-| [L688](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L688) | `fetchWear` |
-| [L696](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L696) | `picCacheOpen` |
-| [L709](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L709) | `headKey` |
-| [L715](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L715) | `picSig` |
-| [L718](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L718) | `picCacheGet` |
-| [L728](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L728) | `picCachePut` |
-| [L735](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L735) | `equipSignature` |
-| [L738](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L738) | `load` |
-| [L807](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L807) | `studentRecord` |
-| [L820](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L820) | `equippedOf` |
-| [L832](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L832) | `avatarEquipFromMonster` |
-| [L854](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L854) | `effectiveWear` |
-| [L873](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L873) | `studentOwnsItem` |
-| [L913](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L913) | `pupilLevel` |
-| [L923](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L923) | `itemLockInfo` |
-| [L941](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L941) | `medianOf` |
-| [L947](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L947) | `analyzeHead` |
-| [L955](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L955) | `samplePatch` |
-| [L1093](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1093) | `getGradedBody` |
-| [L1156](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1156) | `getGradedLeg` |
-| [L1190](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1190) | `topHasHands` |
+| [L46](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L46) | `headFix` |
+| [L216](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L216) | `auraUrl` |
+| [L219](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L219) | `petById` |
+| [L224](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L224) | `petImageUrl` |
+| [L244](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L244) | `pickerCategories` |
+| [L259](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L259) | `allItemCount` |
+| [L263](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L263) | `inClassMode` |
+| [L308](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L308) | `prettyName` |
+| [L359](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L359) | `client` |
+| [L360](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L360) | `store` |
+| [L361](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L361) | `esc` |
+| [L362](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L362) | `firstName` |
+| [L365](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L365) | `monstersHidden` |
+| [L366](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L366) | `mode` |
+| [L368](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L368) | `setMode` |
+| [L373](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L373) | `lockMode` |
+| [L376](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L376) | `rerender` |
+| [L381](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L381) | `loadImg` |
+| [L390](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L390) | `seedBuiltinDefaults` |
+| [L435](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L435) | `cleanApprovedForSave` |
+| [L442](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L442) | `saveLocal` |
+| [L453](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L453) | `nowIso` |
+| [L455](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L455) | `mergeDocs` |
+| [L478](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L478) | `markRemoved` |
+| [L489](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L489) | `readSyncRow` |
+| [L496](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L496) | `hiddenRow` |
+| [L499](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L499) | `writeHeadRows` |
+| [L516](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L516) | `readHeadRows` |
+| [L532](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L532) | `decodeDataUrlToArrayBuffer` |
+| [L544](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L544) | `fetchLocal3dHead` |
+| [L552](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L552) | `getHead3d` |
+| [L570](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L570) | `preloadHeads3d` |
+| [L617](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L617) | `writeSyncRow` |
+| [L639](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L639) | `readJson` |
+| [L650](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L650) | `writeJson` |
+| [L653](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L653) | `fetchHead` |
+| [L657](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L657) | `fromLocalDev` |
+| [L663](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L663) | `fromCloud` |
+| [L673](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L673) | `fetchEmotionHead` |
+| [L691](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L691) | `fetchWear` |
+| [L699](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L699) | `picCacheOpen` |
+| [L712](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L712) | `headKey` |
+| [L718](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L718) | `picSig` |
+| [L721](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L721) | `picCacheGet` |
+| [L731](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L731) | `picCachePut` |
+| [L738](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L738) | `equipSignature` |
+| [L741](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L741) | `load` |
+| [L810](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L810) | `studentRecord` |
+| [L823](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L823) | `equippedOf` |
+| [L835](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L835) | `avatarEquipFromMonster` |
+| [L857](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L857) | `effectiveWear` |
+| [L876](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L876) | `studentOwnsItem` |
+| [L916](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L916) | `pupilLevel` |
+| [L926](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L926) | `itemLockInfo` |
+| [L944](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L944) | `medianOf` |
+| [L950](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L950) | `analyzeHead` |
+| [L958](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L958) | `samplePatch` |
+| [L1096](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1096) | `getGradedBody` |
+| [L1159](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js#L1159) | `getGradedLeg` |
 
 ---
 
@@ -940,6 +941,62 @@
 
 ---
 
+### 📦 [js/class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js) — 1125 lines (101.9 KB)
+
+
+
+#### Key Functions & Methods (showing 46 of 46)
+| Line | Function / Method |
+| :---: | :--- |
+| [L7](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L7) | `monMove` |
+| [L11](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L11) | `esc` |
+| [L18](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L18) | `goalKey` |
+| [L19](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L19) | `loadGoal` |
+| [L26](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L26) | `isDaily` |
+| [L27](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L27) | `bonusOf` |
+| [L28](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L28) | `todayKey` |
+| [L29](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L29) | `isWon` |
+| [L30](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L30) | `isPaid` |
+| [L31](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L31) | `saveGoal` |
+| [L35](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L35) | `loadAbsent` |
+| [L39](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L39) | `saveAbsent` |
+| [L41](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L41) | `students` |
+| [L56](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L56) | `goalProgress` |
+| [L166](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L166) | `discOn` |
+| [L168](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L168) | `flagOf` |
+| [L169](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L169) | `stages` |
+| [L170](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L170) | `stageBadge` |
+| [L171](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L171) | `stageStrip` |
+| [L326](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L326) | `getTeamThemeMeta` |
+| [L349](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L349) | `whyNow` |
+| [L353](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L353) | `amtNow` |
+| [L357](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L357) | `whyBar` |
+| [L365](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L365) | `addLabel` |
+| [L396](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L396) | `ensureCss` |
+| [L401](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L401) | `fmt` |
+| [L402](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L402) | `paintClock` |
+| [L408](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L408) | `stopTimer` |
+| [L409](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L409) | `tick` |
+| [L419](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L419) | `paintGoal` |
+| [L436](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L436) | `confettiBurst` |
+| [L442](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L442) | `payBonus` |
+| [L453](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L453) | `celebrate` |
+| [L476](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L476) | `resetBar` |
+| [L481](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L481) | `goalEditor` |
+| [L485](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L485) | `opt` |
+| [L494](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L494) | `pick` |
+| [L509](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L509) | `todayChips` |
+| [L528](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L528) | `closeMenus` |
+| [L531](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L531) | `hatFor` |
+| [L536](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L536) | `paintHat` |
+| [L545](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L545) | `renderTeamsView` |
+| [L629](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L629) | `render` |
+| [L690](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L690) | `paintTeamScores` |
+| [L706](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L706) | `totals` |
+| [L713](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L713) | `pupilSound` |
+
+---
+
 ### 📦 [js/command-center.js](file:///C:/Users/maysa/Desktop/DV/js/command-center.js) — 1123 lines (126 KB)
 
 #### Section Banners (1)
@@ -1011,58 +1068,6 @@
 | [L572](file:///C:/Users/maysa/Desktop/DV/js/command-center.js#L572) | `rng` |
 | [L573](file:///C:/Users/maysa/Desktop/DV/js/command-center.js#L573) | `htab` |
 | [L606](file:///C:/Users/maysa/Desktop/DV/js/command-center.js#L606) | `crCss` |
-
----
-
-### 📦 [js/class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js) — 1056 lines (96.5 KB)
-
-
-
-#### Key Functions & Methods (showing 42 of 42)
-| Line | Function / Method |
-| :---: | :--- |
-| [L7](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L7) | `monMove` |
-| [L11](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L11) | `esc` |
-| [L18](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L18) | `goalKey` |
-| [L19](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L19) | `loadGoal` |
-| [L26](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L26) | `isDaily` |
-| [L27](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L27) | `bonusOf` |
-| [L28](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L28) | `todayKey` |
-| [L29](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L29) | `isWon` |
-| [L30](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L30) | `isPaid` |
-| [L31](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L31) | `saveGoal` |
-| [L35](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L35) | `loadAbsent` |
-| [L39](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L39) | `saveAbsent` |
-| [L41](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L41) | `students` |
-| [L56](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L56) | `goalProgress` |
-| [L166](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L166) | `discOn` |
-| [L168](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L168) | `flagOf` |
-| [L169](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L169) | `stages` |
-| [L170](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L170) | `stageBadge` |
-| [L171](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L171) | `stageStrip` |
-| [L326](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L326) | `getTeamThemeMeta` |
-| [L340](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L340) | `ensureCss` |
-| [L345](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L345) | `fmt` |
-| [L346](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L346) | `paintClock` |
-| [L352](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L352) | `stopTimer` |
-| [L353](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L353) | `tick` |
-| [L363](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L363) | `paintGoal` |
-| [L380](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L380) | `confettiBurst` |
-| [L386](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L386) | `payBonus` |
-| [L397](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L397) | `celebrate` |
-| [L420](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L420) | `resetBar` |
-| [L425](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L425) | `goalEditor` |
-| [L429](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L429) | `opt` |
-| [L438](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L438) | `pick` |
-| [L453](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L453) | `todayChips` |
-| [L472](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L472) | `closeMenus` |
-| [L475](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L475) | `hatFor` |
-| [L480](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L480) | `paintHat` |
-| [L489](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L489) | `renderTeamsView` |
-| [L573](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L573) | `render` |
-| [L632](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L632) | `paintTeamScores` |
-| [L648](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L648) | `totals` |
-| [L655](file:///C:/Users/maysa/Desktop/DV/js/class-board.js#L655) | `pupilSound` |
 
 ---
 

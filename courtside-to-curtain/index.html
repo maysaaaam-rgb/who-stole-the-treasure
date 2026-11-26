@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#78c4ff">
+  <title>Courtside to Curtain Call · The Festival Adventure · English Adventure Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=20261126a">
+</head>
+<body>
+  <canvas id="fx-canvas" aria-hidden="true"></canvas>
+
+  <div class="app-shell">
+    <!-- TOP STORYBOOK TEACHER RIBBON -->
+    <header class="ribbon">
+      <div class="ribbon-left">
+        <div class="brand-pill">🎭 <span>Courtside to Curtain Call</span></div>
+        <button type="button" class="btn yellow" id="btn-map" title="Return to Adventure Map">🗺️ Map</button>
+        <button type="button" class="btn lilac" id="btn-jump" title="Teacher Quick-Jump & Team Spinner">🧭 Jump / Spin</button>
+        <span class="stars-pill" id="stars-pill">⭐ 0 / 13</span>
+      </div>
+      <div class="ribbon-right">
+        <button type="button" class="btn pink" id="btn-bravo" title="Instant Crowd Cheer & Star Burst">👏 Bravo!</button>
+        <button type="button" class="btn cream" id="btn-replay" title="Replay last spoken line">🗣️ Replay</button>
+        <button type="button" class="btn cream" id="btn-slow" title="Slow Turtle 0.7x Speech Toggle">🐢 Slow</button>
+        <button type="button" class="btn cream" id="btn-bgm" title="Toggle Background Music">🎵 BGM: OFF</button>
+        <button type="button" class="btn cream round" id="btn-sfx" title="Toggle SFX">🔊</button>
+        <a class="btn cream round" href="worksheet.html" target="_blank" title="Printable Companion Sheet">🖨️</a>
+        <a class="btn cream round" href="../index.html#home" title="Back to Platform" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'eaa:closeOverlay'},'*');return false;}}catch(e){}">✕</a>
+      </div>
+    </header>
+
+    <!-- MAIN STORYBOOK STAGE (Title / Adventure Map / Cutscene / 13 Activities / Finale) -->
+    <main class="stage-host" id="stage-host"></main>
+
+    <!-- BOTTOM DOCK: REACTIVE COMPANION MONSTER + 4 TEAMS -->
+    <footer class="bottom-bar">
+      <div class="companion-box" id="companion-box" title="Click to hear companion again">
+        <img class="companion-sprite" id="companion-img" src="../assets/monsters/art/emberwing_growing.webp" alt="Storybook Companion">
+        <div class="companion-text">
+          <div class="companion-name" id="companion-name">🏀 Coach Emberwing · Zone 1</div>
+          <div class="companion-say" id="companion-say">Welcome! Tap Start Adventure to travel from the Court to the Theatre!</div>
+        </div>
+      </div>
+      <div class="teams-bar" id="teams-bar"></div>
+    </footer>
+  </div>
+
+  <!-- TEACHER QUICK-JUMP & TEAM SPINNER DRAWER -->
+  <div class="drawer-back" id="drawer-back">
+    <div class="drawer-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+        <h2 style="margin:0;">🧭 Teacher Quick-Jump &amp; Classroom Controls</h2>
+        <button type="button" class="btn cream round" id="btn-close-drawer">✕</button>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+        <button type="button" class="btn yellow" id="btn-spin-team">🎡 Spin Random Team!</button>
+        <button type="button" class="btn green" id="btn-reset-act">🔄 Reset Current Activity</button>
+        <button type="button" class="btn pink" id="btn-watch-cutscene">🚂 Play Zone 3 Cutscene</button>
+        <button type="button" class="btn lilac" id="btn-watch-finale">🎆 Play Grand Finale</button>
+      </div>
+      <div class="jump-grid" id="jump-grid"></div>
+    </div>
+  </div>
+
+  <script src="js/data.js?v=20261126a"></script>
+  <script src="js/audio.js?v=20261126a"></script>
+  <script src="js/media-fx.js?v=20261126a"></script>
+  <script src="js/app.js?v=20261126a"></script>
+</body>
+</html>

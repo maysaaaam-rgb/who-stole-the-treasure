@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build the Bridge! · Printable Speaking & Writing Sheet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    @page { size: A4 portrait; margin: 10mm 12mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 14px;
+      font-family: 'Nunito', 'Trebuchet MS', system-ui, sans-serif;
+      color: #2b1d40;
+      background: #e8f6ff;
+    }
+    .toolbar {
+      max-width: 820px;
+      margin: 0 auto 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff8ec;
+      border: 4px solid #4f9dff;
+      border-bottom: 6px solid #1d6bd1;
+      border-radius: 18px;
+      padding: 10px 14px;
+    }
+    .toolbar-left { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .tb-btn, .tb-sel {
+      font: 800 0.95rem 'Nunito', sans-serif;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 2px solid #1d6bd1;
+      border-bottom: 4px solid #1d6bd1;
+      background: #4f9dff;
+      color: #fff;
+      cursor: pointer;
+    }
+    .tb-sel { background: #fff; color: #2b1d40; }
+    .tb-btn.green { background: #2fc58a; border-color: #168d5f; }
+    .sheet {
+      max-width: 820px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 4px solid #2b1d40;
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #4f9dff;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+    .sheet-head h1 { margin: 0; font-size: 1.45rem; }
+    .sheet-head p { margin: 2px 0 0; font-size: 0.9rem; color: #594a72; font-weight: 700; }
+    .student-box {
+      display: flex;
+      gap: 14px;
+      font-weight: 800;
+      font-size: 0.92rem;
+    }
+    .line { display: inline-block; width: 115px; border-bottom: 2px solid #2b1d40; }
+    .rule-banner {
+      background: #fff8ec;
+      border: 2.5px solid #ffb320;
+      border-radius: 12px;
+      padding: 7px 12px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 10px;
+      align-items: center;
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 8px 10px;
+      margin-bottom: 9px;
+      break-inside: avoid;
+    }
+    .pic-box {
+      text-align: center;
+    }
+    .pic-box img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+    }
+    .pic-box .wlbl {
+      font-size: 0.78rem;
+      font-weight: 900;
+      margin-top: 2px;
+      color: #2b1d40;
+    }
+    .bricks-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+    .brick-write {
+      border: 2px solid #94a3b8;
+      border-bottom: 4px solid #64748b;
+      border-radius: 10px;
+      min-height: 62px;
+      padding: 4px 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .brick-write.bonus {
+      border-color: #d97706;
+      background: #fffbeb;
+    }
+    .brick-write .bnum {
+      font-size: 0.68rem;
+      font-weight: 900;
+      color: #594a72;
+    }
+    .brick-write .bhint {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+    .say-check {
+      margin-top: 5px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: #594a72;
+      display: flex;
+      justify-content: space-between;
+    }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .toolbar { display: none; }
+      .sheet { border: 0; padding: 0; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <select class="tb-sel" id="ws-grade">
+        <option value="3">Grade 3</option>
+        <option value="4">Grade 4</option>
+      </select>
+      <select class="tb-sel" id="ws-unit">
+        <option value="5">Unit 5</option>
+        <option value="4">Unit 4</option>
+        <option value="3">Unit 3</option>
+        <option value="2">Unit 2</option>
+        <option value="1">Unit 1</option>
+      </select>
+      <button type="button" class="tb-btn" id="ws-hints">Hints: ON</button>
+    </div>
+    <button type="button" class="tb-btn green" onclick="window.print()">🖨️ Print A4 Sheet</button>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head">
+      <div>
+        <h1>🌉 Build the Bridge! — My Full Sentences</h1>
+        <p id="ws-subtitle">Grade 3 · Unit 5 · Let's Go Back</p>
+      </div>
+      <div class="student-box">
+        <div>Name: <span class="line"></span></div>
+        <div>Class: <span class="line" style="width:52px"></span></div>
+      </div>
+    </div>
+
+    <div class="rule-banner">
+      🧱 Rule: 1 word is NOT enough! Build at least <strong>4 bricks</strong> for a full sentence, then say it aloud to your partner! Add <strong>⭐ Brick 5</strong> for a Super Sentence!
+    </div>
+
+    <div id="ws-rows"></div>
+  </div>
+
+  <script src="js/data.js?v=20261126a"></script>
+  <script>
+    (function () {
+      var D = window.BridgeData;
+      var grade = 3, unit = 5, showHints = true;
+      try {
+        var p = new URLSearchParams(location.search || '');
+        var g = parseInt(p.get('grade'), 10);
+        if (g === 3 || g === 4) grade = g;
+        var u = parseInt(p.get('unit'), 10);
+        if (u >= 1 && u <= 5) unit = u;
+      } catch (e) {}
+
+      var selG = document.getElementById('ws-grade');
+      var selU = document.getElementById('ws-unit');
+      var btnH = document.getElementById('ws-hints');
+      var sub = document.getElementById('ws-subtitle');
+      var rowsEl = document.getElementById('ws-rows');
+
+      selG.value = String(grade);
+      selU.value = String(unit);
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function render() {
+        var meta = (D.UNITS_META[grade] || {})[unit] || ('Unit ' + unit);
+        sub.textContent = 'Grade ' + grade + ' · ' + meta;
+        var cards = (D.CARDS[grade] || []).filter(function (c) { return c.unit === unit; });
+        rowsEl.innerHTML = cards.map(function (c) {
+          var boxes = '';
+          for (var i = 0; i < 5; i++) {
+            var isBonus = i === 4;
+            var slots = ['WHO / IT', 'VERB / HAS', 'WHAT', 'DETAIL', 'BECAUSE / EXTRA'];
+            var hint = showHints ? slots[i] : '';
+            boxes += '<div class="brick-write' + (isBonus ? ' bonus' : '') + '">' +
+              '<span class="bnum">' + (isBonus ? '⭐ Bonus' : 'Brick ' + (i + 1)) + '</span>' +
+              '<span class="bhint">' + esc(hint) + '</span>' +
+            '</div>';
+          }
+          return '<div class="row">' +
+            '<div class="pic-box"><img src="' + c.img + '" alt="' + esc(c.word) + '"><div class="wlbl">' + esc(c.word) + '</div></div>' +
+            '<div><div class="bricks-grid">' + boxes + '</div>' +
+            '<div class="say-check"><span>💡 Cue words: <strong>' + esc(c.helper) + '</strong></span><span>☐ I said my full sentence to my partner!</span></div></div>' +
+          '</div>';
+        }).join('');
+      }
+
+      selG.onchange = function () { grade = parseInt(selG.value, 10); render(); };
+      selU.onchange = function () { unit = parseInt(selU.value, 10); render(); };
+      btnH.onclick = function () { showHints = !showHints; btnH.textContent = 'Hints: ' + (showHints ? 'ON' : 'OFF'); render(); };
+      render();
+    })();
+  </script>
+</body>
+</html>

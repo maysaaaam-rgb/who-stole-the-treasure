@@ -27,7 +27,7 @@ English Adventure Academy features **two complementary companion/character pipel
 | **3D Body Pose Bases** | `assets/avatars/body_*.webp` | **6** | Safe core 3D pose sprites (`stand`, `wave`, `cheer`, `jump`) |
 | **Skin Tone Neck/Hands** | `assets/avatars/skin_*.webp` | **3** | Safe skin tone tint layers |
 | **3D Store Wearables** | `assets/avatars/wear/*.webp` | **183** | Safe hats, glasses, shirts, capes, shoes & held items |
-| **Untracked Real-Name Files** | `assets/avatars/<redacted-pupil-file>.webp` | **50** | **DO NOT COMMIT (`AGENTS.md` §8)** — local scratch files only |
+| **Untracked Real-Name Files** | `assets/avatars/<redacted-pupil-file>.webp` | **8** | **DO NOT COMMIT (`AGENTS.md` §8)** — local scratch files only |
 
 ---
 
@@ -60,8 +60,8 @@ English Adventure Academy features **two complementary companion/character pipel
 | [monster-closet.js](file:///C:/Users/maysa/Desktop/DV/js/monster-closet.js) | 191L (18.5 KB) | `EAA_ILLUSTRATED_MONSTERS`, `MonsterCloset`, `renderMonsterCloset` | Monster Closet: pick a pupil, try things on the 3D monster, save. |
 | [monster-costumes.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes.js) | 303L (30.8 KB) | `MonsterCostumes` | Monster Costumes: 8 themed sets x 3 pieces (24 new drawn items). |
 | [monster-costumes2.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes2.js) | 209L (29.6 KB) | — | Monster Costumes, batch 2: 8 more themed sets (24 pieces) and 4 standalone legendary pieces. |
-| [monster-costumes3.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes3.js) | 97L (13 KB) | — | Monster Costumes, batch 3: Halloween. 4 themed sets and 3 standalone pieces (12 pieces), all friendly and funny. |
-| [monster-costumes4.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes4.js) | 89L (8.4 KB) | — | Monster Costumes, batch 4: the Mythic shelf (5 animated pieces, the top of the store) and trails (6 effects that follow the monster in the Island's walking worl |
+| [monster-costumes3.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes3.js) | 97L (13.1 KB) | — | Monster Costumes, batch 3: Halloween. 4 themed sets and 3 standalone pieces (12 pieces), all friendly and funny. |
+| [monster-costumes4.js](file:///C:/Users/maysa/Desktop/DV/js/monster-costumes4.js) | 89L (8.5 KB) | — | Monster Costumes, batch 4: the Mythic shelf (5 animated pieces, the top of the store) and trails (6 effects that follow the monster in the Island's walking worl |
 | [monster-dressup.js](file:///C:/Users/maysa/Desktop/DV/js/monster-dressup.js) | 322L (22.2 KB) | `MonsterDressUp`, `EAA_ILLUSTRATED_MONSTERS` | Monster Dress-Up: puts accessory pictures on the illustrated monsters. |
 | [monster-fit.js](file:///C:/Users/maysa/Desktop/DV/js/monster-fit.js) | 3L (28.7 KB) | `MONSTER_OVERRIDES` | Generated hat fit: per monster and per hat, simulated on the real pixels (see _tmp/autofit2.py). Hats sit on the head with a small seat and never cover the eyes |
 | [monster-outfits.js](file:///C:/Users/maysa/Desktop/DV/js/monster-outfits.js) | 211L (19.8 KB) | `MonsterOutfits` | Monster outfits, redrawn 10 Nov 2026 to match the 3D shop pictures (colour, collar, buttons, belts, emblems). |
@@ -70,7 +70,7 @@ English Adventure Academy features **two complementary companion/character pipel
 | [mystery-box-modal.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-modal.js) | 967L (44.5 KB) | `MysteryBoxModal`, `TradingCabinet`, `openMysteryBoxModal`, `openTradingCabinet` | ENGLISH ADVENTURE ACADEMY — MYSTERY BOX UNBOXING & TRADING ENGINE |
 | [mystery-box-v2.js](file:///C:/Users/maysa/Desktop/DV/js/mystery-box-v2.js) | 223L (21 KB) | `MysteryBoxArt` | Mystery box opening, version 2 (9 Nov 2026). Replaces the drawn chest and the "energy surge" texts. |
 | [no-monsters.js](file:///C:/Users/maysa/Desktop/DV/js/no-monsters.js) | 119L (7.6 KB) | `EAA_HIDE_MONSTERS`, `renderMonsterSVG`, `triggerEvolutionCeremony`, `switchView`, `openMonsterCreator` | Monsters hidden (11 Nov 2026). |
-| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 3787L (191.3 KB) | `PupilAvatars` | Pupil avatars (v2) |
+| [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js) | 3790L (191.6 KB) | `PupilAvatars` | Pupil avatars (v2) |
 | [pupil-card.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-card.js) | 156L (17.9 KB) | `PupilCard` | Pupil trading card, laid out like a real Yu-Gi-Oh monster card: a name banner with an attribute orb, level stars, the monster picture in a framed art box |
 | [pupil-profile.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-profile.js) | 173L (19.9 KB) | `PupilProfile` | Pupil profile: one dark page for the teacher (no tabs). Top: who, status + reason, quick actions. Then the numbers that matter (XP, quiz, homework, |
 | [sleepy-monster.js](file:///C:/Users/maysa/Desktop/DV/js/sleepy-monster.js) | 633L (33.7 KB) | `SleepyMonster`, `openSleepyMonster` | Sleepy Monster: a full-screen noise game for the class. |
