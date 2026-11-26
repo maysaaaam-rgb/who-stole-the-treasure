@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#5cb8ff">
+  <title>Build the Bridge 3D · English Adventure Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=20261126b">
+</head>
+<body>
+  <!-- FULL-SCREEN 3D TROPICAL CANYON CANVAS -->
+  <canvas id="scene"></canvas>
+
+  <!-- ULTRA-CLEAN FLOATING HUD -->
+  <div class="hud">
+    <!-- Top-Left: Picture + ONLY 1-2 Tiny Helper Words (Zero Pre-Written Sentences!) -->
+    <div class="pic-card" id="pic-card">
+      <div class="pic-frame">
+        <img id="pic-img" src="../speak-review/art/describe/g3-u5-chariot.webp" alt="Speaking card">
+        <div class="pic-mini-btns">
+          <button type="button" class="pic-mini" id="btn-word-tts" title="Hear word">🔊</button>
+          <button type="button" class="pic-mini" id="btn-next-card" title="Next picture (N)">🔄</button>
+        </div>
+      </div>
+      <div class="pic-word" id="pic-word">chariot</div>
+      <p class="pic-helper" id="pic-helper">horses · wheels</p>
+    </div>
+
+    <!-- Center-Top: Live Shaking / Cracking Bridge Tension Bar (Visible only during active turns) -->
+    <div class="tension-hud" id="tension-hud" role="status" aria-live="polite">
+      <div class="tension-label" id="tension-label">🧱 1 / 4 — Keep speaking!</div>
+      <div class="tension-track"><div class="tension-fill" id="tension-fill"></div></div>
+    </div>
+
+    <!-- Top-Right: Compact Controls -->
+    <div class="top-right">
+      <button type="button" class="pill-btn pink" id="btn-grade">Grade 3</button>
+      <select class="pill-sel" id="sel-unit" aria-label="Unit">
+        <option value="all">All Units</option>
+        <option value="1">Unit 1</option>
+        <option value="2">Unit 2</option>
+        <option value="3">Unit 3</option>
+        <option value="4">Unit 4</option>
+        <option value="5">Unit 5</option>
+      </select>
+      <button type="button" class="pill-btn yellow" id="btn-timer" title="Pause / Resume plank crack timer (T)">⏱ Timer ON</button>
+      <a class="pill-btn" id="btn-sheet" href="worksheet.html" target="_blank" title="Printable A4 sheet">🖨️</a>
+      <button type="button" class="pill-btn round" id="btn-sound" title="Mute / Unmute">🔊</button>
+      <button type="button" class="pill-btn round" id="btn-fs" title="Fullscreen">⛶</button>
+      <a class="pill-btn round" href="../index.html#home" title="Back" onclick="try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'eaa:closeOverlay'},'*');return false;}}catch(e){}">✕</a>
+    </div>
+
+    <!-- Bottom Safe-Zone Dock: 4 Team Pills + 2 Big Tactile Buttons ONLY -->
+    <div class="bottom-dock">
+      <div class="team-strip" id="team-strip"></div>
+      <div class="action-cluster">
+        <button type="button" class="big-btn" id="btn-word" title="Drop next 3D bridge plank (Space)">
+          🧱 +WORD <small id="word-count-tag">0/4</small>
+        </button>
+        <button type="button" class="big-btn cross" id="btn-cross" disabled title="Cross to Treasure Island! (Enter)">
+          🏆 CROSS!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 100% Offline Three.js 0.169 + Commercial GameQualityCore -->
+  <script src="../games/engine3d/vendor/engine3d-deps.min.js?v=20261121d"></script>
+  <script src="../games/engine3d/SceneAtmosphere.js?v=20261123hd"></script>
+  <script src="../games/engine3d/StylizedWater.js?v=20261123perf"></script>
+  <script src="../games/engine3d/JuiceManager.js?v=20261122n"></script>
+
+  <!-- Build the Bridge 3D Game Scripts -->
+  <script src="js/data.js?v=20261126b"></script>
+  <script src="js/audio.js?v=20261126b"></script>
+  <script src="js/app.js?v=20261126b"></script>
+</body>
+</html>

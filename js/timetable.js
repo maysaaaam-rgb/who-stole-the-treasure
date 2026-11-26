@@ -21,6 +21,7 @@
     { id: 'gm-u5-g3', icon: '🎮', title: "Unit 5 Game Maker · Let's Go Back (40 Questions: Words, Time Book, Time Capsules & Mega Mix)", route: 'game-maker/index.html?set=g3-u5-mega&game=cannon', g: 3, unit: 5, kind: 'game', order: 5, added: '2026-11-08' },
     { id: 'talk-review-g3-l1', icon: '🗣️', title: 'Talk Time Review · Lesson 1 (Units 1–3): Describe & Guess + Spot the Difference', route: 'speak-review/index.html?grade=3&lesson=1', g: 3, unit: 5, kind: 'review', order: 6, added: '2026-11-25' },
     { id: 'talk-review-g3-l2', icon: '🔍', title: 'Talk Time Review · Lesson 2 (Units 4–5 + mix): Describe & Guess + Spot the Difference', route: 'speak-review/index.html?grade=3&lesson=2', g: 3, unit: 5, kind: 'review', order: 7, added: '2026-11-25' },
+    { id: 'build-bridge-g3', icon: '🌉', title: 'Build the Bridge! · Full-Sentence Speaking Game (Grade 3 · Units 1–5 · 30 Picture Cards + Sheet)', route: 'build-the-bridge/index.html?grade=3', g: 3, unit: 5, kind: 'review', order: 8, added: '2026-11-26' },
 
     // =========================================================================
     // UNIT 5 — GRADE 4 (Make Some Noise: Foley Sound Studio & Beethoven, pp. 72–87)
@@ -31,6 +32,7 @@
     { id: 'gm-u5-g4', icon: '🎮', title: 'Unit 5 Game Maker · Make Some Noise (40 Questions: Words, Foley Studio, Beethoven & Mega Mix)', route: 'game-maker/index.html?set=g4-u5-mega&game=cannon', g: 4, unit: 5, kind: 'game', order: 4, added: '2026-11-08' },
     { id: 'talk-review-g4-l1', icon: '🗣️', title: 'Talk Time Review · Lesson 1 (Units 1–3): Describe & Guess + Spot the Difference', route: 'speak-review/index.html?grade=4&lesson=1', g: 4, unit: 5, kind: 'review', order: 5, added: '2026-11-25' },
     { id: 'talk-review-g4-l2', icon: '🔍', title: 'Talk Time Review · Lesson 2 (Units 4–5 + mix): Describe & Guess + Spot the Difference', route: 'speak-review/index.html?grade=4&lesson=2', g: 4, unit: 5, kind: 'review', order: 6, added: '2026-11-25' },
+    { id: 'build-bridge-g4', icon: '🌉', title: 'Build the Bridge! · Full-Sentence Speaking Game (Grade 4 · Units 1–5 · 30 Picture Cards + Sheet)', route: 'build-the-bridge/index.html?grade=4', g: 4, unit: 5, kind: 'review', order: 7, added: '2026-11-26' },
 
     // =========================================================================
     // UNIT 4 — GRADE 3 (What Happened? / The Mona Lisa & The Angry Mountain)
@@ -54,6 +56,7 @@
     { id: 'rev-g4-teamwork', icon: '🏀', title: 'Unit 4 Review 1 · Teamwork (pp. 56–61): Quiz, Word Shoot & Story Order', route: 'review-g4-teamwork/index.html', g: 4, unit: 4, kind: 'review', order: 2, added: '2026-10-19' },
     { id: 'rev-g4-show', icon: '🎭', title: 'Unit 4 Review 2 · Late for the Show (pp. 62–70): Curtain Up, Stage Run, Spotlight & Excuse Round', route: 'review-g4-show/index.html', g: 4, unit: 4, kind: 'review', order: 3, added: '2026-10-20' },
     { id: 'rev-u4-g4', icon: '🏆', title: 'Unit 4 Full Review (Grade 4): Words, Story Order, Cause & Effect, Quiz & Speaking Check', route: 'review-unit4/index.html?grade=4', g: 4, unit: 4, kind: 'review', order: 4, added: '2026-10-22' },
+    { id: 'courtside-curtain-g4', icon: '🎭', title: 'Courtside to Curtain Call: The Festival Adventure (13-Stop Interactive Storybook Map + Sheet)', route: 'courtside-to-curtain/index.html', g: 4, unit: 4, kind: 'review', order: 5, added: '2026-11-26' },
     { id: 'gm-speak-g4', icon: '🎤', title: 'Units 1–4 Speaking & Acting Tournament (Grade 4): Penalty, Baseball, Tower & Arcade Show', route: 'game-maker/index.html?set=speak-g4&game=baseball', g: 4, unit: 4, kind: 'review', order: 5, added: '2026-11-01' },
     { id: 'speak-g4-u4', icon: '🎤', title: 'Unit 4 Speaking Check (Units 1–4): One Pupil at a Time', route: 'speaking-g4/index.html', g: 4, unit: 4, kind: 'quiz', order: 10, added: '2026-10-23' },
     { id: 'quiz-g4-u14', icon: '📝', title: 'Units 1–4 Quiz (Forms A/B): Listening, Words, Reading & Writing', route: 'quiz-g4-units1-4/index.html', g: 4, unit: 4, kind: 'quiz', order: 11, added: '2026-10-23' },

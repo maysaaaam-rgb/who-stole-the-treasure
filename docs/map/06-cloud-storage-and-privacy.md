@@ -23,7 +23,7 @@
 | `assessment_results` | [supabase-client.js](file:///C:/Users/maysa/Desktop/DV/js/supabase-client.js), [supabase_schema.sql](file:///C:/Users/maysa/Desktop/DV/sql/supabase_schema.sql) |
 | `attendance_records` | [supabase-client.js](file:///C:/Users/maysa/Desktop/DV/js/supabase-client.js), [supabase_schema.sql](file:///C:/Users/maysa/Desktop/DV/sql/supabase_schema.sql) |
 | `catalog_items` | [supabase-mystery-boxes.sql](file:///C:/Users/maysa/Desktop/DV/sql/supabase-mystery-boxes.sql) |
-| `classes` | [class-journey.js](file:///C:/Users/maysa/Desktop/DV/js/class-journey.js), [classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js), [island-apply.js](file:///C:/Users/maysa/Desktop/DV/js/island-apply.js), [parent-report.js](file:///C:/Users/maysa/Desktop/DV/js/parent-report.js), [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js), [revision-board.js](file:///C:/Users/maysa/Desktop/DV/js/revision-board.js), [supabase-client.js](file:///C:/Users/maysa/Desktop/DV/js/supabase-client.js), [supabase_schema.sql](file:///C:/Users/maysa/Desktop/DV/sql/supabase_schema.sql) |
+| `classes` | [class-journey.js](file:///C:/Users/maysa/Desktop/DV/js/class-journey.js), [classroom-store.js](file:///C:/Users/maysa/Desktop/DV/js/classroom-store.js), [island-apply.js](file:///C:/Users/maysa/Desktop/DV/js/island-apply.js), [parent-report.js](file:///C:/Users/maysa/Desktop/DV/js/parent-report.js), [pupil-avatars.js](file:///C:/Users/maysa/Desktop/DV/js/pupil-avatars.js), [revision-board.js](file:///C:/Users/maysa/Desktop/DV/js/revision-board.js), [supabase-client.js](file:///C:/Users/maysa/Desktop/DV/js/supabase-client.js), [weekly-check.js](file:///C:/Users/maysa/Desktop/DV/js/weekly-check.js), [supabase_schema.sql](file:///C:/Users/maysa/Desktop/DV/sql/supabase_schema.sql) |
 | `island_wall` | [class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js) |
 | `mystery_boxes` | [supabase-mystery-boxes.sql](file:///C:/Users/maysa/Desktop/DV/sql/supabase-mystery-boxes.sql) |
 | `private_bundle_key` | [private-data.js](file:///C:/Users/maysa/Desktop/DV/js/private-data.js) |
@@ -57,13 +57,15 @@
 
 ---
 
-## 3. Browser `localStorage` & `sessionStorage` Keys (25 keys)
+## 3. Browser `localStorage` & `sessionStorage` Keys (27 keys)
 
 | Storage Key | Used In |
 | :--- | :--- |
 | `adventure_active_class` | [library.js](file:///C:/Users/maysa/Desktop/DV/js/library.js), [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js) |
 | `adventure_students` | [app.js](file:///C:/Users/maysa/Desktop/DV/js/app.js), [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js), [school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js), [supabase-client.js](file:///C:/Users/maysa/Desktop/DV/js/supabase-client.js) |
+| `cb_amt` | [class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js) |
 | `cb_disc` | [class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js) |
+| `cb_why` | [class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js) |
 | `eaa_bk_restored` | [daily-backup.js](file:///C:/Users/maysa/Desktop/DV/js/daily-backup.js) |
 | `eaa_board_absent_` | [class-board.js](file:///C:/Users/maysa/Desktop/DV/js/class-board.js), [sleepy-monster.js](file:///C:/Users/maysa/Desktop/DV/js/sleepy-monster.js) |
 | `eaa_board_view` | [board-scenes.js](file:///C:/Users/maysa/Desktop/DV/js/board-scenes.js) |
@@ -100,34 +102,31 @@
 
 ---
 
-## 5. Complete Root Directory & Git Safety Classification (188 entries)
+## 5. Complete Root Directory & Git Safety Classification (170 entries)
 
 > **Why `git add -A` is forbidden:** Entries marked `MISSING LOCALLY (GIT DELETED)` exist on the live published site (`main` / `gh-pages`) but were cleaned from this local disk. Running `git add -A` would delete them from the live school website!
 
 | Name | Kind | Local? | `GAMES_DATA` | `404.html` | Git / Privacy Status | Notes |
 | :--- | :--- | :---: | :---: | :---: | :--- | :--- |
-| `_tmp/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `.agent/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `.claude/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `.github/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `.gitignore` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `.nojekyll` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
-| `404.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
+| `404.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `adventure-engine/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `advice/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `AGENTS.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
 | `all-about-me/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `ARCHITECTURE_STANDARDS.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
-| `art-prompts/` | Folder | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `art-prompts/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `assets/` | Folder | ✅ | — | — | **LIVE** | Shared 3D packs, avatars (`student-*`), icons & audio |
-| `audit-report/` | Folder | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `avatar-3d-studio/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `bamboozle/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `biome-crafter/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `brain/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `brain-explorers/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `brain-hackers/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
-| `build/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
+| `build-the-bridge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `camp-mystery/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `cat-meme-posters/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `cat-vs-dog/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
@@ -135,6 +134,7 @@
 | `clara-inventor/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `class-reset/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `classroom-instructions-challenge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
+| `courtside-to-curtain/` | Lesson / Game Module | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
 | `creature-cafe/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `css/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
 | `detectives/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
@@ -154,38 +154,32 @@
 | `forest-safari/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `freeze-game/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `game-maker/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
-| `games/` | Lesson / Game Module | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
+| `games/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `good-ideas-lab/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `halloween-pet-shop/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `harvest-feast/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `home-view/` | Core App / World | ✅ | — | — | **LIVE** | Tracked & safe |
-| `home3d/` | Lesson / Game Module | ✅ | — | — | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
-| `hq2.out` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
-| `index.html` | HTML Entry Page | ✅ | — | — | **LIVE** | Tracked & safe |
+| `home3d/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
+| `index.html` | HTML Entry Page | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `inventor-forge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `inventor-lab/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `inventors-odyssey/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `island/` | Core App / World | ✅ | ✅ | ✅ | **NEW / UNTRACKED** | New local folder/file (not yet committed to git) |
-| `island-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `js/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
+| `island/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
+| `js/` | Platform Infrastructure | ✅ | — | — | **MODIFIED / UNPUSHED** | Has local modifications not yet pushed |
 | `jungle/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `karaoke-stage/` | Core App / World | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `kenney-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `lesson-plans/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `library-audit/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `lingo-g3-u3-review/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
-| `lingo-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `magic-book/` | Core App / World | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `manifest.json` | Root File | ✅ | — | — | **LIVE** | Tracked & safe |
 | `meme-rules/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `milestone-1000/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `monster day/` | Lesson / Game Module | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Required local mirror clone (`monster day/.../NH`) — gitignored, never push |
 | `monster-day/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `monster-evolution/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `monster-lab/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `monster-lab-3d/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `monster-studio/` | Core App / World | ✅ | — | — | **LIVE** | Tracked & safe |
-| `monster-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `monsters/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `mouse/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `mystery-of-yesterday/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -194,16 +188,13 @@
 | `NH/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `ninja-trials/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `ocean-cleaners/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
-| `part6_battle_flat_complete.zip` | Root File | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `passport/` | Core App / World | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `pharaoh-living-book.html` | HTML Entry Page | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `phonics/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `platform-art/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
-| `platform-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `pokemon/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `predictions/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `preposition-catapult/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
-| `quaternius-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `quiz-briefing/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `quiz-g3-units1-4/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `quiz-g4-units1-4/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
@@ -217,10 +208,8 @@
 | `review-g4-teamwork/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `review-unit4/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `revision-pack/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `revision-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `robots/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `school-subjects-challenge/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
-| `scratch/` | Folder | ✅ | — | — | **LIVE** | Tracked & safe |
 | `simon-says/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `SITE_MAP.md` | Documentation / Rule | ✅ | — | — | **LIVE** | Tracked & safe |
 | `site-map/` | Platform Infrastructure | ✅ | — | ✅ | **LIVE** | Tracked & safe |
@@ -231,11 +220,10 @@
 | `sound-detective/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `sound-detective-pro/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `space-cadet/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
+| `speak-review/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `speaking-g4/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `speaking-quiz/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `sql/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
-| `src/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `store-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `story/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `story-engine/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `supabase/` | Platform Infrastructure | ✅ | — | — | **LIVE** | Tracked & safe |
@@ -270,19 +258,15 @@
 | `unit3-g4-lessons/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `unit3-money-mission/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `unit3-shop/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `unit3-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `unit4-g3-angry-mountain/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `unit4-g3-lessons/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `unit4-g3-phonics-think/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |
 | `unit4-g4-lessons/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `unit4-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
-| `unit5-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `watch-answer/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `we-are-the-story/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `week-song-g4/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `week4-g3-daphne/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
 | `week4-g4-captain-quiet/` | Lesson / Game Module | ✅ | ✅ | — | **LIVE** | Tracked & safe |
-| `week4-work/` | Folder | ✅ | — | — | **LOCAL-ONLY (NEVER PUSH)** | Local workspace / build / agent scratch folder — never publish |
 | `welcome-to-wonderland/` | Lesson / Game Module | ✅ | — | — | **LIVE** | Tracked & safe |
 | `wildlife-detective/` | Lesson / Game Module | ✅ | — | ✅ | **LIVE** | Tracked & safe |
 | `wind-and-sun/` | Lesson / Game Module | ✅ | ✅ | ✅ | **LIVE** | Tracked & safe |

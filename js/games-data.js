@@ -10464,6 +10464,71 @@ const GAMES_REGISTRY = [
       "Grade 3",
       "Grade 4"
     ]
+  },
+  {
+    "id": "build-the-bridge",
+    "type": "lesson",
+    "gameKind": "team",
+    "gameOrder": 15,
+    "title": "🌉 Build the Bridge 3D (Full-Sentence Speaking Game)",
+    "subtitle": "Real 3D Three.js Island · Shaking/Cracking Planks · Comical 3D Ocean Splash!",
+    "description": "Commercial 3D smartboard speaking game powered by Three.js & GameQualityCore! Picture + 1-2 tiny cue words only (zero pre-written sentences to read). Students build 4-5 word sentences across a real 3D tropical canyon; stop at 1-3 words and the plank shakes, cracks, and splashes the 3D monster into a lifesaver ring!",
+    "grades": [
+      3,
+      4
+    ],
+    "grade": "Grades 3 & 4",
+    "unit": 5,
+    "route": "build-the-bridge/index.html",
+    "url": "build-the-bridge/index.html",
+    "worksheetUrl": "build-the-bridge/worksheet.html",
+    "thumbnailIcon": "🌉",
+    "thumbnail": "speak-review/art/describe/g3-u1-bridge.webp",
+    "thumbnailUrl": "speak-review/art/describe/g3-u1-bridge.webp",
+    "categoryLabel": "3D Speaking Game",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "3D",
+      "Speaking",
+      "Full Sentences",
+      "Team Game",
+      "Units 1-5",
+      "Grade 3",
+      "Grade 4"
+    ]
+  },
+  {
+    "id": "courtside-to-curtain",
+    "type": "lesson",
+    "gameKind": "team",
+    "gameOrder": 16,
+    "title": "🎭 Courtside to Curtain Call: The Festival Adventure",
+    "subtitle": "13-Stop 3-Zone Adventure Map · Basketball Court → Festival Park → Grand Theatre",
+    "description": "Complete Grade 4 Unit 4 interactive storybook adventure across 13 multi-round activities: Word Match, Interactive Court Map, Missing Letter, Odd One Out, Meanings, OR Phonics (SPORT vs WORK), Live Animated Action Clips, Unscramble Bridge, Who Am I, Spot What Is Strange, Poster Puzzle, Festival Notes, and Story Sequence Finale + Worksheet.",
+    "grades": [
+      4
+    ],
+    "grade": "Grade 4",
+    "unit": 4,
+    "route": "courtside-to-curtain/index.html",
+    "url": "courtside-to-curtain/index.html",
+    "worksheetUrl": "courtside-to-curtain/worksheet.html",
+    "thumbnailIcon": "🎭",
+    "thumbnail": "review-g4-show/art/bg_stage.webp",
+    "thumbnailUrl": "review-g4-show/art/bg_stage.webp",
+    "categoryLabel": "Storybook Adventure",
+    "featured": true,
+    "status": "active",
+    "tags": [
+      "Unit 4",
+      "Grade 4",
+      "Basketball",
+      "Theatre",
+      "Phonics",
+      "Speaking",
+      "Adventure Map"
+    ]
   }
 ];
 

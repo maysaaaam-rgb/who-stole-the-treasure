@@ -25,9 +25,9 @@
 
 ---
 
-## 3. Registered `GAMES_DATA` Modules (128 total in [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js))
+## 3. Registered `GAMES_DATA` Modules (130 total in [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js))
 
-### Grade 3 Modules (81)
+### Grade 3 Modules (82)
 | ID | Title | URL | Worksheet | Local Disk | `404.html` |
 | :--- | :--- | :--- | :---: | :---: | :---: |
 | `pharaoh-living-book` | 👑 👑 The Pharaoh's Kingdom • 3D Living Pop-Up Book (Lessons 1–8) | `pharaoh-living-book.html` | — | ✅ Present | — |
@@ -111,8 +111,9 @@
 | `board-game-3d` | 🎲 🎲 3D Park Board Game · 24-Tile Trail | `games/board3d/index.html` | — | ✅ Present | ✅ |
 | `speaking-quiz-u15` | 🎤 🎤 Units 1–5 Speaking Quiz Studio (Grades 3 & 4) | `speaking-quiz/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `foley-studio` | 🎬 🎬 Foley Sound Engineer Studio (Interactive 35-Min Lesson) | `foley-studio/index.html` | 🖨️ Yes | ✅ Present | ✅ |
+| `build-the-bridge` | 🌉 🌉 Build the Bridge 3D (Full-Sentence Speaking Game) | `build-the-bridge/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 
-### Grade 4 Modules (47)
+### Grade 4 Modules (48)
 | ID | Title | URL | Worksheet | Local Disk | `404.html` |
 | :--- | :--- | :--- | :---: | :---: | :---: |
 | `unit4-g4-team-players` | 🏀 🏀 Unit 4 · Team Players: Dream Team League Match Day 1 (Grade 4) | `unit4-g4-lessons/index.html` | 🖨️ Yes | ✅ Present | — |
@@ -162,6 +163,7 @@
 | `cat-meme-posters` | 🐱 🐱 2×2 Cat Meme Pronoun Posters: I, Me, You, He, Him, She, Her, It, We, Us, They, Them | `cat-meme-posters/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 | `res-global-readings-3` | 📚 Global Readings 3: Student's Book | `javascript:openTextbookViewer(1, 'book-global-readings-3')` | — | ⚠️ Published Only | — |
 | `rev-g4-sound-detectives` | 🦊 🦊 Sound Detectives: Grade 4 Unit 5 Revision (Foley Sound Studio & Beethoven’s 9th) | `review-g4-sound-detectives/index.html` | 🖨️ Yes | ✅ Present | ✅ |
+| `courtside-to-curtain` | 🎭 🎭 Courtside to Curtain Call: The Festival Adventure | `courtside-to-curtain/index.html` | 🖨️ Yes | ✅ Present | ✅ |
 
 ### Shared / Multi-Grade Modules (0)
 | ID | Title | URL | Worksheet | Local Disk | `404.html` |

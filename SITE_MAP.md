@@ -13,19 +13,19 @@
 | **Top-Level Navigation Places** | **7** | [platform-nav.js](file:///C:/Users/maysa/Desktop/DV/js/platform-nav.js#L11-L28) |
 | **Dynamic `switchView()` Views** | **42** | [school-app.js](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L10109-L10168) |
 | **Reusable Modals in `index.html`** | **69** | [index.html](file:///C:/Users/maysa/Desktop/DV/index.html#L480-L4390) |
-| **Platform JS Modules (`js/*.js`)** | **90** (69 in `index.html`) | [02-core-js-and-monoliths.md](file:///C:/Users/maysa/Desktop/DV/docs/map/02-core-js-and-monoliths.md) |
+| **Platform JS Modules (`js/*.js`)** | **91** (70 in `index.html`) | [02-core-js-and-monoliths.md](file:///C:/Users/maysa/Desktop/DV/docs/map/02-core-js-and-monoliths.md) |
 | **Platform Stylesheets (`css/*.css`)** | **13** (9 in `index.html`) | [01-platform-screens-and-dom.md](file:///C:/Users/maysa/Desktop/DV/docs/map/01-platform-screens-and-dom.md) |
 | **Game Maker 2.0 Arcade Modes** | **3 modes** + **89 question sets** | [04-game-maker.md](file:///C:/Users/maysa/Desktop/DV/docs/map/04-game-maker.md) |
-| **Registered `GAMES_DATA` Modules** | **128** | [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) |
+| **Registered `GAMES_DATA` Modules** | **130** | [games-data.js](file:///C:/Users/maysa/Desktop/DV/js/games-data.js) |
 | **Printable Lesson Plans (Word/PDF)** | **56 lessons** | [05-lessons-island-and-curriculum.md](file:///C:/Users/maysa/Desktop/DV/docs/map/05-lessons-island-and-curriculum.md) |
-| **Supabase Cloud Tables / Storage Keys** | **16 tables** / **25 keys** | [06-cloud-storage-and-privacy.md](file:///C:/Users/maysa/Desktop/DV/docs/map/06-cloud-storage-and-privacy.md) |
+| **Supabase Cloud Tables / Storage Keys** | **16 tables** / **27 keys** | [06-cloud-storage-and-privacy.md](file:///C:/Users/maysa/Desktop/DV/docs/map/06-cloud-storage-and-privacy.md) |
 
 ---
 
 ## 📂 2. Modular Deep-Dive Map Index (`docs/map/`)
 
 1. **[01-platform-screens-and-dom.md](file:///C:/Users/maysa/Desktop/DV/docs/map/01-platform-screens-and-dom.md)** — Entry HTML pages, 7-place sidebar/rail, all 42 `switchView` routes, all 69 modals, toolkit tabs, and exact CSS/JS load order.
-2. **[02-core-js-and-monoliths.md](file:///C:/Users/maysa/Desktop/DV/docs/map/02-core-js-and-monoliths.md)** — All 90 `js/*.js` & 13 `css/*.css` files, plus full line-range chapters inside `school-app.js` (17227 lines) and `school-store.js` (17601 lines).
+2. **[02-core-js-and-monoliths.md](file:///C:/Users/maysa/Desktop/DV/docs/map/02-core-js-and-monoliths.md)** — All 91 `js/*.js` & 13 `css/*.css` files, plus full line-range chapters inside `school-app.js` (17227 lines) and `school-store.js` (17601 lines).
 3. **[03-avatars-monsters-and-store.md](file:///C:/Users/maysa/Desktop/DV/docs/map/03-avatars-monsters-and-store.md)** — `PupilAvatars` (2D + 3D extruded rig), Unified `ClassroomStore`, `MonsterRenderer` 8-layer stage, Mystery Boxes, and `assets/avatars/` layout.
 4. **[04-game-maker.md](file:///C:/Users/maysa/Desktop/DV/docs/map/04-game-maker.md)** — All 3 Game Maker arcade modes (including 3D Penalty Shootout), 89 question sets, engine & audio architecture.
 5. **[05-lessons-island-and-curriculum.md](file:///C:/Users/maysa/Desktop/DV/docs/map/05-lessons-island-and-curriculum.md)** — All Grade 3 & Grade 4 lessons, `GAMES_DATA`, `Timetable` catalog, `lesson-plans/`, `island/`, `passport/`, `home-view/`, and `404.html` routes.
@@ -145,7 +145,7 @@ flowchart TB
 | [L16659–L16819](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16659-L16819) | LESSON ATTACHMENT MODALS (Games, Worksheets, Assignments) |
 | [L16820–L17227](file:///C:/Users/maysa/Desktop/DV/js/school-app.js#L16820-L17227) | CURRICULUM AI TEACHER ASSISTANT |
 
-### B. [school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js) (17601 lines · 762.3 KB)
+### B. [school-store.js](file:///C:/Users/maysa/Desktop/DV/js/school-store.js) (17601 lines · 762.6 KB)
 | Line Range | Chapter / Section |
 | :---: | :--- |
 | [L958–L961](file:///C:/Users/maysa/Desktop/DV/js/school-store.js#L958-L961) | GLOBAL READINGS 2 — LEVEL 2 STUDENT'S BOOK (MACMILLAN EDUCATION) |
