@@ -1844,7 +1844,14 @@
   K.ui.teamBar = function (teams, fmt) {
     var bar = K.ui.add(K.el('div', 'hud'));
     teams.forEach(function (t, i) {
-      var p = K.el('div', 'tpill', '<i>' + (i + 1) + '</i><span>' + K.esc(t.name) + '</span><b>0</b>'); p.style.setProperty('--c', t.c); t.pill = p; bar.appendChild(p);
+      var p = K.el('div', 'tpill', '<i>' + (i + 1) + '</i><span class="tpill-txt"><em class="tpill-nm">' + K.esc(t.name) + '</em><small class="tpill-sp"></small></span><b>0</b>');
+      p.style.setProperty('--c', t.c);
+      p.title = 'Tap to change groups or pick next pupil';
+      p.style.cursor = 'pointer';
+      p.onclick = function () {
+        if (K.cls && K.cls.openGroupEditor) K.cls.openGroupEditor(i);
+      };
+      t.pill = p; bar.appendChild(p);
     });
     var lastActive = 0;
     var hudApi = {
@@ -1853,7 +1860,12 @@
         teams.forEach(function (t, i) {
           if (!t.pill) return;
           t.pill.classList.toggle('turn', i === lastActive);
-          var sp = t.pill.querySelector('span'); if (sp) sp.textContent = t.name;
+          var sp = t.pill.querySelector('.tpill-nm') || t.pill.querySelector('span'); if (sp) sp.textContent = t.name;
+          var spkEl = t.pill.querySelector('.tpill-sp');
+          if (spkEl) {
+            var curSp = K.cls && K.cls.speaker ? K.cls.speaker(t) : null;
+            spkEl.textContent = curSp ? ('🎤 ' + curSp.name) : '';
+          }
           var b = t.pill.querySelector('b'); if (b) b.textContent = fmt ? fmt(t) : t.score;
         });
       },
@@ -1865,6 +1877,8 @@
   };
   K.ui.topButtons = function (back) {
     var tb = K.ui.add(K.el('div', 'topbtns'));
+    var grpBtn = K.el('button', 'ibtn k3-gm-topbtn', '👥'); grpBtn.title = 'Change Groups & Choose Pupils';
+    grpBtn.onclick = function () { if (K.cls && K.cls.openGroupEditor) K.cls.openGroupEditor(); };
     var scBtn = K.el('button', 'ibtn k3-gm-topbtn', '✏️'); scBtn.title = 'Edit Scores & Team Names';
     scBtn.onclick = function () { if (K.gm) K.gm.scoreEditor(); };
     var flBtn = K.el('button', 'ibtn k3-gm-topbtn', '🔁'); flBtn.title = 'Flashcards Revision (Remember First)';
@@ -1873,6 +1887,8 @@
     exBtn.onclick = function () { if (K.gm && K._qs) K.gm.exitTicket(K._qs.allItems ? K._qs.allItems() : []); };
     var mu = K.el('button', 'ibtn', K.muted ? '🔇' : '🔊'); mu.title = 'Sound on/off';
     mu.onclick = function () { K.muted = !K.muted; mu.textContent = K.muted ? '🔇' : '🔊'; K.loopVol('music', .25); K.loopVol('crowd', .18); };
+    // Append grpBtn right at the front of topbtns below!
+    tb._grpBtn = grpBtn;
     var de = document.documentElement;
     var canFs = !!(de.requestFullscreen || de.webkitRequestFullscreen);
     var fs = K.el('button', 'ibtn', '⛶'); fs.title = 'Full screen';
@@ -1912,7 +1928,7 @@
       location.href = backHref;
     }
     var bk = K.el('button', 'ibtn', '✕'); bk.title = backTitle; bk.onclick = leaveGame;
-    tb.appendChild(scBtn); tb.appendChild(flBtn); tb.appendChild(exBtn); if (!K.CAPTURE) tb.appendChild(K.qualityButton()); tb.appendChild(mu); tb.appendChild(fs); tb.appendChild(bk);
+    tb.appendChild(grpBtn); tb.appendChild(scBtn); tb.appendChild(flBtn); tb.appendChild(exBtn); if (!K.CAPTURE) tb.appendChild(K.qualityButton()); tb.appendChild(mu); tb.appendChild(fs); tb.appendChild(bk);
     if ((is3dGame || Q.get('from') === 'gm' || fromIsl) && !Q.has('preview')) {
       var gmPill = K.ui.add(K.el('a', 'gm-back-pill' + (fromIsl ? ' isl-pill' : ''), K.island ? K.island.backLabel() : '🎮 ← Games'));
       gmPill.href = backHref;
@@ -2434,10 +2450,69 @@
       var picHtml = item.img ? '<span class="k3-picwrap"><img class="qimg" alt="" src="' + K.ROOT + K.esc(item.img) + '"></span>' : (item.pic ? '<span class="k3-picwrap"><span class="pic">' + K.esc(item.pic) + '</span></span>' : '');
       var timerHtml = (gmCfg.timer && !isAiTurn && !K.DEMO) ? '<div class="k3-timer-track"><div class="k3-timer-fill" id="k3-tfill"></div><span class="k3-timer-sec" id="k3-tsec">' + gmCfg.timer + 's</span></div>' : '';
 
-      card.innerHTML = '<div class="qhead"><span>●</span> ' + (sp ? '<i class="qface" data-k3-face="' + sp.id + '">' + sp.initial + '</i>' + K.esc(sp.name) + '\u2019s turn · Team ' + K.esc(team.name) : 'Team ' + K.esc(team.name)) + (isAiTurn ? '<span class="k3-ai-badge">🤖 Crew AI</span>' : '') + badgeHtml + (opts.prompt ? ' — ' + opts.prompt : '') + (isAiTurn || isSpeaking ? '' : '<small class="qkhint">Keys: 1 · 2 · 3</small>') + '</div>' +
+      var canPickPupil = !isAiTurn && !K.DEMO && K.cls && K.cls.on;
+      card.innerHTML = '<div class="qhead"><span>●</span> <span class="qhead-who">' + (sp ? '<i class="qface" data-k3-face="' + sp.id + '">' + sp.initial + '</i><b>' + K.esc(sp.name) + '</b>\u2019s turn · Team ' + K.esc(team.name) : 'Team ' + K.esc(team.name)) + '</span>' +
+        (canPickPupil ? '<button type="button" class="q-pick-btn" title="Choose a different pupil for this turn">👤 Switch pupil ▾</button>' : '') +
+        (isAiTurn ? '<span class="k3-ai-badge">🤖 Crew AI</span>' : '') + badgeHtml + (opts.prompt ? ' — ' + opts.prompt : '') + (isAiTurn || isSpeaking ? '' : '<small class="qkhint">Keys: 1 · 2 · 3</small>') + '</div>' +
+        '<div class="q-pup-tray" style="display:none"></div>' +
         timerHtml +
         '<div class="qtext">' + picHtml + '<span>' + K.esc(item.q) + '</span>' +
         '<button type="button" class="qsay" title="Listen">🔊</button></div>';
+
+      // Live 1-tap Pupil Switcher right inside the question card!
+      if (canPickPupil) {
+        var pickBtn = card.querySelector('.q-pick-btn');
+        var pupTray = card.querySelector('.q-pup-tray');
+        var whoEl = card.querySelector('.qhead-who');
+        var showAllClass = false;
+        function renderPupTray() {
+          pupTray.innerHTML = '';
+          var list = [];
+          if (!showAllClass && team.pupils && team.pupils.length) {
+            list = team.pupils.slice();
+          } else {
+            var seenP = {};
+            (K._activeTeams || [team]).forEach(function (tm) {
+              (tm.pupils || []).forEach(function (pp) { if (!seenP[pp.id]) { seenP[pp.id] = 1; list.push(pp); } });
+            });
+            if (K.cls && K.cls.classId && root.Kit && root.Kit.classroom && root.Kit.classroom.pupils) {
+              root.Kit.classroom.pupils(K.cls.classId, false).forEach(function (pp) {
+                if (!seenP[pp.id]) { seenP[pp.id] = 1; list.push({ id: pp.id, name: pp.name, initial: pp.initial, right: 0, turns: 0 }); }
+              });
+            }
+          }
+          list.forEach(function (pp) {
+            var chip = K.el('button', 'clskid q-pup-chip' + (sp && sp.id === pp.id ? ' on' : ''), '<i data-k3-face="' + pp.id + '">' + pp.initial + '</i>' + K.esc(pp.name));
+            chip.type = 'button';
+            chip.onclick = function () {
+              sp = pp;
+              if (team.pupils) {
+                var fIdx = team.pupils.findIndex(function (x) { return x.id === pp.id; });
+                if (fIdx >= 0) team.speakerIdx = fIdx;
+              }
+              whoEl.innerHTML = '<i class="qface" data-k3-face="' + sp.id + '">' + sp.initial + '</i><b>' + K.esc(sp.name) + '</b>\u2019s turn · Team ' + K.esc(team.name);
+              pupTray.style.display = 'none';
+              K.sfx('tap');
+              K.cls.paintFaces(card);
+              if (K._activeHud && K._activeHud.refresh) K._activeHud.refresh();
+            };
+            pupTray.appendChild(chip);
+          });
+          var tog = K.el('button', 'q-pup-all', showAllClass ? '👥 Team only' : '🌍 All class pupils');
+          tog.type = 'button';
+          tog.onclick = function () { showAllClass = !showAllClass; renderPupTray(); };
+          pupTray.appendChild(tog);
+          K.cls.paintFaces(pupTray);
+        }
+        if (pickBtn) {
+          pickBtn.onclick = function () {
+            K.sfx('tap');
+            var open = pupTray.style.display !== 'none';
+            pupTray.style.display = open ? 'none' : 'flex';
+            if (!open) renderPupTray();
+          };
+        }
+      }
 
       // Picture Tricks: Super Zoom or Blur Slide-to-Reveal
       var picBox = card.querySelector('.k3-picwrap');
@@ -2676,8 +2751,240 @@
     if (!team || !team.pupils || !team.pupils.length) return null;
     return team.pupils[(team.speakerIdx || 0) % team.pupils.length];
   };
-  /* the title screen row: pick the class (or no names), see the teams, shuffle them */
+  /* Helper: build nTeams cleanly from Saved Class Groups, Fair Shuffle, or Custom Saved Roster */
+  var CUSTOM_ROSTER_PREFIX = 'eaa_k3_custom_groups_v1_';
+  function customRosterKey(classId, nTeams) { return CUSTOM_ROSTER_PREFIX + (classId || 'none') + '_' + (nTeams || 4); }
+  function loadCustomRoster(classId, nTeams) {
+    try { return JSON.parse(sessionStorage.getItem(customRosterKey(classId, nTeams)) || 'null'); } catch (e) { return null; }
+  }
+  function saveCustomRoster(classId, nTeams, buckets, benched) {
+    try {
+      sessionStorage.setItem(customRosterKey(classId, nTeams), JSON.stringify({
+        teams: buckets.map(function (b) { return { name: b.customName || '', ids: (b.pupils || []).map(function (p) { return p.id; }) }; }),
+        benched: (benched || []).map(function (p) { return p.id; })
+      }));
+    } catch (e) {}
+  }
+  function clearCustomRoster(classId, nTeams) {
+    try { sessionStorage.removeItem(customRosterKey(classId, nTeams)); } catch (e) {}
+  }
+
+  C.buildForGame = function (nTeams, opts) {
+    opts = opts || {};
+    var n = Math.max(2, Math.min(4, Number(nTeams) || 4));
+    var cid = opts.classId !== undefined ? opts.classId : C.classId;
+    if (!cid || !R()) return { teams: [], benched: [], hasSavedGroups: false, mode: 'fair' };
+
+    var allPupils = R().pupils(cid, false) || [];
+    var byId = {};
+    allPupils.forEach(function (p) { byId[p.id] = p; });
+    var savedGrps = (R().groups && R().groups(cid)) || [];
+    var hasSavedGroups = savedGrps.length >= 2;
+    var Kit = root.Kit;
+    var mode = opts.teamMode || C.teamMode || (Kit && Kit.pref && Kit.pref('teamMode')) || (hasSavedGroups ? 'groups' : 'fair');
+    if (mode === 'groups' && !hasSavedGroups) mode = 'fair';
+    C.teamMode = mode;
+
+    // 1. Respect custom manual edits made by the teacher (unless forceRemix / explicit mode reset)
+    if (!opts.forceRemix && !opts.ignoreCustom) {
+      var custom = loadCustomRoster(cid, n);
+      if (custom && Array.isArray(custom.teams) && custom.teams.length === n) {
+        var assigned = {};
+        var benchIds = {};
+        (custom.benched || []).forEach(function (id) { benchIds[id] = 1; });
+        var buckets = custom.teams.map(function (ct, i) {
+          var mem = (ct.ids || []).map(function (id) { assigned[id] = 1; return byId[id]; }).filter(Boolean);
+          return { name: ct.name || (K.TEAMS[i] && K.TEAMS[i].name) || ('Team ' + (i + 1)), customName: ct.name || '', pupils: mem };
+        });
+        var benched = [];
+        allPupils.forEach(function (p) {
+          if (benchIds[p.id]) benched.push(p);
+          else if (!assigned[p.id]) {
+            buckets.slice().sort(function (a, b) { return a.pupils.length - b.pupils.length; })[0].pupils.push(p);
+          }
+        });
+        return { teams: buckets, benched: benched, hasSavedGroups: hasSavedGroups, mode: mode };
+      }
+    }
+
+    // 2. Saved Class Board Groups (maps cleanly onto nTeams without dropping any pupil!)
+    if (mode === 'groups' && hasSavedGroups) {
+      var gBuckets = [];
+      for (var gi = 0; gi < n; gi++) {
+        var srcG = savedGrps[gi];
+        gBuckets.push({
+          name: (srcG && srcG.name) ? srcG.name : ((K.TEAMS[gi] && K.TEAMS[gi].name) || ('Team ' + (gi + 1))),
+          customName: (srcG && srcG.name) ? srcG.name : '',
+          pupils: (srcG && srcG.pupils) ? srcG.pupils.slice() : []
+        });
+      }
+      // If teacher has more saved groups than nTeams (e.g. 4 groups in a 2-team Tug game), merge extras evenly so nobody is left out
+      for (var ex = n; ex < savedGrps.length; ex++) {
+        var targetB = gBuckets[ex % n];
+        if (savedGrps[ex] && savedGrps[ex].pupils) {
+          targetB.pupils = targetB.pupils.concat(savedGrps[ex].pupils);
+        }
+      }
+      // Include any pupil not yet in a saved group
+      var inGrp = {};
+      gBuckets.forEach(function (b) { b.pupils.forEach(function (p) { inGrp[p.id] = 1; }); });
+      allPupils.forEach(function (p) {
+        if (!inGrp[p.id]) gBuckets.slice().sort(function (a, b) { return a.pupils.length - b.pupils.length; })[0].pupils.push(p);
+      });
+      return { teams: gBuckets, benched: [], hasSavedGroups: hasSavedGroups, mode: 'groups' };
+    }
+
+    // 3. Fair Random Teams
+    var built = R().buildTeams(n, { classId: cid, teamMode: 'fair', forceRemix: !!opts.forceRemix }) || [];
+    var fBuckets = built.slice(0, n).map(function (t, i) {
+      return { name: (K.TEAMS[i] && K.TEAMS[i].name) || t.name, customName: '', pupils: (t.pupils || []).slice() };
+    });
+    return { teams: fBuckets, benched: [], hasSavedGroups: hasSavedGroups, mode: 'fair' };
+  };
+
+  /* Interactive group & pupil roster widget (shared by Title Screen AND Live Mid-Game Editor!) */
+  function renderInteractiveRoster(container, nTeams, stateObj, onChange) {
+    var selected = null; // { fromTeam: idx | 'bench', pupilId: string, name: string }
+    function paint() {
+      container.innerHTML = '';
+      var hint = K.el('div', 'cls-move-hint',
+        selected
+          ? ('👆 Tap any team to move <b>' + K.esc(selected.name) + '</b> · or tap Cancel')
+          : '💡 Tap any pupil to move them to another group · tap ✕ to sit out'
+      );
+      if (selected) {
+        hint.classList.add('active');
+        var cancelB = K.el('button', 'cls-mini-btn', 'Cancel');
+        cancelB.type = 'button';
+        cancelB.onclick = function () { selected = null; paint(); };
+        hint.appendChild(cancelB);
+      }
+      container.appendChild(hint);
+
+      var grid = K.el('div', 'clsteams');
+      stateObj.teams.slice(0, nTeams).forEach(function (t, ti) {
+        var col = K.el('div', 'clsteam' + (selected && selected.fromTeam !== ti ? ' drop-ready' : ''));
+        col.style.setProperty('--c', (K.TEAMS[ti] && K.TEAMS[ti].c) || '#4f9dff');
+        var head = K.el('b', 'clsteam-head', K.esc(t.name || (K.TEAMS[ti] && K.TEAMS[ti].name) || ('Team ' + (ti + 1))) + ' <small>(' + (t.pupils ? t.pupils.length : 0) + ')</small>');
+        col.appendChild(head);
+
+        col.onclick = function (ev) {
+          if (!selected) return;
+          if (ev.target && ev.target.closest && ev.target.closest('.clskid')) return;
+          movePupilTo(selected, ti);
+        };
+
+        (t.pupils || []).forEach(function (p, pi) {
+          var isSel = selected && selected.pupilId === p.id;
+          var isNextSpk = stateObj.liveTeams && stateObj.liveTeams[ti] && (((stateObj.liveTeams[ti].speakerIdx || 0) % Math.max(1, t.pupils.length)) === pi);
+          var chip = K.el('button', 'clskid clskid-btn' + (isSel ? ' sel' : '') + (isNextSpk ? ' next-spk' : ''));
+          chip.type = 'button';
+          chip.innerHTML = '<i data-k3-face="' + p.id + '">' + p.initial + '</i><span>' + K.esc(p.name) + '</span>';
+          chip.title = isSel ? 'Tap a team column to move ' + p.name : 'Tap to move ' + p.name + ' to another group';
+          chip.onclick = function (ev) {
+            ev.stopPropagation();
+            K.sfx('tap');
+            if (selected && selected.pupilId === p.id) {
+              // Quick-cycle to next team if tapped twice!
+              movePupilTo(selected, (ti + 1) % nTeams);
+              return;
+            }
+            if (selected && selected.fromTeam !== ti) {
+              movePupilTo(selected, ti);
+              return;
+            }
+            selected = { fromTeam: ti, pupilId: p.id, name: p.name };
+            paint();
+          };
+          // In live mid-game editor, add 1-tap 🎤 button to make this pupil speak RIGHT NOW!
+          if (stateObj.liveTeams) {
+            var micB = K.el('span', 'clskid-act mic', '🎤');
+            micB.title = 'Make ' + p.name + ' speak next!';
+            micB.onclick = function (ev) {
+              ev.stopPropagation();
+              K.sfx('tap');
+              if (stateObj.liveTeams[ti]) stateObj.liveTeams[ti].speakerIdx = pi;
+              K.ui.toast('🎤 ' + p.name + ' is up next!', 1.4, (K.TEAMS[ti] && K.TEAMS[ti].c) || '#2fc58a');
+              if (onChange) onChange(true);
+              paint();
+            };
+            chip.appendChild(micB);
+          }
+          var benchB = K.el('span', 'clskid-act x', '✕');
+          benchB.title = 'Sit out ' + p.name;
+          benchB.onclick = function (ev) {
+            ev.stopPropagation();
+            K.sfx('tap');
+            var removed = t.pupils.splice(pi, 1)[0];
+            if (removed) stateObj.benched.push(removed);
+            selected = null;
+            if (onChange) onChange();
+            paint();
+          };
+          chip.appendChild(benchB);
+          col.appendChild(chip);
+        });
+        grid.appendChild(col);
+      });
+      container.appendChild(grid);
+
+      if (stateObj.benched && stateObj.benched.length) {
+        var bWrap = K.el('div', 'cls-bench');
+        bWrap.appendChild(K.el('span', 'cls-bench-lbl', '🪑 Sitting out (tap to add back):'));
+        stateObj.benched.forEach(function (p, bi) {
+          var isSel = selected && selected.pupilId === p.id;
+          var chip = K.el('button', 'clskid clskid-btn bench' + (isSel ? ' sel' : ''));
+          chip.type = 'button';
+          chip.innerHTML = '<i data-k3-face="' + p.id + '">' + p.initial + '</i><span>+ ' + K.esc(p.name) + '</span>';
+          chip.onclick = function () {
+            K.sfx('tap');
+            if (selected && selected.pupilId === p.id) {
+              // Add into smallest team automatically
+              var smallest = 0;
+              for (var k = 1; k < nTeams; k++) {
+                if ((stateObj.teams[k].pupils || []).length < (stateObj.teams[smallest].pupils || []).length) smallest = k;
+              }
+              movePupilTo(selected, smallest);
+              return;
+            }
+            selected = { fromTeam: 'bench', pupilId: p.id, name: p.name };
+            paint();
+          };
+          bWrap.appendChild(chip);
+        });
+        container.appendChild(bWrap);
+      }
+
+      C.paintFaces(container);
+    }
+
+    function movePupilTo(sel, targetTeamIdx) {
+      var moved = null;
+      if (sel.fromTeam === 'bench') {
+        var bIdx = stateObj.benched.findIndex(function (p) { return p.id === sel.pupilId; });
+        if (bIdx >= 0) moved = stateObj.benched.splice(bIdx, 1)[0];
+      } else {
+        var srcList = stateObj.teams[sel.fromTeam] && stateObj.teams[sel.fromTeam].pupils;
+        if (srcList) {
+          var pIdx = srcList.findIndex(function (p) { return p.id === sel.pupilId; });
+          if (pIdx >= 0) moved = srcList.splice(pIdx, 1)[0];
+        }
+      }
+      if (moved && stateObj.teams[targetTeamIdx]) {
+        stateObj.teams[targetTeamIdx].pupils.push(moved);
+        K.sfx('tap');
+      }
+      selected = null;
+      if (onChange) onChange();
+      paint();
+    }
+
+    paint();
+  }
+
+  /* the title screen row: pick class, choose Class Groups vs Random Teams, tap to move any pupil between groups! */
   C.setupRow = function (box, nTeams) {
+    C._lastNTeams = nTeams || 4;
     if (!K.ui.preview) K.ui.setPicker(box);
     if (!K.ui.preview && (K.island.from === 'island' || K.island.from === 'practice-island' || Q.has('solo'))) {
       K.solo.toggleRow(box);
@@ -2692,49 +2999,219 @@
       var saved = urlCls || Kit.pref('classId');
       C.classId = saved === 'none' ? '' : (list.some(function (c) { return c.id === saved; }) ? saved : R().defaultClassId());
       if (urlCls && C.classId === urlCls) Kit.pref('classId', urlCls);
-      function draw(remix) {
+
+      function draw(opts) {
+        opts = opts || {};
         wrap.innerHTML = '';
         var pick = K.el('div', 'clspick');
         list.forEach(function (c) {
           var b = K.el('button', 'clsbtn' + (c.id === C.classId ? ' on' : ''), c.label);
+          b.type = 'button';
           b.onclick = function () { C.classId = c.id; Kit.pref('classId', c.id); draw(); };
           pick.appendChild(b);
         });
         var none = K.el('button', 'clsbtn' + (!C.classId ? ' on' : ''), '🎨 No names');
-        none.title = 'Play with colour teams only';
+        none.type = 'button'; none.title = 'Play with colour teams only';
         none.onclick = function () { C.classId = ''; Kit.pref('classId', 'none'); draw(); };
         pick.appendChild(none);
         var soloBtn = K.el('button', 'clsbtn' + (K.solo.on ? ' on' : ''), '🤖 1P vs AI');
-        soloBtn.title = 'Team 1 (Player) vs AI Island Crew';
+        soloBtn.type = 'button'; soloBtn.title = 'Team 1 (Player) vs AI Island Crew';
         soloBtn.onclick = function () { K.solo.on = !K.solo.on; draw(); };
         pick.appendChild(soloBtn);
         wrap.appendChild(pick);
+
         C.on = false; C.preview = null;
         if (!C.classId) return;
-        var teams = R().buildTeams(nTeams, { classId: C.classId, teamMode: 'fair', forceRemix: !!remix });
-        if (!teams.some(function (t) { return t.pupils && t.pupils.length; })) return;
-        C.on = true; C.preview = teams;
-        var grid = K.el('div', 'clsteams');
-        teams.slice(0, nTeams).forEach(function (t, i) {
-          var col = K.el('div', 'clsteam'); col.style.setProperty('--c', K.TEAMS[i].c);
-          col.appendChild(K.el('b', '', K.TEAMS[i].name));
-          (t.pupils || []).forEach(function (p) {
-            var chip = K.el('span', 'clskid');
-            chip.innerHTML = '<i data-k3-face="' + p.id + '">' + p.initial + '</i>' + K.esc(p.name);
-            col.appendChild(chip);
-          });
-          grid.appendChild(col);
+
+        var built = C.buildForGame(nTeams, { classId: C.classId, teamMode: opts.teamMode, forceRemix: !!opts.remix, ignoreCustom: !!opts.ignoreCustom });
+        if (!built.teams.some(function (t) { return t.pupils && t.pupils.length; })) return;
+        C.on = true;
+        C.preview = built.teams;
+        C.benched = built.benched;
+
+        // Mode & Shuffle Controls (Class Groups vs Random Teams)
+        var modeRow = K.el('div', 'clspick clsmode-row');
+        if (built.hasSavedGroups) {
+          var bGrp = K.el('button', 'clsbtn' + (built.mode === 'groups' ? ' on' : ''), '👥 Class Groups');
+          bGrp.type = 'button';
+          bGrp.onclick = function () {
+            Kit.pref('teamMode', 'groups'); C.teamMode = 'groups';
+            clearCustomRoster(C.classId, nTeams);
+            draw({ teamMode: 'groups', ignoreCustom: true });
+          };
+          modeRow.appendChild(bGrp);
+        }
+        var bFair = K.el('button', 'clsbtn' + (built.mode !== 'groups' ? ' on' : ''), '🎲 Random Teams');
+        bFair.type = 'button';
+        bFair.onclick = function () {
+          Kit.pref('teamMode', 'fair'); C.teamMode = 'fair';
+          clearCustomRoster(C.classId, nTeams);
+          draw({ teamMode: 'fair', ignoreCustom: true });
+        };
+        modeRow.appendChild(bFair);
+        var mix = K.el('button', 'clsbtn mix', '🔀 Shuffle');
+        mix.type = 'button';
+        mix.onclick = function () {
+          Kit.pref('teamMode', 'fair'); C.teamMode = 'fair';
+          clearCustomRoster(C.classId, nTeams);
+          draw({ teamMode: 'fair', remix: true, ignoreCustom: true });
+        };
+        modeRow.appendChild(mix);
+        wrap.appendChild(modeRow);
+
+        var rosterBox = K.el('div', 'cls-roster-box');
+        wrap.appendChild(rosterBox);
+        renderInteractiveRoster(rosterBox, nTeams, built, function () {
+          C.preview = built.teams;
+          C.benched = built.benched;
+          saveCustomRoster(C.classId, nTeams, built.teams, built.benched);
         });
-        wrap.appendChild(grid);
-        var mix = K.el('button', 'clsbtn mix', '🔀 New teams'); mix.onclick = function () { draw(true); };
-        wrap.appendChild(mix);
-        C.paintFaces(wrap);
       }
       draw();
       root.addEventListener('eaa:avatars-ready', function () { C.paintFaces(wrap); });
       [1500, 4000, 8000].forEach(function (ms) { setTimeout(function () { C.paintFaces(document); }, ms); });
     });
   };
+
+  /* LIVE MID-GAME GROUP & PUPIL EDITOR (Opened from top 👥 button or tapping any team pill!) */
+  C.openGroupEditor = function () {
+    C.boot().then(function (ok) {
+      var old = document.getElementById('k3-grp-ov'); if (old) old.remove();
+      var teams = K._activeTeams || [];
+      var nTeams = teams.length || C._lastNTeams || 4;
+
+      if (!ok || !R() || !R().classes().length) {
+        // Fallback when teacher is not signed in: open score/team name editor with friendly hint
+        if (K.gm && K.gm.scoreEditor) { K.gm.scoreEditor(); return; }
+        K.ui.toast('Sign in as teacher on the main platform to pick class pupils!', 2.2, '#ffb320');
+        return;
+      }
+
+      var list = R().classes();
+      var Kit = root.Kit;
+      var ov = K.el('div', 'k3-gm-ov'); ov.id = 'k3-grp-ov';
+      var card = K.el('div', 'k3-gm-card wide k3-grp-modal');
+
+      function applyToActive(built) {
+        C.preview = built.teams;
+        C.benched = built.benched;
+        C.on = !!C.classId && built.teams.some(function (b) { return b.pupils && b.pupils.length; });
+        if (C.classId) saveCustomRoster(C.classId, nTeams, built.teams, built.benched);
+        if (teams.length) {
+          teams.forEach(function (t, i) {
+            var src = built.teams[i];
+            var prevById = {};
+            (t.pupils || []).forEach(function (p) { prevById[p.id] = p; });
+            if (src && src.customName) t.name = src.customName;
+            else if (K.TEAMS[i]) t.name = K.TEAMS[i].name;
+            t.pupils = (src && src.pupils) ? src.pupils.map(function (p) {
+              var oldP = prevById[p.id];
+              return oldP ? oldP : { id: p.id, name: p.name, initial: p.initial, right: 0, turns: 0 };
+            }) : [];
+            if (t.speakerIdx >= t.pupils.length) t.speakerIdx = 0;
+          });
+          if (K._activeHud && K._activeHud.refresh) K._activeHud.refresh();
+        }
+      }
+
+      function drawModal(opts) {
+        opts = opts || {};
+        card.innerHTML = '<div class="k3-gm-barhead"><b>👥 Change Groups &amp; Choose Pupils</b><button type="button" class="k3-gm-sbtn ghost" id="k3-grp-x">✕</button></div>';
+        card.querySelector('#k3-grp-x').onclick = function () { ov.remove(); };
+
+        var pick = K.el('div', 'clspick');
+        list.forEach(function (c) {
+          var b = K.el('button', 'clsbtn' + (c.id === C.classId ? ' on' : ''), c.label);
+          b.type = 'button';
+          b.onclick = function () { C.classId = c.id; Kit.pref('classId', c.id); drawModal({ ignoreCustom: false }); };
+          pick.appendChild(b);
+        });
+        var none = K.el('button', 'clsbtn' + (!C.classId ? ' on' : ''), '🎨 No names');
+        none.type = 'button';
+        none.onclick = function () {
+          C.classId = ''; Kit.pref('classId', 'none'); C.on = false;
+          teams.forEach(function (t, i) { t.pupils = []; if (K.TEAMS[i]) t.name = K.TEAMS[i].name; });
+          if (K._activeHud && K._activeHud.refresh) K._activeHud.refresh();
+          drawModal();
+        };
+        pick.appendChild(none);
+        card.appendChild(pick);
+
+        if (!C.classId) {
+          card.appendChild(K.el('p', 'k3-gm-hint', 'Pick a class above to arrange groups and choose pupils!'));
+          return;
+        }
+
+        // Start from live active teams if same class & not resetting
+        var built;
+        if (!opts.remix && !opts.ignoreCustom && teams.length && C.on && teams.some(function (t) { return t.pupils && t.pupils.length; })) {
+          var savedGrps = (R().groups && R().groups(C.classId)) || [];
+          built = {
+            teams: teams.map(function (t, i) { return { name: t.name, customName: (K.TEAMS[i] && t.name !== K.TEAMS[i].name) ? t.name : '', pupils: (t.pupils || []).slice() }; }),
+            benched: (C.benched || []).slice(),
+            hasSavedGroups: savedGrps.length >= 2,
+            mode: C.teamMode || 'fair',
+            liveTeams: teams
+          };
+        } else {
+          built = C.buildForGame(nTeams, { classId: C.classId, teamMode: opts.teamMode, forceRemix: !!opts.remix, ignoreCustom: !!opts.ignoreCustom });
+          built.liveTeams = teams;
+          applyToActive(built);
+        }
+
+        var modeRow = K.el('div', 'clspick clsmode-row');
+        if (built.hasSavedGroups) {
+          var bGrp = K.el('button', 'clsbtn' + (built.mode === 'groups' ? ' on' : ''), '👥 Class Groups');
+          bGrp.type = 'button';
+          bGrp.onclick = function () {
+            Kit.pref('teamMode', 'groups'); C.teamMode = 'groups';
+            clearCustomRoster(C.classId, nTeams);
+            drawModal({ teamMode: 'groups', ignoreCustom: true });
+          };
+          modeRow.appendChild(bGrp);
+        }
+        var bFair = K.el('button', 'clsbtn' + (built.mode !== 'groups' ? ' on' : ''), '🎲 Random Teams');
+        bFair.type = 'button';
+        bFair.onclick = function () {
+          Kit.pref('teamMode', 'fair'); C.teamMode = 'fair';
+          clearCustomRoster(C.classId, nTeams);
+          drawModal({ teamMode: 'fair', ignoreCustom: true });
+        };
+        modeRow.appendChild(bFair);
+        var bMix = K.el('button', 'clsbtn mix', '🔀 Shuffle Now');
+        bMix.type = 'button';
+        bMix.onclick = function () {
+          Kit.pref('teamMode', 'fair'); C.teamMode = 'fair';
+          clearCustomRoster(C.classId, nTeams);
+          drawModal({ teamMode: 'fair', remix: true, ignoreCustom: true });
+        };
+        modeRow.appendChild(bMix);
+        card.appendChild(modeRow);
+
+        var rosterBox = K.el('div', 'cls-roster-box');
+        card.appendChild(rosterBox);
+        renderInteractiveRoster(rosterBox, nTeams, built, function (onlySpeaker) {
+          if (onlySpeaker) {
+            if (K._activeHud && K._activeHud.refresh) K._activeHud.refresh();
+          } else {
+            applyToActive(built);
+          }
+        });
+
+        var doneBtn = K.el('button', 'k3-gm-sbtn green', '✅ Done · Back to Game');
+        doneBtn.type = 'button';
+        doneBtn.style.marginTop = '10px';
+        doneBtn.onclick = function () { ov.remove(); };
+        card.appendChild(doneBtn);
+      }
+
+      ov.appendChild(card);
+      ov.onclick = function (ev) { if (ev.target === ov) ov.remove(); };
+      document.body.appendChild(ov);
+      drawModal();
+    });
+  };
+
   C.paintFaces = function (scope) {
     var nodes = (scope || document).querySelectorAll('[data-k3-face]');
     Array.prototype.forEach.call(nodes, function (n) {
@@ -2745,11 +3222,12 @@
       if (im.getAttribute('src') !== u) im.setAttribute('src', u);
     });
   };
-  /* when the game starts: give each colour team its pupils */
+  /* when the game starts: give each colour team its pupils & group name */
   C.assign = function (TEAMS) {
     if (!C.on || !C.preview) return;
     TEAMS.forEach(function (t, i) {
       var src = C.preview[i];
+      if (src && src.customName) t.name = src.customName;
       t.pupils = src && src.pupils ? src.pupils.map(function (p) { return { id: p.id, name: p.name, initial: p.initial, right: 0, turns: 0 }; }) : [];
       t.speakerIdx = 0;
     });
