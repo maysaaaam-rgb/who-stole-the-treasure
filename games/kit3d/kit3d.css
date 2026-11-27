@@ -541,3 +541,84 @@ body.preview .hud { top: 76px; }
 .ibtn.k3-qbtn small { font-size: .62rem; font-weight: 800; color: #6b5a85; margin-top: 3px; }
 .k3-qbtn-float { position: fixed; left: max(12px, env(safe-area-inset-left)); bottom: max(12px, env(safe-area-inset-bottom)); z-index: 70; height: 44px; opacity: .85; }
 .k3-qbtn-float:hover { opacity: 1; }
+
+
+/* === LIVE GROUP & PUPIL PICKER (All 3D Games) === */
+.tpill-txt { display: flex; flex-direction: column; line-height: 1.05; }
+.tpill-nm { font-style: normal; }
+.tpill-sp { font-size: 0.72rem; font-weight: 800; color: #5b4776; opacity: 0.92; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tpill-sp:empty { display: none; }
+.tpill:hover { transform: translateY(-2px) scale(1.04); }
+
+.qhead-who { display: inline-flex; align-items: center; gap: 7px; }
+.q-pick-btn {
+  appearance: none; border: 2px solid var(--c, #4f9dff); border-bottom-width: 4px;
+  background: #fff8ec; color: #2b1d40; border-radius: 999px;
+  padding: 4px 12px; font-family: inherit; font-weight: 900; font-size: 0.84rem;
+  cursor: pointer; transition: transform 0.12s cubic-bezier(.175,.885,.32,1.275);
+}
+.q-pick-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
+.q-pup-tray {
+  display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 10px; margin: 4px 0 8px;
+  background: #fff8ec; border: 3px solid #ffe08a; border-radius: 18px; align-items: center;
+}
+.q-pup-chip {
+  appearance: none; border: 2px solid #d5c7eb; border-bottom-width: 4px;
+  cursor: pointer; font-family: inherit; transition: transform 0.12s;
+}
+.q-pup-chip:hover { transform: translateY(-2px); border-color: #4f9dff; }
+.q-pup-chip.on { background: #ffe066; border-color: #c77e00; }
+.q-pup-all {
+  appearance: none; border: 2px dashed #9b7bff; background: #f4effa; color: #4c2fa0;
+  border-radius: 999px; padding: 5px 12px; font-family: inherit; font-weight: 900;
+  font-size: 0.82rem; cursor: pointer; margin-left: auto;
+}
+
+.clsmode-row { margin-top: -2px; }
+.cls-roster-box { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.cls-move-hint {
+  display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center;
+  font-size: 0.88rem; font-weight: 800; color: #2b1d40;
+  background: rgba(255, 248, 236, 0.94); border: 2px solid #e6d5b8; border-radius: 999px; padding: 4px 14px;
+}
+.cls-move-hint.active {
+  background: #fff1b8; border-color: #ffb320; box-shadow: 0 4px 12px rgba(199,126,0,0.22);
+}
+.cls-mini-btn {
+  appearance: none; border: 2px solid #c77e00; background: #fff; color: #2b1d40;
+  border-radius: 999px; padding: 2px 10px; font-family: inherit; font-weight: 900; font-size: 0.78rem; cursor: pointer;
+}
+.clsteam.drop-ready {
+  cursor: pointer; background: #fffdf0;
+  box-shadow: 0 0 0 4px rgba(255, 179, 32, 0.55), 0 8px 18px rgba(43, 29, 64, 0.18);
+  transform: translateY(-3px);
+}
+.clsteam-head small { opacity: 0.7; font-weight: 800; }
+.clskid-btn {
+  appearance: none; border: 2px solid #e2d4f4; border-bottom-width: 4px;
+  cursor: pointer; font-family: inherit; padding: 2px 6px 2px 2px;
+  transition: transform 0.12s cubic-bezier(.175,.885,.32,1.275), background 0.12s;
+}
+.clskid-btn:hover { transform: translateY(-2px); border-color: #4f9dff; background: #eef6ff; }
+.clskid-btn.sel {
+  background: #ffe066 !important; border-color: #c77e00 !important;
+  transform: scale(1.06); box-shadow: 0 4px 12px rgba(199,126,0,0.3);
+}
+.clskid-btn.next-spk { border-color: #2fc58a; background: #e8fff4; }
+.clskid-act {
+  display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+  font-size: 0.72rem; font-weight: 900; margin-left: 2px; cursor: pointer;
+}
+.clskid-act.mic { background: #dff9ee; color: #145e40; }
+.clskid-act.mic:hover { background: #2fc58a; color: #fff; }
+.clskid-act.x { background: #f2e8f8; color: #7b6696; }
+.clskid-act.x:hover { background: #ff5fa2; color: #fff; }
+
+.cls-bench {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px;
+  background: rgba(255, 248, 236, 0.9); border: 2px dashed #cbb5e0; border-radius: 16px;
+  padding: 6px 12px; max-width: 100%;
+}
+.cls-bench-lbl { font-size: 0.82rem; font-weight: 800; color: #6a5685; }
+.clskid-btn.bench { opacity: 0.88; border-style: dashed; }
+.k3-grp-modal { max-height: 88vh; overflow-y: auto; }
